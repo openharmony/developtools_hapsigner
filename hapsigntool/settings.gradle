@@ -1,0 +1,4 @@
+rootProject.name = 'hapsigntool'
+include 'hap_sign_tool_lib'
+include 'hap_sign_tool'
+
