@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.hap.entity;
 
 import com.ohos.hapsigntool.utils.ByteArrayUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -28,32 +29,32 @@ class SignContentHash {
     /**
      * the signature sub-block type
      */
-    public char type;
+    protected char type;
 
     /**
      * the signature sub-block tag
      */
-    public char tag;
+    protected char tag;
 
     /**
      * the algorithm ID of digest
      */
-    public short algId;
+    protected short algId;
 
     /**
      * the data length of hash value
      */
-    public int length;
+    protected int length;
 
     /**
      * the data of hash value
      */
-    public byte[] hash;
+    protected byte[] hash;
 
     /**
      * the length of content
      */
-    public int contentHashLen;
+    protected int contentHashLen;
 
     SignContentHash(char type, char tag, short algId, int length, byte[] hash) {
         this.type = type;
@@ -108,30 +109,34 @@ public class SignContentInfo {
         byte[] ret = new byte[this.size];
         byte[] errorOutput = null;
         int index = 0;
-        index = ByteArrayUtils.insertCharToByteArray(ret, index, version);
-        if (index < 0) {
-            return errorOutput;
-        }
-        index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, size);
-        if (index < 0) {
-            return errorOutput;
-        }
-        index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, numOfBlocks);
-        if (index < 0) {
-            return errorOutput;
-        }
-        for (int i = 0; i < hashData.size(); i++) {
-            SignContentHash tmp = hashData.get(i);
-            ret[index] = (byte) tmp.type;
-            index++;
-            ret[index] = (byte) tmp.tag;
-            index++;
-            index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, tmp.algId);
-            index = ByteArrayUtils.insertIntToByteArray(ret, index, tmp.length);
-            index = ByteArrayUtils.insertByteToByteArray(ret, ret.length, index, tmp.hash, tmp.hash.length);
+        try {
+            index = ByteArrayUtils.insertCharToByteArray(ret, index, version);
             if (index < 0) {
-                return errorOutput;
+                throw new IOException();
             }
+            index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, size);
+            if (index < 0) {
+                throw new IOException();
+            }
+            index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, numOfBlocks);
+            if (index < 0) {
+                throw new IOException();
+            }
+            for (int i = 0; i < hashData.size(); i++) {
+                SignContentHash tmp = hashData.get(i);
+                ret[index] = (byte) tmp.type;
+                index++;
+                ret[index] = (byte) tmp.tag;
+                index++;
+                index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, tmp.algId);
+                index = ByteArrayUtils.insertIntToByteArray(ret, index, tmp.length);
+                index = ByteArrayUtils.insertByteToByteArray(ret, ret.length, index, tmp.hash, tmp.hash.length);
+                if (index < 0) {
+                    throw new IOException();
+                }
+            }
+        } catch (IOException e) {
+            return errorOutput;
         }
         return ret;
     }

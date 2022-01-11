@@ -51,6 +51,7 @@ public class SignBin {
      * @return true, if sign successfully.
      */
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
+        boolean result = false;
         /* 1. Make block head, write to output file. */
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
@@ -75,38 +76,44 @@ public class SignBin {
         if (!writeSignHeadDataToOutputFile(inputFile, outputFile)) {
             LOGGER.error("The sign head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
-            return false;
+        } else {
+            result = true;
         }
-        return true;
+        return result;
     }
 
     private static boolean writeBlockDataToFile(
             String inputFile, String outputFile, String profileFile) {
-        long binFileLen = FileUtils.getFileLen(inputFile);
-        long profileDataLen = FileUtils.getFileLen(profileFile);
-        if (!checkBinAndProfileLengthIsValid(binFileLen, profileDataLen)) {
-            LOGGER.error("file length is invalid, binFileLen: " + binFileLen + " profileDataLen: " + profileDataLen);
+        try {
+            long binFileLen = FileUtils.getFileLen(inputFile);
+            long profileDataLen = FileUtils.getFileLen(profileFile);
+            if (!checkBinAndProfileLengthIsValid(binFileLen, profileDataLen)) {
+                LOGGER.error("file length is invalid, binFileLen: " + binFileLen + " profileDataLen: " + profileDataLen);
+                throw new IOException();
+            }
+
+            long offset = binFileLen + HwBlockHead.getBlockLen() + HwBlockHead.getBlockLen();
+            if (isLongOverflowInteger(offset)) {
+                LOGGER.error("The profile block head offset is overflow interger range, offset: " + offset);
+                throw new IOException();
+            }
+            char isSigned = SignatureBlockTypes.PROFILE_SIGNED_BLOCK;
+            byte[] proBlockByte =
+                    HwBlockHead.getBlockHead(isSigned, SignatureBlockTags.DEFAULT, (short) profileDataLen, (int) offset);
+
+            offset += profileDataLen;
+            if (isLongOverflowInteger(offset)) {
+                LOGGER.error("The sign block head offset is overflow integer range, offset: " + offset);
+                throw new IOException();
+            }
+            byte[] signBlockByte = HwBlockHead.getBlockHead(
+                    SignatureBlockTypes.SIGNATURE_BLOCK, SignatureBlockTags.DEFAULT, (short) 0, (int) offset);
+
+            return writeSignedBin(inputFile, proBlockByte, signBlockByte, profileFile, outputFile);
+        } catch (IOException e) {
+            LOGGER.error("writeBlockDataToFile failed.", e);
             return false;
         }
-
-        long offset = binFileLen + HwBlockHead.getBlockLen() + HwBlockHead.getBlockLen();
-        if (isLongOverflowInteger(offset)) {
-            LOGGER.error("The profile block head offset is overflow interger range, offset: " + offset);
-            return false;
-        }
-        char isSigned = 2;
-        byte[] proBlockByte =
-            HwBlockHead.getBlockHead(isSigned, SignatureBlockTags.DEFAULT, (short) profileDataLen, (int) offset);
-
-        offset += profileDataLen;
-        if (isLongOverflowInteger(offset)) {
-            LOGGER.error("The sign block head offset is overflow integer range, offset: " + offset);
-            return false;
-        }
-        byte[] signBlockByte = HwBlockHead.getBlockHead(
-            SignatureBlockTypes.SIGNATURE_BLOCK, SignatureBlockTags.DEFAULT, (short) 0, (int) offset);
-
-        return writeSignedBin(inputFile, proBlockByte, signBlockByte, profileFile, outputFile);
     }
 
     private static boolean writeSignedBin(String inputFile, byte[] proBlockByte, byte[] signBlockByte,
@@ -117,25 +124,25 @@ public class SignBin {
             if (!FileUtils.writeFileToDos(inputFile, dataOutputStream)) {
                 LOGGER.error("Failed to write infomation of input file: " + inputFile +
                         " to outputFile: " + outputFile);
-                return false;
+                throw new IOException();
             }
 
             // 2. write profile block head to the output file.
             if (!FileUtils.writeByteToDos(proBlockByte, dataOutputStream)) {
                 LOGGER.error("Failed to write proBlockByte to output file: " + outputFile);
-                return false;
+                throw new IOException();
             }
 
             // 3. write sign block head to the output file.
             if (!FileUtils.writeByteToDos(signBlockByte, dataOutputStream)) {
                 LOGGER.error("Failed to write binBlockByte to output file: " + outputFile);
-                return false;
+                throw new IOException();
             }
 
             // 4. write profile src file to the output file.
             if (!FileUtils.writeFileToDos(profileFile, dataOutputStream)) {
                 LOGGER.error("Failed to write profile file: " + profileFile);
-                return false;
+                throw new IOException();
             }
         } catch (IOException e) {
             LOGGER.error("writeSignedBin failed.", e);

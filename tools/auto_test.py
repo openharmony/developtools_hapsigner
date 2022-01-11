@@ -124,103 +124,139 @@ random_scope = {
 simple_scope = {
     'generate-keypair': [
         'generate-keypair -keyAlias "oh-app1-key-v1" -keyPwd 123456 -keyAlg ECC -keySize NIST-P-256 '
-        '-keystoreFile "ohtest.jks" -keystorePwd 123456',
+        '-keystoreFile "./test1/ohtest.jks" -keystorePwd 123456',
 
-        'generate-keypair -keyAlias "oh-app1-key-v1" -keyPwd 123456 -keyAlg RSA -keySize 2048 '
-        '-keystoreFile  "ohtest.p12" -keystorePwd 123456'
+        'generate-keypair -keyAlias "oh-profile1-key-v1" -keyPwd 123456 -keyAlg ECC -keySize NIST-P-384 '
+        '-keystoreFile "./test1/ohtest.jks" -keystorePwd 123456',
+
+        'generate-keypair -keyAlias "oh-app2-key-v1" -keyPwd 123456 -keyAlg RSA -keySize 2048 '
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456',
+
+        'generate-keypair -keyAlias "oh-profile2-key-v1" -keyPwd 123456 -keyAlg RSA -keySize 4096 '
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456'
     ],
     'generate-csr': [
         'generate-csr -keyAlias "oh-app1-key-v1" -keyPwd 123456 -subject  '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -signAlg SHA256withECDSA  '
-        '-keystoreFile  "ohtest.jks" -keystorePwd 123456 -outFile "oh-app1-key-v1.csr"'
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/oh-app1-key-v1.csr"',
+
+        'generate-csr -keyAlias "oh-profile2-key-v1" -keyPwd 123456 -subject  '
+        '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -signAlg SHA256withRSA  '
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 -outFile "./test2/oh-profile2-key-v1.csr"'
     ],
     'generate-ca': [
+        # Root CA in ohtest.jks
         'generate-ca -keyAlias "oh-root-ca-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA" '
-        '-validity 365 -signAlg SHA384withECDSA  -keystoreFile  "ohtest.jks" -keystorePwd 123456  '
-        '-outFile "root-ca1.cer" -keyAlg ECC -keySize NIST-P-256',
-
-        'generate-ca -keyAlias "oh-root-ca-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA" '
-        '-validity 365 -signAlg SHA384withECDSA  -keystoreFile  "ohtest.p12" -keystorePwd 123456  '
-        '-outFile "root-ca2.cer" -keyAlg RSA -keySize 2048',
-
+        '-validity 365 -signAlg SHA384withECDSA  -keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456  '
+        '-outFile "./test1/root-ca1.cer" -keyAlg ECC -keySize NIST-P-256',
+        # Sub app cert in ohtest.jks
         'generate-ca -keyAlias "oh-app-sign-srv-ca-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Root CA" -issuerKeyAlias "oh-root-ca-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN= Application Signature Service CA" -validity 365 -signAlg SHA384withECDSA  -keystoreFile  "ohtest.jks" '
-        '-keystorePwd 123456  -outFile "app-sign-srv-ca1.cer" -keyAlg ECC -keySize NIST-P-256',
-
-        'generate-ca -keyAlias "oh-app-sign-srv-ca-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN= Application Signature Service CA" -validity 365 -signAlg SHA384withECDSA  '
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456  -outFile "./test1/app-sign-srv-ca1.cer" '
+        '-keyAlg ECC -keySize NIST-P-256',
+        # Sub profile cert in ohtest.jks
+        'generate-ca -keyAlias "oh-profile-sign-srv-ca-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Root CA" -issuerKeyAlias "oh-root-ca-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN= Application Signature Service CA" -validity 365 -signAlg SHA384withECDSA  -keystoreFile  "ohtest.p12" '
-        '-keystorePwd 123456  -outFile "app-sign-srv-ca2.cer" -keyAlg RSA -keySize 2048'
+        'CN= Profile Signature Service CA" -validity 365 -signAlg SHA384withECDSA  -keystoreFile  "./test1/ohtest.jks" '
+        '-keystorePwd 123456  -outFile "./test1/profile-sign-srv-ca1.cer" -keyAlg ECC -keySize NIST-P-384',
+
+        # Root CA in ohtest.p12
+        'generate-ca -keyAlias "oh-root-ca2-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA" '
+        '-validity 365 -signAlg SHA384withRSA  -keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456  '
+        '-outFile "./test2/root-ca2.cer" -keyAlg RSA -keySize 2048',
+        # Sub app cert in ohtest.p12
+        'generate-ca -keyAlias "oh-app-sign-srv-ca2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Root CA" -issuerKeyAlias "oh-root-ca2-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN= Application Signature Service CA" -validity 365 -signAlg SHA384withRSA  '
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456  -outFile "./test2/app-sign-srv-ca2.cer" '
+        '-keyAlg RSA -keySize 2048',
+        # Sub profile cert in ohtest.p12
+        'generate-ca -keyAlias "oh-profile-sign-srv-ca2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Root CA" -issuerKeyAlias "oh-root-ca2-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN= Profile Signature Service CA" -validity 365 -signAlg SHA384withRSA  -keystoreFile  "./test2/ohtest.p12" '
+        '-keystorePwd 123456  -outFile "./test2/profile-sign-srv-ca2.cer" -keyAlg RSA -keySize 2048'
     ],
     'generate-cert': [
+        # Self-Definition cert - Root CA
+        'generate-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA" '
+        '-issuerKeyAlias "oh-app1-key-v1" -issuerKeyPwd 123456 '
+        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA" -validity 365 '
+        '-keyUsage "certificateSignature, crlSignature" -signAlg SHA256withECDSA  '
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/single-root.cer" -keyPwd 123456',
+        # Self-definition sign cert - app cert
         'generate-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" '
         '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 '
         '-keyUsage digitalSignature -extKeyUsage codeSignature -signAlg SHA256withECDSA  '
-        '-keystoreFile  "ohtest.jks" -keystorePwd 123456 -outFile "single-app1.cer" -keyPwd 123456'
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/single-app1.cer" -keyPwd 123456'
     ],
     'generate-app-cert': [
+        # App sign cert via ohtest.jks
         'generate-app-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -subject '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -signAlg SHA256withECDSA  '
-        '-keystoreFile  "ohtest.jks" -keystorePwd 123456 -outFile "app1.cer" -keyPwd 123456',
-
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/app1.cer" -keyPwd 123456',
+        # App sign cert chain via ohtest.jks
         'generate-app-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -subject '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -signAlg SHA256withECDSA  '
-        '-keystoreFile  "ohtest.jks" -keystorePwd 123456 -outFile "app-release1.pem" '
-        '-subCaCertFile app-sign-srv-ca1.cer -outForm certChain -rootCaCertFile root-ca1.cer -keyPwd 123456',
-
-        'generate-app-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -subject '
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/app-release1.pem" '
+        '-subCaCertFile ./test1/app-sign-srv-ca1.cer -outForm certChain '
+        '-rootCaCertFile ./test1/root-ca1.cer -keyPwd 123456',
+        # App sign cert via ohtest.p12
+        'generate-app-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca2-key-v1" -subject '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -signAlg SHA256withECDSA  '
-        '-keystoreFile  "ohtest.p12" -keystorePwd 123456 -outFile "app2.cer" -keyPwd 123456',
-
-        'generate-app-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -subject '
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 -outFile "./test2/app2.cer" -keyPwd 123456',
+        # App sign cert chain via ohtest.p12
+        'generate-app-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca2-key-v1" -subject '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -signAlg SHA256withECDSA  '
-        '-keystoreFile  "ohtest.p12" -keystorePwd 123456 -outFile "app-release2.pem" '
-        '-subCaCertFile app-sign-srv-ca2.cer -outForm certChain -rootCaCertFile root-ca2.cer -keyPwd 123456'
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 -outFile "./test2/app-release2.pem" '
+        '-subCaCertFile ./test2/app-sign-srv-ca2.cer -outForm certChain '
+        '-rootCaCertFile ./test2/root-ca2.cer -keyPwd 123456'
     ],
     'generate-profile-cert': [
-        'generate-profile-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" '
-        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" '
-        '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "ohtest.jks" '
-        '-keystorePwd 123456 -outFile "profile1.cer" -keyPwd 123456',
-
-        'generate-profile-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" '
-        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 '
-        '-signAlg SHA256withECDSA -keystoreFile  "ohtest.jks" -keystorePwd 123456 -outFile "profile-release1.pem" '
-        '-subCaCertFile app-sign-srv-ca1.cer -outForm certChain '
-        '-rootCaCertFile root-ca1.cer -keyPwd 123456',
-
-        'generate-profile-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" '
-        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" '
-        '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "ohtest.p12" '
-        '-keystorePwd 123456 -outFile "profile2.cer" -keyPwd 123456',
-
-        'generate-profile-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
-        'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" '
-        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" '
-        '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "ohtest.p12" '
-        '-keystorePwd 123456 -outFile "profile-release2.pem" -subCaCertFile app-sign-srv-ca2.cer -outForm certChain '
-        '-rootCaCertFile root-ca2.cer -keyPwd 123456'
+        # Profile sign cert via ohtest.jks
+        'generate-profile-cert -keyAlias "oh-profile1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca-key-v1" '
+        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release" '
+        '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "./test1/ohtest.jks" '
+        '-keystorePwd 123456 -outFile "./test1/profile1.cer" -keyPwd 123456',
+        # Profile sign cert chain via ohtest.jks
+        'generate-profile-cert -keyAlias "oh-profile1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca-key-v1" '
+        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release" -validity 365 '
+        '-signAlg SHA256withECDSA -keystoreFile  "./test1/ohtest.jks" '
+        '-keystorePwd 123456 -outFile "./test1/profile-release1.pem" '
+        '-subCaCertFile "./test1/profile-sign-srv-ca1.cer" -outForm certChain '
+        '-rootCaCertFile "./test1/root-ca1.cer" -keyPwd 123456',
+        # Profile sign cert via ohtest.p12
+        'generate-profile-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca2-key-v1" '
+        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile2 Release" '
+        '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "./test2/ohtest.p12" '
+        '-keystorePwd 123456 -outFile "./test2/profile2.cer" -keyPwd 123456',
+        # Profile sign cert chain via ohtest.p12
+        'generate-profile-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca2-key-v1" '
+        '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile2 Release" -validity 365 '
+        '-signAlg SHA256withECDSA  -keystoreFile  "./test2/ohtest.p12" '
+        '-keystorePwd 123456 -outFile "./test2/profile-release2.pem" -subCaCertFile "./test2/profile-sign-srv-ca2.cer" '
+        '-outForm certChain -rootCaCertFile "./test2/root-ca2.cer" -keyPwd 123456'
     ],
     'sign-profile': [
-        'sign-profile -mode localSign -keyAlias "oh-app1-key-v1" -profileCertFile "profile-release1.pem" '
-        '-inFile  "profile.json" -signAlg SHA256withECDSA  -keystoreFile  "ohtest.jks" -keystorePwd 123456 '
-        '-outFile "app1-profile1.p7b"  -keyPwd 123456',
-        'sign-profile -mode localSign -keyAlias "oh-app1-key-v1" -profileCertFile "profile-release2.pem" '
-        '-inFile  "profile.json" -signAlg SHA256withRSA  -keystoreFile  "ohtest.p12" -keystorePwd 123456 '
-        '-outFile "app1-profile2.p7b"  -keyPwd 123456'
+        'sign-profile -mode localSign -keyAlias "oh-app1-key-v1" -profileCertFile "./test1/profile-release1.pem" '
+        '-inFile  "profile.json" -signAlg SHA256withECDSA  -keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 '
+        '-outFile "./test1/app1-profile1.p7b"  -keyPwd 123456',
+        'sign-profile -mode localSign -keyAlias "oh-app2-key-v1" -profileCertFile "./test2/profile-release2.pem" '
+        '-inFile  "profile.json" -signAlg SHA256withRSA  -keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 '
+        '-outFile "./test2/app1-profile2.p7b"  -keyPwd 123456'
     ],
     'verify-profile': [
-        'verify-profile -inFile "app1-profile1.p7b"',
-        'verify-profile -inFile "app1-profile2.p7b"'
+        'verify-profile -inFile "./test1/app1-profile1.p7b"',
+        'verify-profile -inFile "./test2/app1-profile2.p7b"'
     ]
 }
 
@@ -327,10 +363,16 @@ def run_all_case(case, jar_file):
     print("== Done command: {}".format(result))
 
 
-def remove_keystore():
-    for key_file in ['ohtest.jks', 'ohtest.p12']:
-        if os.path.exists(key_file):
-            os.remove(key_file)
+def prepare_env():
+    test_dirs = ['test1', 'test2']
+    for test_dir in test_dirs:
+        if not os.path.exists(test_dir):
+            os.mkdir(test_dir)
+
+        for key_file in ['ohtest.jks', 'ohtest.p12']:
+            target_file = os.path.join(test_dir, key_file)
+            if os.path.exists(target_file):
+                os.remove(target_file)
 
 
 def process_cmd(args):
@@ -376,7 +418,7 @@ def process_cmd(args):
             for r_scope, _ in random_scope.items():
                 run_random_case(r_scope, jar_file)
         elif run_scope == 'simple':
-            remove_keystore()
+            prepare_env()
             for s_scope, _ in simple_scope.items():
                 run_simple_case(s_scope, jar_file)
         else:

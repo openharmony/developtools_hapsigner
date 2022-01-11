@@ -145,12 +145,8 @@ public abstract class SignProvider {
             return false;
         }
         File file = new File(filePath);
-        if (!file.canRead()) {
+        if (!file.canRead() && !file.isFile()) {
             LOGGER.error(filePath + " not exist or can not read!");
-            return false;
-        }
-        if (!file.isFile()) {
-            LOGGER.error(filePath + " is not a file!");
             return false;
         }
         return true;
@@ -190,19 +186,20 @@ public abstract class SignProvider {
      * @return Object of SignerConfig
      * @throws InvalidKeyException on error when the key is invalid.
      */
-    public SignerConfig createV2SignerConfigs(List<X509Certificate> certificates, X509CRL crl)
+    public SignerConfig createV2SignerConfigs(List<X509Certificate> certificates, X509CRL crl, Options options)
             throws InvalidKeyException {
         SignerConfig signerConfig = new SignerConfig();
         signerConfig.fillParameters(this.signParams);
-        signerConfig.certificates = certificates;
+        signerConfig.setCertificates(certificates);
+        signerConfig.setOptions(options);
 
         List<SignatureAlgorithm> signatureAlgorithms = new ArrayList<SignatureAlgorithm>();
         signatureAlgorithms.add(
             ParamProcessUtil.getSignatureAlgorithm(this.signParams.get(ParamConstants.PARAM_BASIC_SIGANTURE_ALG)));
-        signerConfig.signatureAlgorithms = signatureAlgorithms;
+        signerConfig.setSignatureAlgorithms(signatureAlgorithms);
 
         if (crl != null) {
-            signerConfig.x509CRLs = Collections.singletonList(crl);
+            signerConfig.setX509CRLs(Collections.singletonList(crl));
         }
         return signerConfig;
     }
@@ -233,12 +230,9 @@ public abstract class SignProvider {
             X509CRL crl = getCrl();
 
             // 5. Create signer configs, which contains public cert and crl info.
-            signerConfig = createV2SignerConfigs(publicCert, crl);
-        } catch (InvalidKeyException e) {
+            signerConfig = createV2SignerConfigs(publicCert, crl, options);
+        } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
             LOGGER.error("create v2 signer configs failed.", e);
-            printErrorLog(e);
-            return false;
-        } catch (InvalidParamsException | MissingParamsException | ProfileException e) {
             printErrorLog(e);
             return false;
         }
@@ -303,7 +297,7 @@ public abstract class SignProvider {
                 ByteBuffer eocdBuffer = zipInfo.getEocd();
                 ZipDataInput eocd = new ByteBufferZipDataInput(eocdBuffer);
 
-                SignerConfig signerConfig = createV2SignerConfigs(publicCerts, crl);
+                SignerConfig signerConfig = createV2SignerConfigs(publicCerts, crl, options);
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
                 byte[] signingBlock = SignHapV2.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;

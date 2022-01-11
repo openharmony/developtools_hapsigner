@@ -18,6 +18,8 @@ package com.ohos.hapsigntool.utils;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +54,11 @@ public class ParamProcessUtil {
                 }
             }
         }
-        file.delete();
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -62,26 +68,28 @@ public class ParamProcessUtil {
      * @return SignatureAlgorithm value
      */
     public static SignatureAlgorithm getSignatureAlgorithm(String signatureAlgorithm) {
+        SignatureAlgorithm result;
         if (ParamConstants.HAP_SIG_ALGORITHM_SHA256_ECDSA.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.ECDSA_WITH_SHA256;
+            result = SignatureAlgorithm.ECDSA_WITH_SHA256;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA384_ECDSA.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.ECDSA_WITH_SHA384;
+            result = SignatureAlgorithm.ECDSA_WITH_SHA384;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA512_ECDSA.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.ECDSA_WITH_SHA512;
+            result = SignatureAlgorithm.ECDSA_WITH_SHA512;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA256_RSA_PSS.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.RSA_PSS_WITH_SHA256;
+            result = SignatureAlgorithm.RSA_PSS_WITH_SHA256;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA384_RSA_PSS.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.RSA_PSS_WITH_SHA384;
+            result = SignatureAlgorithm.RSA_PSS_WITH_SHA384;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA512_RSA_PSS.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.RSA_PSS_WITH_SHA512;
+            result = SignatureAlgorithm.RSA_PSS_WITH_SHA512;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA256_RSA_MGF1.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.RSA_PSS_WITH_SHA256;
+            result = SignatureAlgorithm.RSA_PSS_WITH_SHA256;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA384_RSA_MGF1.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.RSA_PSS_WITH_SHA384;
+            result = SignatureAlgorithm.RSA_PSS_WITH_SHA384;
         } else if (ParamConstants.HAP_SIG_ALGORITHM_SHA512_RSA_MGF1.equalsIgnoreCase(signatureAlgorithm)) {
-            return SignatureAlgorithm.RSA_PSS_WITH_SHA512;
+            result = SignatureAlgorithm.RSA_PSS_WITH_SHA512;
         } else {
             throw new IllegalArgumentException("Unsupported signature algorithm: " + signatureAlgorithm);
         }
+        return result;
     }
 }

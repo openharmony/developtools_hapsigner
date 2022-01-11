@@ -15,17 +15,12 @@
 
 package com.ohos.hapsigntoolcmd;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
-
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
-import com.ohos.hapsigntool.HapSignTool;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
@@ -36,6 +31,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * CmdUnitTest.
@@ -138,10 +136,6 @@ public class CmdUnitTest {
      */
     public static final String CMD_PROFILE_CERT_FILE = "-profileCertFile";
     /**
-     * Command line parameter profileCaCertFile.
-     */
-    public static final String CMD_PROFILE_CA_CERT_FILE = "-profileCaCertFile";
-    /**
      * Command line parameter subject.
      */
     public static final String CMD_SUBJECT = "-subject";
@@ -206,9 +200,13 @@ public class CmdUnitTest {
      */
     public static final String CMD_SHA_256_WITH_RSA = "SHA256withRSA";
     /**
-     * Command line parameter cer file is test_app-cert.
+     * Command line parameter cer file is test_app-debug-cert.
      */
-    public static final String CMD_APP_CERT_PATH = "test_app-cert.cer";
+    public static final String CMD_APP_DEBUG_CERT_PATH = "test_app-debug-cert.pem";
+    /**
+     * Command line parameter cer file is test_app-release-cert.
+     */
+    public static final String CMD_APP_RELEASE_CERT_PATH = "test_app-release-cert.pem";
     /**
      * Command line parameter cer file is test_cert.
      */
@@ -218,37 +216,69 @@ public class CmdUnitTest {
      */
     public static final String CMD_CSR_PATH = "test_csr.csr";
     /**
-     * Command line parameter jks file is test_csr.
+     * Command line parameter jks file is test_app_csr.
      */
-    public static final String CMD_KEY_STORE_PATH = "test_keypair.jks";
+    public static final String CMD_KEY_APP_STORE_PATH = "test_app_keypair.jks";
     /**
-     * Command line parameter cer file is test_root_ca.
+     * Command line parameter jks file is test_profile_csr.
      */
-    public static final String CMD_ROOT_CA_PATH = "test_root_ca.cer";
+    public static final String CMD_KEY_PROFILE_STORE_PATH = "test_profile_keypair.jks";
     /**
-     * Command line parameter cer file is test_sub_ca.
+     * Command line parameter cer file is test_root_app_ca.
      */
-    public static final String CMD_SUB_CA_PATH = "test_sub_ca.cer";
+    public static final String CMD_ROOT_APP_CA_PATH = "test_root_app_ca.cer";
+    /**
+     * Command line parameter cer file is test_root_profile_ca.
+     */
+    public static final String CMD_ROOT_PROFILE_CA_PATH = "test_root_profile_ca.cer";
+    /**
+     * Command line parameter cer file is test_sub_app_ca.
+     */
+    public static final String CMD_SUB_APP_CA_PATH = "test_sub_app_ca.cer";
+    /**
+     * Command line parameter cer file is test_sub_profile_ca.
+     */
+    public static final String CMD_SUB_PROFILE_CA_PATH = "test_sub_profile_ca.cer";
     /**
      * Command line parameter p7b file is test_sign_profile.
      */
     public static final String CMD_SIGN_PROFILE_PATH = "test_sign_profile.p7b";
     /**
-     * Command line parameter cer file is test_profile-cert.
+     * Command line parameter cer file is test_profile-debug-cert.
      */
-    public static final String CMD_PROFILE_CERT_PATH = "test_profile-cert.cer";
+    public static final String CMD_PROFILE_DEBUG_CERT_PATH = "test_profile-debug-cert.pem";
+    /**
+     * Command line parameter cer file is test_profile-release-cert.
+     */
+    public static final String CMD_PROFILE_RELEASE_CERT_PATH = "test_profile-release-cert.pem";
     /**
      * Command line parameter cer file is test_verify_profile.
      */
-    public static final String CMD_VERIFY_PROFILE_PATH = "test_verify_profile.cer";
+    public static final String CMD_VERIFY_PROFILE_RESULT_PATH = "test_verify_profile_result.json";
     /**
-     * Command line parameter oh-app-ca-v1.
+     * Command line parameter oh-profile-key-v1.
      */
-    public static final String CMD_OH_APP_CA_V1 = "oh-app-ca-v1";
+    public static final String CMD_OH_PROFILE_KEY_V1 = "oh-profile-key-v1";
     /**
      * Command line parameter oh-app1-key-v1.
      */
     public static final String CMD_OH_APP1_KEY_V1 = "oh-app1-key-v1";
+    /**
+     * Command line parameter oh-root-ca-key-v1.
+     */
+    public static final String CMD_OH_ROOT_CA_KEY_V1 = "oh-root-ca-key-v1";
+    /**
+     * Command line parameter oh-sub-app-ca-key-v1.
+     */
+    public static final String CMD_OH_SUB_APP_CA_KEY_V1 = "oh-sub-app-ca-key-v1";
+    /**
+     * Command line parameter oh-sub-profile-ca-key-v1.
+     */
+    public static final String CMD_OH_SUB_PROFILE_CA_KEY_V1 = "oh-sub-profile-ca-key-v1";
+    /**
+     * Command line parameter CN=ROOT CA.
+     */
+    public static final String CMD_ROOT_CA = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=ROOT CA";
     /**
      * Command line parameter CN=App1 Release.
      */
@@ -256,12 +286,12 @@ public class CmdUnitTest {
     /**
      * Command line parameter CN=Provision Profile Release.
      */
-    public static final String CMD_PP_RELEASE = "C=CN,O=OpenHarmony,"
+    public static final String CMD_PROFILE_RELEASE = "C=CN,O=OpenHarmony,"
             + "OU=OpenHarmony Community,CN=Provision Profile Release";
     /**
      * Command line parameter CN=Provision Profile Signature Service CA.
      */
-    public static final String CMD_PP_CA = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,"
+    public static final String CMD_PROFILE_CA = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,"
             + "CN=Provision Profile Signature Service CA";
     /**
      * Command line parameter CN=Application Signature Service CA.
@@ -278,35 +308,38 @@ public class CmdUnitTest {
     public void testCmdKeypair() throws IOException {
 
         try {
-            deleteFile(CMD_KEY_STORE_PATH);
+            deleteFile(CMD_KEY_APP_STORE_PATH);
+            deleteFile(CMD_KEY_PROFILE_STORE_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_KEYPAIR});
             assertFalse(result);
-            assertFalse(FileUtils.isFileExist(CMD_KEY_STORE_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_KEY_APP_STORE_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_KEY_PROFILE_STORE_PATH));
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
         }
 
-        deleteFile(CMD_KEY_STORE_PATH);
+        deleteFile(CMD_KEY_APP_STORE_PATH);
         boolean result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_KEYPAIR,
             CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_KEY_ALG, KeyPairTools.RSA,
             CMD_KEY_SIZE, CMD_RSA_2048,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456});
         assertTrue(result);
-        assertTrue(FileUtils.isFileExist(CMD_KEY_STORE_PATH));
+        assertTrue(FileUtils.isFileExist(CMD_KEY_APP_STORE_PATH));
+        deleteFile(CMD_KEY_PROFILE_STORE_PATH);
         result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_KEYPAIR,
-            CMD_KEY_ALIAS, CMD_OH_APP_CA_V1,
+            CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_KEY_ALG, KeyPairTools.RSA,
             CMD_KEY_SIZE, CMD_RSA_2048,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456});
         assertTrue(result);
-        assertTrue(FileUtils.isFileExist(CMD_KEY_STORE_PATH));
+        assertTrue(FileUtils.isFileExist(CMD_KEY_PROFILE_STORE_PATH));
     }
 
     /**
@@ -334,7 +367,7 @@ public class CmdUnitTest {
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_SUBJECT, CMD_APP1_RELEASE,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_CSR_PATH});
         assertTrue(result);
@@ -366,7 +399,7 @@ public class CmdUnitTest {
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_ISSUER, CMD_APP_CA,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_CERT_PATH,
             CMD_ISSUER_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
@@ -394,50 +427,35 @@ public class CmdUnitTest {
     @Test
     public void testCmdCa() throws IOException {
         try {
-            deleteFile(CMD_ROOT_CA_PATH);
-            deleteFile(CMD_SUB_CA_PATH);
+            deleteFile(CMD_ROOT_APP_CA_PATH);
+            deleteFile(CMD_ROOT_PROFILE_CA_PATH);
+            deleteFile(CMD_SUB_APP_CA_PATH);
+            deleteFile(CMD_SUB_PROFILE_CA_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CA});
             assertFalse(result);
-            assertFalse(FileUtils.isFileExist(CMD_ROOT_CA_PATH));
-            assertFalse(FileUtils.isFileExist(CMD_SUB_CA_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_ROOT_APP_CA_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_ROOT_PROFILE_CA_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_SUB_APP_CA_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_SUB_PROFILE_CA_PATH));
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
         }
-        deleteFile(CMD_ROOT_CA_PATH);
-        boolean result1 = HapSignTool.processCmd(new String[]{
-            CmdUtil.Method.GENERATE_CA,
-            CMD_KEY_ALIAS, CMD_OH_APP_CA_V1,
-            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
-            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
-            CMD_OUT_FILE, CMD_ROOT_CA_PATH,
-            CMD_SUBJECT, CMD_APP_CA,
-            CMD_VALIDITY, CMD_VALIDITY_365,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
-            CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
-        assertTrue(result1);
-        assertTrue(FileUtils.isFileExist(CMD_ROOT_CA_PATH));
-        deleteFile(CMD_SUB_CA_PATH);
-        boolean result2 = HapSignTool.processCmd(new String[]{
-            CmdUtil.Method.GENERATE_CA,
-            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
-            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_ISSUER, CMD_APP_CA,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
-            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
-            CMD_OUT_FILE, CMD_SUB_CA_PATH,
-            CMD_ISSUER_KEY_ALIAS, CMD_OH_APP_CA_V1,
-            CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_SUBJECT, CMD_APP_CA,
-            CMD_VALIDITY, CMD_VALIDITY_365,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
-            CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
-        assertTrue(result2);
-        assertTrue(FileUtils.isFileExist(CMD_SUB_CA_PATH));
+        deleteFile(CMD_ROOT_APP_CA_PATH);
+        boolean result = generateAppRootCa();
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_ROOT_APP_CA_PATH));
+        deleteFile(CMD_ROOT_PROFILE_CA_PATH);
+        result = generateProfileRootCa();
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_ROOT_PROFILE_CA_PATH));
+        deleteFile(CMD_SUB_APP_CA_PATH);
+        result = generateAppSubCa();
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_SUB_APP_CA_PATH));
+        deleteFile(CMD_SUB_PROFILE_CA_PATH);
+        result = generateProfileSubCa();
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_SUB_PROFILE_CA_PATH));
     }
 
     /**
@@ -448,34 +466,54 @@ public class CmdUnitTest {
     @Order(5)
     @Test
     public void testCmdAppCert() throws IOException {
-
         try {
-            deleteFile(CMD_APP_CERT_PATH);
+            deleteFile(CMD_APP_DEBUG_CERT_PATH);
+            deleteFile(CMD_APP_RELEASE_CERT_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_APP_CERT});
             assertFalse(result);
-            assertFalse(FileUtils.isFileExist(CMD_APP_CERT_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_APP_DEBUG_CERT_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_APP_RELEASE_CERT_PATH));
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
         }
-        deleteFile(CMD_APP_CERT_PATH);
+        deleteFile(CMD_APP_DEBUG_CERT_PATH);
         boolean result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_APP_CERT,
             CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_ISSUER, CMD_APP_CA,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
-            CMD_OUT_FILE, CMD_APP_CERT_PATH,
-            CMD_ISSUER_KEY_ALIAS, CMD_OH_APP_CA_V1,
+            CMD_OUT_FILE, CMD_APP_DEBUG_CERT_PATH,
+            CMD_ISSUER_KEY_ALIAS, CMD_OH_SUB_APP_CA_KEY_V1,
             CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_SUBJECT, CMD_APP1_RELEASE,
             CMD_VALIDITY, CMD_VALIDITY_365,
             CMD_OUT_FORM, CMD_CERT_CHAIN,
-            CMD_ROOT_CA_CERT_FILE, CMD_ROOT_CA_PATH,
-            CMD_SUB_CA_CERT_FILE, CMD_SUB_CA_PATH,
+            CMD_ROOT_CA_CERT_FILE, CMD_ROOT_APP_CA_PATH,
+            CMD_SUB_CA_CERT_FILE, CMD_SUB_APP_CA_PATH,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
         assertTrue(result);
-        assertTrue(FileUtils.isFileExist(CMD_APP_CERT_PATH));
+        assertTrue(FileUtils.isFileExist(CMD_APP_DEBUG_CERT_PATH));
+        deleteFile(CMD_APP_RELEASE_CERT_PATH);
+        result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.GENERATE_APP_CERT,
+            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_ISSUER, CMD_APP_CA,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_APP_RELEASE_CERT_PATH,
+            CMD_ISSUER_KEY_ALIAS, CMD_OH_SUB_APP_CA_KEY_V1,
+            CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_SUBJECT, CMD_APP1_RELEASE,
+            CMD_VALIDITY, CMD_VALIDITY_365,
+            CMD_OUT_FORM, CMD_CERT_CHAIN,
+            CMD_ROOT_CA_CERT_FILE, CMD_ROOT_APP_CA_PATH,
+            CMD_SUB_CA_CERT_FILE, CMD_SUB_APP_CA_PATH,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_APP_RELEASE_CERT_PATH));
     }
 
     /**
@@ -487,33 +525,53 @@ public class CmdUnitTest {
     @Test
     public void testCmdProfileCert() throws IOException {
         try {
-            deleteFile(CMD_PROFILE_CERT_PATH);
+            deleteFile(CMD_PROFILE_DEBUG_CERT_PATH);
+            deleteFile(CMD_PROFILE_RELEASE_CERT_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_PROFILE_CERT});
             assertFalse(result);
-            assertFalse(FileUtils.isFileExist(CMD_PROFILE_CERT_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_PROFILE_DEBUG_CERT_PATH));
+            assertFalse(FileUtils.isFileExist(CMD_PROFILE_RELEASE_CERT_PATH));
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
         }
-
-        deleteFile(CMD_PROFILE_CERT_PATH);
+        deleteFile(CMD_PROFILE_DEBUG_CERT_PATH);
         boolean result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_PROFILE_CERT,
-            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
+            CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_ISSUER, CMD_PP_CA,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_ISSUER, CMD_PROFILE_CA,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
-            CMD_OUT_FILE, CMD_PROFILE_CERT_PATH,
-            CMD_ISSUER_KEY_ALIAS, CMD_OH_APP_CA_V1,
+            CMD_OUT_FILE, CMD_PROFILE_DEBUG_CERT_PATH,
+            CMD_ISSUER_KEY_ALIAS, CMD_OH_SUB_PROFILE_CA_KEY_V1,
             CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_SUBJECT, CMD_PP_RELEASE,
+            CMD_SUBJECT, CMD_PROFILE_RELEASE,
             CMD_VALIDITY, CMD_VALIDITY_365,
             CMD_OUT_FORM, CMD_CERT_CHAIN,
-            CMD_ROOT_CA_CERT_FILE, CMD_ROOT_CA_PATH,
-            CMD_SUB_CA_CERT_FILE, CMD_SUB_CA_PATH,
+            CMD_ROOT_CA_CERT_FILE, CMD_ROOT_PROFILE_CA_PATH,
+            CMD_SUB_CA_CERT_FILE, CMD_SUB_PROFILE_CA_PATH,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
         assertTrue(result);
-        assertTrue(FileUtils.isFileExist(CMD_PROFILE_CERT_PATH));
+        assertTrue(FileUtils.isFileExist(CMD_PROFILE_DEBUG_CERT_PATH));
+        deleteFile(CMD_PROFILE_RELEASE_CERT_PATH);
+        result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.GENERATE_PROFILE_CERT,
+            CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_ISSUER, CMD_PROFILE_CA,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_PROFILE_RELEASE_CERT_PATH,
+            CMD_ISSUER_KEY_ALIAS, CMD_OH_SUB_PROFILE_CA_KEY_V1,
+            CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_SUBJECT, CMD_PROFILE_RELEASE,
+            CMD_VALIDITY, CMD_VALIDITY_365,
+            CMD_OUT_FORM, CMD_CERT_CHAIN,
+            CMD_ROOT_CA_CERT_FILE, CMD_ROOT_PROFILE_CA_PATH,
+            CMD_SUB_CA_CERT_FILE, CMD_SUB_PROFILE_CA_PATH,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_PROFILE_RELEASE_CERT_PATH));
     }
 
     /**
@@ -539,12 +597,12 @@ public class CmdUnitTest {
         boolean result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.SIGN_PROFILE,
             CMD_MODE, CMD_LOCAL_SIGN,
-            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
+            CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_PROFILE_CERT_FILE, CMD_PROFILE_CERT_PATH,
+            CMD_PROFILE_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH,
             CMD_IN_FILE, CMD_JSON_FILE,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
-            CMD_KEY_STORE_FILE, CMD_KEY_STORE_PATH,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_SIGN_PROFILE_PATH});
         assertTrue(result);
@@ -567,7 +625,7 @@ public class CmdUnitTest {
         boolean result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.VERIFY_PROFILE,
             CMD_IN_FILE, CMD_SIGN_PROFILE_PATH,
-            CMD_OUT_FILE, CMD_VERIFY_PROFILE_PATH});
+            CMD_OUT_FILE, CMD_VERIFY_PROFILE_RESULT_PATH});
         assertTrue(result);
     }
 
@@ -597,6 +655,80 @@ public class CmdUnitTest {
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
         }
+    }
+
+    private boolean generateAppRootCa() {
+        boolean result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.GENERATE_CA,
+            CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_KEY_ALG, KeyPairTools.RSA,
+            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_ROOT_APP_CA_PATH,
+            CMD_SUBJECT, CMD_ROOT_CA,
+            CMD_VALIDITY, CMD_VALIDITY_365,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
+        return result;
+    }
+
+    private boolean generateProfileRootCa() {
+        boolean result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.GENERATE_CA,
+            CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_KEY_ALG, KeyPairTools.RSA,
+            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_ROOT_PROFILE_CA_PATH,
+            CMD_SUBJECT, CMD_ROOT_CA,
+            CMD_VALIDITY, CMD_VALIDITY_365,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
+        return result;
+    }
+
+    private boolean generateAppSubCa() {
+        boolean result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.GENERATE_CA,
+            CMD_KEY_ALIAS, CMD_OH_SUB_APP_CA_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_ISSUER, CMD_ROOT_CA,
+            CMD_KEY_ALG, KeyPairTools.RSA,
+            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_SUB_APP_CA_PATH,
+            CMD_ISSUER_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
+            CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_SUBJECT, CMD_APP_CA,
+            CMD_VALIDITY, CMD_VALIDITY_365,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
+        return result;
+    }
+
+    private boolean generateProfileSubCa() {
+        boolean result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.GENERATE_CA,
+            CMD_KEY_ALIAS, CMD_OH_SUB_PROFILE_CA_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_ISSUER, CMD_ROOT_CA,
+            CMD_KEY_ALG, KeyPairTools.RSA,
+            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_SUB_PROFILE_CA_PATH,
+            CMD_ISSUER_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
+            CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_SUBJECT, CMD_PROFILE_CA,
+            CMD_VALIDITY, CMD_VALIDITY_365,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
+        return result;
     }
 
     private void loadFile(String filePath) throws IOException {

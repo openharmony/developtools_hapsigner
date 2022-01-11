@@ -17,6 +17,8 @@ package com.ohos.hapsigntool.hap.entity;
 
 import com.ohos.hapsigntool.utils.ByteArrayUtils;
 
+import java.io.IOException;
+
 /**
  * define class of hap signature block head
  *
@@ -31,7 +33,6 @@ public class HwSignHead {
     private static final char[] MAGIC = "hw signed app   ".toCharArray(); // 16Bytes-Magic
     private static final char[] VERSION = "1000".toCharArray(); // 4-Bytes, version is 1.0.0.0
     private static final int NUM_OF_BLOCK = 2; // number of sub-block
-    private int size; // total size of sub-block
     private char[] reserve = new char[4];
 
     /**
@@ -41,27 +42,31 @@ public class HwSignHead {
      * @return Byte array after serialization of HwSignHead
      */
     public byte[] getSignHead(int subBlockSize) {
-        size = subBlockSize;
+        int size = subBlockSize; // total size of sub-block
         byte[] signHead = new byte[SIGN_HEAD_LEN];
         int start = 0;
-        start = ByteArrayUtils.insertCharToByteArray(signHead, start, MAGIC);
-        if (start < 0) {
-            return null;
-        }
-        start = ByteArrayUtils.insertCharToByteArray(signHead, start, VERSION);
-        if (start < 0) {
-            return null;
-        }
-        start = ByteArrayUtils.insertIntToByteArray(signHead, start, size);
-        if (start < 0) {
-            return null;
-        }
-        start = ByteArrayUtils.insertIntToByteArray(signHead, start, NUM_OF_BLOCK);
-        if (start < 0) {
-            return null;
-        }
-        start = ByteArrayUtils.insertCharToByteArray(signHead, start, reserve);
-        if (start < 0) {
+        try {
+            start = ByteArrayUtils.insertCharToByteArray(signHead, start, MAGIC);
+            if (start < 0) {
+                throw new IOException();
+            }
+            start = ByteArrayUtils.insertCharToByteArray(signHead, start, VERSION);
+            if (start < 0) {
+                throw new IOException();
+            }
+            start = ByteArrayUtils.insertIntToByteArray(signHead, start, size);
+            if (start < 0) {
+                throw new IOException();
+            }
+            start = ByteArrayUtils.insertIntToByteArray(signHead, start, NUM_OF_BLOCK);
+            if (start < 0) {
+                throw new IOException();
+            }
+            start = ByteArrayUtils.insertCharToByteArray(signHead, start, reserve);
+            if (start < 0) {
+                throw new IOException();
+            }
+        } catch (IOException e) {
             return null;
         }
         return signHead;

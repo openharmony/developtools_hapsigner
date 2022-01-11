@@ -98,7 +98,7 @@ public class SignToolServiceImpl implements ServiceApi {
             return false;
         }
         String csrContent = CertUtils.toCsrTemplate(csr);
-        outputCsr(csrContent, adapter.getOutFile());
+        outputString(csrContent, adapter.getOutFile());
         return true;
     }
 
@@ -231,9 +231,8 @@ public class SignToolServiceImpl implements ServiceApi {
             result = verificationResult.isVerifiedPassed();
             if (!result) {
                 logger.error(verificationResult.getMessage());
-            } else {
-                logger.info(FileUtils.GSON_PRETTY_PRINT.toJson(verificationResult));
             }
+            outputString(FileUtils.GSON_PRETTY_PRINT.toJson(verificationResult), adapter.getOutFile());
         } catch (IOException exception) {
             logger.debug(exception.getMessage(), exception);
             logger.error(exception.getMessage());
@@ -253,9 +252,9 @@ public class SignToolServiceImpl implements ServiceApi {
         String mode = options.getString(Options.MODE);
         //sign online or locally
         SignProvider signProvider;
-        if ("localSign".equals(mode)) {
+        if ("localSign".equalsIgnoreCase(mode)) {
             signProvider = new LocalJKSSignProvider();
-        } else if ("remoteSign".equals(mode)){
+        } else if ("remoteSign".equalsIgnoreCase(mode)){
             signProvider = new RemoteSignProvider();
         } else {
             logger.info("Resign mode. But not implement yet");
@@ -266,11 +265,8 @@ public class SignToolServiceImpl implements ServiceApi {
         String inFile = options.getString(Options.IN_FILE);
         if (inFile.endsWith(".bin")) {
             return signProvider.signBin(options);
-        } else if (inFile.endsWith(".hap") || inFile.endsWith(".zip")) {
-            return signProvider.sign(options);
         } else {
-            logger.info("error file type.");
-            return false;
+            return signProvider.sign(options);
         }
     }
 
@@ -281,17 +277,17 @@ public class SignToolServiceImpl implements ServiceApi {
     }
 
     /**
-     * Output csr.
+     * Output string, save into file or print.
      *
-     * @param csrContent csrContent
-     * @param file       file
+     * @param content String Content
+     * @param file    file
      */
-    public void outputCsr(String csrContent, String file) {
+    public void outputString(String content, String file) {
         if (StringUtils.isEmpty(file)) {
-            logger.info(csrContent);
+            logger.info(content);
         } else {
             try {
-                FileUtils.write(csrContent.getBytes(StandardCharsets.UTF_8), new File(file));
+                FileUtils.write(content.getBytes(StandardCharsets.UTF_8), new File(file));
             } catch (IOException exception) {
                 logger.debug(exception.getMessage(), exception);
                 CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());

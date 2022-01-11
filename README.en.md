@@ -31,7 +31,7 @@ You can also use -help to view the complete instructions
 java -jar hap_sign_tool.jar -help
 ```
 ****
-####Auto generate script
+#### Auto generate script
 You can also find a script in **autosign** folder
 * start_create.sh/start_create.bat
 * start_sign.sh/start_sign.bat
@@ -48,7 +48,7 @@ Steps：
 
 ****
 
-####Command description：
+#### Command description：
 
 * generate-keypair : generate key pair
 * generate-csr : generate certificate signing request

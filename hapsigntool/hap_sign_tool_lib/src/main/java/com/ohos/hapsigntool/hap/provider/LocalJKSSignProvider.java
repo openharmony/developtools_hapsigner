@@ -16,8 +16,6 @@
 package com.ohos.hapsigntool.hap.provider;
 
 import com.ohos.hapsigntool.api.model.Options;
-import com.ohos.hapsigntool.hap.config.LocalJKSSignerConfig;
-import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
 import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.utils.FileUtils;
@@ -31,12 +29,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.security.cert.CRL;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
-import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,12 +41,6 @@ import java.util.Set;
  */
 public class LocalJKSSignProvider extends SignProvider {
     private static final Logger LOGGER = LogManager.getLogger(LocalJKSSignProvider.class);
-
-    @Override
-    public SignerConfig createV2SignerConfigs(List<X509Certificate> certificates, X509CRL crl)
-            throws InvalidKeyException {
-        return new LocalJKSSignerConfig(super.createV2SignerConfigs(certificates, crl));
-    }
 
     @Override
     public X509CRL getCrl() {

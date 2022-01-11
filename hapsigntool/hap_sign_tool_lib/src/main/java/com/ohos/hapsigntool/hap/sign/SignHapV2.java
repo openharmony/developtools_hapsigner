@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.hap.sign;
 
-import com.ohos.hapsigntool.hap.config.RemoteSignerConfig;
+import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
@@ -276,7 +276,7 @@ public abstract class SignHapV2 {
 
         result.putInt(optionalBlocks.size() + 1); // Signing block count
         result.putLong(resultSize); // length of hap signing block
-        result.put(HapUtils.HAP_SIGNING_BLOCK_MAGIC); // magic
+        result.put(HapUtils.getHapSigningBlockMagic()); // magic
         result.putInt(HAP_SIGN_SCHEME_VERSION); // version
         return result.array();
     }
@@ -294,15 +294,16 @@ public abstract class SignHapV2 {
 
     private static byte[] generateSignerBlock(
             SignerConfig signerConfig, Map<ContentDigestAlgorithm, byte[]> contentDigests) throws SignatureException {
-        if (!(signerConfig instanceof RemoteSignerConfig)) {
-            if (signerConfig.certificates.isEmpty()) {
+        String mode = signerConfig.getOptions().getString(Options.MODE);
+        if (!("remoteSign".equalsIgnoreCase(mode))) {
+            if (signerConfig.getCertificates().isEmpty()) {
                 throw new SignatureException("No certificates configured for signer");
             }
         }
 
         List<Pair<Integer, byte[]>> digests =
-                new ArrayList<Pair<Integer, byte[]>>(signerConfig.signatureAlgorithms.size());
-        for (SignatureAlgorithm signatureAlgorithm : signerConfig.signatureAlgorithms) {
+                new ArrayList<Pair<Integer, byte[]>>(signerConfig.getSignatureAlgorithms().size());
+        for (SignatureAlgorithm signatureAlgorithm : signerConfig.getSignatureAlgorithms()) {
             ContentDigestAlgorithm contentDigestAlgorithm = signatureAlgorithm.getContentDigestAlgorithm();
             byte[] contentDigest = contentDigests.get(contentDigestAlgorithm);
             if (contentDigest == null) {
@@ -331,7 +332,7 @@ public abstract class SignHapV2 {
     public static byte[] sign(ZipDataInput[] contents, SignerConfig signerConfig, List<SigningBlock> optionalBlocks)
         throws SignatureException {
         Set<ContentDigestAlgorithm> contentDigestAlgorithms = new HashSet<ContentDigestAlgorithm>();
-        for (SignatureAlgorithm signatureAlgorithm : signerConfig.signatureAlgorithms) {
+        for (SignatureAlgorithm signatureAlgorithm : signerConfig.getSignatureAlgorithms()) {
             contentDigestAlgorithms.add(signatureAlgorithm.getContentDigestAlgorithm());
         }
         return getHapSigningBlock(contentDigestAlgorithms, optionalBlocks, signerConfig, contents);

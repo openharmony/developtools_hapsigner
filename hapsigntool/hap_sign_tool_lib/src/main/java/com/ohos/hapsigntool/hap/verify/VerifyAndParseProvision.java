@@ -44,33 +44,37 @@ public class VerifyAndParseProvision {
      */
     public boolean verifyAndParseProvision(String signedProvisionPath, String unsignedProvisionPath) {
         File signedProvisionFile = new File(signedProvisionPath);
-        if (!checkProvisionFile(signedProvisionFile)) {
-            String errorMsg = "Check input provision file false!";
-            LOGGER.error(errorMsg);
+        try {
+            if (!checkProvisionFile(signedProvisionFile)) {
+                String errorMsg = "Check input provision file false!";
+                LOGGER.error(errorMsg);
+                throw new IOException();
+            }
+            byte[] signedProvisionData = getSignedProvisionData(signedProvisionFile);
+            if (signedProvisionData.length == 0) {
+                LOGGER.error("read provision file failed");
+                throw new IOException();
+            }
+            byte[] unsignedProvisionData = getUnsignedProvisionData(signedProvisionData);
+            if (unsignedProvisionData == null) {
+                LOGGER.error("get unsigned provision failed");
+                throw new IOException();
+            }
+            return outputUnsignedProvisionToFile(unsignedProvisionData, unsignedProvisionPath);
+        } catch (IOException e) {
             return false;
         }
-        byte[] signedProvisionData = getSignedProvisionData(signedProvisionFile);
-        if (signedProvisionData.length == 0) {
-            LOGGER.error("read provision file failed");
-            return false;
-        }
-        byte[] unsignedProvisionData = getUnsignedProvisionData(signedProvisionData);
-        if (unsignedProvisionData == null) {
-            LOGGER.error("get unsigned provision failed");
-            return false;
-        }
-        return outputUnsignedProvisionToFile(unsignedProvisionData, unsignedProvisionPath);
     }
 
     private boolean checkProvisionFile(File signedProvisionFile) {
         try {
             if (!signedProvisionFile.canRead()) {
                 LOGGER.error(signedProvisionFile.getCanonicalPath() + " does not exist or can not read!");
-                return false;
+                throw new IOException();
             }
             if (!signedProvisionFile.isFile()) {
                 LOGGER.error(signedProvisionFile.getCanonicalPath() + " is not a file!");
-                return false;
+                throw new IOException();
             }
         } catch (IOException e) {
             LOGGER.error("getCanonicalPath failed", e);

@@ -34,7 +34,7 @@ java -jar hap_sign_tool.jar -help
 ```
 ****
 
-####一键签名脚本
+#### 一键签名脚本
 使用一键签名脚本，免于输入繁杂的命令
 
 打开本项目子目录autosign可见：
@@ -52,8 +52,8 @@ java -jar hap_sign_tool.jar -help
 6. Linux运行start_sign.sh、Windows运行start_sign.bat对hap包进行签名
 
 ****
-####(附)命令说明：
-#####生成密钥对
+#### (附)命令说明：
+##### 生成密钥对
 * generate-keypair : 生成密钥对
   * -keyAlias : 密钥别名，必填项；
   * -keyPwd : 密钥口令，可选项；
@@ -62,7 +62,7 @@ java -jar hap_sign_tool.jar -help
   * -keystoreFile : 密钥库文件，必填项，JKS或P12格式；
   * -keystorePwd : 密钥库口令，可选项；
 
-#####生成证书签名请求
+##### 生成证书签名请求
 * generate-csr : 生成证书签名请求
   * -keyAlias : 密钥别名，必填项；
   * -keyPwd : 密钥口令，可选项；
@@ -72,7 +72,7 @@ java -jar hap_sign_tool.jar -help
   * -keystorePwd : 密钥库口令，可选项；
   * -outFile : 输出文件，可选项，如果不填，则直接输出到控制台；
 
-#####生成根CA/子CA证书
+##### 生成根CA/子CA证书
 * generate-ca : 生成根CA/子CA证书，如果密钥不存在，一起生成密钥
   * -keyAlias : 密钥别名，必填项；
   * -keyPwd : 密钥口令，可选项；
@@ -89,7 +89,7 @@ java -jar hap_sign_tool.jar -help
   * -keystorePwd : 密钥库口令，可选项；
   * -outFile : 输出证书文件，可选项，如果不填，则直接输出到控制台；
 
-#####生成应用调试/发布证书
+##### 生成应用调试/发布证书
 * generate-app-cert : 生成应用调试/发布证书
   * -keyAlias : 密钥别名，必填项；
   * -keyPwd : 密钥口令，可选项；
@@ -106,7 +106,7 @@ java -jar hap_sign_tool.jar -help
   * -subCaCertFile: outForm为certChain时必填，二级子CA证书文件；
   * -outFile : 输出证书文件(证书或证书链)，可选项，如果不填，则直接输出到控制台；
 
-#####生成应用调试/发布证书
+##### 生成应用调试/发布证书
 * generate-profile-cert : 生成profile调试/发布证书
   * -keyAlias : 密钥别名，必填项；
   * -keyPwd : 密钥口令，可选项；
@@ -123,7 +123,7 @@ java -jar hap_sign_tool.jar -help
   * -subCaCertFile: outForm为certChain时必填，二级子CA证书文件；
   * -outFile : 输出证书文件(证书或证书链)，可选项，如果不填，则直接输出到控制台；
 
-#####通用证书生成，可以生成自定义证书
+##### 通用证书生成，可以生成自定义证书
 * generate-cert : 通用证书生成，可以生成自定义证书
   * -keyAlias : 密钥别名，必填项；
   * -keyPwd : 密钥口令，可选项；
@@ -145,7 +145,7 @@ java -jar hap_sign_tool.jar -help
   * -keystorePwd : 密钥库口令，可选项；
   * -outFile : 输出证书文件，可选项，如果不填，则直接输出到控制台；
 
-#####ProvisionProfile文件签名
+##### ProvisionProfile文件签名
 * sign-profile : ProvisionProfile文件签名
   * -mode : 签名模式，必填项，包括localSign，remoteSign；
   * -keyAlias : 密钥别名，必填项；
@@ -157,12 +157,12 @@ java -jar hap_sign_tool.jar -help
   * -keystorePwd : 密钥库口令，可选项；
   * -outFile : 输出签名后的Provision Profile文件，p7b格式，必填项；
 
-#####ProvisionProfile文件验签
+##### ProvisionProfile文件验签
 * verify-profile : ProvisionProfile文件验签
   * -inFile：已签名的Provision Profile文件，p7b格式，必填项；
   * -outFile：验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台；
 
-#####hap应用包签名
+##### hap应用包签名
 * sign-app : hap应用包签名
   * -mode：签名模式，必填项，包括localSign，remoteSign，remoteResign；
   * -keyAlias：密钥别名，必填项；
@@ -175,7 +175,7 @@ java -jar hap_sign_tool.jar -help
   * -keystorePwd: 密钥库口令，可选项；
   * -outFile: 输出签名后的包文件，必填项；
 
-#####hap应用包文件验签
+##### hap应用包文件验签
 * verify-app : hap应用包文件验签
   * -inFile：已签名的应用包文件，hap格式或bin格式，必填项；
   * -outCertchain：签名的证书链文件，必填项；

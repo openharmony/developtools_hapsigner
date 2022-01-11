@@ -235,7 +235,7 @@ public class Options extends HashMap<String, Object> {
      */
     public String getString(String key, String defValue) {
         Object value = this.get(key);
-        if (StringUtils.isEmpty(value) || !(value instanceof String)) {
+        if (!(value instanceof String)) {
             return defValue;
         }
         return (String) value;

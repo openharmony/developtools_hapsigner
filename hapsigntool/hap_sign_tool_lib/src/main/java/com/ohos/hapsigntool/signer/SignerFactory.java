@@ -38,7 +38,7 @@ public class SignerFactory {
         } else {
             KeyPair keyPair = adapter.getAliasKey(false);
             adapter.releasePwd();
-            return new LocalSigner(keyPair.getPrivate(), adapter.getProfileCert());
+            return new LocalSigner(keyPair.getPrivate(), adapter.getSignCertChain());
         }
     }
 }
