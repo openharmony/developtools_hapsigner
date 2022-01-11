@@ -377,19 +377,20 @@ public class HapVerifyV2 {
     }
 
     private int getKeySize(PublicKey publicKey) {
+        int result = -1;
         if (publicKey instanceof RSAKey) {
-            return ((RSAKey) publicKey).getModulus().bitLength();
+            result = ((RSAKey) publicKey).getModulus().bitLength();
         }
         if (publicKey instanceof ECKey) {
-            return ((ECKey) publicKey).getParams().getOrder().bitLength();
+            result = ((ECKey) publicKey).getParams().getOrder().bitLength();
         }
         if (publicKey instanceof DSAKey) {
             DSAParams dsaParams = ((DSAKey) publicKey).getParams();
             if (dsaParams != null) {
-                return dsaParams.getP().bitLength();
+                result = dsaParams.getP().bitLength();
             }
         }
-        return -1;
+        return result;
     }
 
     private String formatDateTime(Date date) {

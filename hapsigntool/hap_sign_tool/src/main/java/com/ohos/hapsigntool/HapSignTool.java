@@ -289,6 +289,10 @@ public final class HapSignTool {
     private static boolean runVerifyProfile(Options params, ServiceApi api) {
         params.required(Options.IN_FILE);
         FileUtils.validFileType(params.getString(Options.IN_FILE), "p7b");
+        String outFile = params.getString(Options.OUT_FILE);
+        if (!StringUtils.isEmpty(outFile)) {
+            FileUtils.validFileType(outFile, "json");
+        }
 
         return api.verifyProfile(params);
     }

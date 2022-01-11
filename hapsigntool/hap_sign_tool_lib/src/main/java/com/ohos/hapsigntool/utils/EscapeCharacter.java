@@ -32,7 +32,7 @@ public class EscapeCharacter {
         int lastPos = 0;
         int pos = 0;
         while (lastPos < src.length()) {
-            pos = src.indexOf("%", lastPos);
+            pos = src.indexOf('%', lastPos);
             if (pos == lastPos) {
                 if (src.charAt(pos + 1) == 'u') {
                     char ch = (char) Integer.parseInt(src.substring(pos + 2, pos + 6), 16);

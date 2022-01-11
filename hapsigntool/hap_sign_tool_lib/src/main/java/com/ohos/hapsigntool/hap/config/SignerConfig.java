@@ -15,9 +15,11 @@
 
 package com.ohos.hapsigntool.hap.config;
 
+import com.ohos.hapsigntool.api.LocalizationAdapter;
 import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
 import com.ohos.hapsigntool.signer.ISigner;
+import com.ohos.hapsigntool.signer.SignerFactory;
 
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -34,30 +36,103 @@ public class SignerConfig {
     /**
      * params inputted by users
      */
-    public Options options;
+    private Options options;
 
     /**
      * certificate chain used for sign hap
      */
-    public List<X509Certificate> certificates;
+    private List<X509Certificate> certificates;
 
     /**
      * certificate revocation list return from server
      */
-    public List<X509CRL> x509CRLs;
+    private List<X509CRL> x509CRLs;
 
     /**
      * Signature Algorithms used for sign hap
      */
-    public List<SignatureAlgorithm> signatureAlgorithms;
+    private List<SignatureAlgorithm> signatureAlgorithms;
 
     /**
      * parameters for sign hap
      */
-    public Map<String, String> signParamMap = new HashMap<String, String>();
+    private Map<String, String> signParamMap = new HashMap<String, String>();
 
     /**
-     * server interface for get signature
+     * Get options.
+     *
+     * @return options
+     */
+    public Options getOptions() {
+        return options;
+    }
+
+    /**
+     * set options.
+     */
+    public void setOptions(Options options) {
+        this.options = options;
+    }
+
+    /**
+     * Get certificates.
+     *
+     * @return certificates
+     */
+    public List<X509Certificate> getCertificates() {
+        return certificates;
+    }
+
+    /**
+     * set certificate
+     */
+    public void setCertificates(List<X509Certificate> certificates) {
+        this.certificates = certificates;
+    }
+
+    /**
+     * get crl
+     *
+     * @return crl list
+     */
+    public List<X509CRL> getX509CRLs() {
+        return x509CRLs;
+    }
+
+    /**
+     * set crl
+     */
+    public void setX509CRLs(List<X509CRL> crls) {
+        this.x509CRLs = crls;
+    }
+
+    /**
+     * get signature algorithm
+     *
+     * @return signature algorithm
+     */
+    public List<SignatureAlgorithm> getSignatureAlgorithms() {
+        return signatureAlgorithms;
+    }
+
+    /**
+     * set signature algorithm
+     */
+    public void setSignatureAlgorithms(List<SignatureAlgorithm> signatureAlgorithms) {
+        this.signatureAlgorithms = signatureAlgorithms;
+    }
+
+    /**
+     * get param map
+     *
+     * @return param map
+     */
+    public Map<String, String> getSignParamMap() {
+        return this.signParamMap;
+    }
+
+    /**
+     * set param map
      */
     public void fillParameters(Map<String, String> params) {
         this.signParamMap = params;
@@ -67,6 +142,6 @@ public class SignerConfig {
      * get signer
      */
     public ISigner getSigner() {
-        return null;
+        return new SignerFactory().getSigner(new LocalizationAdapter(options));
     }
 }

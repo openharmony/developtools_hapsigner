@@ -20,6 +20,7 @@ import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,6 +101,8 @@ public class KeyStoreHelper {
      * @param storePwd passwd of key store
      */
     public KeyStoreHelper(String keyStorePath, char[] storePwd) {
+        ValidateUtils.throwIfMatches(StringUtils.isEmpty(keyStorePath), ERROR.COMMAND_ERROR,
+                "Missed params: 'keyStorePath'");
         if (storePwd == null) {
             storePwd = new char[0];
         }

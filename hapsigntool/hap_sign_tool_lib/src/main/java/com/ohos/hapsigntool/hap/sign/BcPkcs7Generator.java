@@ -83,7 +83,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         }
         ASN1EncodableVector signerInfoLst = new ASN1EncodableVector();
         ASN1EncodableVector algorithmIdLst = new ASN1EncodableVector();
-        for (SignatureAlgorithm signatureAlgorithm : signerConfig.signatureAlgorithms) {
+        for (SignatureAlgorithm signatureAlgorithm : signerConfig.getSignatureAlgorithms()) {
             try {
                 SignerInfo signerInfo = getSignerInfo(signatureAlgorithm, content, signerConfig);
                 if (signerInfo != null) {
@@ -112,11 +112,11 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         ASN1Set crls = null;
         byte[] signBlock;
         try {
-            if (checkListNotNullOrEmty(signerConfig.certificates)) {
-                certs = createBerSetFromCerts(signerConfig.certificates);
+            if (checkListNotNullOrEmty(signerConfig.getCertificates())) {
+                certs = createBerSetFromCerts(signerConfig.getCertificates());
             }
-            if (checkListNotNullOrEmty(signerConfig.x509CRLs)) {
-                crls = createBerSetFromCrls(signerConfig.x509CRLs);
+            if (checkListNotNullOrEmty(signerConfig.getX509CRLs())) {
+                crls = createBerSetFromCrls(signerConfig.getX509CRLs());
             }
             SignedData signedData = new SignedData(
                 new ASN1Integer(1), algorithmIdLst, contentInfo, certs, crls, signerInfoLst);
@@ -154,7 +154,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         if (signatureBytes == null) {
             throw new SignatureException("Generate signature bytes error");
         }
-        if (signerConfig.certificates.isEmpty()) {
+        if (signerConfig.getCertificates().isEmpty()) {
             throw new SignatureException("No certificates configured for signer");
         }
 
@@ -175,7 +175,8 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         String digestAlgorithm = signatureAlgorithm.getContentDigestAlgorithm().getDigestAlgorithm();
         String signAlg = signatureAlgorithm.getSignatureAlgAndParams().getFirst();
         try {
-            JcaX509CertificateHolder certificateHolder = new JcaX509CertificateHolder(signerConfig.certificates.get(0));
+            JcaX509CertificateHolder certificateHolder =
+                new JcaX509CertificateHolder(signerConfig.getCertificates().get(0));
             AlgorithmIdentifier digestAlgId = DIGEST_ALG_FINDER.find(digestAlgorithm);
             AlgorithmIdentifier signAlgId = SIGN_ALG_FINDER.find(signAlg);
             IssuerAndSerialNumber issuerAndSerialNumber =
@@ -235,7 +236,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
             ASN1Set authed)
             throws SignatureException {
         try {
-            PublicKey publicKey = signerConfig.certificates.get(0).getPublicKey();
+            PublicKey publicKey = signerConfig.getCertificates().get(0).getPublicKey();
             Signature signature = Signature.getInstance(signAlgPair.getFirst());
             signature.initVerify(publicKey);
             if (signAlgPair.getSecond() != null) {

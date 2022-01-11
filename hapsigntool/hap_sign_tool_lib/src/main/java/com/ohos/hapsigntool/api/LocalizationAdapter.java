@@ -55,7 +55,7 @@ public class LocalizationAdapter {
     /**
      * Params
      */
-    private Options options;
+    private final Options options;
     /**
      * Operation of keystore
      */
@@ -68,7 +68,6 @@ public class LocalizationAdapter {
      */
     public LocalizationAdapter(Options options) {
         this.options = options;
-        initKeyStore();
     }
 
     /**
@@ -81,8 +80,12 @@ public class LocalizationAdapter {
     }
 
     private void initKeyStore() {
-        keyStoreHelper = new KeyStoreHelper(options.getString(Options.KEY_STORE_FILE, ""),
-                options.getChars(Options.KEY_STORE_RIGHTS));
+        // Avoid duplicated initialization
+        if (keyStoreHelper != null) {
+            return;
+        }
+        String keyStore = options.getString(Options.KEY_STORE_FILE, "");
+        keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.KEY_STORE_RIGHTS));
     }
 
     /**
@@ -113,6 +116,9 @@ public class LocalizationAdapter {
      * @return true or false
      */
     public boolean hasAlias(String alias) {
+        if (keyStoreHelper == null) {
+            initKeyStore();
+        }
         return keyStoreHelper.hasAlias(alias);
     }
 
@@ -122,6 +128,9 @@ public class LocalizationAdapter {
      * @param alias alias
      */
     public void errorIfNotExist(String alias) {
+        if (keyStoreHelper == null) {
+            initKeyStore();
+        }
         keyStoreHelper.errorIfNotExist(alias);
     }
 
@@ -131,10 +140,16 @@ public class LocalizationAdapter {
      * @param alias alias
      */
     public void errorOnExist(String alias) {
+        if (keyStoreHelper == null) {
+            initKeyStore();
+        }
         keyStoreHelper.errorOnExist(alias);
     }
 
     private KeyPair getKeyPair(String alias, char[] keyPwd, boolean autoCreate) {
+        if (keyStoreHelper == null) {
+            initKeyStore();
+        }
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(alias), ERROR.ACCESS_ERROR, "Alias could not be empty");
         KeyPair keyPair = null;
         if (keyStoreHelper.hasAlias(alias)) {
@@ -154,22 +169,15 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getAppCert.
-     *
-     * @return App cert
-     */
-    public List<X509Certificate> getAppCert() {
-        String certPath = options.getString(Options.APP_CERT_FILE);
-        return getCertsFromFile(certPath, Options.APP_CERT_FILE);
-    }
-
-    /**
      * getProfileCert.
      *
      * @return profile cert
      */
-    public List<X509Certificate> getProfileCert() {
+    public List<X509Certificate> getSignCertChain() {
         String certPath = options.getString(Options.PROFILE_CERT_FILE);
+        if (StringUtils.isEmpty(certPath)) {
+            certPath = options.getString(Options.APP_CERT_FILE);
+        }
         List<X509Certificate> certificates = getCertsFromFile(certPath, Options.PROFILE_CERT_FILE);
         ValidateUtils.throwIfNotMatches(certificates.size() == CERT_CHAIN_SIZE, ERROR.NOT_SUPPORT_ERROR,
                 String.format("Profile cert '%s' must a cert chain", certPath));

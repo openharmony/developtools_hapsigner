@@ -75,13 +75,7 @@ public final class Pair<A, B> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        if (!(obj instanceof Pair)) {
+        if ((obj == null) || (getClass() != obj.getClass()) || (!(obj instanceof Pair))) {
             return false;
         }
         Pair other = (Pair) obj;

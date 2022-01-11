@@ -44,19 +44,20 @@ public class HashUtils {
      * @return algorithm ID
      */
     public static int getHashAlgsId(String algMethod) {
+        int result = HashAlgs.USE_NONE;
         if ("SHA-224".equals(algMethod)) {
-            return HashAlgs.USE_SHA224;
+            result = HashAlgs.USE_SHA224;
         }
         if ("SHA-256".equals(algMethod)) {
-            return HashAlgs.USE_SHA256;
+            result = HashAlgs.USE_SHA256;
         }
         if ("SHA-384".equals(algMethod)) {
-            return HashAlgs.USE_SHA384;
+            result = HashAlgs.USE_SHA384;
         }
         if ("SHA-512".equals(algMethod)){
-            return HashAlgs.USE_SHA512;
+            result = HashAlgs.USE_SHA512;
         }
-        return HashAlgs.USE_NONE;
+        return result;
     }
 
     private static MessageDigest getMessageDigest(String algMethod) {
@@ -85,11 +86,11 @@ public class HashUtils {
     public static byte[] getFileDigest(String filePath, String algName) {
         byte[] digest = null;
         MessageDigest md = getMessageDigest(algName);
-        if (md == null) {
-            return digest;
-        }
-        byte[] fileDate = new byte[HASH_LEN];
         try (InputStream input = new FileInputStream(new File(filePath))) {
+            if (md == null) {
+                throw new NoSuchAlgorithmException();
+            }
+            byte[] fileDate = new byte[HASH_LEN];
             int num = 0;
             int byteCount;
             HashMap<Integer, byte[]> hashList = new HashMap<Integer, byte[]>();
@@ -110,6 +111,8 @@ public class HashUtils {
             LOGGER.error("getFileDigest File Not Found failed.");
         } catch (IOException e) {
             LOGGER.error("getFileDigest IOException failed.", e);
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("MessageDigest is null", e);
         }
         return digest;
     }

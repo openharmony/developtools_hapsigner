@@ -24,16 +24,6 @@ public final class StringUtils {
     private StringUtils() {
     }
 
-    /**
-     * Check empty String.
-     *
-     * @param obj String to check
-     * @return boolean
-     */
-    public static boolean isEmpty(Object obj) {
-        return obj == null || "".equals(obj);
-    }
-
 	/**
      * Check string is empty.
      *

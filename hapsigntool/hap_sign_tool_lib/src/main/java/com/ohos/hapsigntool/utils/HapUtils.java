@@ -79,7 +79,7 @@ public class HapUtils {
     /**
      * The set of IDs of optional blocks in hap signature block.
      */
-    public static final Set<Integer> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS =
+    private static final Set<Integer> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS =
             new HashSet<Integer>() {
                 private static final long SERIAL_VERSION_UID = -7972389022577288313L;
 
@@ -93,7 +93,7 @@ public class HapUtils {
     /**
      * Magic word of hap signature block/
      */
-    public static final byte[] HAP_SIGNING_BLOCK_MAGIC =
+    private static final byte[] HAP_SIGNING_BLOCK_MAGIC =
             new byte[] {0x48, 0x41, 0x50, 0x20, 0x53, 0x69, 0x67, 0x20, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x20, 0x34, 0x32};
 
     /**
@@ -119,6 +119,24 @@ public class HapUtils {
     private static final byte ZIP_FIRST_LEVEL_CHUNK_PREFIX = 0x5a;
     private static final byte ZIP_SECOND_LEVEL_CHUNK_PREFIX = (byte) 0xa5;
     private static final int DIGEST_PRIFIX_LENGTH = 5;
+
+    /**
+     * Get HAP_SIGNATURE_OPTIONAL_BLOCK_IDS
+     *
+     * @return HAP_SIGNATURE_OPTIONAL_BLOCK_IDS
+     */
+    public static Set<Integer> getHapSignatureOptionalBlockIds() {
+        return HAP_SIGNATURE_OPTIONAL_BLOCK_IDS;
+    }
+
+    /**
+     * Get HAP_SIGNING_BLOCK_MAGIC
+     *
+     * @return HAP_SIGNING_BLOCK_MAGIC
+     */
+    public static byte[] getHapSigningBlockMagic() {
+        return HAP_SIGNING_BLOCK_MAGIC;
+    }
 
     /**
      * Read data from hap file.

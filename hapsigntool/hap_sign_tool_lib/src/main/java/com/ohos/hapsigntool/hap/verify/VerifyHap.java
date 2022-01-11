@@ -106,28 +106,29 @@ public class VerifyHap {
      * @return true, if verify successfully.
      */
     public boolean verify(Options options) {
-
-        if (!checkParams(options)) {
-            LOGGER.error("Check params failed!");
-            return false;
-        }
-        String filePath = options.getString(ParamConstants.PARAM_BASIC_INPUT_FILE);;
-        String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
-        if (StringUtils.isEmpty(filePath)) {
-            LOGGER.error("Not found verify file path!");
-            return false;
-        }
-        File signedFile = new File(filePath);
-        if (!checkSignFile(signedFile)) {
-            LOGGER.error("Check input signature hap false!");
-            return false;
-        }
-        VerifyResult verifyResult = verifyHap(filePath);
-        if (!verifyResult.getResult()) {
-            LOGGER.error("verify: {}", verifyResult.getMessage());
-            return false;
-        }
+        VerifyResult verifyResult;
         try {
+            if (!checkParams(options)) {
+                LOGGER.error("Check params failed!");
+                throw new IOException();
+            }
+            String filePath = options.getString(ParamConstants.PARAM_BASIC_INPUT_FILE);;
+            String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
+            if (StringUtils.isEmpty(filePath)) {
+                LOGGER.error("Not found verify file path!");
+                throw new IOException();
+            }
+            File signedFile = new File(filePath);
+            if (!checkSignFile(signedFile)) {
+                LOGGER.error("Check input signature hap false!");
+                throw new IOException();
+            }
+            verifyResult = verifyHap(filePath);
+            if (!verifyResult.getResult()) {
+                LOGGER.error("verify: {}", verifyResult.getMessage());
+                throw new IOException();
+            }
+
             writeCertificate(outputCertPath, verifyResult.getCertificates());
         } catch (IOException e) {
             LOGGER.error("Write certificate chain error", e);
@@ -217,15 +218,9 @@ public class VerifyHap {
         List<X509Certificate> certificates = verifyResult.getCertificates();
         try {
             writeCertificate(outCertPath, certificates);
-        } catch (IOException e) {
-            LOGGER.error("Write certificate chain error", e);
-            verifyResult.setResult(false);
-            return verifyResult;
-        }
-        try {
             outputOptionalBlocks(outProvisionFile, null, null, verifyResult);
         } catch (IOException e) {
-            LOGGER.error("Write profile error", e);
+            LOGGER.error("Write certificate chain or profile error", e);
             verifyResult.setResult(false);
             return verifyResult;
         }
@@ -311,7 +306,7 @@ public class VerifyHap {
                     throw new SignatureNotFoundException("block end pos: " + (blockOffset + blockLength) +
                         " is larger than block len: " + signatureValueBytes.length);
                 }
-                if (HapUtils.HAP_SIGNATURE_OPTIONAL_BLOCK_IDS.contains(blockType)) {
+                if (HapUtils.getHapSignatureOptionalBlockIds().contains(blockType)) {
                     byte[] blockValue = Arrays.copyOfRange(signatureValueBytes, blockOffset, blockOffset + blockLength);
                     optionalBlocks.add(new SigningBlock(blockType, blockValue));
                 }
@@ -322,9 +317,7 @@ public class VerifyHap {
             }
             return Pair.create(hapSigningPkcs7Block, optionalBlocks);
         } finally {
-            if (hapSigningBlock != null) {
-                hapSigningBlock.clear();
-            }
+            hapSigningBlock.clear();
         }
     }
 }
