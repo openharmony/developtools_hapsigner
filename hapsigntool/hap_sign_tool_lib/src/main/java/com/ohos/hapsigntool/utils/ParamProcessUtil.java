@@ -16,6 +16,8 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.Set;
  * @since 2021/12/21
  */
 public class ParamProcessUtil {
+    private static final Logger LOGGER = LogManager.getLogger(ParamProcessUtil.class);
     /**
      * Use string array to init string set
      *
@@ -57,7 +60,7 @@ public class ParamProcessUtil {
         try {
             Files.delete(file.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("delete files failed!");
         }
     }
 

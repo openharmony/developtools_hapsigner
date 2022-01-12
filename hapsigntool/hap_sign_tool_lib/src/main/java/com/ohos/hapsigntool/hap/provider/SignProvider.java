@@ -145,7 +145,7 @@ public abstract class SignProvider {
             return false;
         }
         File file = new File(filePath);
-        if (!file.canRead() && !file.isFile()) {
+        if (!file.canRead() || !file.isFile()) {
             LOGGER.error(filePath + " not exist or can not read!");
             return false;
         }

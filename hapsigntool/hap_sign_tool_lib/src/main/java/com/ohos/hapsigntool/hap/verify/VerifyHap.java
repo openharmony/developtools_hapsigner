@@ -112,7 +112,7 @@ public class VerifyHap {
                 LOGGER.error("Check params failed!");
                 throw new IOException();
             }
-            String filePath = options.getString(ParamConstants.PARAM_BASIC_INPUT_FILE);;
+            String filePath = options.getString(ParamConstants.PARAM_BASIC_INPUT_FILE);
             String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
             if (StringUtils.isEmpty(filePath)) {
                 LOGGER.error("Not found verify file path!");
@@ -264,13 +264,13 @@ public class VerifyHap {
             result = verifyEngine.verify();
         } catch (IOException e) {
             LOGGER.error("Verify Hap has IO error!", e);
-            return new VerifyResult(false, VerifyResult.RET_IO_ERROR, e.getMessage());
+            result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, e.getMessage());
         } catch (SignatureNotFoundException e) {
             LOGGER.error("Verify Hap failed, signature not found.", e);
-            return new VerifyResult(false, VerifyResult.RET_SIGNATURE_NOT_FOUND_ERROR, e.getMessage());
+            result = new VerifyResult(false, VerifyResult.RET_SIGNATURE_NOT_FOUND_ERROR, e.getMessage());
         } catch (HapFormatException e) {
             LOGGER.error("Verify Hap failed, unsupported format hap.", e);
-            return new VerifyResult(false, VerifyResult.RET_UNSUPPORTED_FORMAT_ERROR, e.getMessage());
+            result = new VerifyResult(false, VerifyResult.RET_UNSUPPORTED_FORMAT_ERROR, e.getMessage());
         }
         return result;
     }
