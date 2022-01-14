@@ -1,36 +1,63 @@
 # developtools_hapsigner
 
+* Description
+* Installation
+* Instructions
+* Auto generate script
+
 #### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
-
-#### Software Architecture
-Software architecture description
-
+In order to ensure the integrity and reliability of the OpenHarmony application, the application needs to be signed when the application is built, so that the application can be installed, run, and debugged on a real device. This warehouse provides a jar toolkit with functions such as certificate generation and hap package signature.
 #### Installation
+1. Clone this git
+2. Configure the operating environment ：Gradle 7.1, JDK 8
+3. Command to locate developtools_hapsigner/hapsigntool/
+4. Compile project with **gradle build** or **gradle jar**
+5. You can find jar at ./hap_sign_tool/build/libs/hap_sign_tool-xxxx.jar
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
 
 #### Instructions
+Command example：
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```shell
+java -jar <signature tool.jar> <command> <params>
+```
 
-#### Contribution
+Complete usage example：
+```shell
+java -jar hap_sign_tool.jar generate-csr -keyAlias "oh-app1-key-v1" -keyPwd ***** -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\ohtest.jks" -keystorePwd ***** -outFile "D:\OH\oh-app1-key-v1.csr"
+```
+You can also use -help to view the complete instructions
+```shell
+java -jar hap_sign_tool.jar -help
+```
+****
+#### Auto generate script
+You can also find a script in **autosign** folder
+* start_create.sh/start_create.bat
+* start_sign.sh/start_sign.bat
+* auto_sign_main.py
+* auto_sign.conf
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
+Steps：
+1. Environment python3.x is required
+2. Also related hap_sign_tool.jar 
+3. Get your unsigned hap package and Provision profile templates
+4. Edit auto_sign.conf and replace it with your information
+5. Run start_create.sh and start_sign.sh in Linux os
+6. Or run start_create.bat and start_sign.bat in Window os
 
+****
 
-#### Gitee Feature
+#### Command description：
 
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+* generate-keypair : generate key pair
+* generate-csr : generate certificate signing request
+* generate-cert : generate certificate in full, large and complete, any certificate can be generated
+* generate-ca : generate root/subject CA certificate, if the key does not exist, generate the key together
+* generate-app-cert : generate application debug/release certificate
+* generate-profile-cert : generate application debug/release certificate
+* sign-profile : Provision Profile file signature
+* verify-profile : Provision Profile file verification
+* sign-app : application package signature
+* verify-app : application package file verification
+
