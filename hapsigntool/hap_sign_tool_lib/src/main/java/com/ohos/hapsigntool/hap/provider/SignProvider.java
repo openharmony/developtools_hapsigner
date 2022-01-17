@@ -205,6 +205,27 @@ public abstract class SignProvider {
     }
 
     /**
+     * check profile signed in bin signed
+     *
+     * @param options inputted by user.
+     * @throws MissingParamsException Exception occurs when the required parameters are not entered.
+     */
+    private void checkLiteParams(Options options) throws MissingParamsException {
+        String[] paramFileds = {ParamConstants.PARAM_BASIC_PROFILE_SIGNED};
+        Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
+
+        for (String paramKey : options.keySet()) {
+            if (paramSet.contains(paramKey)) {
+                signParams.put(paramKey, options.getString(paramKey));
+            }
+        }
+
+        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
+            signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
+        }
+    }
+
+    /**
      * sign bin file
      *
      * @param options parameters used to sign bin file
@@ -217,6 +238,8 @@ public abstract class SignProvider {
         try {
             // 1. check the parameters
             checkParams(options);
+
+            checkLiteParams(options);
 
             // 2. load optionalBlocks
             loadOptionalBlocks();
@@ -510,17 +533,23 @@ public abstract class SignProvider {
     private void checkProfileValid(List<X509Certificate> inputCerts) throws ProfileException {
         try {
             byte[] profile = findProfileFromOptionalBlocks();
+            boolean isProfileWithoutSign = ParamConstants.ProfileSignFlag.UNSIGNED_PROFILE.getSignFlag().equals(
+                    signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED));
             String content;
-            CMSSignedData cmsSignedData = new CMSSignedData(profile);
-            boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
-            if (!verifyResult) {
-                throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid.");
+            if (!isProfileWithoutSign) {
+                CMSSignedData cmsSignedData = new CMSSignedData(profile);
+                boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
+                if (!verifyResult) {
+                    throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid.");
+                }
+                Object contentObj = cmsSignedData.getSignedContent().getContent();
+                if (!(contentObj instanceof byte[])) {
+                    throw new ProfileException("Check profile failed, signed profile content is not byte array!");
+                }
+                content = new String((byte[]) contentObj, StandardCharsets.UTF_8);
+            } else {
+                content = new String(profile, StandardCharsets.UTF_8);
             }
-            Object contentObj = cmsSignedData.getSignedContent().getContent();
-            if (!(contentObj instanceof byte[])) {
-                throw new ProfileException("Check profile failed, signed profile content is not byte array!");
-            }
-            content = new String((byte[]) contentObj, StandardCharsets.UTF_8);
             JsonElement parser = JsonParser.parseString(content);
             JsonObject profileJson = parser.getAsJsonObject();
             checkProfileInfo(profileJson, inputCerts);

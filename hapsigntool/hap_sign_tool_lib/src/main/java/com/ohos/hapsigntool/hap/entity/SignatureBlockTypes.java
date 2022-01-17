@@ -38,4 +38,20 @@ public class SignatureBlockTypes {
      * type-value of key rotation block
      */
     public static final char KEY_ROTATION_BLOCK = 3;
+
+    /**
+     * get profile block type by the flag of isSigned
+     *
+     * @param isSigned the flag whether profile is signed
+     * @return profile block type value
+     */
+    public static char getProfileBlockTypes(String isSigned) {
+        if (isSigned != null && isSigned.equals("0")) {
+            return PROFILE_NOSIGNED_BLOCK;
+        }
+        if (isSigned != null && isSigned.equals("1")) {
+            return PROFILE_SIGNED_BLOCK;
+        }
+        return PROFILE_NOSIGNED_BLOCK;
+    }
 }

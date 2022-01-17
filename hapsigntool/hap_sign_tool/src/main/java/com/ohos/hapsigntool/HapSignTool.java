@@ -54,6 +54,14 @@ public final class HapSignTool {
      * Remote sign.
      */
     private static final String REMOTE_SIGN = "remoteSign";
+    /**
+     * Signed.
+     */
+    private static final int SIGNED = 1;
+    /**
+     * No signed.
+     */
+    private static final int NOT_SIGNED = 0;
 
     private HapSignTool() {
     }
@@ -158,7 +166,7 @@ public final class HapSignTool {
         params.required(Options.KEY_ALIAS, Options.ISSUER, Options.ISSUER_KEY_ALIAS, Options.SUBJECT,
                 Options.SIGN_ALG, Options.KEY_STORE_FILE);
         String signAlg = params.getString(Options.SIGN_ALG);
-        CmdUtil.judgeSignAlgType(signAlg);
+        CmdUtil.judgeEndSignAlgType(signAlg);
         String outForm = params.getString(Options.OUT_FORM);
         if (!StringUtils.isEmpty(outForm)) {
             CmdUtil.verifyType(outForm, Options.OUT_FORM_SCOPE);
@@ -209,10 +217,11 @@ public final class HapSignTool {
     }
 
     private static boolean runCsr(Options params, ServiceApi api) {
-        params.required(Options.KEY_ALIAS, Options.SUBJECT, Options.SIGN_ALG, Options.KEY_STORE_FILE);
+        params.required(Options.KEY_ALIAS, Options.SUBJECT, Options.SIGN_ALG, Options.KEY_STORE_FILE, Options.OUT_FILE);
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
+        FileUtils.validFileType(params.getString(Options.OUT_FILE), "csr");
 
         return api.generateCsr(params);
     }
@@ -249,10 +258,16 @@ public final class HapSignTool {
 
         String profileFile = params.getString(Options.PROFILE_FILE);
         FileUtils.validFileType(profileFile, "p7b");
-        String infile = params.getString(Options.IN_FILE);
-        FileUtils.validFileType(infile, "hap", "bin", "zip");
+        int profileSigned = params.getInt(Options.PROFILE_SIGNED, SIGNED);
+        if (profileSigned != SIGNED && profileSigned != NOT_SIGNED) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
+        }
+        String inForm = params.getString(Options.IN_FORM);
+        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
+        }
         String signAlg = params.getString(Options.SIGN_ALG);
-        CmdUtil.judgeSignAlgType(signAlg);
+        CmdUtil.judgeEndSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
 
         return api.signHap(params);
@@ -270,7 +285,7 @@ public final class HapSignTool {
         }
 
         String signAlg = params.getString(Options.SIGN_ALG);
-        CmdUtil.judgeSignAlgType(signAlg);
+        CmdUtil.judgeEndSignAlgType(signAlg);
         String outFile = params.getString(Options.OUT_FILE);
         FileUtils.validFileType(outFile, "p7b");
 

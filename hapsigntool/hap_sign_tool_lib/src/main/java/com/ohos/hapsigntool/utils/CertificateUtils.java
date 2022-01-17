@@ -61,6 +61,7 @@ public class CertificateUtils {
      * @throws CertificateException data in file is not certificate
      * @throws VerifyCertificateChainException certificates in file are not certificate chain
      */
+    @SuppressWarnings("unchecked")
     public static List<X509Certificate> getCertListFromFile(String certsFile) throws IOException, CertificateException,
         VerifyCertificateChainException {
         try (FileInputStream fileInputStream = FileUtils.openInputStream(new File(certsFile))) {
