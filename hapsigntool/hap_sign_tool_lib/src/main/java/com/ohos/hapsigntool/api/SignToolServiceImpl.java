@@ -58,6 +58,14 @@ public class SignToolServiceImpl implements ServiceApi {
     }
 
     /**
+     * App signing Capabilty Bytes.
+     */
+    private static final byte[] APP_SIGNING_CAPABILITY = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
+    /**
+     * Profile signing Capabilty Bytes.
+     */
+    private static final byte[] PROFILE_SIGNING_CAPABILITY = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x01};
+    /**
      * Logger.
      */
     private final Logger logger = LogManager.getLogger(ServiceApi.class);
@@ -162,7 +170,22 @@ public class SignToolServiceImpl implements ServiceApi {
      */
     @Override
     public boolean generateAppCert(Options options) {
-        return generateProfileCert(options);
+        LocalizationAdapter adapter = new LocalizationAdapter(options);
+        KeyPair keyPair = adapter.getAliasKey(false);
+        KeyPair issueKeyPair = adapter.getIssuerAliasKey();
+        adapter.releasePwd();
+
+        byte[] csr = CertTools.generateCsr(keyPair, adapter.getSignAlg(), adapter.getSubject());
+        X509Certificate cert = CertTools.generateEndCert(issueKeyPair, csr, adapter, APP_SIGNING_CAPABILITY);
+        if (adapter.isOutFormChain()) {
+            List<X509Certificate> certificates = new ArrayList<>();
+            certificates.add(cert);
+            certificates.add(adapter.getSubCaCertFile());
+            certificates.add(adapter.getCaCertFile());
+            return outputCertChain(certificates, adapter.getOutFile());
+        } else {
+            return outputCert(cert, adapter.getOutFile());
+        }
     }
 
     /**
@@ -179,7 +202,7 @@ public class SignToolServiceImpl implements ServiceApi {
         adapter.releasePwd();
 
         byte[] csr = CertTools.generateCsr(keyPair, adapter.getSignAlg(), adapter.getSubject());
-        X509Certificate cert = CertTools.generateEndCert(issueKeyPair, csr, adapter);
+        X509Certificate cert = CertTools.generateEndCert(issueKeyPair, csr, adapter, PROFILE_SIGNING_CAPABILITY);
         if (adapter.isOutFormChain()) {
             List<X509Certificate> certificates = new ArrayList<>();
             certificates.add(cert);
@@ -262,11 +285,11 @@ public class SignToolServiceImpl implements ServiceApi {
         }
 
         //The type of file is bin or hap
-        String inFile = options.getString(Options.IN_FILE);
-        if (inFile.endsWith(".bin")) {
-            return signProvider.signBin(options);
-        } else {
+        String inForm = options.getString(Options.IN_FORM, "zip");
+        if ("zip".equalsIgnoreCase(inForm)) {
             return signProvider.sign(options);
+        } else {
+            return signProvider.signBin(options);
         }
     }
 

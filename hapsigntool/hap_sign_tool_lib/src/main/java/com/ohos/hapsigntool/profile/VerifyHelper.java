@@ -79,6 +79,7 @@ public class VerifyHelper implements IProvisionVerifier {
         }
     }
 
+    @SuppressWarnings("unchecked")
     CMSSignedData verifyPkcs(byte[] p7b) {
         CMSSignedData cmsSignedData = null;
         try {

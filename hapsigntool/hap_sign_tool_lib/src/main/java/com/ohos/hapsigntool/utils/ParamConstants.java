@@ -167,6 +167,11 @@ public class ParamConstants {
     public static final String PARAM_BASIC_SIGANTURE_ALG = "signAlg";
 
     /**
+     * Flag indicates whether profile is signed
+     */
+    public static final String PARAM_BASIC_PROFILE_SIGNED = "profileSigned";
+
+    /**
      * Url of signature server
      */
     public static final String PARAM_REMOTE_SERVER = "signServer";

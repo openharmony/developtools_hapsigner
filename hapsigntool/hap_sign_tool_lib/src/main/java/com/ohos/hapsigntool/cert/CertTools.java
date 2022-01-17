@@ -161,7 +161,8 @@ public final class CertTools {
      * @param adapter adapter
      * @return X509Certificate
      */
-    public static X509Certificate generateEndCert(KeyPair keyPair, byte[] csr, LocalizationAdapter adapter) {
+    public static X509Certificate generateEndCert(KeyPair keyPair, byte[] csr, LocalizationAdapter adapter,
+                                                  byte[] signingCapabiltyBytes) {
         try {
             return new CertBuilder(keyPair, adapter.getIssuer(), csr,
                     adapter.getOptions().getInt(Options.VALIDITY, THREE_YEAR_DAY))
@@ -169,6 +170,7 @@ public final class CertTools {
                             null)
                     .withKeyUsages(new KeyUsage(KeyUsage.digitalSignature), true)
                     .withExtKeyUsages(new KeyPurposeId[]{KeyPurposeId.id_kp_codeSigning}, false)
+                    .withSigningCapabilty(signingCapabiltyBytes)
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
