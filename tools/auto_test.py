@@ -261,7 +261,7 @@ simple_scope = {
 }
 
 def get_test_scope_from_file():
-    with open('commands.config', 'r') as f:
+    with open('commands.config', 'r', encoding='utf-8') as f:
         content = f.read()
         return ast.literal_eval(content)
 
@@ -281,7 +281,7 @@ def run_target(case, cmd):
     command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
 
     out = command.stdout.readlines()
-    with open("log.txt", mode='a+') as f:
+    with open("log.txt", mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
             f.writelines(cmd + "\r\n")
         for line in out:
@@ -289,7 +289,7 @@ def run_target(case, cmd):
 
     success = True
     error = command.stderr.readlines()
-    with open("error.txt", mode='a+') as f:
+    with open("error.txt", mode='a+', encoding='utf-8') as f:
         if len(error) > 0:
             f.writelines(cmd + "\r\n")
 
