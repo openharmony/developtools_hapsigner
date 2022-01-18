@@ -17,6 +17,7 @@ import os.path
 import random
 import sys
 import time
+import ast
 from subprocess import Popen
 from subprocess import PIPE
 
@@ -30,6 +31,7 @@ def print_help():
               "\n" \
               "Example: \n" \
               "    signtool.jar \n" \
+              "    signtool.jar -runtest\n" \
               "    signtool.jar -scope all -n 1000\n" \
               "    signtool.jar -scope generate-profile-cert\n" \
               "    signtool.jar -n 50 --random\n" \
@@ -196,7 +198,8 @@ simple_scope = {
         'generate-app-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -subject '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -signAlg SHA256withECDSA  '
-        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/app1.cer" -keyPwd 123456',
+        '-keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 -outFile "./test1/app1.cer" -keyPwd 123456 '
+        '-outForm cert ',
         # App sign cert chain via ohtest.jks
         'generate-app-cert -keyAlias "oh-app1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -subject '
@@ -208,7 +211,8 @@ simple_scope = {
         'generate-app-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca2-key-v1" -subject '
         '"C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -signAlg SHA256withECDSA  '
-        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 -outFile "./test2/app2.cer" -keyPwd 123456',
+        '-keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 -outFile "./test2/app2.cer" -keyPwd 123456 '
+        '-outForm cert ',
         # App sign cert chain via ohtest.p12
         'generate-app-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca2-key-v1" -subject '
@@ -223,7 +227,7 @@ simple_scope = {
         'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca-key-v1" '
         '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release" '
         '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "./test1/ohtest.jks" '
-        '-keystorePwd 123456 -outFile "./test1/profile1.cer" -keyPwd 123456',
+        '-keystorePwd 123456 -outFile "./test1/profile1.cer" -keyPwd 123456 -outForm cert ',
         # Profile sign cert chain via ohtest.jks
         'generate-profile-cert -keyAlias "oh-profile1-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca-key-v1" '
@@ -237,7 +241,7 @@ simple_scope = {
         'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca2-key-v1" '
         '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile2 Release" '
         '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "./test2/ohtest.p12" '
-        '-keystorePwd 123456 -outFile "./test2/profile2.cer" -keyPwd 123456',
+        '-keystorePwd 123456 -outFile "./test2/profile2.cer" -keyPwd 123456 -outForm cert ',
         # Profile sign cert chain via ohtest.p12
         'generate-profile-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca2-key-v1" '
@@ -249,16 +253,19 @@ simple_scope = {
     'sign-profile': [
         'sign-profile -mode localSign -keyAlias "oh-app1-key-v1" -profileCertFile "./test1/profile-release1.pem" '
         '-inFile  "profile.json" -signAlg SHA256withECDSA  -keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 '
-        '-outFile "./test1/app1-profile1.p7b"  -keyPwd 123456',
-        'sign-profile -mode localSign -keyAlias "oh-app2-key-v1" -profileCertFile "./test2/profile-release2.pem" '
-        '-inFile  "profile.json" -signAlg SHA256withRSA  -keystoreFile  "./test2/ohtest.p12" -keystorePwd 123456 '
-        '-outFile "./test2/app1-profile2.p7b"  -keyPwd 123456'
+        '-outFile "./test1/app1-profile1.p7b"  -keyPwd 123456'
     ],
     'verify-profile': [
-        'verify-profile -inFile "./test1/app1-profile1.p7b"',
-        'verify-profile -inFile "./test2/app1-profile2.p7b"'
+        'verify-profile -inFile "./test1/app1-profile1.p7b"'
     ]
 }
+
+def get_test_scope_from_file():
+    with open('commands.config', 'r') as f:
+        content = f.read()
+        return ast.literal_eval(content)
+
+test_scope = get_test_scope_from_file()
 
 test_result = {}
 
@@ -303,6 +310,18 @@ def run_target(case, cmd):
 
 def run_simple_case(case, jar_file):
     test_case = simple_scope.get(case, None)
+    if not test_case:
+        print("Not found test case: {}".format(case))
+        exit(0)
+
+    for k in test_case:
+        cmd = 'java -jar {} {}'.format(jar_file, k)
+        print("== Run command: {}".format(cmd))
+        result = run_target(case, cmd)
+        print("== Done command: {}".format(result))
+
+def run_test_case(case, jar_file):
+    test_case = test_scope.get(case, None)
     if not test_case:
         print("Not found test case: {}".format(case))
         exit(0)
@@ -398,6 +417,8 @@ def process_cmd(args):
                     run_scope = args[i + 1]
                 elif args[i] == '--random':
                     is_random = True
+                elif args[i] == '-runtest':
+                    run_scope = 'runtest'
         except IndexError:
             print_help()
             exit(0)
@@ -421,6 +442,10 @@ def process_cmd(args):
             prepare_env()
             for s_scope, _ in simple_scope.items():
                 run_simple_case(s_scope, jar_file)
+        elif run_scope == 'runtest':
+            prepare_env()
+            for t_scope, _ in test_scope.items():
+                run_test_case(t_scope, jar_file)
         else:
             run_simple_case(run_scope, jar_file)
 
