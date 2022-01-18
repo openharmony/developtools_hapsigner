@@ -184,6 +184,10 @@ public class CmdUnitTest {
      */
     public static final String CMD_RSA_2048 = "2048";
     /**
+     * Command line parameter ECC is 256.
+     */
+    public static final String CMD_ECC_256 = "NIST-P-256";
+    /**
      * Command line parameter validity is 365.
      */
     public static final String CMD_VALIDITY_365 = "365";
@@ -196,9 +200,9 @@ public class CmdUnitTest {
      */
     public static final String CMD_LOCAL_SIGN = "localSign";
     /**
-     * Command line parameter SHA256withRSA.
+     * Command line parameter SHA256withECDSA.
      */
-    public static final String CMD_SHA_256_WITH_RSA = "SHA256withRSA";
+    public static final String CMD_SHA_256_WITH_ECDSA = "SHA256withECDSA";
     /**
      * Command line parameter cer file is test_app-debug-cert.
      */
@@ -323,8 +327,8 @@ public class CmdUnitTest {
             CmdUtil.Method.GENERATE_KEYPAIR,
             CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_ALG, KeyPairTools.ECC_INPUT,
+            CMD_KEY_SIZE, CMD_ECC_256,
             CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456});
         assertTrue(result);
@@ -334,8 +338,8 @@ public class CmdUnitTest {
             CmdUtil.Method.GENERATE_KEYPAIR,
             CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_ALG, KeyPairTools.ECC_INPUT,
+            CMD_KEY_SIZE, CMD_ECC_256,
             CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456});
         assertTrue(result);
@@ -366,7 +370,7 @@ public class CmdUnitTest {
             CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_SUBJECT, CMD_APP1_RELEASE,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_CSR_PATH});
@@ -398,7 +402,7 @@ public class CmdUnitTest {
             CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_ISSUER, CMD_APP_CA,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_CERT_PATH,
@@ -492,7 +496,7 @@ public class CmdUnitTest {
             CMD_OUT_FORM, CMD_CERT_CHAIN,
             CMD_ROOT_CA_CERT_FILE, CMD_ROOT_APP_CA_PATH,
             CMD_SUB_CA_CERT_FILE, CMD_SUB_APP_CA_PATH,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA});
         assertTrue(result);
         assertTrue(FileUtils.isFileExist(CMD_APP_DEBUG_CERT_PATH));
         deleteFile(CMD_APP_RELEASE_CERT_PATH);
@@ -511,7 +515,7 @@ public class CmdUnitTest {
             CMD_OUT_FORM, CMD_CERT_CHAIN,
             CMD_ROOT_CA_CERT_FILE, CMD_ROOT_APP_CA_PATH,
             CMD_SUB_CA_CERT_FILE, CMD_SUB_APP_CA_PATH,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA});
         assertTrue(result);
         assertTrue(FileUtils.isFileExist(CMD_APP_RELEASE_CERT_PATH));
     }
@@ -550,7 +554,7 @@ public class CmdUnitTest {
             CMD_OUT_FORM, CMD_CERT_CHAIN,
             CMD_ROOT_CA_CERT_FILE, CMD_ROOT_PROFILE_CA_PATH,
             CMD_SUB_CA_CERT_FILE, CMD_SUB_PROFILE_CA_PATH,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA});
         assertTrue(result);
         assertTrue(FileUtils.isFileExist(CMD_PROFILE_DEBUG_CERT_PATH));
         deleteFile(CMD_PROFILE_RELEASE_CERT_PATH);
@@ -569,7 +573,7 @@ public class CmdUnitTest {
             CMD_OUT_FORM, CMD_CERT_CHAIN,
             CMD_ROOT_CA_CERT_FILE, CMD_ROOT_PROFILE_CA_PATH,
             CMD_SUB_CA_CERT_FILE, CMD_SUB_PROFILE_CA_PATH,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA});
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA});
         assertTrue(result);
         assertTrue(FileUtils.isFileExist(CMD_PROFILE_RELEASE_CERT_PATH));
     }
@@ -601,7 +605,7 @@ public class CmdUnitTest {
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_PROFILE_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH,
             CMD_IN_FILE, CMD_JSON_FILE,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_SIGN_PROFILE_PATH});
@@ -662,14 +666,14 @@ public class CmdUnitTest {
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_ALG, KeyPairTools.ECC_INPUT,
+            CMD_KEY_SIZE, CMD_ECC_256,
             CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_ROOT_APP_CA_PATH,
             CMD_SUBJECT, CMD_ROOT_CA,
             CMD_VALIDITY, CMD_VALIDITY_365,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
         return result;
     }
@@ -679,14 +683,14 @@ public class CmdUnitTest {
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_ALG, KeyPairTools.ECC_INPUT,
+            CMD_KEY_SIZE, CMD_ECC_256,
             CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_ROOT_PROFILE_CA_PATH,
             CMD_SUBJECT, CMD_ROOT_CA,
             CMD_VALIDITY, CMD_VALIDITY_365,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
         return result;
     }
@@ -697,8 +701,8 @@ public class CmdUnitTest {
             CMD_KEY_ALIAS, CMD_OH_SUB_APP_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_ISSUER, CMD_ROOT_CA,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_ALG, KeyPairTools.ECC_INPUT,
+            CMD_KEY_SIZE, CMD_ECC_256,
             CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_SUB_APP_CA_PATH,
@@ -706,7 +710,7 @@ public class CmdUnitTest {
             CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_SUBJECT, CMD_APP_CA,
             CMD_VALIDITY, CMD_VALIDITY_365,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
         return result;
     }
@@ -717,8 +721,8 @@ public class CmdUnitTest {
             CMD_KEY_ALIAS, CMD_OH_SUB_PROFILE_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_ISSUER, CMD_ROOT_CA,
-            CMD_KEY_ALG, KeyPairTools.RSA,
-            CMD_KEY_SIZE, CMD_RSA_2048,
+            CMD_KEY_ALG, KeyPairTools.ECC_INPUT,
+            CMD_KEY_SIZE, CMD_ECC_256,
             CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
             CMD_OUT_FILE, CMD_SUB_PROFILE_CA_PATH,
@@ -726,7 +730,7 @@ public class CmdUnitTest {
             CMD_ISSUER_KEY_RIGHTS, CMD_RIGHTS_123456,
             CMD_SUBJECT, CMD_PROFILE_CA,
             CMD_VALIDITY, CMD_VALIDITY_365,
-            CMD_SIGN_ALG, CMD_SHA_256_WITH_RSA,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
         return result;
     }

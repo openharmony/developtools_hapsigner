@@ -147,6 +147,7 @@ public final class CertUtils {
         return ids.toArray(new KeyPurposeId[]{});
     }
 
+    @SuppressWarnings("unchecked")
     public static X500Name buildDN(String nameString) {
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString), ERROR.COMMAND_ERROR, "");
 
@@ -255,6 +256,7 @@ public final class CertUtils {
      * @return Certs
      * @throws CertificateException Convert failed
      */
+    @SuppressWarnings("unchecked")
     public static List<X509Certificate> generateCertificates(byte[] cert) throws CertificateException {
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
         List<X509Certificate> certificates =

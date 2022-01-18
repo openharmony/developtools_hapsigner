@@ -69,6 +69,10 @@ public class CertTest {
      * Params CN=App1 Release.
      */
     public static final String APP1_RELEASE = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    /**
+     * App signing Capabilty Bytes.
+     */
+    private static final byte[] APP_SIGNING_CAPABILITY = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
 
     static {
         Security.addProvider(new BouncyCastleProvider());
@@ -170,7 +174,8 @@ public class CertTest {
         options.put(Options.ISSUER, APP_CA);
         options.put(Options.SIGN_ALG, SHA_384_WITH_RSA);
         options.put(Options.VALIDITY, VALIDITY_365);
-        X509Certificate appCert = CertTools.generateEndCert(keyPair, csr, new LocalizationAdapter(options));
+        X509Certificate appCert = CertTools.generateEndCert(keyPair, csr, new LocalizationAdapter(options),
+                APP_SIGNING_CAPABILITY);
         try {
             appCert.verify(keyPair.getPublic());
         } catch (CertificateException | NoSuchAlgorithmException | InvalidKeyException
@@ -189,7 +194,7 @@ public class CertTest {
         try {
             options.put(Options.ISSUER, null);
             options.put(Options.SIGN_ALG, "");
-            appCert = CertTools.generateEndCert(keyPair, csr, new LocalizationAdapter(options));
+            appCert = CertTools.generateEndCert(keyPair, csr, new LocalizationAdapter(options), APP_SIGNING_CAPABILITY);
             assertNull(appCert);
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());

@@ -48,6 +48,7 @@ public class VerifyUtils {
      * @return true, if verify success
      * @throws CMSException if error occurs
      */
+    @SuppressWarnings("unchecked")
     public static boolean verifyCmsSignedData(CMSSignedData cmsSignedData) throws CMSException {
         Store<X509CertificateHolder> certs = cmsSignedData.getCertificates();
         boolean verifyResult = cmsSignedData.verifySignatures(sid -> {

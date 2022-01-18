@@ -56,7 +56,8 @@ public class SignBin {
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
         String profileFile = signParams.get(ParamConstants.PARAM_BASIC_PROFILE);
-        if (!writeBlockDataToFile(inputFile, outputFile, profileFile)) {
+        String profileSigned = signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED);
+        if (!writeBlockDataToFile(inputFile, outputFile, profileFile, profileSigned)) {
             LOGGER.error("The block head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
             return false;
@@ -83,12 +84,13 @@ public class SignBin {
     }
 
     private static boolean writeBlockDataToFile(
-            String inputFile, String outputFile, String profileFile) {
+            String inputFile, String outputFile, String profileFile, String profileSigned) {
         try {
             long binFileLen = FileUtils.getFileLen(inputFile);
             long profileDataLen = FileUtils.getFileLen(profileFile);
             if (!checkBinAndProfileLengthIsValid(binFileLen, profileDataLen)) {
-                LOGGER.error("file length is invalid, binFileLen: " + binFileLen + " profileDataLen: " + profileDataLen);
+                LOGGER.error("file length is invalid, binFileLen: " + binFileLen
+                    + " profileDataLen: " + profileDataLen);
                 throw new IOException();
             }
 
@@ -97,9 +99,9 @@ public class SignBin {
                 LOGGER.error("The profile block head offset is overflow interger range, offset: " + offset);
                 throw new IOException();
             }
-            char isSigned = SignatureBlockTypes.PROFILE_SIGNED_BLOCK;
+            char isSigned = SignatureBlockTypes.getProfileBlockTypes(profileSigned);
             byte[] proBlockByte =
-                    HwBlockHead.getBlockHead(isSigned, SignatureBlockTags.DEFAULT, (short) profileDataLen, (int) offset);
+                HwBlockHead.getBlockHead(isSigned, SignatureBlockTags.DEFAULT, (short) profileDataLen, (int) offset);
 
             offset += profileDataLen;
             if (isLongOverflowInteger(offset)) {
