@@ -170,6 +170,8 @@ public final class HapSignTool {
         String outForm = params.getString(Options.OUT_FORM);
         if (!StringUtils.isEmpty(outForm)) {
             CmdUtil.verifyType(outForm, Options.OUT_FORM_SCOPE);
+        }
+        if (StringUtils.isEmpty(outForm) || "certChain".equals(outForm)) {
             params.required(Options.SUB_CA_CERT_FILE, Options.CA_CERT_FILE);
             FileUtils.validFileType(params.getString(Options.SUB_CA_CERT_FILE), "cer");
             FileUtils.validFileType(params.getString(Options.CA_CERT_FILE), "cer");
@@ -217,11 +219,13 @@ public final class HapSignTool {
     }
 
     private static boolean runCsr(Options params, ServiceApi api) {
-        params.required(Options.KEY_ALIAS, Options.SUBJECT, Options.SIGN_ALG, Options.KEY_STORE_FILE, Options.OUT_FILE);
+        params.required(Options.KEY_ALIAS, Options.SUBJECT, Options.SIGN_ALG, Options.KEY_STORE_FILE);
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-        FileUtils.validFileType(params.getString(Options.OUT_FILE), "csr");
+        if (!StringUtils.isEmpty(params.getString(Options.OUT_FILE))) {
+            FileUtils.validFileType(params.getString(Options.OUT_FILE), "csr");
+        }
 
         return api.generateCsr(params);
     }
