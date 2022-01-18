@@ -145,6 +145,19 @@ public final class CmdUtil {
     }
 
     /**
+     * Sign alg must in the scope.
+     *
+     * @param signAlg sign alg
+     */
+    public static void judgeEndSignAlgType(String signAlg) {
+        List<String> arrayList = Arrays.asList("SHA256withECDSA", "SHA384withECDSA");
+        if (!arrayList.contains(signAlg)) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR,
+                    "SignAlg params is incorrect, signature algorithms include SHA256withECDSA,SHA384withECDSA");
+        }
+    }
+
+    /**
      * verifyType.
      *
      * @param inputType Types with ','

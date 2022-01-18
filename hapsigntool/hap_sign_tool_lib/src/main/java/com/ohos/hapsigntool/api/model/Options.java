@@ -92,6 +92,10 @@ public class Options extends HashMap<String, Object> {
      */
     public static final String IN_FILE = "inFile";
     /**
+     * In file parameter form.
+     */
+    public static final String IN_FORM = "inForm";
+    /**
      * Issuer parameter name.
      */
     public static final String ISSUER = "issuer";
@@ -162,6 +166,10 @@ public class Options extends HashMap<String, Object> {
      * Profile file parameter name.
      */
     public static final String PROFILE_FILE = "profileFile";
+    /**
+     * Profile file is signed or not.
+     */
+    public static final String PROFILE_SIGNED = "profileSigned";
     /**
      * Sign alg parameter name.
      */

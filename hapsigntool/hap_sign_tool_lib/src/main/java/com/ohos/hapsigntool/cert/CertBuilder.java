@@ -21,6 +21,7 @@ import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.CertUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
@@ -176,6 +177,20 @@ public class CertBuilder {
             ExtendedKeyUsage extendedKeyUsage = new ExtendedKeyUsage(extKeyUsages);
             x509v3CertificateBuilder.addExtension(Extension.extendedKeyUsage, extKeyUsageCritical, extendedKeyUsage);
         }
+        return this;
+    }
+
+    /**
+     * Add signingCapabilty for certificate builder.
+     *
+     * @param signingCapabiltyBytes signingCapabiltyBytes
+     * @return CertBuilder
+     * @throws CertIOException CertIOException
+     */
+    public CertBuilder withSigningCapabilty(byte[] signingCapabiltyBytes) throws CertIOException {
+        ASN1ObjectIdentifier signingCapabiltyIdentifier = (new ASN1ObjectIdentifier("1.3.6.1.4.1.2011.2.376.1.3"))
+                .intern();
+        x509v3CertificateBuilder.addExtension(signingCapabiltyIdentifier, false, signingCapabiltyBytes);
         return this;
     }
 
