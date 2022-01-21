@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################
-
+import json
 import os.path
 import random
 import sys
@@ -280,6 +280,9 @@ def run_target(case, cmd):
 
     command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
 
+
+
+
     out = command.stdout.readlines()
     with open("log.txt", mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
@@ -292,7 +295,6 @@ def run_target(case, cmd):
     with open("error.txt", mode='a+', encoding='utf-8') as f:
         if len(error) > 0:
             f.writelines(cmd + "\r\n")
-
         for line in error:
             success = False
             f.writelines(str(line.strip()) + "\r\n")
@@ -326,11 +328,34 @@ def run_test_case(case, jar_file):
         print("Not found test case: {}".format(case))
         exit(0)
 
+
+
     for k in test_case:
         cmd = 'java -jar {} {}'.format(jar_file, k)
         print("== Run command: {}".format(cmd))
         result = run_target(case, cmd)
-        print("== Done command: {}".format(result))
+
+        with open('test_result.log', 'r', encoding='utf-8') as f:
+            content = f.read()
+            test_result_dict = ast.literal_eval(content)
+
+
+        if case == 'case-assert-true':
+            if result:
+                print("== Done command: Expected True and tested True")
+            else:
+                test_result_dict['commands_expected_True_but_tested_False'].append(cmd)
+                print("== Done command: Expected True but tested False")
+        else:
+            if result:
+                test_result_dict['commands_expected_False_but_tested_True'].append(cmd)
+                print("== Done command: Expected False but tested True")
+            else:
+                print("== Done command: Expected False and tested False")
+
+
+        with open("test_result.log", mode='w', encoding='utf-8') as tr:
+            tr.write(json.dumps(test_result_dict, indent=4))
 
 
 def random_str():
@@ -392,6 +417,8 @@ def prepare_env():
             target_file = os.path.join(test_dir, key_file)
             if os.path.exists(target_file):
                 os.remove(target_file)
+            if os.path.exists(key_file):
+                os.remove(key_file)
 
 
 def process_cmd(args):
@@ -444,6 +471,12 @@ def process_cmd(args):
                 run_simple_case(s_scope, jar_file)
         elif run_scope == 'runtest':
             prepare_env()
+            with open("test_result.log", mode='w', encoding='utf-8') as file_result:
+                result_dict = {
+                    'commands_expected_True_but_tested_False': [],
+                    'commands_expected_False_but_tested_True': []
+                }
+                file_result.write(str(result_dict))
             for t_scope, _ in test_scope.items():
                 run_test_case(t_scope, jar_file)
         else:

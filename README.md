@@ -1,12 +1,25 @@
 # developtools_hapsigner
 
 * Description
+* catalogue
 * Installation
 * Instructions
 * Auto generate script
 
 #### Description
 In order to ensure the integrity and reliability of the OpenHarmony application, the application needs to be signed when the application is built, so that the application can be installed, run, and debugged on a real device. This warehouse provides a jar toolkit with functions such as certificate generation and hap package signature.
+
+#### catalogue
+
+    developtools_hapsigner
+
+    ├── autosign        # One-click signature script
+    ├── docs            # Documentation
+    ├── hapsigntool     # Main code
+          ├──hap_sign_tool # The main program entrance completes the basic verification of input parameters
+          ├──hap_sign_tool_lib  # Signature tool library, parses the command word and parameter list, and realizes the logical function of each module
+    ├── tools   # Automated test script
+
 #### Installation
 1. Clone this git
 2. Configure the operating environment ：Gradle 7.1, JDK 8
