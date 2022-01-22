@@ -112,7 +112,7 @@ def load_engine(engine_config):
 def run_target(cmd):
     command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
     out = command.stdout.readlines()
-    with open("log.txt", mode='a+') as f:
+    with open("log.txt", mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
             f.writelines(cmd + "\r\n")
         for line in out:
@@ -120,7 +120,7 @@ def run_target(cmd):
 
     success = True
     error = command.stderr.readlines()
-    with open("error.txt", mode='a+') as f:
+    with open("error.txt", mode='a+', encoding='utf-8') as f:
         if len(error) > 0:
             f.writelines(cmd + "\r\n")
 
@@ -180,7 +180,7 @@ def convert_to_map(line, temp_map):
 def load_config():
     config_file = 'autosign.config'
     temp_map = {}
-    with open(config_file, 'r') as f:
+    with open(config_file, 'r', encoding='utf-8') as f:
         for line in f.readlines():
             if not re.match(r'\s*//[\s\S]*', line):
                 convert_to_map(line, temp_map)
