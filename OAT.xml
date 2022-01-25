@@ -23,57 +23,7 @@
                 <project name="defaultProject" path="defaultProject/"/>
             </task>
         </tasklist>
-        <policylist>
-            <policy name="3rdDefaultPolicy" desc="">
-                <policyitem type="compatibility" name="Apache" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="compatibility" name="BSD" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="compatibility" name="MIT" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="compatibility" name="FSFULLR" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="compatibility" name="MulanPSL" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="compatibility" name="!APSL-1.0" path=".*" rule="must" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="filename" name="LICENSE" path="projectroot" rule="may" group="defaultGroup" filefilter="licenseFileNamePolicyFilter" desc=""/>
-                <policyitem type="filename" name="README.OpenSource" path="projectroot" rule="must" group="defaultGroup" filefilter="readmeOpenSourcefileNamePolicyFilter" desc=""/>
-                <policyitem type="filetype" name="!binary" path=".*" rule="must" group="defaultGroup" filefilter="binaryFileTypePolicyFilter" desc=""/>
-                <policyitem type="filetype" name="!archive" path=".*" rule="must" group="defaultGroup" filefilter="binaryFileTypePolicyFilter" desc=""/>
-
-            </policy>
-            <policy name="defaultPolicy" desc="">
-                <policyitem type="license" name="Apache-2.0" path="!.*LICENSE" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="license" name="ApacheStyleLicense" path=".*LICENSE" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="license" name="Apache-2.0" path=".*LICENSE" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
-                <policyitem type="copyright" name="Huawei Device Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
-                <policyitem type="filename" name="LICENSE" path="projectroot" rule="may" group="defaultGroup" filefilter="licenseFileNamePolicyFilter" desc=""/>
-                <policyitem type="filename" name="README.md" path="projectroot" rule="may" group="defaultGroup" filefilter="readmeFileNamePolicyFilter" desc=""/>
-                <policyitem type="filename" name="README_zh.md" path="projectroot" rule="may" group="defaultGroup" filefilter="readmeFileNamePolicyFilter" desc=""/>
-                <policyitem type="filetype" name="!binary" path=".*" rule="must" group="defaultGroup" filefilter="binaryFileTypePolicyFilter" desc=""/>
-                <policyitem type="filetype" name="!archive" path=".*" rule="must" group="defaultGroup" filefilter="binaryFileTypePolicyFilter" desc=""/>
-            </policy>
-
-
-        </policylist>
         <filefilterlist>
-            <filefilter name="defaultFilter" desc="Files that do not need to be scanned">
-                <filteritem type="filename" name="OAT*.xml|zunit|signature|Makefile|MANIFEST.MF|Kconfig|*.crt|*.markdown|*.git"/>
-                <filteritem type="filename" name=".mk|.ld|.gitkeep|.gitignore|.gitattributes|.config|*.txt|*.te|*.json|*.svg|*.swp"/>
-                <filteritem type="filename" name="*.sandbox|*.rslp|*.rc|*.pydeps|*.properties|*.pluginmeta|*.php|*.sgml|.adoc|NEWS"/>
-                <filteritem type="filename" name="*.patch|*.p7b|*.md|*.log|*.ini|*.html|*.htm|*.hml|*.hcs|__init__.py|MANIFEST.in"/>
-                <filteritem type="filename" name="*.hcb|*.gradle|*.gen|*.dic|*.d|*.css|*.cmake|*.cer|*.build|*.aff|*.err|*.pro|*.clang-format|*.ld"/>
-                <filteritem type="filename" name="*.babelrc|*.editorconfig|*.eslintignore|*.prettierrc|*.eslintrc.js|*.template|*.tmpl|*.vcproj|*.def|*.sln"/>
-                <filteritem type="filename" name="*_contexts|*.vcxproj|*.vcxproj.filters|*.vcxproj.user|*visual_studio.sln|*.bundle|CERTIFICATE|SIGNATURE"/>
-                <filteritem type="filename" name="*.lds|SConscript|*.pod|*.arb|*.repo|*.map|*.yml|*.config|*.cfg|*.conf|*.in"/>
-                <!--filteritem type="filename" name="*.png|*.jpg|*.jpeg|*.tif|*.tiff|*.gif|*.bmp|*.heic|*.ico|*.pic|*.psd|*.pcx"/>
-                <filteritem type="filename" name="*.wav|*.mp3|*.mp4|*.wma|*.mov|*.wmv|*.rmvb|*.3gp|*.avi|*.rm|*.mid|*.flv|*.mpg|*.mkv|*.vob"/-->
-                <filteritem type="filepath" name="projectroot/target/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/output/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/out/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/log/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/logs/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/.idea/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/.git/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/.gitee/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/.svn/.*" desc="out put files"/>
-                <filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/>
-            </filefilter>
             <filefilter name="defaultPolicyFilter" desc="Files that do not need to be applied specified policy, will be merged with the filter items which has the same filefilter name">
                 <filteritem type="filename" name="README.OpenSource"/>
                 <filteritem type="filename" name="README"/>
