@@ -45,11 +45,13 @@ Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
 ****
 #### 说明
 ##### 使用说明
+
 以下说明中使用jar包为编译构建中生成的二进制文件
 
 1.命令行签名
    命令行签名分为profile文件签名和hap包签名。
    （1）签名profile文件的命令实例如下：
+
    
 ```shell
 java -jar hap_sign_tool-1.0-SNAPSHOT.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "result\profile1.pem" -inFile "app1-profile-release.json" -keystoreFile "result\ohtest.jks" -outFile "result\app1-profile.p7b" -keyPwd "123456" -keystorePwd "123456"
@@ -68,7 +70,10 @@ java -jar hap_sign_tool-1.0-SNAPSHOT.jar  sign-profile -keyAlias "oh-profile1-ke
          ├── -outFile           #输出签名后的Provision Profile文件，p7b格式，必填项
 
 
+
 （2）签名Hap包的命令实例如下：
+
+
 ```shell
 java -jar hap_sign_tool-1.0-SNAPSHOT.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456"
 ```
@@ -88,7 +93,9 @@ java -jar hap_sign_tool-1.0-SNAPSHOT.jar sign-app -keyAlias "oh-app1-key-v1" -si
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的包文件，必填项
          
+
 2.一键签名
+
 
 为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、根CA证书、二级CA证书、三级证书、签名profile包、签名hap包的命令。
 脚本位于目录autosign下：
