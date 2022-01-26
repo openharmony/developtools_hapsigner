@@ -39,7 +39,7 @@ Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
             
         gradle build 或者 gradle jar
 
- 3. 编译后得到二进制文件，目录为: ./hap_sign_tool/build/libs/hap_sign_tool-xxxx.jar
+ 3. 编译后得到二进制文件，目录为: ./hap_sign_tool/build/libs/hap-sign-tool.jar
 
 ****
 #### 说明
@@ -53,7 +53,7 @@ Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
 
    
 ```shell
-java -jar hap_sign_tool-1.0-SNAPSHOT.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "result\profile1.pem" -inFile "app1-profile-release.json" -keystoreFile "result\ohtest.jks" -outFile "result\app1-profile.p7b" -keyPwd "123456" -keystorePwd "123456"
+java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "result\profile1.pem" -inFile "app1-profile-release.json" -keystoreFile "result\ohtest.jks" -outFile "result\app1-profile.p7b" -keyPwd "123456" -keystorePwd "123456"
 ```
 该命令的参数说明如下：
 
@@ -74,7 +74,7 @@ java -jar hap_sign_tool-1.0-SNAPSHOT.jar  sign-profile -keyAlias "oh-profile1-ke
 
 
 ```shell
-java -jar hap_sign_tool-1.0-SNAPSHOT.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456"
+java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456"
 ```
 该命令的参数说明如下:
 
@@ -106,7 +106,7 @@ java -jar hap_sign_tool-1.0-SNAPSHOT.jar sign-app -keyAlias "oh-app1-key-v1" -si
 
 使用指导：
 1. 准备依赖环境python3.5以上
-2. 准备签名工具jar包：hap_sign_tool.jar（参照上文编译生成的产物）
+2. 准备签名工具jar包：hap-sign-tool.jar（参照上文编译生成的产物）
 3. 准备待签名的应用hap包和Provision profile模板文件
 4. 使用文本编辑器编辑auto_sign.conf，修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
 5. Linux运行start_create.sh、Windows运行start_create.bat生成签名所需文件
