@@ -206,17 +206,12 @@ public class CertTest {
     public void testCsrTemplate() {
         X500Name name = new X500Name(APP1_RELEASE);
         byte[] csr = generateCsrParameters(name);
+        assertNotNull(csr);
+        assertTrue(csr.length > 0);
         String csrTemplate = CertUtils.toCsrTemplate(csr);
         assertNotNull(csrTemplate);
         assertTrue(csrTemplate.startsWith("-----BEGIN NEW CERTIFICATE REQUEST-----\n"));
         assertTrue(csrTemplate.endsWith("\n-----END NEW CERTIFICATE REQUEST-----\n"));
-
-        try {
-            csrTemplate = CertUtils.toCsrTemplate(null);
-            assertNull(csrTemplate);
-        } catch (Exception exception) {
-            logger.info(exception, () -> exception.getMessage());
-        }
     }
 
     private byte[] generateCsrParameters(X500Name name) {

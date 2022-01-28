@@ -120,6 +120,9 @@ public final class ProfileSignTool {
             byte[] digest = getContentDigest(content, digestAlgId);
             ASN1Set signedAttr = generatePKCS9Attributes(digest);
             byte[] signature = signer.getSignature(signedAttr.getEncoded("DER"), sigAlg, null);
+            // To validate cert(public key) and private key
+            VerifyHelper.verifySignature(signer.getCertificates().get(0), signature,
+                    signedAttr.getEncoded("DER"), sigAlg);
             SignerIdentifier signerIdentifier = generateSignerIdentifier(signer.getCertificates().get(0));
             SignerInfo signerInfo = new SignerInfo(signerIdentifier, digestAlgId, signedAttr, sigAlgId,
                     new DEROctetString(signature), null);

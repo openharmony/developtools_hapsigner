@@ -17,23 +17,22 @@ package com.ohos.hapsigntool.profile;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 import com.ohos.hapsigntool.profile.model.Provision;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformationVerifier;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.util.Store;
 
 import java.nio.charset.StandardCharsets;
-import java.security.cert.CertificateException;
-import java.util.Collection;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.X509Certificate;
 
 /**
  * Signed provision profile verifier.
@@ -52,6 +51,26 @@ public class VerifyHelper implements IProvisionVerifier {
      */
     public VerifyHelper() {
         // Empty constructor
+    }
+
+    /**
+     * Checked signed data with public key.
+     *
+     * @param cert         public key
+     * @param signedData   signed data with private key
+     * @param unsignedData unsigned data
+     * @param algorithm    algorithm
+     */
+    public static void verifySignature(X509Certificate cert, byte[] signedData, byte[] unsignedData, String algorithm) {
+        try {
+            Signature signature = Signature.getInstance(algorithm);
+            signature.initVerify(cert);
+            signature.update(unsignedData);
+            ValidateUtils.throwIfNotMatches(signature.verify(signedData), ERROR.SIGN_ERROR, "Signature not matched!");
+        } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException exception) {
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.SIGN_ERROR, "Failed to verify signature: " + exception.getMessage());
+        }
     }
 
     /**
@@ -79,28 +98,13 @@ public class VerifyHelper implements IProvisionVerifier {
         }
     }
 
-    @SuppressWarnings("unchecked")
     CMSSignedData verifyPkcs(byte[] p7b) {
         CMSSignedData cmsSignedData = null;
         try {
             cmsSignedData = new CMSSignedData(p7b);
-            Store<X509CertificateHolder> store = cmsSignedData.getCertificates();
-            cmsSignedData.verifySignatures((SignerId sid) -> {
-                Collection<X509CertificateHolder> collection =
-                        (Collection<X509CertificateHolder>) store.getMatches(sid);
-                ValidateUtils.throwIfNotMatches(collection != null && collection.size() == 1, ERROR.VERIFY_ERROR,
-                        "No matched cert or more than one matched certs: " + collection);
-                X509CertificateHolder cert = collection.iterator().next();
-                SignerInformationVerifier signInfoVerifier = null;
-                try {
-                    signInfoVerifier = (new JcaSimpleSignerInfoVerifierBuilder()).setProvider("BC").build(cert);
-                } catch (CertificateException exception) {
-                    LOGGER.debug(exception.getMessage(), exception);
-                    CustomException.throwException(ERROR.VERIFY_ERROR, "Failed to verify BC signatures: "
-                            + exception.getMessage());
-                }
-                return signInfoVerifier;
-            });
+            boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
+            ValidateUtils.throwIfNotMatches(verifyResult == true, ERROR.VERIFY_ERROR,
+                    "Failed to verify BC signatures");
             return cmsSignedData;
         } catch (CMSException exception) {
             LOGGER.debug(exception.getMessage(), exception);
