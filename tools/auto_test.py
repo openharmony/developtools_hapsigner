@@ -237,13 +237,13 @@ simple_scope = {
         '-subCaCertFile "./test1/profile-sign-srv-ca1.cer" -outForm certChain '
         '-rootCaCertFile "./test1/root-ca1.cer" -keyPwd 123456',
         # Profile sign cert via ohtest.p12
-        'generate-profile-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'generate-profile-cert -keyAlias "oh-profile2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca2-key-v1" '
         '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile2 Release" '
         '-validity 365 -signAlg SHA256withECDSA  -keystoreFile  "./test2/ohtest.p12" '
         '-keystorePwd 123456 -outFile "./test2/profile2.cer" -keyPwd 123456 -outForm cert ',
         # Profile sign cert chain via ohtest.p12
-        'generate-profile-cert -keyAlias "oh-app2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
+        'generate-profile-cert -keyAlias "oh-profile2-key-v1" -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,'
         'CN=Profile Signature Service CA" -issuerKeyAlias "oh-profile-sign-srv-ca2-key-v1" '
         '-subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile2 Release" -validity 365 '
         '-signAlg SHA256withECDSA  -keystoreFile  "./test2/ohtest.p12" '
@@ -251,7 +251,7 @@ simple_scope = {
         '-outForm certChain -rootCaCertFile "./test2/root-ca2.cer" -keyPwd 123456'
     ],
     'sign-profile': [
-        'sign-profile -mode localSign -keyAlias "oh-app1-key-v1" -profileCertFile "./test1/profile-release1.pem" '
+        'sign-profile -mode localSign -keyAlias "oh-profile1-key-v1" -profileCertFile "./test1/profile-release1.pem" '
         '-inFile  "profile.json" -signAlg SHA256withECDSA  -keystoreFile  "./test1/ohtest.jks" -keystorePwd 123456 '
         '-outFile "./test1/app1-profile1.p7b"  -keyPwd 123456'
     ],
