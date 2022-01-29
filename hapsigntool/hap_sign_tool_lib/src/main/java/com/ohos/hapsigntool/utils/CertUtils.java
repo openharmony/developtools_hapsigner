@@ -264,7 +264,12 @@ public final class CertUtils {
         return certificates;
     }
 
-    private static void sortCertificateChain(List<X509Certificate> certificates) {
+    /**
+     * Sort cert chain to sign cert, sub cert, root cert
+     *
+     * @param certificates cert chain
+     */
+    public static void sortCertificateChain(List<X509Certificate> certificates) {
         if (certificates != null && certificates.size() > 1) {
             int size = certificates.size();
             X500Principal lastSubjectX500Principal = (certificates.get(size - 1)).getSubjectX500Principal();
