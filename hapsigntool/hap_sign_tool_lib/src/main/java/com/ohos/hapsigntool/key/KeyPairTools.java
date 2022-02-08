@@ -27,8 +27,11 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PublicKey;
+import java.security.PrivateKey;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
@@ -123,16 +126,36 @@ public final class KeyPairTools {
      *
      * @param algorithm input parameter and algorithm can not be null.
      * @param keyString input parameter and keyString can not be null.
-     * @return return x509EncodedKeySpec.
+     * @return return PublicKey.
      */
-    public static Key string2Key(String algorithm, String keyString) {
-        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(Base64.decode(keyString));
+    public static PublicKey stringToPublicKey(String algorithm, String keyString) {
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(keyString));
+        PublicKey result = null;
         try {
-            return KeyFactory.getInstance(algorithm).generatePublic(x509EncodedKeySpec);
+            result = KeyFactory.getInstance(algorithm).generatePublic(spec);
         } catch (InvalidKeySpecException | NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
-            return null;
         }
+        return result;
+    }
+
+    /**
+     * Convert string back to key
+     *
+     * @param algorithm input parameter and algorithm can not be null.
+     * @param keyString input parameter and keyString can not be null.
+     * @return return PrivateKey.
+     */
+    public static PrivateKey stringToPrivateKey(String algorithm, String keyString) {
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(Base64.decode(keyString));
+        PrivateKey result = null;
+        try {
+            result = KeyFactory.getInstance(algorithm).generatePrivate(spec);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException exception) {
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+        }
+        return result;
     }
 }

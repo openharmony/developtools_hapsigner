@@ -29,6 +29,7 @@ import com.ohos.hapsigntool.profile.VerifyHelper;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.ProfileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -225,7 +226,7 @@ public class SignToolServiceImpl implements ServiceApi {
         boolean result;
         try {
             LocalizationAdapter adapter = new LocalizationAdapter(options);
-            byte[] provisionContent = ProfileSignTool.getProvisionContent(new File(adapter.getInFile()));
+            byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             result = true;

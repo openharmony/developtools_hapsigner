@@ -15,15 +15,11 @@
 
 package com.ohos.hapsigntool.utils;
 
-import com.google.gson.Gson;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.util.io.pem.PemObject;
@@ -45,9 +41,7 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Cert Usage Util.
@@ -147,31 +141,36 @@ public final class CertUtils {
         return ids.toArray(new KeyPurposeId[]{});
     }
 
-    @SuppressWarnings("unchecked")
     public static X500Name buildDN(String nameString) {
-        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString), ERROR.COMMAND_ERROR, "");
-
-        String gsonStr = nameString.replace(",", "\",\"");
-        gsonStr = "{\"" + gsonStr.replace("=", "\":\"") + "\"}";
-
-        X500NameBuilder builder = new X500NameBuilder();
-        HashMap<String, String> map = FileUtils.GSON.fromJson(gsonStr, HashMap.class);
-
-        BCStyle x500NameStyle = (BCStyle) BCStyle.INSTANCE;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (StringUtils.isEmpty(entry.getKey()) || StringUtils.isEmpty(entry.getValue())) {
-                continue;
-            }
-            try {
-                ASN1ObjectIdentifier oid = x500NameStyle.attrNameToOID(entry.getKey().trim());
-                builder.addRDN(oid, entry.getValue());
-            } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
-                LOGGER.debug(exception.getMessage(), exception);
-                CustomException.throwException(ERROR.COMMAND_ERROR,
-                        String.format("Error params near: %s. Reason: %s", nameString, exception.getMessage()));
-            }
+        checkDN(nameString);
+        X500Name dn = null;
+        try {
+            dn = new X500Name(nameString);
+        } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.COMMAND_ERROR,
+                    String.format("Error params near: %s. Reason: %s", nameString, exception.getMessage()));
         }
-        return builder.build();
+        return dn;
+    }
+
+    /**
+     * To verify the format of subject or issuer.
+     * Refer to X500NameStyle.fromString().
+     *
+     * @param nameString subject or issuer
+     */
+    private static void checkDN(String nameString) {
+        String errorMsg = String.format("Format error, must be \"X=xx,XX=xxx,...\", please check: \"%s\"", nameString);
+        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString), ERROR.COMMAND_ERROR, errorMsg);
+        String[] pairs = nameString.split(",");
+        for (String pair : pairs) {
+            ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString.trim()), ERROR.COMMAND_ERROR, errorMsg);
+            String[] kvPair = pair.split("=");
+            ValidateUtils.throwIfNotMatches(kvPair.length == SECOND_INDEX, ERROR.COMMAND_ERROR, errorMsg);
+            // Key will be checked in X500NameStyle.attrNameToOID
+            ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(kvPair[1].trim()), ERROR.COMMAND_ERROR, errorMsg);
+        }
     }
 
     /**
@@ -265,7 +264,12 @@ public final class CertUtils {
         return certificates;
     }
 
-    private static void sortCertificateChain(List<X509Certificate> certificates) {
+    /**
+     * Sort cert chain to sign cert, sub cert, root cert
+     *
+     * @param certificates cert chain
+     */
+    public static void sortCertificateChain(List<X509Certificate> certificates) {
         if (certificates != null && certificates.size() > 1) {
             int size = certificates.size();
             X500Principal lastSubjectX500Principal = (certificates.get(size - 1)).getSubjectX500Principal();

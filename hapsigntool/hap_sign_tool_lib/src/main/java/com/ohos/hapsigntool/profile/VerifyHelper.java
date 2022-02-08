@@ -17,23 +17,37 @@ package com.ohos.hapsigntool.profile;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 import com.ohos.hapsigntool.profile.model.Provision;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
+import com.ohos.hapsigntool.utils.CertChainUtils;
+import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformationVerifier;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.Store;
 
+import javax.security.auth.x500.X500Principal;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Signed provision profile verifier.
@@ -55,6 +69,55 @@ public class VerifyHelper implements IProvisionVerifier {
     }
 
     /**
+     * Checked signed data with public key.
+     *
+     * @param cert         public key
+     * @param signedData   signed data with private key
+     * @param unsignedData unsigned data
+     * @param algorithm    algorithm
+     */
+    public static void verifySignature(X509Certificate cert, byte[] signedData, byte[] unsignedData, String algorithm) {
+        try {
+            Signature signature = Signature.getInstance(algorithm);
+            signature.initVerify(cert);
+            signature.update(unsignedData);
+            ValidateUtils.throwIfNotMatches(signature.verify(signedData), ERROR.SIGN_ERROR, "Signature not matched!");
+        } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException exception) {
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.SIGN_ERROR, "Failed to verify signature: " + exception.getMessage());
+        }
+    }
+
+    /**
+     * Convert store collection to list.
+     *
+     * @param certificates certificates from cmsSignedData
+     * @return List<X509Certificate>
+     */
+    public static List<X509Certificate> certStoreToCertList(Store<X509CertificateHolder> certificates) {
+        String errorMsg = "Verify failed, not found cert chain";
+        JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
+        ValidateUtils.throwIfMatches(certificates == null, ERROR.VERIFY_ERROR, errorMsg);
+        Collection<X509CertificateHolder> matches = certificates.getMatches(null);
+        ValidateUtils.throwIfMatches(matches == null || !matches.iterator().hasNext(),
+                ERROR.VERIFY_ERROR, errorMsg);
+
+        List<X509Certificate> certificateList = new ArrayList<>();
+        Iterator<X509CertificateHolder> iterator = matches.iterator();
+        try {
+            while (iterator.hasNext()) {
+                X509CertificateHolder next = iterator.next();
+                certificateList.add(converter.getCertificate(next));
+            }
+        } catch (CertificateException exception) {
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.VERIFY_ERROR, errorMsg);
+        }
+        ValidateUtils.throwIfMatches(certificateList.size() == 0, ERROR.VERIFY_ERROR, errorMsg);
+        return certificateList;
+    }
+
+    /**
      * verify p7b content.
      *
      * @param p7b signed p7b content
@@ -66,41 +129,39 @@ public class VerifyHelper implements IProvisionVerifier {
 
         try {
             CMSSignedData cmsSignedData = this.verifyPkcs(p7b);
+            List<X509Certificate> certificates = certStoreToCertList(cmsSignedData.getCertificates());
+            CertUtils.sortCertificateChain(certificates);
+
+            SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
+            Collection<SignerInformation> signers = signerInfos.getSigners();
+
+            for (SignerInformation signer : signers) {
+                SignerId sid = signer.getSID();
+                X500Principal principal = new X500Principal(sid.getIssuer().getEncoded());
+                CertChainUtils.verifyCertChain(certificates, principal, sid.getSerialNumber(),
+                        certificates.get(certificates.size() - 1));
+            }
+
             result.setContent(FileUtils.GSON.fromJson(new String((byte[]) (cmsSignedData
                     .getSignedContent().getContent()), StandardCharsets.UTF_8), Provision.class));
             result.setMessage("OK");
             result.setVerifiedPassed(true);
             return result;
-        } catch (CustomException exception) {
+        } catch (CustomException | IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            result.setMessage("Failed to verify provision" + exception.getMessage());
+            result.setMessage(exception.getMessage());
             result.setVerifiedPassed(false);
             return result;
         }
     }
 
-    @SuppressWarnings("unchecked")
     CMSSignedData verifyPkcs(byte[] p7b) {
         CMSSignedData cmsSignedData = null;
         try {
             cmsSignedData = new CMSSignedData(p7b);
-            Store<X509CertificateHolder> store = cmsSignedData.getCertificates();
-            cmsSignedData.verifySignatures((SignerId sid) -> {
-                Collection<X509CertificateHolder> collection =
-                        (Collection<X509CertificateHolder>) store.getMatches(sid);
-                ValidateUtils.throwIfNotMatches(collection != null && collection.size() == 1, ERROR.VERIFY_ERROR,
-                        "No matched cert or more than one matched certs: " + collection);
-                X509CertificateHolder cert = collection.iterator().next();
-                SignerInformationVerifier signInfoVerifier = null;
-                try {
-                    signInfoVerifier = (new JcaSimpleSignerInfoVerifierBuilder()).setProvider("BC").build(cert);
-                } catch (CertificateException exception) {
-                    LOGGER.debug(exception.getMessage(), exception);
-                    CustomException.throwException(ERROR.VERIFY_ERROR, "Failed to verify BC signatures: "
-                            + exception.getMessage());
-                }
-                return signInfoVerifier;
-            });
+            boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
+            ValidateUtils.throwIfNotMatches(verifyResult, ERROR.VERIFY_ERROR,
+                    "Failed to verify BC signatures");
             return cmsSignedData;
         } catch (CMSException exception) {
             LOGGER.debug(exception.getMessage(), exception);
