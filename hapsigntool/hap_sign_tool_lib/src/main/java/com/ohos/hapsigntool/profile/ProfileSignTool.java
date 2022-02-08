@@ -18,10 +18,10 @@ package com.ohos.hapsigntool.profile;
 import com.ohos.hapsigntool.api.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.profile.model.Provision;
+import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.signer.ISigner;
 import com.ohos.hapsigntool.signer.SignerFactory;
-import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -48,9 +48,7 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509CRL;
@@ -87,20 +85,12 @@ public final class ProfileSignTool {
      */
     public static byte[] generateP7b(LocalizationAdapter adapter, byte[] content) {
         ISigner signer = new SignerFactory().getSigner(adapter);
-        return signProfile(content, signer, adapter.getSignAlg());
-    }
-
-    /**
-     * Get provision content.
-     *
-     * @param input input provision profile
-     * @return file data
-     */
-    public static byte[] getProvisionContent(File input) throws IOException {
-        byte[] bytes = FileUtils.readFile(input);
-        Provision provision = FileUtils.GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Provision.class);
-        Provision.enforceValid(provision);
-        return FileUtils.GSON.toJson(provision).getBytes(StandardCharsets.UTF_8);
+        byte[] p7b = signProfile(content, signer, adapter.getSignAlg());
+        VerifyHelper verifyHelper = new VerifyHelper();
+        VerificationResult verificationResult = verifyHelper.verify(p7b);
+        ValidateUtils.throwIfNotMatches(verificationResult.isVerifiedPassed(), ERROR.SIGN_ERROR,
+                verificationResult.getMessage());
+        return p7b;
     }
 
     /**
@@ -120,6 +110,9 @@ public final class ProfileSignTool {
             byte[] digest = getContentDigest(content, digestAlgId);
             ASN1Set signedAttr = generatePKCS9Attributes(digest);
             byte[] signature = signer.getSignature(signedAttr.getEncoded("DER"), sigAlg, null);
+            // To validate cert(public key) and private key
+            VerifyHelper.verifySignature(signer.getCertificates().get(0), signature,
+                    signedAttr.getEncoded("DER"), sigAlg);
             SignerIdentifier signerIdentifier = generateSignerIdentifier(signer.getCertificates().get(0));
             SignerInfo signerInfo = new SignerInfo(signerIdentifier, digestAlgId, signedAttr, sigAlgId,
                     new DEROctetString(signature), null);

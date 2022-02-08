@@ -18,11 +18,13 @@ package com.ohos.hapsigntool;
 import com.ohos.hapsigntool.api.LocalizationAdapter;
 import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.key.KeyPairTools;
-import com.ohos.hapsigntool.keystore.KeyStoreHelper;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.profile.VerifyHelper;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
+import com.ohos.hapsigntool.signer.ISigner;
+import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.ProfileUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
@@ -31,14 +33,16 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.Security;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * ProfileTest.
@@ -47,9 +51,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ProfileTest {
     /**
-     * Add log info.
+     * Params SHA256withRSA.
      */
-    private final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+    public static final String SHA_256_WITH_ECC = "SHA256withECDSA";
     /**
      * Output the signed ProvisionProfile file in p7b format.
      */
@@ -57,11 +61,11 @@ public class ProfileTest {
     /**
      * Keystore file in JKS or P12 format.
      */
-    private static final String KEY_STORE_PATH = "test_keypair.jks";
+    private static final String KEY_STORE_PATH = "test-keystore.jks";
     /**
      * Key alias.
      */
-    private static final String KEY_ALIAS = "oh-app1-key-v1";
+    private static final String KEY_ALIAS = "oh-profile1-key-v1";
     /**
      * Key pwd and keystore pwd.
      */
@@ -73,7 +77,7 @@ public class ProfileTest {
     /**
      * Profile signing certificate.
      */
-    private static final String CERT_PATH = "test_profile_cert.cer";
+    private static final String CERT_PATH = "test-profile-cert.cer";
     /**
      * Mode is localSign.
      */
@@ -82,21 +86,30 @@ public class ProfileTest {
      * Mode is remoteSign.
      */
     private static final String REMOTE_SIGN = "remoteSign";
+
     /**
-     * Params SHA256withRSA.
+     * Test error profile content.
      */
-    public static final String SHA_256_WITH_RSA = "SHA256withRSA";
+    private static final String ERROR_PROFILE_CONTENT = "mnbvcxzlkjhgfdsapoiuytrewq";
+
+    private static final String PRIVATE_KEY_STR = "ME4CAQAwEAYHKoZIzj0CAQYFK4EEACIENzA1AgEBBDDave+tlNDdIlc0HsRKe" +
+            "Wbhcj3BVUmKRoHtz51waRY4K5+SrHpD2GVZHD+2EeZ135A=";
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
+
+    /**
+     * Add log info.
+     */
+    private final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
 
     @Test
     public void testProfile() throws IOException {
         try {
             Options options = new Options();
             LocalizationAdapter adapter = new LocalizationAdapter(options);
-            byte[] provisionContent = ProfileSignTool.getProvisionContent(new File(adapter.getInFile()));
+            byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             assertFalse(FileUtils.isFileExist(OUT_PATH));
@@ -106,24 +119,22 @@ public class ProfileTest {
         loadFile(IN_FILE_PATH);
         loadFile(CERT_PATH);
         deleteFile(OUT_PATH);
-        deleteFile(KEY_STORE_PATH);
-        KeyPair keyPair = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.RSA_2048);
-        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(KEY_STORE_PATH, PWD.toCharArray());
-        keyStoreHelper.store(KEY_ALIAS, PWD.toCharArray(), keyPair, null);
         Options options = new Options();
         putParams(options);
         LocalizationAdapter adapter = new LocalizationAdapter(options);
-        byte[] provisionContent = ProfileSignTool.getProvisionContent(new File(adapter.getInFile()));
-        byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
-        FileUtils.write(p7b, new File(adapter.getOutFile()));
-        assertTrue(FileUtils.isFileExist(OUT_PATH));
+        byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
+        PrivateKey privateKey = KeyPairTools.stringToPrivateKey(KeyPairTools.ECC, PRIVATE_KEY_STR);
+        ISigner signer = new LocalSigner(privateKey, adapter.getSignCertChain());
+        byte[] p7b = ProfileSignTool.signProfile(provisionContent, signer, adapter.getSignAlg());
+        assertNotNull(p7b);
         VerifyHelper verifyHelper = new VerifyHelper();
         VerificationResult verificationResult = verifyHelper.verify(p7b);
         assertTrue(verificationResult.isVerifiedPassed());
+
         try {
             options.put(Options.MODE, REMOTE_SIGN);
             adapter = new LocalizationAdapter(options);
-            provisionContent = ProfileSignTool.getProvisionContent(new File(adapter.getInFile()));
+            provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
             p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             assertTrue(FileUtils.isFileExist(OUT_PATH));
@@ -131,7 +142,7 @@ public class ProfileTest {
             logger.info(exception, () -> exception.getMessage());
         }
         try {
-            verificationResult = verifyHelper.verify(null);
+            verificationResult = verifyHelper.verify(ERROR_PROFILE_CONTENT.getBytes(StandardCharsets.UTF_8));
             assertFalse(verificationResult.isVerifiedPassed());
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
@@ -153,7 +164,7 @@ public class ProfileTest {
         options.put(Options.MODE, LOCAL_SIGN);
         options.put(Options.PROFILE_CERT_FILE, CERT_PATH);
         options.put(Options.IN_FILE, IN_FILE_PATH);
-        options.put(Options.SIGN_ALG, SHA_256_WITH_RSA);
+        options.put(Options.SIGN_ALG, SHA_256_WITH_ECC);
         options.put(Options.KEY_STORE_FILE, KEY_STORE_PATH);
         options.put(Options.KEY_STORE_RIGHTS, PWD.toCharArray());
         options.put(Options.OUT_FILE, OUT_PATH);
