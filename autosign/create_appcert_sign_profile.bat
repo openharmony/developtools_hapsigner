@@ -11,5 +11,5 @@
 @rem See the License for the specific language governing permissions and
 @rem limitations under the License.
 
-python autosign.py sign
+python autosign.py createAppCertAndProfile
 pause

@@ -29,20 +29,16 @@
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-                <filteritem type="filename" name="start_create.bat" desc="script file"/>
-                <filteritem type="filename" name="start_create.sh" desc="script file"/>
-                <filteritem type="filename" name="start_sign.bat" desc="script file"/>
-                <filteritem type="filename" name="start_sign.sh" desc="script file"/>
+                <filteritem type="filename" name="*.bat" desc="script file"/>
+                <filteritem type="filename" name="*.sh" desc="script file"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="">
                 <filteritem type="filename" name="README.OpenSource"/>
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-                <filteritem type="filename" name="start_create.bat" desc="script file"/>
-                <filteritem type="filename" name="start_create.sh" desc="script file"/>
-                <filteritem type="filename" name="start_sign.bat" desc="script file"/>
-                <filteritem type="filename" name="start_sign.sh" desc="script file"/>
+                <filteritem type="filename" name="*.bat" desc="script file"/>
+                <filteritem type="filename" name="*.sh" desc="script file"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="">
             </filefilter>
@@ -50,7 +46,9 @@
             </filefilter>
             <filefilter name="readmeOpenSourcefileNamePolicyFilter" desc="">
             </filefilter>
-            <filefilter name="binaryFileTypePolicyFilter" desc="">
+            <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+				<filteritem type="filename" name="OpenHarmony.p12" desc="Keystore used in OpenHarmony app sign"/>
+                <filteritem type="filename" name="OpenHarmonyProfileRelease.pem" desc="OpenHarmony profile sign certificates"/>
             </filefilter>
         </filefilterlist>
         <licensematcherlist>
