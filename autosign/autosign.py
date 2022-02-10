@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################
-
+import json
 import os
 import re
 import sys
@@ -64,8 +64,8 @@ def print_help():
               "    signtool.jar : Main progress jar file\n" \
               "\n" \
               "Example: \n" \
-              "    python autosign.py generate \n" \
-              "    python autosign.py sign" \
+              "    python autosign.py createAppCertAndProfile \n" \
+              "    python autosign.py signHap" \
               "\n"
     print(content)
 
@@ -152,6 +152,13 @@ def do_sign(jar):
     run_with_engine(sign_engine_config, jar)
 
 
+def do_sign_hap(jar):
+    sign_hap_engine_config = {
+        'sign.app': 'sign-app'
+    }
+    run_with_engine(sign_hap_engine_config, jar)
+
+
 def do_generate(jar):
     cert_engine_config = {
         'app.keypair': 'generate-keypair',
@@ -166,6 +173,32 @@ def do_generate(jar):
     run_with_engine(cert_engine_config, jar)
 
 
+def do_generate_root_cert(jar):
+    root_engine_config = {
+        'profile.keypair': 'generate-keypair',
+        'root-ca': 'generate-ca',
+        'sub-ca.app': 'generate-ca',
+        'sub-ca.profile': 'generate-ca',
+        'cert.profile': 'generate-profile-cert',
+    }
+    run_with_engine(root_engine_config, jar)
+
+
+def do_generate_app_cert(jar):
+    app_cert_engine_config = {
+        'app.keypair': 'generate-keypair',
+        'cert.app': 'generate-app-cert',
+    }
+    run_with_engine(app_cert_engine_config, jar)
+
+
+def do_sign_profile(jar):
+    app_cert_engine_config = {
+        'sign.profile': 'sign-profile',
+    }
+    run_with_engine(app_cert_engine_config, jar)
+
+
 def convert_to_map(line, temp_map):
     line = line.strip('\n')
     strs = line.split('=', 1)
@@ -177,8 +210,8 @@ def convert_to_map(line, temp_map):
             temp_map[strs[0]] = strs[1]
 
 
-def load_config():
-    config_file = 'autosign.config'
+def load_config(config):
+    config_file = config
     temp_map = {}
     with open(config_file, 'r', encoding='utf-8') as f:
         for line in f.readlines():
@@ -199,22 +232,65 @@ def process_cmd():
         exit(0)
 
     action = args[1]
-    if action not in ['generate', 'sign']:
+    if action not in ['createRootAndSubCert', 'createAppCertAndProfile', 'signHap']:
         print("Not support cmd")
         print_help()
         exit(1)
     return action
 
 
-if __name__ == '__main__':
-    act = process_cmd()
-    load_config()
-    jar_file = global_config.get('config', {}).get('signtool')
+def process_jar():
+    read_jar_file = global_config.get('config', {}).get('signtool')
     if not os.path.exists(jar_file):
         print("Jar file '{}' not found".format(jar_file))
         exit(1)
+    return read_jar_file
 
-    if act == 'generate':
-        do_generate(jar_file)
-    elif act == 'sign':
-        do_sign(jar_file)
+
+
+def replace_cert_in_profile():
+    profile_file = global_config.get('sign.profile', {}).get('inFile')
+    app_cert_file = global_config.get('cert.app', {}).get('outFile')
+    tar_dir = global_config.get('config', {}).get('targetDir')
+    app_cert_file = os.path.join(tar_dir, app_cert_file)
+    if not os.path.exists(profile_file):
+        print("profile file '{}' not found".format(jar_file))
+        exit(1)
+    if not os.path.exists(app_cert_file):
+        print("app cert file '{}' not found".format(jar_file))
+        exit(1)
+
+    app_cert = ''
+    # read app cert
+    with open(app_cert_file, 'r', encoding='utf-8') as f:
+        app_cert_temp = f.read()
+        app_cert = app_cert_temp.split("-----END CERTIFICATE-----")[0] + "-----END CERTIFICATE-----\n"
+
+    profile = {}
+    # read profile
+    with open(profile_file, 'r', encoding='utf-8') as f:
+        profile = json.load(f)
+
+    profile["bundle-info"]["distribution-certificate"] = app_cert
+
+    # save profile
+    with open(profile_file, 'w', encoding='utf-8') as profile_write:
+        json.dump(profile, profile_write)
+
+
+if __name__ == '__main__':
+    act = process_cmd()
+    if act == 'createRootAndSubCert':
+        load_config('createRootAndSubCert.config')
+        jar_file = process_jar()
+        do_generate_root_cert(jar_file)
+    elif act == 'createAppCertAndProfile':
+        load_config('createAppCertAndProfile.config')
+        jar_file = process_jar()
+        do_generate_app_cert(jar_file)
+        replace_cert_in_profile()
+        do_sign_profile(jar_file)
+    elif act == 'signHap':
+        load_config('signHap.config')
+        jar_file = process_jar()
+        do_sign_hap(jar_file)
