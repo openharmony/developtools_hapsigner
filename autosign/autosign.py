@@ -241,11 +241,10 @@ def process_cmd():
 
 def process_jar():
     read_jar_file = global_config.get('config', {}).get('signtool')
-    if not os.path.exists(jar_file):
-        print("Jar file '{}' not found".format(jar_file))
+    if not os.path.exists(read_jar_file):
+        print("Jar file '{}' not found".format(read_jar_file))
         exit(1)
     return read_jar_file
-
 
 
 def replace_cert_in_profile():
