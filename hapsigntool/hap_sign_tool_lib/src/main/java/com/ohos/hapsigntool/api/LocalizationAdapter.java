@@ -47,7 +47,8 @@ public class LocalizationAdapter {
     /**
      * check cert chain size
      */
-    private static final int CERT_CHAIN_SIZE = 3;
+    private static final int MIN_CERT_CHAIN_SIZE = 2;
+    private static final int MAX_CERT_CHAIN_SIZE = 3;
     /**
      * Logger
      */
@@ -179,7 +180,7 @@ public class LocalizationAdapter {
             certPath = options.getString(Options.APP_CERT_FILE);
         }
         List<X509Certificate> certificates = getCertsFromFile(certPath, Options.PROFILE_CERT_FILE);
-        ValidateUtils.throwIfNotMatches(certificates.size() == CERT_CHAIN_SIZE, ERROR.NOT_SUPPORT_ERROR,
+        ValidateUtils.throwIfNotMatches(certificates.size() >= MIN_CERT_CHAIN_SIZE && certificates.size() <= MAX_CERT_CHAIN_SIZE, ERROR.NOT_SUPPORT_ERROR,
                 String.format("Profile cert '%s' must a cert chain", certPath));
         return certificates;
     }
