@@ -107,7 +107,7 @@ public class LocalizationAdapter {
             keyStore =  options.getString(Options.KEY_STORE_FILE, "");
             keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.KEY_STORE_RIGHTS));
         }
-        this.isIssuerKeyStoreFile = false;
+        LocalizationAdapter.isIssuerKeyStoreFile = false;
     }
 
     /**
