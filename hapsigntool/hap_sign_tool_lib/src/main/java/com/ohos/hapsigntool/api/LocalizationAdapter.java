@@ -98,17 +98,16 @@ public class LocalizationAdapter {
         if (keyStoreHelper != null) {
             return;
         }
+
         String keyStore ;
-        char[] keystorePwd ;
         if (isIssuerKeyStoreFile){
             keyStore = options.getString(Options.ISSUER_KEY_STORE_FILE, "");
-            keystorePwd = options.getChars(Options.ISSUER_KEY_STORE_RIGHTS);
+            keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
         }else {
             keyStore =  options.getString(Options.KEY_STORE_FILE, "");
-            keystorePwd = options.getChars(Options.KEY_STORE_RIGHTS);
+            keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.KEY_STORE_RIGHTS));
         }
         this.isIssuerKeyStoreFile = false;
-        keyStoreHelper = new KeyStoreHelper(keyStore, keystorePwd);
     }
 
     /**
@@ -202,6 +201,7 @@ public class LocalizationAdapter {
             certPath = options.getString(Options.APP_CERT_FILE);
         }
         List<X509Certificate> certificates = getCertsFromFile(certPath, Options.PROFILE_CERT_FILE);
+
         ValidateUtils.throwIfNotMatches(
                 certificates.size() >= MIN_CERT_CHAIN_SIZE && certificates.size() <= MAX_CERT_CHAIN_SIZE,
                 ERROR.NOT_SUPPORT_ERROR, String.format("Profile cert '%s' must a cert chain", certPath)
