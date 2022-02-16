@@ -178,6 +178,12 @@ public final class HapSignTool {
         }
         String keyStoreFile = params.getString(Options.KEY_STORE_FILE);
         FileUtils.validFileType(keyStoreFile, "p12", "jks");
+
+        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+            String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
+            FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
+        }
+
         String outFile = params.getString(Options.OUT_FILE);
         if (!StringUtils.isEmpty(outFile)) {
             FileUtils.validFileType(outFile, "cer", "pem");
