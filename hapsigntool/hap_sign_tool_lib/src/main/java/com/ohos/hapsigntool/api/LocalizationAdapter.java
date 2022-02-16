@@ -98,6 +98,7 @@ public class LocalizationAdapter {
         if (keyStoreHelper != null) {
             return;
         }
+
         String keyStore ;
         char[] keystorePwd ;
         if (isIssuerKeyStoreFile){
@@ -202,6 +203,7 @@ public class LocalizationAdapter {
             certPath = options.getString(Options.APP_CERT_FILE);
         }
         List<X509Certificate> certificates = getCertsFromFile(certPath, Options.PROFILE_CERT_FILE);
+
         ValidateUtils.throwIfNotMatches(
                 certificates.size() >= MIN_CERT_CHAIN_SIZE && certificates.size() <= MAX_CERT_CHAIN_SIZE,
                 ERROR.NOT_SUPPORT_ERROR, String.format("Profile cert '%s' must a cert chain", certPath)
