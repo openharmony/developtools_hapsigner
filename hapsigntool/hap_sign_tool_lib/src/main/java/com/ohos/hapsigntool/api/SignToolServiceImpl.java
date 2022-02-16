@@ -173,6 +173,10 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean generateAppCert(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
         KeyPair keyPair = adapter.getAliasKey(false);
+        adapter.setKeyStoreHelper(null);
+        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+            LocalizationAdapter.isIssuerKeyStoreFile = true;
+        }
         KeyPair issueKeyPair = adapter.getIssuerAliasKey();
         adapter.releasePwd();
 
@@ -199,6 +203,10 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean generateProfileCert(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
         KeyPair keyPair = adapter.getAliasKey(false);
+        adapter.setKeyStoreHelper(null);
+        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+            LocalizationAdapter.isIssuerKeyStoreFile = true;
+        }
         KeyPair issueKeyPair = adapter.getIssuerAliasKey();
         adapter.releasePwd();
 
