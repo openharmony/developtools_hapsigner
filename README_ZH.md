@@ -166,6 +166,8 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -signAlg                         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA；
          ├── -keystoreFile                    # 密钥库文件，必填项，JKS或P12格式
          ├── -keystorePwd                     # 密钥库口令，可选项
+         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项，JKS或P12格式
+         ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -outForm                         # 输出证书文件的格式，包括 cert / certChain，可选项，默认为certChain
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
          ├── -subCaCertFile                   #  outForm为certChain时必填，二级子CA证书文件
@@ -184,6 +186,8 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -signAlg                         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA；
          ├── -keystoreFile                    # 密钥库文件，必填项，JKS或P12格式
          ├── -keystorePwd                     # 密钥库口令，可选项
+         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项，JKS或P12格式
+         ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -outForm                         # 输出证书文件的格式，包括 cert / certChain，可选项，默认为certChain
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
          ├── -subCaCertFile                   #  outForm为certChain时必填，二级子CA证书文件
