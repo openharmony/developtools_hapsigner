@@ -149,6 +149,8 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -validity                        # 证书有效期，可选项，默认为3650天
          ├── -signAlg                         # 签名算法，必填项，包括SHA256withRSA / SHA384withRSA / SHA256withECDSA / SHA384withECDSA
          ├── -basicConstraintsPathLen         # 路径长度，可选项，默认为0
+         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项，JKS或P12格式
+         ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -keystoreFile                    # 密钥库文件，必填项，JKS或P12格式
          ├── -keystorePwd                     # 密钥库口令，可选项
          ├── -outFile                         # 输出文件，可选项，如果不填，则直接输出到控制台
@@ -211,11 +213,12 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├                                        codeSignature，emailProtection，smartCardLogin，timestamp，ocspSignature
           ├── -extKeyUsageCritical               # extKeyUsage是否为关键项，可选项，默认为否
           ├── -signAlg                           # 签名算法，必填项，包括SHA256withRSA/SHA384withRSA/SHA256withECDSA/SHA384withECDSA 
-                                                  
           ├── -basicConstraints                  # 是否包含basicConstraints，可选项，默认为否
           ├── -basicConstraintsCritical          # basicConstraints是否包含为关键项，可选项，默认为否
           ├── -basicConstraintsCa                # 是否为CA，可选项，默认为否
           ├── -basicConstraintsPathLen           # 路径长度，可选项，默认为0
+          ├── -issuerKeystoreFile                # 签发者密钥库文件，可选项，JKS或P12格式
+          ├── -issuerKeystorePwd                 # 签发者密钥库口令，可选项
           ├── -keystoreFile                      # 密钥库文件，必填项，JKS或P12格式
           ├── -keystorePwd                       # 密钥库口令，可选项
           ├── -outFile                           # 输出证书文件，可选项，如果不填，则直接输出到控制台
