@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 /**
  * Main entry of lib.
@@ -125,6 +126,10 @@ public class SignToolServiceImpl implements ServiceApi {
         adapter.errorIfNotExist(issuerAlias);
 
         KeyPair subjectKeyPair = adapter.getAliasKey(false);
+        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+            adapter.setKeyStoreHelper(null);
+            adapter.setIssuerKeyStoreFile(true);
+        }
         KeyPair rootKeyPair = adapter.getIssuerAliasKey();
         adapter.releasePwd();
         byte[] csr = CertTools.generateCsr(subjectKeyPair, adapter.getSignAlg(), adapter.getSubject());
@@ -146,9 +151,29 @@ public class SignToolServiceImpl implements ServiceApi {
         boolean genRootCA = StringUtils.isEmpty(options.getString(Options.ISSUER_KEY_ALIAS));
         KeyPair subKey = adapter.getAliasKey(true);
         KeyPair rootKey;
+        String ksFile = options.getString(Options.KEY_STORE_FILE);
+        String iksFile = options.getString(Options.ISSUER_KEY_STORE_FILE);
         if (genRootCA) {
+             if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)){
+                 CustomException.throwException(ERROR.WRITE_FILE_ERROR,
+                         String.format("Parameter '%s' and parameter '%s' are inconsistent",ksFile,iksFile));
+             }
+            if (options.containsKey(Options.ISSUER_KEY_STORE_RIGHTS) ){
+                boolean isEqual = Arrays.equals(options.getChars(Options.KEY_STORE_RIGHTS),
+                        options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
+                if (!isEqual){
+                    CustomException.throwException(ERROR.WRITE_FILE_ERROR,
+                            String.format("Parameter '%s' and parameter '%s' are inconsistent",
+                                    Options.KEY_STORE_RIGHTS,Options.ISSUER_KEY_STORE_RIGHTS));
+                }
+            }
             rootKey = subKey;
         } else {
+            if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+                FileUtils.validFileType(options.getString(Options.ISSUER_KEY_STORE_FILE), "p12", "jks");
+                adapter.setKeyStoreHelper(null);
+                adapter.setIssuerKeyStoreFile(true);
+            }
             rootKey = adapter.getIssuerAliasKey();
         }
         adapter.releasePwd();
@@ -173,9 +198,9 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean generateAppCert(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
         KeyPair keyPair = adapter.getAliasKey(false);
-        adapter.setKeyStoreHelper(null);
         if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
-            LocalizationAdapter.isIssuerKeyStoreFile = true;
+            adapter.setKeyStoreHelper(null);
+            adapter.setIssuerKeyStoreFile(true);
         }
         KeyPair issueKeyPair = adapter.getIssuerAliasKey();
         adapter.releasePwd();
@@ -203,9 +228,9 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean generateProfileCert(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
         KeyPair keyPair = adapter.getAliasKey(false);
-        adapter.setKeyStoreHelper(null);
         if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
-            LocalizationAdapter.isIssuerKeyStoreFile = true;
+            adapter.setKeyStoreHelper(null);
+            adapter.setIssuerKeyStoreFile(true);
         }
         KeyPair issueKeyPair = adapter.getIssuerAliasKey();
         adapter.releasePwd();

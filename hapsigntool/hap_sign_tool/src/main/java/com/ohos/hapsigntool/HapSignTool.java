@@ -206,7 +206,6 @@ public final class HapSignTool {
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
         params.put(Options.KEY_SIZE, CmdUtil.convertAlgSize(size));
-
         return api.generateCA(params);
     }
 
@@ -220,7 +219,10 @@ public final class HapSignTool {
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-
+        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+            String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
+            FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
+        }
         return api.generateCert(params);
     }
 

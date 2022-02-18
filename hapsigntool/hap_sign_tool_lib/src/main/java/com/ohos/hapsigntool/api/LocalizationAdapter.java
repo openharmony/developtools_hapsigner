@@ -65,7 +65,7 @@ public class LocalizationAdapter {
     /**
      * Judge whether IssuerKeyStoreFile exists
      */
-    public static boolean isIssuerKeyStoreFile = false ;
+    private  boolean isIssuerKeyStoreFile = false ;
 
     /**
      * Constructor of LocalizationAdapter.
@@ -85,6 +85,14 @@ public class LocalizationAdapter {
     }
 
     /**
+     * Set issuerKeyStoreFile
+     * @param issuerKeyStoreFile
+     */
+    public void setIssuerKeyStoreFile(boolean issuerKeyStoreFile) {
+        this.isIssuerKeyStoreFile = issuerKeyStoreFile;
+    }
+
+    /**
      * Get options.
      *
      * @return options
@@ -100,14 +108,14 @@ public class LocalizationAdapter {
         }
 
         String keyStore ;
-        if (isIssuerKeyStoreFile){
+        if (this.isIssuerKeyStoreFile){
             keyStore = options.getString(Options.ISSUER_KEY_STORE_FILE, "");
             keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
         }else {
             keyStore =  options.getString(Options.KEY_STORE_FILE, "");
             keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.KEY_STORE_RIGHTS));
         }
-        LocalizationAdapter.isIssuerKeyStoreFile = false;
+        this.setIssuerKeyStoreFile(false);
     }
 
     /**
@@ -186,7 +194,7 @@ public class LocalizationAdapter {
         }
         ValidateUtils.throwIfNotMatches(keyPair != null, ERROR.NOT_SUPPORT_ERROR,
                 String.format("%s: '%s' is not exist in %s", Options.KEY_ALIAS, alias,
-                        options.getString(Options.KEY_STORE_FILE)));
+                        keyStoreHelper.getKeyStorePath()));
         return keyPair;
     }
 
