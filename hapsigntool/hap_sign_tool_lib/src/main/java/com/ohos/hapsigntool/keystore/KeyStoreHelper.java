@@ -94,6 +94,10 @@ public class KeyStoreHelper {
      */
     private final KeyStore keyStore;
 
+    public String getKeyStorePath() {
+        return keyStorePath;
+    }
+
     /**
      * Helper to load and save pair.
      *
