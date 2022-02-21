@@ -108,6 +108,15 @@ public class Options extends HashMap<String, Object> {
      */
     public static final String ISSUER_KEY_RIGHTS = "issuerKeyPwd";
     /**
+     * Issuer Key Store File parameter name.
+     */
+    public static final String ISSUER_KEY_STORE_FILE = "issuerKeystoreFile";
+
+    /**
+     * Issuer Key Store Pwd parameter name.
+     */
+    public static final String ISSUER_KEY_STORE_RIGHTS = "issuerKeystorePwd";
+    /**
      * Key alg parameter name.
      */
     public static final String KEY_ALG = "keyAlg";
