@@ -17,12 +17,12 @@ import("//build/ohos/ace/ace.gni")
 ohos_copy("lib") {
   if (build_public_version) {
     sources = [
-      "dist/hap-sign-tool.jar",
       "dist/OpenHarmony.p12",
       "dist/OpenHarmonyProfileDebug.pem",
       "dist/OpenHarmonyProfileRelease.pem",
       "dist/UnsgnedDebugProfileTemplate.json",
       "dist/UnsgnedReleasedProfileTemplate.json",
+      "dist/hap-sign-tool.jar",
     ]
   } else {
     sources = "dist/hap-sign-tool.jar"
