@@ -49,6 +49,7 @@ Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
 
 1.命令行签名
    命令行签名分为profile文件签名和hap包签名。
+
    （1）签名profile文件的命令实例如下：
 
    
@@ -96,21 +97,28 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 2.一键签名
 
 
-为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、根CA证书、二级CA证书、三级证书、签名profile包、签名hap包的命令。
-脚本位于目录autosign下：
+为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、三级证书、签名profile包、签名hap包的命令。
+脚本以及配置文件位于目录autosign下：
 
- - start_create.sh/start_create.bat
- - start_sign.sh/start_sign.bat
- - auto_sign_main.py
- - auto_sign.conf
+ - create_root.sh/create_root.bat
+ - create_appcert_sign_profile.sh/create_appcert_sign_profile.bat
+ - sign_hap.sh/sign_hap.bat
+ - createAppCertAndProfile.config
+ - createRootAndSubCert.config
+ - signHap.config
 
 使用指导：
 1. 准备依赖环境python3.5以上
 2. 准备签名工具jar包：hap-sign-tool.jar（参照上文编译生成的产物）
 3. 准备待签名的应用hap包和Provision profile模板文件
-4. 使用文本编辑器编辑auto_sign.conf，修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
-5. Linux运行start_create.sh、Windows运行start_create.bat生成签名所需文件
-6. Linux运行start_sign.sh、Windows运行start_sign.bat对hap包进行签名
+4. 使用文本编辑器编辑createAppCertAndProfile.config,signHap.config修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
+5. Linux运行create_appcert_sign_profile.sh、Windows运行create_appcert_sign_profile.bat生成签名所需文件
+6. Linux运行sign_hap.sh、Windows运行sign_hap.bat对hap包进行签名
+
+ > 说明：如需自定义生成密钥库文件，根CA，二级CA证书，profile签名证书，可执行以下步骤
+ 1.使用文本编辑器编辑createRootAndSubCert.config修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
+ 2.Linux运行 create_root.sh、Windows运行create_root.bat生成所需密钥库文件，根CA，二级CA证书，profile签名证书
+
 
 ****
 ##### 接口说明
