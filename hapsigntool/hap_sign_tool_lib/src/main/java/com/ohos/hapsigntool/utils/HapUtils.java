@@ -19,6 +19,7 @@ import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
 import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
+import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.zip.MessageDigestZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
@@ -42,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 /**
  * Hap util, parse hap, find signature block.
@@ -75,36 +77,42 @@ public class HapUtils {
      * The size of data block used to get digest
      */
     public static final int CONTENT_DIGESTED_CHUNK_MAX_SIZE_BYTES = 1024 * 1024;
+    /**
+     * Content version
+     */
+    public static final int CONTENT_VERSION = 2;
+
+    public static final int BIT_SIZE = 8;
+
+    public static final int HALF_BIT_SIZE = 4;
+
+    public static  final int INT_SIZE = 4;
+
+    public static  final int BLOCK_NUMBER = 1;
+
+    private HapUtils() {
+    }
 
     /**
      * The set of IDs of optional blocks in hap signature block.
      */
-    private static final Set<Integer> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS =
-            new HashSet<Integer>() {
-                private static final long SERIAL_VERSION_UID = -7972389022577288313L;
-
-                {
-                    add(HAP_PROOF_OF_ROTATION_BLOCK_ID);
-                    add(HAP_PROFILE_BLOCK_ID);
-                    add(HAP_PROPERTY_BLOCK_ID);
-                }
-            };
+    private static final Set<Integer> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS ;
 
     /**
      * Magic word of hap signature block/
      */
     private static final byte[] HAP_SIGNING_BLOCK_MAGIC =
-            new byte[] {0x48, 0x41, 0x50, 0x20, 0x53, 0x69, 0x67, 0x20, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x20, 0x34, 0x32};
+            new byte[] {0x3c, 0x68, 0x61, 0x70, 0x20, 0x73, 0x69, 0x67, 0x6e, 0x20, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x3e};
 
     /**
      * The value of lower 8 bytes of magic word
      */
-    public static final long HAP_SIG_BLOCK_MAGIC_LO = 0x2067695320504148L;
+    public static final long HAP_SIG_BLOCK_MAGIC_LO = 0x676973207061683cL;
 
     /**
      * The value of higher 8 bytes of magic word
      */
-    public static final long HAP_SIG_BLOCK_MAGIC_HI = 0x3234206b636f6c42L;
+    public static final long HAP_SIG_BLOCK_MAGIC_HI = 0x3e6b636f6c62206eL;
 
     /**
      * Size of hap signature block header
@@ -119,6 +127,7 @@ public class HapUtils {
     private static final byte ZIP_FIRST_LEVEL_CHUNK_PREFIX = 0x5a;
     private static final byte ZIP_SECOND_LEVEL_CHUNK_PREFIX = (byte) 0xa5;
     private static final int DIGEST_PRIFIX_LENGTH = 5;
+    private static final int BUFFER_LENGTH = 4096;
 
     /**
      * Get HAP_SIGNATURE_OPTIONAL_BLOCK_IDS
@@ -137,6 +146,17 @@ public class HapUtils {
     public static byte[] getHapSigningBlockMagic() {
         return HAP_SIGNING_BLOCK_MAGIC;
     }
+    /**
+     * The set of IDs of optional blocks in hap signature block.
+     */
+    static {
+        Set<Integer> blockIds = new HashSet<Integer>();
+        blockIds.add(HAP_PROOF_OF_ROTATION_BLOCK_ID);
+        blockIds.add(HAP_PROFILE_BLOCK_ID);
+        blockIds.add(HAP_PROPERTY_BLOCK_ID);
+        HAP_SIGNATURE_OPTIONAL_BLOCK_IDS = Collections.unmodifiableSet(blockIds);
+
+    }
 
     /**
      * Read data from hap file.
@@ -148,7 +168,7 @@ public class HapUtils {
     public static byte[] readFileToByte(String file) throws IOException {
         try (FileInputStream in = new FileInputStream(file);
             ByteArrayOutputStream out = new ByteArrayOutputStream(in.available());) {
-            byte[] buf = new byte[4096];
+            byte[] buf = new byte[BUFFER_LENGTH];
             int len = 0;
             while ((len = in.read(buf)) != -1) {
                 out.write(buf, 0, len);
@@ -265,8 +285,8 @@ public class HapUtils {
     }
 
     private static void setUInt32ToByteArrayWithLittleEngian(int value, byte[] result, int offset) {
-        for (int i = 0; i < 4; i++) {
-            result[offset + i] = (byte) ((value >> (8 * i)) & 0xff);
+        for (int i = 0; i < INT_SIZE; i++) {
+            result[offset + i] = (byte) ((value >> (BIT_SIZE * i)) & 0xff);
         }
     }
 
@@ -354,17 +374,17 @@ public class HapUtils {
      */
     public static byte[] encodeListOfPairsToByteArray(List<Pair<Integer, byte[]>> pairList) {
         int encodeSize = 0;
-        encodeSize += 4 + 4;
+        encodeSize += INT_SIZE + INT_SIZE;
         for (Pair<Integer, byte[]> pair : pairList) {
-            encodeSize += 12 + pair.getSecond().length;
+            encodeSize += INT_SIZE+INT_SIZE+INT_SIZE + pair.getSecond().length;
         }
         ByteBuffer encodeBytes = ByteBuffer.allocate(encodeSize);
         encodeBytes.order(ByteOrder.LITTLE_ENDIAN);
-        encodeBytes.putInt(2); // version
-        encodeBytes.putInt(1); // block number
+        encodeBytes.putInt(CONTENT_VERSION); // version
+        encodeBytes.putInt(BLOCK_NUMBER); // block number
         for (Pair<Integer, byte[]> pair : pairList) {
             byte[] second = pair.getSecond();
-            encodeBytes.putInt(8 + second.length);
+            encodeBytes.putInt(INT_SIZE+INT_SIZE + second.length);
             encodeBytes.putInt(pair.getFirst());
             encodeBytes.putInt(second.length);
             encodeBytes.put(second);
@@ -380,11 +400,11 @@ public class HapUtils {
      * @return a hex-values string.
      */
     public static String toHex(byte[] value, String separator) {
-        StringBuilder sb = new StringBuilder(value.length * 2);
+        StringBuilder sb = new StringBuilder(value.length + value.length);
         String useSeparator = separator == null ? "" : separator;
         int len = value.length;
         for (int i = 0; i < len; i++) {
-            int hi = (value[i] & 0xff) >>> 4;
+            int hi = (value[i] & 0xff) >>> HALF_BIT_SIZE;
             int lo = value[i] & 0x0f;
             sb.append(HEX_CHAR_ARRAY[hi]).append(HEX_CHAR_ARRAY[lo]);
             if (i != len - 1) {
@@ -429,7 +449,8 @@ public class HapUtils {
                 || (hapSignBlockMagicHi != HAP_SIG_BLOCK_MAGIC_HI)) {
             throw new SignatureNotFoundException("No Hap Signing Block before ZIP Central Directory");
         }
-        if ((hapSigBlockSize < HAP_SIG_BLOCK_HEADER_SIZE) || (hapSigBlockSize > Integer.MAX_VALUE - 8)) {
+        if ((hapSigBlockSize < HAP_SIG_BLOCK_HEADER_SIZE) ||
+                (hapSigBlockSize > Integer.MAX_VALUE - SignHap.getBlockSize())) {
             throw new SignatureNotFoundException("Hap Signing Block size out of range: " + hapSigBlockSize);
         }
         int totalSize = (int) hapSigBlockSize;
