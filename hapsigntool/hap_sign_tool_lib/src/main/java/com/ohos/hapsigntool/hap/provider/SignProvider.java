@@ -28,7 +28,7 @@ import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.exception.SignatureException;
 import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
 import com.ohos.hapsigntool.hap.sign.SignBin;
-import com.ohos.hapsigntool.hap.sign.SignHapV2;
+import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 import com.ohos.hapsigntool.utils.CertificateUtils;
@@ -87,6 +87,7 @@ public abstract class SignProvider {
     private static final List<String> PARAMETERS_NEED_ESCAPE = new ArrayList<String>();
     private static final Pattern DOMAIN_NUM_PATTER = Pattern.compile("^[a-zA-Z]+[0-9]+$");
     private static final long TIMESTAMP = 1230768000000L;
+    private static final int COMPRESSION_MODE = 9;
     /**
      * list of hap signature optional blocks
      */
@@ -322,7 +323,7 @@ public abstract class SignProvider {
 
                 SignerConfig signerConfig = createV2SignerConfigs(publicCerts, crl, options);
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
-                byte[] signingBlock = SignHapV2.sign(contents, signerConfig, optionalBlocks);
+                byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;
                 ZipUtils.setCentralDirectoryOffset(eocdBuffer, newCentralDirectoryOffset);
                 LOGGER.info("Generate signing block success, begin write it to output file");
@@ -379,9 +380,9 @@ public abstract class SignProvider {
             JarOutputStream outputJar = new JarOutputStream(outputFile)) {
             long timestamp = TIMESTAMP;
             timestamp -= TimeZone.getDefault().getOffset(timestamp);
-            outputJar.setLevel(9);
-            List<String> entryNames = SignHapV2.getEntryNamesFromHap(inputJar);
-            SignHapV2.copyFiles(entryNames, inputJar, outputJar, timestamp, alignment);
+            outputJar.setLevel(COMPRESSION_MODE);
+            List<String> entryNames = SignHap.getEntryNamesFromHap(inputJar);
+            SignHap.copyFiles(entryNames, inputJar, outputJar, timestamp, alignment);
         }
     }
 
@@ -576,10 +577,8 @@ public abstract class SignProvider {
         } else {
             throw new ProfileException("Unsupported profile type!");
         }
-        if (!inputCerts.isEmpty()) {
-            if (!checkInputCertMatchWithProfile(inputCerts.get(0), certInProfile)) {
+        if (!inputCerts.isEmpty() && !checkInputCertMatchWithProfile(inputCerts.get(0), certInProfile)) {
                 throw new ProfileException("input certificates do not match with profile!");
-            }
         }
         String cn = getCertificateCN(certInProfile);
         LOGGER.info("certificate in profile: {}", cn);
