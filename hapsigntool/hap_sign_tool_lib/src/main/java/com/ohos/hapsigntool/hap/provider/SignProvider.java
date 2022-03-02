@@ -85,7 +85,6 @@ public abstract class SignProvider {
     private static final Logger LOGGER = LogManager.getLogger(SignProvider.class);
     private static final List<String> VALID_SIGN_ALG_NAME = new ArrayList<String>();
     private static final List<String> PARAMETERS_NEED_ESCAPE = new ArrayList<String>();
-    private static final Pattern DOMAIN_NUM_PATTER = Pattern.compile("^[a-zA-Z]+[0-9]+$");
     private static final long TIMESTAMP = 1230768000000L;
     private static final int COMPRESSION_MODE = 9;
     /**
@@ -363,28 +362,6 @@ public abstract class SignProvider {
         }
     }
 
-    /**
-     * check private key path
-     *
-     * @throws MissingParamsException Exception occurs when private key alias is not entered.
-     */
-    public void checkPrivateKeyPath() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PRIVATE_KEY)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_BASIC_PRIVATE_KEY);
-        }
-    }
-
-    /**
-     * check input hap file
-     *
-     * @throws MissingParamsException Exception occurs when unsigned file is not entered.
-     */
-    protected void checkInputFile() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_INPUT_FILE)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_BASIC_INPUT_FILE);
-        }
-    }
-
     static {
         VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_ECDSA);
         VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_ECDSA);
@@ -400,15 +377,9 @@ public abstract class SignProvider {
     /**
      * check signature algorithm
      *
-     * @throws MissingParamsException Exception occurs when the name of sign algorithm is not entered.
      * @throws InvalidParamsException Exception occurs when the inputted sign algorithm is invalid.
      */
-    private void checkSignatureAlg() throws MissingParamsException, InvalidParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_SIGANTURE_ALG)) {
-            LOGGER.error("Missing parameter : " + ParamConstants.PARAM_BASIC_SIGANTURE_ALG);
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_BASIC_SIGANTURE_ALG);
-        }
-
+    private void checkSignatureAlg() throws InvalidParamsException {
         String signAlg = signParams.get( ParamConstants.PARAM_BASIC_SIGANTURE_ALG).trim();
         for (String validAlg : VALID_SIGN_ALG_NAME) {
             if (validAlg.equalsIgnoreCase(signAlg)) {
@@ -417,28 +388,6 @@ public abstract class SignProvider {
         }
         LOGGER.error("Unsupported signature algorithm :" + signAlg);
         throw new InvalidParamsException("Invalid parameter: Sign Alg");
-    }
-
-    /**
-     * check output hap file
-     *
-     * @throws MissingParamsException Exception occurs when the output file path is not entered.
-     */
-    protected void checkOutputFile() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_OUTPUT_FILE)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_BASIC_OUTPUT_FILE);
-        }
-    }
-
-    /**
-     * check profile
-     *
-     * @throws MissingParamsException Exception occurs when the profile is not entered.
-     */
-    private void checkProfile() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_BASIC_PROFILE);
-        }
     }
 
     /**
@@ -479,9 +428,7 @@ public abstract class SignProvider {
             return "";
         }
         String valueOfDN = cert.getSubjectDN().toString();
-
-        valueOfDN = valueOfDN.replaceAll("\"", "");
-
+        valueOfDN = valueOfDN.replace("\"", "");
         String[] arrayDN = valueOfDN.split(",");
         for (String element : arrayDN) {
             if (element.trim().startsWith("CN=")) {
@@ -605,11 +552,7 @@ public abstract class SignProvider {
         if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
             signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
         }
-        checkPrivateKeyPath();
         checkSignatureAlg();
-        checkInputFile();
-        checkOutputFile();
-        checkProfile();
         checkSignAlignment();
     }
 
