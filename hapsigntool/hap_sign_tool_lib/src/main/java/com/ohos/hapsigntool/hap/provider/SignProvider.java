@@ -206,27 +206,6 @@ public abstract class SignProvider {
     }
 
     /**
-     * check profile signed in bin signed
-     *
-     * @param options inputted by user.
-     * @throws MissingParamsException Exception occurs when the required parameters are not entered.
-     */
-    private void checkLiteParams(Options options) throws MissingParamsException {
-        String[] paramFileds = {ParamConstants.PARAM_BASIC_PROFILE_SIGNED};
-        Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
-
-        for (String paramKey : options.keySet()) {
-            if (paramSet.contains(paramKey)) {
-                signParams.put(paramKey, options.getString(paramKey));
-            }
-        }
-
-        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
-            signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
-        }
-    }
-
-    /**
      * sign bin file
      *
      * @param options parameters used to sign bin file
@@ -239,8 +218,6 @@ public abstract class SignProvider {
         try {
             // 1. check the parameters
             checkParams(options);
-
-            checkLiteParams(options);
 
             // 2. load optionalBlocks
             loadOptionalBlocks();
@@ -615,7 +592,8 @@ public abstract class SignProvider {
             ParamConstants.PARAM_BASIC_PROFILE,
             ParamConstants.PARAM_BASIC_PROOF,
             ParamConstants.PARAM_BASIC_PROPERTY,
-            ParamConstants.PARAM_REMOTE_SERVER
+            ParamConstants.PARAM_REMOTE_SERVER,
+            ParamConstants.PARAM_BASIC_PROFILE_SIGNED
         };
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
 
@@ -624,7 +602,9 @@ public abstract class SignProvider {
                 signParams.put(paramKey, getParamValue(paramKey, options.getString(paramKey)));
             }
         }
-
+        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
+            signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
+        }
         checkPrivateKeyPath();
         checkSignatureAlg();
         checkInputFile();
