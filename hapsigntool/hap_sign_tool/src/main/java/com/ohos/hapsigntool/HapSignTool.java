@@ -57,11 +57,11 @@ public final class HapSignTool {
     /**
      * Signed.
      */
-    private static final int SIGNED = 1;
+    private static final String SIGNED = "1";
     /**
      * No signed.
      */
-    private static final int NOT_SIGNED = 0;
+    private static final String NOT_SIGNED = "0";
 
     private HapSignTool() {
     }
@@ -269,11 +269,16 @@ public final class HapSignTool {
         }
 
         String profileFile = params.getString(Options.PROFILE_FILE);
-        FileUtils.validFileType(profileFile, "p7b");
-        int profileSigned = params.getInt(Options.PROFILE_SIGNED, SIGNED);
-        if (profileSigned != SIGNED && profileSigned != NOT_SIGNED) {
+        String profileSigned = params.getString(Options.PROFILE_SIGNED,SIGNED);
+        if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
         }
+        if (SIGNED.equals(profileSigned)) {
+            FileUtils.validFileType(profileFile, "p7b");
+        } else {
+            FileUtils.validFileType(profileFile, "json");
+        }
+
         String inForm = params.getString(Options.IN_FORM);
         if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
