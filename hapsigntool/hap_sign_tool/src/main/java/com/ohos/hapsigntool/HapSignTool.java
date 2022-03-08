@@ -73,7 +73,10 @@ public final class HapSignTool {
      */
     public static void main(String[] args) {
         try {
-            processCmd(args);
+            boolean result = processCmd(args);
+            if (!result) {
+                System.exit(1);
+            }
         } catch (CustomException exception) {
             LOGGER.debug(exception.getMessage(), exception);
             LOGGER.error(exception.getMessage());
