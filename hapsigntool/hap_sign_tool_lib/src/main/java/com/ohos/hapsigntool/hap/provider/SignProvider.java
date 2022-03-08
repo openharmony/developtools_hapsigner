@@ -20,6 +20,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
@@ -308,7 +309,7 @@ public abstract class SignProvider {
                 ret = true;
             }
         } catch (IOException | InvalidKeyException | SignatureException | MissingParamsException
-            | InvalidParamsException | ProfileException e) {
+            | InvalidParamsException | ProfileException | CustomException e) {
             printErrorLog(e);
             ret = false;
         }
