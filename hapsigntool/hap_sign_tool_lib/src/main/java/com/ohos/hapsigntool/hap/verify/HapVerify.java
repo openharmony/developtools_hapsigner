@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,12 +68,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Class used to verify hap-file with signature v2
+ * Class used to verify hap-file with signature
  *
  * @since 2021/12/22
  */
-public class HapVerifyV2 {
-    private static final Logger LOGGER = LogManager.getLogger(HapVerifyV2.class);
+public class HapVerify {
+    private static final Logger LOGGER = LogManager.getLogger(HapVerify.class);
 
     private ZipDataInput beforeApkSigningBlock;
 
@@ -93,7 +93,7 @@ public class HapVerifyV2 {
 
     private boolean printCert;
 
-    public HapVerifyV2(
+    public HapVerify(
             ZipDataInput beforeApkSigningBlock,
             ByteBuffer signatureSchemeBlock,
             ZipDataInput centralDirectoryBlock,
@@ -107,7 +107,7 @@ public class HapVerifyV2 {
     }
 
     /**
-     * Verify hap signature v2.
+     * Verify hap signature.
      *
      * @return verify result.
      */
