@@ -20,8 +20,12 @@ import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
+import java.security.SignatureException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.security.spec.AlgorithmParameterSpec;
@@ -77,7 +81,8 @@ public class LocalSigner implements ISigner {
             }
             signature.update(data);
             signData = signature.sign();
-        } catch (Exception exception) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException
+                | SignatureException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
         }

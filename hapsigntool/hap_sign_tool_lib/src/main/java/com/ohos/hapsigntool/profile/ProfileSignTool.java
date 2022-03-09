@@ -126,7 +126,7 @@ public final class ProfileSignTool {
                     new DERSet(signerInfos));
             ContentInfo contentInfo = new ContentInfo(CMSObjectIdentifiers.signedData, sd);
             return contentInfo.getEncoded("DER");
-        } catch (Exception e) {
+        } catch (OperatorCreationException | IOException | CertificateEncodingException | CRLException e) {
             LOGGER.debug(e.getMessage(), e);
             CustomException.throwException(ERROR.SIGN_ERROR, e.getMessage());
         }

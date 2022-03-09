@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,6 @@ import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.HapUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
-import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
@@ -49,9 +48,7 @@ import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class of verify hap.
@@ -258,7 +255,7 @@ public class VerifyHap {
             ByteBuffer eocdBbyteBuffer = zipInfo.getEocd();
             ZipUtils.setCentralDirectoryOffset(eocdBbyteBuffer, signingBlockOffset);
             ZipDataInput eocdBlock = new ByteBufferZipDataInput(eocdBbyteBuffer);
-            HapVerifyV2 verifyEngine = new HapVerifyV2(beforeHapSigningBlock, signatureSchemeBlock,
+            HapVerify verifyEngine = new HapVerify(beforeHapSigningBlock, signatureSchemeBlock,
                 centralDirectoryBlock, eocdBlock, optionalBlocks);
             verifyEngine.setPrintCert(printCert);
             result = verifyEngine.verify();
