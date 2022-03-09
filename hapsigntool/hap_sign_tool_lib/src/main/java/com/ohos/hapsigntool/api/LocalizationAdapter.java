@@ -78,7 +78,7 @@ public class LocalizationAdapter {
 
     /**
      * Set keyStoreHelper
-     * @param keyStoreHelper
+     * @param keyStoreHelper keyStoreHelper
      */
     public void setKeyStoreHelper(KeyStoreHelper keyStoreHelper) {
         this.keyStoreHelper = keyStoreHelper;
@@ -86,7 +86,7 @@ public class LocalizationAdapter {
 
     /**
      * Set issuerKeyStoreFile
-     * @param issuerKeyStoreFile
+     * @param issuerKeyStoreFile issuerKeyStoreFile
      */
     public void setIssuerKeyStoreFile(boolean issuerKeyStoreFile) {
         this.isIssuerKeyStoreFile = issuerKeyStoreFile;

@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 /**
- *Define const parameters
+ * Define const parameters
  *
  * @since 2021-12-13
  */

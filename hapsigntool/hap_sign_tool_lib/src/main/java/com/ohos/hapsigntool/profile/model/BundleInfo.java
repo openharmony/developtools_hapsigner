@@ -60,7 +60,7 @@ public class BundleInfo {
      * Sub dto of Provision.
      */
     public BundleInfo() {
-        //Empty constructor of BundleInfo.
+        // Empty constructor of BundleInfo.
     }
 
     public String getDeveloperId() {

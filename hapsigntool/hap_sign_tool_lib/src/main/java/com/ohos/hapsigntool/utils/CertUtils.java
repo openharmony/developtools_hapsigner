@@ -141,6 +141,11 @@ public final class CertUtils {
         return ids.toArray(new KeyPurposeId[]{});
     }
 
+    /**
+     * buildDN
+     * @param nameString nameString
+     * @return X500Name
+     */
     public static X500Name buildDN(String nameString) {
         checkDN(nameString);
         X500Name dn = null;

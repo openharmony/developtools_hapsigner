@@ -23,7 +23,6 @@ import com.ohos.hapsigntool.api.model.Options;
  * @since 2021/12/28
  */
 public interface ServiceApi {
-
     /**
      * Generate keyStore.
      *

@@ -87,6 +87,9 @@ public class CertTest {
      */
     private final KeyPair keyPair = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.RSA_2048);
 
+    /**
+     * test RootCaCert
+     */
     @Order(1)
     @Test
     public void testRootCaCert() {
@@ -126,10 +129,12 @@ public class CertTest {
         }
     }
 
+    /**
+     * test subCaCert
+     */
     @Order(2)
     @Test
     public void testSubCaCert() {
-
         X500Name subName = CertUtils.buildDN(APP1_RELEASE);
         byte[] csr = generateCsrParameters(subName);
         Options options = new Options();
@@ -164,6 +169,9 @@ public class CertTest {
         }
     }
 
+    /**
+     * test appCert
+     */
     @Order(3)
     @Test
     public void testAppCert() {
@@ -201,6 +209,9 @@ public class CertTest {
         }
     }
 
+    /**
+     * test csrTemplate
+     */
     @Order(4)
     @Test
     public void testCsrTemplate() {

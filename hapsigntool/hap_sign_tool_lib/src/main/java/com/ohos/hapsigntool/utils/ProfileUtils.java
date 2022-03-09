@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
  * Utils to process provision profile
  */
 public class ProfileUtils {
-
     private ProfileUtils() {
     }
 
