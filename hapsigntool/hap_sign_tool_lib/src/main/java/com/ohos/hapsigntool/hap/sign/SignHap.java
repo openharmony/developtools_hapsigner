@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
 /**
- * Hap Signature Scheme v2 signer
+ * Hap Signature Scheme signer
  *
  * @since 2021/12/21
  */
@@ -201,8 +201,8 @@ public abstract class SignHap {
             Map<ContentDigestAlgorithm, byte[]> contentDigests,
             List<SigningBlock> optionalBlocks)
             throws SignatureException {
-        byte[] hapSignatureSchemeV2Block = generateHapSignatureSchemeV2Block(signerConfig, contentDigests);
-        return generateHapSigningBlock(hapSignatureSchemeV2Block, optionalBlocks);
+        byte[] hapSignatureSchemeBlock = generateHapSignatureSchemeBlock(signerConfig, contentDigests);
+        return generateHapSigningBlock(hapSignatureSchemeBlock, optionalBlocks);
     }
 
     private static byte[] generateHapSigningBlock(byte[] hapSignatureSchemeBlock, List<SigningBlock> optionalBlocks) {
@@ -296,7 +296,7 @@ public abstract class SignHap {
         return result.array();
     }
 
-    private static byte[] generateHapSignatureSchemeV2Block(
+    private static byte[] generateHapSignatureSchemeBlock(
             SignerConfig signerConfig, Map<ContentDigestAlgorithm, byte[]> contentDigests) throws SignatureException {
         byte[] signerBlock = null;
         try {
@@ -333,7 +333,7 @@ public abstract class SignHap {
     }
 
     /**
-     * Signs the provided Hap using Hap Signature Scheme v2 and returns the
+     * Signs the provided Hap using Hap Signature Scheme and returns the
      * signed block as an array of ByteBuffer
      *
      * @param contents Hap content before ZIP CD

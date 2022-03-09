@@ -32,7 +32,9 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -122,9 +124,9 @@ public class KeyStoreHelper {
             } else {
                 keyStore.load(null, null);
             }
-        } catch (Exception exception) {
+        } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
         }
     }
 
@@ -277,7 +279,7 @@ public class KeyStoreHelper {
             keyStore.store(fos, keyStorePwd);
             fos.flush();
             fos.close();
-        } catch (Exception exception) {
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;
