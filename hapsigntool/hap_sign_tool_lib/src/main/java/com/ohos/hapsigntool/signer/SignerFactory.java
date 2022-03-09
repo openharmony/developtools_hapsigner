@@ -25,7 +25,6 @@ import java.security.KeyPair;
  * @since 2021/12/28
  */
 public class SignerFactory {
-
     /**
      * Create a signer.
      *
