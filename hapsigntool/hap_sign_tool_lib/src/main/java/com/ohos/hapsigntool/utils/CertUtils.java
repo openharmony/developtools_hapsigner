@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -254,13 +255,15 @@ public final class CertUtils {
      * @param cert Byte from cert file
      * @return Certs
      * @throws CertificateException Convert failed
+     * @throws VerifyCertificateChainException certificates in file are not certificate chain
      */
     @SuppressWarnings("unchecked")
-    public static List<X509Certificate> generateCertificates(byte[] cert) throws CertificateException {
+    public static List<X509Certificate> generateCertificates(byte[] cert) throws CertificateException, VerifyCertificateChainException {
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
         List<X509Certificate> certificates =
                 (List<X509Certificate>) factory.generateCertificates(new ByteArrayInputStream(cert));
         sortCertificateChain(certificates);
+        CertificateUtils.verifyCertChain(certificates);
         return certificates;
     }
 

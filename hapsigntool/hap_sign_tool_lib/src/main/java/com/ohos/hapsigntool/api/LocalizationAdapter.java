@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.api;
 import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.keystore.KeyStoreHelper;
 import com.ohos.hapsigntool.utils.CertUtils;
@@ -264,7 +265,7 @@ public class LocalizationAdapter {
         List<X509Certificate> certificates = null;
         try {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
-        } catch (IOException | CertificateException exception) {
+        } catch (IOException | CertificateException | VerifyCertificateChainException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
         }
