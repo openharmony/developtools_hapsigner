@@ -54,7 +54,7 @@ public class LocalizationAdapter {
     /**
      * Logger
      */
-    private final Logger logger = LogManager.getLogger(LocalizationAdapter.class);
+    private static final Logger logger = LogManager.getLogger(LocalizationAdapter.class);
 
     /**
      * Params

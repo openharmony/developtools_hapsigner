@@ -41,7 +41,7 @@ public class Options extends HashMap<String, Object> {
     /**
      * Logger.
      */
-    private final Logger logger = LogManager.getLogger(ServiceApi.class);
+    private static final Logger logger = LogManager.getLogger(ServiceApi.class);
     /**
      * App cert file parameter name.
      */

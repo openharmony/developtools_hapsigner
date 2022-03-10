@@ -41,7 +41,7 @@ public class LocalSigner implements ISigner {
     /**
      * logger of LocalSigner
      */
-    private final Logger logger = LogManager.getLogger(LocalSigner.class);
+    private static final Logger logger = LogManager.getLogger(LocalSigner.class);
     /**
      * PrivateKey.
      */

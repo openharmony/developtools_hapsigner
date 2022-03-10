@@ -82,7 +82,7 @@ public class KeyStoreHelper {
     /**
      * Use LogManager to show log instead of use "System.out.print" to show log.
      */
-    private final Logger logger = LogManager.getLogger(KeyStoreHelper.class);
+    private static final Logger logger = LogManager.getLogger(KeyStoreHelper.class);
     /**
      * Field keyStorePath.
      */
