@@ -63,34 +63,42 @@ public class KeyStoreHelper {
      * Field KEYSTORE_TYPE_PKCS12.
      */
     private static final String KEYSTORE_TYPE_PKCS12 = "pkcs12";
+
     /**
      * Field KEYSTORE_TYPE_JKS.
      */
     private static final String KEYSTORE_TYPE_JKS = "jks";
+
     /**
      * Field FILE_TYPE_JKS.
      */
     private static final String FILE_TYPE_JKS = "jks";
+
     /**
      * Field FILE_TYPE_PKCS12.
      */
     private static final String FILE_TYPE_PKCS12 = "p12";
+
     /**
      * Field number 100.
      */
     private static final int NUM_ONE_HUNDRED = 100;
+
     /**
      * Use LogManager to show log instead of use "System.out.print" to show log.
      */
     private static final Logger logger = LogManager.getLogger(KeyStoreHelper.class);
+
     /**
      * Field keyStorePath.
      */
     private final String keyStorePath;
+
     /**
      * Field keyStorePwd.
      */
     private final char[] keyStorePwd;
+
     /**
      * Field keyStore.
      */

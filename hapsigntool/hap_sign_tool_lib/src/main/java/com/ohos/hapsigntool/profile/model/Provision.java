@@ -29,42 +29,52 @@ public class Provision {
      * Field DEBUG.
      */
     public static final String DEBUG = "debug";
+
     /**
      * Field RELEASE.
      */
     public static final String RELEASE = "release";
+
     /**
      * Field HOS_SYSTEM_APP.
      */
     public static final String HOS_SYSTEM_APP = "hos_system_app";
+
     /**
      * Field HOS_NORMAL_APP.
      */
     public static final String HOS_NORMAL_APP = "hos_normal_app";
+
     /**
      * Field NORMAL.
      */
     public static final String NORMAL = "normal";
+
     /**
      * Field SYSTEM_BASIC.
      */
     public static final String SYSTEM_BASIC = "system_basic";
+
     /**
      * Field SYSTEM_CORE.
      */
     public static final String SYSTEM_CORE = "system_core";
+
     /**
      * Field APP_GALLERY.
      */
     public static final String APP_GALLERY = "app_gallery";
+
     /**
      * Field ENTERPRISE.
      */
     public static final String ENTERPRISE = "enterprise";
+
     /**
      * Field OS_INTEGRATION.
      */
     public static final String OS_INTEGRATION = "os_integration";
+
     /**
      * Number 100.
      */
@@ -75,51 +85,61 @@ public class Provision {
      */
     @SerializedName("version-code")
     private Integer versionCode;
+
     /**
      * Field version-name.
      */
     @SerializedName("version-name")
     private String versionName;
+
     /**
      * Field uuid.
      */
     @SerializedName("uuid")
     private String uuid;
+
     /**
      * Field type.
      */
     @SerializedName("type")
     private String type;
+
     /**
      * Field app-distribution-type.
      */
     @SerializedName("app-distribution-type")
     private String appDistributionType;
+
     /**
      * Field validity.
      */
     @SerializedName("validity")
     private Validity validity;
+
     /**
      * Field bundle-info.
      */
     @SerializedName("bundle-info")
     private BundleInfo bundleInfo;
+
     /**
      * Field acls.
      */
     @SerializedName("acls")
     private Acls acls;
+
     /**
      * Field permissions.
      */
     @SerializedName("permissions")
     private Permissions permissions;
+
     /**
      * Field debug-info.
      */
     @SerializedName("debug-info")
     private DebugInfo debuginfo;
+
     /**
      * Field issuer.
      */

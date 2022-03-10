@@ -59,10 +59,12 @@ public class CertBuilder {
      * Logger.
      */
     private static final Logger logger = LogManager.getLogger(ServiceApi.class);
+
     /**
      * issuer keyPair.
      */
     private final KeyPair keyPair;
+
     /**
      * CertificateBuilder.
      */

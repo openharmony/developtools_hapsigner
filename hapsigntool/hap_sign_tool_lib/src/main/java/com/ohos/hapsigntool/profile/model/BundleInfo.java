@@ -30,26 +30,31 @@ public class BundleInfo {
      */
     @SerializedName("developer-id")
     private String developerId;
+
     /**
      * Field development-certificate.
      */
     @SerializedName("development-certificate")
     private String developmentCertificate;
+
     /**
      * Field distribution-certificate.
      */
     @SerializedName("distribution-certificate")
     private String distributionCertificate;
+
     /**
      * Field bundle-name.
      */
     @SerializedName("bundle-name")
     private String bundleName;
+
     /**
      * Field apl.
      */
     @SerializedName("apl")
     private String apl;
+
     /**
      * Field app-feature.
      */
