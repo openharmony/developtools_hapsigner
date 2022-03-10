@@ -50,14 +50,17 @@ public final class HapSignTool {
      * Local sign.
      */
     private static final String LOCAL_SIGN = "localSign";
+
     /**
      * Remote sign.
      */
     private static final String REMOTE_SIGN = "remoteSign";
+
     /**
      * Signed.
      */
     private static final String SIGNED = "1";
+
     /**
      * No signed.
      */

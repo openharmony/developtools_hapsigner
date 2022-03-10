@@ -50,14 +50,17 @@ public class LocalizationAdapter {
      */
     private static final int MIN_CERT_CHAIN_SIZE = 2;
     private static final int MAX_CERT_CHAIN_SIZE = 3;
+
     /**
      * Logger
      */
     private final Logger logger = LogManager.getLogger(LocalizationAdapter.class);
+
     /**
      * Params
      */
     private final Options options;
+
     /**
      * Operation of keystore
      */
