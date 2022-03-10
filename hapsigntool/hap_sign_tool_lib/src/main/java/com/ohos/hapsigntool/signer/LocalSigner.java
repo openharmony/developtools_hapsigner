@@ -42,10 +42,12 @@ public class LocalSigner implements ISigner {
      * logger of LocalSigner
      */
     private static final Logger logger = LogManager.getLogger(LocalSigner.class);
+
     /**
      * PrivateKey.
      */
     private final PrivateKey privateKey;
+
     /**
      * X509Certificate.
      */

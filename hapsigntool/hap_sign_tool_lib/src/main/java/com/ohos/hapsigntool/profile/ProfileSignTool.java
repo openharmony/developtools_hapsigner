@@ -68,6 +68,7 @@ public final class ProfileSignTool {
      * Empty byte array.
      */
     private static final byte[] NO_BYTE = {};
+
     /**
      * logger
      */

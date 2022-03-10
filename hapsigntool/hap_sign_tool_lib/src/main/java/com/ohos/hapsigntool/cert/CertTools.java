@@ -52,22 +52,27 @@ public final class CertTools {
      * Ten years days.
      */
     private static final int TEN_YEAR_DAY = 3650;
+
     /**
      * Three years dats.
      */
     private static final int THREE_YEAR_DAY = 1095;
+
     /**
      * Empty csr array.
      */
     private static final byte[] NO_CSR = {};
+
     /**
      * ECC.
      */
     private static final String ECC = "ECDSA";
+
     /**
      * Compile String.
      */
     private static final Pattern SIGN_ALGORITHM_PATTERN = Pattern.compile("^SHA([0-9]{3})with([A-Z]{1,5})$");
+
     /**
      * Logger.
      */
