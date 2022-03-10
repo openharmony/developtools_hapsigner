@@ -102,7 +102,7 @@ public class ProfileTest {
     /**
      * Add log info.
      */
-    private final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
 
     @Test
     public void testProfile() throws IOException {

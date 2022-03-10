@@ -81,7 +81,7 @@ public class CertTest {
     /**
      * Add log info.
      */
-    private final Logger logger = LoggerFactory.getLogger(CertTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CertTest.class);
     /**
      * Generate keystore file.
      */

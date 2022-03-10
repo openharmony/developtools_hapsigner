@@ -72,7 +72,7 @@ public class SignToolServiceImpl implements ServiceApi {
     /**
      * Logger.
      */
-    private final Logger logger = LogManager.getLogger(ServiceApi.class);
+    private static final Logger logger = LogManager.getLogger(ServiceApi.class);
 
 	/**
      * map of input params for signing hap.

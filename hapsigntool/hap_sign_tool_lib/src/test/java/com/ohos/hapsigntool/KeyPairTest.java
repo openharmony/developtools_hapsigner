@@ -39,7 +39,7 @@ public class KeyPairTest {
     /**
      * Add log info.
      */
-    private Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
 
     @Test
     public void testKeyPair() {

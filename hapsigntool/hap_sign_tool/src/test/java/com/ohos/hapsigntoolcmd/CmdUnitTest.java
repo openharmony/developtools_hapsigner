@@ -369,7 +369,7 @@ public class CmdUnitTest {
     /**
      * Add log info.
      */
-    private final Logger logger = LoggerFactory.getLogger(CmdUnitTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CmdUnitTest.class);
     @Order(1)
     @Test
     public void testCmdKeypair() throws IOException {
