@@ -63,10 +63,12 @@ public class SignToolServiceImpl implements ServiceApi {
      * App signing Capabilty Bytes.
      */
     private static final byte[] APP_SIGNING_CAPABILITY = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
+
     /**
      * Profile signing Capabilty Bytes.
      */
     private static final byte[] PROFILE_SIGNING_CAPABILITY = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x01};
+
     /**
      * Logger.
      */
