@@ -40,7 +40,7 @@ public class Validity {
      * Sub dto of Provision.
      */
     public Validity() {
-        //Empty constructor of Validity.
+        // Empty constructor of Validity.
     }
 
     /**

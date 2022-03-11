@@ -27,7 +27,6 @@ import java.util.List;
  * @since 2021/12/28
  */
 public class DebugInfo {
-
     /**
      * Max number of debug device.
      */
@@ -48,7 +47,7 @@ public class DebugInfo {
      * Sub dto of Provision.
      */
     public DebugInfo() {
-        //Empty constructor of DebugInfo.
+        // Empty constructor of DebugInfo.
     }
 
     public String getDeviceIdType() {
@@ -77,7 +76,6 @@ public class DebugInfo {
             ValidateUtils.throwIfMatches(!this.isDeviceIdTypeValid(), ERROR.SIGN_ERROR,
                     "Device id type must be sn or udid, current is " + this.deviceIdType);
         }
-
     }
 
     private boolean isDeviceIdTypeValid() {
