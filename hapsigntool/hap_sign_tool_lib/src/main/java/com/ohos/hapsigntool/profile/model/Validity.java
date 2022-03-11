@@ -30,6 +30,7 @@ public class Validity {
      */
     @SerializedName("not-before")
     private Long notBefore;
+
     /**
      * Field not-after.
      */

@@ -32,7 +32,9 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -61,34 +63,42 @@ public class KeyStoreHelper {
      * Field KEYSTORE_TYPE_PKCS12.
      */
     private static final String KEYSTORE_TYPE_PKCS12 = "pkcs12";
+
     /**
      * Field KEYSTORE_TYPE_JKS.
      */
     private static final String KEYSTORE_TYPE_JKS = "jks";
+
     /**
      * Field FILE_TYPE_JKS.
      */
     private static final String FILE_TYPE_JKS = "jks";
+
     /**
      * Field FILE_TYPE_PKCS12.
      */
     private static final String FILE_TYPE_PKCS12 = "p12";
+
     /**
      * Field number 100.
      */
     private static final int NUM_ONE_HUNDRED = 100;
+
     /**
      * Use LogManager to show log instead of use "System.out.print" to show log.
      */
-    private final Logger logger = LogManager.getLogger(KeyStoreHelper.class);
+    private static final Logger logger = LogManager.getLogger(KeyStoreHelper.class);
+
     /**
      * Field keyStorePath.
      */
     private final String keyStorePath;
+
     /**
      * Field keyStorePwd.
      */
     private final char[] keyStorePwd;
+
     /**
      * Field keyStore.
      */
@@ -122,9 +132,9 @@ public class KeyStoreHelper {
             } else {
                 keyStore.load(null, null);
             }
-        } catch (Exception exception) {
+        } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
         }finally {
             FileUtils.close(fis);
         }
@@ -277,7 +287,7 @@ public class KeyStoreHelper {
             keyStore.setKeyEntry(alias, keyPair.getPrivate(), keyPwd, certs);
             keyStore.store(fos, keyStorePwd);
             fos.flush();
-        } catch (Exception exception) {
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;

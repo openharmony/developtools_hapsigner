@@ -29,6 +29,7 @@ public class Params {
      * Method names in the command line.
      */
     private String method;
+
     /**
      * Hashmap for storing parameters.
      */

@@ -30,6 +30,7 @@ public class Permissions {
      */
     @SerializedName("restricted-permissions")
     private List<String> restrictedPermissions;
+
     /**
      * Field restricted-capabilities.
      */

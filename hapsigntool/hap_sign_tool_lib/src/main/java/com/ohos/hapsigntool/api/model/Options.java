@@ -34,42 +34,52 @@ public class Options extends HashMap<String, Object> {
      * Serial version UID.
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * Empty char.
      */
     private static final char[] NO_CHAR = {};
+
     /**
      * Logger.
      */
-    private final Logger logger = LogManager.getLogger(ServiceApi.class);
+    private static final Logger logger = LogManager.getLogger(ServiceApi.class);
+
     /**
      * App cert file parameter name.
      */
     public static final String APP_CERT_FILE = "appCertFile";
+
     /**
      * BasicConstraints parameter name.
      */
     public static final String BASIC_CONSTRAINTS = "basicConstraints";
+
     /**
      * BasicConstraintsCa parameter name.
      */
     public static final String BASIC_CONSTRAINTS_CA = "basicConstraintsCa";
+
     /**
      * BasicConstraintsCritical parameter name.
      */
     public static final String BASIC_CONSTRAINTS_CRITICAL = "basicConstraintsCritical";
+
     /**
      * BasicConstraintsPathLen parameter name.
      */
     public static final String BASIC_CONSTRAINTS_PATH_LEN = "basicConstraintsPathLen";
+
     /**
      * End file type of cert. values in: cert / certChain
      */
     public static final String OUT_FORM = "outForm";
+
     /**
      * Ca cert file parameter name.
      */
     public static final String CA_CERT_FILE = "rootCaCertFile";
+
     /**
      * Sub cert for sign
      */
@@ -79,34 +89,42 @@ public class Options extends HashMap<String, Object> {
      * Ext cfg file parameter name.
      */
     public static final String EXT_CFG_FILE = "extCfgFile";
+
     /**
      * Ext key usage parameter name.
      */
     public static final String EXT_KEY_USAGE = "extKeyUsage";
+
     /**
      * Ext key usage critical parameter name.
      */
     public static final String EXT_KEY_USAGE_CRITICAL = "extKeyUsageCritical";
+
     /**
      * In file parameter name.
      */
     public static final String IN_FILE = "inFile";
+
     /**
      * In file parameter form.
      */
     public static final String IN_FORM = "inForm";
+
     /**
      * Issuer parameter name.
      */
     public static final String ISSUER = "issuer";
+
     /**
      * Issuer key alias parameter name.
      */
     public static final String ISSUER_KEY_ALIAS = "issuerKeyAlias";
+
     /**
      * Issuer key right parameter name.
      */
     public static final String ISSUER_KEY_RIGHTS = "issuerKeyPwd";
+
     /**
      * Issuer Key Store File parameter name.
      */
@@ -116,42 +134,52 @@ public class Options extends HashMap<String, Object> {
      * Issuer Key Store Pwd parameter name.
      */
     public static final String ISSUER_KEY_STORE_RIGHTS = "issuerKeystorePwd";
+
     /**
      * Key alg parameter name.
      */
     public static final String KEY_ALG = "keyAlg";
+
     /**
      * Key alias parameter name.
      */
     public static final String KEY_ALIAS = "keyAlias";
+
     /**
      * Key right parameter name.
      */
     public static final String KEY_RIGHTS = "keyPwd";
+
     /**
      * Key size parameter name.
      */
     public static final String KEY_SIZE = "keySize";
+
     /**
      * Keystore file parameter name.
      */
     public static final String KEY_STORE_FILE = "keystoreFile";
+
     /**
      * Keystore right parameter name.
      */
     public static final String KEY_STORE_RIGHTS = "keystorePwd";
+
     /**
      * Key usage parameter name.
      */
     public static final String KEY_USAGE = "keyUsage";
+
     /**
      * Key usage critical parameter name.
      */
     public static final String KEY_USAGE_CRITICAL = "keyUsageCritical";
+
     /**
      * Mode parameter name.
      */
     public static final String MODE = "mode";
+
     /**
      * Out file parameter name.
      */
@@ -171,30 +199,37 @@ public class Options extends HashMap<String, Object> {
      * Profile cert file parameter name.
      */
     public static final String PROFILE_CERT_FILE = "profileCertFile";
+
     /**
      * Profile file parameter name.
      */
     public static final String PROFILE_FILE = "profileFile";
+
     /**
      * Profile file is signed or not.
      */
     public static final String PROFILE_SIGNED = "profileSigned";
+
     /**
      * Sign alg parameter name.
      */
     public static final String SIGN_ALG = "signAlg";
+
     /**
      * Subject parameter name.
      */
     public static final String SUBJECT = "subject";
+
     /**
      * Trusted app source file parameter name.
      */
     public static final String TRUSTED_APP_SOURCE_FILE = "trustedAppSourceFile";
+
     /**
      * Trusted root ca file parameter name.
      */
     public static final String TRUSTED_ROOT_CA_FILE = "trustedRootCaFile";
+
     /**
      * Validity parameter name.
      */
@@ -205,6 +240,7 @@ public class Options extends HashMap<String, Object> {
      */
     public static final String EXT_KEY_USAGE_SCOPE = "clientAuthentication,serverAuthentication,codeSignature,"
             + "emailProtection,smartCardLogin,timestamp,ocspSignature";
+
     /**
      * Key usage includes all usages.
      */
