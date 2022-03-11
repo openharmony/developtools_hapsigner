@@ -24,7 +24,7 @@ public final class StringUtils {
     private StringUtils() {
     }
 
-	/**
+    /**
      * Check string is empty.
      *
      * @param cs input string

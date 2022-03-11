@@ -104,6 +104,10 @@ public class ProfileTest {
      */
     private final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
 
+    /**
+     * test profile
+     * @throws IOException
+     */
     @Test
     public void testProfile() throws IOException {
         try {

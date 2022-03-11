@@ -22,6 +22,7 @@ import com.ohos.hapsigntool.utils.ValidateUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -83,7 +84,7 @@ public final class CmdUtil {
             CustomException.throwException(ERROR.COMMAND_ERROR,
                     String.format("Duplicate param '%s'. Stop processing", key));
             result = false;
-        } else if (key.toLowerCase().endsWith("pwd")) {
+        } else if (key.toLowerCase(Locale.ROOT).endsWith("pwd")) {
             params.getOptions().put(key, value.toCharArray());
             result = true;
         } else {
@@ -166,13 +167,13 @@ public final class CmdUtil {
     public static void verifyType(String inputType, String supportTypes) {
         String[] types = inputType.split(",");
         List<String> supportList = Arrays.asList(supportTypes.split(","));
-        for (String t : types) {
-            if (StringUtils.isEmpty(t)) {
+        for (String type : types) {
+            if (StringUtils.isEmpty(type)) {
                 continue;
             }
-            if (!supportList.contains(t.trim())) {
+            if (!supportList.contains(type.trim())) {
                 CustomException.throwException(ERROR.COMMAND_ERROR,
-                        "'" + t + "' in params '" + inputType + "' is not support");
+                        "'" + type + "' in params '" + inputType + "' is not support");
             }
         }
     }
@@ -195,6 +196,10 @@ public final class CmdUtil {
         }
     }
 
+    /**
+     * Command parameter constant
+     *
+     */
     public static final class Method {
         /**
          * Generate app cert method name.
@@ -241,7 +246,7 @@ public final class CmdUtil {
          * Constructor of Method.
          */
         private Method() {
-            //Empty constructor of Method.
+            // Empty constructor of Method.
         }
     }
 }

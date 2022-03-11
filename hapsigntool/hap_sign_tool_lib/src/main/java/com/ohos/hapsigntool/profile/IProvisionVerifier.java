@@ -24,7 +24,6 @@ import com.ohos.hapsigntool.profile.model.VerificationResult;
  */
 @FunctionalInterface
 public interface IProvisionVerifier {
-
     /**
      * verify p7b content.
      *

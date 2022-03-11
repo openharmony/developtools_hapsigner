@@ -69,6 +69,10 @@ public class Provision {
      * Number 100.
      */
     public static final int NUM_ONE_HUNDRED = 100;
+    /**
+     * newline character
+     */
+    public static final String NEWLINE_CHARACTER = System.lineSeparator();
 
     /**
      * Field version-code.
@@ -130,13 +134,23 @@ public class Provision {
      * Dto for provision profile.
      */
     public Provision() {
-        //Empty constructor of Provision.
+        // Empty constructor of Provision.
     }
 
+    /**
+     * buildType valid
+     * @param buildType  buildType
+     * @return
+     */
     public static boolean isBuildTypeValid(String buildType) {
         return DEBUG.equals(buildType) || RELEASE.equals(buildType);
     }
 
+    /**
+     * buildType valid
+     * @param buildType buildType
+     * @return
+     */
     public static boolean isBuildTypeRelease(String buildType) {
         return RELEASE.equals(buildType);
     }
@@ -278,29 +292,29 @@ public class Provision {
 
     @Override
     public String toString() {
-        return "\n" + "version-code:" + versionCode + "\n"
-                + "version-name:" + versionCode + "\n"
-                + "uuid:" + uuid + "\n"
-                + "type:" + type + "\n"
-                + "app-distribution-type:" + appDistributionType + "\n"
-                + "validity:\n"
-                + "\t not-before:" + getValidity().getNotBefore() + "\n"
-                + "\t not-after:" + getValidity().getNotAfter() + "\n"
-                + "bundle-info\n"
-                + "\t developer-id:" + getBundleInfo().getDeveloperId() + "\n"
-                + "\t development-certificate:" + getBundleInfo().getDevelopmentCertificate() + "\n"
-                + "\t distribution-certificate:" + getBundleInfo().getDistributionCertificate() + "\n"
-                + "\t bundle-name:" + getBundleInfo().getBundleName() + "\n"
-                + "\t apl:" + getBundleInfo().getApl() + "\n"
-                + "\t app-feature:" + getBundleInfo().getAppFeature() + "\n"
-                + "acls:\n"
-                + "\t allowed-acls:" + getAcls().getAllowedAcls() + "\n"
-                + "permissions:\n"
-                + "\t restricted-permissions:" + getPermissions().getRestrictedPermissions() + "\n"
-                + "\t restricted-capabilities:" + getPermissions().getRestrictedCapabilities() + "\n"
-                + "debug-info\n"
-                + "\t device-id-type:" + getDebuginfo().getDeviceIdType() + "\n"
-                + "\t device-ids:" + getDebuginfo().getDeviceIds() + "\n"
+        return NEWLINE_CHARACTER + "version-code:" + versionCode + NEWLINE_CHARACTER
+                + "version-name:" + versionCode + NEWLINE_CHARACTER
+                + "uuid:" + uuid + NEWLINE_CHARACTER
+                + "type:" + type + NEWLINE_CHARACTER
+                + "app-distribution-type:" + appDistributionType + NEWLINE_CHARACTER
+                + "validity:"+NEWLINE_CHARACTER
+                + "\t not-before:" + getValidity().getNotBefore() + NEWLINE_CHARACTER
+                + "\t not-after:" + getValidity().getNotAfter() + NEWLINE_CHARACTER
+                + "bundle-info"+NEWLINE_CHARACTER
+                + "\t developer-id:" + getBundleInfo().getDeveloperId() + NEWLINE_CHARACTER
+                + "\t development-certificate:" + getBundleInfo().getDevelopmentCertificate() + NEWLINE_CHARACTER
+                + "\t distribution-certificate:" + getBundleInfo().getDistributionCertificate() + NEWLINE_CHARACTER
+                + "\t bundle-name:" + getBundleInfo().getBundleName() + NEWLINE_CHARACTER
+                + "\t apl:" + getBundleInfo().getApl() + NEWLINE_CHARACTER
+                + "\t app-feature:" + getBundleInfo().getAppFeature() + NEWLINE_CHARACTER
+                + "acls:"+NEWLINE_CHARACTER
+                + "\t allowed-acls:" + getAcls().getAllowedAcls() + NEWLINE_CHARACTER
+                + "permissions:"+NEWLINE_CHARACTER
+                + "\t restricted-permissions:" + getPermissions().getRestrictedPermissions() + NEWLINE_CHARACTER
+                + "\t restricted-capabilities:" + getPermissions().getRestrictedCapabilities() + NEWLINE_CHARACTER
+                + "debug-info"+NEWLINE_CHARACTER
+                + "\t device-id-type:" + getDebuginfo().getDeviceIdType() + NEWLINE_CHARACTER
+                + "\t device-ids:" + getDebuginfo().getDeviceIds() + NEWLINE_CHARACTER
                 + "issuer:" + getIssuer();
     }
 }

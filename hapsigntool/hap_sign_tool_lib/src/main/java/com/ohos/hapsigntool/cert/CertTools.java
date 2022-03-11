@@ -137,7 +137,7 @@ public final class CertTools {
         try {
             return new CertBuilder(keyPair, adapter.getIssuer(), csr,
                     adapter.getOptions().getInt(Options.VALIDITY, THREE_YEAR_DAY))
-                    //Need CertLevel
+                    // Need CertLevel
                     .withAuthorityKeyIdentifier(CertLevel.ROOT_CA)
                     .withBasicConstraints(CertLevel.ROOT_CA,
                             adapter.isBasicConstraintsCritical(),
