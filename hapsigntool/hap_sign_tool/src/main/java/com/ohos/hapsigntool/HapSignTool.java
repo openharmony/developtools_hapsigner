@@ -104,7 +104,7 @@ public final class HapSignTool {
             ServiceApi api = new SignToolServiceImpl();
             Params params = CmdUtil.convert2Params(args);
             LOGGER.debug(params.toString());
-            LOGGER.info("Start " + params.getMethod());
+            LOGGER.info("Start {}", params.getMethod());
             boolean result;
             result = dispatchParams(params, api);
             if (result) {
@@ -273,7 +273,19 @@ public final class HapSignTool {
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.APP_CERT_FILE);
         }
+        checkProfile(params);
+        String inForm = params.getString(Options.IN_FORM);
+        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
+        }
+        String signAlg = params.getString(Options.SIGN_ALG);
+        CmdUtil.judgeEndSignAlgType(signAlg);
+        FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
 
+        return api.signHap(params);
+    }
+
+    private static void checkProfile(Options params) {
         String profileFile = params.getString(Options.PROFILE_FILE);
         String profileSigned = params.getString(Options.PROFILE_SIGNED,SIGNED);
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
@@ -284,16 +296,6 @@ public final class HapSignTool {
         } else {
             FileUtils.validFileType(profileFile, "json");
         }
-
-        String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
-        }
-        String signAlg = params.getString(Options.SIGN_ALG);
-        CmdUtil.judgeEndSignAlgType(signAlg);
-        FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-
-        return api.signHap(params);
     }
 
     private static boolean runSignProfile(Options params, ServiceApi api) {

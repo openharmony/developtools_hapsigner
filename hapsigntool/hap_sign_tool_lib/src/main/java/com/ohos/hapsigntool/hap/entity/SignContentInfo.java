@@ -56,13 +56,18 @@ class SignContentHash {
      */
     protected int contentHashLen;
 
+    /**
+     * Length of two chars, one short,and one int
+     */
+    private static final int CONTENT_HEAD_SIZE = 8;
+
     SignContentHash(char type, char tag, short algId, int length, byte[] hash) {
         this.type = type;
         this.tag = tag;
         this.algId = algId;
         this.length = length;
         this.hash = hash;
-        this.contentHashLen = 8 + this.hash.length;
+        this.contentHashLen = CONTENT_HEAD_SIZE + this.hash.length;
     }
 }
 
@@ -130,7 +135,7 @@ public class SignContentInfo {
                 index++;
                 index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, tmp.algId);
                 index = ByteArrayUtils.insertIntToByteArray(ret, index, tmp.length);
-                index = ByteArrayUtils.insertByteToByteArray(ret, ret.length, index, tmp.hash, tmp.hash.length);
+                index = ByteArrayUtils.insertByteToByteArray(ret, index, tmp.hash, tmp.hash.length);
                 if (index < 0) {
                     throw new IOException();
                 }

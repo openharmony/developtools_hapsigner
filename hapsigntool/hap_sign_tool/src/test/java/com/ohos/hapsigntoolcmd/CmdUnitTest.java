@@ -42,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CmdUnitTest {
-
     /**
      * Command line parameter appCaCertFile.
      */
@@ -370,10 +369,14 @@ public class CmdUnitTest {
      * Add log info.
      */
     private static final Logger logger = LoggerFactory.getLogger(CmdUnitTest.class);
+
+    /**
+     * test cmdKeypair
+     * @throws IOException io error
+     */
     @Order(1)
     @Test
     public void testCmdKeypair() throws IOException {
-
         try {
             deleteFile(CMD_KEY_APP_STORE_PATH);
             deleteFile(CMD_KEY_PROFILE_STORE_PATH);
@@ -417,7 +420,6 @@ public class CmdUnitTest {
     @Order(2)
     @Test
     public void testCmdCsr() throws IOException {
-
         try {
             deleteFile(CMD_CSR_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CSR});
@@ -449,7 +451,6 @@ public class CmdUnitTest {
     @Order(3)
     @Test
     public void testCmdCert() throws IOException {
-
         try {
             deleteFile(CMD_CERT_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CERT});
@@ -649,7 +650,6 @@ public class CmdUnitTest {
     @Order(7)
     @Test
     public void testCmdSignProfile() throws IOException {
-
         try {
             deleteFile(CMD_SIGN_PROFILE_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.SIGN_PROFILE});

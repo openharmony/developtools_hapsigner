@@ -35,12 +35,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+
 /**
  * Lite OS bin file Signature signer.
  *
  * @since 2021/12/21
  */
 public class SignBin {
+    private SignBin() {
+    }
+
     private static final Logger LOGGER = LogManager.getLogger(SignBin.class);
 
     /**

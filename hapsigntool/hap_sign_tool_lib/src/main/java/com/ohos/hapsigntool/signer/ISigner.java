@@ -26,7 +26,6 @@ import java.util.List;
  * @since 2021/12/28
  */
 public interface ISigner {
-
     /**
      * Sign function, implement by local or remote.
      *

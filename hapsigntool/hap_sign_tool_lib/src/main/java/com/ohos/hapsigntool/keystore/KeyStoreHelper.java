@@ -123,18 +123,20 @@ public class KeyStoreHelper {
         this.keyStorePwd = storePwd;
         this.keyStorePath = keyStorePath;
         this.keyStore = createKeyStoreAccordingFileType(keyStorePath);
+        FileInputStream fis = null;
         try {
             if (FileUtils.isFileExist(keyStorePath)) {
-                logger.info(keyStorePath + " is exist. Try to load it with given passwd");
-                FileInputStream fis = new FileInputStream(keyStorePath);
+                logger.info("{} is exist. Try to load it with given passwd",keyStorePath);
+                fis = new FileInputStream(keyStorePath);
                 keyStore.load(fis, storePwd);
-                FileUtils.close(fis);
             } else {
                 keyStore.load(null, null);
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
+        }finally {
+            FileUtils.close(fis);
         }
     }
 
@@ -281,12 +283,10 @@ public class KeyStoreHelper {
             X509Certificate certificate = createKeyOnly(keyPair, alias);
             certs = new X509Certificate[]{certificate};
         }
-        try {
+        try (FileOutputStream fos = new FileOutputStream(keyStorePath)){
             keyStore.setKeyEntry(alias, keyPair.getPrivate(), keyPwd, certs);
-            FileOutputStream fos = new FileOutputStream(keyStorePath);
             keyStore.store(fos, keyStorePwd);
             fos.flush();
-            fos.close();
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());

@@ -76,18 +76,32 @@ public class HapUtils {
     /**
      * The size of data block used to get digest
      */
+
     public static final int CONTENT_DIGESTED_CHUNK_MAX_SIZE_BYTES = 1024 * 1024;
+
     /**
      * Content version
      */
     public static final int CONTENT_VERSION = 2;
 
+    /**
+     * bit size
+     */
     public static final int BIT_SIZE = 8;
 
+    /**
+     * half bit size
+     */
     public static final int HALF_BIT_SIZE = 4;
 
+    /**
+     * int size
+     */
     public static  final int INT_SIZE = 4;
 
+    /**
+     * block number
+     */
     public static  final int BLOCK_NUMBER = 1;
 
     private HapUtils() {
@@ -146,6 +160,7 @@ public class HapUtils {
     public static byte[] getHapSigningBlockMagic() {
         return HAP_SIGNING_BLOCK_MAGIC;
     }
+
     /**
      * The set of IDs of optional blocks in hap signature block.
      */
@@ -155,7 +170,6 @@ public class HapUtils {
         blockIds.add(HAP_PROFILE_BLOCK_ID);
         blockIds.add(HAP_PROPERTY_BLOCK_ID);
         HAP_SIGNATURE_OPTIONAL_BLOCK_IDS = Collections.unmodifiableSet(blockIds);
-
     }
 
     /**

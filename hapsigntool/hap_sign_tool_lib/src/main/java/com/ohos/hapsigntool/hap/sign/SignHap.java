@@ -46,7 +46,6 @@ import java.util.jar.JarOutputStream;
  * @since 2021/12/21
  */
 public abstract class SignHap {
-
     private static final int HAP_SIGN_SCHEME_VERSION = 3;
     private static final int STORED_ENTRY_SO_ALIGNMENT = 4096;
     private static final int BUFFER_LENGTH = 4096;
@@ -243,13 +242,13 @@ public abstract class SignHap {
         }
 
         long resultSize =
-               ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1))
-                       + optionalBlockSize // optional pair
-                       + hapSignatureSchemeBlock.length // App signing pairs
-                       + BLOCK_COUNT // block count
-                       + BLOCK_SIZE // size
-                       + BLOCK_MAGIC // magic
-                       + BLOCK_VERSION; // version
+                ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1))
+                        + optionalBlockSize // optional pair
+                        + hapSignatureSchemeBlock.length // App signing pairs
+                        + BLOCK_COUNT // block count
+                        + BLOCK_SIZE // size
+                        + BLOCK_MAGIC // magic
+                        + BLOCK_VERSION; // version
         if (resultSize > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("HapSigningBlock out of range : " + resultSize);
         }

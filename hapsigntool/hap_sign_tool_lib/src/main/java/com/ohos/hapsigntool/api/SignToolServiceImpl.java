@@ -54,7 +54,6 @@ import java.util.Arrays;
  * @since 2021/12/28
  */
 public class SignToolServiceImpl implements ServiceApi {
-
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
@@ -73,11 +72,6 @@ public class SignToolServiceImpl implements ServiceApi {
      * Logger.
      */
     private static final Logger logger = LogManager.getLogger(ServiceApi.class);
-
-	/**
-     * map of input params for signing hap.
-     */
-	 protected Map<String, String> inputParams = new HashMap<String, String>();
 
     /**
      * Generate keyStore.
@@ -138,7 +132,6 @@ public class SignToolServiceImpl implements ServiceApi {
 
         X509Certificate cert = CertTools.generateCert(rootKeyPair, csr, adapter);
         return outputCert(cert, adapter.getOutFile());
-
     }
 
     /**
@@ -156,10 +149,10 @@ public class SignToolServiceImpl implements ServiceApi {
         String ksFile = options.getString(Options.KEY_STORE_FILE);
         String iksFile = options.getString(Options.ISSUER_KEY_STORE_FILE);
         if (genRootCA) {
-             if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)){
-                 CustomException.throwException(ERROR.WRITE_FILE_ERROR,
-                         String.format("Parameter '%s' and parameter '%s' are inconsistent",ksFile,iksFile));
-             }
+            if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)){
+                CustomException.throwException(ERROR.WRITE_FILE_ERROR,
+                        String.format("Parameter '%s' and parameter '%s' are inconsistent",ksFile,iksFile));
+            }
             if (options.containsKey(Options.ISSUER_KEY_STORE_RIGHTS) ){
                 boolean isEqual = Arrays.equals(options.getChars(Options.KEY_STORE_RIGHTS),
                         options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
@@ -309,7 +302,7 @@ public class SignToolServiceImpl implements ServiceApi {
     @Override
     public boolean signHap(Options options) {
         String mode = options.getString(Options.MODE);
-        //sign online or locally
+        // sign online or locally
         SignProvider signProvider;
         if ("localSign".equalsIgnoreCase(mode)) {
             signProvider = new LocalJKSSignProvider();
@@ -320,7 +313,7 @@ public class SignToolServiceImpl implements ServiceApi {
             return false;
         }
 
-        //The type of file is bin or hap
+        // The type of file is bin or hap
         String inForm = options.getString(Options.IN_FORM, "zip");
         if ("zip".equalsIgnoreCase(inForm)) {
             return signProvider.sign(options);

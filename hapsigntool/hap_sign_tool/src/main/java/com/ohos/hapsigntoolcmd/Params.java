@@ -39,7 +39,7 @@ public class Params {
      * Constructor of Params.
      */
     public Params() {
-        //Empty constructor of Params
+        // Empty constructor of Params
     }
 
     public String getMethod() {
