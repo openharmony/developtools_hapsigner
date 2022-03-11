@@ -37,6 +37,7 @@ public class DebugInfo {
      */
     @SerializedName("device-id-type")
     private String deviceIdType;
+
     /**
      * Field device-ids.
      */

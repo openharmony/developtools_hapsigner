@@ -25,10 +25,12 @@ public class VerificationResult {
      * Field verifiedPassed.
      */
     private boolean verifiedPassed;
+
     /**
      * Field message.
      */
     private String message;
+
     /**
      * Field content.
      */

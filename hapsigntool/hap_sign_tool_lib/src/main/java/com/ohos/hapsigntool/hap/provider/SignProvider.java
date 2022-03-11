@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -75,7 +75,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-import java.util.regex.Pattern;
 
 /**
  * Sign provider super class
@@ -187,7 +186,7 @@ public abstract class SignProvider {
      * @return Object of SignerConfig
      * @throws InvalidKeyException on error when the key is invalid.
      */
-    public SignerConfig createV2SignerConfigs(List<X509Certificate> certificates, X509CRL crl, Options options)
+    public SignerConfig createSignerConfigs(List<X509Certificate> certificates, X509CRL crl, Options options)
             throws InvalidKeyException {
         SignerConfig signerConfig = new SignerConfig();
         signerConfig.fillParameters(this.signParams);
@@ -231,16 +230,16 @@ public abstract class SignProvider {
             X509CRL crl = getCrl();
 
             // 5. Create signer configs, which contains public cert and crl info.
-            signerConfig = createV2SignerConfigs(publicCert, crl, options);
+            signerConfig = createSignerConfigs(publicCert, crl, options);
         } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
-            LOGGER.error("create v2 signer configs failed.", e);
+            LOGGER.error("create signer configs failed.", e);
             printErrorLog(e);
             return false;
         }
 
         /* 6. make signed file into output file. */
         if (!SignBin.sign(signerConfig, signParams)) {
-            LOGGER.error("hapsigntoolv2: error: Sign bin internal failed.");
+            LOGGER.error("hap-sign-tool: error: Sign bin internal failed.");
             return false;
         }
         LOGGER.info("Sign success");
@@ -298,7 +297,7 @@ public abstract class SignProvider {
                 ByteBuffer eocdBuffer = zipInfo.getEocd();
                 ZipDataInput eocd = new ByteBufferZipDataInput(eocdBuffer);
 
-                SignerConfig signerConfig = createV2SignerConfigs(publicCerts, crl, options);
+                SignerConfig signerConfig = createSignerConfigs(publicCerts, crl, options);
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
                 byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;
@@ -347,7 +346,7 @@ public abstract class SignProvider {
 
     private void printErrorLog(Exception e) {
         if (e != null) {
-            LOGGER.error("hapsigntoolv2: error: {}", e.getMessage(), e);
+            LOGGER.error("hap-sign-tool: error: {}", e.getMessage(), e);
         }
     }
 
