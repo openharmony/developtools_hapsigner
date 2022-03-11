@@ -64,6 +64,6 @@ public class VerificationResult {
      * Empty constructor without value initial.
      */
     public VerificationResult() {
-        //Empty constructor of VerificationResult.
+        // Empty constructor of VerificationResult.
     }
 }

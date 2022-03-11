@@ -25,7 +25,7 @@ public class RemoteSignProvider extends SignProvider {
     @Override
     public void checkParams(Options options) throws MissingParamsException, InvalidParamsException {
         super.checkParams(options);
-        //add remote params check here
+        // add remote params check here
     }
 
     @Override

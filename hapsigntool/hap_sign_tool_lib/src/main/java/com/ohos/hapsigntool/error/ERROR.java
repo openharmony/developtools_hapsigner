@@ -75,5 +75,4 @@ public enum ERROR {
     ERROR(int code) {
         this.errorCode = code;
     }
-
 }

@@ -55,7 +55,6 @@ import java.util.List;
  * @since 2021/12/28
  */
 public class VerifyHelper implements IProvisionVerifier {
-
     /**
      * LOGGER.
      */
@@ -102,8 +101,8 @@ public class VerifyHelper implements IProvisionVerifier {
         ValidateUtils.throwIfMatches(matches == null || !matches.iterator().hasNext(),
                 ERROR.VERIFY_ERROR, errorMsg);
 
-        List<X509Certificate> certificateList = new ArrayList<>();
         Iterator<X509CertificateHolder> iterator = matches.iterator();
+        List<X509Certificate> certificateList = new ArrayList<>();
         try {
             while (iterator.hasNext()) {
                 X509CertificateHolder next = iterator.next();
