@@ -28,6 +28,7 @@ import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.exception.SignatureException;
 import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
+import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.sign.SignBin;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
@@ -233,7 +234,7 @@ public abstract class SignProvider {
             signerConfig = createSignerConfigs(publicCert, crl, options);
         } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
             LOGGER.error("create signer configs failed.", e);
-            printErrorLog(e);
+            printErrorLogWithoutStack(e);
             return false;
         }
 
@@ -307,8 +308,11 @@ public abstract class SignProvider {
                 outputSignedFile(outputHap, centralDirectoryOffset, signingBlock, centralDirectory, eocdBuffer);
                 ret = true;
             }
-        } catch (IOException | InvalidKeyException | SignatureException | MissingParamsException
+        } catch (IOException | InvalidKeyException | HapFormatException | MissingParamsException
             | InvalidParamsException | ProfileException | CustomException e) {
+            printErrorLogWithoutStack(e);
+            ret = false;
+        } catch (SignatureException e) {
             printErrorLog(e);
             ret = false;
         }
@@ -347,6 +351,12 @@ public abstract class SignProvider {
     private void printErrorLog(Exception e) {
         if (e != null) {
             LOGGER.error("hap-sign-tool: error: {}", e.getMessage(), e);
+        }
+    }
+
+    private void printErrorLogWithoutStack(Exception e) {
+        if (e != null) {
+            LOGGER.error("hap-sign-tool: error: {}", e.getMessage());
         }
     }
 
