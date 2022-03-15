@@ -116,7 +116,7 @@ Procedure:
 
 ****
 ##### Common Operations
-1. Generate a key pair.
+1.Generate a key pair.
 
      generate-keypair: Generate a key pair.
          ├── -keyAlias          # Key alias. It is mandatory.
@@ -126,7 +126,7 @@ Procedure:
          ├── -keystoreFile      # KS file, in JKS or P12 format. It is mandatory.
          ├── -keystorePwd       # KS password. It is optional.
 
-2. Generate a CSR.
+2.Generate a CSR.
 
     generate-csr: generate a CSR.
          ├── -keyAlias          # Key alias. It is mandatory.
@@ -137,7 +137,7 @@ Procedure:
          ├── -keystorePwd       # KS password. It is optional.
          ├── -outFile           # CSR to generate. It is optional. If you do not specify this parameter, the CSR is output to the console.
 
-3. Generate a root CA or subordinate CA certificate.
+3.Generate a root CA or subordinate CA certificate.
 
     generate-ca: Generate a root CA or subordinate CA certificate. If the key does not exist, generate a key together with the certificate.
          ├── -keyAlias                        # Key alias. It is mandatory.
@@ -157,7 +157,7 @@ Procedure:
          ├── -keystorePwd                     # KS password. It is optional.
          ├── -outFile                         # File to generate. It is optional. The file is output to the console if this parameter is not specified.
 
-4. Generate an application debugging or release certificate.
+4.Generate an application debugging or release certificate.
 
     generate-app-cert: generate an application debugging or release certificate.
          ├── -keyAlias                        # Key alias. It is mandatory.
@@ -177,7 +177,7 @@ Procedure:
          ├── -subCaCertFile                   # Subordinate CA certificate, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
-5. Generate a profile debugging or release certificate.
+5.Generate a profile debugging or release certificate.
 
     generate-profile-cert: generate a profile debugging or release certificate.
          ├── -keyAlias                        # Key alias. It is mandatory.
@@ -197,16 +197,16 @@ Procedure:
          ├── -subCaCertFile                   # Subordinate CA certificate, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
-6. Generate a common certificate, which can be used to generate a custom certificate.
+6.Generate a common certificate, which can be used to generate a custom certificate.
 
     generate-cert: generate a common certificate, which can be used to generate a custom certificate.
           ├── -keyAlias                          # Key alias. It is mandatory.
           ├── -keyPwd                            # Key password. It is optional.
           ├── -issuer                            # Issuer of the certificate. It is mandatory.
           ├── -issuerKeyAlias                    # Key alias of the certificate issuer. It is mandatory.
-          ├── -issuerKeyPwd                     # Key password of the certificate issuer. It is optional.
-          ├── -subject                          # Certificate subject. It is mandatory.
-          ├── -validity                         # Validity period of the certificate. It is optional. The default value is 1095 days.
+          ├── -issuerKeyPwd                      # Key password of the certificate issuer. It is optional.
+          ├── -subject                           # Certificate subject. It is mandatory.
+          ├── -validity                          # Validity period of the certificate. It is optional. The default value is 1095 days.
           ├── -keyUsage                          # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, keyEncipherment,
           ├                                        dataEncipherment, keyAgreement, certificateSignature, crlSignature,
           ├                                        encipherOnly, and decipherOnly. Use a comma (,) to separate multiple values.
@@ -214,18 +214,18 @@ Procedure:
           ├── -extKeyUsage                       # Extended key usages. It is optional. The extended key usages include clientAuthentication, serverAuthentication,
           ├                                        codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
           ├── -extKeyUsageCritical               # Specifies whether extKeyUsage is a critical option. It is optional. The default value is No.
-          ├── -signAlg                         # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
+          ├── -signAlg                           # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
           ├── -basicConstraints                  # Specifies whether basicConstraints is contained. It is optional. The default value is No.
           ├── -basicConstraintsCritical          # Specifies whether basicConstraints is a critical option. It is optional. The default value is No.
           ├── -basicConstraintsCa                # Specifies whether it is CA. It is optional. The default value is No.
-          ├── -basicConstraintsPathLen          # Path length. It is optional. The default value is 0.
-          ├── -issuerKeystoreFile              # KS file of the issuer, in JKS or P12 format. It is optional.
-          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
-          ├── -keystoreFile                     # KS file, in JKS or P12 format. It is mandatory.
-          ├── -keystorePwd                     # KS password. It is optional.
+          ├── -basicConstraintsPathLen           # Path length. It is optional. The default value is 0.
+          ├── -issuerKeystoreFile                # KS file of the issuer, in JKS or P12 format. It is optional.
+          ├── -issuerKeystorePwd                 # KS password of the issuer. It is optional. 
+          ├── -keystoreFile                      # KS file, in JKS or P12 format. It is mandatory.
+          ├── -keystorePwd                       # KS password. It is optional.
           ├── -outFile                           # Certificate file to generate. It is optional. The file is output to the console if this parameter is not specified.
 
-7. Sign a provisioning profile.
+7.Sign a provisioning profile.
 
     sign-profile: Generate a provisioning profile signature.
           ├── -mode            # Signing mode, which can be localSign or remoteSign. It is mandatory.
@@ -234,17 +234,17 @@ Procedure:
           ├── -profileCertFile # Profile signing certificate (certificate chain, represented by level 3 certificate, level 2 certificate, and root sequence). It is mandatory.
           ├── -inFile          # Raw provisioning profile. It is mandatory.
           ├── -signAlg         # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
-          ├── -keystoreFile      # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
+          ├── -keystoreFile    # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
           ├── -keystorePwd     # KS password. It is optional.
           ├── -outFile         # Signed provisioning profile to generate, in p7b format. It is mandatory.
 
-8. Verify the provisioning profile signature.
+8.Verify the provisioning profile signature.
 
      verify-profile: Verify the provisioning profile signature.
            ├── -inFile       # Signed provisioning profile, in p7b format. It is mandatory.
            ├── -outFil       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
 
-9. Sign a HAP
+9.Sign a HAP
   
      sign-app: Sign a HAP
           ├── -mode          # Signing mode, which can be localSign, remoteSign, or remoteResign. It is mandatory.
@@ -253,14 +253,14 @@ Procedure:
           ├── -appCertFile   # Application signing certificate (certificate chain, represented by level 3 certificate, level 2 certificate, and root sequence). It is mandatory.
           ├── -profileFile   # Name of the signed provisioning profile. The profile is in p7b format if profileSigned is 1 and in json format if profileSigned is 0. It is mandatory.
           ├── -profileSigned # Specifies whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
-          ├── -inForm       # Raw file, in .zip (default) or .bin format. It is optional.
+          ├── -inForm        # Raw file, in .zip (default) or .bin format. It is optional.
           ├── -inFile        # Raw application package, in HAP or .bin format. It is mandatory.
           ├── -signAlg       # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
           ├── -keystoreFile  # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
           ├── -keystorePwd   # KS password. It is optional.
           ├── -outFile       # Signed HAP file to generate. It is mandatory.
 
-10. Verify the HAP Signature
+10.Verify the HAP Signature
 
       verify-app: verify the HAP signature.
          ├── -inFile          # Signed application file, in HAP or bin format. It is mandatory.
