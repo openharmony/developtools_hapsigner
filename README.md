@@ -4,7 +4,7 @@
 
 #### Introduction
 
-To ensure the integrity and secure source of OpenHarmony applications, the applications must be signed during the build process. Only signed applications can be installed, run, and debugged on real devices. This repository provides the source code of the HarmonyOS Ability Package (HAP) signing tool - hapsigner. This tool can be used to generate key pairs, certificate signing requests (CSRs), certificates, profile signatures, and HAP signatures.
+To ensure the integrity and secure source of applications, the applications must be signed during the build process. Only signed applications can be installed, run, and debugged on real devices. This repository provides the source code of the HAP signing tool - hapsigner. This tool can be used to generate key pairs, certificate signing requests (CSRs), certificates, profile signatures, and HAP signatures.
 
 
 #### Directory Structure
