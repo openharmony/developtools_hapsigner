@@ -48,6 +48,14 @@ public class ZipUtils {
 
     private static final long UINT32_MAX_VALUE = 0xffffffffL;
 
+    private static final int ZIP_DATA_SIZE = 4;
+
+    /**
+     * Constructor of Method
+     */
+    private ZipUtils() {
+    }
+
     /**
      * This function find Eocd by searching Eocd flag from input buffer(searchBuffer) and
      * making sure the comment length is equal to the expected value
@@ -102,7 +110,7 @@ public class ZipUtils {
         if (locatorPos < 0) {
             return false;
         }
-        ByteBuffer byteBuffer = zip.createByteBuffer(locatorPos, 4);
+        ByteBuffer byteBuffer = zip.createByteBuffer(locatorPos, ZIP_DATA_SIZE);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         return byteBuffer.getInt() == ZIP64_EOCD_LOCATOR_SIG;
     }

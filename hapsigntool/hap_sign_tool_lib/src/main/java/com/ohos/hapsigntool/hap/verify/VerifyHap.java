@@ -121,7 +121,7 @@ public class VerifyHap {
                 throw new IOException();
             }
             verifyResult = verifyHap(filePath);
-            if (!verifyResult.getResult()) {
+            if (!verifyResult.isVerified()) {
                 LOGGER.error("verify: {}", verifyResult.getMessage());
                 throw new IOException();
             }
@@ -209,7 +209,7 @@ public class VerifyHap {
      */
     public VerifyResult verifyHap(String hapFilePath, String outCertPath, String outProvisionFile) {
         VerifyResult verifyResult = verifyHap(hapFilePath);
-        if (!verifyResult.getResult()) {
+        if (!verifyResult.isVerified()) {
             return verifyResult;
         }
         List<X509Certificate> certificates = verifyResult.getCertificates();
