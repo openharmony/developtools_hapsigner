@@ -56,19 +56,23 @@ public class CertTest {
      * The certificate is valid for 365 days.
      */
     public static final int VALIDITY_365 = 365;
+
     /**
      * Params SHA384withRSA.
      */
     public static final String SHA_384_WITH_RSA = "SHA384withRSA";
+
     /**
      * Params CN=Application Signature Service CA.
      */
     public static final String APP_CA = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,"
             + "CN=Application Signature Service CA";
+
     /**
      * Params CN=App1 Release.
      */
     public static final String APP1_RELEASE = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+
     /**
      * App signing Capabilty Bytes.
      */
@@ -81,12 +85,16 @@ public class CertTest {
     /**
      * Add log info.
      */
-    private final Logger logger = LoggerFactory.getLogger(CertTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CertTest.class);
+
     /**
      * Generate keystore file.
      */
     private final KeyPair keyPair = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.RSA_2048);
 
+    /**
+     * test RootCaCert
+     */
     @Order(1)
     @Test
     public void testRootCaCert() {
@@ -126,10 +134,12 @@ public class CertTest {
         }
     }
 
+    /**
+     * test subCaCert
+     */
     @Order(2)
     @Test
     public void testSubCaCert() {
-
         X500Name subName = CertUtils.buildDN(APP1_RELEASE);
         byte[] csr = generateCsrParameters(subName);
         Options options = new Options();
@@ -164,6 +174,9 @@ public class CertTest {
         }
     }
 
+    /**
+     * test appCert
+     */
     @Order(3)
     @Test
     public void testAppCert() {
@@ -201,6 +214,9 @@ public class CertTest {
         }
     }
 
+    /**
+     * test csrTemplate
+     */
     @Order(4)
     @Test
     public void testCsrTemplate() {

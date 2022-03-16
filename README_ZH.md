@@ -19,6 +19,7 @@
     developtools_hapsigner
 
     ├── autosign                # 一键签名脚本
+	├── dist                    # SDK预置文件
     ├── hapsigntool             # 主代码
           ├──hap_sign_tool      # 主程序入口，完成输入参数的基础校验
           ├──hap_sign_tool_lib  # 签名工具库，解析命令字和参数列表，实现各模块逻辑功能
@@ -257,7 +258,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -keyAlias      # 密钥别名，必填项
           ├──-keyPwd         # 密钥口令，可选项
           ├── -appCertFile   # 应用签名证书文件（证书链，顺序为三级-二级-根），必填项
-          ├── -profileFile   # 签名后的Provision Profile文件名，p7b格式，必填项
+          ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式,必填项
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
           ├── -inForm        # 输入的原始文件的格式，zip格式或bin格式，默认zip格式，可选项
           ├── -inFile        # 输入的原始APP包文件，hap格式或bin格式，必填项

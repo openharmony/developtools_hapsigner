@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,10 +19,19 @@ package com.ohos.hapsigntool.hap.entity;
  * define class of hap signature sub-block head
  */
 public class HwBlockHead {
-    private static final int BLOCK_LEN = 8; //current block length
+    private static final int BLOCK_LEN = 8; // current block length
+
+    private static final int BIT_SIZE = 8;
+
+    private static final int DOUBLE_BIT_SIZE = 16;
+
+    private static final int TRIPLE_BIT_SIZE = 24;
 
     public static int getBlockLen() {
         return BLOCK_LEN;
+    }
+
+    private HwBlockHead() {
     }
 
     /**
@@ -38,11 +47,11 @@ public class HwBlockHead {
         return new byte[] {
             (byte) (type),
             (byte) (tag),
-            (byte) ((length >> 8) & 0xff),
+            (byte) ((length >> BIT_SIZE) & 0xff),
             (byte) (length & 0xff),
-            (byte) ((offset >> 24) & 0xff),
-            (byte) ((offset >> 16) & 0xff),
-            (byte) ((offset >> 8) & 0xff),
+            (byte) ((offset >> TRIPLE_BIT_SIZE) & 0xff),
+            (byte) ((offset >> DOUBLE_BIT_SIZE) & 0xff),
+            (byte) ((offset >> BIT_SIZE) & 0xff),
             (byte) (offset & 0xff)
         };
     }

@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.api;
 import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.keystore.KeyStoreHelper;
 import com.ohos.hapsigntool.utils.CertUtils;
@@ -49,14 +50,17 @@ public class LocalizationAdapter {
      */
     private static final int MIN_CERT_CHAIN_SIZE = 2;
     private static final int MAX_CERT_CHAIN_SIZE = 3;
+
     /**
      * Logger
      */
-    private final Logger logger = LogManager.getLogger(LocalizationAdapter.class);
+    private static final Logger logger = LogManager.getLogger(LocalizationAdapter.class);
+
     /**
      * Params
      */
     private final Options options;
+
     /**
      * Operation of keystore
      */
@@ -78,7 +82,7 @@ public class LocalizationAdapter {
 
     /**
      * Set keyStoreHelper
-     * @param keyStoreHelper
+     * @param keyStoreHelper keyStoreHelper
      */
     public void setKeyStoreHelper(KeyStoreHelper keyStoreHelper) {
         this.keyStoreHelper = keyStoreHelper;
@@ -86,7 +90,7 @@ public class LocalizationAdapter {
 
     /**
      * Set issuerKeyStoreFile
-     * @param issuerKeyStoreFile
+     * @param issuerKeyStoreFile issuerKeyStoreFile
      */
     public void setIssuerKeyStoreFile(boolean issuerKeyStoreFile) {
         this.isIssuerKeyStoreFile = issuerKeyStoreFile;
@@ -264,7 +268,7 @@ public class LocalizationAdapter {
         List<X509Certificate> certificates = null;
         try {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
-        } catch (IOException | CertificateException exception) {
+        } catch (IOException | CertificateException | VerifyCertificateChainException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
         }
