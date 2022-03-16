@@ -39,8 +39,11 @@ public class KeyPairTest {
     /**
      * Add log info.
      */
-    private Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
 
+    /**
+     * test keyPair
+     */
     @Test
     public void testKeyPair() {
         KeyPair kRsa2048 = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.RSA_2048);

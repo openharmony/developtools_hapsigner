@@ -53,7 +53,6 @@ import java.util.List;
  * Check cert list is cert chain.
  */
 public class CertChainUtils {
-
     private static final Logger LOGGER = LogManager.getLogger(CertUtils.class);
 
     private CertChainUtils() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +32,11 @@ import java.util.Set;
  * @since 2021/12/21
  */
 public class ParamProcessUtil {
+    private ParamProcessUtil() {
+    }
+
     private static final Logger LOGGER = LogManager.getLogger(ParamProcessUtil.class);
+
     /**
      * Use string array to init string set
      *

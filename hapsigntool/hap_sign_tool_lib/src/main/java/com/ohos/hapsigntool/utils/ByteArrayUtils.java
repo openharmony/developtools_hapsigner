@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,17 @@ package com.ohos.hapsigntool.utils;
  * @since 2021-12-13
  */
 public class ByteArrayUtils {
+    private static final int BIT_SIZE = 8;
+
+    private static final int DOUBLE_BIT_SIZE = 16;
+
+    private static final int TRIPLE_BIT_SIZE = 24;
+
+    private static final int HALF_INTEGER_BYTES = 2;
+
+    private ByteArrayUtils() {
+    }
+
     /**
      * Insert int value to byte array
      *
@@ -34,11 +45,11 @@ public class ByteArrayUtils {
             return -1;
         }
         int pos = index;
-        desByte[pos] = (byte) ((num >> 24) & 0xff);
+        desByte[pos] = (byte) ((num >> TRIPLE_BIT_SIZE) & 0xff);
         pos++;
-        desByte[pos] = (byte) ((num >> 16) & 0xff);
+        desByte[pos] = (byte) ((num >> DOUBLE_BIT_SIZE) & 0xff);
         pos++;
-        desByte[pos] = (byte) ((num >> 8) & 0xff);
+        desByte[pos] = (byte) ((num >> BIT_SIZE) & 0xff);
         pos++;
         desByte[pos] = (byte) (num & 0xff);
         pos++;
@@ -46,7 +57,7 @@ public class ByteArrayUtils {
     }
 
     /**
-     *Insert short value to byte array
+     * Insert short value to byte array
      *
      * @param desByte destination byte array
      * @param desByteLen length of destination byte array
@@ -55,11 +66,11 @@ public class ByteArrayUtils {
      * @return end of position of inserting, if successfully
      */
     public static int insertShortToByteArray(byte[] desByte, int desByteLen, int index, short num) {
-        if (index + 2 > desByteLen) {
+        if (index + HALF_INTEGER_BYTES > desByteLen) {
             return -1;
         }
         int pos = index;
-        desByte[pos] = (byte) ((num >> 8) & 0xff);
+        desByte[pos] = (byte) ((num >> BIT_SIZE) & 0xff);
         pos++;
         desByte[pos] = (byte) (num & 0xff);
         pos++;
@@ -70,13 +81,12 @@ public class ByteArrayUtils {
      * Insert byte array to byte array
      *
      * @param des destination byte array
-     * @param desByteLen length of destination byte array
      * @param start position of inserting
      * @param src byte array is inserted
      * @param srcLen length of byte array is inserted
      * @return end of position of inserting, if successfully
      */
-    public static int insertByteToByteArray(byte[] des, int desByteLen, int start, byte[] src, int srcLen) {
+    public static int insertByteToByteArray(byte[] des, int start, byte[] src, int srcLen) {
         if (src.length < srcLen) {
             return -1;
         }

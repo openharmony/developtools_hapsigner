@@ -30,6 +30,7 @@ public class Permissions {
      */
     @SerializedName("restricted-permissions")
     private List<String> restrictedPermissions;
+
     /**
      * Field restricted-capabilities.
      */
@@ -40,7 +41,7 @@ public class Permissions {
      * Sub dto of Provision.
      */
     public Permissions() {
-        //Empty constructor of Permissions.
+        // Empty constructor of Permissions.
     }
 
     public List<String> getRestrictedPermissions() {

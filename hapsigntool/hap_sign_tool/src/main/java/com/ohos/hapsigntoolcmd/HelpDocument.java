@@ -46,12 +46,11 @@ public final class HelpDocument {
         }
 
         String page = "help.txt";
-        InputStream inputStream = classLoader.getResourceAsStream(page);
-        if (inputStream == null) {
-            return;
-        }
 
-        try {
+        try(InputStream inputStream = classLoader.getResourceAsStream(page)) {
+            if (inputStream == null) {
+                return;
+            }
             byte[] helpData = FileUtils.read(inputStream);
             String helpStr = new String(helpData, StandardCharsets.UTF_8);
             logger.info(helpStr);
