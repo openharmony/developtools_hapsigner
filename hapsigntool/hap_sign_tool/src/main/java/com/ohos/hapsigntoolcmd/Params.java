@@ -29,6 +29,7 @@ public class Params {
      * Method names in the command line.
      */
     private String method;
+
     /**
      * Hashmap for storing parameters.
      */
@@ -38,7 +39,7 @@ public class Params {
      * Constructor of Params.
      */
     public Params() {
-        //Empty constructor of Params
+        // Empty constructor of Params
     }
 
     public String getMethod() {

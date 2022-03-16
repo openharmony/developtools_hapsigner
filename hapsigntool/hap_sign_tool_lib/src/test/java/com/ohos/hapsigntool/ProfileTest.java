@@ -54,34 +54,42 @@ public class ProfileTest {
      * Params SHA256withRSA.
      */
     public static final String SHA_256_WITH_ECC = "SHA256withECDSA";
+
     /**
      * Output the signed ProvisionProfile file in p7b format.
      */
     private static final String OUT_PATH = "test_sign_profile.p7b";
+
     /**
      * Keystore file in JKS or P12 format.
      */
     private static final String KEY_STORE_PATH = "test-keystore.jks";
+
     /**
      * Key alias.
      */
     private static final String KEY_ALIAS = "oh-profile1-key-v1";
+
     /**
      * Key pwd and keystore pwd.
      */
     private static final String PWD = "123456";
+
     /**
      * Input original ProvisionProfile file.
      */
     private static final String IN_FILE_PATH = "UnsgnedDebugProfileTemplate.json";
+
     /**
      * Profile signing certificate.
      */
     private static final String CERT_PATH = "test-profile-cert.cer";
+
     /**
      * Mode is localSign.
      */
     private static final String LOCAL_SIGN = "localSign";
+
     /**
      * Mode is remoteSign.
      */
@@ -102,8 +110,12 @@ public class ProfileTest {
     /**
      * Add log info.
      */
-    private final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
 
+    /**
+     * test profile
+     * @throws IOException
+     */
     @Test
     public void testProfile() throws IOException {
         try {

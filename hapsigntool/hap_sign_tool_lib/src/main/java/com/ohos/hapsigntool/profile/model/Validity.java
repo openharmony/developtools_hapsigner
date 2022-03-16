@@ -30,6 +30,7 @@ public class Validity {
      */
     @SerializedName("not-before")
     private Long notBefore;
+
     /**
      * Field not-after.
      */
@@ -40,7 +41,7 @@ public class Validity {
      * Sub dto of Provision.
      */
     public Validity() {
-        //Empty constructor of Validity.
+        // Empty constructor of Validity.
     }
 
     /**

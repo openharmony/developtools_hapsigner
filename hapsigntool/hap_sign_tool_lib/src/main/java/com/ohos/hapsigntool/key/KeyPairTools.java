@@ -47,34 +47,42 @@ public final class KeyPairTools {
      * Field RSA.
      */
     public static final String RSA = "RSA";
+
     /**
      * Field EC.
      */
     public static final String ECC = "EC";
+
     /**
      * Field ECC.
      */
     public static final String ECC_INPUT = "ECC";
+
     /**
      * Field RSA_2048.
      */
     public static final int RSA_2048 = 2048;
+
     /**
      * Field RSA_3072.
      */
     public static final int RSA_3072 = 3072;
+
     /**
      * Field RSA_4096.
      */
     public static final int RSA_4096 = 4096;
+
     /**
      * Field NIST_P_256.
      */
     public static final int NIST_P_256 = 256;
+
     /**
      * Field NIST_P_384.
      */
     public static final int NIST_P_384 = 384;
+
     /**
      * Logger.
      */

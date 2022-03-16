@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -56,13 +56,18 @@ class SignContentHash {
      */
     protected int contentHashLen;
 
+    /**
+     * Length of two chars, one short,and one int
+     */
+    private static final int CONTENT_HEAD_SIZE = 8;
+
     SignContentHash(char type, char tag, short algId, int length, byte[] hash) {
         this.type = type;
         this.tag = tag;
         this.algId = algId;
         this.length = length;
         this.hash = hash;
-        this.contentHashLen = 8 + this.hash.length;
+        this.contentHashLen = CONTENT_HEAD_SIZE + this.hash.length;
     }
 }
 
@@ -130,7 +135,7 @@ public class SignContentInfo {
                 index++;
                 index = ByteArrayUtils.insertShortToByteArray(ret, ret.length, index, tmp.algId);
                 index = ByteArrayUtils.insertIntToByteArray(ret, index, tmp.length);
-                index = ByteArrayUtils.insertByteToByteArray(ret, ret.length, index, tmp.hash, tmp.hash.length);
+                index = ByteArrayUtils.insertByteToByteArray(ret, index, tmp.hash, tmp.hash.length);
                 if (index < 0) {
                     throw new IOException();
                 }

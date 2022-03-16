@@ -29,97 +29,121 @@ public class Provision {
      * Field DEBUG.
      */
     public static final String DEBUG = "debug";
+
     /**
      * Field RELEASE.
      */
     public static final String RELEASE = "release";
+
     /**
      * Field HOS_SYSTEM_APP.
      */
     public static final String HOS_SYSTEM_APP = "hos_system_app";
+
     /**
      * Field HOS_NORMAL_APP.
      */
     public static final String HOS_NORMAL_APP = "hos_normal_app";
+
     /**
      * Field NORMAL.
      */
     public static final String NORMAL = "normal";
+
     /**
      * Field SYSTEM_BASIC.
      */
     public static final String SYSTEM_BASIC = "system_basic";
+
     /**
      * Field SYSTEM_CORE.
      */
     public static final String SYSTEM_CORE = "system_core";
+
     /**
      * Field APP_GALLERY.
      */
     public static final String APP_GALLERY = "app_gallery";
+
     /**
      * Field ENTERPRISE.
      */
     public static final String ENTERPRISE = "enterprise";
+
     /**
      * Field OS_INTEGRATION.
      */
     public static final String OS_INTEGRATION = "os_integration";
+
     /**
      * Number 100.
      */
     public static final int NUM_ONE_HUNDRED = 100;
+    /**
+     * newline character
+     */
+    public static final String NEWLINE_CHARACTER = System.lineSeparator();
 
     /**
      * Field version-code.
      */
     @SerializedName("version-code")
     private Integer versionCode;
+
     /**
      * Field version-name.
      */
     @SerializedName("version-name")
     private String versionName;
+
     /**
      * Field uuid.
      */
     @SerializedName("uuid")
     private String uuid;
+
     /**
      * Field type.
      */
     @SerializedName("type")
     private String type;
+
     /**
      * Field app-distribution-type.
      */
     @SerializedName("app-distribution-type")
     private String appDistributionType;
+
     /**
      * Field validity.
      */
     @SerializedName("validity")
     private Validity validity;
+
     /**
      * Field bundle-info.
      */
     @SerializedName("bundle-info")
     private BundleInfo bundleInfo;
+
     /**
      * Field acls.
      */
     @SerializedName("acls")
     private Acls acls;
+
     /**
      * Field permissions.
      */
     @SerializedName("permissions")
     private Permissions permissions;
+
     /**
      * Field debug-info.
      */
     @SerializedName("debug-info")
     private DebugInfo debuginfo;
+
     /**
      * Field issuer.
      */
@@ -130,13 +154,23 @@ public class Provision {
      * Dto for provision profile.
      */
     public Provision() {
-        //Empty constructor of Provision.
+        // Empty constructor of Provision.
     }
 
+    /**
+     * buildType valid
+     * @param buildType  buildType
+     * @return
+     */
     public static boolean isBuildTypeValid(String buildType) {
         return DEBUG.equals(buildType) || RELEASE.equals(buildType);
     }
 
+    /**
+     * buildType valid
+     * @param buildType buildType
+     * @return
+     */
     public static boolean isBuildTypeRelease(String buildType) {
         return RELEASE.equals(buildType);
     }
@@ -278,29 +312,29 @@ public class Provision {
 
     @Override
     public String toString() {
-        return "\n" + "version-code:" + versionCode + "\n"
-                + "version-name:" + versionCode + "\n"
-                + "uuid:" + uuid + "\n"
-                + "type:" + type + "\n"
-                + "app-distribution-type:" + appDistributionType + "\n"
-                + "validity:\n"
-                + "\t not-before:" + getValidity().getNotBefore() + "\n"
-                + "\t not-after:" + getValidity().getNotAfter() + "\n"
-                + "bundle-info\n"
-                + "\t developer-id:" + getBundleInfo().getDeveloperId() + "\n"
-                + "\t development-certificate:" + getBundleInfo().getDevelopmentCertificate() + "\n"
-                + "\t distribution-certificate:" + getBundleInfo().getDistributionCertificate() + "\n"
-                + "\t bundle-name:" + getBundleInfo().getBundleName() + "\n"
-                + "\t apl:" + getBundleInfo().getApl() + "\n"
-                + "\t app-feature:" + getBundleInfo().getAppFeature() + "\n"
-                + "acls:\n"
-                + "\t allowed-acls:" + getAcls().getAllowedAcls() + "\n"
-                + "permissions:\n"
-                + "\t restricted-permissions:" + getPermissions().getRestrictedPermissions() + "\n"
-                + "\t restricted-capabilities:" + getPermissions().getRestrictedCapabilities() + "\n"
-                + "debug-info\n"
-                + "\t device-id-type:" + getDebuginfo().getDeviceIdType() + "\n"
-                + "\t device-ids:" + getDebuginfo().getDeviceIds() + "\n"
+        return NEWLINE_CHARACTER + "version-code:" + versionCode + NEWLINE_CHARACTER
+                + "version-name:" + versionCode + NEWLINE_CHARACTER
+                + "uuid:" + uuid + NEWLINE_CHARACTER
+                + "type:" + type + NEWLINE_CHARACTER
+                + "app-distribution-type:" + appDistributionType + NEWLINE_CHARACTER
+                + "validity:"+NEWLINE_CHARACTER
+                + "\t not-before:" + getValidity().getNotBefore() + NEWLINE_CHARACTER
+                + "\t not-after:" + getValidity().getNotAfter() + NEWLINE_CHARACTER
+                + "bundle-info"+NEWLINE_CHARACTER
+                + "\t developer-id:" + getBundleInfo().getDeveloperId() + NEWLINE_CHARACTER
+                + "\t development-certificate:" + getBundleInfo().getDevelopmentCertificate() + NEWLINE_CHARACTER
+                + "\t distribution-certificate:" + getBundleInfo().getDistributionCertificate() + NEWLINE_CHARACTER
+                + "\t bundle-name:" + getBundleInfo().getBundleName() + NEWLINE_CHARACTER
+                + "\t apl:" + getBundleInfo().getApl() + NEWLINE_CHARACTER
+                + "\t app-feature:" + getBundleInfo().getAppFeature() + NEWLINE_CHARACTER
+                + "acls:"+NEWLINE_CHARACTER
+                + "\t allowed-acls:" + getAcls().getAllowedAcls() + NEWLINE_CHARACTER
+                + "permissions:"+NEWLINE_CHARACTER
+                + "\t restricted-permissions:" + getPermissions().getRestrictedPermissions() + NEWLINE_CHARACTER
+                + "\t restricted-capabilities:" + getPermissions().getRestrictedCapabilities() + NEWLINE_CHARACTER
+                + "debug-info"+NEWLINE_CHARACTER
+                + "\t device-id-type:" + getDebuginfo().getDeviceIdType() + NEWLINE_CHARACTER
+                + "\t device-ids:" + getDebuginfo().getDeviceIds() + NEWLINE_CHARACTER
                 + "issuer:" + getIssuer();
     }
 }

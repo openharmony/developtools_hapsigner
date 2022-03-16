@@ -40,6 +40,10 @@ public class KeyStoreTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    /**
+     * test keystore
+     * @throws IOException io error.
+     */
     @Test
     public void testKeyStore() throws IOException {
         String keyStorePath = "test_keypair.jks";
