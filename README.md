@@ -81,7 +81,7 @@ The parameters in the command are described as follows:
          ├── -profileFile       # Singed provisioning profile, in p7b format. It is mandatory.
          ├── -profileSigned     # Specifies whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
          ├── -inForm            # Raw file, in .zip (default) or .bin format. It is optional.
-         ├── -inFile            # Raw application package, in HAP or .bin format. It is mandatory.
+         ├── -inFile            # Raw application package, in zip or .bin format. It is mandatory.
          ├── -signAlg           # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
          ├── -keystoreFile      # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
          ├── -keystorePwd       # KS password. It is optional.
@@ -254,7 +254,7 @@ Procedure:
           ├── -profileFile   # Name of the signed provisioning profile. The profile is in p7b format if profileSigned is 1 and in json format if profileSigned is 0. It is mandatory.
           ├── -profileSigned # Specifies whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
           ├── -inForm        # Raw file, in .zip (default) or .bin format. It is optional.
-          ├── -inFile        # Raw application package, in HAP or .bin format. It is mandatory.
+          ├── -inFile        # Raw application package, in zip or .bin format. It is mandatory.
           ├── -signAlg       # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
           ├── -keystoreFile  # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
           ├── -keystorePwd   # KS password. It is optional.
@@ -263,7 +263,7 @@ Procedure:
 10.Verify the HAP Signature
 
       verify-app: verify the HAP signature.
-         ├── -inFile          # Signed application file, in HAP or bin format. It is mandatory.
+         ├── -inFile          # Signed application file, in zip or bin format. It is mandatory.
          ├── -outCertchain    # Signed certificate chain file. It is mandatory.
          ├── -outProfile      # Profile of the application. It is mandatory.
 

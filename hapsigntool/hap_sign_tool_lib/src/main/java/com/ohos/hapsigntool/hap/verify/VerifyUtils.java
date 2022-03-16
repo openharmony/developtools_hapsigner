@@ -34,6 +34,12 @@ import java.util.Collection;
  * @since 2021/12/20
  */
 public class VerifyUtils {
+    /**
+     * Constructor of Method
+     */
+    private VerifyUtils() {
+    }
+
     static {
         Provider bc = Security.getProvider("BC");
         if (bc == null) {
