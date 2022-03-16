@@ -37,6 +37,12 @@ import java.util.Base64;
  * @since 2021-12-13
  */
 public class DigestUtils {
+    /**
+     * Constructor of Method
+     */
+    private DigestUtils() {
+    }
+
     private static final Logger LOGGER = LogManager.getLogger(DigestUtils.class);
 
     /**
