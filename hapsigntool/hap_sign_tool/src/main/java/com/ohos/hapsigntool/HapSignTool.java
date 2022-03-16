@@ -50,18 +50,21 @@ public final class HapSignTool {
      * Local sign.
      */
     private static final String LOCAL_SIGN = "localSign";
+
     /**
      * Remote sign.
      */
     private static final String REMOTE_SIGN = "remoteSign";
+
     /**
      * Signed.
      */
-    private static final int SIGNED = 1;
+    private static final String SIGNED = "1";
+
     /**
      * No signed.
      */
-    private static final int NOT_SIGNED = 0;
+    private static final String NOT_SIGNED = "0";
 
     private HapSignTool() {
     }
@@ -73,7 +76,10 @@ public final class HapSignTool {
      */
     public static void main(String[] args) {
         try {
-            processCmd(args);
+            boolean result = processCmd(args);
+            if (!result) {
+                System.exit(1);
+            }
         } catch (CustomException exception) {
             LOGGER.debug(exception.getMessage(), exception);
             LOGGER.error(exception.getMessage());
@@ -98,7 +104,7 @@ public final class HapSignTool {
             ServiceApi api = new SignToolServiceImpl();
             Params params = CmdUtil.convert2Params(args);
             LOGGER.debug(params.toString());
-            LOGGER.info("Start " + params.getMethod());
+            LOGGER.info("Start {}", params.getMethod());
             boolean result;
             result = dispatchParams(params, api);
             if (result) {
@@ -267,13 +273,7 @@ public final class HapSignTool {
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.APP_CERT_FILE);
         }
-
-        String profileFile = params.getString(Options.PROFILE_FILE);
-        FileUtils.validFileType(profileFile, "p7b");
-        int profileSigned = params.getInt(Options.PROFILE_SIGNED, SIGNED);
-        if (profileSigned != SIGNED && profileSigned != NOT_SIGNED) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
-        }
+        checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
         if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
@@ -283,6 +283,19 @@ public final class HapSignTool {
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
 
         return api.signHap(params);
+    }
+
+    private static void checkProfile(Options params) {
+        String profileFile = params.getString(Options.PROFILE_FILE);
+        String profileSigned = params.getString(Options.PROFILE_SIGNED,SIGNED);
+        if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
+        }
+        if (SIGNED.equals(profileSigned)) {
+            FileUtils.validFileType(profileFile, "p7b");
+        } else {
+            FileUtils.validFileType(profileFile, "json");
+        }
     }
 
     private static boolean runSignProfile(Options params, ServiceApi api) {

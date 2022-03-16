@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,54 +68,12 @@ public class LocalJKSSignProvider extends SignProvider {
     }
 
     /**
-     * check keystore
-     *
-     * @throws MissingParamsException Exception occurs when the keystore file is not entered.
-     */
-    private void checkKeystore() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_LOCAL_JKS_KEYSTORE)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_LOCAL_JKS_KEYSTORE);
-        }
-    }
-
-    /**
-     * check keystore password
-     *
-     * @throws MissingParamsException Exception occurs when the keystore password is not right.
-     */
-    private void checkKeystorePassword() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE);
-        }
-    }
-
-    /**
-     * check jks alias password
-     *
-     * @throws MissingParamsException Exception occurs when the key alias password is not right.
-     */
-    private void checkJKSAliasPassword() throws MissingParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE);
-        }
-    }
-
-    /**
      * check public cert
      *
-     * @throws MissingParamsException Exception occurs when the key alias password is not right.
-     * @throws InvalidParamsException Exception occurs when the key alias password is invalid.
+     * @throws InvalidParamsException Exception occurs when the appCertFile is invalid.
      */
-    private void checkPublicKeyPath() throws MissingParamsException, InvalidParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_LOCAL_PUBLIC_CERT)) {
-            throw new MissingParamsException("Missing parameter: " + ParamConstants.PARAM_LOCAL_PUBLIC_CERT);
-        }
-
+    private void checkPublicKeyPath() throws InvalidParamsException {
         String publicCertsFile = signParams.get(ParamConstants.PARAM_LOCAL_PUBLIC_CERT);
-        if (StringUtils.isEmpty(publicCertsFile)) {
-            throw new MissingParamsException("empty-parameter : " + ParamConstants.PARAM_LOCAL_PUBLIC_CERT);
-        }
-
         File publicKeyFile = new File(publicCertsFile);
         try {
             FileUtils.isValidFile(publicKeyFile);
@@ -147,9 +105,6 @@ public class LocalJKSSignProvider extends SignProvider {
             }
         }
 
-        checkKeystore();
-        checkKeystorePassword();
-        checkJKSAliasPassword();
         checkPublicKeyPath();
     }
 }

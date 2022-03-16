@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,12 +35,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+
 /**
  * Lite OS bin file Signature signer.
  *
  * @since 2021/12/21
  */
 public class SignBin {
+    private SignBin() {
+    }
+
     private static final Logger LOGGER = LogManager.getLogger(SignBin.class);
 
     /**

@@ -127,8 +127,8 @@ public final class FileUtils {
      */
     public static void write(byte[] content, File output) throws IOException {
         try (FileOutputStream out = new FileOutputStream(output)) {
-            for (byte b : content) {
-                out.write(b);
+            for (byte con : content) {
+                out.write(con);
             }
         }
     }
@@ -199,7 +199,7 @@ public final class FileUtils {
         File src = new File(file);
         try (FileInputStream fileStream = new FileInputStream(src)) {
             int temp;
-            byte[] buf = new byte[4096];
+            byte[] buf = new byte[FILE_BUFFER_BLOCK];
             while ((temp = fileStream.read(buf)) > 0) {
                 dos.write(buf, 0, temp);
             }
@@ -334,10 +334,6 @@ public final class FileUtils {
             return toByteArray(in, (int) fileLength);
         }
     }
-
-
-
-
 
     /**
      * Write a string to file

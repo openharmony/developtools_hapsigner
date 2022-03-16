@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -76,6 +76,9 @@ public class BcPkcs7Generator implements Pkcs7Generator {
     private static final DigestAlgorithmIdentifierFinder DIGEST_ALG_FINDER =
         new DefaultDigestAlgorithmIdentifierFinder();
 
+    private static final String SIGNATURE_VERIFY_FAILED = "Signature did not verify";
+
+
     @Override
     public byte[] generateSignedData(byte[] content, SignerConfig signerConfig) throws SignatureException {
         if (content == null) {
@@ -86,10 +89,8 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         for (SignatureAlgorithm signatureAlgorithm : signerConfig.getSignatureAlgorithms()) {
             try {
                 SignerInfo signerInfo = getSignerInfo(signatureAlgorithm, content, signerConfig);
-                if (signerInfo != null) {
                     algorithmIdLst.add(signerInfo.getDigestAlgorithm());
                     signerInfoLst.add(signerInfo);
-                }
                 LOGGER.info("Add sign data in sign info list success.");
             } catch (NoSuchAlgorithmException e) {
                 throw new SignatureException(
@@ -148,7 +149,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         byte[] digest = md.digest(unsignedHapDigest);
         ASN1Set authed = generatePKCS9Attributes(digest);
 
-        //Get sign data content from sign server
+        // Get sign data content from sign server
         byte[] signatureBytes = signerConfig.getSigner().getSignature(
             authed.getEncoded(), jcaSignatureAlg, signatureParams.getSecond());
         if (signatureBytes == null) {
@@ -161,7 +162,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         Pair<String, ? extends AlgorithmParameterSpec> obj = signatureAlgorithm.getSignatureAlgAndParams();
         Pair<String, AlgorithmParameterSpec> signAlgPair = Pair.create(obj.getFirst(), obj.getSecond());
         if (!verifySignatureFromServer(signerConfig, signatureBytes, signAlgPair, authed)) {
-            throw new SignatureException("Signature did not verify");
+            throw new SignatureException(SIGNATURE_VERIFY_FAILED);
         }
         return createSignerInfo(signerConfig, signatureAlgorithm, authed, signatureBytes);
     }
@@ -245,10 +246,10 @@ public class BcPkcs7Generator implements Pkcs7Generator {
             signature.update(authed.getEncoded());
             if (signatureBytes == null) {
                 LOGGER.error("signatureBytes is null");
-                throw new SignatureException("Signature did not verify");
+                throw new SignatureException(SIGNATURE_VERIFY_FAILED);
             }
             if (!signature.verify(signatureBytes)) {
-                throw new SignatureException("Signature did not verify");
+                throw new SignatureException(SIGNATURE_VERIFY_FAILED);
             }
             return true;
         } catch (InvalidKeyException | java.security.SignatureException e) {

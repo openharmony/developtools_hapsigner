@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,26 +25,41 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.cert.CertificateNotYetValidException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.security.auth.x500.X500Principal;
 
 /**
  * Utils of certificate processing.
  */
 public class CertificateUtils {
-    private static void verifyCertChain(List<X509Certificate> certs) throws VerifyCertificateChainException {
+    /**
+     * Check cert list is cert chain.
+     * @param certs certs
+     * @throws VerifyCertificateChainException certificates in file are not certificate chain
+     */
+    public static void verifyCertChain(List<X509Certificate> certs) throws VerifyCertificateChainException {
         if (certs.size() <= 1) {
             return;
         }
         for(int i = 1; i < certs.size(); i++) {
             try {
                 certs.get(i - 1).verify(certs.get(i).getPublicKey());
+                certs.get(i - 1).checkValidity();
+                if (!certs.get(i - 1).getIssuerDN().equals(certs.get(i).getSubjectDN())){
+                    throw new CertificateException("verify certificate chain issuer subject failed") ;
+                }
+                if (i == certs.size() - 1) {
+                    certs.get(i).checkValidity();
+                }
+            } catch (CertificateExpiredException |  CertificateNotYetValidException e) {
+                throw new VerifyCertificateChainException("The certificate has expired! " + e.getMessage());
             } catch (CertificateException | NoSuchAlgorithmException | InvalidKeyException
                 | NoSuchProviderException | SignatureException e) {
                 throw new VerifyCertificateChainException("verify certificate chain failed! " + e.getMessage());
@@ -70,28 +85,11 @@ public class CertificateUtils {
                 (Collection<X509Certificate>) cf.generateCertificates(fileInputStream);
             if (certificates != null && certificates.size() > 0) {
                 List<X509Certificate> certs = new ArrayList<X509Certificate>(certificates);
-                sortCertificateChain(certs);
+                CertUtils.sortCertificateChain(certs);
                 verifyCertChain(certs);
                 return certs;
             }
         }
         return Collections.emptyList();
-    }
-
-    /**
-     * If the last certificate subject is not equal to previous certificate issuer,
-     * the certificate-chain need be reversed.
-     *
-     * @param certificates input certificate-chain
-     */
-    private static void sortCertificateChain(List<X509Certificate> certificates) {
-        if (certificates != null && certificates.size() > 1) {
-            int size = certificates.size();
-            X500Principal lastSubjectX500Principal = certificates.get(size - 1).getSubjectX500Principal();
-            X500Principal beforeIssuerX500Principal = certificates.get(size - 2).getIssuerX500Principal();
-            if (!lastSubjectX500Principal.equals(beforeIssuerX500Principal)) {
-                Collections.reverse(certificates);
-            }
-        }
     }
 }
