@@ -35,7 +35,12 @@ import java.util.HashMap;
 public class HashUtils {
     private static final Logger LOGGER = LogManager.getLogger(HashUtils.class);
     private static final int HASH_LEN = 4096;
-    private MessageDigest md;
+
+    /**
+     * Constructor of Method
+     */
+    private HashUtils() {
+    }
 
     /**
      * Get algorithm id of algorithm name.
@@ -122,7 +127,13 @@ public class HashUtils {
      *
      * @since 2021/12/21
      */
-    class HashAlgs {
+   static class HashAlgs {
+        /**
+         * Constructor of Method
+         */
+        private HashAlgs() {
+        }
+
         /**
          * None
          */
