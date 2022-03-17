@@ -31,7 +31,7 @@ The scripts, such as the one-click signature script, are developed in Python, an
 
  2. Download the code, open the file directory **developtools_hapsigner/hapsigntool**, and run the following command to build the code:
             
-        **gradle build** or **gradle jar**
+        gradle build or gradle jar
 
  3. Check that **hap-sign-tool.jar** (binary files) is generated in the **./hap_sign_tool/build/libs** directory.
 
