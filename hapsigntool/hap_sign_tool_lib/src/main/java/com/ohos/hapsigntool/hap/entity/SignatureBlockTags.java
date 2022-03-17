@@ -129,4 +129,10 @@ public class SignatureBlockTags {
      * The digest of block is 4k bytes.
      */
     public static final char HASH_BLOCK_4K = 0x98;
+
+    /**
+     * Constructor of Method
+     */
+    private SignatureBlockTags() {
+    }
 }
