@@ -40,6 +40,12 @@ import java.util.List;
  */
 public class CertificateUtils {
     /**
+     * Constructor of Method
+     */
+    private CertificateUtils() {
+    }
+
+    /**
      * Check cert list is cert chain.
      * @param certs certs
      * @throws VerifyCertificateChainException certificates in file are not certificate chain

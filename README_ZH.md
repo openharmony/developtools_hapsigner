@@ -88,7 +88,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，必填项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inForm            #输入的原始文件的格式，zip格式或bin格式，默认zip格式；可选项
-         ├── -inFile            #输入的原始APP包文件，hap格式或bin格式，必填项
+         ├── -inFile            #输入的原始APP包文件，zip格式或bin格式，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
          ├── -keystorePwd       #密钥库口令，可选项
@@ -261,7 +261,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式,必填项
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
           ├── -inForm        # 输入的原始文件的格式，zip格式或bin格式，默认zip格式，可选项
-          ├── -inFile        # 输入的原始APP包文件，hap格式或bin格式，必填项
+          ├── -inFile        # 输入的原始APP包文件，zip格式或bin格式，必填项
           ├── -signAlg       # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
           ├── -keystorePwd   # 密钥库口令，可选项
@@ -270,7 +270,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 10.hap应用包文件验签
 
       verify-app : hap应用包文件验签
-         ├── -inFile          # 已签名的应用包文件，hap格式或bin格式，必填项
+         ├── -inFile          # 已签名的应用包文件，zip格式或bin格式，必填项
          ├── -outCertchain    # 签名的证书链文件，必填项
          ├── -outProfile      # 应用包中的profile文件，必填项
 

@@ -263,7 +263,8 @@ public final class CertUtils {
      * @throws VerifyCertificateChainException certificates in file are not certificate chain
      */
     @SuppressWarnings("unchecked")
-    public static List<X509Certificate> generateCertificates(byte[] cert) throws CertificateException, VerifyCertificateChainException {
+    public static List<X509Certificate> generateCertificates(byte[] cert) throws CertificateException,
+            VerifyCertificateChainException {
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
         List<X509Certificate> certificates =
                 (List<X509Certificate>) factory.generateCertificates(new ByteArrayInputStream(cert));

@@ -113,7 +113,7 @@ public class VerifyResult {
         this.message = message;
     }
 
-    public boolean getResult() {
+    public boolean isVerified() {
         return result;
     }
 

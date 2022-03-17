@@ -40,6 +40,12 @@ public class SignatureBlockTypes {
     public static final char KEY_ROTATION_BLOCK = 3;
 
     /**
+     * Constructor of Method
+     */
+    private SignatureBlockTypes() {
+    }
+
+    /**
      * get profile block type by the flag of isSigned
      *
      * @param isSigned the flag whether profile is signed
