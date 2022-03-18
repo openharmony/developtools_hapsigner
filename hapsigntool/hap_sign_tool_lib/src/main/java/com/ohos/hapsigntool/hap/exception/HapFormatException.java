@@ -18,7 +18,7 @@ package com.ohos.hapsigntool.hap.exception;
 import com.ohos.hapsigntool.utils.ParamConstants;
 
 /**
- * Exception Hap file format exception
+ * Exception that occurs if the Hap file format is incorrect.
  *
  * @since 2021/12/20
  */

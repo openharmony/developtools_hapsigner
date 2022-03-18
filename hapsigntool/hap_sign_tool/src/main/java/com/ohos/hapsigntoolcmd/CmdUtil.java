@@ -45,7 +45,7 @@ public final class CmdUtil {
     }
 
     /**
-     * Analysis and convert args to Params object.
+     * Analyze and convert args to Params object.
      *
      * @param args Command line args
      * @return Params
@@ -107,9 +107,10 @@ public final class CmdUtil {
     }
 
     /**
-     * Alg size must in below scope.
+     * Check whether the algorithm size is within specified scope.
      *
-     * @param alg Incoming string
+     * @param size algorithm size
+     * @param alg algorithm
      */
     public static void judgeSize(String size, String alg) {
         String[] array = {"2048", "3072", "4096", "NIST-P-256", "NIST-P-384"};
@@ -132,9 +133,9 @@ public final class CmdUtil {
     }
 
     /**
-     * Sign alg must in the scope.
+     * Check whether the signature algorithm is within specified scope.
      *
-     * @param signAlg sign alg
+     * @param signAlg signature algorithm
      */
     public static void judgeSignAlgType(String signAlg) {
         List<String> arrayList = Arrays.asList("SHA256withRSA", "SHA384withRSA", "SHA256withECDSA",
@@ -146,9 +147,9 @@ public final class CmdUtil {
     }
 
     /**
-     * Sign alg must in the scope.
+     * Check whether the signature algorithm is within specified scope.
      *
-     * @param signAlg sign alg
+     * @param signAlg signature algorithm
      */
     public static void judgeEndSignAlgType(String signAlg) {
         List<String> arrayList = Arrays.asList("SHA256withECDSA", "SHA384withECDSA");
@@ -159,7 +160,7 @@ public final class CmdUtil {
     }
 
     /**
-     * verifyType.
+     * Verify target type.
      *
      * @param inputType Types with ','
      * @param supportTypes Target types with ','

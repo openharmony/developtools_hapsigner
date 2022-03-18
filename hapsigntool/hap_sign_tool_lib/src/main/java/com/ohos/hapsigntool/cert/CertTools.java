@@ -49,12 +49,12 @@ import java.util.regex.Pattern;
  */
 public final class CertTools {
     /**
-     * Ten years days.
+     * Ten years, in days.
      */
     private static final int TEN_YEAR_DAY = 3650;
 
     /**
-     * Three years dats.
+     * Three years, in dats.
      */
     private static final int THREE_YEAR_DAY = 1095;
 
