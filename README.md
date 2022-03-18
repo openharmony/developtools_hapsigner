@@ -244,7 +244,7 @@ Procedure:
            ├── -inFile       # Signed provisioning profile, in p7b format. It is mandatory.
            ├── -outFil       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
 
-9.Sign a HAP
+9.Sign a HAP.
   
      sign-app: Sign a HAP
           ├── -mode          # Signing mode, which can be localSign, remoteSign, or remoteResign. It is mandatory.
@@ -260,7 +260,7 @@ Procedure:
           ├── -keystorePwd   # KS password. It is optional.
           ├── -outFile       # Signed HAP file to generate. It is mandatory.
 
-10.Verify the HAP Signature
+10.Verify the HAP Signature.
 
       verify-app: Verify the HAP signature.
          ├── -inFile          # Signed application file, in .zip or .bin format. It is mandatory.
