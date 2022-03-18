@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class VerifyResult {
     /**
-     * Return code of verify success.
+     * Return code of verification success.
      */
     public static final int RET_SUCCESS = 10000;
 

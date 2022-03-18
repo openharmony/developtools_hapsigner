@@ -72,7 +72,7 @@ public final class HapSignTool {
     /**
      * Main entry.
      *
-     * @param args args
+     * @param args arguments
      */
     public static void main(String[] args) {
         try {
@@ -89,9 +89,9 @@ public final class HapSignTool {
     /**
      * Process command.
      *
-     * @param args args
-     * @return result
-     * @throws CustomException Failed exception
+     * @param args arguments
+     * @return command processing result
+     * @throws CustomException custom exception for command execution failure
      */
     public static boolean processCmd(String[] args) throws CustomException {
         if (args.length == 0 || StringUtils.isEmpty(args[0])) {
@@ -139,7 +139,7 @@ public final class HapSignTool {
                 result = runProfileCert(params.getOptions(), api);
                 break;
             default:
-                CustomException.throwException(ERROR.COMMAND_ERROR, "Not support cmd");
+                CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
                 break;
         }
         return result;

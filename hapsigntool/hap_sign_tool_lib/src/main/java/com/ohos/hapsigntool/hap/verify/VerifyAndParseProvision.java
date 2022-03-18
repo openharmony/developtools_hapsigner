@@ -35,18 +35,17 @@ public class VerifyAndParseProvision {
     private static final Logger LOGGER = LogManager.getLogger(VerifyAndParseProvision.class);
 
     /**
-     * this function verify signatures of provision and output unsigned provision
+     * verify signatures of provision and output unsigned provision
      *
-     * @param signedProvisionPath the path of the inputted signedProvision file
-     * @param unsignedProvisionPath the path which the caller wants to output unsignedProvision file
-     * @return true indicates verify and parse provision file successfully,
-     * false indicates something wrong is happened.
+     * @param signedProvisionPath the path of the input signedProvision file.
+     * @param unsignedProvisionPath the path to which the unsignedProvision file is output.
+     * @return true if the provision file is verified and parsed successfully, false otherwise.
      */
     public boolean verifyAndParseProvision(String signedProvisionPath, String unsignedProvisionPath) {
         File signedProvisionFile = new File(signedProvisionPath);
         try {
             if (!checkProvisionFile(signedProvisionFile)) {
-                String errorMsg = "Check input provision file false!";
+                String errorMsg = "Check input provision file failed!";
                 LOGGER.error(errorMsg);
                 throw new IOException();
             }

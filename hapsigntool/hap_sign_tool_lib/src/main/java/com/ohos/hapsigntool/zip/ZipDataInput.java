@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
  */
 public interface ZipDataInput {
     /**
-     * return how many bytes contained in this data input
+     * Get how many bytes are contained in this data input.
      *
      * @return this data input size
      */

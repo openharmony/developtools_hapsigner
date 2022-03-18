@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.exception;
 
 /**
- * Exception occurs when profile is invalid
+ * Exception that occurs if the profile is invalid.
  *
  * @since 2021/12/20
  */

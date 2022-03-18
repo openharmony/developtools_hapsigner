@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.exception;
 
 /**
- * Exception occurs when the input parameters are invalid
+ * Exception that occurs when the input parameters are invalid.
  *
  * @since 2021/12/20
  */

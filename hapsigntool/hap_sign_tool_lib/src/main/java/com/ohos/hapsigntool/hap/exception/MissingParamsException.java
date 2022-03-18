@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.exception;
 
 /**
- * Exception occurs when the required parameters aren't entered.
+ * Exception that occurs when the required parameters are missing.
  *
  * @since 2021/12/20
  */

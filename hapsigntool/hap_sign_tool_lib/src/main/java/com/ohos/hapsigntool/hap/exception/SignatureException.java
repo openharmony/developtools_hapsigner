@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.exception;
 
 /**
- * Signature exception
+ * Exception that occurs if the signature is invalid.
  *
  * @since 2021/12/20
  */
