@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,7 +35,12 @@ import java.util.HashMap;
 public class HashUtils {
     private static final Logger LOGGER = LogManager.getLogger(HashUtils.class);
     private static final int HASH_LEN = 4096;
-    private MessageDigest md;
+
+    /**
+     * Constructor of Method
+     */
+    private HashUtils() {
+    }
 
     /**
      * Get algorithm id of algorithm name.
@@ -122,7 +127,13 @@ public class HashUtils {
      *
      * @since 2021/12/21
      */
-    class HashAlgs {
+   static class HashAlgs {
+        /**
+         * Constructor of Method
+         */
+        private HashAlgs() {
+        }
+
         /**
          * None
          */

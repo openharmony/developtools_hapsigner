@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,37 @@ package com.ohos.hapsigntool.utils;
  */
 public class EscapeCharacter {
     /**
+     * The length of  character  "%"
+     */
+    private static final int ESCAPE_STRING1_LEN = 1;
+
+    /**
+     * The length of  character  "%u"
+     */
+    private static final int ESCAPE_STRING2_LEN = 2;
+
+    /**
+     * If it starts with "%", the intercept length is 2
+     */
+    private static final int INTERCEPT1_LEN = 2;
+
+    /**
+     * If it starts with "%u", the intercept length is 4
+     */
+    private static final int INTERCEPT2_LEN = 4;
+
+    /**
+     * Constructor of Method
+     */
+    private EscapeCharacter() {
+    }
+
+    /**
+     * Base number
+     */
+    private static final int RADIX_NUM = 16;
+
+    /**
      * Phase string which is escaped
      * @param src escaped string
      * @return string after unescape.
@@ -35,13 +66,15 @@ public class EscapeCharacter {
             pos = src.indexOf('%', lastPos);
             if (pos == lastPos) {
                 if (src.charAt(pos + 1) == 'u') {
-                    char ch = (char) Integer.parseInt(src.substring(pos + 2, pos + 6), 16);
+                    char ch = (char) Integer.parseInt(src.substring(pos + ESCAPE_STRING2_LEN,
+                            pos + ESCAPE_STRING2_LEN + INTERCEPT2_LEN), RADIX_NUM);
                     tmp.append(ch);
-                    lastPos = pos + 6;
+                    lastPos = pos + ESCAPE_STRING2_LEN + INTERCEPT2_LEN;
                 } else {
-                    char ch = (char) Integer.parseInt(src.substring(pos + 1, pos + 3), 16);
+                    char ch = (char) Integer.parseInt(src.substring(pos + ESCAPE_STRING1_LEN,
+                            pos + ESCAPE_STRING1_LEN + INTERCEPT1_LEN), RADIX_NUM);
                     tmp.append(ch);
-                    lastPos = pos + 3;
+                    lastPos = pos + ESCAPE_STRING1_LEN + INTERCEPT1_LEN;
                 }
             } else if (pos == -1) {
                 tmp.append(src.substring(lastPos));
