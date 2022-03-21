@@ -56,7 +56,7 @@ The parameters in the command are described as follows:
          ├── -mode              # Signing mode, which can be localSign or remoteSign. It is mandatory.
          ├── -keyAlias          # Key alias. It is mandatory.
          ├── -keyPwd            # Key password. It is optional.
-         ├── -profileCertFile   # Profile signing certificate (certificate chain, in the profile signing certificate, subordinate CA certificate, and root certificate order). It is mandatory.
+         ├── -profileCertFile   # Profile signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
          ├── -inFile            # Raw provisioning profile. It is mandatory.
          ├── -signAlg           # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
          ├── -keystoreFile      # KeyStore (KS) file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
@@ -77,7 +77,7 @@ The parameters in the command are described as follows:
          ├── -mode              # Signing mode, which can be localSign or remoteSign. It is mandatory.
          ├── -keyAlias          # Key alias. It is mandatory.
          ├── -keyPwd            # Key password. It is optional.
-         ├── -appCertFile       # Application signing certificate (certificate chain, in the application signing certificate, subordinate CA certificate, and root certificate order). It is mandatory.
+         ├── -appCertFile       # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
          ├── -profileFile       # Singed provisioning profile, in p7b format. It is mandatory.
          ├── -profileSigned     # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
          ├── -inForm            # Raw file, in .zip (default) or .bin format. It is optional.
@@ -91,7 +91,7 @@ The parameters in the command are described as follows:
 2. One-click signature
 
 
-To improve development efficiency, this project also provides one-click signature scripts based on the hapsigner tool. You can use these scripts to easily generate key pairs and end-user certificates and sign profiles and HAPs, instead of entering complex commands.
+To improve development efficiency, this project also provides one-click signature scripts based on the hapsigner tool. You can use these scripts to easily generate key pairs and end-entity certificates and sign profiles and HAPs, instead of entering complex commands.
 The scripts and configuration files are located in the **autosign** directory.
 
  - create_root.sh/create_root.bat
@@ -109,9 +109,9 @@ Procedure:
 5. Run **create_appcert_sign_profile.sh** in Linux or **create_appcert_sign_profile.bat** in Windows to generate files required for signature.
 6. Run **sign_hap.sh** in Linux or **sign_hap.bat** in Windows to sign the HAP.
 
- > Note: To generate the KS file, root CA certificate, subordinate CA certificate, and profile signing certificate, perform the following steps:
+ > Note: To generate the KS file, root CA certificate, intermediate CA certificate, and profile signing certificate, perform the following steps:
  1. Use the text editor to open the **createRootAndSubCert.config** file and change the values of **common.keyPwd** and **common.issuerKeyPwd** to match your case.
- 2. Run **create_root.sh** in Linux or run **create_root.bat** in Windows to generate the required KS file, root CA certificate, subordinate CA certificate, and profile signing certificate.
+ 2. Run **create_root.sh** in Linux or run **create_root.bat** in Windows to generate the required KS file, root CA certificate, intermediate CA certificate, and profile signing certificate.
 
 
 ****
@@ -137,9 +137,9 @@ Procedure:
          ├── -keystorePwd       # KS password. It is optional.
          ├── -outFile           # CSR to generate. It is optional. If you do not specify this parameter, the CSR is output to the console.
 
-3.Generate a root CA or subordinate CA certificate.
+3.Generate a root CA or intermediate CA certificate.
 
-    generate-ca: Generate a root CA or subordinate CA certificate. If the key does not exist, generate a key together with the certificate.
+    generate-ca: Generate a root CA or intermediate CA certificate. If the key does not exist, generate a key together with the certificate.
          ├── -keyAlias                        # Key alias. It is mandatory.
          ├── -keyPwd                          # Key password. It is optional.
          ├── -keyAlg                          # Key algorithm, which can be RSA or ECC. It is mandatory.
@@ -174,7 +174,7 @@ Procedure:
          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
          ├── -outForm                         # Format of the certificate to generate. It is optional. The value can be cert or certChain. The default value is certChain.
          ├── -rootCaCertFile                  # Root CA certificate, which is mandatory when outForm is certChain.
-         ├── -subCaCertFile                   # Subordinate CA certificate, which is mandatory when outForm is certChain.
+         ├── -subCaCertFile                   # Intermediate CA certificate, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 5.Generate a profile debug or release certificate.
@@ -194,7 +194,7 @@ Procedure:
          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
          ├── -outForm                         # Format of the certificate to generate. It is optional. The value can be cert or certChain. The default value is certChain.
          ├── -rootCaCertFile                  # Root CA certificate, which is mandatory when outForm is certChain.
-         ├── -subCaCertFile                   # Subordinate CA certificate, which is mandatory when outForm is certChain.
+         ├── -subCaCertFile                   # Intermediate CA certificate, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 6.Generate a common certificate, which can be used to generate a custom certificate.
@@ -231,7 +231,7 @@ Procedure:
           ├── -mode            # Signing mode, which can be localSign or remoteSign. It is mandatory.
           ├── -keyAlias        # Key alias. It is mandatory.
           ├── -keyPwd          # Key password. It is optional.
-          ├── -profileCertFile # Profile signing certificate (certificate chain, in the profile signing certificate, subordinate CA certificate, and root certificate order). It is mandatory.
+          ├── -profileCertFile # Profile signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
           ├── -inFile          # Raw provisioning profile. It is mandatory.
           ├── -signAlg         # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
           ├── -keystoreFile    # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
@@ -242,15 +242,15 @@ Procedure:
 
      verify-profile: Verify the provisioning profile signature.
            ├── -inFile       # Signed provisioning profile, in p7b format. It is mandatory.
-           ├── -outFil       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
+           ├── -outFile       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
 
 9.Sign a HAP.
   
      sign-app: Sign a HAP
           ├── -mode          # Signing mode, which can be localSign, remoteSign, or remoteResign. It is mandatory.
           ├── -keyAlias      # Key alias. It is mandatory.
-          ├──-keyPwd         # Key password. It is optional.
-          ├── -appCertFile   # Application signing certificate (certificate chain, in the application signing certificate, subordinate CA certificate, and root certificate order). It is mandatory.
+          ├── -keyPwd         # Key password. It is optional.
+          ├── -appCertFile   # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
           ├── -profileFile   # Name of the signed provisioning profile. The profile is in p7b format if profileSigned is 1 and in json format if profileSigned is 0. It is mandatory.
           ├── -profileSigned # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
           ├── -inForm        # Raw file, in .zip (default) or .bin format. It is optional.
