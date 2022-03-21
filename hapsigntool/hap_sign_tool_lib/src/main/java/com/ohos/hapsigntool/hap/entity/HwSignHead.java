@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,8 @@ public class HwSignHead {
     private static final char[] MAGIC = "hw signed app   ".toCharArray(); // 16Bytes-Magic
     private static final char[] VERSION = "1000".toCharArray(); // 4-Bytes, version is 1.0.0.0
     private static final int NUM_OF_BLOCK = 2; // number of sub-block
-    private char[] reserve = new char[4];
+    private static final int RESERVE_LENGTH = 4;
+    private char[] reserve = new char[RESERVE_LENGTH];
 
     /**
      * get serialization of HwSignHead

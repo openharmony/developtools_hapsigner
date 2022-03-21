@@ -63,7 +63,7 @@ java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAl
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
          ├── -keyAlias          #密钥别名，必填项
          ├── -keyPwd            #密钥口令，可选项
-         ├── -profileCertFile   #Profile签名证书（证书链，顺序为三级-二级-根），必填项
+         ├── -profileCertFile   #Profile签名证书（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
          ├── -inFile            #输入的原始Provision Profile文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
@@ -84,11 +84,11 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
          ├── -keyAlias          #密钥别名，必填项
          ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #应用签名证书文件（证书链，顺序为三级-二级-根），必填项
+         ├── -appCertFile       #应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，必填项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inForm            #输入的原始文件的格式，zip格式或bin格式，默认zip格式；可选项
-         ├── -inFile            #输入的原始APP包文件，hap格式或bin格式，必填项
+         ├── -inFile            #输入的原始APP包文件，zip格式或bin格式，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
          ├── -keystorePwd       #密钥库口令，可选项
@@ -98,7 +98,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 2.一键签名
 
 
-为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、三级证书、签名profile包、签名hap包的命令。
+为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、最终实体证书、签名profile包、签名hap包的命令。
 脚本以及配置文件位于目录autosign下：
 
  - create_root.sh/create_root.bat
@@ -116,9 +116,9 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 5. Linux运行create_appcert_sign_profile.sh、Windows运行create_appcert_sign_profile.bat生成签名所需文件
 6. Linux运行sign_hap.sh、Windows运行sign_hap.bat对hap包进行签名
 
- > 说明：如需自定义生成密钥库文件，根CA，二级CA证书，profile签名证书，可执行以下步骤
+ > 说明：如需自定义生成密钥库文件，根CA，中间CA证书，profile签名证书，可执行以下步骤
  1.使用文本编辑器编辑createRootAndSubCert.config修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
- 2.Linux运行 create_root.sh、Windows运行create_root.bat生成所需密钥库文件，根CA，二级CA证书，profile签名证书
+ 2.Linux运行 create_root.sh、Windows运行create_root.bat生成所需密钥库文件，根CA，中间CA证书，profile签名证书
 
 
 ****
@@ -144,9 +144,9 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -keystorePwd       # 密钥库口令，可选项
          ├── -outFile           # 输出文件，可选项，如果不填，则直接输出到控制台
 
-3.生成根CA/子CA证书
+3.生成根CA/中间CA证书
 
-    generate-ca : 生成根CA/子CA证书，如果密钥不存在，一起生成密钥
+    generate-ca : 生成根CA/中间CA证书，如果密钥不存在，一起生成密钥
          ├── -keyAlias                        # 密钥别名，必填项
          ├── -keyPwd                          # 密钥口令，可选项
          ├── -keyAlg                          # 密钥算法，必填项，包括RSA/ECC
@@ -181,7 +181,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -outForm                         # 输出证书文件的格式，包括 cert / certChain，可选项，默认为certChain
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
-         ├── -subCaCertFile                   #  outForm为certChain时必填，二级子CA证书文件
+         ├── -subCaCertFile                   #  outForm为certChain时必填，中间CA证书文件
          ├── -outFile                         #  输出证书文件(证书或证书链)，可选项，如果不填，则直接输出到控制台
 
 5.生成profile调试/发布证书
@@ -201,7 +201,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -outForm                         # 输出证书文件的格式，包括 cert / certChain，可选项，默认为certChain
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
-         ├── -subCaCertFile                   #  outForm为certChain时必填，二级子CA证书文件
+         ├── -subCaCertFile                   #  outForm为certChain时必填，中间CA证书文件
          ├── -outFile                         #  输出证书文件(证书或证书链)，可选项，如果不填，则直接输出到控制台
 
 6.通用证书生成，可以生成自定义证书
@@ -238,7 +238,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -mode            # 签名模式，必填项，包括localSign，remoteSign
           ├── -keyAlias        # 密钥别名，必填项
           ├── -keyPwd          # 密钥口令，可选项
-          ├── -profileCertFile # Profile签名证书（证书链，顺序为三级-二级-根），必填项
+          ├── -profileCertFile # Profile签名证书（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
           ├── -inFile          # 输入的原始Provision Profile文件，必填项
           ├── -signAlg         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile    # 密钥库文件，localSign模式时为必填项，JKS或P12格式
@@ -257,11 +257,11 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -mode          # 签名模式，必填项，包括localSign，remoteSign，remoteResign
           ├── -keyAlias      # 密钥别名，必填项
           ├──-keyPwd         # 密钥口令，可选项
-          ├── -appCertFile   # 应用签名证书文件（证书链，顺序为三级-二级-根），必填项
+          ├── -appCertFile   # 应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式,必填项
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
           ├── -inForm        # 输入的原始文件的格式，zip格式或bin格式，默认zip格式，可选项
-          ├── -inFile        # 输入的原始APP包文件，hap格式或bin格式，必填项
+          ├── -inFile        # 输入的原始APP包文件，zip格式或bin格式，必填项
           ├── -signAlg       # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
           ├── -keystorePwd   # 密钥库口令，可选项
@@ -270,7 +270,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 10.hap应用包文件验签
 
       verify-app : hap应用包文件验签
-         ├── -inFile          # 已签名的应用包文件，hap格式或bin格式，必填项
+         ├── -inFile          # 已签名的应用包文件，zip格式或bin格式，必填项
          ├── -outCertchain    # 签名的证书链文件，必填项
          ├── -outProfile      # 应用包中的profile文件，必填项
 

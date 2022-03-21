@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,6 +47,14 @@ public class ZipUtils {
     private static final int UINT16_MAX_VALUE = 0xffff;
 
     private static final long UINT32_MAX_VALUE = 0xffffffffL;
+
+    private static final int ZIP_DATA_SIZE = 4;
+
+    /**
+     * Constructor of Method
+     */
+    private ZipUtils() {
+    }
 
     /**
      * This function find Eocd by searching Eocd flag from input buffer(searchBuffer) and
@@ -102,7 +110,7 @@ public class ZipUtils {
         if (locatorPos < 0) {
             return false;
         }
-        ByteBuffer byteBuffer = zip.createByteBuffer(locatorPos, 4);
+        ByteBuffer byteBuffer = zip.createByteBuffer(locatorPos, ZIP_DATA_SIZE);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         return byteBuffer.getInt() == ZIP64_EOCD_LOCATOR_SIG;
     }
