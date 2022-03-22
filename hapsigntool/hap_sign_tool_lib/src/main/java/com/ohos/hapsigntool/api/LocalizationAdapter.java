@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class LocalizationAdapter {
     /**
-     * check cert chain size
+     * Check cert chain size
      */
     private static final int MIN_CERT_CHAIN_SIZE = 2;
     private static final int MAX_CERT_CHAIN_SIZE = 3;
@@ -134,9 +134,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getIssuerAliasKey.
+     * Get the alias of issuer key.
      *
-     * @return param of issuerKeyAlias
+     * @return param of issuer alias key .
      */
     public KeyPair getIssuerAliasKey() {
         return getKeyPair(options.getString(Options.ISSUER_KEY_ALIAS),
@@ -144,9 +144,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * Keystore has alias or not.
+     * Check whether the keystore has alias or not.
      *
-     * @param alias alias
+     * @param alias alias of key
      * @return true or false
      */
     public boolean hasAlias(String alias) {
@@ -203,9 +203,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getProfileCert.
+     * Get profile cert.
      *
-     * @return profile cert
+     * @return profile cert.
      */
     public List<X509Certificate> getSignCertChain() {
         String certPath = options.getString(Options.PROFILE_CERT_FILE);
@@ -222,9 +222,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getSubCaCertFile.
+     * Get the cert file of sub ca.
      *
-     * @return sub ca cert
+     * @return the cert file of sub ca.
      */
     public X509Certificate getSubCaCertFile() {
         String certPath = options.getString(Options.SUB_CA_CERT_FILE);
@@ -232,9 +232,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getCaCertFile.
+     * Get the cert file of root ca.
      *
-     * @return root ca cert
+     * @return the cert file of root ca.
      */
     public X509Certificate getCaCertFile() {
         String certPath = options.getString(Options.CA_CERT_FILE);
@@ -242,9 +242,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * isOutFormChain.
+     * Check whether the form is cert chain.
      *
-     * @return is out form chain
+     * @return result indicating whether the form is cert chain.
      */
     public boolean isOutFormChain() {
         String outForm = options.getString(Options.OUT_FORM, "certChain");
@@ -254,17 +254,17 @@ public class LocalizationAdapter {
     /**
      * Get certificates from file.
      *
-     * @param certPath certPath
-     * @param logTitle logTitle
+     * @param certPath the path of cert
+     * @param logTitle log title
      * @return certificates
      */
     public List<X509Certificate> getCertsFromFile(String certPath, String logTitle) {
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(certPath), ERROR.NOT_SUPPORT_ERROR,
-                String.format("Params '%s' is not exist", logTitle));
+                String.format("Params '%s' not exist", logTitle));
 
         File certFile = new File(certPath);
         ValidateUtils.throwIfNotMatches(certFile.exists(), ERROR.FILE_NOT_FOUND,
-                String.format("%s: '%s' is not exist", logTitle, certPath));
+                String.format("%s: '%s' not exist", logTitle, certPath));
         List<X509Certificate> certificates = null;
         try {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
@@ -278,81 +278,81 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getSignAlg.
+     * Get signature algorithm.
      *
-     * @return sign alg
+     * @return signature algorithm.
      */
     public String getSignAlg() {
         return options.getString(Options.SIGN_ALG);
     }
 
     /**
-     * isKeyUsageCritical.
+     * Check whether the key usage is critical.
      *
-     * @return isKeyUsageCritical
+     * @return result indicating whether the key usage is critical.
      */
     public boolean isKeyUsageCritical() {
         return options.getBoolean(Options.KEY_USAGE_CRITICAL, true);
     }
 
     /**
-     * isExtKeyUsageCritical.
+     * Check whether the external key usage is critical.
      *
-     * @return isExtKeyUsageCritical
+     * @return result indicating whether the external key usage is critical.
      */
     public boolean isExtKeyUsageCritical() {
         return options.getBoolean(Options.EXT_KEY_USAGE_CRITICAL, true);
     }
 
     /**
-     * isBasicConstraintsCa.
+     * Check whether the basic constraints is ca.
      *
-     * @return isBasicConstraintsCa
+     * @return result indicating whether the basic constraints is ca.
      */
     public boolean isBasicConstraintsCa() {
         return options.getBoolean(Options.BASIC_CONSTRAINTS_CA, false);
     }
 
     /**
-     * isBasicConstraintsCritical
+     * Check whether the basic constraints is critical.
      *
-     * @return isBasicConstraintsCritical
+     * @return result indicating whether the basic constraints is critical.
      */
     public boolean isBasicConstraintsCritical() {
         return options.getBoolean(Options.BASIC_CONSTRAINTS_CRITICAL, false);
     }
 
     /**
-     * getBasicConstraintsPathLen.
+     * Get the path length of basic constraints.
      *
-     * @return BasicConstraintsPathLen
+     * @return the path length of basic constraints.
      */
     public int getBasicConstraintsPathLen() {
         return options.getInt(Options.BASIC_CONSTRAINTS_PATH_LEN);
     }
 
     /**
-     * getExtKeyUsage.
+     * Get the external key usage.
      *
-     * @return KeyPurposeId[] of ExtKeyUsage
+     * @return KeyPurposeId[] of ExtKeyUsage.
      */
     public KeyPurposeId[] getExtKeyUsage() {
         return CertUtils.parseExtKeyUsage(options.getString(Options.EXT_KEY_USAGE));
     }
 
     /**
-     * getKeyUsage.
+     * Get the key usage.
      *
-     * @return KeyUsage
+     * @return the key usage.
      */
     public KeyUsage getKeyUsage() {
         return new KeyUsage(CertUtils.parseKeyUsage(options.getString(Options.KEY_USAGE)));
     }
 
     /**
-     * getSubject.
+     * Get the subject of cert.
      *
-     * @return Subject
+     * @return the subject of cert.
      */
     public X500Name getSubject() {
         String subject = options.getString(Options.SUBJECT);
@@ -360,8 +360,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getIssuer.
-     * @return Issuer
+     * Get the subject of issuer.
+     *
+     * @return the subject of issuer.
      */
     public X500Name getIssuer() {
         String issuer = options.getString(Options.ISSUER, options.getString(Options.SUBJECT));
@@ -369,18 +370,18 @@ public class LocalizationAdapter {
     }
 
     /**
-     * getOutFile.
+     * Get the output file.
      *
-     * @return OutFile
+     * @return the string of output file.
      */
     public String getOutFile() {
         return options.getString(Options.OUT_FILE);
     }
 
     /**
-     * getInFile.
+     * Get the input file.
      *
-     * @return InFile
+     * @return the string of input file.
      */
     public String getInFile() {
         String file = options.getString(Options.IN_FILE);
@@ -390,9 +391,9 @@ public class LocalizationAdapter {
     }
 
     /**
-     * isRemoteSigner.
+     * Check if it is a remote signature.
      *
-     * @return isRemoteSigner
+     * @return result indicating whether the signer is a remote signer.
      */
     public boolean isRemoteSigner() {
         String mode = options.getString(Options.MODE, "localSign");
@@ -400,7 +401,7 @@ public class LocalizationAdapter {
     }
 
     /**
-     * Reset pwd to keep security
+     * Reset the password to ensure security.
      */
     public void releasePwd() {
         resetChars(options.getChars(Options.KEY_STORE_RIGHTS));

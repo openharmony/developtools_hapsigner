@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Utils functions for process parameters.
+ * Utils functions for processing parameters.
  *
  * @since 2021/12/21
  */

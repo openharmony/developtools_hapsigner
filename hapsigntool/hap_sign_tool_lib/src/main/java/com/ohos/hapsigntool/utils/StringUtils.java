@@ -25,7 +25,7 @@ public final class StringUtils {
     }
 
     /**
-     * Check string is empty.
+     * Check whether the input string is empty.
      *
      * @param cs input string
      * @return true, if cs is empty

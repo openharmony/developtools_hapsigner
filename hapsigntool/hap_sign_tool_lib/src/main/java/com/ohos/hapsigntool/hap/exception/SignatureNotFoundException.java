@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.exception;
 
 /**
- * Exception to find signature in the signed hap file
+ * Exception that occurs when finding signature in the signed hap file.
  *
  * @since 2021/12/20
  */

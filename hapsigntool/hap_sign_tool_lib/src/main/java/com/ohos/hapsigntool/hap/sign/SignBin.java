@@ -37,22 +37,25 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Lite OS bin file Signature signer.
+ * LiteOS bin file Signature signer.
  *
  * @since 2021/12/21
  */
 public class SignBin {
+    /**
+     * Constructor of Method
+     */
     private SignBin() {
     }
 
     private static final Logger LOGGER = LogManager.getLogger(SignBin.class);
 
     /**
-     * The function of sign bin file.
+     * Sign the bin file.
      *
-     * @param signerConfig The config of sign bin file.
-     * @param signParams The input parameters of sign bin
-     * @return true, if sign successfully.
+     * @param signerConfig Config of the bin file to be signed.
+     * @param signParams The input parameters of sign bin.
+     * @return true if sign successfully; false otherwise.
      */
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
         boolean result = false;
@@ -68,7 +71,7 @@ public class SignBin {
         }
         LOGGER.info("The block head data made success.");
 
-        /* 2. Make sign data, add write to output file */
+        /* 2. Make sign data, and write to output file */
         String signAlg = signParams.get(ParamConstants.PARAM_BASIC_SIGANTURE_ALG);
         if (!writeSignDataToOutputFile(signerConfig, outputFile, signAlg)) {
             LOGGER.error("The sign data made failed.");
@@ -77,7 +80,7 @@ public class SignBin {
         }
         LOGGER.info("The data signed success.");
 
-        /* 3. Make sign data, add write to output file */
+        /* 3. Make sign data, and write to output file */
         if (!writeSignHeadDataToOutputFile(inputFile, outputFile)) {
             LOGGER.error("The sign head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
