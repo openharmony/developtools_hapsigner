@@ -24,10 +24,10 @@ import com.ohos.hapsigntool.api.model.Options;
  */
 public interface ServiceApi {
     /**
-     * Generate keyStore.
+     * Generate keystore.
      *
      * @param options options
-     * @return Generate or not
+     * @return Result indicating whether the keystore is generated.
      */
     boolean generateKeyStore(Options options);
 
@@ -35,7 +35,7 @@ public interface ServiceApi {
      * Generate csr.
      *
      * @param options options
-     * @return Generate or not
+     * @return Result indicating whether the csr is generated.
      */
     boolean generateCsr(Options options);
 
@@ -43,7 +43,7 @@ public interface ServiceApi {
      * Generate cert.
      *
      * @param options options
-     * @return Generate or not
+     * @return Result indicating whether the cert is generated.
      */
     boolean generateCert(Options options);
 
@@ -51,7 +51,7 @@ public interface ServiceApi {
      * Generate CA.
      *
      * @param options options
-     * @return Generate or not
+     * @return Result indicating whether the CA is generated.
      */
     boolean generateCA(Options options);
 
@@ -59,7 +59,7 @@ public interface ServiceApi {
      * Generate app cert.
      *
      * @param options options
-     * @return Generate or not
+     * @return Result indicating whether the app cert is generated.
      */
     boolean generateAppCert(Options options);
 
@@ -67,7 +67,7 @@ public interface ServiceApi {
      * Generate profile cert.
      *
      * @param options options
-     * @return Generate or not
+     * @return Result indicating whether the profile cert is generated.
      */
     boolean generateProfileCert(Options options);
 
@@ -75,7 +75,7 @@ public interface ServiceApi {
      * Sign for profile.
      *
      * @param options options
-     * @return Sign or not
+     * @return Result indicating whether the profile is signed.
      */
     boolean signProfile(Options options);
 
@@ -83,7 +83,7 @@ public interface ServiceApi {
      * Verify profile.
      *
      * @param options options
-     * @return Verify or not
+     * @return Result indicating whether the profile is correct.
      */
     boolean verifyProfile(Options options);
 
@@ -91,7 +91,7 @@ public interface ServiceApi {
      * Sign for hap.
      *
      * @param options options
-     * @return Sign or not
+     * @return Result indicating whether the HAP is signed.
      */
     boolean signHap(Options options);
 
@@ -99,7 +99,7 @@ public interface ServiceApi {
      * Verify hap.
      *
      * @param options options
-     * @return Verify or not
+     * @return Result indicating whether the HAP is correct.
      */
     boolean verifyHap(Options options);
 

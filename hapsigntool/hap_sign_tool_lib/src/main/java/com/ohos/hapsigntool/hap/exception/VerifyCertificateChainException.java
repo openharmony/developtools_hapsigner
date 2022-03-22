@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.exception;
 
 /**
- * Exception occurs when verify certificate chains
+ * Exception that occurs when verifying certificate chains.
  *
  * @since 2021/12/20
  */
