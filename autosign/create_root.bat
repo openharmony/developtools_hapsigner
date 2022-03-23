@@ -11,5 +11,7 @@
 @rem See the License for the specific language governing permissions and
 @rem limitations under the License.
 
+@echo off
 python autosign.py createRootAndSubCert
 pause
+@echo on
