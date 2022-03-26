@@ -56,9 +56,8 @@ Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileT
 签名工具：hap-sign-tool.jar
 ```
 上述文件的使用场景如下图所示。
-<div align=center>
+
 ![](figures/hapsigner.png)
-</div>
 
 ##### 使用说明
 
