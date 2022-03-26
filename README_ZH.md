@@ -5,6 +5,7 @@
 * 约束
 * 编译构建
 * 说明
+  * 签名相关文件用法说明
   * 使用说明 
   * 接口说明 
 * 相关仓
@@ -44,6 +45,21 @@ Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
 
 ****
 #### 说明
+##### 签名相关文件用法说明
+
+开发者通过IDE进行应用签名时，可在SDK中会获得如下签名相关文件：
+
+```
+签名密钥库文件：OpenHarmony.p12
+Profile签名证书：OpenHarmonyProfileRelease.pem、OpenHarmonyProfileDebug.pem
+Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileTemplate.json
+签名工具：hap-sign-tool.jar
+```
+上述文件的使用场景如下图所示。
+<div align=center>
+![](figures/hapsigner.png)
+</div>
+
 ##### 使用说明
 
 以下说明中使用jar包为编译构建中生成的二进制文件
