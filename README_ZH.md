@@ -57,10 +57,12 @@ Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileT
 ```
 上述文件的使用场景如下图所示。
 
-Profile签名场景：
+**Profile签名场景：**
+
 ![signprofile.png](figures/signprofile_zh.png)
 
-应用签名场景：
+**应用签名场景：**
+
 ![signapp.png](figures/signapp_zh.png)
 ##### 使用说明
 
