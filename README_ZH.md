@@ -56,9 +56,11 @@ Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileT
 签名工具：hap-sign-tool.jar
 ```
 上述文件的使用场景如下图所示。
+Profile签名场景：
+![signprofile.png](figures/signprofile_zh.png)
 
-![hapsigner.png](figures/hapsigner_zh.png)
-
+应用签名场景：
+![signapp.png](figures/signapp_zh.png)
 ##### 使用说明
 
 以下说明中使用jar包为编译构建中生成的二进制文件
