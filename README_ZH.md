@@ -57,7 +57,7 @@ Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileT
 ```
 上述文件的使用场景如下图所示。
 
-![hapsigner.png](figures/hapsigner.png)
+![hapsigner.png](figures/hapsigner_zh.png)
 
 ##### 使用说明
 
