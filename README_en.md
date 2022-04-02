@@ -37,7 +37,7 @@ The scripts, such as the one-click signature script, are developed in Python, an
 #### Usage
 ##### Usage of Signature-related Files
 
-When signing an app using the IDE, you will obtain the following files from the SDK:
+When signing an application using the IDE, you will obtain the following files from the SDK:
 
 ```
 KeyStore (KS) file: OpenHarmony.p12
@@ -90,11 +90,11 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 ```
 The parameters in the command are described as follows:
 
-    sign-app: HAP signature.
+    sign-app: Sign a HAP.
          ├── -mode              # Signing mode, which can be localSign or remoteSign. It is mandatory.
          ├── -keyAlias          # Key alias. It is mandatory.
          ├── -keyPwd            # Key password. It is optional.
-         ├── -appCertFile       # App signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
+         ├── -appCertFile       # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
          ├── -profileFile       # Singed provisioning profile, in p7b format. It is mandatory.
          ├── -profileSigned     # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
          ├── -inForm            # Raw file, in .zip (default) or .bin format. It is optional.
@@ -126,7 +126,7 @@ Procedure:
 5. Run **create_appcert_sign_profile.sh** in Linux or **create_appcert_sign_profile.bat** in Windows to generate files required for signature.
 6. Run **sign_hap.sh** in Linux or **sign_hap.bat** in Windows to sign the HAP.
 
- > NOTE: To generate the KS file, root CA certificate, intermediate CA certificate, and profile signing certificate, perform the following steps:
+ > Note: To generate the KS file, root CA certificate, intermediate CA certificate, and profile signing certificate, perform the following steps:
  1. Use the text editor to open the **createRootAndSubCert.config** file and change the values of **common.keyPwd** and **common.issuerKeyPwd** to match your case.
  2. Run **create_root.sh** in Linux or run **create_root.bat** in Windows to generate the required KS file, root CA certificate, intermediate CA certificate, and profile signing certificate.
 
@@ -191,7 +191,7 @@ Procedure:
          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
          ├── -outForm                         # Format of the certificate to generate. It is optional. The value can be cert or certChain. The default value is certChain.
          ├── -rootCaCertFile                  # Root CA certificate, which is mandatory when outForm is certChain.
-         ├── -subCaCertFile                   # Intermediate CA certificate file. This parameter is mandatory when outForm is set to certChain.
+         ├── -subCaCertFile                   # Intermediate CA certificate file, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 5.Generate a profile debug or release certificate.
@@ -211,40 +211,40 @@ Procedure:
          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
          ├── -outForm                         # Format of the certificate to generate. It is optional. The value can be cert or certChain. The default value is certChain.
          ├── -rootCaCertFile                  # Root CA certificate, which is mandatory when outForm is certChain.
-         ├── -subCaCertFile                   # Intermediate CA certificate file. This parameter is mandatory when outForm is set to certChain.
+         ├── -subCaCertFile                   # Intermediate CA certificate file, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 6.Generate a common certificate, which can be used to generate a custom certificate.
 
     generate-cert: Generate a common certificate, which can be used to generate a custom certificate.
-          ├── -keyAlias                         # Key alias. It is mandatory.
-          ├── -keyPwd                           # Key password. It is optional.
-          ├── -issuer                           # Issuer of the certificate. It is mandatory.
-          ├── -issuerKeyAlias                   # Key alias of the issuer. It is mandatory.
-          ├── -issuerKeyPwd                     # Key password of the issuer. It is optional.
-          ├── -subject                          # Certificate subject. It is mandatory.
-          ├── -validity                         # Validity period of the certificate. It is optional. The default value is 1095 days.
-          ├── -keyUsage                         # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, 
-          ├                                       keyEncipherment, dataEncipherment, keyAgreement, certificateSignature, crlSignature,
-          ├                                       encipherOnly, and decipherOnly. Use a comma (,) to separate multiple values.
-          ├── -keyUsageCritical                 # Whether keyUsage is a critical option. It is optional. The default value is true.
-          ├── -extKeyUsage                      # Extended key usages. It is optional. The extended key usages include clientAuthentication, 
-          ├                                       serverAuthentication, codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
-          ├── -extKeyUsageCritical              # Whether extKeyUsage is a critical option. It is optional. The default value is false.
-          ├── -signAlg                          # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
-          ├── -basicConstraints                 # Whether basicConstraints is contained. It is optional. The default value is false.
-          ├── -basicConstraintsCritical         # Whether basicConstraints is a critical option. It is optional. The default value is false.
-          ├── -basicConstraintsCa               # Whether it is CA. It is optional. The default value is false.
-          ├── -basicConstraintsPathLen          # Path length. It is optional. The default value is 0.
-          ├── -issuerKeystoreFile               # KS file of the issuer, in JKS or P12 format. It is optional.
-          ├── -issuerKeystorePwd                # KS password of the issuer. It is optional. 
-          ├── -keystoreFile                     # KS file, in JKS or P12 format. It is mandatory.
-          ├── -keystorePwd                      # KS password. It is optional.
-          ├── -outFile                          # Certificate file to generate. It is optional. The file is output to the console if this parameter is not specified.
+          ├── -keyAlias                        # Key alias. It is mandatory.
+          ├── -keyPwd                          # Key password. It is optional.
+          ├── -issuer                          # Issuer of the certificate. It is mandatory.
+          ├── -issuerKeyAlias                  # Key alias of the issuer. It is mandatory.
+          ├── -issuerKeyPwd                    # Key password of the issuer. It is optional.
+          ├── -subject                         # Certificate subject. It is mandatory.
+          ├── -validity                        # Validity period of the certificate. It is optional. The default value is 1095 days.
+          ├── -keyUsage                        # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, keyEncipherment,
+          ├                                      dataEncipherment, keyAgreement, certificateSignature, crlSignature, encipherOnly, and decipherOnly.
+          ├                                      Use a comma (,) to separate multiple values.
+          ├── -keyUsageCritical                # Whether keyUsage is a critical option. It is optional. The default value is true.
+          ├── -extKeyUsage                     # Extended key usages. It is optional. The extended key usages include clientAuthentication, serverAuthentication,
+          ├                                      codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
+          ├── -extKeyUsageCritical             # Whether extKeyUsage is a critical option. It is optional. The default value is false.
+          ├── -signAlg                         # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
+          ├── -basicConstraints                # Whether basicConstraints is contained. It is optional. The default value is false.
+          ├── -basicConstraintsCritical        # Whether basicConstraints is a critical option. It is optional. The default value is false.
+          ├── -basicConstraintsCa              # Whether it is CA. It is optional. The default value is false.
+          ├── -basicConstraintsPathLen         # Path length. It is optional. The default value is 0.
+          ├── -issuerKeystoreFile              # KS file of the issuer, in JKS or P12 format. It is optional.
+          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
+          ├── -keystoreFile                    # KS file, in JKS or P12 format. It is mandatory.
+          ├── -keystorePwd                     # KS password. It is optional.
+          ├── -outFile                         # Certificate file to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 7.Sign a provisioning profile.
 
-    sign-profile: Generate a provisioning profile signature.
+    sign-profile: Sign a provisioning profile.
           ├── -mode            # Signing mode, which can be localSign or remoteSign. It is mandatory.
           ├── -keyAlias        # Key alias. It is mandatory.
           ├── -keyPwd          # Key password. It is optional.
@@ -259,15 +259,15 @@ Procedure:
 
      verify-profile: Verify the provisioning profile signature.
            ├── -inFile       # Signed provisioning profile, in p7b format. It is mandatory.
-           ├── -outFil       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
+           ├── -outFile       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
 
-9.Sign a HAP
+9.Sign a HAP.
   
      sign-app: Sign a HAP
           ├── -mode          # Signing mode, which can be localSign, remoteSign, or remoteResign. It is mandatory.
           ├── -keyAlias      # Key alias. It is mandatory.
-          ├──-keyPwd         # Key password. It is optional.
-          ├── -appCertFile   # App signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
+          ├── -keyPwd         # Key password. It is optional.
+          ├── -appCertFile   # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
           ├── -profileFile   # Name of the signed provisioning profile. The profile is in p7b format if profileSigned is 1 and in json format if profileSigned is 0. It is mandatory.
           ├── -profileSigned # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
           ├── -inForm       # Raw file, in .zip (default) or .bin format. It is optional.
@@ -277,7 +277,7 @@ Procedure:
           ├── -keystorePwd   # KS password. It is optional.
           ├── -outFile       # Signed HAP file to generate. It is mandatory.
 
-10.Verify the HAP Signature
+10.Verify the HAP Signature.
 
       verify-app: Verify the HAP signature.
          ├── -inFile          # Signed application file, in .zip or .bin format. It is mandatory.
