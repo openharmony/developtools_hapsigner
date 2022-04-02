@@ -269,14 +269,14 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 
      verify-profile : ProvisionProfile文件验签
            ├── -inFile       # 已签名的Provision Profile文件，p7b格式，必填项
-           ├── -outFil       # 验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台
+           ├── -outFile       # 验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台
 
 9.hap应用包签名
   
      sign-app : hap应用包签名 
           ├── -mode          # 签名模式，必填项，包括localSign，remoteSign，remoteResign
           ├── -keyAlias      # 密钥别名，必填项
-          ├──-keyPwd         # 密钥口令，可选项
+          ├── -keyPwd        # 密钥口令，可选项
           ├── -appCertFile   # 应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式,必填项
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
