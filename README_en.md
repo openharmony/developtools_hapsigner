@@ -266,11 +266,11 @@ Procedure:
      sign-app: Sign a HAP
           ├── -mode          # Signing mode, which can be localSign, remoteSign, or remoteResign. It is mandatory.
           ├── -keyAlias      # Key alias. It is mandatory.
-          ├── -keyPwd         # Key password. It is optional.
+          ├── -keyPwd        # Key password. It is optional.
           ├── -appCertFile   # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
           ├── -profileFile   # Name of the signed provisioning profile. The profile is in p7b format if profileSigned is 1 and in json format if profileSigned is 0. It is mandatory.
           ├── -profileSigned # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
-          ├── -inForm       # Raw file, in .zip (default) or .bin format. It is optional.
+          ├── -inForm        # Raw file, in .zip (default) or .bin format. It is optional.
           ├── -inFile        # Raw application package, in .zip or .bin format. It is mandatory.
           ├── -signAlg       # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
           ├── -keystoreFile  # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
