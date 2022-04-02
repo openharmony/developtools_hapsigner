@@ -29,7 +29,7 @@ The scripts, such as the one-click signature script, are developed in Python, an
 
  2. Download the code, open the file directory **developtools_hapsigner/hapsigntool**, and run the following command to build the code:
             
-        **gradle build** or **gradle jar**
+        gradle build or gradle jar
 
  3. Check that **hap-sign-tool.jar** (binary files) is generated in the **./hap_sign_tool/build/libs** directory.
 
@@ -40,10 +40,10 @@ The scripts, such as the one-click signature script, are developed in Python, an
 When signing an app using the IDE, you will obtain the following files from the SDK:
 
 ```
-KeyStore (KS) file: **OpenHarmony.p12**
-Profile signing certificates: **OpenHarmonyProfileRelease.pem** and  **OpenHarmonyProfileDebug.pem**
-Profile templates: **UnsgnedReleasedProfileTemplate.json** and **UnsgnedDebugProfileTemplate.json**
-Signature tool: **hap-sign-tool.jar**
+KeyStore (KS) file: OpenHarmony.p12
+Profile signing certificates: OpenHarmonyProfileRelease.pem and OpenHarmonyProfileDebug.pem
+Profile templates: UnsgnedReleasedProfileTemplate.json and UnsgnedDebugProfileTemplate.json
+Signature tool: hap-sign-tool.jar
 ```
 The figures below illustrate how these files are used.
 
@@ -126,7 +126,7 @@ Procedure:
 5. Run **create_appcert_sign_profile.sh** in Linux or **create_appcert_sign_profile.bat** in Windows to generate files required for signature.
 6. Run **sign_hap.sh** in Linux or **sign_hap.bat** in Windows to sign the HAP.
 
- > Note: To generate the KS file, root CA certificate, intermediate CA certificate, and profile signing certificate, perform the following steps:
+ > NOTE: To generate the KS file, root CA certificate, intermediate CA certificate, and profile signing certificate, perform the following steps:
  1. Use the text editor to open the **createRootAndSubCert.config** file and change the values of **common.keyPwd** and **common.issuerKeyPwd** to match your case.
  2. Run **create_root.sh** in Linux or run **create_root.bat** in Windows to generate the required KS file, root CA certificate, intermediate CA certificate, and profile signing certificate.
 
