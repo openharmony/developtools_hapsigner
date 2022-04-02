@@ -1,10 +1,8 @@
 # hapsigner
 
-
-
 #### Introduction
 
-To ensure the integrity and secure source of applications, the applications must be signed during the build process. Only signed applications can be installed, run, and debugged on real devices. This repository provides the source code of the HAP signing tool - hapsigner. This tool can be used to generate key pairs, certificate signing requests (CSRs), certificates, profile signatures, and HAP signatures.
+To ensure the integrity and secure source of OpenHarmony applications, the applications must be signed during the build process. Only signed applications can be installed, run, and debugged on real devices. This repository provides the source code of the HAP signing tool - hapsigner. This tool can be used to generate key pairs, certificate signing requests (CSRs), certificates, profile signatures, and HAP signatures.
 
 
 #### Directory Structure
@@ -37,6 +35,25 @@ The scripts, such as the one-click signature script, are developed in Python, an
 
 ****
 #### Usage
+##### Usage of Signature-related Files
+
+When signing an application using the IDE, you will obtain the following files from the SDK:
+
+```
+KeyStore (KS) file: OpenHarmony.p12
+Profile signing certificates: OpenHarmonyProfileRelease.pem and OpenHarmonyProfileDebug.pem
+Profile templates: UnsgnedReleasedProfileTemplate.json and UnsgnedDebugProfileTemplate.json
+Signature tool: hap-sign-tool.jar
+```
+The figures below illustrate how these files are used.
+
+**Signing a Profile**
+
+![signprofile.png](figures/signprofile_en.png)
+
+**Signing an App**
+
+![signapp.png](figures/signapp_en.png)
 ##### Note
 
 In the following, the JAR package used is the binary files generated during the build process.
@@ -59,7 +76,7 @@ The parameters in the command are described as follows:
          ├── -profileCertFile   # Profile signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
          ├── -inFile            # Raw provisioning profile. It is mandatory.
          ├── -signAlg           # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
-         ├── -keystoreFile      # KeyStore (KS) file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
+         ├── -keystoreFile      # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
          ├── -keystorePwd       # KS password. It is optional.
          ├── -outFile           # Signed provisioning profile to generate, in p7b format. It is mandatory.
 
@@ -73,7 +90,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 ```
 The parameters in the command are described as follows:
 
-    sign-app: HAP signature.
+    sign-app: Sign a HAP.
          ├── -mode              # Signing mode, which can be localSign or remoteSign. It is mandatory.
          ├── -keyAlias          # Key alias. It is mandatory.
          ├── -keyPwd            # Key password. It is optional.
@@ -174,7 +191,7 @@ Procedure:
          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
          ├── -outForm                         # Format of the certificate to generate. It is optional. The value can be cert or certChain. The default value is certChain.
          ├── -rootCaCertFile                  # Root CA certificate, which is mandatory when outForm is certChain.
-         ├── -subCaCertFile                   # Intermediate CA certificate, which is mandatory when outForm is certChain.
+         ├── -subCaCertFile                   # Intermediate CA certificate file, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 5.Generate a profile debug or release certificate.
@@ -194,7 +211,7 @@ Procedure:
          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
          ├── -outForm                         # Format of the certificate to generate. It is optional. The value can be cert or certChain. The default value is certChain.
          ├── -rootCaCertFile                  # Root CA certificate, which is mandatory when outForm is certChain.
-         ├── -subCaCertFile                   # Intermediate CA certificate, which is mandatory when outForm is certChain.
+         ├── -subCaCertFile                   # Intermediate CA certificate file, which is mandatory when outForm is certChain.
          ├── -outFile                         # Certificate file (certificate or certificate chain) to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 6.Generate a common certificate, which can be used to generate a custom certificate.
@@ -207,12 +224,12 @@ Procedure:
           ├── -issuerKeyPwd                    # Key password of the issuer. It is optional.
           ├── -subject                         # Certificate subject. It is mandatory.
           ├── -validity                        # Validity period of the certificate. It is optional. The default value is 1095 days.
-          ├── -keyUsage                        # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, 
-          ├                                      keyEncipherment, dataEncipherment, keyAgreement, certificateSignature, crlSignature,
-          ├                                      encipherOnly, and decipherOnly. Use a comma (,) to separate multiple values.  
+          ├── -keyUsage                        # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, keyEncipherment,
+          ├                                      dataEncipherment, keyAgreement, certificateSignature, crlSignature, encipherOnly, and decipherOnly.
+          ├                                      Use a comma (,) to separate multiple values.
           ├── -keyUsageCritical                # Whether keyUsage is a critical option. It is optional. The default value is true.
-          ├── -extKeyUsage                     # Extended key usages. It is optional. The extended key usages include clientAuthentication, 
-          ├                                      serverAuthentication, codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
+          ├── -extKeyUsage                     # Extended key usages. It is optional. The extended key usages include clientAuthentication, serverAuthentication,
+          ├                                      codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
           ├── -extKeyUsageCritical             # Whether extKeyUsage is a critical option. It is optional. The default value is false.
           ├── -signAlg                         # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
           ├── -basicConstraints                # Whether basicConstraints is contained. It is optional. The default value is false.
@@ -227,7 +244,7 @@ Procedure:
 
 7.Sign a provisioning profile.
 
-    sign-profile: Generate a provisioning profile signature.
+    sign-profile: Sign a provisioning profile.
           ├── -mode            # Signing mode, which can be localSign or remoteSign. It is mandatory.
           ├── -keyAlias        # Key alias. It is mandatory.
           ├── -keyPwd          # Key password. It is optional.
@@ -241,7 +258,7 @@ Procedure:
 8.Verify the provisioning profile signature.
 
      verify-profile: Verify the provisioning profile signature.
-           ├── -inFile       # Signed provisioning profile, in p7b format. It is mandatory.
+           ├── -inFile        # Signed provisioning profile, in p7b format. It is mandatory.
            ├── -outFile       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
 
 9.Sign a HAP.
@@ -249,7 +266,7 @@ Procedure:
      sign-app: Sign a HAP
           ├── -mode          # Signing mode, which can be localSign, remoteSign, or remoteResign. It is mandatory.
           ├── -keyAlias      # Key alias. It is mandatory.
-          ├── -keyPwd         # Key password. It is optional.
+          ├── -keyPwd        # Key password. It is optional.
           ├── -appCertFile   # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
           ├── -profileFile   # Name of the signed provisioning profile. The profile is in p7b format if profileSigned is 1 and in json format if profileSigned is 0. It is mandatory.
           ├── -profileSigned # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
