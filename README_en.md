@@ -217,30 +217,30 @@ Procedure:
 6.Generate a common certificate, which can be used to generate a custom certificate.
 
     generate-cert: Generate a common certificate, which can be used to generate a custom certificate.
-          ├── -keyAlias                          # Key alias. It is mandatory.
-          ├── -keyPwd                            # Key password. It is optional.
-          ├── -issuer                            # Issuer of the certificate. It is mandatory.
-          ├── -issuerKeyAlias                    # Key alias of the issuer. It is mandatory.
+          ├── -keyAlias                         # Key alias. It is mandatory.
+          ├── -keyPwd                           # Key password. It is optional.
+          ├── -issuer                           # Issuer of the certificate. It is mandatory.
+          ├── -issuerKeyAlias                   # Key alias of the issuer. It is mandatory.
           ├── -issuerKeyPwd                     # Key password of the issuer. It is optional.
           ├── -subject                          # Certificate subject. It is mandatory.
           ├── -validity                         # Validity period of the certificate. It is optional. The default value is 1095 days.
-          ├── -keyUsage                          # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, keyEncipherment,
-          ├                                        dataEncipherment, keyAgreement, certificateSignature, crlSignature,
-          ├                                        encipherOnly, and decipherOnly. Use a comma (,) to separate multiple values.
-          ├── -keyUsageCritical                  # Whether keyUsage is a critical option. It is optional. The default value is true.
-          ├── -extKeyUsage                       # Extended key usages. It is optional. The extended key usages include clientAuthentication, serverAuthentication,
-          ├                                        codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
-          ├── -extKeyUsageCritical               # Whether extKeyUsage is a critical option. It is optional. The default value is false.
-          ├── -signAlg                         # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
-          ├── -basicConstraints                  # Whether basicConstraints is contained. It is optional. The default value is false.
-          ├── -basicConstraintsCritical          # Whether basicConstraints is a critical option. It is optional. The default value is false.
-          ├── -basicConstraintsCa                # Whether it is CA. It is optional. The default value is false.
+          ├── -keyUsage                         # Usages of the key. It is mandatory. The key usages include digitalSignature, nonRepudiation, 
+          ├                                       keyEncipherment, dataEncipherment, keyAgreement, certificateSignature, crlSignature,
+          ├                                       encipherOnly, and decipherOnly. Use a comma (,) to separate multiple values.
+          ├── -keyUsageCritical                 # Whether keyUsage is a critical option. It is optional. The default value is true.
+          ├── -extKeyUsage                      # Extended key usages. It is optional. The extended key usages include clientAuthentication, 
+          ├                                       serverAuthentication, codeSignature, emailProtection, smartCardLogin, timestamp, and ocspSignature.
+          ├── -extKeyUsageCritical              # Whether extKeyUsage is a critical option. It is optional. The default value is false.
+          ├── -signAlg                          # Signature algorithm, which can be SHA256withRSA, SHA384withRSA,  SHA256withECDSA, or SHA384withECDSA. It is mandatory.
+          ├── -basicConstraints                 # Whether basicConstraints is contained. It is optional. The default value is false.
+          ├── -basicConstraintsCritical         # Whether basicConstraints is a critical option. It is optional. The default value is false.
+          ├── -basicConstraintsCa               # Whether it is CA. It is optional. The default value is false.
           ├── -basicConstraintsPathLen          # Path length. It is optional. The default value is 0.
-          ├── -issuerKeystoreFile              # KS file of the issuer, in JKS or P12 format. It is optional.
-          ├── -issuerKeystorePwd               # KS password of the issuer. It is optional. 
+          ├── -issuerKeystoreFile               # KS file of the issuer, in JKS or P12 format. It is optional.
+          ├── -issuerKeystorePwd                # KS password of the issuer. It is optional. 
           ├── -keystoreFile                     # KS file, in JKS or P12 format. It is mandatory.
-          ├── -keystorePwd                     # KS password. It is optional.
-          ├── -outFile                           # Certificate file to generate. It is optional. The file is output to the console if this parameter is not specified.
+          ├── -keystorePwd                      # KS password. It is optional.
+          ├── -outFile                          # Certificate file to generate. It is optional. The file is output to the console if this parameter is not specified.
 
 7.Sign a provisioning profile.
 
