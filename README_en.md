@@ -251,14 +251,14 @@ Procedure:
           ├── -profileCertFile # Profile signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
           ├── -inFile          # Raw provisioning profile. It is mandatory.
           ├── -signAlg         # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
-          ├── -keystoreFile      # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
+          ├── -keystoreFile    # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
           ├── -keystorePwd     # KS password. It is optional.
           ├── -outFile         # Signed provisioning profile to generate, in p7b format. It is mandatory.
 
 8.Verify the provisioning profile signature.
 
      verify-profile: Verify the provisioning profile signature.
-           ├── -inFile       # Signed provisioning profile, in p7b format. It is mandatory.
+           ├── -inFile        # Signed provisioning profile, in p7b format. It is mandatory.
            ├── -outFile       # Verification result file (including the verification result and profile content), in json format. It is optional. The file is output to the console if this parameter is not specified.
 
 9.Sign a HAP.
