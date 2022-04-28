@@ -291,7 +291,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 
       verify-app : hap应用包文件验签
          ├── -inFile          # 已签名的应用包文件，zip格式或bin格式，必填项
-         ├── -outCertchain    # 签名的证书链文件，必填项
+         ├── -outCertChain    # 签名的证书链文件，必填项
          ├── -outProfile      # 应用包中的profile文件，必填项
 
 
