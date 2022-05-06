@@ -281,7 +281,7 @@ Procedure:
 
       verify-app: Verify the HAP signature.
          ├── -inFile          # Signed application file, in .zip or .bin format. It is mandatory.
-         ├── -outCertchain    # Signed certificate chain file. It is mandatory.
+         ├── -outCertChain    # Signed certificate chain file. It is mandatory.
          ├── -outProfile      # Profile of the application. It is mandatory.
 
 
