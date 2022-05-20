@@ -56,10 +56,17 @@ public final class CmdUtil {
         Params params = new Params();
         params.setMethod(args[0]);
         String keyStandBy = null;
+        List<String> trustList = ParamsTrustlist.getTrustList(args[0]);
+        if (trustList == null) {
+            CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
+        }
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
             // prepare key
             if (value != null && (value.startsWith("-"))) {
+                boolean isTrust = trustList.contains(value);
+                ValidateUtils.throwIfNotMatches(isTrust,
+                        ERROR.COMMAND_PARAM_ERROR,"Not support command param:" + value);
                 keyStandBy = value.substring(1);
             } else {
                 // prepare value
