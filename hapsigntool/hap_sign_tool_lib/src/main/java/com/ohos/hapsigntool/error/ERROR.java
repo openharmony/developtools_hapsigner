@@ -56,7 +56,11 @@ public enum ERROR {
     /**
      * Enum constant ACCESS_ERROR.
      */
-    ACCESS_ERROR(109);
+    ACCESS_ERROR(109),
+    /**
+     * Enum constant COMMAND_PARAM_ERROR.
+     */
+    COMMAND_PARAM_ERROR(110);
 
     /**
      * Field errorCode.
