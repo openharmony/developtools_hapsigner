@@ -38,13 +38,13 @@ templates = {
                    'basicConstraintsPathLen']
     },
     'generate-app-cert': {
-        'required': ['keyAlias', 'signAlg', 'keyAlg', 'keySize', 'issuer', 'issuerKeyAlias', 'subject', 'keystoreFile',
+        'required': ['keyAlias', 'signAlg', 'issuer', 'issuerKeyAlias', 'subject', 'keystoreFile',
                      'subCaCertFile', 'rootCaCertFile', 'outForm', 'outFile'],
         'others': ['keyPwd', 'keystorePwd', 'issuerKeyPwd', 'validity',
                    'basicConstraintsPathLen']
     },
     'generate-profile-cert': {
-        'required': ['keyAlias', 'signAlg', 'keyAlg', 'keySize', 'issuer', 'issuerKeyAlias', 'subject', 'keystoreFile',
+        'required': ['keyAlias', 'signAlg', 'issuer', 'issuerKeyAlias', 'subject', 'keystoreFile',
                      'subCaCertFile', 'rootCaCertFile', 'outForm', 'outFile'],
         'others': ['keyPwd', 'keystorePwd', 'issuerKeyPwd', 'validity',
                    'basicConstraintsPathLen']
