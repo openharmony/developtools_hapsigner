@@ -193,33 +193,12 @@ public class Provision {
      * @param provision provision
      */
     public static void enforceValid(Provision provision) {
-        ValidateUtils.throwIfMatches(provision == null, ERROR.SIGN_ERROR,
-                "Require provision not empty!");
-        ValidateUtils.throwIfMatches(provision.versionName == null, ERROR.SIGN_ERROR,
-                "Require provision version name!");
-        ValidateUtils.throwIfMatches(provision.versionCode == 0, ERROR.SIGN_ERROR,
-                "Require provision version code!");
-        ValidateUtils.throwIfMatches(provision.uuid == null, ERROR.SIGN_ERROR,
-                "Require provision uuid!");
         ValidateUtils.throwIfMatches(provision.type == null || !isBuildTypeValid(provision.type),
                 ERROR.SIGN_ERROR, "Require build type must be debug or release, current is :" + provision.type);
 
-        ValidateUtils.throwIfMatches(isBuildTypeRelease(provision.type)
-                        && (provision.appDistributionType == null
-                        || !isAppDistTypeValid(provision.appDistributionType)), ERROR.SIGN_ERROR,
-                "Require app distribution type must be one of app_gallery, "
-                        + "enterprise or os_integration, current is " + provision.appDistributionType);
         ValidateUtils.throwIfMatches(provision.bundleInfo == null, ERROR.SIGN_ERROR,
                 "Require bundleInfo in provision!");
         provision.bundleInfo.enforceValid(provision.type);
-        ValidateUtils.throwIfMatches(provision.validity == null, ERROR.SIGN_ERROR,
-                "Require validity in provision!");
-        provision.validity.enforceValid();
-        if (provision.debuginfo != null) {
-            provision.debuginfo.enforceValid();
-        }
-        ValidateUtils.throwIfMatches(provision.issuer == null, ERROR.SIGN_ERROR,
-                "Require issuer in provision!");
     }
 
     public Integer getVersionCode() {
