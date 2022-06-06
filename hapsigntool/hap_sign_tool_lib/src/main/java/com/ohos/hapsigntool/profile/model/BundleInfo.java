@@ -122,8 +122,6 @@ public class BundleInfo {
      * @param buildType build type
      */
     public void enforceValid(String buildType) {
-        ValidateUtils.throwIfMatches(this.developerId == null, ERROR.SIGN_ERROR,
-                "Require developerId in bundleInfo!");
         if (Provision.isBuildTypeRelease(buildType)) {
             ValidateUtils.throwIfMatches(this.distributionCertificate == null,
                     ERROR.SIGN_ERROR, "Require cert in bundleInfo!");
@@ -131,10 +129,5 @@ public class BundleInfo {
             ValidateUtils.throwIfMatches(this.developmentCertificate == null,
                     ERROR.SIGN_ERROR, "Require cert in bundleInfo!");
         }
-        ValidateUtils.throwIfMatches(this.bundleName == null, ERROR.SIGN_ERROR,
-                "Require bundleName in bundleInfo!");
-        ValidateUtils.throwIfMatches(this.appFeature == null || Provision.isAppDistTypeValid(this.appFeature),
-                ERROR.SIGN_ERROR, "Require appFeature be hos_system_app or hos_normal_app,curr is :"
-                        + this.appFeature + " in bundleInfo!");
     }
 }
