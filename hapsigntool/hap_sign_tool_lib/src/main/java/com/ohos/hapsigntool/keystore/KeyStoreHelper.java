@@ -238,7 +238,7 @@ public class KeyStoreHelper {
      * @return certificates of alias
      */
     public List<X509Certificate> loadCertificates(String alias) {
-        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), ERROR.NOT_SUPPORT_ERROR,
+        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), ERROR.FILE_NOT_FOUND,
                 String.format("Not found '%s' in %s", alias, this.keyStorePath));
 
         List<X509Certificate> certificates = new ArrayList<>();
@@ -256,7 +256,7 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
         }
 
         ValidateUtils.throwIfNotMatches(certificates.size() > 0, ERROR.ACCESS_ERROR,
@@ -317,7 +317,7 @@ public class KeyStoreHelper {
                     .getCertificate(certificateBuilder.build(contentSigner));
         } catch (CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
             return null;
         }
     }
@@ -341,7 +341,7 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
         }
         return typeKeyStore;
     }

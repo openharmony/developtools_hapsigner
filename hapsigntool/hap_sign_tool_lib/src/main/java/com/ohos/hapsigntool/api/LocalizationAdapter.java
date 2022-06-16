@@ -196,7 +196,7 @@ public class LocalizationAdapter {
                 keyStoreHelper.store(alias, keyPwd, keyPair, null);
             }
         }
-        ValidateUtils.throwIfNotMatches(keyPair != null, ERROR.NOT_SUPPORT_ERROR,
+        ValidateUtils.throwIfNotMatches(keyPair != null, ERROR.PARAM_NOT_EXIST_ERROR,
                 String.format("%s: '%s' is not exist in %s", Options.KEY_ALIAS, alias,
                         keyStoreHelper.getKeyStorePath()));
         return keyPair;
@@ -259,7 +259,7 @@ public class LocalizationAdapter {
      * @return certificates
      */
     public List<X509Certificate> getCertsFromFile(String certPath, String logTitle) {
-        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(certPath), ERROR.NOT_SUPPORT_ERROR,
+        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(certPath), ERROR.PARAM_NOT_EXIST_ERROR,
                 String.format("Params '%s' not exist", logTitle));
 
         File certFile = new File(certPath);

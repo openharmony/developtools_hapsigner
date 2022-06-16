@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ohos.hapsigntoolcmd;
 
 import com.ohos.hapsigntool.error.CustomException;
@@ -7,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,17 +30,22 @@ import java.util.Optional;
 
 /**
  * 入参白名单获取类
+ *
+ * @since 2022/06/01
  */
 public final class ParamsTrustlist {
-
+    /**
+     * Define generic string
+     */
     public static final String OPTIONS = " [options]:";
-
-    private static  final List<String>  COMMONDS = new ArrayList<String>();
-
+    /**
+     * Define commond list
+     */
+    private static final List<String> COMMONDS = new ArrayList<String>();
+    /**
+     * Define trust map
+     */
     private static HashMap<String, List<String>> trustMap = new HashMap<>();
-
-    private ParamsTrustlist() {
-    }
 
     static {
         COMMONDS.add(CmdUtil.Method.GENERATE_KEYPAIR + OPTIONS);
@@ -39,10 +60,13 @@ public final class ParamsTrustlist {
         COMMONDS.add(CmdUtil.Method.VERIFY_APP + OPTIONS);
     }
 
+    private ParamsTrustlist() {
+    }
+
     /**
      * Generate Trustlist
      */
-    public  static void generateTrustlist() {
+    public static void generateTrustlist() {
         ClassLoader classLoader = ParamsTrustlist.class.getClassLoader();
         if (classLoader == null) {
             return ;
@@ -53,16 +77,19 @@ public final class ParamsTrustlist {
             if (inputStream == null) {
                 return ;
             }
-            InputStreamReader isr = new InputStreamReader(inputStream);
+            InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr);
-            String tempCommond = null;
-            while ((str=br.readLine()) != null) {
+            String cmdStandBy = null;
+            while ((str = br.readLine()) != null) {
                 String param = str.trim();
                 if (COMMONDS.contains(param)) {
-                    tempCommond = param;
-                    continue;
+                    cmdStandBy = param;
+                } else {
+                    boolean success = putTrustMap(cmdStandBy, param);
+                    if (!success && cmdStandBy != null) {
+                        cmdStandBy = null;
+                    }
                 }
-                tempCommond = putTrustMap(tempCommond, param);
             }
         } catch (IOException ioe) {
             CustomException.throwException(ERROR.READ_FILE_ERROR, "Failed to read " + page + " resource");
@@ -70,34 +97,36 @@ public final class ParamsTrustlist {
 
     }
 
-    private static String putTrustMap(String tempCommond, String param) {
-        if (tempCommond != null) {
-            if (param.startsWith("-")) {
-                String subParam = param.substring(0, param.indexOf(":")).trim();
-                List<String> trustLists = Optional.ofNullable(
-                        trustMap.get(tempCommond)).orElse(new ArrayList<>());
-                trustLists.add(subParam);
-                trustMap.put(tempCommond,trustLists);
-            } else {
-                tempCommond = null;
-            }
+    /**
+     * Put trustlist map
+     *
+     * @param cmdStandBy command as key
+     * @param param commond as value
+     * @return boolean
+     */
+    private static boolean putTrustMap(String cmdStandBy, String param) {
+        if (cmdStandBy != null && param.startsWith("-")) {
+            String subParam = param.substring(0, param.indexOf(":")).trim();
+            List<String> trustLists = Optional.ofNullable(
+                    trustMap.get(cmdStandBy)).orElse(new ArrayList<>());
+            trustLists.add(subParam);
+            trustMap.put(cmdStandBy, trustLists);
+            return true;
         }
-        return tempCommond;
+        return false;
     }
 
     /**
-     *Get Trustlist
+     * Get Trustlist
      *
      * @param commond commond
      * @return  TrustList
      */
     public static List<String> getTrustList(String commond) {
-      generateTrustlist();
-      String keyParam = commond + OPTIONS;
-      if (trustMap.containsKey(keyParam)) {
-          return trustMap.get(keyParam);
-      }
-      return null;
+        generateTrustlist();
+        String keyParam = commond + OPTIONS;
+        List<String> list = Optional.ofNullable(trustMap.get(keyParam)).orElse(new ArrayList<>());
+        return  list;
     }
 
 }

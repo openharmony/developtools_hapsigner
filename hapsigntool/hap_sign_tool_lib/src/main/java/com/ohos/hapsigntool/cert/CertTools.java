@@ -101,7 +101,7 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return null;
     }
@@ -125,7 +125,7 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return null;
     }
@@ -153,7 +153,7 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return null;
     }
@@ -179,7 +179,7 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return null;
     }
@@ -201,7 +201,7 @@ public final class CertTools {
             return csr.getEncoded();
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "Not support " + subject);
+            CustomException.throwException(ERROR.IO_CSR_ERROR, "Not support " + subject);
             return NO_CSR;
         }
     }
@@ -231,10 +231,9 @@ public final class CertTools {
             return jcaContentSignerBuilder.build(privateKey);
         } catch (OperatorCreationException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "Not support " + signAlgorithm);
+            CustomException.throwException(ERROR.OPERATOR_CREATION_ERROR, exception.getMessage());
         }
         return null;
     }
-
 
 }

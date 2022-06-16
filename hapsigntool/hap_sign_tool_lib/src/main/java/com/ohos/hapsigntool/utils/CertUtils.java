@@ -180,23 +180,6 @@ public final class CertUtils {
     }
 
     /**
-     * Generate crl.
-     *
-     * @param crl crl
-     * @return X509CRL
-     */
-    public static X509CRL generateCrl(byte[] crl) {
-        try {
-            CertificateFactory factory = CertificateFactory.getInstance("X.509");
-            return (X509CRL) factory.generateCRL(new ByteArrayInputStream(crl));
-        } catch (CertificateException | CRLException exception) {
-            LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
-        }
-        return null;
-    }
-
-    /**
      * Convert byte to CSR String.
      *
      * @param csr bytes of CSR
@@ -231,27 +214,6 @@ public final class CertUtils {
      */
     public static BigInteger randomSerial() {
         return new BigInteger(RANDOM_SERIAL_LENGTH, new SecureRandom());
-    }
-
-    /**
-     * save2Pem.
-     *
-     * @param certificates certificates to save
-     * @param filePath     filePath to save
-     */
-    public static void save2Pem(List<X509Certificate> certificates, String filePath) {
-        try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(filePath)))) {
-            for (X509Certificate certificate : certificates) {
-                PemObject object = new PemObject("certificate", certificate.getEncoded());
-                pemWriter.writeObject(object);
-            }
-        } catch (CertificateEncodingException exception) {
-            LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
-        } catch (IOException exception) {
-            LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
-        }
     }
 
     /**
