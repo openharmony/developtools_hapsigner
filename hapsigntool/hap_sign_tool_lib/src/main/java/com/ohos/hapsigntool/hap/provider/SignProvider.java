@@ -74,6 +74,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.Optional;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
@@ -88,6 +89,25 @@ public abstract class SignProvider {
     private static final List<String> PARAMETERS_NEED_ESCAPE = new ArrayList<String>();
     private static final long TIMESTAMP = 1230768000000L;
     private static final int COMPRESSION_MODE = 9;
+
+    static {
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_ECDSA);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_ECDSA);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA512_ECDSA);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_RSA_PSS);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_RSA_PSS);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA512_RSA_PSS);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_RSA_MGF1);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_RSA_MGF1);
+        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA512_RSA_MGF1);
+    }
+
+    static {
+        PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_REMOTE_CODE);
+        PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE);
+        PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE);
+    }
+
     /**
      * list of hap signature optional blocks
      */
@@ -137,6 +157,7 @@ public abstract class SignProvider {
 
     /**
      * check if the input path is a file
+     *
      * @param filePath input file path
      * @return true, if path is a file and can be read
      */
@@ -175,8 +196,8 @@ public abstract class SignProvider {
      *
      * @return certificate revocation list
      */
-    public X509CRL getCrl() {
-        return null;
+    public Optional<X509CRL> getCrl() {
+        return Optional.empty();
     }
 
     /**
@@ -184,10 +205,11 @@ public abstract class SignProvider {
      *
      * @param certificates certificate chain
      * @param crl certificate revocation list
+     * @param options options
      * @return Object of SignerConfig
      * @throws InvalidKeyException on error when the key is invalid.
      */
-    public SignerConfig createSignerConfigs(List<X509Certificate> certificates, X509CRL crl, Options options)
+    public SignerConfig createSignerConfigs(List<X509Certificate> certificates, Optional<X509CRL> crl, Options options)
             throws InvalidKeyException {
         SignerConfig signerConfig = new SignerConfig();
         signerConfig.fillParameters(this.signParams);
@@ -199,8 +221,8 @@ public abstract class SignProvider {
             ParamProcessUtil.getSignatureAlgorithm(this.signParams.get(ParamConstants.PARAM_BASIC_SIGANTURE_ALG)));
         signerConfig.setSignatureAlgorithms(signatureAlgorithms);
 
-        if (crl != null) {
-            signerConfig.setX509CRLs(Collections.singletonList(crl));
+        if (!crl.equals(Optional.empty())) {
+            signerConfig.setX509CRLs(Collections.singletonList(crl.get()));
         }
         return signerConfig;
     }
@@ -216,21 +238,12 @@ public abstract class SignProvider {
         List<X509Certificate> publicCert = null;
         SignerConfig signerConfig;
         try {
-            // 1. check the parameters
-            checkParams(options);
+            publicCert = getX509Certificates(options);
 
-            // 2. load optionalBlocks
-            loadOptionalBlocks();
+            // Get x509 CRL
+            Optional<X509CRL> crl = getCrl();
 
-            // 3. get x509 verify certificate
-            publicCert = getPublicCerts();
-
-            checkProfileValid(publicCert);
-
-            // 4. Get x509 CRL
-            X509CRL crl = getCrl();
-
-            // 5. Create signer configs, which contains public cert and crl info.
+            // Create signer configs, which contains public cert and crl info.
             signerConfig = createSignerConfigs(publicCert, crl, options);
         } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
             LOGGER.error("create signer configs failed.", e);
@@ -258,27 +271,17 @@ public abstract class SignProvider {
         List<X509Certificate> publicCerts = null;
         File output = null;
         File tmpOutput = null;
-        boolean ret = false;
-        boolean pathOverlap = false;
+        boolean isRet = false;
+        boolean isPathOverlap = false;
         try {
-            // 1. check the parameters
-            checkParams(options);
+            publicCerts = getX509Certificates(options);
 
-            // 2. get x509 verify certificate
-            publicCerts = getPublicCerts();
-
-            // 3. load optionalBlocks
-            loadOptionalBlocks();
-
-            checkProfileValid(publicCerts);
-
-            X509CRL crl = getCrl();
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
             if (input.getCanonicalPath().equals(output.getCanonicalPath())) {
                 tmpOutput = File.createTempFile("signedHap", ".hap");
                 tmpOutput.deleteOnExit();
-                pathOverlap = true;
+                isPathOverlap = true;
             } else {
                 tmpOutput = output;
             }
@@ -298,6 +301,7 @@ public abstract class SignProvider {
                 ByteBuffer eocdBuffer = zipInfo.getEocd();
                 ZipDataInput eocd = new ByteBufferZipDataInput(eocdBuffer);
 
+                Optional<X509CRL> crl = getCrl();
                 SignerConfig signerConfig = createSignerConfigs(publicCerts, crl, options);
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
                 byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
@@ -306,18 +310,38 @@ public abstract class SignProvider {
                 LOGGER.info("Generate signing block success, begin write it to output file");
 
                 outputSignedFile(outputHap, centralDirectoryOffset, signingBlock, centralDirectory, eocdBuffer);
-                ret = true;
+                isRet = true;
             }
         } catch (IOException | InvalidKeyException | HapFormatException | MissingParamsException
             | InvalidParamsException | ProfileException | CustomException e) {
             printErrorLogWithoutStack(e);
-            ret = false;
+            isRet = false;
         } catch (SignatureException e) {
             printErrorLog(e);
-            ret = false;
+            isRet = false;
         }
+        return doAfterSign(isRet, isPathOverlap, tmpOutput, output);
+    }
 
-        return doAfterSign(ret, pathOverlap, tmpOutput, output);
+    /**
+     *
+     * @param options parameters used to sign hap file
+     * @return list of type x509certificate
+     * @throws MissingParamsException Exception occurs when the required parameters are not entered.
+     * @throws InvalidParamsException Exception occurs when the required parameters are invalid.
+     * @throws ProfileException Exception occurs when profile is invalid.
+     */
+    private List<X509Certificate> getX509Certificates(Options options) throws MissingParamsException,
+            InvalidParamsException, ProfileException {
+        List<X509Certificate> publicCerts;
+        // 1. check the parameters
+        checkParams(options);
+        // 2. get x509 verify certificate
+        publicCerts = getPublicCerts();
+        // 3. load optionalBlocks
+        loadOptionalBlocks();
+        checkProfileValid(publicCerts);
+        return publicCerts;
     }
 
     private void outputSignedFile(RandomAccessFile outputHap, long centralDirectoryOffset,
@@ -329,37 +353,45 @@ public abstract class SignProvider {
     }
 
     private boolean doAfterSign(boolean isSuccess, boolean pathOverlap, File tmpOutput, File output) {
-        boolean ret = isSuccess;
-        if (ret && pathOverlap) {
+        boolean isRet = isSuccess;
+        if (isRet && pathOverlap) {
             try {
                 Files.move(tmpOutput.toPath(), output.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 printErrorLog(e);
-                ret = false;
+                isRet = false;
             }
         }
-        if ((!ret) && (!pathOverlap) && (output != null)) {
+        if ((!isRet) && (!pathOverlap) && (output != null)) {
             output.deleteOnExit();
         }
 
-        if (ret) {
+        if (isRet) {
             LOGGER.info("Sign Hap success!");
         }
-        return ret;
+        return isRet;
     }
 
-    private void printErrorLog(Exception e) {
-        if (e != null) {
-            LOGGER.error("hap-sign-tool: error: {}", e.getMessage(), e);
+    private void printErrorLog(Exception exception) {
+        if (exception != null) {
+            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage(), exception);
         }
     }
 
-    private void printErrorLogWithoutStack(Exception e) {
-        if (e != null) {
-            LOGGER.error("hap-sign-tool: error: {}", e.getMessage());
+    private void printErrorLogWithoutStack(Exception exception) {
+        if (exception != null) {
+            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage());
         }
     }
 
+    /**
+     * Copy file and alignment
+     *
+     * @param input file input
+     * @param tmpOutput file tmpOutput
+     * @param alignment alignment
+     * @throws IOException  io error
+     */
     private void copyFileAndAlignment(File input, File tmpOutput, int alignment) throws IOException {
         try (JarFile inputJar = new JarFile(input, false);
             FileOutputStream outputFile = new FileOutputStream(tmpOutput);
@@ -372,25 +404,13 @@ public abstract class SignProvider {
         }
     }
 
-    static {
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_ECDSA);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_ECDSA);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA512_ECDSA);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_RSA_PSS);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_RSA_PSS);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA512_RSA_PSS);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA256_RSA_MGF1);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA384_RSA_MGF1);
-        VALID_SIGN_ALG_NAME.add(ParamConstants.HAP_SIG_ALGORITHM_SHA512_RSA_MGF1);
-    }
-
     /**
      * check signature algorithm
      *
      * @throws InvalidParamsException Exception occurs when the inputted sign algorithm is invalid.
      */
     private void checkSignatureAlg() throws InvalidParamsException {
-        String signAlg = signParams.get( ParamConstants.PARAM_BASIC_SIGANTURE_ALG).trim();
+        String signAlg = signParams.get(ParamConstants.PARAM_BASIC_SIGANTURE_ALG).trim();
         for (String validAlg : VALID_SIGN_ALG_NAME) {
             if (validAlg.equalsIgnoreCase(signAlg)) {
                 return;
@@ -473,8 +493,8 @@ public abstract class SignProvider {
             String content;
             if (!isProfileWithoutSign) {
                 CMSSignedData cmsSignedData = new CMSSignedData(profile);
-                boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
-                if (!verifyResult) {
+                boolean isVerify = VerifyUtils.verifyCmsSignedData(cmsSignedData);
+                if (!isVerify) {
                     throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid.");
                 }
                 Object contentObj = cmsSignedData.getSignedContent().getContent();
@@ -566,12 +586,6 @@ public abstract class SignProvider {
         checkSignAlignment();
     }
 
-    static {
-        PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_REMOTE_CODE);
-        PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE);
-        PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE);
-    }
-
     /**
      * Get parameters from inputted strings. This function unescape some escaped parameters and return it.
      *
@@ -580,7 +594,7 @@ public abstract class SignProvider {
      * @return parameter value in the correct form.
      */
     protected String getParamValue(String paramName, String paramValue) {
-        for ( String name : PARAMETERS_NEED_ESCAPE) {
+        for (String name : PARAMETERS_NEED_ESCAPE) {
             if (name.equals(paramName)) {
                 return EscapeCharacter.unescape(paramValue);
             }
