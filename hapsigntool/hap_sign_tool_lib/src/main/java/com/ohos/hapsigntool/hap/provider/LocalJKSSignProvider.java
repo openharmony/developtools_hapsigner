@@ -21,7 +21,6 @@ import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
-import com.ohos.hapsigntool.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +31,7 @@ import java.security.GeneralSecurityException;
 import java.security.cert.CRL;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -43,18 +43,18 @@ public class LocalJKSSignProvider extends SignProvider {
     private static final Logger LOGGER = LogManager.getLogger(LocalJKSSignProvider.class);
 
     @Override
-    public X509CRL getCrl() {
+    public Optional<X509CRL> getCrl() {
         X509CRL crl = null;
         String crlPath = signParams.get(ParamConstants.PARAM_BASIC_CRL);
         if (crlPath == null || "".equals(crlPath)) {
-            return crl;
+            return Optional.ofNullable(crl);
         }
         try (FileInputStream input = new FileInputStream(new File(crlPath));) {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             CRL baseCrl = cf.generateCRL(input);
             if (!(baseCrl instanceof X509CRL)) {
                 LOGGER.error("crl is not X509CRL");
-                return crl;
+                return Optional.ofNullable(crl);
             }
             crl = (X509CRL) baseCrl;
         } catch (IOException e) {
@@ -64,7 +64,7 @@ public class LocalJKSSignProvider extends SignProvider {
             LOGGER.error("Generate x509 CRL failed!");
             crl = null;
         }
-        return crl;
+        return Optional.ofNullable(crl);
     }
 
     /**
@@ -79,7 +79,7 @@ public class LocalJKSSignProvider extends SignProvider {
             FileUtils.isValidFile(publicKeyFile);
         } catch (IOException e) {
             LOGGER.error("file is invalid: " + publicCertsFile + System.lineSeparator(), e);
-            throw  new InvalidParamsException("Invalid file: " + publicCertsFile);
+            throw new InvalidParamsException("Invalid file: " + publicCertsFile);
         }
     }
 
