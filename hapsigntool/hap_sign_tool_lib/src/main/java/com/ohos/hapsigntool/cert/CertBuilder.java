@@ -88,7 +88,7 @@ public class CertBuilder {
             request = new PKCS10CertificationRequest(csr);
         } catch (IOException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CSR_ERROR, exception.getMessage());
         }
         x509v3CertificateBuilder = new X509v3CertificateBuilder(
                 issuer, CertUtils.randomSerial(), Date.from(notBefore.atZone(ZoneId.systemDefault()).toInstant()),
@@ -98,9 +98,12 @@ public class CertBuilder {
             JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
             x509v3CertificateBuilder.addExtension(Extension.subjectKeyIdentifier, false,
                     extUtils.createSubjectKeyIdentifier(request.getSubjectPublicKeyInfo()));
-        } catch (NoSuchAlgorithmException | CertIOException exception) {
+        } catch (NoSuchAlgorithmException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+        } catch (CertIOException exception) {
+            logger.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
     }
 
@@ -118,9 +121,12 @@ public class CertBuilder {
                         extUtils.createAuthorityKeyIdentifier(SubjectPublicKeyInfo
                                 .getInstance(keyPair.getPublic().getEncoded())));
             }
-        } catch (NoSuchAlgorithmException | CertIOException exception) {
+        } catch (NoSuchAlgorithmException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+        } catch (CertIOException exception) {
+            logger.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return this;
     }
@@ -209,8 +215,16 @@ public class CertBuilder {
             cert = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME)
                     .getCertificate(x509v3CertificateBuilder.build(contentSigner));
             cert.verify(keyPair.getPublic());
-        } catch (CertificateException | NoSuchAlgorithmException | SignatureException
-                | InvalidKeyException | NoSuchProviderException exception) {
+        } catch (InvalidKeyException exception) {
+            logger.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.KEY_ERROR, exception.getMessage());
+        } catch (SignatureException exception) {
+            logger.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
+        } catch (CertificateException exception) {
+            logger.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.CERTIFICATE_ERROR, exception.getMessage());
+        } catch (NoSuchAlgorithmException | NoSuchProviderException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         }

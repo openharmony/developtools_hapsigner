@@ -23,6 +23,7 @@ import com.ohos.hapsigntool.utils.ValidateUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -57,7 +58,7 @@ public final class CmdUtil {
         params.setMethod(args[0]);
         String keyStandBy = null;
         List<String> trustList = ParamsTrustlist.getTrustList(args[0]);
-        if (trustList == null) {
+        if (trustList.size() == 0) {
             CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
         }
         for (int i = 1; i < args.length; i++) {
@@ -66,7 +67,7 @@ public final class CmdUtil {
             if (value != null && (value.startsWith("-"))) {
                 boolean isTrust = trustList.contains(value);
                 ValidateUtils.throwIfNotMatches(isTrust,
-                        ERROR.COMMAND_PARAM_ERROR,"Not support command param:" + value);
+                        ERROR.COMMAND_PARAM_ERROR, "Not support command param:" + value);
                 keyStandBy = value.substring(1);
             } else {
                 // prepare value

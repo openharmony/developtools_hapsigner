@@ -60,8 +60,35 @@ public enum ERROR {
     /**
      * Enum constant COMMAND_PARAM_ERROR.
      */
-    COMMAND_PARAM_ERROR(110);
-
+    COMMAND_PARAM_ERROR(110),
+    /**
+     *Enum constant OPERATOR_CREATION_ERROR.
+     */
+    OPERATOR_CREATION_ERROR(111),
+    /**
+     *Enum constant PARAM_NOT_EXIST_ERROR.
+     */
+    PARAM_NOT_EXIST_ERROR(113),
+    /**
+     *Enum constant KEYSTORE_OPERATION_ERROR.
+     */
+    KEYSTORE_OPERATION_ERROR(114),
+    /**
+     *Enum constant CERTIFICATE_ERROR.
+     */
+    CERTIFICATE_ERROR(115),
+    /**
+     *Enum constant KEY_ERROR.
+     */
+    KEY_ERROR(116),
+    /**
+     *Enum constant IO_CERT_ERROR.
+     */
+    IO_CERT_ERROR(117),
+    /**
+     *Enum constant IO_CSR_ERROR.
+     */
+    IO_CSR_ERROR(118);
     /**
      * Field errorCode.
      */
