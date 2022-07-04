@@ -38,10 +38,12 @@ public final class ParamsTrustlist {
      * Define generic string
      */
     public static final String OPTIONS = " [options]:";
+
     /**
      * Define commond list
      */
     private static final List<String> COMMONDS = new ArrayList<String>();
+
     /**
      * Define trust map
      */
@@ -85,10 +87,7 @@ public final class ParamsTrustlist {
                 if (COMMONDS.contains(param)) {
                     cmdStandBy = param;
                 } else {
-                    boolean success = putTrustMap(cmdStandBy, param);
-                    if (!success && cmdStandBy != null) {
-                        cmdStandBy = null;
-                    }
+                    putTrustMap(cmdStandBy, param);
                 }
             }
         } catch (IOException ioe) {
@@ -102,18 +101,15 @@ public final class ParamsTrustlist {
      *
      * @param cmdStandBy command as key
      * @param param commond as value
-     * @return boolean
      */
-    private static boolean putTrustMap(String cmdStandBy, String param) {
-        if (cmdStandBy != null && param.startsWith("-")) {
+    private static void putTrustMap(String cmdStandBy, String param) {
+        if (param.startsWith("-")) {
             String subParam = param.substring(0, param.indexOf(":")).trim();
             List<String> trustLists = Optional.ofNullable(
                     trustMap.get(cmdStandBy)).orElse(new ArrayList<>());
             trustLists.add(subParam);
             trustMap.put(cmdStandBy, trustLists);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -125,8 +121,7 @@ public final class ParamsTrustlist {
     public static List<String> getTrustList(String commond) {
         generateTrustlist();
         String keyParam = commond + OPTIONS;
-        List<String> list = Optional.ofNullable(trustMap.get(keyParam)).orElse(new ArrayList<>());
-        return  list;
+        return Optional.ofNullable(trustMap.get(keyParam)).orElse(new ArrayList<>());
     }
 
 }
