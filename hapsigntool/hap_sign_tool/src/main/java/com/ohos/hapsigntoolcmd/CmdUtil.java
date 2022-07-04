@@ -23,7 +23,6 @@ import com.ohos.hapsigntool.utils.ValidateUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
