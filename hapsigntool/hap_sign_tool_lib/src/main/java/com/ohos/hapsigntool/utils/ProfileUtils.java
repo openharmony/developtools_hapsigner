@@ -38,6 +38,6 @@ public class ProfileUtils {
         byte[] bytes = FileUtils.readFile(input);
         Provision provision = FileUtils.GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Provision.class);
         Provision.enforceValid(provision);
-        return FileUtils.GSON.toJson(provision).getBytes(StandardCharsets.UTF_8);
+        return bytes;
     }
 }
