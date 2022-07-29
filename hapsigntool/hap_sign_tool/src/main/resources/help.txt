@@ -182,12 +182,12 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
 
     verify-app [options]:
         -inFile : signed application package file, hap or bin format, required fields;
-        -outCertchain : signed certificate chain file, required fields;
+        -outCertChain : signed certificate chain file, required fields;
         -outProfile : profile file in application package, required fields;
         -extCfgFile : Extend Profile, optional fields;
 
     EXAMPLE:
-        verify-app -inFile "D:\OH\app1-signed.hap" -outcertchain "outCertchain.cer" -outProfile "outprofile.p7b"
+        verify-app -inFile "D:\OH\app1-signed.hap" -outCertChain "outCertChain.cer" -outProfile "outprofile.p7b"
 
 COMMANDS:
         generate-keypair : generate key pair
