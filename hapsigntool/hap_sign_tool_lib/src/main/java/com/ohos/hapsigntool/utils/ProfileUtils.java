@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.utils;
 
+import com.google.gson.JsonParser;
 import com.ohos.hapsigntool.profile.model.Provision;
 
 import java.io.File;
@@ -36,8 +37,9 @@ public class ProfileUtils {
      */
     public static byte[] getProvisionContent(File input) throws IOException {
         byte[] bytes = FileUtils.readFile(input);
+        String json = JsonParser.parseString(new String(bytes, StandardCharsets.UTF_8)).toString();
         Provision provision = FileUtils.GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Provision.class);
         Provision.enforceValid(provision);
-        return bytes;
+        return json.getBytes();
     }
 }
