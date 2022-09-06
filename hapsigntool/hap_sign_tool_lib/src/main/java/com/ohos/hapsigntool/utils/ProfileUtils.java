@@ -40,6 +40,6 @@ public class ProfileUtils {
         String json = JsonParser.parseString(new String(bytes, StandardCharsets.UTF_8)).toString();
         Provision provision = FileUtils.GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Provision.class);
         Provision.enforceValid(provision);
-        return json.getBytes();
+        return json.getBytes(StandardCharsets.UTF_8);
     }
 }

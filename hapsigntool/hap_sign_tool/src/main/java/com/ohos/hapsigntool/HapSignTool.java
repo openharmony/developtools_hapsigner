@@ -96,9 +96,9 @@ public final class HapSignTool {
     public static boolean processCmd(String[] args) throws CustomException {
         if (args.length == 0 || StringUtils.isEmpty(args[0])) {
             help();
-        } else if (args[0].equals("-h") || args[0].contains("-help")) {
+        } else if ("-h".equals(args[0]) || "-help".equals(args[0])) {
             help();
-        } else if (args[0].equals("-v") || args[0].contains("-version")) {
+        } else if ("-v".equals(args[0]) || "-version".equals(args[0])) {
             version();
         } else {
             ServiceApi api = new SignToolServiceImpl();
