@@ -248,7 +248,7 @@ public class LocalizationAdapter {
      */
     public boolean isOutFormChain() {
         String outForm = options.getString(Options.OUT_FORM, "certChain");
-        return outForm.equals("certChain");
+        return "certChain".equals(outForm);
     }
 
     /**

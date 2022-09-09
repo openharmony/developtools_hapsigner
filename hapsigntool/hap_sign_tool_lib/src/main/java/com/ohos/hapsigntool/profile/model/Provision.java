@@ -160,7 +160,7 @@ public class Provision {
     /**
      * buildType valid
      * @param buildType  buildType
-     * @return
+     * @return BuildType Valid
      */
     public static boolean isBuildTypeValid(String buildType) {
         return DEBUG.equals(buildType) || RELEASE.equals(buildType);
@@ -169,7 +169,7 @@ public class Provision {
     /**
      * buildType valid
      * @param buildType buildType
-     * @return
+     * @return  Is the buildType release
      */
     public static boolean isBuildTypeRelease(String buildType) {
         return RELEASE.equals(buildType);

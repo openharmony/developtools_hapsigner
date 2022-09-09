@@ -52,10 +52,10 @@ public class SignatureBlockTypes {
      * @return profile block type value
      */
     public static char getProfileBlockTypes(String isSigned) {
-        if (isSigned != null && isSigned.equals("0")) {
+        if (isSigned != null && "0".equals(isSigned)) {
             return PROFILE_NOSIGNED_BLOCK;
         }
-        if (isSigned != null && isSigned.equals("1")) {
+        if (isSigned != null && "1".equals(isSigned)) {
             return PROFILE_SIGNED_BLOCK;
         }
         return PROFILE_NOSIGNED_BLOCK;
