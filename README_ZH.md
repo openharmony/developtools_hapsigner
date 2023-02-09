@@ -85,7 +85,7 @@ java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAl
          ├── -keyPwd            #密钥口令，可选项
          ├── -profileCertFile   #Profile签名证书（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
          ├── -inFile            #输入的原始Provision Profile文件，必填项
-         ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
+         ├── -signAlg           #签名算法，必填项，包括 SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的Provision Profile文件，p7b格式，必填项
@@ -119,7 +119,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 
 
 为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、最终实体证书、签名profile包、签名hap包的命令。
-脚本以及配置文件位于目录autosign下：
+脚本以及配置文件位于目录 autosign 下：
 
  - create_root.sh/create_root.bat
  - create_appcert_sign_profile.sh/create_appcert_sign_profile.bat
@@ -129,16 +129,16 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
  - signHap.config
 
 使用指导：
-1. 准备依赖环境python3.5以上
+1. 准备依赖环境 python3.5 以上
 2. 准备签名工具jar包：hap-sign-tool.jar（参照上文编译生成的产物）
-3. 准备待签名的应用hap包和Provision profile模板文件
-4. 使用文本编辑器编辑createAppCertAndProfile.config,signHap.config修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
-5. Linux运行create_appcert_sign_profile.sh、Windows运行create_appcert_sign_profile.bat生成签名所需文件
-6. Linux运行sign_hap.sh、Windows运行sign_hap.bat对hap包进行签名
+3. 准备待签名的应用hap包和 Provision profile 模板文件
+4. 使用文本编辑器编辑 createAppCertAndProfile.config 和 signHap.config，修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
+5. Linux运行 create_appcert_sign_profile.sh、Windows运行 create_appcert_sign_profile.bat 生成签名所需文件
+6. Linux运行 sign_hap.sh、Windows运行 sign_hap.bat 对hap包进行签名
 
  > 说明：如需自定义生成密钥库文件，根CA，中间CA证书，profile签名证书，可执行以下步骤
- 1.使用文本编辑器编辑createRootAndSubCert.config修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
- 2.Linux运行 create_root.sh、Windows运行create_root.bat生成所需密钥库文件，根CA，中间CA证书，profile签名证书
+ 1.使用文本编辑器编辑 createRootAndSubCert.config 修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
+ 2.Linux运行 create_root.sh、Windows运行 create_root.bat 生成所需密钥库文件，根CA，中间CA证书，profile签名证书
 
 
 ****
