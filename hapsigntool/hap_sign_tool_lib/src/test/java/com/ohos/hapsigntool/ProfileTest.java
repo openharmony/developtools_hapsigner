@@ -100,8 +100,8 @@ public class ProfileTest {
      */
     private static final String ERROR_PROFILE_CONTENT = "mnbvcxzlkjhgfdsapoiuytrewq";
 
-    private static final String PRIVATE_KEY_STR = "ME4CAQAwEAYHKoZIzj0CAQYFK4EEACIENzA1AgEBBDDave+tlNDdIlc0HsRKe" +
-            "Wbhcj3BVUmKRoHtz51waRY4K5+SrHpD2GVZHD+2EeZ135A=";
+    private static final String PRIVATE_KEY_STR = "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCQfrM8g" +
+            "55vQ5tZXx1T6FwAP7WDe+bexD/Ti/qvIYXpJw==";
 
     static {
         Security.addProvider(new BouncyCastleProvider());
