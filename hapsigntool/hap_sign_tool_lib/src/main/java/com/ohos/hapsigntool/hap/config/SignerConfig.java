@@ -59,6 +59,16 @@ public class SignerConfig {
     private Map<String, String> signParamMap = new HashMap<String, String>();
 
     /**
+     * Signer used for sign hap
+     */
+    private ISigner signer;
+
+    /**
+     * Minimum api version to run the application
+     */
+    private int compatibleVersion;
+
+    /**
      * Get options.
      *
      * @return options
@@ -69,6 +79,8 @@ public class SignerConfig {
 
     /**
      * set options.
+     *
+     * @param options parameters
      */
     public void setOptions(Options options) {
         this.options = options;
@@ -80,11 +92,16 @@ public class SignerConfig {
      * @return certificates
      */
     public List<X509Certificate> getCertificates() {
-        return certificates;
+        if (isInputCertChainNotEmpty() || signer == null) {
+            return certificates;
+        }
+        return signer.getCertificates();
     }
 
     /**
      * set certificate
+     *
+     * @param certificates certificate chain
      */
     public void setCertificates(List<X509Certificate> certificates) {
         this.certificates = certificates;
@@ -96,11 +113,16 @@ public class SignerConfig {
      * @return crl list
      */
     public List<X509CRL> getX509CRLs() {
-        return x509CRLs;
+        if (isInputCertChainNotEmpty() || isInputCrlNotEmpty() || signer == null) {
+            return x509CRLs;
+        }
+        return signer.getCrls();
     }
 
     /**
      * set crl
+     *
+     * @param crls cert revocation list
      */
     public void setX509CRLs(List<X509CRL> crls) {
         this.x509CRLs = crls;
@@ -117,6 +139,8 @@ public class SignerConfig {
 
     /**
      * set signature algorithm
+     *
+     * @param signatureAlgorithms sign algorithm
      */
     public void setSignatureAlgorithms(List<SignatureAlgorithm> signatureAlgorithms) {
         this.signatureAlgorithms = signatureAlgorithms;
@@ -133,6 +157,8 @@ public class SignerConfig {
 
     /**
      * set param map
+     *
+     * @param params params map
      */
     public void fillParameters(Map<String, String> params) {
         this.signParamMap = params;
@@ -140,8 +166,39 @@ public class SignerConfig {
 
     /**
      * get signer
+     *
+     * @return content signer
      */
     public ISigner getSigner() {
-        return new SignerFactory().getSigner(new LocalizationAdapter(options));
+        if (signer == null) {
+            signer = new SignerFactory().getSigner(new LocalizationAdapter(options));
+        }
+        return signer;
+    }
+
+    /**
+     * get compatible version
+     *
+     * @return compatible version
+     */
+    public int getCompatibleVersion() {
+        return compatibleVersion;
+    }
+
+    /**
+     * set param compatible version
+     *
+     * @param compatibleVersion compatible version
+     */
+    public void setCompatibleVersion(int compatibleVersion) {
+        this.compatibleVersion = compatibleVersion;
+    }
+
+    private boolean isInputCertChainNotEmpty() {
+        return certificates != null && !certificates.isEmpty();
+    }
+
+    private boolean isInputCrlNotEmpty() {
+        return x509CRLs != null && !x509CRLs.isEmpty();
     }
 }

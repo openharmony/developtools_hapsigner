@@ -272,6 +272,7 @@ public final class HapSignTool {
 
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.APP_CERT_FILE);
+            FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
@@ -280,7 +281,6 @@ public final class HapSignTool {
         }
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeEndSignAlgType(signAlg);
-        FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
 
         return api.signHap(params);
     }
