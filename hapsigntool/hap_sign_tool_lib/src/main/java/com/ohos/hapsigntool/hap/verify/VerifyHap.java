@@ -241,14 +241,14 @@ public class VerifyHap {
                 LOGGER.error(errorMsg);
                 return new VerifyResult(false, VerifyResult.RET_UNSUPPORTED_FORMAT_ERROR, errorMsg);
             }
-            Pair<Long, ByteBuffer> hapSigningBlockAndOffsetInFile = HapUtils.findHapSigningBlock(hapFile, zipInfo);
-            ByteBuffer signingBlock = hapSigningBlockAndOffsetInFile.getSecond();
+            HapUtils.HapSignBlockInfo hapSigningBlockAndOffsetInFile = HapUtils.findHapSigningBlock(hapFile, zipInfo);
+            ByteBuffer signingBlock = hapSigningBlockAndOffsetInFile.getContent();
             signingBlock.order(ByteOrder.LITTLE_ENDIAN);
             Pair<ByteBuffer, List<SigningBlock>> blockPair = getHapSignatureSchemeBlockAndOptionalBlocks(signingBlock);
             ByteBuffer signatureSchemeBlock = blockPair.getFirst();
             List<SigningBlock> optionalBlocks = blockPair.getSecond();
             Collections.reverse(optionalBlocks);
-            long signingBlockOffset = hapSigningBlockAndOffsetInFile.getFirst();
+            long signingBlockOffset = hapSigningBlockAndOffsetInFile.getOffset();
             ZipDataInput beforeHapSigningBlock = hapFile.slice(0, signingBlockOffset);
             ZipDataInput centralDirectoryBlock = hapFile.slice(zipInfo.getCentralDirectoryOffset(),
                 zipInfo.getCentralDirectorySize());
@@ -259,6 +259,7 @@ public class VerifyHap {
                 centralDirectoryBlock, eocdBlock, optionalBlocks);
             verifyEngine.setPrintCert(printCert);
             result = verifyEngine.verify();
+            result.setSignBlockVersion(hapSigningBlockAndOffsetInFile.getVersion());
         } catch (IOException e) {
             LOGGER.error("Verify Hap has IO error!", e);
             result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, e.getMessage());

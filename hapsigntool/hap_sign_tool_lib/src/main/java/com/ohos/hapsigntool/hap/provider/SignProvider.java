@@ -33,13 +33,7 @@ import com.ohos.hapsigntool.hap.sign.SignBin;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
-import com.ohos.hapsigntool.utils.CertificateUtils;
-import com.ohos.hapsigntool.utils.DigestUtils;
-import com.ohos.hapsigntool.utils.EscapeCharacter;
-import com.ohos.hapsigntool.utils.HapUtils;
-import com.ohos.hapsigntool.utils.ParamConstants;
-import com.ohos.hapsigntool.utils.ParamProcessUtil;
-import com.ohos.hapsigntool.utils.StringUtils;
+import com.ohos.hapsigntool.utils.*;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataOutput;
@@ -275,12 +269,11 @@ public abstract class SignProvider {
         boolean isPathOverlap = false;
         try {
             publicCerts = getX509Certificates(options);
-
+            checkCompatibleVersion();
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
             if (input.getCanonicalPath().equals(output.getCanonicalPath())) {
                 tmpOutput = File.createTempFile("signedHap", ".hap");
-                tmpOutput.deleteOnExit();
                 isPathOverlap = true;
             } else {
                 tmpOutput = output;
@@ -303,6 +296,8 @@ public abstract class SignProvider {
 
                 Optional<X509CRL> crl = getCrl();
                 SignerConfig signerConfig = createSignerConfigs(publicCerts, crl, options);
+                signerConfig.setCompatibleVersion(Integer.parseInt(
+                        signParams.get(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION)));
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
                 byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;
@@ -313,17 +308,16 @@ public abstract class SignProvider {
                 isRet = true;
             }
         } catch (IOException | InvalidKeyException | HapFormatException | MissingParamsException
-            | InvalidParamsException | ProfileException | CustomException e) {
+            | InvalidParamsException | ProfileException | NumberFormatException | CustomException e) {
             printErrorLogWithoutStack(e);
-            isRet = false;
         } catch (SignatureException e) {
             printErrorLog(e);
-            isRet = false;
         }
         return doAfterSign(isRet, isPathOverlap, tmpOutput, output);
     }
 
     /**
+     * Load certificate chain from input parameters
      *
      * @param options parameters used to sign hap file
      * @return list of type x509certificate
@@ -362,12 +356,11 @@ public abstract class SignProvider {
                 isRet = false;
             }
         }
-        if ((!isRet) && (!pathOverlap) && (output != null)) {
-            output.deleteOnExit();
-        }
 
         if (isRet) {
             LOGGER.info("Sign Hap success!");
+        } else {
+            FileUtils.deleteFile(tmpOutput);
         }
         return isRet;
     }
@@ -570,7 +563,9 @@ public abstract class SignProvider {
             ParamConstants.PARAM_BASIC_PROOF,
             ParamConstants.PARAM_BASIC_PROPERTY,
             ParamConstants.PARAM_REMOTE_SERVER,
-            ParamConstants.PARAM_BASIC_PROFILE_SIGNED
+            ParamConstants.PARAM_BASIC_PROFILE_SIGNED,
+            ParamConstants.PARAM_LOCAL_PUBLIC_CERT,
+            ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION
         };
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
 
@@ -584,6 +579,19 @@ public abstract class SignProvider {
         }
         checkSignatureAlg();
         checkSignAlignment();
+    }
+
+    protected void checkCompatibleVersion() throws  InvalidParamsException, MissingParamsException {
+        if (!signParams.containsKey(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION)) {
+            signParams.put(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION, "9");
+            return;
+        }
+        String compatibleApiVersionVal = signParams.get(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION);
+        try {
+            int compatibleApiVersion = Integer.parseInt(compatibleApiVersionVal);
+        } catch (NumberFormatException e) {
+            throw new InvalidParamsException("Invalid parameter: " + ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION);
+        }
     }
 
     /**
