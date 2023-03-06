@@ -33,7 +33,14 @@ import com.ohos.hapsigntool.hap.sign.SignBin;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
-import com.ohos.hapsigntool.utils.*;
+import com.ohos.hapsigntool.utils.CertificateUtils;
+import com.ohos.hapsigntool.utils.DigestUtils;
+import com.ohos.hapsigntool.utils.EscapeCharacter;
+import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.HapUtils;
+import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.utils.ParamProcessUtil;
+import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataOutput;
@@ -581,7 +588,13 @@ public abstract class SignProvider {
         checkSignAlignment();
     }
 
-    protected void checkCompatibleVersion() throws  InvalidParamsException, MissingParamsException {
+    /**
+     * Check compatible version, if param do not have compatible version default 9.
+     *
+     * @throws InvalidParamsException invalid param
+     * @throws MissingParamsException missing param
+     */
+    protected void checkCompatibleVersion() throws InvalidParamsException, MissingParamsException {
         if (!signParams.containsKey(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION)) {
             signParams.put(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION, "9");
             return;
