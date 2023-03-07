@@ -89,8 +89,7 @@ public class LocalJKSSignProvider extends SignProvider {
         String[] paramFileds = {
             ParamConstants.PARAM_LOCAL_JKS_KEYSTORE,
             ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE,
-            ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE,
-            ParamConstants.PARAM_LOCAL_PUBLIC_CERT
+            ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE
         };
 
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
