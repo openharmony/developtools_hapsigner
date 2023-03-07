@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 /**
  * Common file operation.
@@ -348,6 +349,21 @@ public final class FileUtils {
                 new FileOutputStream(filePath), charset))) {
             writer.write(source);
             writer.flush();
+        }
+    }
+
+    /**
+     * Delete a file quietly
+     *
+     * @param file the file to delete
+     */
+    public static void deleteFile(File file) {
+        if (file != null && file.isFile()) {
+            try {
+                Files.delete(file.toPath());
+            } catch (IOException e) {
+                LOGGER.warn("delete file '{}' error, error message: {}", file, e.getMessage());
+            }
         }
     }
 }

@@ -104,9 +104,21 @@ public class VerifyResult {
 
     private Store<X509CertificateHolder> certificateHolderStore;
 
+    private int signBlockVersion;
+
+    /**
+     * Empty constructor
+     */
     public VerifyResult() {
     }
 
+    /**
+     * Verify result constructor
+     *
+     * @param result verify result
+     * @param code error code
+     * @param message error message
+     */
     public VerifyResult(boolean result, int code, String message) {
         this.result = result;
         this.code = code;
@@ -175,5 +187,13 @@ public class VerifyResult {
 
     public void setCertificateHolderStore(Store<X509CertificateHolder> certificateHolderStore) {
         this.certificateHolderStore = certificateHolderStore;
+    }
+
+    public int getSignBlockVersion() {
+        return signBlockVersion;
+    }
+
+    public void setSignBlockVersion(int signBlockVersion) {
+        this.signBlockVersion = signBlockVersion;
     }
 }
