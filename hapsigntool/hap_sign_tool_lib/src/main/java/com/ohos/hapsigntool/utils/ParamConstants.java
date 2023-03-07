@@ -172,6 +172,11 @@ public class ParamConstants {
     public static final String PARAM_BASIC_PROFILE_SIGNED = "profileSigned";
 
     /**
+     * The minimum SDK version required for running the application
+     */
+    public static final String PARAM_BASIC_COMPATIBLE_VERSION = "compatibleVersion";
+
+    /**
      * Url of signature server
      */
     public static final String PARAM_REMOTE_SERVER = "signServer";

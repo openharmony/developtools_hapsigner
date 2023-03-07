@@ -28,7 +28,6 @@ import java.nio.channels.FileChannel;
  */
 public class RandomAccessFileZipDataInput implements ZipDataInput {
     private static final int MAX_READ_BLOCK_SIZE = 1024 * 1024;
-    private static final byte[] READ_BUFFER = new byte[MAX_READ_BLOCK_SIZE];
     private final RandomAccessFile file;
     private final FileChannel fileChannel;
     private final long startIndex;
@@ -76,12 +75,13 @@ public class RandomAccessFileZipDataInput implements ZipDataInput {
         long offsetInFile = startIndex + offset;
         long remaining = size;
         int blockSize;
+        byte[] buf = new byte[MAX_READ_BLOCK_SIZE];
         while (remaining > 0) {
-            blockSize = (int) Math.min(remaining, READ_BUFFER.length);
+            blockSize = (int) Math.min(remaining, buf.length);
             synchronized (file) {
                 file.seek(offsetInFile);
-                file.readFully(READ_BUFFER, 0, blockSize);
-                output.write(READ_BUFFER, 0, blockSize);
+                file.readFully(buf, 0, blockSize);
+                output.write(buf, 0, blockSize);
             }
             offsetInFile += blockSize;
             remaining -= blockSize;

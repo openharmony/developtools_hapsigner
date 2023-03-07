@@ -46,7 +46,6 @@ import java.util.jar.JarOutputStream;
  * @since 2021/12/21
  */
 public abstract class SignHap {
-    private static final int HAP_SIGN_SCHEME_VERSION = 3;
     private static final int STORED_ENTRY_SO_ALIGNMENT = 4096;
     private static final int BUFFER_LENGTH = 4096;
     private static final int BLOCK_COUNT = 4;
@@ -201,10 +200,11 @@ public abstract class SignHap {
             List<SigningBlock> optionalBlocks)
             throws SignatureException {
         byte[] hapSignatureSchemeBlock = generateHapSignatureSchemeBlock(signerConfig, contentDigests);
-        return generateHapSigningBlock(hapSignatureSchemeBlock, optionalBlocks);
+        return generateHapSigningBlock(hapSignatureSchemeBlock, optionalBlocks, signerConfig.getCompatibleVersion());
     }
 
-    private static byte[] generateHapSigningBlock(byte[] hapSignatureSchemeBlock, List<SigningBlock> optionalBlocks) {
+    private static byte[] generateHapSigningBlock(byte[] hapSignatureSchemeBlock,
+        List<SigningBlock> optionalBlocks, int compatibleVersion) {
         // FORMAT:
         // Proof-of-Rotation pairs(optional):
         // uint32:type
@@ -290,8 +290,8 @@ public abstract class SignHap {
 
         result.putInt(optionalBlocks.size() + 1); // Signing block count
         result.putLong(resultSize); // length of hap signing block
-        result.put(HapUtils.getHapSigningBlockMagic()); // magic
-        result.putInt(HAP_SIGN_SCHEME_VERSION); // version
+        result.put(HapUtils.getHapSigningBlockMagic(compatibleVersion)); // magic
+        result.putInt(HapUtils.getHapSigningBlockVersion(compatibleVersion)); // version
         return result.array();
     }
 

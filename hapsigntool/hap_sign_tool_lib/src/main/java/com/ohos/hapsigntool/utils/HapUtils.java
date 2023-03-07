@@ -104,6 +104,26 @@ public class HapUtils {
      */
     public static  final int BLOCK_NUMBER = 1;
 
+    /**
+     * hap sign schema v2 signature block version
+     */
+    public static final int HAP_SIGN_SCHEME_V2_BLOCK_VERSION = 2;
+
+    /**
+     * hap sign schema v3 signature block version
+     */
+    public static final int HAP_SIGN_SCHEME_V3_BLOCK_VERSION = 3;
+
+    /**
+     * The value of lower 8-bytes of old magic word
+     */
+    public static final long HAP_SIG_BLOCK_MAGIC_LO_V2 = 0x2067695320504148L;
+
+    /**
+     * The value of higher 8-bytes of old magic word
+     */
+    public static final long HAP_SIG_BLOCK_MAGIC_HI_V2 = 0x3234206b636f6c42L;
+
     private HapUtils() {
     }
 
@@ -113,20 +133,31 @@ public class HapUtils {
     private static final Set<Integer> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS ;
 
     /**
-     * Magic word of hap signature block/
+     * Minimum api version for hap sign schema v3.
      */
-    private static final byte[] HAP_SIGNING_BLOCK_MAGIC =
+    private static final int MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3 = 8;
+
+    /**
+     * Magic word of hap signature block v2
+     */
+    private static final byte[] HAP_SIGNING_BLOCK_MAGIC_V2 =
+            new byte[] {0x48, 0x41, 0x50, 0x20, 0x53, 0x69, 0x67, 0x20, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x20, 0x34, 0x32};
+
+    /**
+     * Magic word of hap signature block
+     */
+    private static final byte[] HAP_SIGNING_BLOCK_MAGIC_V3 =
             new byte[] {0x3c, 0x68, 0x61, 0x70, 0x20, 0x73, 0x69, 0x67, 0x6e, 0x20, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x3e};
 
     /**
      * The value of lower 8 bytes of magic word
      */
-    public static final long HAP_SIG_BLOCK_MAGIC_LO = 0x676973207061683cL;
+    public static final long HAP_SIG_BLOCK_MAGIC_LO_V3 = 0x676973207061683cL;
 
     /**
      * The value of higher 8 bytes of magic word
      */
-    public static final long HAP_SIG_BLOCK_MAGIC_HI = 0x3e6b636f6c62206eL;
+    public static final long HAP_SIG_BLOCK_MAGIC_HI_V3 = 0x3e6b636f6c62206eL;
 
     /**
      * Size of hap signature block header
@@ -155,10 +186,27 @@ public class HapUtils {
     /**
      * Get HAP_SIGNING_BLOCK_MAGIC
      *
+     * @param compatibleVersion compatible api version
      * @return HAP_SIGNING_BLOCK_MAGIC
      */
-    public static byte[] getHapSigningBlockMagic() {
-        return HAP_SIGNING_BLOCK_MAGIC;
+    public static byte[] getHapSigningBlockMagic(int compatibleVersion) {
+        if (compatibleVersion >= MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3) {
+            return HAP_SIGNING_BLOCK_MAGIC_V3.clone();
+        }
+        return HAP_SIGNING_BLOCK_MAGIC_V2.clone();
+    }
+
+    /**
+     * Get version number of hap signature block
+     *
+     * @param compatibleVersion compatible api version
+     * @return magic to number
+     */
+    public static int getHapSigningBlockVersion(int compatibleVersion) {
+        if (compatibleVersion >= MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3) {
+            return HAP_SIGN_SCHEME_V3_BLOCK_VERSION;
+        }
+        return HAP_SIGN_SCHEME_V2_BLOCK_VERSION;
     }
 
     /**
@@ -437,7 +485,7 @@ public class HapUtils {
      * @throws SignatureNotFoundException No signing block is found
      * @throws IOException file operation error
      */
-    public static Pair<Long, ByteBuffer> findHapSigningBlock(ZipDataInput hap, ZipFileInfo zipInfo)
+    public static HapSignBlockInfo findHapSigningBlock(ZipDataInput hap, ZipFileInfo zipInfo)
             throws SignatureNotFoundException, IOException {
         long centralDirectoryStartOffset = zipInfo.getCentralDirectoryOffset();
         long centralDirectorySize = zipInfo.getCentralDirectorySize();
@@ -459,8 +507,7 @@ public class HapUtils {
         long hapSignBlockMagicLo = hapSigningBlockHeader.getLong();
         long hapSignBlockMagicHi = hapSigningBlockHeader.getLong();
         int version = hapSigningBlockHeader.getInt();
-        if ((hapSignBlockMagicLo != HAP_SIG_BLOCK_MAGIC_LO)
-                || (hapSignBlockMagicHi != HAP_SIG_BLOCK_MAGIC_HI)) {
+        if (!isVersionAndMagicNumValid(version, hapSignBlockMagicLo, hapSignBlockMagicHi)) {
             throw new SignatureNotFoundException("No Hap Signing Block before ZIP Central Directory");
         }
         if ((hapSigBlockSize < HAP_SIG_BLOCK_HEADER_SIZE) ||
@@ -475,6 +522,40 @@ public class HapUtils {
         ByteBuffer hapSigningBlockByteBuffer = hap.createByteBuffer(hapSigningBlockOffset, totalSize)
             .order(ByteOrder.LITTLE_ENDIAN);
         LOGGER.info("Find Hap Signing Block success, version: {}, block count: {}", version, blockCount);
-        return Pair.create(hapSigningBlockOffset, hapSigningBlockByteBuffer);
+        return new HapSignBlockInfo(hapSigningBlockOffset, version, hapSigningBlockByteBuffer);
+    }
+
+    private static boolean isVersionAndMagicNumValid(int version, long hapSignBlockMagicLo, long hapSignBlockMagicHi) {
+        if (version < HAP_SIGN_SCHEME_V3_BLOCK_VERSION) {
+            return hapSignBlockMagicLo == HAP_SIG_BLOCK_MAGIC_LO_V2 && hapSignBlockMagicHi == HAP_SIG_BLOCK_MAGIC_HI_V2;
+        }
+        return hapSignBlockMagicLo == HAP_SIG_BLOCK_MAGIC_LO_V3 && hapSignBlockMagicHi == HAP_SIG_BLOCK_MAGIC_HI_V3;
+    }
+
+    /**
+     * Hap sign block info
+     */
+    public static class HapSignBlockInfo {
+        private final long offset;
+        private final int version;
+        private final ByteBuffer content;
+
+        public HapSignBlockInfo(long offset, int version, ByteBuffer content) {
+            this.offset = offset;
+            this.version = version;
+            this.content = content;
+        }
+
+        public int getVersion() {
+            return version;
+        }
+
+        public ByteBuffer getContent() {
+            return content;
+        }
+
+        public long getOffset() {
+            return offset;
+        }
     }
 }
