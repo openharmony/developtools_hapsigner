@@ -155,7 +155,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         if (signatureBytes == null) {
             throw new SignatureException("Generate signature bytes error");
         }
-        if (signerConfig.getCertificates().isEmpty()) {
+        if (!checkListNotNullOrEmty(signerConfig.getCertificates())) {
             throw new SignatureException("No certificates configured for signer");
         }
 
