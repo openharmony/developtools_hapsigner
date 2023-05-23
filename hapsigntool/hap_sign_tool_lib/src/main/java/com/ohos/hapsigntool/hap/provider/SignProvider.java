@@ -462,7 +462,11 @@ public abstract class SignProvider {
         String[] arrayDN = valueOfDN.split(",");
         for (String element : arrayDN) {
             if (element.trim().startsWith("CN=")) {
-                return element.split("=")[1];
+                String[] tempArray = element.split("=");
+                if (tempArray.length == 2) {
+                    return tempArray[1];
+                }
+                return "";
             }
         }
         return "";
