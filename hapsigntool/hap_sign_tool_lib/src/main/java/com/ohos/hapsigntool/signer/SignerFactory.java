@@ -19,6 +19,7 @@ import com.ohos.hapsigntool.api.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.StringUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,8 +76,19 @@ public class SignerFactory {
             LOGGER.warn("lost parameter signerPlugin");
             return Optional.empty();
         }
-        File classLocation = getClassLocation();
-        File plugin = new File(classLocation, signerPlugin);
+
+        File plugin = new File(signerPlugin);
+        if (!plugin.exists()) {
+            File classLocation = getClassLocation();
+            plugin = new File(classLocation, signerPlugin);
+        }
+
+        try {
+            LOGGER.info("try to find plugin by path {}", plugin.getCanonicalPath());
+        } catch (IOException e) {
+            LOGGER.warn("can not find signerPlugin by param signerPlugin = {}", signerPlugin);
+            return Optional.empty();
+        }
         Optional<URL> url = fileToUrl(plugin);
         if (!url.isPresent()) {
             return Optional.empty();
@@ -127,7 +140,7 @@ public class SignerFactory {
             CustomException.throwException(ERROR.COMMAND_ERROR, "class path is empty");
         }
         try {
-            jarPath = URLDecoder.decode(jarPath, "utf-8");
+            jarPath = URLDecoder.decode(URLEncoder.encode(jarPath, "utf-8"), "utf-8");
         } catch (UnsupportedEncodingException | IllegalArgumentException e) {
             LOGGER.warn("decode class location failed, will ignored. msg :{}", e.getMessage());
         }
