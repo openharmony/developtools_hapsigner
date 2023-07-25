@@ -141,10 +141,10 @@ public class VerifyHelper implements IProvisionVerifier {
             SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
             Collection<SignerInformation> signers = signerInfos.getSigners();
 
-            Date signTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 
             for (SignerInformation signer : signers) {
                 SignerId sid = signer.getSID();
+                Date signTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 
                 ASN1Set attrValues = signer.getSignedAttributes().get(PKCSObjectIdentifiers.pkcs_9_at_signingTime)
                         .getAttrValues();
