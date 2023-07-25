@@ -26,6 +26,10 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSException;
@@ -44,10 +48,13 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
 
 /**
  * Signed provision profile verifier.
@@ -134,11 +141,24 @@ public class VerifyHelper implements IProvisionVerifier {
             SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
             Collection<SignerInformation> signers = signerInfos.getSigners();
 
+            Date signTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
             for (SignerInformation signer : signers) {
                 SignerId sid = signer.getSID();
+
+                ASN1Set attrValues = signer.getSignedAttributes().get(PKCSObjectIdentifiers.pkcs_9_at_signingTime)
+                        .getAttrValues();
+
+                if (attrValues.size() > 0) {
+                    ASN1Encodable objectAt = attrValues.getObjectAt(0);
+                    signTime = Time.getInstance(objectAt).getDate();
+                } else {
+                    LOGGER.warn("get sign time false, use local datetime verify profile cert chain");
+                }
+
                 X500Principal principal = new X500Principal(sid.getIssuer().getEncoded());
                 CertChainUtils.verifyCertChain(certificates, principal, sid.getSerialNumber(),
-                        certificates.get(certificates.size() - 1));
+                        certificates.get(certificates.size() - 1), signTime);
             }
 
             result.setContent(FileUtils.GSON.fromJson(new String((byte[]) (cmsSignedData
