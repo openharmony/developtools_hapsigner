@@ -27,7 +27,10 @@ import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -144,17 +147,7 @@ public class VerifyHelper implements IProvisionVerifier {
 
             for (SignerInformation signer : signers) {
                 SignerId sid = signer.getSID();
-                Date signTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-
-                ASN1Set attrValues = signer.getSignedAttributes().get(PKCSObjectIdentifiers.pkcs_9_at_signingTime)
-                        .getAttrValues();
-
-                if (attrValues.size() > 0) {
-                    ASN1Encodable objectAt = attrValues.getObjectAt(0);
-                    signTime = Time.getInstance(objectAt).getDate();
-                } else {
-                    LOGGER.warn("get sign time false, use local datetime verify profile cert chain");
-                }
+                Date signTime = getSignTime(signer);
 
                 X500Principal principal = new X500Principal(sid.getIssuer().getEncoded());
                 CertChainUtils.verifyCertChain(certificates, principal, sid.getSerialNumber(),
@@ -172,6 +165,28 @@ public class VerifyHelper implements IProvisionVerifier {
             result.setVerifiedPassed(false);
             return result;
         }
+    }
+
+    Date getSignTime(SignerInformation signer) {
+        Date signTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
+        Attribute attribute = signer.getSignedAttributes().get(PKCSObjectIdentifiers.pkcs_9_at_signingTime);
+
+        if (attribute == null) {
+            LOGGER.warn("sign information does not include signTime");
+            return signTime;
+        }
+
+        ASN1Set attrValues = attribute.getAttrValues();
+        if (attrValues.size() == 0) {
+            LOGGER.warn("get sign time false, use local datetime verify profile cert chain");
+            return signTime;
+        }
+
+        ASN1Encodable objectAt = attrValues.getObjectAt(0);
+        signTime = Time.getInstance(objectAt).getDate();
+
+        return signTime;
     }
 
     CMSSignedData verifyPkcs(byte[] p7b) {
