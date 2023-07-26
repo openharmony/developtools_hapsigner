@@ -27,10 +27,8 @@ import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -143,7 +141,6 @@ public class VerifyHelper implements IProvisionVerifier {
 
             SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
             Collection<SignerInformation> signers = signerInfos.getSigners();
-
 
             for (SignerInformation signer : signers) {
                 SignerId sid = signer.getSID();
