@@ -26,6 +26,11 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSException;
@@ -44,10 +49,13 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
 
 /**
  * Signed provision profile verifier.
@@ -136,9 +144,11 @@ public class VerifyHelper implements IProvisionVerifier {
 
             for (SignerInformation signer : signers) {
                 SignerId sid = signer.getSID();
+                Date signTime = getSignTime(signer);
+
                 X500Principal principal = new X500Principal(sid.getIssuer().getEncoded());
                 CertChainUtils.verifyCertChain(certificates, principal, sid.getSerialNumber(),
-                        certificates.get(certificates.size() - 1));
+                        certificates.get(certificates.size() - 1), signTime);
             }
 
             result.setContent(FileUtils.GSON.fromJson(new String((byte[]) (cmsSignedData
@@ -152,6 +162,28 @@ public class VerifyHelper implements IProvisionVerifier {
             result.setVerifiedPassed(false);
             return result;
         }
+    }
+
+    Date getSignTime(SignerInformation signer) {
+        Date signTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
+        Attribute attribute = signer.getSignedAttributes().get(PKCSObjectIdentifiers.pkcs_9_at_signingTime);
+
+        if (attribute == null) {
+            LOGGER.warn("sign information does not include signTime");
+            return signTime;
+        }
+
+        ASN1Set attrValues = attribute.getAttrValues();
+        if (attrValues.size() == 0) {
+            LOGGER.warn("get sign time false, use local datetime verify profile cert chain");
+            return signTime;
+        }
+
+        ASN1Encodable objectAt = attrValues.getObjectAt(0);
+        signTime = Time.getInstance(objectAt).getDate();
+
+        return signTime;
     }
 
     CMSSignedData verifyPkcs(byte[] p7b) {

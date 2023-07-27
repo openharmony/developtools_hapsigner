@@ -43,8 +43,6 @@ import java.security.cert.PKIXCertPathValidatorResult;
 import java.security.cert.PKIXParameters;
 import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -59,8 +57,9 @@ public class CertChainUtils {
     }
 
     private static CertPath getCertPath(List<X509Certificate> certificates, KeyStore trustStore, X500Principal issuer,
-                                        BigInteger serial) throws KeyStoreException, InvalidAlgorithmParameterException,
-            NoSuchAlgorithmException, CertPathBuilderException, CertificateException {
+                                        BigInteger serial, Date signTime) throws KeyStoreException,
+            InvalidAlgorithmParameterException, NoSuchAlgorithmException, CertPathBuilderException,
+            CertificateException {
         if (certificates.size() != 1 && (issuer != null || serial != null)) {
             X509CertSelector targetCertSelector = new X509CertSelector();
             targetCertSelector.setIssuer(issuer);
@@ -69,7 +68,7 @@ public class CertChainUtils {
             CertStore certStore = CertStore.getInstance("Collection",
                     new CollectionCertStoreParameters(certificates));
             params.addCertStore(certStore);
-            params.setDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+            params.setDate(signTime);
             params.setRevocationEnabled(false);
             CertPathBuilder certPathBuilder = CertPathBuilder.getInstance("PKIX");
             PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) certPathBuilder.build(params);
@@ -90,15 +89,15 @@ public class CertChainUtils {
      * @param root         root cert
      */
     public static void verifyCertChain(List<X509Certificate> certificates, X500Principal issuer, BigInteger serial,
-                                       X509Certificate root) {
+                                       X509Certificate root, Date signTime) {
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             trustStore.load(null, null);
             trustStore.setCertificateEntry("root", root);
-            CertPath certPath = getCertPath(certificates, trustStore, issuer, serial);
+            CertPath certPath = getCertPath(certificates, trustStore, issuer, serial, signTime);
             PKIXParameters params = new PKIXParameters(trustStore);
             params.setRevocationEnabled(false);
-            params.setDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+            params.setDate(signTime);
             CertStore certStore = CertStore.getInstance("Collection", new CollectionCertStoreParameters());
             params.addCertStore(certStore);
             CertPathValidator validator = CertPathValidator.getInstance("PKIX");
