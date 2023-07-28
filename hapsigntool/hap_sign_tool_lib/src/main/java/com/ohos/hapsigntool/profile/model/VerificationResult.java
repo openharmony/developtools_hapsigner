@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.profile.model;
 
+import java.util.Map;
+
 /**
  * VerificationResult.
  *
@@ -34,7 +36,7 @@ public class VerificationResult {
     /**
      * Field content.
      */
-    private Provision content;
+    private Map content;
 
     public boolean isVerifiedPassed() {
         return verifiedPassed;
@@ -52,11 +54,11 @@ public class VerificationResult {
         this.message = string;
     }
 
-    public Provision getContent() {
+    public Map getContent() {
         return content;
     }
 
-    public void setContent(Provision provision) {
+    public void setContent(Map provision) {
         this.content = provision;
     }
 

@@ -18,7 +18,6 @@ package com.ohos.hapsigntool.profile;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
-import com.ohos.hapsigntool.profile.model.Provision;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertChainUtils;
 import com.ohos.hapsigntool.utils.CertUtils;
@@ -54,6 +53,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.List;
 import java.util.Date;
 
@@ -152,7 +152,7 @@ public class VerifyHelper implements IProvisionVerifier {
             }
 
             result.setContent(FileUtils.GSON.fromJson(new String((byte[]) (cmsSignedData
-                    .getSignedContent().getContent()), StandardCharsets.UTF_8), Provision.class));
+                    .getSignedContent().getContent()), StandardCharsets.UTF_8), Map.class));
             result.setMessage("OK");
             result.setVerifiedPassed(true);
             return result;
