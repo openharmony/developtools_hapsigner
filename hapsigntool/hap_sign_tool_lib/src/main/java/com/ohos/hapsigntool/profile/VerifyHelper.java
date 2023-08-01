@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.profile;
 
+import com.google.gson.JsonObject;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
@@ -152,7 +153,7 @@ public class VerifyHelper implements IProvisionVerifier {
             }
 
             result.setContent(FileUtils.GSON.fromJson(new String((byte[]) (cmsSignedData
-                    .getSignedContent().getContent()), StandardCharsets.UTF_8), Map.class));
+                    .getSignedContent().getContent()), StandardCharsets.UTF_8), JsonObject.class));
             result.setMessage("OK");
             result.setVerifiedPassed(true);
             return result;
