@@ -17,8 +17,6 @@ package com.ohos.hapsigntool.profile.model;
 
 import com.google.gson.JsonObject;
 
-import java.util.Map;
-
 /**
  * VerificationResult.
  *
