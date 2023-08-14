@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.profile.model;
 
+import com.google.gson.JsonObject;
+
 /**
  * VerificationResult.
  *
@@ -34,7 +36,7 @@ public class VerificationResult {
     /**
      * Field content.
      */
-    private Provision content;
+    private JsonObject content;
 
     public boolean isVerifiedPassed() {
         return verifiedPassed;
@@ -52,11 +54,11 @@ public class VerificationResult {
         this.message = string;
     }
 
-    public Provision getContent() {
+    public JsonObject getContent() {
         return content;
     }
 
-    public void setContent(Provision provision) {
+    public void setContent(JsonObject provision) {
         this.content = provision;
     }
 
