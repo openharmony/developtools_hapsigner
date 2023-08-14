@@ -87,6 +87,7 @@ public class CertChainUtils {
      * @param issuer       issuer
      * @param serial       serial number
      * @param root         root cert
+     * @param signTime     signing time
      */
     public static void verifyCertChain(List<X509Certificate> certificates, X500Principal issuer, BigInteger serial,
                                        X509Certificate root, Date signTime) {
