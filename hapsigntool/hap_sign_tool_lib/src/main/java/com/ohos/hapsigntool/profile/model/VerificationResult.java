@@ -26,7 +26,7 @@ public class VerificationResult {
     /**
      *
      *
-     * 40
+     *
      * Field verifiedPassed.
      */
     private boolean verifiedPassed;
