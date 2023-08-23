@@ -24,6 +24,9 @@ import com.google.gson.JsonObject;
  */
 public class VerificationResult {
     /**
+     *
+     *
+     * 40
      * Field verifiedPassed.
      */
     private boolean verifiedPassed;
