@@ -25,8 +25,6 @@ import com.google.gson.JsonObject;
 public class VerificationResult {
     /**
      *
-     *
-     *
      * Field verifiedPassed.
      */
     private boolean verifiedPassed;
@@ -40,6 +38,13 @@ public class VerificationResult {
      * Field content.
      */
     private JsonObject content;
+
+    /**
+     * Empty constructor without value initial.
+     */
+    public VerificationResult() {
+        // Empty constructor of VerificationResult.
+    }
 
     public boolean isVerifiedPassed() {
         return verifiedPassed;
@@ -63,12 +68,5 @@ public class VerificationResult {
 
     public void setContent(JsonObject provision) {
         this.content = provision;
-    }
-
-    /**
-     * Empty constructor without value initial.
-     */
-    public VerificationResult() {
-        // Empty constructor of VerificationResult.
     }
 }
