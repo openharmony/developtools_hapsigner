@@ -56,23 +56,31 @@ public final class CmdUtil {
         Params params = new Params();
         params.setMethod(args[0]);
         String keyStandBy = null;
+        boolean readKey = true;
         List<String> trustList = ParamsTrustlist.getTrustList(args[0]);
         if (trustList.size() == 0) {
             CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
         }
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
-            // prepare key
-            if (value != null && (value.startsWith("-"))) {
-                boolean isTrust = trustList.contains(value);
-                ValidateUtils.throwIfNotMatches(isTrust,
-                        ERROR.COMMAND_PARAM_ERROR, "Not support command param:" + value);
-                keyStandBy = value.substring(1);
+            if (readKey) {
+                // prepare key
+                if (value != null && (value.startsWith("-"))) {
+                    boolean isTrust = trustList.contains(value);
+                    ValidateUtils.throwIfNotMatches(isTrust,
+                            ERROR.COMMAND_PARAM_ERROR, "Not support command param");
+                    keyStandBy = value.substring(1);
+                    readKey = false;
+                } else {
+                    ValidateUtils.throwIfNotMatches(false,
+                            ERROR.COMMAND_PARAM_ERROR, "param key value must in pairs");
+                }
             } else {
                 // prepare value
                 boolean success = validAndPutParam(params, keyStandBy, value);
                 if (success) {
                     keyStandBy = null;
+                    readKey = true;
                 }
             }
         }
