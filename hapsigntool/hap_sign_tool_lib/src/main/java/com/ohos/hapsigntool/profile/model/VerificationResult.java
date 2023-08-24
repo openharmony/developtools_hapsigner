@@ -61,11 +61,4 @@ public class VerificationResult {
     public void setContent(JsonObject provision) {
         this.content = provision;
     }
-
-    /**
-     * Empty constructor without value initial.
-     */
-    public VerificationResult() {
-        // Empty constructor of VerificationResult.
-    }
 }
