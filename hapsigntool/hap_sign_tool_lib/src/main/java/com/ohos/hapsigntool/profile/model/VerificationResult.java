@@ -39,7 +39,6 @@ public class VerificationResult {
      */
     private JsonObject content;
 
-
     public boolean isVerifiedPassed() {
         return verifiedPassed;
     }
