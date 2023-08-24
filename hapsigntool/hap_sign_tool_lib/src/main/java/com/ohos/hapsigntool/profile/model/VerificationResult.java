@@ -39,12 +39,6 @@ public class VerificationResult {
      */
     private JsonObject content;
 
-    /**
-     * Empty constructor without value initial.
-     */
-    public VerificationResult() {
-        // Empty constructor of VerificationResult.
-    }
 
     public boolean isVerifiedPassed() {
         return verifiedPassed;

@@ -63,9 +63,12 @@ public final class CmdUtil {
         }
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
+            if (StringUtils.isEmpty(value)) {
+                continue;
+            }
             if (readKey) {
                 // prepare key
-                if (value != null && (value.startsWith("-"))) {
+                if (value.startsWith("-")) {
                     boolean isTrust = trustList.contains(value);
                     ValidateUtils.throwIfNotMatches(isTrust,
                             ERROR.COMMAND_PARAM_ERROR, "Not support command param");
@@ -257,12 +260,5 @@ public final class CmdUtil {
          * Verify profile method name.
          */
         public static final String VERIFY_PROFILE = "verify-profile";
-
-        /**
-         * Constructor of Method.
-         */
-        private Method() {
-            // Empty constructor of Method.
-        }
     }
 }
