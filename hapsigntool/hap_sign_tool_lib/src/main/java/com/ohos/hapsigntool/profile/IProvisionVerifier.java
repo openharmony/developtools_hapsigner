@@ -30,6 +30,7 @@ public interface IProvisionVerifier {
      *
      * @param p7b signed p7b content
      * @return result
+     * @exception VerifyException verify p7b failed
      */
     VerificationResult verify(byte[] p7b) throws VerifyException;
 }

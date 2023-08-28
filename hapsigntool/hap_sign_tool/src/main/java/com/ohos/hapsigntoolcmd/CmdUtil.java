@@ -64,7 +64,7 @@ public final class CmdUtil {
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
             if (StringUtils.isEmpty(value)) {
-                CustomException.throwException(ERROR.COMMAND_ERROR,"Command -%s could not be empty");
+                CustomException.throwException(ERROR.COMMAND_ERROR, "Command -%s could not be empty");
             }
             if (readKey) {
                 // prepare key
