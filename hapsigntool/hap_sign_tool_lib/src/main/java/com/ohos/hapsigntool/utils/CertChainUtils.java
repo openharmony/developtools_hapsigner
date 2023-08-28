@@ -116,7 +116,7 @@ public class CertChainUtils {
             }
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException | CertificateException
                 | KeyStoreException | CertPathBuilderException | CertPathValidatorException exception) {
-            throw new VerifyException("Cert chain verify failed! ");
+            throw new VerifyException("Cert chain verify failed! " + exception.getMessage());
         }
     }
 }
