@@ -20,6 +20,7 @@ import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.cert.CertTools;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.provider.LocalJKSSignProvider;
 import com.ohos.hapsigntool.hap.provider.RemoteSignProvider;
 import com.ohos.hapsigntool.hap.provider.SignProvider;
@@ -289,6 +290,10 @@ public class SignToolServiceImpl implements ServiceApi {
             logger.debug(exception.getMessage(), exception);
             logger.error(exception.getMessage());
             result = false;
+        } catch (VerifyException e) {
+            CustomException.throwException(ERROR.VERIFY_ERROR, "Verify Profile Failed! " + e.getMessage());
+            result = false;
+
         }
         return result;
     }
