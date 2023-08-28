@@ -130,7 +130,7 @@ public class VerifyHelper implements IProvisionVerifier {
      *
      * @param p7b signed p7b content
      * @return result
-     * @exception VerifyException verify p7b failed
+     * @throws VerifyException verify p7b failed
      */
     @Override
     public VerificationResult verify(byte[] p7b) throws VerifyException {
