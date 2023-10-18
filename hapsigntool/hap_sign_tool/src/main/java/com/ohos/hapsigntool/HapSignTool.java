@@ -83,6 +83,7 @@ public final class HapSignTool {
         } catch (CustomException exception) {
             LOGGER.debug(exception.getMessage(), exception);
             LOGGER.error(exception.getMessage());
+            System.exit(1);
         }
     }
 
