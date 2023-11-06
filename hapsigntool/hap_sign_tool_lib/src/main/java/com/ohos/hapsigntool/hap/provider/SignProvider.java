@@ -33,6 +33,7 @@ import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.exception.SignatureException;
 import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
 import com.ohos.hapsigntool.hap.sign.SignBin;
+import com.ohos.hapsigntool.hap.sign.SignElf;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
@@ -258,6 +259,39 @@ public abstract class SignProvider {
         /* 6. make signed file into output file. */
         if (!SignBin.sign(signerConfig, signParams)) {
             LOGGER.error("hap-sign-tool: error: Sign bin internal failed.");
+            return false;
+        }
+        LOGGER.info("Sign success");
+        return true;
+    }
+
+    /**
+     * sign elf file
+     *
+     * @param options parameters used to sign elf file
+     * @return true, if sign successfully.
+     */
+    public boolean signElf(Options options) {
+        Security.addProvider(new BouncyCastleProvider());
+        List<X509Certificate> publicCert = null;
+        SignerConfig signerConfig;
+        try {
+            publicCert = getX509Certificates(options);
+
+            // Get x509 CRL
+            Optional<X509CRL> crl = getCrl();
+
+            // Create signer configs, which contains public cert and crl info.
+            signerConfig = createSignerConfigs(publicCert, crl, options);
+        } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
+            LOGGER.error("create signer configs failed.", e);
+            printErrorLogWithoutStack(e);
+            return false;
+        }
+
+        /* 6. make signed file into output file. */
+        if (!SignElf.sign(signerConfig, signParams)) {
+            LOGGER.error("hap-sign-tool: error: Sign elf internal failed.");
             return false;
         }
         LOGGER.info("Sign success");
@@ -632,7 +666,8 @@ public abstract class SignProvider {
             ParamConstants.PARAM_BASIC_PROFILE_SIGNED,
             ParamConstants.PARAM_LOCAL_PUBLIC_CERT,
             ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION,
-            ParamConstants.PARAM_CODE_SIGN
+            ParamConstants.PARAM_CODE_SIGN,
+            ParamConstants.PARAM_IN_FORM
         };
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
 

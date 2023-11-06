@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -235,6 +235,11 @@ public class ParamConstants {
      * The config params of resign hap
      */
     public static final String PARAM_RESIGN_CONFIG_FILE = "resignconfig";
+
+    /**
+     * sign file type bin or zip or elf
+     */
+    public static final String PARAM_IN_FORM = "inForm";
 
     /**
      * The code sign params of resign hap
