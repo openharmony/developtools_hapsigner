@@ -90,6 +90,16 @@ public class VerifyResult {
      */
     public static final int RET_CRL_ERROR = 10011;
 
+    /**
+     * Return code of file code sign data error.
+     */
+    public static final int RET_CODESIGN_DATA_ERROR = 10012;
+
+    /**
+     * Return code of verify code sign error.
+     */
+    public static final int RET_CODE_SIGN_BLOCK_ERROR = 10013;
+
     private boolean result;
     private int code;
     private String message;

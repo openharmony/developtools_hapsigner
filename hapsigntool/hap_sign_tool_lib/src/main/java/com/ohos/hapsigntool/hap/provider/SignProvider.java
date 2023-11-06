@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,15 +20,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
+import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
+import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
+import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
 import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.exception.SignatureException;
 import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
-import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.sign.SignBin;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
@@ -48,7 +51,6 @@ import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
@@ -60,6 +62,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -73,9 +76,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.Optional;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
@@ -279,8 +282,9 @@ public abstract class SignProvider {
             checkCompatibleVersion();
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
+            String suffix = getFileSuffix(output);
             if (input.getCanonicalPath().equals(output.getCanonicalPath())) {
-                tmpOutput = File.createTempFile("signedHap", ".hap");
+                tmpOutput = File.createTempFile("signedHap", "." + suffix);
                 isPathOverlap = true;
             } else {
                 tmpOutput = output;
@@ -306,6 +310,8 @@ public abstract class SignProvider {
                 signerConfig.setCompatibleVersion(Integer.parseInt(
                         signParams.get(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION)));
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
+
+                appendCodeSignBlock(signerConfig, tmpOutput, suffix, centralDirectoryOffset);
                 byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;
                 ZipUtils.setCentralDirectoryOffset(eocdBuffer, newCentralDirectoryOffset);
@@ -315,12 +321,61 @@ public abstract class SignProvider {
                 isRet = true;
             }
         } catch (IOException | InvalidKeyException | HapFormatException | MissingParamsException
-            | InvalidParamsException | ProfileException | NumberFormatException | CustomException e) {
+            | InvalidParamsException | ProfileException | NumberFormatException | CustomException
+            | FsVerityDigestException | CodeSignException e) {
             printErrorLogWithoutStack(e);
         } catch (SignatureException e) {
             printErrorLog(e);
         }
         return doAfterSign(isRet, isPathOverlap, tmpOutput, output);
+    }
+
+    /**
+     * append code signBlock
+     *
+     * @param signerConfig signerConfig
+     * @param tmpOutput temp output file
+     * @param suffix suffix
+     * @param centralDirectoryOffset central directory offset
+     * @throws FsVerityDigestException FsVerity digest on error
+     * @throws CodeSignException code sign on error
+     * @throws IOException IO error
+     * @throws HapFormatException hap format on error
+     */
+    private void appendCodeSignBlock(SignerConfig signerConfig, File tmpOutput, String suffix,
+        long centralDirectoryOffset)
+        throws FsVerityDigestException, CodeSignException, IOException, HapFormatException {
+        if (signParams.get(ParamConstants.PARAM_CODE_SIGN)
+                .equals(ParamConstants.CodeSignFlag.CODE_SIGNED.getCodeSignFlag())){
+            int codeSignOffset = (int)
+                    (centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4)));
+            // create CodeSigning Object
+            CodeSigning codeSigning = new CodeSigning(signerConfig);
+            byte[] codeSignArray=codeSigning.getCodeSignBlock(tmpOutput,codeSignOffset,suffix);
+            ByteBuffer result = ByteBuffer.allocate(codeSignArray.length + (4 + 4 + 4));
+            result.order(ByteOrder.LITTLE_ENDIAN);
+            result.putInt(HapUtils.HAP_CODE_SIGN_BLOCK_ID); // type
+            result.putInt(codeSignArray.length); // length
+            result.putInt(codeSignOffset); // offset
+            result.put(codeSignArray);
+            SigningBlock propertyBlock = new SigningBlock(HapUtils.HAP_PROPERTY_BLOCK_ID, result.array());
+            optionalBlocks.add(0,propertyBlock);
+        }
+    }
+
+    /**
+     * obtain file name suffix
+     *
+     * @param output
+     * @return suffix
+     * @throws HapFormatException hap format error
+     */
+    private String getFileSuffix(File output) throws HapFormatException {
+        String[] fileNameArray = output.getName().split("\\.");
+        if (fileNameArray.length < ParamConstants.FILE_NAME_MIN_LENGTH) {
+            throw new HapFormatException("hap format error :" + output);
+        }
+        return fileNameArray[fileNameArray.length - 1];
     }
 
     /**
@@ -392,15 +447,15 @@ public abstract class SignProvider {
      * @param alignment alignment
      * @throws IOException  io error
      */
-    private void copyFileAndAlignment(File input, File tmpOutput, int alignment) throws IOException {
+    private void copyFileAndAlignment(File input, File tmpOutput, int alignment)
+            throws IOException, HapFormatException {
         try (JarFile inputJar = new JarFile(input, false);
             FileOutputStream outputFile = new FileOutputStream(tmpOutput);
             JarOutputStream outputJar = new JarOutputStream(outputFile)) {
             long timestamp = TIMESTAMP;
             timestamp -= TimeZone.getDefault().getOffset(timestamp);
             outputJar.setLevel(COMPRESSION_MODE);
-            List<String> entryNames = SignHap.getEntryNamesFromHap(inputJar);
-            SignHap.copyFiles(entryNames, inputJar, outputJar, timestamp, alignment);
+            SignHap.copyFiles(inputJar, outputJar, timestamp, alignment);
         }
     }
 
@@ -576,7 +631,8 @@ public abstract class SignProvider {
             ParamConstants.PARAM_REMOTE_SERVER,
             ParamConstants.PARAM_BASIC_PROFILE_SIGNED,
             ParamConstants.PARAM_LOCAL_PUBLIC_CERT,
-            ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION
+            ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION,
+            ParamConstants.PARAM_CODE_SIGN
         };
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
 
@@ -588,8 +644,26 @@ public abstract class SignProvider {
         if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
             signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
         }
+        checkCodeSign();
         checkSignatureAlg();
         checkSignAlignment();
+    }
+
+    /**
+     * Check code sign, if param do not have code sign default "1".
+     *
+     * @throws InvalidParamsException invalid param
+     */
+    protected void checkCodeSign() throws InvalidParamsException {
+        if (!signParams.containsKey(ParamConstants.PARAM_CODE_SIGN)) {
+            signParams.put(ParamConstants.PARAM_CODE_SIGN, ParamConstants.CodeSignFlag.CODE_SIGNED.getCodeSignFlag());
+            return;
+        }
+        String codeSign = signParams.get(ParamConstants.PARAM_CODE_SIGN);
+        if (!codeSign.equals(ParamConstants.CodeSignFlag.CODE_SIGNED.getCodeSignFlag())
+                && !codeSign.equals(ParamConstants.CodeSignFlag.CODE_UNSIGNED.getCodeSignFlag())) {
+            throw new InvalidParamsException("Invalid parameter: " + ParamConstants.PARAM_CODE_SIGN);
+        }
     }
 
     /**

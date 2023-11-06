@@ -237,6 +237,16 @@ public class ParamConstants {
     public static final String PARAM_RESIGN_CONFIG_FILE = "resignconfig";
 
     /**
+     * The code sign params of resign hap
+     */
+    public static final String PARAM_CODE_SIGN = "codesign";
+
+    /**
+     * file name split . of min length
+     */
+    public static final int FILE_NAME_MIN_LENGTH = 2;
+
+    /**
      * Enumerated value of whether a profile is signed
      */
     public enum ProfileSignFlag {
@@ -251,6 +261,21 @@ public class ParamConstants {
 
         public String getSignFlag() {
             return signFlag;
+        }
+    }
+
+    public enum CodeSignFlag {
+        CODE_UNSIGNED("0"),
+        CODE_SIGNED("1");
+
+        private String codeSignFlag;
+
+        CodeSignFlag(String codeSignFlag) {
+            this.codeSignFlag = codeSignFlag;
+        }
+
+        public String getCodeSignFlag() {
+            return codeSignFlag;
         }
     }
 }
