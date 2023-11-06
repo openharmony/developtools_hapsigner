@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,6 @@ import com.ohos.hapsigntool.zip.MessageDigestZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
@@ -38,12 +37,12 @@ import java.nio.ByteOrder;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 
 /**
  * Hap util, parse hap, find signature block.
@@ -72,6 +71,11 @@ public class HapUtils {
      * ID of property block
      */
     public static final int HAP_PROPERTY_BLOCK_ID = 0x20000003;
+
+    /**
+     * ID of code sign block
+     */
+    public static final int HAP_CODE_SIGN_BLOCK_ID = 0x30000001;
 
     /**
      * The size of data block used to get digest

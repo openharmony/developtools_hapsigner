@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,9 @@
 package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
+import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
+import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
 import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
@@ -29,9 +32,9 @@ import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.Arrays;
@@ -49,6 +52,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Class of verify hap.
@@ -248,6 +253,11 @@ public class VerifyHap {
             ByteBuffer signatureSchemeBlock = blockPair.getFirst();
             List<SigningBlock> optionalBlocks = blockPair.getSecond();
             Collections.reverse(optionalBlocks);
+            if (!checkCodeSign(hapFilePath, optionalBlocks)) {
+                String errMsg = "ZIP64 code sign data error";
+                return new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
+            }
+
             long signingBlockOffset = hapSigningBlockAndOffsetInFile.getOffset();
             ZipDataInput beforeHapSigningBlock = hapFile.slice(0, signingBlockOffset);
             ZipDataInput centralDirectoryBlock = hapFile.slice(zipInfo.getCentralDirectoryOffset(),
@@ -269,8 +279,60 @@ public class VerifyHap {
         } catch (HapFormatException e) {
             LOGGER.error("Verify Hap failed, unsupported format hap.", e);
             result = new VerifyResult(false, VerifyResult.RET_UNSUPPORTED_FORMAT_ERROR, e.getMessage());
+        } catch (FsVerityDigestException e) {
+            LOGGER.error("Verify Hap failed, fs-verity digest generate failed.", e);
+            result = new VerifyResult(false, VerifyResult.RET_DIGEST_ERROR, e.getMessage());
+        } catch (VerifyCodeSignException e) {
+            LOGGER.error("Verify Hap failed, code sign block verify failed.", e);
+            result = new VerifyResult(false, VerifyResult.RET_CODE_SIGN_BLOCK_ERROR, e.getMessage());
+        } catch (CMSException e) {
+            LOGGER.error("Verify Hap failed, code signature verify failed.", e);
+            result = new VerifyResult(false, VerifyResult.RET_SIGNATURE_ERROR, e.getMessage());
         }
         return result;
+    }
+
+    /**
+     * code sign check
+     *
+     * @param hapFilePath hap file path
+     * @param optionalBlocks optional blocks
+     * @throws FsVerityDigestException FsVerity digest on error
+     * @throws IOException IO error
+     * @throws VerifyCodeSignException verify code sign on error
+     * @throws CMSException cms on error
+     * @return true or false
+     */
+    private boolean checkCodeSign(String hapFilePath, List<SigningBlock> optionalBlocks)
+            throws FsVerityDigestException, IOException, VerifyCodeSignException, CMSException {
+        Map<Integer, byte[]> map = optionalBlocks.stream()
+                .collect(Collectors.toMap(SigningBlock::getType, SigningBlock::getValue));
+        byte[] propertyBlockArray = map.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
+        if (propertyBlockArray != null && propertyBlockArray.length > 0) {
+            String[] fileNameArray = hapFilePath.split("\\.");
+            if (fileNameArray.length < ParamConstants.FILE_NAME_MIN_LENGTH) {
+                LOGGER.error("ZIP46 format not supported");
+                return false;
+            }
+            ByteBuffer byteBuffer = ByteBuffer.wrap(propertyBlockArray);
+            String suffix = fileNameArray[fileNameArray.length - 1];
+            ByteBuffer header = HapUtils.reverseSliceBuffer(byteBuffer, 0, ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH);
+            int blockOffset = header.getInt();
+            int blockLength = header.getInt();
+            int blockType = header.getInt();
+            if (blockType != HapUtils.HAP_CODE_SIGN_BLOCK_ID) {
+                LOGGER.error("Verify Hap has no code sign data error!");
+                return false;
+            }
+            File outputFile = new File(hapFilePath);
+            boolean isCodeSign = VerifyCodeSignature.verifyHap(outputFile, blockOffset, blockLength, suffix);
+            if (!isCodeSign) {
+                LOGGER.error("Verify Hap has no code sign data error!");
+                return false;
+            }
+            return true;
+        }
+        return true;
     }
 
     private Pair<ByteBuffer, List<SigningBlock>> getHapSignatureSchemeBlockAndOptionalBlocks(ByteBuffer hapSigningBlock)
