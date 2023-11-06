@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -322,6 +322,8 @@ public class SignToolServiceImpl implements ServiceApi {
         String inForm = options.getString(Options.IN_FORM, "zip");
         if ("zip".equalsIgnoreCase(inForm)) {
             return signProvider.sign(options);
+        } else if ("elf".equalsIgnoreCase(inForm)) {
+            return signProvider.signElf(options);
         } else {
             return signProvider.signBin(options);
         }

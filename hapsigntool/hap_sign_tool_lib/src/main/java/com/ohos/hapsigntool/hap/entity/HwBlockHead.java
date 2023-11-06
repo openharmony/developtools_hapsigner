@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,9 @@
  */
 
 package com.ohos.hapsigntool.hap.entity;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * define class of hap signature sub-block head
@@ -54,5 +57,23 @@ public class HwBlockHead {
             (byte) ((offset >> BIT_SIZE) & 0xff),
             (byte) (offset & 0xff)
         };
+    }
+
+    /**
+     * get serialization of HwBlockHead little endian
+     *
+     * @param type type of signature block
+     * @param tag tags of signature block
+     * @param length the length of block data
+     * @param offset Byte offset of the data block relative to the start position of the signature block
+     * @return Byte array after serialization of HwBlockHead
+     */
+    public static byte[] getBlockHeadLittleEndian(char type, char tag, short length, int offset) {
+        ByteBuffer bf = ByteBuffer.allocate(HwBlockHead.BLOCK_LEN).order(ByteOrder.LITTLE_ENDIAN);
+        bf.put((byte) (type));
+        bf.put((byte) (tag));
+        bf.putShort(length);
+        bf.putInt(offset);
+        return bf.array();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -277,7 +277,7 @@ public final class HapSignTool {
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
+        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm) && !"elf".equalsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
@@ -321,7 +321,7 @@ public final class HapSignTool {
     private static boolean runVerifyApp(Options params, ServiceApi api) {
         params.required(Options.IN_FILE, Options.OUT_CERT_CHAIN,
                 Options.OUT_PROFILE);
-        FileUtils.validFileType(params.getString(Options.IN_FILE), "hap", "bin");
+        FileUtils.validFileType(params.getString(Options.IN_FILE), "hap");
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");
         return api.verifyHap(params);

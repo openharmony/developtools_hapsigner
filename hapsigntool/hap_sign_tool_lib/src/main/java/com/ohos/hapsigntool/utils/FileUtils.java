@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -221,10 +221,13 @@ public final class FileUtils {
      * @return true, if write successfully.
      */
     public static boolean writeByteToDos(byte[] data, DataOutputStream dos) {
+        if (data == null) {
+            return true;
+        }
         try {
             dos.write(data);
         } catch (IOException e) {
-            LOGGER.error("Faile to write data to output stream.");
+            LOGGER.error("Failed to write data to output stream.");
             return false;
         }
         return true;
