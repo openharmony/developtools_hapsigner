@@ -17,6 +17,11 @@ package com.ohos.hapsigntool.hap.entity;
 
 import com.ohos.hapsigntool.utils.FileUtils;
 
+/**
+ * sign block data
+ *
+ * @since 2023-11-07
+ */
 public class SignBlockData {
     private char type;
     private byte[] blockHead;
@@ -24,6 +29,20 @@ public class SignBlockData {
     private String signFile;
     private long len;
     private boolean isByte;
+
+    public SignBlockData(byte[] signData, char type) {
+        this.signData = signData;
+        this.type = type;
+        this.len = signData == null ? 0 : signData.length;
+        this.isByte = true;
+    }
+
+    public SignBlockData(String signFile, char type) {
+        this.signFile = signFile;
+        this.type = type;
+        this.len = FileUtils.getFileLen(signFile);
+        this.isByte = false;
+    }
 
     public char getType() {
         return type;
@@ -73,21 +92,4 @@ public class SignBlockData {
         isByte = aByte;
     }
 
-    public SignBlockData() {
-
-    }
-
-    public SignBlockData(byte[] signData, char type) {
-        this.signData = signData;
-        this.type = type;
-        this.len = signData == null ? 0 : signData.length;
-        this.isByte = true;
-    }
-
-    public SignBlockData(String signFile, char type) {
-        this.signFile = signFile;
-        this.type = type;
-        this.len = FileUtils.getFileLen(signFile);
-        this.isByte = false;
-    }
 }

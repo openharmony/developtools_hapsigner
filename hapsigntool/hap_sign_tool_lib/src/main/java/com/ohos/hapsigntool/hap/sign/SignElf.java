@@ -57,7 +57,7 @@ public class SignElf {
 
     private static final Logger LOGGER = LogManager.getLogger(SignElf.class);
 
-    private static final String CODESIGN_ON = "1";
+    private static final String CODESIGN_OFF = "0";
 
     private static final char CODESIGN_BLOCK_TYPE = 3;
 
@@ -197,13 +197,13 @@ public class SignElf {
 
     private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams, String inputFile,
         int blockNum, long binFileLen) throws IOException, FsVerityDigestException, CodeSignException, HapFormatException {
-        if (CODESIGN_ON.equals(signParams.get(ParamConstants.PARAM_CODE_SIGN))) {
-            CodeSigning codeSigning = new CodeSigning(signerConfig);
-            long offset = binFileLen + (long) HwBlockHead.getBlockLen() * blockNum;
-            byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset, signParams.get(ParamConstants.PARAM_IN_FORM));
-            return new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
+        if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_CODE_SIGN))) {
+            return null;
         }
-        return null;
+        CodeSigning codeSigning = new CodeSigning(signerConfig);
+        long offset = binFileLen + (long) HwBlockHead.getBlockLen() * blockNum;
+        byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset, signParams.get(ParamConstants.PARAM_IN_FORM));
+        return new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
     }
 
     private static boolean writeSignHeadDataToOutputFile(String inputFile, String outputFile, int blockNum) {
