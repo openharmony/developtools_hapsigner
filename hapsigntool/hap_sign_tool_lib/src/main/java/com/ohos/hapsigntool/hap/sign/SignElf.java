@@ -201,7 +201,7 @@ public class SignElf {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
-        long offset = binFileLen + (long) HwBlockHead.getBlockLen() * blockNum;
+        long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
         byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset, signParams.get(ParamConstants.PARAM_IN_FORM));
         return new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
     }
