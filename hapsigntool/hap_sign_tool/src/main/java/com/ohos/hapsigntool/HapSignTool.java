@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool;
 
-
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.api.model.Options;
@@ -27,6 +26,7 @@ import com.ohos.hapsigntoolcmd.CmdUtil;
 import com.ohos.hapsigntoolcmd.CmdUtil.Method;
 import com.ohos.hapsigntoolcmd.HelpDocument;
 import com.ohos.hapsigntoolcmd.Params;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,8 +76,8 @@ public final class HapSignTool {
      */
     public static void main(String[] args) {
         try {
-            boolean result = processCmd(args);
-            if (!result) {
+            boolean isFinish = processCmd(args);
+            if (!isFinish) {
                 System.exit(1);
             }
         } catch (CustomException exception) {
@@ -106,67 +106,65 @@ public final class HapSignTool {
             Params params = CmdUtil.convert2Params(args);
             LOGGER.debug(params.toString());
             LOGGER.info("Start {}", params.getMethod());
-            boolean result;
-            result = dispatchParams(params, api);
-            if (result) {
+            boolean dispatchParams = dispatchParams(params, api);
+            if (dispatchParams) {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "success"));
             } else {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "failed"));
             }
-            return result;
+            return dispatchParams;
         }
         return true;
     }
 
     private static boolean callGenerators(Params params, ServiceApi api) {
-        boolean result = false;
+        boolean isFinish = false;
         switch (params.getMethod()) {
             case Method.GENERATE_APP_CERT:
-                result = runAppCert(params.getOptions(), api);
+                isFinish = runAppCert(params.getOptions(), api);
                 break;
             case Method.GENERATE_CA:
-                result = runCa(params.getOptions(), api);
+                isFinish = runCa(params.getOptions(), api);
                 break;
             case Method.GENERATE_CERT:
-                result = runCert(params.getOptions(), api);
+                isFinish = runCert(params.getOptions(), api);
                 break;
             case Method.GENERATE_CSR:
-                result = runCsr(params.getOptions(), api);
+                isFinish = runCsr(params.getOptions(), api);
                 break;
             case Method.GENERATE_KEYPAIR:
-                result = runKeypair(params.getOptions(), api);
+                isFinish = runKeypair(params.getOptions(), api);
                 break;
             case Method.GENERATE_PROFILE_CERT:
-                result = runProfileCert(params.getOptions(), api);
+                isFinish = runProfileCert(params.getOptions(), api);
                 break;
             default:
                 CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
                 break;
         }
-        return result;
+        return isFinish;
     }
 
     private static boolean dispatchParams(Params params, ServiceApi api) {
-        boolean result;
+        boolean isFinish;
         switch (params.getMethod()) {
             case Method.SIGN_APP:
-                result = runSignApp(params.getOptions(), api);
+                isFinish = runSignApp(params.getOptions(), api);
                 break;
             case Method.SIGN_PROFILE:
-                result = runSignProfile(params.getOptions(), api);
+                isFinish = runSignProfile(params.getOptions(), api);
                 break;
             case Method.VERIFY_APP:
-                result = runVerifyApp(params.getOptions(), api);
+                isFinish = runVerifyApp(params.getOptions(), api);
                 break;
             case Method.VERIFY_PROFILE:
-                result = runVerifyProfile(params.getOptions(), api);
+                isFinish = runVerifyProfile(params.getOptions(), api);
                 break;
             default:
-                result = callGenerators(params, api);
+                isFinish = callGenerators(params, api);
                 break;
         }
-
-        return result;
+        return isFinish;
     }
 
     private static void checkEndCertArguments(Options params) {
@@ -186,7 +184,7 @@ public final class HapSignTool {
         String keyStoreFile = params.getString(Options.KEY_STORE_FILE);
         FileUtils.validFileType(keyStoreFile, "p12", "jks");
 
-        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
             String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
             FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
         }
@@ -226,7 +224,7 @@ public final class HapSignTool {
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
             String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
             FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
         }
@@ -277,7 +275,8 @@ public final class HapSignTool {
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm) && !"elf".equalsIgnoreCase(inForm)) {
+        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)
+                && !"elf".equalsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
@@ -288,7 +287,7 @@ public final class HapSignTool {
 
     private static void checkProfile(Options params) {
         String profileFile = params.getString(Options.PROFILE_FILE);
-        String profileSigned = params.getString(Options.PROFILE_SIGNED,SIGNED);
+        String profileSigned = params.getString(Options.PROFILE_SIGNED, SIGNED);
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
         }

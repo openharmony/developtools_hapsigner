@@ -20,9 +20,13 @@ import java.nio.ByteOrder;
 
 /**
  * define class of hap signature sub-block head
+ *
+ * @since 2023/11/07
  */
 public class HwBlockHead {
     private static final int BLOCK_LEN = 8; // current block length
+
+    private static final int ELF_BLOCK_LEN = 12; // current block length
 
     private static final int BIT_SIZE = 8;
 
@@ -30,11 +34,11 @@ public class HwBlockHead {
 
     private static final int TRIPLE_BIT_SIZE = 24;
 
-    public static int getBlockLen() {
-        return BLOCK_LEN;
+    private HwBlockHead() {
     }
 
-    private HwBlockHead() {
+    public static int getBlockLen() {
+        return BLOCK_LEN;
     }
 
     /**
@@ -60,7 +64,7 @@ public class HwBlockHead {
     }
 
     /**
-     * get serialization of HwBlockHead little endian
+     * get serialization of HwBlockHead
      *
      * @param type type of signature block
      * @param tag tags of signature block
@@ -69,9 +73,9 @@ public class HwBlockHead {
      * @return Byte array after serialization of HwBlockHead
      */
     public static byte[] getBlockHeadLittleEndian(char type, char tag, short length, int offset) {
-        ByteBuffer bf = ByteBuffer.allocate(HwBlockHead.BLOCK_LEN).order(ByteOrder.LITTLE_ENDIAN);
-        bf.put((byte) (type));
-        bf.put((byte) (tag));
+        ByteBuffer bf = ByteBuffer.allocate(HwBlockHead.ELF_BLOCK_LEN).order(ByteOrder.LITTLE_ENDIAN);
+        bf.putChar(type);
+        bf.putChar(tag);
         bf.putShort(length);
         bf.putInt(offset);
         return bf.array();

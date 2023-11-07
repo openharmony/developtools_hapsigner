@@ -172,7 +172,7 @@ public class SignBin {
         }
         HwSignHead signHeadData = new HwSignHead();
         byte[] signHeadByte = signHeadData.getSignHead((int) size);
-        if (signHeadByte == null) {
+        if (signHeadByte == null || signHeadByte.length == 0) {
             LOGGER.error("Failed to get sign head data.");
             return false;
         }
