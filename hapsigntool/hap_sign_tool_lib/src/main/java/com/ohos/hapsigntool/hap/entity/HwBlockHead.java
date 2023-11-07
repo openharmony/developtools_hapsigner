@@ -41,6 +41,10 @@ public class HwBlockHead {
         return BLOCK_LEN;
     }
 
+    public static int getElfBlockLen() {
+        return ELF_BLOCK_LEN;
+    }
+
     /**
      * get serialization of HwBlockHead
      *

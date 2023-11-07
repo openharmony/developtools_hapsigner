@@ -168,7 +168,7 @@ public class SignElf {
 
     private static void generateSignBlockHead(List<SignBlockData> signDataList)
             throws IOException {
-        long offset = (long) HwBlockHead.getBlockLen() * signDataList.size();
+        long offset = (long) HwBlockHead.getElfBlockLen() * signDataList.size();
 
         for (int i = 0; i < signDataList.size(); i++) {
             SignBlockData signBlockData = signDataList.get(i);
