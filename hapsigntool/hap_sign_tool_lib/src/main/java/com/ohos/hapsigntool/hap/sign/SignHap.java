@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,8 +41,8 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 
-
 /**
+ *
  * Hap Signature Scheme signer
  *
  * @since 2021/12/21
@@ -73,9 +73,10 @@ public abstract class SignHap {
      * @param timestamp ZIP file timestamps
      * @param defaultAlignment default value of alignment.
      * @throws IOException io error.
+     * @throws HapFormatException hap format error.
      */
     public static void copyFiles(JarFile in,
-        JarOutputStream out, long timestamp, int defaultAlignment) throws IOException, HapFormatException {
+                                 JarOutputStream out, long timestamp, int defaultAlignment) throws IOException, HapFormatException {
         // split compressed and uncompressed
         List<JarEntry> entryListStored = in.stream()
                 .filter(jarFile -> jarFile.getMethod() == JarEntry.STORED).collect(Collectors.toList());
@@ -101,7 +102,7 @@ public abstract class SignHap {
             JarEntry outEntry = getJarEntry(timestamp, inEntry);
             offset += outEntry.getName().length();
 
-            int alignment = getStoredEntryDataAlignment(inEntry.getName(), defaultAlignment,lastAlignmentEntryName);
+            int alignment = getStoredEntryDataAlignment(inEntry.getName(), defaultAlignment, lastAlignmentEntryName);
             if (alignment > 0 && (offset % alignment != 0)) {
                 int needed = alignment - (int) (offset % alignment);
                 outEntry.setExtra(new byte[needed]);
@@ -210,22 +211,22 @@ public abstract class SignHap {
     }
 
     private static void copyFilesExceptStoredFile(List<JarEntry> entryListNotStored, JarFile in,
-        JarOutputStream out, long timestamp, boolean isAlignmentFlag) throws IOException {
+                                                  JarOutputStream out, long timestamp, boolean isAlignmentFlag) throws IOException {
         byte[] buffer = new byte[BUFFER_LENGTH];
-        int index=0;
-        if (isAlignmentFlag){
-            index=1;
+        int index = 0;
+        if (isAlignmentFlag) {
+            index = 1;
         }
-        for (;index<entryListNotStored.size();index++) {
+        for (; index < entryListNotStored.size(); index++) {
             JarEntry inEntry = entryListNotStored.get(index);
-            if (inEntry==null||inEntry.getMethod() == JarEntry.STORED) {
+            if (inEntry == null || inEntry.getMethod() == JarEntry.STORED) {
                 continue;
             }
 
             JarEntry outEntry = new JarEntry(inEntry.getName());
             outEntry.setTime(timestamp);
             out.putNextEntry(outEntry);
-            writeOutputStream(in,out,inEntry,buffer);
+            writeOutputStream(in, out, inEntry, buffer);
         }
     }
 
@@ -234,6 +235,7 @@ public abstract class SignHap {
      *
      * @param entryName name of entry
      * @param defaultAlignment default value of alignment.
+     * @param lastAlignmentEntryName lastAlignmentEntryName
      * @return value of alignment.
      */
     private static int getStoredEntryDataAlignment(String entryName, int defaultAlignment,
@@ -255,7 +257,7 @@ public abstract class SignHap {
             List<SigningBlock> optionalBlocks,
             SignerConfig signerConfig,
             ZipDataInput[] hapData)
-        throws SignatureException {
+            throws SignatureException {
         /**
          * Compute digests of Hap contents
          * Sign the digests and wrap the signature and signer info into the Hap Signing Block
@@ -263,7 +265,7 @@ public abstract class SignHap {
         byte[] hapSignatureBytes = null;
         try {
             Map<ContentDigestAlgorithm, byte[]> contentDigests =
-                HapUtils.computeDigests(contentDigestAlgorithms, hapData, optionalBlocks);
+                    HapUtils.computeDigests(contentDigestAlgorithms, hapData, optionalBlocks);
             hapSignatureBytes = generateHapSigningBlock(signerConfig, contentDigests, optionalBlocks);
         } catch (DigestException | IOException e) {
             throw new SignatureException("Failed to compute digests of HAP", e);
@@ -281,35 +283,29 @@ public abstract class SignHap {
     }
 
     private static byte[] generateHapSigningBlock(byte[] hapSignatureSchemeBlock,
-        List<SigningBlock> optionalBlocks, int compatibleVersion) {
+                                                  List<SigningBlock> optionalBlocks, int compatibleVersion) {
         // FORMAT:
         // Proof-of-Rotation pairs(optional):
         // uint32:type
         // uint32:length
         // uint32:offset
-
         // Property pairs(optional):
         // uint32:type
         // uint32:length
         // uint32:offset
-
         // Profile capability pairs(optional):
         // uint32:type
         // uint32:length
         // uint32:offset
-
         // length bytes : app signing pairs
         // uint32:type
         // uint32:length
         // uint32:offset
-
         // repeated ID-value pairs(reserved extensions):
         // length bytes : Proof-of-Rotation values
         // length bytes : property values
         // length bytes : profile capability values
         // length bytes : signature schema values
-
-        // uint32: block count
         // uint64: size
         // uint128: magic
         // uint32: version
@@ -317,7 +313,6 @@ public abstract class SignHap {
         for (SigningBlock optionalBlock : optionalBlocks) {
             optionalBlockSize += optionalBlock.getLength();
         }
-
         long resultSize =
                 ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1))
                         + optionalBlockSize // optional pair
@@ -333,8 +328,8 @@ public abstract class SignHap {
         result.order(ByteOrder.LITTLE_ENDIAN);
 
         Map<Integer, Integer> typeAndOffsetMap = new HashMap<Integer, Integer>();
-        int currentOffset = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE +
-                OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1));
+        int currentOffset = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE
+                + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1));
         int currentOffsetInBlockValue = 0;
         int blockValueSizes = (int) (optionalBlockSize + hapSignatureSchemeBlock.length);
         byte[] blockValues = new byte[blockValueSizes];
@@ -351,25 +346,28 @@ public abstract class SignHap {
                 hapSignatureSchemeBlock, 0, blockValues, currentOffsetInBlockValue, hapSignatureSchemeBlock.length);
         typeAndOffsetMap.put(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID, currentOffset);
 
-        int offset = 0;
+        extractedResult(optionalBlocks, result, typeAndOffsetMap);
+        result.putInt(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID); // type
+        result.putInt(hapSignatureSchemeBlock.length); // length
+        int offset = typeAndOffsetMap.get(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID);
+        result.putInt(offset); // offset
+        result.put(blockValues);
+        result.putInt(optionalBlocks.size() + 1); // Signing block count
+        result.putLong(resultSize); // length of hap signing block
+        result.put(HapUtils.getHapSigningBlockMagic(compatibleVersion)); // magic
+        result.putInt(HapUtils.getHapSigningBlockVersion(compatibleVersion)); // version
+        return result.array();
+    }
+
+    private static void extractedResult(List<SigningBlock> optionalBlocks, ByteBuffer result,
+                                        Map<Integer, Integer> typeAndOffsetMap) {
+        int offset;
         for (SigningBlock optionalBlock : optionalBlocks) {
             result.putInt(optionalBlock.getType()); // type
             result.putInt(optionalBlock.getLength()); // length
             offset = typeAndOffsetMap.get(optionalBlock.getType());
             result.putInt(offset); // offset
         }
-        result.putInt(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID); // type
-        result.putInt(hapSignatureSchemeBlock.length); // length
-        offset = typeAndOffsetMap.get(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID);
-        result.putInt(offset); // offset
-
-        result.put(blockValues);
-
-        result.putInt(optionalBlocks.size() + 1); // Signing block count
-        result.putLong(resultSize); // length of hap signing block
-        result.put(HapUtils.getHapSigningBlockMagic(compatibleVersion)); // magic
-        result.putInt(HapUtils.getHapSigningBlockVersion(compatibleVersion)); // version
-        return result.array();
     }
 
     private static byte[] generateHapSignatureSchemeBlock(
@@ -387,7 +385,7 @@ public abstract class SignHap {
             SignerConfig signerConfig, Map<ContentDigestAlgorithm, byte[]> contentDigests) throws SignatureException {
         String mode = signerConfig.getOptions().getString(Options.MODE);
         if (!("remoteSign".equalsIgnoreCase(mode)) && signerConfig.getCertificates().isEmpty()) {
-                throw new SignatureException("No certificates configured for signer");
+            throw new SignatureException("No certificates configured for signer");
         }
 
         List<Pair<Integer, byte[]>> digests =
@@ -419,7 +417,7 @@ public abstract class SignHap {
      * @throws SignatureException if an error occurs when sign hap file.
      */
     public static byte[] sign(ZipDataInput[] contents, SignerConfig signerConfig, List<SigningBlock> optionalBlocks)
-        throws SignatureException {
+            throws SignatureException {
         Set<ContentDigestAlgorithm> contentDigestAlgorithms = new HashSet<ContentDigestAlgorithm>();
         for (SignatureAlgorithm signatureAlgorithm : signerConfig.getSignatureAlgorithms()) {
             contentDigestAlgorithms.add(signatureAlgorithm.getContentDigestAlgorithm());
