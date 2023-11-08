@@ -289,6 +289,11 @@ public abstract class SignProvider {
             return false;
         }
 
+        if (ParamConstants.ProfileSignFlag.UNSIGNED_PROFILE.getSignFlag().equals(
+                signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED))) {
+            LOGGER.error("hap-sign-tool: error: Sign elf can not use unsigned profile.");
+        }
+
         /* 6. make signed file into output file. */
         if (!SignElf.sign(signerConfig, signParams)) {
             LOGGER.error("hap-sign-tool: error: Sign elf internal failed.");
