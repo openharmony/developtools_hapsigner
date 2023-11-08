@@ -76,11 +76,11 @@ public class HwBlockHead {
      * @param offset Byte offset of the data block relative to the start position of the signature block
      * @return Byte array after serialization of HwBlockHead
      */
-    public static byte[] getBlockHeadLittleEndian(char type, char tag, short length, int offset) {
+    public static byte[] getBlockHeadLittleEndian(char type, char tag, int length, int offset) {
         ByteBuffer bf = ByteBuffer.allocate(HwBlockHead.ELF_BLOCK_LEN).order(ByteOrder.LITTLE_ENDIAN);
         bf.putChar(type);
         bf.putChar(tag);
-        bf.putShort(length);
+        bf.putInt(length);
         bf.putInt(offset);
         return bf.array();
     }

@@ -174,7 +174,7 @@ public class SignElf {
             SignBlockData signBlockData = signDataList.get(i);
 
             signBlockData.setBlockHead(HwBlockHead.getBlockHeadLittleEndian(signBlockData.getType(), SignatureBlockTags.DEFAULT,
-                    (short) signBlockData.getLen(), (int) offset));
+                    (int) signBlockData.getLen(), (int) offset));
             offset += signBlockData.getLen();
             if (isLongOverflowInteger(offset)) {
                 LOGGER.error("The sign block " + i + "offset is overflow integer, offset: " + offset);
