@@ -274,7 +274,7 @@ public abstract class SignProvider {
      */
     public boolean signElf(Options options) {
         List<X509Certificate> publicCert = null;
-        SignerConfig signerConfig;
+        SignerConfig signerConfig = null;
         try {
             publicCert = getX509Certificates(options);
 
@@ -441,7 +441,7 @@ public abstract class SignProvider {
     }
 
     private void outputSignedFile(RandomAccessFile outputHap, long centralDirectoryOffset,
-                                  byte[] signingBlock, ZipDataInput centralDirectory, ByteBuffer eocdBuffer) throws IOException {
+        byte[] signingBlock, ZipDataInput centralDirectory, ByteBuffer eocdBuffer) throws IOException {
         ZipDataOutput outputHapOut = new RandomAccessFileZipDataOutput(outputHap, centralDirectoryOffset);
         outputHapOut.write(signingBlock, 0, signingBlock.length);
         centralDirectory.copyTo(0, centralDirectory.size(), outputHapOut);
