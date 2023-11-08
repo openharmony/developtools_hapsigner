@@ -269,6 +269,9 @@ public class ParamConstants {
         }
     }
 
+    /**
+     * Enumerated value of whether a code sign is signed.
+     */
     public enum CodeSignFlag {
         CODE_UNSIGNED("0"),
         CODE_SIGNED("1");
