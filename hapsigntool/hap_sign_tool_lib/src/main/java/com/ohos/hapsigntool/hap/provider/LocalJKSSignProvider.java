@@ -21,6 +21,7 @@ import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,9 +88,9 @@ public class LocalJKSSignProvider extends SignProvider {
     public void checkParams(Options options) throws InvalidParamsException, MissingParamsException {
         super.checkParams(options);
         String[] paramFileds = {
-            ParamConstants.PARAM_LOCAL_JKS_KEYSTORE,
-            ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE,
-            ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE,
+                ParamConstants.PARAM_LOCAL_JKS_KEYSTORE,
+                ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE,
+                ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE
         };
 
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
