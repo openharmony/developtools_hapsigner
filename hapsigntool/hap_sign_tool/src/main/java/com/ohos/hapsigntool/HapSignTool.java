@@ -76,8 +76,8 @@ public final class HapSignTool {
      */
     public static void main(String[] args) {
         try {
-            boolean isFinish = processCmd(args);
-            if (!isFinish) {
+            boolean isSuccess = processCmd(args);
+            if (!isSuccess) {
                 System.exit(1);
             }
         } catch (CustomException exception) {
@@ -118,53 +118,53 @@ public final class HapSignTool {
     }
 
     private static boolean callGenerators(Params params, ServiceApi api) {
-        boolean isFinish = false;
+        boolean isSuccess = false;
         switch (params.getMethod()) {
             case Method.GENERATE_APP_CERT:
-                isFinish = runAppCert(params.getOptions(), api);
+                isSuccess = runAppCert(params.getOptions(), api);
                 break;
             case Method.GENERATE_CA:
-                isFinish = runCa(params.getOptions(), api);
+                isSuccess = runCa(params.getOptions(), api);
                 break;
             case Method.GENERATE_CERT:
-                isFinish = runCert(params.getOptions(), api);
+                isSuccess = runCert(params.getOptions(), api);
                 break;
             case Method.GENERATE_CSR:
-                isFinish = runCsr(params.getOptions(), api);
+                isSuccess = runCsr(params.getOptions(), api);
                 break;
             case Method.GENERATE_KEYPAIR:
-                isFinish = runKeypair(params.getOptions(), api);
+                isSuccess = runKeypair(params.getOptions(), api);
                 break;
             case Method.GENERATE_PROFILE_CERT:
-                isFinish = runProfileCert(params.getOptions(), api);
+                isSuccess = runProfileCert(params.getOptions(), api);
                 break;
             default:
                 CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
                 break;
         }
-        return isFinish;
+        return isSuccess;
     }
 
     private static boolean dispatchParams(Params params, ServiceApi api) {
-        boolean isFinish;
+        boolean isSuccess;
         switch (params.getMethod()) {
             case Method.SIGN_APP:
-                isFinish = runSignApp(params.getOptions(), api);
+                isSuccess = runSignApp(params.getOptions(), api);
                 break;
             case Method.SIGN_PROFILE:
-                isFinish = runSignProfile(params.getOptions(), api);
+                isSuccess = runSignProfile(params.getOptions(), api);
                 break;
             case Method.VERIFY_APP:
-                isFinish = runVerifyApp(params.getOptions(), api);
+                isSuccess = runVerifyApp(params.getOptions(), api);
                 break;
             case Method.VERIFY_PROFILE:
-                isFinish = runVerifyProfile(params.getOptions(), api);
+                isSuccess = runVerifyProfile(params.getOptions(), api);
                 break;
             default:
-                isFinish = callGenerators(params, api);
+                isSuccess = callGenerators(params, api);
                 break;
         }
-        return isFinish;
+        return isSuccess;
     }
 
     private static void checkEndCertArguments(Options params) {
