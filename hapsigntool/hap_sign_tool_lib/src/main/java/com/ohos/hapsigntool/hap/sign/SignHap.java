@@ -76,7 +76,7 @@ public abstract class SignHap {
      * @throws HapFormatException hap format error.
      */
     public static void copyFiles(JarFile in,
-                                 JarOutputStream out, long timestamp, int defaultAlignment) throws IOException, HapFormatException {
+        JarOutputStream out, long timestamp, int defaultAlignment) throws IOException, HapFormatException {
         // split compressed and uncompressed
         List<JarEntry> entryListStored = in.stream()
                 .filter(jarFile -> jarFile.getMethod() == JarEntry.STORED).collect(Collectors.toList());
@@ -211,7 +211,7 @@ public abstract class SignHap {
     }
 
     private static void copyFilesExceptStoredFile(List<JarEntry> entryListNotStored, JarFile in,
-                                                  JarOutputStream out, long timestamp, boolean isAlignmentFlag) throws IOException {
+        JarOutputStream out, long timestamp, boolean isAlignmentFlag) throws IOException {
         byte[] buffer = new byte[BUFFER_LENGTH];
         int index = 0;
         if (isAlignmentFlag) {
