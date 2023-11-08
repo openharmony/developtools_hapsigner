@@ -33,6 +33,9 @@ public class HwSignHead {
     public static final int SIGN_HEAD_LEN = 32;
 
     private static final char[] MAGIC = "hw signed app   ".toCharArray(); // 16Bytes-Magic
+
+    private static final char[] ELF_MAGIC = "elf sign block  ".toCharArray(); // 16Bytes-Magic
+
     private static final char[] VERSION = "1000".toCharArray(); // 4-Bytes, version is 1.0.0.0
     public static final int NUM_OF_BLOCK = 2; // number of sub-block
     private static final int RESERVE_LENGTH = 4;
@@ -83,7 +86,7 @@ public class HwSignHead {
      */
     public byte[] getSignHeadLittleEndian(int subBlockSize, int subBlockNum) {
         ByteBuffer bf = ByteBuffer.allocate(SIGN_HEAD_LEN).order(ByteOrder.LITTLE_ENDIAN);
-        for (char c : MAGIC) {
+        for (char c : ELF_MAGIC) {
             bf.put((byte) c);
         }
         for (char c : VERSION) {
