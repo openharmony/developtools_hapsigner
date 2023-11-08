@@ -16,6 +16,7 @@
 package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
+
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
@@ -100,7 +101,7 @@ public class VerifyResult {
      */
     public static final int RET_CODE_SIGN_BLOCK_ERROR = 10013;
 
-    private boolean result;
+    private boolean isResult;
     private int code;
     private String message;
 
@@ -125,22 +126,22 @@ public class VerifyResult {
     /**
      * Verify result constructor
      *
-     * @param result verify result
+     * @param isResult verify result
      * @param code error code
      * @param message error message
      */
-    public VerifyResult(boolean result, int code, String message) {
-        this.result = result;
+    public VerifyResult(boolean isResult, int code, String message) {
+        this.isResult = isResult;
         this.code = code;
         this.message = message;
     }
 
     public boolean isVerified() {
-        return result;
+        return isResult;
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
+    public void setIsResult(boolean isResult) {
+        this.isResult = isResult;
     }
 
     public int getCode() {
