@@ -261,7 +261,7 @@ public final class HapSignTool {
     }
 
     private static boolean runSignApp(Options params, ServiceApi api) {
-        params.required(Options.MODE, Options.IN_FILE, Options.OUT_FILE, Options.PROFILE_FILE, Options.SIGN_ALG);
+        params.required(Options.MODE, Options.IN_FILE, Options.OUT_FILE, Options.SIGN_ALG);
         String mode = params.getString(Options.MODE);
         if (!LOCAL_SIGN.equalsIgnoreCase(mode)
                 && !REMOTE_SIGN.equalsIgnoreCase(mode)
@@ -286,8 +286,13 @@ public final class HapSignTool {
     }
 
     private static void checkProfile(Options params) {
+        String inForm = params.getString(Options.IN_FORM);
         String profileFile = params.getString(Options.PROFILE_FILE);
         String profileSigned = params.getString(Options.PROFILE_SIGNED, SIGNED);
+
+        if ("elf".equalsIgnoreCase(inForm) && StringUtils.isEmpty(profileFile)) {
+            return;
+        }
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
         }
