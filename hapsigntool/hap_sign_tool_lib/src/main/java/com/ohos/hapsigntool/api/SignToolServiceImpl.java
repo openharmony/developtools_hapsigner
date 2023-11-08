@@ -31,6 +31,7 @@ import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ProfileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -52,7 +53,6 @@ import java.util.List;
  * @since 2021/12/28
  */
 public class SignToolServiceImpl implements ServiceApi {
-
     /**
      * App signing Capabilty Bytes.
      */

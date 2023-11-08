@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,16 +22,14 @@ import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.HwBlockHead;
 import com.ohos.hapsigntool.hap.entity.HwSignHead;
 import com.ohos.hapsigntool.hap.entity.SignBlockData;
-import com.ohos.hapsigntool.hap.entity.SignContentInfo;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTags;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
-import com.ohos.hapsigntool.hap.exception.SignatureException;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.HashUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,12 +47,6 @@ import java.util.Map;
  * @since 2021/12/21
  */
 public class SignElf {
-    /**
-     * Constructor of Method
-     */
-    private SignElf() {
-    }
-
     private static final Logger LOGGER = LogManager.getLogger(SignElf.class);
 
     private static final String CODESIGN_OFF = "0";
@@ -64,6 +56,12 @@ public class SignElf {
     private static int blockNum = 0;
 
     /**
+     * Constructor of Method
+     */
+    private SignElf() {
+    }
+
+    /**
      * Sign the bin file.
      *
      * @param signerConfig Config of the bin file to be signed.
@@ -71,13 +69,12 @@ public class SignElf {
      * @return true if sign successfully; false otherwise.
      */
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
-        boolean result = false;
+        boolean isSuccess = false;
         /* 1. Make block head, write to output file. */
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
-        String profileFile = signParams.get(ParamConstants.PARAM_BASIC_PROFILE);
         String profileSigned = signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED);
-        if (!writeBlockDataToFile(signerConfig, inputFile, outputFile, profileFile, profileSigned, signParams)) {
+        if (!writeBlockDataToFile(signerConfig, inputFile, outputFile, profileSigned, signParams)) {
             LOGGER.error("The block head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
             return false;
@@ -89,14 +86,16 @@ public class SignElf {
             LOGGER.error("The sign head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
         } else {
-            result = true;
+            isSuccess = true;
         }
-        return result;
+        return isSuccess;
     }
 
     private static boolean writeBlockDataToFile(SignerConfig signerConfig,
-        String inputFile, String outputFile, String profileFile, String profileSigned, Map<String, String> signParams) {
+        String inputFile, String outputFile, String profileSigned, Map<String, String> signParams) {
         try {
+            String profileFile = signParams.get(ParamConstants.PARAM_BASIC_PROFILE);
+
             List<SignBlockData> signDataList = new ArrayList<>();
 
             long binFileLen = FileUtils.getFileLen(inputFile);
@@ -132,8 +131,8 @@ public class SignElf {
              DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream)) {
             // 1. write the input file to the output file.
             if (!FileUtils.writeFileToDos(inputFile, dataOutputStream)) {
-                LOGGER.error("Failed to write information of input file: " + inputFile +
-                        " to outputFile: " + outputFile);
+                LOGGER.error("Failed to write information of input file: " + inputFile
+                        + " to outputFile: " + outputFile);
                 throw new IOException();
             }
 
@@ -147,14 +146,14 @@ public class SignElf {
 
             // 3. write block data to the output file.
             for (SignBlockData signBlockData : signBlockList) {
-                boolean writeFlag;
+                boolean isSuccess;
                 if (signBlockData.isByte()) {
-                    writeFlag = FileUtils.writeByteToDos(signBlockData.getSignData(), dataOutputStream);
+                    isSuccess = FileUtils.writeByteToDos(signBlockData.getSignData(), dataOutputStream);
                 } else {
-                    writeFlag = FileUtils.writeFileToDos(signBlockData.getSignFile(), dataOutputStream);
+                    isSuccess = FileUtils.writeFileToDos(signBlockData.getSignFile(), dataOutputStream);
                 }
 
-                if (!writeFlag) {
+                if (!isSuccess) {
                     LOGGER.error("Failed to write Block Data to output file: " + outputFile);
                     throw new IOException();
                 }
@@ -173,8 +172,8 @@ public class SignElf {
         for (int i = 0; i < signDataList.size(); i++) {
             SignBlockData signBlockData = signDataList.get(i);
 
-            signBlockData.setBlockHead(HwBlockHead.getBlockHeadLittleEndian(signBlockData.getType(), SignatureBlockTags.DEFAULT,
-                    (int) signBlockData.getLen(), (int) offset));
+            signBlockData.setBlockHead(HwBlockHead.getBlockHeadLittleEndian(signBlockData.getType(),
+                    SignatureBlockTags.DEFAULT, (int) signBlockData.getLen(), (int) offset));
             offset += signBlockData.getLen();
             if (isLongOverflowInteger(offset)) {
                 LOGGER.error("The sign block " + i + "offset is overflow integer, offset: " + offset);
@@ -195,14 +194,16 @@ public class SignElf {
         return new SignBlockData(profileFile, isSigned);
     }
 
-    private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams, String inputFile,
-        int blockNum, long binFileLen) throws IOException, FsVerityDigestException, CodeSignException, HapFormatException {
+    private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams,
+        String inputFile, int blockNum, long binFileLen) throws IOException,
+            FsVerityDigestException, CodeSignException, HapFormatException {
         if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_CODE_SIGN))) {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
         long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
-        byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset, signParams.get(ParamConstants.PARAM_IN_FORM));
+        byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset,
+                signParams.get(ParamConstants.PARAM_IN_FORM));
         return new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
     }
 

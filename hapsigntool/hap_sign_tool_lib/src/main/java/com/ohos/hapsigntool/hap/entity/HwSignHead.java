@@ -37,8 +37,11 @@ public class HwSignHead {
     private static final char[] ELF_MAGIC = "elf sign block  ".toCharArray(); // 16Bytes-Magic
 
     private static final char[] VERSION = "1000".toCharArray(); // 4-Bytes, version is 1.0.0.0
-    public static final int NUM_OF_BLOCK = 2; // number of sub-block
+
+    private static final int NUM_OF_BLOCK = 2; // number of sub-block
+
     private static final int RESERVE_LENGTH = 4;
+
     private char[] reserve = new char[RESERVE_LENGTH];
 
     /**
@@ -82,6 +85,7 @@ public class HwSignHead {
      * get serialization of HwSignHead
      *
      * @param subBlockSize the total size of all sub-blocks
+     * @param subBlockNum the sign block num
      * @return Byte array after serialization of HwSignHead
      */
     public byte[] getSignHeadLittleEndian(int subBlockSize, int subBlockNum) {
