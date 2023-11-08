@@ -432,7 +432,8 @@ public abstract class SignProvider {
         publicCerts = getPublicCerts();
         // 3. load optionalBlocks
         loadOptionalBlocks();
-        if ("elf".equals(options.getString(ParamConstants.PARAM_IN_FORM))) {
+        if ("elf".equals(options.getString(ParamConstants.PARAM_IN_FORM))
+                && StringUtils.isEmpty(options.getString(ParamConstants.PARAM_BASIC_PROFILE))) {
             return publicCerts;
         }
         checkProfileValid(publicCerts);
