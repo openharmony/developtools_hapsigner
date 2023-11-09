@@ -30,6 +30,9 @@ import com.ohos.hapsigntoolcmd.Params;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * HapSignTool.
  *
@@ -65,6 +68,12 @@ public final class HapSignTool {
      * No signed.
      */
     private static final String NOT_SIGNED = "0";
+
+    private static List<String> INFORM_LIST = new ArrayList<String>(){{
+        add("bin");
+        add("elf");
+        add("zip");
+    }};
 
     private HapSignTool() {
     }
@@ -106,13 +115,13 @@ public final class HapSignTool {
             Params params = CmdUtil.convert2Params(args);
             LOGGER.debug(params.toString());
             LOGGER.info("Start {}", params.getMethod());
-            boolean dispatchParams = dispatchParams(params, api);
-            if (dispatchParams) {
+            boolean isSuccess = dispatchParams(params, api);
+            if (isSuccess) {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "success"));
             } else {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "failed"));
             }
-            return dispatchParams;
+            return isSuccess;
         }
         return true;
     }
@@ -275,8 +284,7 @@ public final class HapSignTool {
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)
-                && !"elf".equalsIgnoreCase(inForm)) {
+        if (!StringUtils.isEmpty(inForm) && !INFORM_LIST.contains(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
