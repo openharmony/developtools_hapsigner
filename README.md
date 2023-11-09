@@ -86,7 +86,7 @@ The parameters in the command are described as follows:
 
 
 ```shell
-java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -codesign "1"
+java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -signcode "1"
 ```
 The parameters in the command are described as follows:
 
@@ -103,7 +103,7 @@ The parameters in the command are described as follows:
          ├── -keystoreFile      # KeyStore (KS) file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
          ├── -keystorePwd       # KS password. It is optional.
          ├── -outFile           # Signed HAP file to generate. It is mandatory.
-         ├── -codesign          # Signed HAP file to code sign, The value 1 means code signed, and value 0 means code unsigned. The default value is 1. It is optional.   
+         ├── -signcode          # Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.   
          
 
 2. One-click signature
@@ -277,7 +277,7 @@ Procedure:
           ├── -keystoreFile  # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
           ├── -keystorePwd   # KS password. It is optional.
           ├── -outFile       # Signed HAP file to generate. It is mandatory.
-          ├── -codesign      # Signed HAP file to code sign, The value 1 means code signed, and value 0 means code unsigned. The default value is 1. It is optional.
+          ├── -signcode      # Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.
 
 10.Verify the HAP Signature.
 

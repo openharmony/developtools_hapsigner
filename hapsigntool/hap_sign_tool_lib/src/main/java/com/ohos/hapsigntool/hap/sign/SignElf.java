@@ -197,7 +197,7 @@ public class SignElf {
     private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams,
         String inputFile, int blockNum, long binFileLen) throws IOException,
             FsVerityDigestException, CodeSignException, HapFormatException {
-        if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_CODE_SIGN))) {
+        if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_SIGN_CODE))) {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
