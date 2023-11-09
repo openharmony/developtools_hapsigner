@@ -289,7 +289,7 @@ public abstract class SignProvider {
             return false;
         }
 
-        if (ParamConstants.ProfileSignFlag.UNSIGNED_PROFILE.getSignFlag().equals(
+        if (ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(
                 signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED))) {
             LOGGER.error("hap-sign-tool: error: Sign elf can not use unsigned profile.");
             return false;
@@ -589,7 +589,7 @@ public abstract class SignProvider {
     private void checkProfileValid(List<X509Certificate> inputCerts) throws ProfileException {
         try {
             byte[] profile = findProfileFromOptionalBlocks();
-            boolean isProfileWithoutSign = ParamConstants.ProfileSignFlag.UNSIGNED_PROFILE.getSignFlag().equals(
+            boolean isProfileWithoutSign = ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(
                     signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED));
             String content;
             if (!isProfileWithoutSign) {

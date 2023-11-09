@@ -246,19 +246,19 @@ public class SignToolServiceImpl implements ServiceApi {
      */
     @Override
     public boolean signProfile(Options options) {
-        boolean isSign;
+        boolean isSuccess;
         try {
             LocalizationAdapter adapter = new LocalizationAdapter(options);
             byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
-            isSign = true;
+            isSuccess = true;
         } catch (IOException exception) {
             logger.debug(exception.getMessage(), exception);
             logger.error(exception.getMessage());
-            isSign = false;
+            isSuccess = false;
         }
-        return isSign;
+        return isSuccess;
     }
 
     /**

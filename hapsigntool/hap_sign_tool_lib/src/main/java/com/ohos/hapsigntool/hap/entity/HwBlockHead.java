@@ -24,9 +24,9 @@ import java.nio.ByteOrder;
  * @since 2023/11/07
  */
 public class HwBlockHead {
-    private static final int BLOCK_LEN = 8; // current block length
+    private static final int BLOCK_LEN = 8; // bin block length is 8 byte
 
-    private static final int ELF_BLOCK_LEN = 12; // current block length
+    private static final int ELF_BLOCK_LEN = 12; // elf block length is 12 byte
 
     private static final int BIT_SIZE = 8;
 
@@ -34,19 +34,24 @@ public class HwBlockHead {
 
     private static final int TRIPLE_BIT_SIZE = 24;
 
-    private HwBlockHead() {
-    }
-
+    /**
+     * get bin block length
+     * @return return bin block length
+     */
     public static int getBlockLen() {
         return BLOCK_LEN;
     }
 
+    /**
+     * get elf block length
+     * @return return elf block length
+     */
     public static int getElfBlockLen() {
         return ELF_BLOCK_LEN;
     }
 
     /**
-     * get serialization of HwBlockHead
+     * get serialization of file type bin BlockHead
      *
      * @param type type of signature block
      * @param tag tags of signature block
@@ -68,7 +73,7 @@ public class HwBlockHead {
     }
 
     /**
-     * get serialization of HwBlockHead
+     * get serialization of file type elf BlockHead
      *
      * @param type type of signature block
      * @param tag tags of signature block

@@ -255,8 +255,8 @@ public class ParamConstants {
      * Enumerated value of whether a profile is signed
      */
     public enum ProfileSignFlag {
-        UNSIGNED_PROFILE("0"),
-        SIGNED_PROFILE("1");
+        DISABLE_SIGN_CODE("0"),
+        ENABLE_SIGN_CODE("1");
 
         private String signFlag;
 

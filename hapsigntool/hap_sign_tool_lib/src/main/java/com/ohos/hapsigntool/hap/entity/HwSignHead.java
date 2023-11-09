@@ -45,7 +45,7 @@ public class HwSignHead {
     private char[] reserve = new char[RESERVE_LENGTH];
 
     /**
-     * get serialization of HwSignHead
+     * get serialization of HwSignHead file type of bin
      *
      * @param subBlockSize the total size of all sub-blocks
      * @return Byte array after serialization of HwSignHead
@@ -82,7 +82,7 @@ public class HwSignHead {
     }
 
     /**
-     * get serialization of HwSignHead
+     * get serialization of HwSignHead file type of elf
      *
      * @param subBlockSize the total size of all sub-blocks
      * @param subBlockNum the sign block num

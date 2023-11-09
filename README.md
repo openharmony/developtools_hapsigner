@@ -97,7 +97,7 @@ The parameters in the command are described as follows:
          ├── -appCertFile       # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
          ├── -profileFile       # Singed provisioning profile, in p7b format. It is mandatory.
          ├── -profileSigned     # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
-         ├── -inForm            # Raw file, in .zip (default) or .bin format. It is optional.
+         ├── -inForm            # Raw file, in .zip (default) or .bin or .elf format. It is optional.
          ├── -inFile            # Raw application package, in .zip or .bin format. It is mandatory.
          ├── -signAlg           # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
          ├── -keystoreFile      # KeyStore (KS) file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
