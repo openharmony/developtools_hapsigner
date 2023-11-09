@@ -104,7 +104,7 @@ public class LocalJKSSignProvider extends SignProvider {
                 }
             }
         }
-        checkCodeSign();
+        checkSignCode();
         checkPublicKeyPath();
     }
 }

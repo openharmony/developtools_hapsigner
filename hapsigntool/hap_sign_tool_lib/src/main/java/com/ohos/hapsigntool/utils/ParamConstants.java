@@ -244,7 +244,7 @@ public class ParamConstants {
     /**
      * The code sign params of resign hap
      */
-    public static final String PARAM_CODE_SIGN = "codesign";
+    public static final String PARAM_SIGN_CODE = "signcode";
 
     /**
      * file name split . of min length
@@ -272,18 +272,18 @@ public class ParamConstants {
     /**
      * Enumerated value of whether a code sign is signed.
      */
-    public enum CodeSignFlag {
-        CODE_UNSIGNED("0"),
-        CODE_SIGNED("1");
+    public enum SignCodeFlag {
+        DISABLE_SIGN_CODE("0"),
+        ENABLE_SIGN_CODE("1");
 
-        private String codeSignFlag;
+        private String signCodeFlag;
 
-        CodeSignFlag(String codeSignFlag) {
-            this.codeSignFlag = codeSignFlag;
+        SignCodeFlag(String signCodeFlag) {
+            this.signCodeFlag = signCodeFlag;
         }
 
-        public String getCodeSignFlag() {
-            return codeSignFlag;
+        public String getSignCodeFlag() {
+            return signCodeFlag;
         }
     }
 }

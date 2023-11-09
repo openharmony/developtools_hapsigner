@@ -379,10 +379,11 @@ public abstract class SignProvider {
      * @throws HapFormatException hap format on error
      */
     private void appendCodeSignBlock(SignerConfig signerConfig, File tmpOutput, String suffix,
-                                     long centralDirectoryOffset)
-            throws FsVerityDigestException, CodeSignException, IOException, HapFormatException {
-        if (signParams.get(ParamConstants.PARAM_CODE_SIGN)
-                .equals(ParamConstants.CodeSignFlag.CODE_SIGNED.getCodeSignFlag())) {
+        long centralDirectoryOffset)
+        throws FsVerityDigestException, CodeSignException, IOException, HapFormatException {
+        if (signParams.get(ParamConstants.PARAM_SIGN_CODE)
+                .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
+            // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
             int codeSignOffset = (int)
                     (centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4)));
             // create CodeSigning Object
@@ -673,7 +674,7 @@ public abstract class SignProvider {
                 ParamConstants.PARAM_BASIC_PROFILE_SIGNED,
                 ParamConstants.PARAM_LOCAL_PUBLIC_CERT,
                 ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION,
-                ParamConstants.PARAM_CODE_SIGN,
+                ParamConstants.PARAM_SIGN_CODE,
                 ParamConstants.PARAM_IN_FORM
         };
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
@@ -686,7 +687,7 @@ public abstract class SignProvider {
         if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
             signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
         }
-        checkCodeSign();
+        checkSignCode();
         checkSignatureAlg();
         checkSignAlignment();
     }
@@ -696,15 +697,16 @@ public abstract class SignProvider {
      *
      * @throws InvalidParamsException invalid param
      */
-    protected void checkCodeSign() throws InvalidParamsException {
-        if (!signParams.containsKey(ParamConstants.PARAM_CODE_SIGN)) {
-            signParams.put(ParamConstants.PARAM_CODE_SIGN, ParamConstants.CodeSignFlag.CODE_SIGNED.getCodeSignFlag());
+    protected void checkSignCode() throws InvalidParamsException {
+        if (!signParams.containsKey(ParamConstants.PARAM_SIGN_CODE)) {
+            signParams.put(ParamConstants.PARAM_SIGN_CODE,
+                    ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag());
             return;
         }
-        String codeSign = signParams.get(ParamConstants.PARAM_CODE_SIGN);
-        if (!codeSign.equals(ParamConstants.CodeSignFlag.CODE_SIGNED.getCodeSignFlag())
-                && !codeSign.equals(ParamConstants.CodeSignFlag.CODE_UNSIGNED.getCodeSignFlag())) {
-            throw new InvalidParamsException("Invalid parameter: " + ParamConstants.PARAM_CODE_SIGN);
+        String codeSign = signParams.get(ParamConstants.PARAM_SIGN_CODE);
+        if (!codeSign.equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())
+                && !codeSign.equals(ParamConstants.SignCodeFlag.DISABLE_SIGN_CODE.getSignCodeFlag())) {
+            throw new InvalidParamsException("Invalid parameter: " + ParamConstants.PARAM_SIGN_CODE);
         }
     }
 

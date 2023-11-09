@@ -96,7 +96,7 @@ java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAl
 
 
 ```shell
-java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -codesign "1"
+java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -signcode "1"
 ```
 该命令的参数说明如下:
 
@@ -113,7 +113,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的包文件，必填项
-         ├── -codesign          #指示包文件是否带有代码签名，1表示有代码签名，0表示没有代码签名，默认1。可选项
+         ├── -signcode          #指示包文件是否带有代码签名，1表示有代码签名，0表示没有代码签名，默认1。可选项
 
 
 2.一键签名
@@ -287,7 +287,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
           ├── -keystorePwd   # 密钥库口令，可选项
           ├── -outFile       # 输出签名后的包文件，必填项
-          ├── -codesign      # 指示包文件是否带有代码签名，1表示有代码签名，0表示没有代码签名，默认1。可选项    
+          ├── -signcode      # 指示包文件是否带有代码签名，1表示有代码签名，0表示没有代码签名，默认1。可选项    
 
 10.hap应用包文件验签
 
