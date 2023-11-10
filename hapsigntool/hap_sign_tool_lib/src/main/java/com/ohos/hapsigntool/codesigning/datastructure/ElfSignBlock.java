@@ -41,7 +41,7 @@ import java.nio.ByteOrder;
  * 14) u32 flags
  * 15) u32 reserved
  * 16) u64 treeOffset: merkle tree offset
- * 17) u8[128] reserved
+ * 17) u8[127] reserved
  * 18) u8 csVersion: code sign version
  * 19) u8[] signature: signature after signing the data in byte array representation
  *
