@@ -143,10 +143,10 @@ public class HapVerify {
             crl.verify(cert.getPublicKey());
             return checkCRL(crl, certificates);
         } catch (NoSuchAlgorithmException
-                 | InvalidKeyException
-                 | SignatureException
-                 | CRLException
-                 | NoSuchProviderException e) {
+            | InvalidKeyException
+            | SignatureException
+            | CRLException
+            | NoSuchProviderException e) {
             throw new SignatureException("crl verify failed.", e);
         }
     }

@@ -70,7 +70,9 @@ public class VerifyHap {
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
+
     private final boolean isPrintCert;
+
     public VerifyHap() {
         this(true);
     }
