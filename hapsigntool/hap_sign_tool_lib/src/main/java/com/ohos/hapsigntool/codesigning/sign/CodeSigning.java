@@ -30,6 +30,7 @@ import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
+import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
@@ -120,7 +121,7 @@ public class CodeSigning {
             FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
             fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
             byte[] fsVerityDigest = fsVerityGenerator.getFsVerityDigest();
-            byte[] signature = generateSignature(fsVerityDigest);
+            byte[] signature = generateSignature(fsVerityDigest, null);
             // add fs-verify info
             FsVerityDescriptor.Builder fsdbuilder = new FsVerityDescriptor.Builder().setFileSize(fileSize)
                 .setHashAlgorithm(FsVerityGenerator.getFsVerityHashAlgorithm())
@@ -148,14 +149,16 @@ public class CodeSigning {
      * @param input  file to sign
      * @param offset position of codesign block based on start of the file
      * @param inForm file's format
+     * @param profileContent profile of the hap
      * @return byte array of code sign block
      * @throws CodeSignException        code signing exception
      * @throws IOException              io error
      * @throws HapFormatException       hap format invalid
      * @throws FsVerityDigestException  computing FsVerity digest error
+     * @throws ProfileException         profile of the hap error
      */
-    public byte[] getCodeSignBlock(File input, long offset, String inForm)
-        throws CodeSignException, IOException, HapFormatException, FsVerityDigestException {
+    public byte[] getCodeSignBlock(File input, long offset, String inForm, String profileContent)
+        throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (SUPPORT_BIN_FILE_FORM.contains(inForm)) {
             return getElfCodeSignBlock(input, offset, inForm);
@@ -175,9 +178,11 @@ public class CodeSigning {
         this.codeSignBlock.setFsVerityInfoSegment(fsVerityInfoSegment);
 
         LOGGER.debug("Sign hap.");
+        String ownerID = HapUtils.getAppIdentifier(profileContent);
+
         try (FileInputStream inputStream = new FileInputStream(input)) {
             Pair<SignInfo, byte[]> hapSignInfoAndMerkleTreeBytesPair = signFile(inputStream, dataSize, true,
-                fsvTreeOffset);
+                fsvTreeOffset, ownerID);
             // update hap segment in CodeSignBlock
             this.codeSignBlock.getHapInfoSegment().setSignInfo(hapSignInfoAndMerkleTreeBytesPair.getFirst());
             // Insert merkle tree bytes into code sign block
@@ -185,7 +190,7 @@ public class CodeSigning {
                 hapSignInfoAndMerkleTreeBytesPair.getSecond());
         }
         // update native lib info segment in CodeSignBlock
-        signNativeLibs(input);
+        signNativeLibs(input, ownerID);
 
         // last update codeSignBlock before generating its byte array representation
         updateCodeSignBlock(this.codeSignBlock);
@@ -237,7 +242,7 @@ public class CodeSigning {
         }
     }
 
-    private void signNativeLibs(File input) throws IOException, FsVerityDigestException, CodeSignException {
+    private void signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException, CodeSignException {
         // 'an' libs are always signed
         extractedNativeLibSuffixs.add(NATIVE_LIB_AN_SUFFIX);
         if (HapUtils.checkCompressNativeLibs(input)) {
@@ -253,7 +258,7 @@ public class CodeSigning {
                 LOGGER.info("No native libs.");
                 return;
             }
-            List<Pair<String, SignInfo>> nativeLibInfoList = signFilesFromJar(entryNames, inputJar);
+            List<Pair<String, SignInfo>> nativeLibInfoList = signFilesFromJar(entryNames, inputJar, ownerID);
             // update SoInfoSegment in CodeSignBlock
             this.codeSignBlock.getSoInfoSegment().setSoInfoList(nativeLibInfoList);
         }
@@ -299,12 +304,13 @@ public class CodeSigning {
      *
      * @param entryNames list of entries which need to be signed
      * @param hap        input hap
+     * @param ownerID    app-id in signature to identify
      * @return sign info and merkle tree of each file
      * @throws IOException             io error
      * @throws FsVerityDigestException computing FsVerity digest error
      * @throws CodeSignException       sign error
      */
-    private List<Pair<String, SignInfo>> signFilesFromJar(List<String> entryNames, JarFile hap)
+    private List<Pair<String, SignInfo>> signFilesFromJar(List<String> entryNames, JarFile hap, String ownerID)
         throws IOException, FsVerityDigestException, CodeSignException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         for (String name : entryNames) {
@@ -314,7 +320,7 @@ public class CodeSigning {
                 long fileSize = inEntry.getSize();
                 // We don't store merkle tree in code signing of native libs
                 // Therefore, the second value of pair returned is ignored
-                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, fileSize, false, 0);
+                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, fileSize, false, 0, ownerID);
                 nativeLibInfoList.add(Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst()));
             }
         }
@@ -328,16 +334,17 @@ public class CodeSigning {
      * @param fileSize      size of the file
      * @param storeTree     whether to store merkle tree in signed info
      * @param fsvTreeOffset merkle tree raw bytes offset based on the start of file
+     * @param ownerID       app-id in signature to identify
      * @return pair of signature and tree
      * @throws FsVerityDigestException computing FsVerity Digest error
      * @throws CodeSignException       signing error
      */
     public Pair<SignInfo, byte[]> signFile(InputStream inputStream, long fileSize, boolean storeTree,
-        long fsvTreeOffset) throws FsVerityDigestException, CodeSignException {
+        long fsvTreeOffset, String ownerID) throws FsVerityDigestException, CodeSignException {
         FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
         fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
         byte[] fsVerityDigest = fsVerityGenerator.getFsVerityDigest();
-        byte[] signature = generateSignature(fsVerityDigest);
+        byte[] signature = generateSignature(fsVerityDigest, ownerID);
         int flags = 0;
         if (storeTree) {
             flags = SignInfo.FLAG_MERKLE_TREE_INCLUDED;
@@ -354,14 +361,17 @@ public class CodeSigning {
         return Pair.create(signInfo, fsVerityGenerator.getTreeBytes());
     }
 
-    private byte[] generateSignature(byte[] signedData) throws CodeSignException {
+    private byte[] generateSignature(byte[] signedData, String ownerID) throws CodeSignException {
         // signConfig is created by SignerFactory
         if ((signConfig.getSigner() instanceof LocalSigner)) {
             if (signConfig.getCertificates().isEmpty()) {
                 throw new CodeSignException("No certificates configured for sign");
             }
         }
-        return SignedDataGenerator.BC.generateSignedData(signedData, signConfig);
+
+        BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
+        bcSignedDataGenerator.setOwnerID(ownerID);
+        return bcSignedDataGenerator.generateSignedData(signedData, signConfig);
     }
 
     /**

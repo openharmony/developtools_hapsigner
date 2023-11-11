@@ -22,6 +22,7 @@ import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
 import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
+import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.HapUtils;
@@ -36,6 +37,7 @@ import com.ohos.hapsigntool.zip.ZipUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.Arrays;
@@ -48,6 +50,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -70,6 +73,23 @@ public class VerifyHap {
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
+
+    private static String getProfileContent(byte[] profile) throws ProfileException {
+        try {
+            CMSSignedData cmsSignedData = new CMSSignedData(profile);
+            if (!VerifyUtils.verifyCmsSignedData(cmsSignedData)) {
+                throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid");
+            }
+            Object contentObj = cmsSignedData.getSignedContent().getContent();
+            if(!(contentObj instanceof byte[])) {
+                throw new ProfileException("Check profile failed, signed profile content is not byte array!");
+            }
+            return new String((byte[]) contentObj, StandardCharsets.UTF_8);
+        } catch (CMSException e) {
+            return new String(profile, StandardCharsets.UTF_8);
+        }
+    }
+
     private final boolean isPrintCert;
     public VerifyHap() {
         this(true);
@@ -277,6 +297,9 @@ public class VerifyHap {
         } catch (CMSException e) {
             LOGGER.error("Verify Hap failed, code signature verify failed.", e);
             result = new VerifyResult(false, VerifyResult.RET_SIGNATURE_ERROR, e.getMessage());
+        } catch (ProfileException e) {
+            LOGGER.error("Verify Hap failed, parse app-identifier from profile failed, profile is invalid", e);
+            return new VerifyResult(false, VerifyResult.RET_CODE_SIGN_BLOCK_ERROR, e.getMessage());
         }
         return result;
     }
@@ -307,9 +330,10 @@ public class VerifyHap {
      * @throws IOException IO error
      * @throws VerifyCodeSignException verify code sign on error
      * @throws CMSException cms on error
+     * @throws ProfileException profile of the hap error
      */
     private boolean checkCodeSign(String hapFilePath, List<SigningBlock> optionalBlocks)
-            throws FsVerityDigestException, IOException, VerifyCodeSignException, CMSException {
+            throws FsVerityDigestException, IOException, VerifyCodeSignException, CMSException, ProfileException {
         Map<Integer, byte[]> map = optionalBlocks.stream()
                 .collect(Collectors.toMap(SigningBlock::getType, SigningBlock::getValue));
         byte[] propertyBlockArray = map.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
@@ -330,7 +354,9 @@ public class VerifyHap {
                 return false;
             }
             File outputFile = new File(hapFilePath);
-            boolean isCodeSign = VerifyCodeSignature.verifyHap(outputFile, blockOffset, blockLength, suffix);
+            byte[] profileArray = map.get(HapUtils.HAP_PROFILE_BLOCK_ID);
+            String profileContent = getProfileContent(profileArray);
+            boolean isCodeSign = VerifyCodeSignature.verifyHap(outputFile, blockOffset, blockLength, suffix, profileContent);
             if (!isCodeSign) {
                 LOGGER.error("Verify Hap has no code sign data error!");
                 return false;
