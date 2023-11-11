@@ -28,21 +28,24 @@ import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
+import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.hap.entity.Pair;
 
+import com.ohos.hapsigntool.hap.exception.ProfileException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -63,6 +66,41 @@ public class VerifyCodeSignature {
     static {
         EXTRACTED_NATIVE_LIB_SUFFIXS.add(NATIVE_LIB_AN_SUFFIX);
         EXTRACTED_NATIVE_LIB_SUFFIXS.add(NATIVE_LIB_SO_SUFFIX);
+    }
+
+    private static void checkOwnerID(byte[] signature, String profileOwnerID, String profileType) throws CMSException, VerifyCodeSignException {
+        String ownerID = profileOwnerID;
+        // if profileType is debug, check the app-id in signature, should be null or DEBUG_LIB_ID
+        if ("debug".equals(profileType)) {
+            ownerID = "DEBUG_LIB_ID";
+        }
+
+        CMSSignedData cmsSignedData = new CMSSignedData(signature);
+        Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+        Collection<String> results = null;
+        for (SignerInformation signer : signers) {
+            AttributeTable attrTable = signer.getSignedAttributes();
+            Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
+            // if app-id is null, if profileType is debug, it's ok. if profileType is release and ownerID is not null, throw exception.
+            if (attr == null) {
+                if ("debug".equals(profileType)) {
+                    continue;
+                }
+                if (ownerID == null) {
+                    continue;
+                } else {
+                    throw new VerifyCodeSignException("app-identifier is not in the signature");
+                }
+            }
+            if (ownerID == null) {
+                throw new VerifyCodeSignException("app-identifier in profile is null, but is not null in signature");
+            }
+            // if app-id in signature exists, it should be equal to the app-id in profile.
+            String resultOwnerID = attr.getAttrValues().getObjectAt(0).toString();
+            if (!ownerID.equals(resultOwnerID)) {
+                throw new VerifyCodeSignException("app-identifier in signature is invalid");
+            }
+        }
     }
 
     /**
@@ -110,18 +148,22 @@ public class VerifyCodeSignature {
      * @param offset     start position of code sign block based on the start of the hap file
      * @param length     byte size of code sign block
      * @param fileFormat hap or hqf or hsp, etc.
+     * @param profileContent profile of the hap
      * @return true if signature verify succeed and false otherwise
      * @throws IOException             If an input or output exception occurred
      * @throws VerifyCodeSignException parsing result invalid
      * @throws FsVerityDigestException if fs-verity digest generation failed
      * @throws CMSException            if signature verify failed
+     * @throws ProfileException        profile of the hap failed
      */
-    public static boolean verifyHap(File file, long offset, long length, String fileFormat)
-        throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException {
+    public static boolean verifyHap(File file, long offset, long length, String fileFormat, String profileContent)
+            throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
         if (!CodeSigning.SUPPORT_FILE_FORM.contains(fileFormat)) {
             LOGGER.info("Not hap or hsp file, skip code signing verify");
             return true;
         }
+        Pair<String, String> pairResult = HapUtils.parseAppIdentifier(profileContent);
+
         CodeSignBlock csb = generateCodeSignBlock(file, offset, length);
         // 2) verify hap
         try (FileInputStream hap = new FileInputStream(file)) {
@@ -137,6 +179,7 @@ public class VerifyCodeSignature {
             // temporary: merkle tree offset set to zero, change to merkleTreeOffset
             verifySingleFile(hap, dataSize, signature, mte.getMerkleTreeOffset(),
                 csb.getOneMerkleTreeByFileName(CodeSigning.HAP_SIGNATURE_ENTRY_NAME));
+            checkOwnerID(signature, pairResult.getFirst(), pairResult.getSecond());
         }
         // 3) verify native libs
         try (JarFile inputJar = new JarFile(file, false)) {
@@ -151,6 +194,7 @@ public class VerifyCodeSignature {
                 InputStream entryInputStream = inputJar.getInputStream(entry);
                 // temporary merkleTreeOffset 0
                 verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
+                checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
             }
         }
         return true;

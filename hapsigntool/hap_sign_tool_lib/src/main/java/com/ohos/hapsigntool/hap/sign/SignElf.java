@@ -25,6 +25,7 @@ import com.ohos.hapsigntool.hap.entity.SignBlockData;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTags;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
+import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
@@ -120,7 +121,7 @@ public class SignElf {
         } catch (IOException e) {
             LOGGER.error("writeBlockDataToFile failed.", e);
             return false;
-        } catch (FsVerityDigestException | CodeSignException | HapFormatException e) {
+        } catch (FsVerityDigestException | CodeSignException | HapFormatException | ProfileException e) {
             LOGGER.error("codesign failed.", e);
             return false;
         }
@@ -196,14 +197,14 @@ public class SignElf {
 
     private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams,
         String inputFile, int blockNum, long binFileLen) throws IOException,
-            FsVerityDigestException, CodeSignException, HapFormatException {
+            FsVerityDigestException, CodeSignException, HapFormatException, ProfileException {
         if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_SIGN_CODE))) {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
         long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
         byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset,
-                signParams.get(ParamConstants.PARAM_IN_FORM));
+                signParams.get(ParamConstants.PARAM_IN_FORM), null);
         return new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
     }
 
