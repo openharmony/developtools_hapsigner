@@ -86,7 +86,7 @@ The parameters in the command are described as follows:
 
 
 ```shell
-java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456"
+java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -signcode "1"
 ```
 The parameters in the command are described as follows:
 
@@ -97,12 +97,13 @@ The parameters in the command are described as follows:
          ├── -appCertFile       # Application signing certificate (certificate chain, in the end-entity certificate, intermediate CA certificate, and root certificate order). It is mandatory.
          ├── -profileFile       # Singed provisioning profile, in p7b format. It is mandatory.
          ├── -profileSigned     # Whether the profile is signed. The value 1 means signed, and value 0 means unsigned. The default value is 1. It is optional.
-         ├── -inForm            # Raw file, in .zip (default) or .bin format. It is optional.
+         ├── -inForm            # Raw file, in .zip (default) or .bin or .elf format. It is optional.
          ├── -inFile            # Raw application package, in .zip or .bin format. It is mandatory.
          ├── -signAlg           # Signature algorithm, which can be SHA256withECDSA or SHA384withECDSA. It is mandatory.
          ├── -keystoreFile      # KeyStore (KS) file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
          ├── -keystorePwd       # KS password. It is optional.
          ├── -outFile           # Signed HAP file to generate. It is mandatory.
+         ├── -signcode          # Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.   
          
 
 2. One-click signature
@@ -276,6 +277,7 @@ Procedure:
           ├── -keystoreFile  # KS file, in JKS or P12 format. It is mandatory if the signing mode is localSign.
           ├── -keystorePwd   # KS password. It is optional.
           ├── -outFile       # Signed HAP file to generate. It is mandatory.
+          ├── -signcode      # Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.
 
 10.Verify the HAP Signature.
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -237,11 +237,26 @@ public class ParamConstants {
     public static final String PARAM_RESIGN_CONFIG_FILE = "resignconfig";
 
     /**
+     * sign file type bin or zip or elf
+     */
+    public static final String PARAM_IN_FORM = "inForm";
+
+    /**
+     * The code sign params of resign hap
+     */
+    public static final String PARAM_SIGN_CODE = "signcode";
+
+    /**
+     * file name split . of min length
+     */
+    public static final int FILE_NAME_MIN_LENGTH = 2;
+
+    /**
      * Enumerated value of whether a profile is signed
      */
     public enum ProfileSignFlag {
-        UNSIGNED_PROFILE("0"),
-        SIGNED_PROFILE("1");
+        DISABLE_SIGN_CODE("0"),
+        ENABLE_SIGN_CODE("1");
 
         private String signFlag;
 
@@ -251,6 +266,24 @@ public class ParamConstants {
 
         public String getSignFlag() {
             return signFlag;
+        }
+    }
+
+    /**
+     * Enumerated value of whether a code sign is signed.
+     */
+    public enum SignCodeFlag {
+        DISABLE_SIGN_CODE("0"),
+        ENABLE_SIGN_CODE("1");
+
+        private String signCodeFlag;
+
+        SignCodeFlag(String signCodeFlag) {
+            this.signCodeFlag = signCodeFlag;
+        }
+
+        public String getSignCodeFlag() {
+            return signCodeFlag;
         }
     }
 }
