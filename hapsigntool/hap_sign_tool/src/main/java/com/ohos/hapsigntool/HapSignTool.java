@@ -69,7 +69,7 @@ public final class HapSignTool {
      */
     private static final String NOT_SIGNED = "0";
 
-    private static List<String> INFORM_LIST = new ArrayList<String>(){{
+    private static List<String> informList = new ArrayList<String>(){{
         add("bin");
         add("elf");
         add("zip");
@@ -284,7 +284,7 @@ public final class HapSignTool {
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !INFORM_LIST.contains(inForm)) {
+        if (!StringUtils.isEmpty(inForm) && !informList.contains(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
