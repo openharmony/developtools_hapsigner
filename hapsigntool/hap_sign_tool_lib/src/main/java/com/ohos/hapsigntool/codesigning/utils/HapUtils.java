@@ -18,6 +18,11 @@ package com.ohos.hapsigntool.codesigning.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.hap.exception.ProfileException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +42,8 @@ import java.util.jar.JarFile;
  * @since 2023/06/05
  */
 public class HapUtils {
+    private static final Logger LOGGER = LogManager.getLogger(HapUtils.class);
+
     private static final String COMPRESS_NATIVE_LIBS_OPTION = "compressNativeLibs";
 
     private static final List<String> HAP_CONFIG_FILES = new ArrayList<>();
@@ -44,6 +51,10 @@ public class HapUtils {
     private static final String HAP_FA_CONFIG_JSON_FILE = "config.json";
 
     private static final String HAP_STAGE_MODULE_JSON_FILE = "module.json";
+
+    private static final String HAP_DEBUG_OWNER_ID = "DEBUG_LIB_ID";
+
+    private static final int MAX_APP_ID_LEN = 32; // max app-identifier in profile
 
     static {
         HAP_CONFIG_FILES.add(HAP_FA_CONFIG_JSON_FILE);
@@ -101,5 +112,72 @@ public class HapUtils {
         }
         // default to compress native libs
         return true;
+    }
+
+    /**
+     * get app-id from profile
+     *
+     * @param profileContent the content of profile
+     * @return string value of app-id
+     * @throws ProfileException profile is invalid
+     */
+    public static String getAppIdentifier(String profileContent) throws ProfileException {
+        Pair<String, String> resultPair = parseAppIdentifier(profileContent);
+        String ownerID = resultPair.getFirst();
+        String profileType = resultPair.getSecond();
+        if ("debug".equals(profileType)) {
+            return HAP_DEBUG_OWNER_ID;
+        } else if ("release".equals(profileType)) {
+            return ownerID;
+        } else {
+            throw new ProfileException("unsupported profile type");
+        }
+    }
+
+    /**
+     * parse app-id and profileType from profile
+     *
+     * @param profileContent the content of profile
+     * @return Pair value of app-id and profileType
+     * @throws ProfileException profile is invalid
+     */
+    public static Pair<String, String> parseAppIdentifier(String profileContent) throws ProfileException {
+        String ownerID = null;
+        String profileType = null;
+        try {
+            JsonElement parser = JsonParser.parseString(profileContent);
+            JsonObject profileJson = parser.getAsJsonObject();
+            String profileTypeKey = "type";
+            if (!profileJson.has(profileTypeKey)) {
+                throw new ProfileException("profile has no type key");
+            }
+
+            profileType = profileJson.get(profileTypeKey).getAsString();
+            if (profileType == null || profileType.length() == 0) {
+                throw new ProfileException("Get profile type error");
+            }
+
+            String appIdentifier = "app-identifier";
+            String buildInfoMember = "bundle-info";
+            JsonObject buildInfoObject = profileJson.getAsJsonObject(buildInfoMember);
+            if (buildInfoObject == null) {
+                throw new ProfileException("can not find bundle-info");
+            }
+            if (buildInfoObject.has(appIdentifier)) {
+                JsonElement ownerIDElement = buildInfoObject.get(appIdentifier);
+                if (!ownerIDElement.getAsJsonPrimitive().isString()) {
+                    throw new ProfileException("value of app-identifier is not string");
+                }
+                ownerID = ownerIDElement.getAsString();
+                if (ownerID.isEmpty() || ownerID.length() > MAX_APP_ID_LEN) {
+                    throw new ProfileException("app-id length in profile is invalid");
+                }
+
+            }
+        } catch (JsonSyntaxException | UnsupportedOperationException e) {
+            LOGGER.error(e.getMessage());
+            throw new ProfileException("profile json is invalid");
+        }
+        return Pair.create(ownerID, profileType);
     }
 }
