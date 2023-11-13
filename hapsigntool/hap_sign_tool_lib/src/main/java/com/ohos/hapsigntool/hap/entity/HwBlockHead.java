@@ -36,6 +36,7 @@ public class HwBlockHead {
 
     /**
      * get bin block length
+     *
      * @return return bin block length
      */
     public static int getBlockLen() {
@@ -44,6 +45,7 @@ public class HwBlockHead {
 
     /**
      * get elf block length
+     *
      * @return return elf block length
      */
     public static int getElfBlockLen() {

@@ -74,6 +74,16 @@ public class VerifyHap {
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    private final boolean isPrintCert;
+
+    public VerifyHap() {
+        this(true);
+    }
+
+    public VerifyHap(boolean isPrintCert) {
+        this.isPrintCert = isPrintCert;
+    }
+
     private static String getProfileContent(byte[] profile) throws ProfileException {
         try {
             CMSSignedData cmsSignedData = new CMSSignedData(profile);
@@ -81,7 +91,7 @@ public class VerifyHap {
                 throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid");
             }
             Object contentObj = cmsSignedData.getSignedContent().getContent();
-            if(!(contentObj instanceof byte[])) {
+            if (!(contentObj instanceof byte[])) {
                 throw new ProfileException("Check profile failed, signed profile content is not byte array!");
             }
             return new String((byte[]) contentObj, StandardCharsets.UTF_8);
@@ -90,14 +100,6 @@ public class VerifyHap {
         }
     }
 
-    private final boolean isPrintCert;
-    public VerifyHap() {
-        this(true);
-    }
-
-    public VerifyHap(boolean isPrintCert) {
-        this.isPrintCert = isPrintCert;
-    }
 
     /**
      * Check whether parameters are valid
@@ -344,7 +346,6 @@ public class VerifyHap {
                 return false;
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(propertyBlockArray);
-            String suffix = fileNameArray[fileNameArray.length - 1];
             ByteBuffer header = HapUtils.reverseSliceBuffer(byteBuffer, 0, ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH);
             int blockOffset = header.getInt();
             int blockLength = header.getInt();
@@ -356,7 +357,9 @@ public class VerifyHap {
             File outputFile = new File(hapFilePath);
             byte[] profileArray = map.get(HapUtils.HAP_PROFILE_BLOCK_ID);
             String profileContent = getProfileContent(profileArray);
-            boolean isCodeSign = VerifyCodeSignature.verifyHap(outputFile, blockOffset, blockLength, suffix, profileContent);
+            String suffix = fileNameArray[fileNameArray.length - 1];
+            boolean isCodeSign = VerifyCodeSignature.verifyHap(outputFile, blockOffset, blockLength,
+                    suffix, profileContent);
             if (!isCodeSign) {
                 LOGGER.error("Verify Hap has no code sign data error!");
                 return false;

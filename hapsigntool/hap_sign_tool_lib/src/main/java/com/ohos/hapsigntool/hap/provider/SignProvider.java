@@ -115,8 +115,6 @@ public abstract class SignProvider {
         PARAMETERS_NEED_ESCAPE.add(ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE);
     }
 
-    private String profileContent;
-
     /**
      * list of hap signature optional blocks
      */
@@ -126,6 +124,8 @@ public abstract class SignProvider {
      * parameters only used in signing
      */
     protected Map<String, String> signParams = new HashMap<String, String>();
+
+    private String profileContent;
 
     /**
      * Read data of optional blocks from file user inputted.
@@ -297,6 +297,9 @@ public abstract class SignProvider {
             return false;
         }
 
+        if (profileContent != null) {
+            signParams.put(ParamConstants.PARAM_PROFILE_JSON_CONTENT, profileContent);
+        }
         /* 6. make signed file into output file. */
         if (!SignElf.sign(signerConfig, signParams)) {
             LOGGER.error("hap-sign-tool: error: Sign elf internal failed.");
@@ -379,6 +382,7 @@ public abstract class SignProvider {
      * @throws CodeSignException code sign on error
      * @throws IOException IO error
      * @throws HapFormatException hap format on error
+     * @throws ProfileException profile of app is invalid
      */
     private void appendCodeSignBlock(SignerConfig signerConfig, File tmpOutput, String suffix,
         long centralDirectoryOffset)

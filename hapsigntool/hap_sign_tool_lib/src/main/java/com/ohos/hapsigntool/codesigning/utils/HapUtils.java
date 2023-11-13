@@ -54,6 +54,8 @@ public class HapUtils {
 
     private static final String HAP_DEBUG_OWNER_ID = "DEBUG_LIB_ID";
 
+    private static final int MAX_APP_ID_LEN = 32; // max app-identifier in profile
+
     static {
         HAP_CONFIG_FILES.add(HAP_FA_CONFIG_JSON_FILE);
         HAP_CONFIG_FILES.add(HAP_STAGE_MODULE_JSON_FILE);
@@ -112,7 +114,13 @@ public class HapUtils {
         return true;
     }
 
-
+    /**
+     * get app-id from profile
+     *
+     * @param profileContent the content of profile
+     * @return string value of app-id
+     * @throws ProfileException profile is invalid
+     */
     public static String getAppIdentifier(String profileContent) throws ProfileException {
         Pair<String, String> resultPair = parseAppIdentifier(profileContent);
         String ownerID = resultPair.getFirst();
@@ -126,6 +134,13 @@ public class HapUtils {
         }
     }
 
+    /**
+     * parse app-id and profileType from profile
+     *
+     * @param profileContent the content of profile
+     * @return Pair value of app-id and profileType
+     * @throws ProfileException profile is invalid
+     */
     public static Pair<String, String> parseAppIdentifier(String profileContent) throws ProfileException {
         String ownerID = null;
         String profileType = null;
@@ -150,11 +165,14 @@ public class HapUtils {
             }
             if (buildInfoObject.has(appIdentifier)) {
                 JsonElement ownerIDElement = buildInfoObject.get(appIdentifier);
-                if (ownerIDElement.getAsJsonPrimitive().isString()) {
-                    ownerID = ownerIDElement.getAsString();
-                } else {
-                    LOGGER.error("value of app-identifier is not string");
+                if (!ownerIDElement.getAsJsonPrimitive().isString()) {
+                    throw new ProfileException("value of app-identifier is not string");
                 }
+                ownerID = ownerIDElement.getAsString();
+                if (ownerID.isEmpty() || ownerID.length() > MAX_APP_ID_LEN) {
+                    throw new ProfileException("app-id length in profile is invalid");
+                }
+
             }
         } catch (JsonSyntaxException | UnsupportedOperationException e) {
             LOGGER.error(e.getMessage());

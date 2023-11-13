@@ -82,6 +82,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
 
     private static final DigestAlgorithmIdentifierFinder DIGEST_ALG_ID_FINDER
         = new DefaultDigestAlgorithmIdentifierFinder();
+
     private String ownerID;
 
     public void setOwnerID(String ownerID) {
@@ -187,8 +188,9 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         table.add(signingTimeAttr);
         table.add(contentTypeAttr);
         table.add(messageDigestAttr);
-        if(ownerID != null) {
-            Attribute ownerIDAttr = new Attribute(new ASN1ObjectIdentifier(SIGNER_OID), new DERSet(new DERUTF8String(ownerID)));
+        if (ownerID != null) {
+            Attribute ownerIDAttr = new Attribute(new ASN1ObjectIdentifier(SIGNER_OID),
+                new DERSet(new DERUTF8String(ownerID)));
             table.add(ownerIDAttr);
         }
         return new DERSet(table);
