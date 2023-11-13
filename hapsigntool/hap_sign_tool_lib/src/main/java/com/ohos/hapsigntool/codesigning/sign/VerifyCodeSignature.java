@@ -45,7 +45,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
+import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -68,7 +73,8 @@ public class VerifyCodeSignature {
         EXTRACTED_NATIVE_LIB_SUFFIXS.add(NATIVE_LIB_SO_SUFFIX);
     }
 
-    private static void checkOwnerID(byte[] signature, String profileOwnerID, String profileType) throws CMSException, VerifyCodeSignException {
+    private static void checkOwnerID(byte[] signature, String profileOwnerID, String profileType)
+        throws CMSException, VerifyCodeSignException {
         String ownerID = profileOwnerID;
         // if profileType is debug, check the app-id in signature, should be null or DEBUG_LIB_ID
         if ("debug".equals(profileType)) {
@@ -81,7 +87,7 @@ public class VerifyCodeSignature {
         for (SignerInformation signer : signers) {
             AttributeTable attrTable = signer.getSignedAttributes();
             Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
-            // if app-id is null, if profileType is debug, it's ok. if profileType is release and ownerID is not null, throw exception.
+            // if app-id is null, if profileType is debug, it's ok.
             if (attr == null) {
                 if ("debug".equals(profileType)) {
                     continue;

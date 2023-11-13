@@ -137,6 +137,11 @@ public class ParamConstants {
     public static final String PARAM_BASIC_PROFILE = "profileFile";
 
     /**
+     * json type content of Hap-file's capability profile
+     */
+    public static final String PARAM_PROFILE_JSON_CONTENT = "profileContent";
+
+    /**
      * Hap-file's proof-of-rotation
      */
     public static final String PARAM_BASIC_PROOF = "proof";

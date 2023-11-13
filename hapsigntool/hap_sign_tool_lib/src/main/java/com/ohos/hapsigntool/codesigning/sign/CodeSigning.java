@@ -104,13 +104,15 @@ public class CodeSigning {
      * @param input  file to sign
      * @param offset position of codesign block based on start of the file
      * @param inForm file's format
+     * @param profileContent profile of the elf
      * @return byte array of code sign block
      * @throws CodeSignException        code signing exception
      * @throws IOException              io error
      * @throws FsVerityDigestException  computing FsVerity digest error
+     * @throws ProfileException         profile of elf is invalid
      */
-    public byte[] getElfCodeSignBlock(File input, long offset, String inForm)
-        throws CodeSignException, FsVerityDigestException, IOException {
+    public byte[] getElfCodeSignBlock(File input, long offset, String inForm, String profileContent)
+        throws CodeSignException, FsVerityDigestException, IOException, ProfileException {
         if (!SUPPORT_BIN_FILE_FORM.contains(inForm)) {
             throw new CodeSignException("file's format is unsupported");
         }
@@ -121,7 +123,9 @@ public class CodeSigning {
             FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
             fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
             byte[] fsVerityDigest = fsVerityGenerator.getFsVerityDigest();
-            byte[] signature = generateSignature(fsVerityDigest, null);
+            // ownerID should be DEBUG_LIB_ID while signing ELF
+            String ownerID = (profileContent == null) ? "DEBUG_LIB_ID" : HapUtils.getAppIdentifier(profileContent);
+            byte[] signature = generateSignature(fsVerityDigest, ownerID);
             // add fs-verify info
             FsVerityDescriptor.Builder fsdbuilder = new FsVerityDescriptor.Builder().setFileSize(fileSize)
                 .setHashAlgorithm(FsVerityGenerator.getFsVerityHashAlgorithm())
@@ -161,7 +165,7 @@ public class CodeSigning {
         throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (SUPPORT_BIN_FILE_FORM.contains(inForm)) {
-            return getElfCodeSignBlock(input, offset, inForm);
+            return getElfCodeSignBlock(input, offset, inForm, profileContent);
         }
         if (!SUPPORT_FILE_FORM.contains(inForm)) {
             throw new CodeSignException("file's format is unsupported");
@@ -242,7 +246,8 @@ public class CodeSigning {
         }
     }
 
-    private void signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException, CodeSignException {
+    private void signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException,
+            CodeSignException {
         // 'an' libs are always signed
         extractedNativeLibSuffixs.add(NATIVE_LIB_AN_SUFFIX);
         if (HapUtils.checkCompressNativeLibs(input)) {
@@ -320,7 +325,8 @@ public class CodeSigning {
                 long fileSize = inEntry.getSize();
                 // We don't store merkle tree in code signing of native libs
                 // Therefore, the second value of pair returned is ignored
-                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, fileSize, false, 0, ownerID);
+                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, fileSize,
+                        false, 0, ownerID);
                 nativeLibInfoList.add(Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst()));
             }
         }
