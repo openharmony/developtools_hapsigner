@@ -32,6 +32,8 @@ import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.BERSet;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Time;
 import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.ContentInfo;
@@ -68,6 +70,11 @@ import java.util.List;
  * @since 2023/06/05
  */
 public class BcSignedDataGenerator implements SignedDataGenerator {
+    /**
+     * OID of the signer identity
+     */
+    public static final String SIGNER_OID = "1.3.6.1.4.1.2011.2.376.1.4.1";
+
     private static final Logger LOGGER = LogManager.getLogger(BcSignedDataGenerator.class);
 
     private static final SignatureAlgorithmIdentifierFinder SIGN_ALG_ID_FINDER
@@ -76,6 +83,11 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
     private static final DigestAlgorithmIdentifierFinder DIGEST_ALG_ID_FINDER
         = new DefaultDigestAlgorithmIdentifierFinder();
 
+    private String ownerID;
+
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
+    }
     @Override
     public byte[] generateSignedData(byte[] content, SignerConfig signConfig) throws CodeSignException {
         if (content == null) {
@@ -176,6 +188,11 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         table.add(signingTimeAttr);
         table.add(contentTypeAttr);
         table.add(messageDigestAttr);
+        if (ownerID != null) {
+            Attribute ownerIDAttr = new Attribute(new ASN1ObjectIdentifier(SIGNER_OID),
+                new DERSet(new DERUTF8String(ownerID)));
+            table.add(ownerIDAttr);
+        }
         return new DERSet(table);
     }
 

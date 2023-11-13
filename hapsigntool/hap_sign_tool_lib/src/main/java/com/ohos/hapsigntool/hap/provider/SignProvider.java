@@ -125,6 +125,8 @@ public abstract class SignProvider {
      */
     protected Map<String, String> signParams = new HashMap<String, String>();
 
+    private String profileContent;
+
     /**
      * Read data of optional blocks from file user inputted.
      *
@@ -295,6 +297,9 @@ public abstract class SignProvider {
             return false;
         }
 
+        if (profileContent != null) {
+            signParams.put(ParamConstants.PARAM_PROFILE_JSON_CONTENT, profileContent);
+        }
         /* 6. make signed file into output file. */
         if (!SignElf.sign(signerConfig, signParams)) {
             LOGGER.error("hap-sign-tool: error: Sign elf internal failed.");
@@ -377,10 +382,11 @@ public abstract class SignProvider {
      * @throws CodeSignException code sign on error
      * @throws IOException IO error
      * @throws HapFormatException hap format on error
+     * @throws ProfileException profile of app is invalid
      */
     private void appendCodeSignBlock(SignerConfig signerConfig, File tmpOutput, String suffix,
         long centralDirectoryOffset)
-        throws FsVerityDigestException, CodeSignException, IOException, HapFormatException {
+            throws FsVerityDigestException, CodeSignException, IOException, HapFormatException, ProfileException {
         if (signParams.get(ParamConstants.PARAM_SIGN_CODE)
                 .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
             // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
@@ -388,7 +394,7 @@ public abstract class SignProvider {
                     (centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4)));
             // create CodeSigning Object
             CodeSigning codeSigning = new CodeSigning(signerConfig);
-            byte[] codeSignArray = codeSigning.getCodeSignBlock(tmpOutput, codeSignOffset, suffix);
+            byte[] codeSignArray = codeSigning.getCodeSignBlock(tmpOutput, codeSignOffset, suffix, profileContent);
             ByteBuffer result = ByteBuffer.allocate(codeSignArray.length + (4 + 4 + 4));
             result.order(ByteOrder.LITTLE_ENDIAN);
             result.putInt(HapUtils.HAP_CODE_SIGN_BLOCK_ID); // type
@@ -591,7 +597,6 @@ public abstract class SignProvider {
             byte[] profile = findProfileFromOptionalBlocks();
             boolean isProfileWithoutSign = ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(
                     signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED));
-            String content;
             if (!isProfileWithoutSign) {
                 CMSSignedData cmsSignedData = new CMSSignedData(profile);
                 boolean isVerify = VerifyUtils.verifyCmsSignedData(cmsSignedData);
@@ -602,11 +607,11 @@ public abstract class SignProvider {
                 if (!(contentObj instanceof byte[])) {
                     throw new ProfileException("Check profile failed, signed profile content is not byte array!");
                 }
-                content = new String((byte[]) contentObj, StandardCharsets.UTF_8);
+                profileContent = new String((byte[]) contentObj, StandardCharsets.UTF_8);
             } else {
-                content = new String(profile, StandardCharsets.UTF_8);
+                profileContent = new String(profile, StandardCharsets.UTF_8);
             }
-            JsonElement parser = JsonParser.parseString(content);
+            JsonElement parser = JsonParser.parseString(profileContent);
             JsonObject profileJson = parser.getAsJsonObject();
             checkProfileInfo(profileJson, inputCerts);
         } catch (CMSException e) {
