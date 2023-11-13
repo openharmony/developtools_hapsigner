@@ -15,6 +15,9 @@
 
 package com.ohos.hapsigntool.hap.provider;
 
+import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_BIN_FILE_FORM;
+import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_FILE_FORM;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -52,6 +55,7 @@ import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
@@ -82,9 +86,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-
-import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_BIN_FILE_FORM;
-import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_FILE_FORM;
 
 /**
  * Sign provider super class
@@ -128,7 +129,7 @@ public abstract class SignProvider {
     protected Map<String, String> signParams = new HashMap<String, String>();
 
     private String profileContent;
-    
+
     /**
      * Read data of optional blocks from file user inputted.
      *
