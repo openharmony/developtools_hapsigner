@@ -94,9 +94,10 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
             throw new CodeSignException("Verity digest is null");
         }
         Pair<DERSet, DERSet> pairDigestAndSignInfo = getSignInfo(content, signConfig);
+        // Unsupported certificate revocation, SignedData's _crls is null
         SignedData signedData = new SignedData(new ASN1Integer(1), pairDigestAndSignInfo.getFirst(),
             new ContentInfo(PKCSObjectIdentifiers.data, null), createBerSetFromLst(signConfig.getCertificates()),
-            createBerSetFromLst(signConfig.getX509CRLs()), pairDigestAndSignInfo.getSecond());
+            createBerSetFromLst(null), pairDigestAndSignInfo.getSecond());
         return encodingUnsignedData(content, signedData);
     }
 
