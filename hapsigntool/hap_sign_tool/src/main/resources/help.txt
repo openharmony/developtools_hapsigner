@@ -175,7 +175,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -keystorePwd : keystore password, optional fields on localSign mode;
         -outFile : output the signed Provision Profile file, required fields;
         -extCfgFile : Extend Profile, optional fields;
-        -inForm : enter the format of the original file, the format is .zip or .bin;
+        -inForm : enter the format of the original file, the format is zip,bin or elf;
         -compatibleVersion : min compatible api version for running app, required fields while input original application package file format is hap;
         -signServer : remote signer plugin, required fields on remoteSign mode;
         -signerPlugin : remote sign service url, required fields on remoteSign mode;

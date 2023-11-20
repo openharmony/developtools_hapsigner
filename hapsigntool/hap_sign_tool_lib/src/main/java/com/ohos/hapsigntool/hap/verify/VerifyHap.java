@@ -274,7 +274,7 @@ public class VerifyHap {
             List<SigningBlock> optionalBlocks = blockPair.getSecond();
             Collections.reverse(optionalBlocks);
             if (!checkCodeSign(hapFilePath, optionalBlocks)) {
-                String errMsg = "ZIP64 code sign data error";
+                String errMsg = "code sign verify failed";
                 return new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
             }
             HapVerify verifyEngine = getHapVerify(hapFile, zipInfo, hapSigningBlockAndOffsetInFile,
@@ -340,9 +340,10 @@ public class VerifyHap {
                 .collect(Collectors.toMap(SigningBlock::getType, SigningBlock::getValue));
         byte[] propertyBlockArray = map.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
         if (propertyBlockArray != null && propertyBlockArray.length > 0) {
+            LOGGER.info("trying verify codesign block");
             String[] fileNameArray = hapFilePath.split("\\.");
             if (fileNameArray.length < ParamConstants.FILE_NAME_MIN_LENGTH) {
-                LOGGER.error("ZIP46 format not supported");
+                LOGGER.error("ZIP64 format not supported");
                 return false;
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(propertyBlockArray);
@@ -365,6 +366,8 @@ public class VerifyHap {
                 return false;
             }
             return true;
+        } else {
+            LOGGER.info("can not find codesign block");
         }
         return true;
     }
