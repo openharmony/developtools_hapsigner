@@ -116,14 +116,15 @@ public class VerifyCodeSignature {
      * @param offset     start position of code sign block based on the start of the elf file
      * @param length     byte size of code sign block
      * @param fileFormat elf or hqf or hsp, etc.
+     * @param profileContent profile json string
      * @return true if signature verify succeed and false otherwise
      * @throws IOException             If an input or output exception occurred
      * @throws VerifyCodeSignException parsing result invalid
      * @throws FsVerityDigestException if fs-verity digest generation failed
      * @throws CMSException            if signature verify failed
      */
-    public static boolean verifyElf(File file, long offset, long length, String fileFormat)
-        throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException {
+    public static boolean verifyElf(File file, long offset, long length, String fileFormat, String profileContent)
+            throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
         if (!CodeSigning.SUPPORT_BIN_FILE_FORM.contains(fileFormat)) {
             LOGGER.info("Not elf file, skip code signing verify");
             return true;
@@ -143,6 +144,10 @@ public class VerifyCodeSignature {
             byte[] merkleTree = Arrays.copyOfRange(merkleTreeWithPadding, paddingSize, merkleTreeWithPadding.length);
             verifySingleFile(signedElf, elfSignBlock.getDataSize(), elfSignBlock.getSignature(),
                 elfSignBlock.getTreeOffset(), merkleTree);
+        }
+        if (profileContent != null) {
+            Pair<String, String> pairResult = HapUtils.parseAppIdentifier(profileContent);
+            checkOwnerID(elfSignBlock.getSignature(), pairResult.getFirst(), pairResult.getSecond());
         }
         return true;
     }

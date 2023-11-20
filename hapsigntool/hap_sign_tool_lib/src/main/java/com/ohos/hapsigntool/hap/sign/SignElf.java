@@ -108,7 +108,7 @@ public class SignElf {
             if (!StringUtils.isEmpty(signParams.get(ParamConstants.PARAM_BASIC_PROFILE))) {
                 signDataList.add(generateProfileSignByte(profileFile, profileSigned));
             }
-            blockNum = signDataList.size();
+            blockNum = signDataList.size() + 1;
             SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen);
             if (codeSign != null) {
                 signDataList.add(0, codeSign);

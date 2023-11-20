@@ -106,6 +106,10 @@ public class HapVerify {
         this.optionalBlocks = optionalBlocks;
     }
 
+    public HapVerify() {
+
+    }
+
     /**
      * Verify hap signature.
      *
@@ -113,6 +117,15 @@ public class HapVerify {
      */
     public VerifyResult verify() {
         return parserSigner(signatureSchemeBlock);
+    }
+
+    /**
+     * Verify elf signature.
+     *
+     * @return verify result.
+     */
+    public VerifyResult verifyElfProfile(byte[] profile) {
+        return parserSigner(ByteBuffer.wrap(profile));
     }
 
     public void setIsPrintCert(boolean isPrintCert) {
@@ -214,7 +227,7 @@ public class HapVerify {
             result.setOptionalBlocks(optionalBlocks);
             return result;
         } catch (VerifyHapException e) {
-            LOGGER.error("Verify Hap error!", e);
+            LOGGER.error("Verify profile error!", e);
             return new VerifyResult(false, VerifyResult.RET_UNKNOWN_ERROR, e.getMessage());
         }
     }

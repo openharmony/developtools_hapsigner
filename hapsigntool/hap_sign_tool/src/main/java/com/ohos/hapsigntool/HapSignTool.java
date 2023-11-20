@@ -333,6 +333,9 @@ public final class HapSignTool {
     private static boolean runVerifyApp(Options params, ServiceApi api) {
         params.required(Options.IN_FILE, Options.OUT_CERT_CHAIN,
                 Options.OUT_PROFILE);
+        if (!informList.contains(params.getString(Options.IN_FORM))) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
+        }
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");
         return api.verifyHap(params);

@@ -25,11 +25,21 @@ public class SigningBlock {
     private int length;
     private byte[] value;
 
+    private int offset;
+
     public SigningBlock(int type, byte[] value) {
         super();
         this.type = type;
         this.length = value.length;
         this.value = value;
+    }
+
+    public SigningBlock(int type, byte[] value, int offset) {
+        super();
+        this.type = type;
+        this.length = value.length;
+        this.value = value;
+        this.offset = offset;
     }
 
     public int getType() {
@@ -42,5 +52,9 @@ public class SigningBlock {
 
     public byte[] getValue() {
         return value;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }
