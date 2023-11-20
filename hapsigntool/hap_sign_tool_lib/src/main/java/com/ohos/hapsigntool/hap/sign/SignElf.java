@@ -48,11 +48,11 @@ import java.util.Map;
  * @since 2021/12/21
  */
 public class SignElf {
+    public static final char CODESIGN_BLOCK_TYPE = 3;
+
     private static final Logger LOGGER = LogManager.getLogger(SignElf.class);
 
     private static final String CODESIGN_OFF = "0";
-
-    private static final char CODESIGN_BLOCK_TYPE = 3;
 
     private static int blockNum = 0;
 
