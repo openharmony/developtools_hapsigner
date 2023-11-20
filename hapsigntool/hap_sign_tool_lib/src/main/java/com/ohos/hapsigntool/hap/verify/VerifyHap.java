@@ -19,10 +19,10 @@ import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
+import com.ohos.hapsigntool.hap.entity.ElfBlockData;
 import com.ohos.hapsigntool.hap.entity.HwBlockHead;
 import com.ohos.hapsigntool.hap.entity.HwSignHead;
 import com.ohos.hapsigntool.hap.entity.Pair;
-import com.ohos.hapsigntool.hap.entity.SignBlockData;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
@@ -38,7 +38,6 @@ import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
@@ -48,7 +47,6 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.Arrays;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -65,9 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.c;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
 
 /**
  * Class of verify hap.
@@ -182,12 +177,12 @@ public class VerifyHap {
     }
 
     /**
-     * verify bin file.
+     * verify elf file.
      *
-     * @param options input parameters used to verify bin.
+     * @param options input parameters used to verify elf.
      * @return true, if verify successfully.
      */
-    public boolean verifyBin(Options options) {
+    public boolean verifyElf(Options options) {
         VerifyResult verifyResult;
         try {
             if (!checkParams(options)) {
@@ -204,13 +199,15 @@ public class VerifyHap {
                 LOGGER.error("Check input signature hap false!");
                 throw new IOException();
             }
-            verifyResult = verifyBin(filePath);
+            verifyResult = verifyElf(filePath);
             if (!verifyResult.isVerified()) {
                 LOGGER.error("verify: {}", verifyResult.getMessage());
                 throw new IOException();
             }
             String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
-            writeCertificate(outputCertPath, verifyResult.getCertificates());
+            if (verifyResult.getCertificates() != null) {
+                writeCertificate(outputCertPath, verifyResult.getCertificates());
+            }
         } catch (IOException e) {
             LOGGER.error("Write certificate chain error", e);
             return false;
@@ -366,72 +363,40 @@ public class VerifyHap {
     }
 
     /**
-     * Verify bin file.
+     * Verify elf file.
      *
-     * @param binFile path of bin file.
+     * @param binFile path of elf file.
      * @return true, if verify successfully.
      */
-    public VerifyResult verifyBin(String binFile) {
-        VerifyResult result = null;
+    public VerifyResult verifyElf(String binFile) {
+        VerifyResult result = new VerifyResult(true, VerifyResult.RET_SUCCESS, "verify signature pass");
         File bin = new File(binFile);
         try {
             byte[] bytes = FileUtils.readFile(bin);
-            int offset = bytes.length - HwSignHead.SIGN_HEAD_LEN;
-            int intByteLength = 4;
-            byte[] magicByte = readByteArrayOffset(bytes, offset, HwSignHead.ELF_MAGIC.length);
-            offset += HwSignHead.ELF_MAGIC.length;
-            byte[] versionByte = readByteArrayOffset(bytes, offset, HwSignHead.VERSION.length);
-            offset += HwSignHead.VERSION.length;
-            byte[] blockSizeByte = readByteArrayOffset(bytes, offset, intByteLength);
-            offset += intByteLength;
-            byte[] blockNumByte = readByteArrayOffset(bytes, offset, intByteLength);
-            for (int i = 0; i < HwSignHead.ELF_MAGIC.length; i++) {
-                if (HwSignHead.ELF_MAGIC[i] != magicByte[i]) {
-                    String errMsg = "elf magic verify failed";
-                    new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
-                }
+            ElfBlockData elfSignBlockData = getElfSignBlockData(bytes);
+            String profileJson;
+            Map<Character, SigningBlock> signBlock = getSignBlock(bytes, elfSignBlockData);
+            if (signBlock.containsKey(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK)) {
+                profileJson = new String(signBlock.get(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK).getValue());
+            } else if (signBlock.containsKey(SignatureBlockTypes.PROFILE_SIGNED_BLOCK)) {
+                // verify signed profile
+                SigningBlock profileSign = signBlock.get(SignatureBlockTypes.PROFILE_SIGNED_BLOCK);
+                result = new HapVerify().verifyElfProfile(profileSign.getValue());
+                profileJson = getProfileContent(profileSign.getValue());
+            } else {
+                LOGGER.warn("can not found profile sign block");
+                profileJson = null;
             }
 
-            for (int i = 0; i < HwSignHead.VERSION.length; i++) {
-                if (HwSignHead.VERSION[i] != versionByte[i]) {
-                    String errMsg = "elf sign version verify failed";
-                    new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
+            if (signBlock.containsKey(SignElf.CODESIGN_BLOCK_TYPE)) {
+                // verify codesign
+                SigningBlock codesign = signBlock.get(SignElf.CODESIGN_BLOCK_TYPE);
+                if (!VerifyCodeSignature.verifyElf(bin, codesign.getOffset(), codesign.getLength(), "elf", profileJson)) {
+                    String errMsg = "Verify codesign error!";
+                    result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, errMsg);
                 }
-            }
-
-            ByteBuffer blockNumBf = ByteBuffer.wrap(blockNumByte).order(ByteOrder.LITTLE_ENDIAN);
-            int blockNum = blockNumBf.getInt();
-
-            ByteBuffer blockSizeBf = ByteBuffer.wrap(blockSizeByte).order(ByteOrder.LITTLE_ENDIAN);
-            int blockSize = blockSizeBf.getInt();
-
-            int blockStart = bytes.length - HwSignHead.SIGN_HEAD_LEN - blockSize;
-            offset = blockStart;
-            for (int i = 0; i < blockNum; i++) {
-                byte[] blockByte = readByteArrayOffset(bytes, offset, HwBlockHead.ELF_BLOCK_LEN);
-                ByteBuffer blockBuffer = ByteBuffer.wrap(blockByte).order(ByteOrder.LITTLE_ENDIAN);
-                char type = blockBuffer.getChar();
-                char tag = blockBuffer.getChar();
-                int length = blockBuffer.getInt();
-                int blockOffset = blockBuffer.getInt();
-                if (type == SignElf.CODESIGN_BLOCK_TYPE) {
-                    // verify codesign
-                    if (!VerifyCodeSignature.verifyElf(bin, blockStart + blockOffset, length, "elf")) {
-                        String errMsg = "Verify codesign error!";
-                        result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, errMsg);
-                        return result;
-                    }
-                }
-                if (type == SignatureBlockTypes.PROFILE_SIGNED_BLOCK) {
-                    // verify signed profile
-                    CMSSignedData cmsSignedData = new CMSSignedData(readByteArrayOffset(bytes, blockOffset + blockStart, length));
-                    if (!VerifyUtils.verifyCmsSignedData(cmsSignedData)) {
-                        String errMsg = "Verify profile error!";
-                        result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, errMsg);
-                        return result;
-                    }
-                }
-                offset += HwBlockHead.ELF_BLOCK_LEN;
+            } else {
+                LOGGER.warn("can not found code sign block");
             }
         } catch (IOException e) {
             LOGGER.error("Verify file has IO error!", e);
@@ -439,13 +404,62 @@ public class VerifyHap {
         } catch (FsVerityDigestException | VerifyCodeSignException e) {
             LOGGER.error("Verify codesign error!", e);
             result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, e.getMessage());
-        } catch (CMSException e) {
+        } catch (CMSException | ProfileException e) {
             LOGGER.error("Verify profile error!", e);
             result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, e.getMessage());
         }
         return result;
     }
 
+    private ElfBlockData getElfSignBlockData(byte[] bytes) {
+        int offset = bytes.length - HwSignHead.SIGN_HEAD_LEN;
+        int intByteLength = 4;
+        byte[] magicByte = readByteArrayOffset(bytes, offset, HwSignHead.ELF_MAGIC.length);
+        offset += HwSignHead.ELF_MAGIC.length;
+        byte[] versionByte = readByteArrayOffset(bytes, offset, HwSignHead.VERSION.length);
+        offset += HwSignHead.VERSION.length;
+        byte[] blockSizeByte = readByteArrayOffset(bytes, offset, intByteLength);
+        offset += intByteLength;
+        byte[] blockNumByte = readByteArrayOffset(bytes, offset, intByteLength);
+        for (int i = 0; i < HwSignHead.ELF_MAGIC.length; i++) {
+            if (HwSignHead.ELF_MAGIC[i] != magicByte[i]) {
+                String errMsg = "elf magic verify failed";
+                new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
+            }
+        }
+        for (int i = 0; i < HwSignHead.VERSION.length; i++) {
+            if (HwSignHead.VERSION[i] != versionByte[i]) {
+                String errMsg = "elf sign version verify failed";
+                new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
+            }
+        }
+        ByteBuffer blockNumBf = ByteBuffer.wrap(blockNumByte).order(ByteOrder.LITTLE_ENDIAN);
+        int blockNum = blockNumBf.getInt();
+
+        ByteBuffer blockSizeBf = ByteBuffer.wrap(blockSizeByte).order(ByteOrder.LITTLE_ENDIAN);
+        int blockSize = blockSizeBf.getInt();
+
+        int blockStart = bytes.length - HwSignHead.SIGN_HEAD_LEN - blockSize;
+        return new ElfBlockData(blockNum, blockStart);
+    }
+
+    private Map<Character, SigningBlock> getSignBlock(byte[] bytes, ElfBlockData elfBlockData) throws ProfileException {
+        int offset = elfBlockData.getBlockStart();
+
+        Map<Character, SigningBlock> blockMap = new HashMap<>();
+        for (int i = 0; i < elfBlockData.getBlockNum(); i++) {
+            byte[] blockByte = readByteArrayOffset(bytes, offset, HwBlockHead.ELF_BLOCK_LEN);
+            ByteBuffer blockBuffer = ByteBuffer.wrap(blockByte).order(ByteOrder.LITTLE_ENDIAN);
+            char type = blockBuffer.getChar();
+            char tag = blockBuffer.getChar();
+            int length = blockBuffer.getInt();
+            int blockOffset = blockBuffer.getInt();
+            byte[] value = readByteArrayOffset(bytes, elfBlockData.getBlockStart() + blockOffset, length);
+            blockMap.put(type, new SigningBlock(type, value, elfBlockData.getBlockStart() + blockOffset));
+            offset += HwBlockHead.ELF_BLOCK_LEN;
+        }
+        return blockMap;
+    }
     private byte[] readByteArrayOffset(byte[] bytes, int offset, int length) {
         byte[] output = new byte[length];
         System.arraycopy(bytes, offset, output, 0, length);

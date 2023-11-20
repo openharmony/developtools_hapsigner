@@ -329,7 +329,7 @@ public class SignToolServiceImpl implements ServiceApi {
         if ("zip".equals(inForm)) {
             return hapVerify.verify(options);
         }
-        return hapVerify.verifyBin(options);
+        return hapVerify.verifyElf(options);
     }
 
     /**
