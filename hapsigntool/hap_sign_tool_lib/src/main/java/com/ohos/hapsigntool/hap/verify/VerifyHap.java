@@ -214,7 +214,10 @@ public class VerifyHap {
                 }
             }
         }
-        writeOptionalBytesToFile(verifyResult.getProfile(), outputProfileFile);
+        byte[] profile = verifyResult.getProfile();
+        if (profile != null) {
+            writeOptionalBytesToFile(profile, outputProfileFile);
+        }
     }
 
     private void writeOptionalBytesToFile(byte[] data, String outputFile) throws IOException {
