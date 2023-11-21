@@ -381,7 +381,6 @@ public class VerifyHap {
             } else if (signBlock.containsKey(SignatureBlockTypes.PROFILE_SIGNED_BLOCK)) {
                 // verify signed profile
                 SigningBlock profileSign = signBlock.get(SignatureBlockTypes.PROFILE_SIGNED_BLOCK);
-                result = new HapVerify().verifyElfProfile(profileSign.getValue());
                 profileJson = getProfileContent(profileSign.getValue());
             } else {
                 LOGGER.warn("can not found profile sign block");
