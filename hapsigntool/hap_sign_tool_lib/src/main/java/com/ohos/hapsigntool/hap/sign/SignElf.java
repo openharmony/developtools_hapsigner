@@ -34,12 +34,15 @@ import com.ohos.hapsigntool.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +63,7 @@ public class SignElf {
 
     private static int blockNum = 0;
 
-    private static final int BLOCK_HEAD_LENGTH = 4096;
+    private static final int PAGE_SIZE = 4096;
 
     /**
      * Constructor of Method
@@ -79,23 +82,48 @@ public class SignElf {
         boolean isSuccess = false;
         /* 1. Make block head, write to output file. */
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
+        String tmpFile = get4KTmpFile(inputFile);
+        if (tmpFile == null) {
+            LOGGER.error("copy input File failed");
+            return false;
+        }
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
         String profileSigned = signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED);
-        if (!writeBlockDataToFile(signerConfig, inputFile, outputFile, profileSigned, signParams)) {
-            LOGGER.error("The block head data made failed.");
+        if (!writeBlockDataToFile(signerConfig, tmpFile, outputFile, profileSigned, signParams)) {
+            LOGGER.error("The block head data made failed.`");
             ParamProcessUtil.delDir(new File(outputFile));
             return false;
         }
         LOGGER.info("The block head data made success.");
 
         /* 2. Make sign data, and write to output file */
-        if (!writeSignHeadDataToOutputFile(inputFile, outputFile, blockNum)) {
+        if (!writeSignHeadDataToOutputFile(tmpFile, outputFile, blockNum)) {
             LOGGER.error("The sign head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
         } else {
             isSuccess = true;
         }
         return isSuccess;
+    }
+
+    private static String get4KTmpFile(String inputFile) {
+        String tmp = "tmpFile" + new Date().getTime();
+        File tmpFile = new File(tmp);
+        try {
+            tmpFile.createNewFile();
+        } catch (IOException e) {
+            return null;
+        }
+        try (FileOutputStream output = new FileOutputStream(tmpFile);
+             FileInputStream input = new FileInputStream(inputFile)){
+            byte[] buffer = new byte[PAGE_SIZE];
+            while (input.read(buffer) != FileUtils.FILE_END) {
+                output.write(buffer, 0, PAGE_SIZE);
+            }
+        } catch (IOException ex) {
+            return null;
+        }
+        return tmp;
     }
 
     private static boolean writeBlockDataToFile(SignerConfig signerConfig,
@@ -115,7 +143,7 @@ public class SignElf {
                 signDataList.add(generateProfileSignByte(profileFile, profileSigned));
             }
             blockNum = signDataList.size() + 1;
-            SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, binFileLen);
+            SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen);
             if (codeSign != null) {
                 signDataList.add(0, codeSign);
             }
@@ -144,13 +172,11 @@ public class SignElf {
             }
 
             // 2. write block head to the output file.
-            ByteBuffer blockHead = ByteBuffer.allocate(BLOCK_HEAD_LENGTH);
             for (SignBlockData signBlockData : signBlockList) {
-                blockHead.put(signBlockData.getBlockHead());
-            }
-            if (!FileUtils.writeByteToDos(blockHead.array(), dataOutputStream)) {
-                LOGGER.error("Failed to write Block Head to output file: " + outputFile);
-                throw new IOException();
+                if (!FileUtils.writeByteToDos(signBlockData.getBlockHead(), dataOutputStream)) {
+                    LOGGER.error("Failed to write Block Head to output file: " + outputFile);
+                    throw new IOException();
+                }
             }
 
             // 3. write block data to the output file.
@@ -176,7 +202,7 @@ public class SignElf {
 
     private static void generateSignBlockHead(List<SignBlockData> signDataList)
             throws IOException {
-        long offset = BLOCK_HEAD_LENGTH;
+        long offset = (long) HwBlockHead.getElfBlockLen() * signDataList.size();
 
         for (int i = 0; i < signDataList.size(); i++) {
             SignBlockData signBlockData = signDataList.get(i);
@@ -204,13 +230,13 @@ public class SignElf {
     }
 
     private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams,
-        String inputFile, long binFileLen) throws IOException,
+        String inputFile, int blockNum, long binFileLen) throws IOException,
             FsVerityDigestException, CodeSignException, HapFormatException, ProfileException {
         if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_SIGN_CODE))) {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
-        long offset = binFileLen + BLOCK_HEAD_LENGTH;
+        long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
         String profileContent = signParams.get(ParamConstants.PARAM_PROFILE_JSON_CONTENT);
         byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset,
                 signParams.get(ParamConstants.PARAM_IN_FORM), profileContent);
