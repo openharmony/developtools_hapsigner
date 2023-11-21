@@ -369,7 +369,7 @@ public class VerifyHap {
      * @return true, if verify successfully.
      */
     public VerifyResult verifyElf(String binFile) {
-        VerifyResult result = new VerifyResult(true, VerifyResult.RET_SUCCESS, "verify signature pass");
+        VerifyResult result = new VerifyResult(true, VerifyResult.RET_SUCCESS, "verify signature success");
         File bin = new File(binFile);
         try {
             byte[] bytes = FileUtils.readFile(bin);
@@ -378,10 +378,12 @@ public class VerifyHap {
             Map<Character, SigningBlock> signBlock = getSignBlock(bytes, elfSignBlockData);
             if (signBlock.containsKey(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK)) {
                 profileJson = new String(signBlock.get(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK).getValue());
+                LOGGER.warn("profile is not signed");
             } else if (signBlock.containsKey(SignatureBlockTypes.PROFILE_SIGNED_BLOCK)) {
                 // verify signed profile
                 SigningBlock profileSign = signBlock.get(SignatureBlockTypes.PROFILE_SIGNED_BLOCK);
                 profileJson = getProfileContent(profileSign.getValue());
+                LOGGER.info("verify profile success");
             } else {
                 LOGGER.warn("can not found profile sign block");
                 profileJson = null;
@@ -394,6 +396,7 @@ public class VerifyHap {
                     String errMsg = "Verify codesign error!";
                     result = new VerifyResult(false, VerifyResult.RET_IO_ERROR, errMsg);
                 }
+                LOGGER.info("verify codesign success");
             } else {
                 LOGGER.warn("can not found code sign block");
             }
