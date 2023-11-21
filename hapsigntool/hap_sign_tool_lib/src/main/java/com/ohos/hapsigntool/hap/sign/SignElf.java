@@ -30,15 +30,12 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,14 +82,14 @@ public class SignElf {
         String tmpFile = get4KTmpFile(inputFile);
         if (tmpFile == null) {
             LOGGER.error("copy input File failed");
-            return false;
+            return isSuccess;
         }
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
         String profileSigned = signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED);
         if (!writeBlockDataToFile(signerConfig, tmpFile, outputFile, profileSigned, signParams)) {
             LOGGER.error("The block head data made failed.`");
             ParamProcessUtil.delDir(new File(outputFile));
-            return false;
+            return isSuccess;
         }
         LOGGER.info("The block head data made success.");
 
@@ -115,7 +112,7 @@ public class SignElf {
             return null;
         }
         try (FileOutputStream output = new FileOutputStream(tmpFile);
-             FileInputStream input = new FileInputStream(inputFile)){
+             FileInputStream input = new FileInputStream(inputFile)) {
             byte[] buffer = new byte[PAGE_SIZE];
             while (input.read(buffer) != FileUtils.FILE_END) {
                 output.write(buffer, 0, PAGE_SIZE);
