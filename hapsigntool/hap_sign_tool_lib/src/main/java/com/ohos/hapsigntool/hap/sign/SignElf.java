@@ -38,6 +38,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -141,11 +142,13 @@ public class SignElf {
             }
 
             // 2. write block head to the output file.
+            ByteBuffer blockHead = ByteBuffer.allocate(4096);
             for (SignBlockData signBlockData : signBlockList) {
-                if (!FileUtils.writeByteToDos(signBlockData.getBlockHead(), dataOutputStream)) {
-                    LOGGER.error("Failed to write Block Head to output file: " + outputFile);
-                    throw new IOException();
-                }
+                blockHead.put(signBlockData.getBlockHead());
+            }
+            if (!FileUtils.writeByteToDos(blockHead.array(), dataOutputStream)) {
+                LOGGER.error("Failed to write Block Head to output file: " + outputFile);
+                throw new IOException();
             }
 
             // 3. write block data to the output file.
