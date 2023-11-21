@@ -106,6 +106,9 @@ public class HapVerify {
         this.optionalBlocks = optionalBlocks;
     }
 
+    public HapVerify() {
+    }
+
     /**
      * Verify hap signature.
      *
@@ -113,6 +116,16 @@ public class HapVerify {
      */
     public VerifyResult verify() {
         return parserSigner(signatureSchemeBlock);
+    }
+
+    /**
+     * Verify elf signature.
+     *
+     * @param profile profile byte
+     * @return verify result.
+     */
+    public VerifyResult verifyElfProfile(byte[] profile) {
+        return parserSigner(ByteBuffer.wrap(profile), false);
     }
 
     public void setIsPrintCert(boolean isPrintCert) {
@@ -197,6 +210,10 @@ public class HapVerify {
     }
 
     private VerifyResult parserSigner(ByteBuffer signer) {
+        return parserSigner(signer, true);
+    }
+
+    private VerifyResult parserSigner(ByteBuffer signer, boolean verifyContent) {
         byte[] signingBlock = new byte[signer.remaining()];
         signer.get(signingBlock);
         try {
@@ -204,7 +221,9 @@ public class HapVerify {
             List<X509Certificate> certificates = getCertChain(cmsSignedData);
             List<X509CRL> crlList = getCrlList(cmsSignedData);
             verifyCRLs(crlList, certificates);
-            checkContentDigest(cmsSignedData);
+            if (verifyContent) {
+                checkContentDigest(cmsSignedData);
+            }
             List<SignerInformation> signerInfos = getSignerInformations(cmsSignedData);
             VerifyResult result = new VerifyResult(true, VerifyResult.RET_SUCCESS, "Verify success");
             result.setCrls(crlList);
@@ -214,7 +233,7 @@ public class HapVerify {
             result.setOptionalBlocks(optionalBlocks);
             return result;
         } catch (VerifyHapException e) {
-            LOGGER.error("Verify Hap error!", e);
+            LOGGER.error("Verify profile error!", e);
             return new VerifyResult(false, VerifyResult.RET_UNKNOWN_ERROR, e.getMessage());
         }
     }
