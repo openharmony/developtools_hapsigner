@@ -119,6 +119,7 @@ public class SignElf {
             byte[] buffer = new byte[PAGE_SIZE];
             while (input.read(buffer) != FileUtils.FILE_END) {
                 output.write(buffer, 0, PAGE_SIZE);
+                java.util.Arrays.fill(buffer, (byte) 0);
             }
         } catch (IOException ex) {
             return null;
