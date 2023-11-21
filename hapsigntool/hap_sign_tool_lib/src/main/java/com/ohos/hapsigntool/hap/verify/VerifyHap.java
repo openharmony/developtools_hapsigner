@@ -151,7 +151,7 @@ public class VerifyHap {
                 LOGGER.error("Check input signature hap false!");
                 throw new IOException();
             }
-            if ("zip".equals(options.get(ParamConstants.PARAM_IN_FORM))) {
+            if ("zip".equals(options.getOrDefault(ParamConstants.PARAM_IN_FORM, "zip"))) {
                 verifyResult = verifyHap(filePath);
             } else {
                 verifyResult = verifyElf(filePath);
@@ -161,7 +161,9 @@ public class VerifyHap {
                 throw new IOException();
             }
             String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
-            writeCertificate(outputCertPath, verifyResult.getCertificates());
+            if (verifyResult.getCertificates() != null) {
+                writeCertificate(outputCertPath, verifyResult.getCertificates());
+            }
         } catch (IOException e) {
             LOGGER.error("Write certificate chain error", e);
             return false;
@@ -212,6 +214,7 @@ public class VerifyHap {
                 }
             }
         }
+        writeOptionalBytesToFile(verifyResult.getProfile(), outputProfileFile);
     }
 
     private void writeOptionalBytesToFile(byte[] data, String outputFile) throws IOException {
@@ -329,14 +332,20 @@ public class VerifyHap {
             byte[] bytes = FileUtils.readFile(bin);
             ElfBlockData elfSignBlockData = getElfSignBlockData(bytes);
             String profileJson;
+            byte[] profileByte;
             Map<Character, SigningBlock> signBlock = getSignBlock(bytes, elfSignBlockData);
             if (signBlock.containsKey(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK)) {
-                profileJson = new String(signBlock.get(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK).getValue());
+                profileByte = signBlock.get(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK).getValue();
+                profileJson = new String(profileByte);
+                result.setProfile(profileByte);
                 LOGGER.warn("profile is not signed");
             } else if (signBlock.containsKey(SignatureBlockTypes.PROFILE_SIGNED_BLOCK)) {
                 // verify signed profile
                 SigningBlock profileSign = signBlock.get(SignatureBlockTypes.PROFILE_SIGNED_BLOCK);
-                profileJson = getProfileContent(profileSign.getValue());
+                profileByte = profileSign.getValue();
+                profileJson = getProfileContent(profileByte);
+                result = new HapVerify().verifyElfProfile(profileSign.getValue());
+                result.setProfile(profileByte);
                 LOGGER.info("verify profile success");
             } else {
                 LOGGER.warn("can not found profile sign block");
