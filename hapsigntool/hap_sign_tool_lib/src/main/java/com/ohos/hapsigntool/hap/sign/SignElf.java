@@ -60,6 +60,8 @@ public class SignElf {
 
     private static int blockNum = 0;
 
+    private static final int BLOCK_HEAD_LENGTH = 4096;
+
     /**
      * Constructor of Method
      */
@@ -113,7 +115,7 @@ public class SignElf {
                 signDataList.add(generateProfileSignByte(profileFile, profileSigned));
             }
             blockNum = signDataList.size() + 1;
-            SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen);
+            SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, binFileLen);
             if (codeSign != null) {
                 signDataList.add(0, codeSign);
             }
@@ -142,7 +144,7 @@ public class SignElf {
             }
 
             // 2. write block head to the output file.
-            ByteBuffer blockHead = ByteBuffer.allocate(4096);
+            ByteBuffer blockHead = ByteBuffer.allocate(BLOCK_HEAD_LENGTH);
             for (SignBlockData signBlockData : signBlockList) {
                 blockHead.put(signBlockData.getBlockHead());
             }
@@ -174,7 +176,7 @@ public class SignElf {
 
     private static void generateSignBlockHead(List<SignBlockData> signDataList)
             throws IOException {
-        long offset = (long) HwBlockHead.getElfBlockLen() * signDataList.size();
+        long offset = BLOCK_HEAD_LENGTH;
 
         for (int i = 0; i < signDataList.size(); i++) {
             SignBlockData signBlockData = signDataList.get(i);
@@ -202,13 +204,13 @@ public class SignElf {
     }
 
     private static SignBlockData generateCodeSignByte(SignerConfig signerConfig, Map<String, String> signParams,
-        String inputFile, int blockNum, long binFileLen) throws IOException,
+        String inputFile, long binFileLen) throws IOException,
             FsVerityDigestException, CodeSignException, HapFormatException, ProfileException {
         if (CODESIGN_OFF.equals(signParams.get(ParamConstants.PARAM_SIGN_CODE))) {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
-        long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
+        long offset = binFileLen + BLOCK_HEAD_LENGTH;
         String profileContent = signParams.get(ParamConstants.PARAM_PROFILE_JSON_CONTENT);
         byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset,
                 signParams.get(ParamConstants.PARAM_IN_FORM), profileContent);
