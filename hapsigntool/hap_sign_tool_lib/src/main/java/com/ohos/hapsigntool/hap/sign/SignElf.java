@@ -43,11 +43,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * LiteOS bin file Signature signer.
+ * elf file Signature signer.
  *
- * @since 2021/12/21
+ * @since 2023/11/21
  */
 public class SignElf {
+    /**
+     * codesign sign block type
+     */
     public static final char CODESIGN_BLOCK_TYPE = 3;
 
     private static final Logger LOGGER = LogManager.getLogger(SignElf.class);
@@ -63,10 +66,10 @@ public class SignElf {
     }
 
     /**
-     * Sign the bin file.
+     * Sign the elf file.
      *
-     * @param signerConfig Config of the bin file to be signed.
-     * @param signParams The input parameters of sign bin.
+     * @param signerConfig Config of the elf file to be signed.
+     * @param signParams The input parameters of sign elf.
      * @return true if sign successfully; false otherwise.
      */
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
@@ -101,7 +104,7 @@ public class SignElf {
 
             long binFileLen = FileUtils.getFileLen(inputFile);
             if (binFileLen == -1) {
-                LOGGER.error("file length is invalid, bin file len: " + binFileLen);
+                LOGGER.error("file length is invalid, elf file len: " + binFileLen);
                 throw new IOException();
             }
             // 1. generate sign data
@@ -160,7 +163,7 @@ public class SignElf {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("writeSignedBin failed.", e);
+            LOGGER.error("writeSignedElf failed.", e);
             return false;
         }
         return true;

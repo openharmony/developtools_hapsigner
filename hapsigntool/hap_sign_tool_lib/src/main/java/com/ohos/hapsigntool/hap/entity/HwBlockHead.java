@@ -24,8 +24,14 @@ import java.nio.ByteOrder;
  * @since 2023/11/07
  */
 public class HwBlockHead {
+    /**
+     * bin file sign block length
+     */
     public static final int BLOCK_LEN = 8; // bin block length is 8 byte
 
+    /**
+     * elf file sign block length
+     */
     public static final int ELF_BLOCK_LEN = 12; // elf block length is 12 byte
 
     private static final int BIT_SIZE = 8;

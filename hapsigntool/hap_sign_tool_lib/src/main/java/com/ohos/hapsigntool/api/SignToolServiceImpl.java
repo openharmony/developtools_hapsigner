@@ -326,10 +326,7 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean verifyHap(Options options) {
         VerifyHap hapVerify = new VerifyHap();
         String inForm = options.getString(Options.IN_FORM, "zip");
-        if ("zip".equals(inForm)) {
-            return hapVerify.verify(options);
-        }
-        return hapVerify.verifyElf(options);
+        return hapVerify.verify(options);
     }
 
     /**
