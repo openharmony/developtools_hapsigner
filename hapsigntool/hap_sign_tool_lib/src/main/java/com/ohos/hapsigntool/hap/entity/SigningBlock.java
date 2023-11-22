@@ -27,6 +27,12 @@ public class SigningBlock {
 
     private int offset;
 
+    /**
+     * Init Signing Block type and value
+     *
+     * @param type signing type
+     * @param value signing value
+     */
     public SigningBlock(int type, byte[] value) {
         super();
         this.type = type;
@@ -34,6 +40,13 @@ public class SigningBlock {
         this.value = value;
     }
 
+    /**
+     * Init Signing Block type and value
+     *
+     * @param type signing type
+     * @param value signing value
+     * @param offset signing block offset
+     */
     public SigningBlock(int type, byte[] value, int offset) {
         super();
         this.type = type;

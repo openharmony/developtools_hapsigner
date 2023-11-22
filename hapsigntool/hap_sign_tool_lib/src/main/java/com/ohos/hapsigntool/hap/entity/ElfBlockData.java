@@ -24,7 +24,6 @@ public class ElfBlockData {
     int blockNum;
     int blockStart;
 
-
     public ElfBlockData(int blockNum, int blockStart) {
         this.blockNum = blockNum;
         this.blockStart = blockStart;

@@ -122,6 +122,7 @@ public class VerifyCodeSignature {
      * @throws VerifyCodeSignException parsing result invalid
      * @throws FsVerityDigestException if fs-verity digest generation failed
      * @throws CMSException            if signature verify failed
+     * @throws ProfileException        if verify profile failed
      */
     public static boolean verifyElf(File file, long offset, long length, String fileFormat, String profileContent)
             throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
