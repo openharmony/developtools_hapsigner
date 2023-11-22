@@ -382,7 +382,7 @@ public class VerifyHap {
         return result;
     }
 
-    private ElfBlockData getElfSignBlockData(byte[] bytes) {
+    private ElfBlockData getElfSignBlockData(byte[] bytes) throws IOException {
         int offset = bytes.length - HwSignHead.SIGN_HEAD_LEN;
         byte[] magicByte = readByteArrayOffset(bytes, offset, HwSignHead.ELF_MAGIC.length);
         offset += HwSignHead.ELF_MAGIC.length;
@@ -390,15 +390,12 @@ public class VerifyHap {
         offset += HwSignHead.VERSION.length;
         for (int i = 0; i < HwSignHead.ELF_MAGIC.length; i++) {
             if (HwSignHead.ELF_MAGIC[i] != magicByte[i]) {
-                String errMsg = "elf magic verify failed";
-                new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
+                throw new IOException("elf magic verify failed");
             }
         }
         for (int i = 0; i < HwSignHead.VERSION.length; i++) {
             if (HwSignHead.VERSION[i] != versionByte[i]) {
-                String errMsg = "elf sign version verify failed";
-                new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
-            }
+                throw new IOException("elf sign version verify failed");            }
         }
         int intByteLength = 4;
         byte[] blockSizeByte = readByteArrayOffset(bytes, offset, intByteLength);
