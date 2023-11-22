@@ -292,6 +292,8 @@ public class VerifyHap {
             if (!checkCodeSign(hapFilePath, optionalBlocks)) {
                 String errMsg = "code sign verify failed";
                 return new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
+            } else {
+                LOGGER.info("verify codesign success");
             }
             HapVerify verifyEngine = getHapVerify(hapFile, zipInfo, hapSigningBlockAndOffsetInFile,
                     signatureSchemeBlock, optionalBlocks);
