@@ -339,7 +339,7 @@ public class VerifyHap {
             Map<Character, SigningBlock> signBlock = getSignBlock(bytes, elfSignBlockData);
             if (signBlock.containsKey(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK)) {
                 profileByte = signBlock.get(SignatureBlockTypes.PROFILE_NOSIGNED_BLOCK).getValue();
-                profileJson = new String(profileByte);
+                profileJson = new String(profileByte, StandardCharsets.UTF_8);
                 result.setProfile(profileByte);
                 LOGGER.warn("profile is not signed");
             } else if (signBlock.containsKey(SignatureBlockTypes.PROFILE_SIGNED_BLOCK)) {
@@ -382,7 +382,6 @@ public class VerifyHap {
 
     private ElfBlockData getElfSignBlockData(byte[] bytes) {
         int offset = bytes.length - HwSignHead.SIGN_HEAD_LEN;
-        int intByteLength = 4;
         byte[] magicByte = readByteArrayOffset(bytes, offset, HwSignHead.ELF_MAGIC.length);
         offset += HwSignHead.ELF_MAGIC.length;
         byte[] versionByte = readByteArrayOffset(bytes, offset, HwSignHead.VERSION.length);
@@ -399,6 +398,7 @@ public class VerifyHap {
                 new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
             }
         }
+        int intByteLength = 4;
         byte[] blockSizeByte = readByteArrayOffset(bytes, offset, intByteLength);
         offset += intByteLength;
         byte[] blockNumByte = readByteArrayOffset(bytes, offset, intByteLength);

@@ -93,6 +93,15 @@ public class HapVerify {
 
     private boolean isPrintCert;
 
+    /**
+     * Init Zip HapVerify
+     *
+     * @param beforeApkSigningBlock beforeApkSigningBlock
+     * @param signatureSchemeBlock signatureSchemeBlock
+     * @param centralDirectoryBlock centralDirectoryBlock
+     * @param eocd eocd
+     * @param optionalBlocks optionalBlocks
+     */
     public HapVerify(
             ZipDataInput beforeApkSigningBlock,
             ByteBuffer signatureSchemeBlock,
@@ -106,6 +115,9 @@ public class HapVerify {
         this.optionalBlocks = optionalBlocks;
     }
 
+    /**
+     * init HapVerify
+     */
     public HapVerify() {
     }
 
