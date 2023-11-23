@@ -62,6 +62,8 @@ public class SignElf {
 
     private static final int PAGE_SIZE = 4096;
 
+    private static final int FILE_BUFFER_BLOCK = 16384;
+
     /**
      * Constructor of Method
      */
@@ -79,7 +81,7 @@ public class SignElf {
         boolean isSuccess = false;
         /* 1. Make block head, write to output file. */
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
-        String tmpFile = get4KTmpFile(inputFile);
+        String tmpFile = alignFileBy4kBytes(inputFile);
         if (tmpFile == null) {
             LOGGER.error("copy input File failed");
             return isSuccess;
@@ -103,22 +105,33 @@ public class SignElf {
         return isSuccess;
     }
 
-    private static String get4KTmpFile(String inputFile) {
+    private static String alignFileBy4kBytes(String inputFile) {
         String tmp = "tmpFile" + new Date().getTime();
         File tmpFile = new File(tmp);
         try {
             tmpFile.createNewFile();
         } catch (IOException e) {
+            LOGGER.error("create tmp file Failed");
             return null;
         }
         try (FileOutputStream output = new FileOutputStream(tmpFile);
              FileInputStream input = new FileInputStream(inputFile)) {
-            byte[] buffer = new byte[PAGE_SIZE];
-            while (input.read(buffer) != FileUtils.FILE_END) {
-                output.write(buffer, 0, PAGE_SIZE);
-                java.util.Arrays.fill(buffer, (byte) 0);
+            byte[] buffer = new byte[FILE_BUFFER_BLOCK];
+            int read;
+            while ((read = input.read(buffer)) != FileUtils.FILE_END) {
+                output.write(buffer, 0, read);
             }
-        } catch (IOException ex) {
+
+            long addLength = PAGE_SIZE - (tmpFile.length() % PAGE_SIZE);
+            if (isLongOverflowInteger(addLength)) {
+                LOGGER.error("File alignment error");
+                return null;
+            }
+            byte[] bytes = new byte[(int) addLength];
+            java.util.Arrays.fill(bytes, (byte) 0);
+            FileUtils.writeByteToOutFile(bytes, tmp);
+        } catch (IOException e) {
+            LOGGER.error("copy inFile Failed");
             return null;
         }
         return tmp;
@@ -140,7 +153,7 @@ public class SignElf {
             if (!StringUtils.isEmpty(signParams.get(ParamConstants.PARAM_BASIC_PROFILE))) {
                 signDataList.add(generateProfileSignByte(profileFile, profileSigned));
             }
-            blockNum = signDataList.size() + 1;
+            blockNum = signDataList.size() + 1; // other sign block num + codesign block 1
             SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen);
             if (codeSign != null) {
                 signDataList.add(0, codeSign);
