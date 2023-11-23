@@ -28,6 +28,7 @@ public class ElfBlockData {
         this.blockNum = blockNum;
         this.blockStart = blockStart;
     }
+
     public int getBlockNum() {
         return blockNum;
     }
