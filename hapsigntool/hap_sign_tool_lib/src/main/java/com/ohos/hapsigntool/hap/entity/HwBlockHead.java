@@ -25,14 +25,14 @@ import java.nio.ByteOrder;
  */
 public class HwBlockHead {
     /**
-     * bin file sign block length
+     * bin file sign block length is 8 byte
      */
-    public static final int BLOCK_LEN = 8; // bin block length is 8 byte
+    public static final int BLOCK_LEN = 8;
 
     /**
-     * elf file sign block length
+     * elf file sign block length is 12 byte
      */
-    public static final int ELF_BLOCK_LEN = 12; // elf block length is 12 byte
+    public static final int ELF_BLOCK_LEN = 12;
 
     private static final int BIT_SIZE = 8;
 
