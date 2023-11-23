@@ -292,8 +292,6 @@ public class VerifyHap {
             if (!checkCodeSign(hapFilePath, optionalBlocks)) {
                 String errMsg = "code sign verify failed";
                 return new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
-            } else {
-                LOGGER.info("verify codesign success");
             }
             HapVerify verifyEngine = getHapVerify(hapFile, zipInfo, hapSigningBlockAndOffsetInFile,
                     signatureSchemeBlock, optionalBlocks);
@@ -395,7 +393,8 @@ public class VerifyHap {
         }
         for (int i = 0; i < HwSignHead.VERSION.length; i++) {
             if (HwSignHead.VERSION[i] != versionByte[i]) {
-                throw new IOException("elf sign version verify failed");            }
+                throw new IOException("elf sign version verify failed");
+            }
         }
         int intByteLength = 4;
         byte[] blockSizeByte = readByteArrayOffset(bytes, offset, intByteLength);
@@ -493,10 +492,10 @@ public class VerifyHap {
                 LOGGER.error("Verify Hap has no code sign data error!");
                 return false;
             }
+            LOGGER.info("verify codesign success");
             return true;
-        } else {
-            LOGGER.info("can not find codesign block");
         }
+        LOGGER.info("can not find codesign block");
         return true;
     }
 
