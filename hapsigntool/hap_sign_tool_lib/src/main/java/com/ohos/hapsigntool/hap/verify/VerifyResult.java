@@ -117,6 +117,8 @@ public class VerifyResult {
 
     private int signBlockVersion;
 
+    private byte[] profile;
+
     /**
      * Empty constructor
      */
@@ -206,5 +208,13 @@ public class VerifyResult {
 
     public void setSignBlockVersion(int signBlockVersion) {
         this.signBlockVersion = signBlockVersion;
+    }
+
+    public byte[] getProfile() {
+        return profile;
+    }
+
+    public void setProfile(byte[] profile) {
+        this.profile = profile;
     }
 }

@@ -23,12 +23,14 @@ import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.provider.LocalJKSSignProvider;
 import com.ohos.hapsigntool.hap.provider.RemoteSignProvider;
 import com.ohos.hapsigntool.hap.provider.SignProvider;
+import com.ohos.hapsigntool.hap.verify.VerifyElf;
 import com.ohos.hapsigntool.hap.verify.VerifyHap;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.profile.VerifyHelper;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ProfileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 
@@ -324,8 +326,13 @@ public class SignToolServiceImpl implements ServiceApi {
 
     @Override
     public boolean verifyHap(Options options) {
-        VerifyHap hapVerify = new VerifyHap();
-        return hapVerify.verify(options);
+        if ("zip".equals(options.getOrDefault(ParamConstants.PARAM_IN_FORM, "zip"))) {
+            VerifyHap hapVerify = new VerifyHap();
+            return hapVerify.verify(options);
+        } else {
+            VerifyElf verifyElf = new VerifyElf();
+            return verifyElf.verify(options);
+        }
     }
 
     /**

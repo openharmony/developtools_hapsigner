@@ -160,7 +160,7 @@ public class FsVerityDescriptor {
         builder.setVersion(inFsVersion).setHashAlgorithm(inFsHashAlgorithm).setLog2BlockSize(inLog2BlockSize);
         byte inSaltSize = bf.get();
         int inSignSize = bf.getInt();
-        int inDataSize = bf.getInt();
+        long inDataSize = bf.getLong();
         byte[] inRootHash = new byte[FsVerityDescriptor.ROOT_HASH_FILED_SIZE];
         bf.get(inRootHash);
         builder.setSaltSize(inSaltSize).setSignSize(inSignSize).setFileSize(inDataSize).setRawRootHash(inRootHash);

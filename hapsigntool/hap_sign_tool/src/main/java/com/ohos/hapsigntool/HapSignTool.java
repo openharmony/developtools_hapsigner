@@ -333,7 +333,10 @@ public final class HapSignTool {
     private static boolean runVerifyApp(Options params, ServiceApi api) {
         params.required(Options.IN_FILE, Options.OUT_CERT_CHAIN,
                 Options.OUT_PROFILE);
-        FileUtils.validFileType(params.getString(Options.IN_FILE), "hap");
+        String inForm = params.getString(Options.IN_FORM, "zip");
+        if (!informList.contains(inForm)) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
+        }
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");
         return api.verifyHap(params);

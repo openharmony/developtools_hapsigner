@@ -30,31 +30,39 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
- * LiteOS bin file Signature signer.
+ * elf file Signature signer.
  *
- * @since 2021/12/21
+ * @since 2023/11/21
  */
 public class SignElf {
+    /**
+     * codesign sign block type
+     */
+    public static final char CODESIGN_BLOCK_TYPE = 3;
+
     private static final Logger LOGGER = LogManager.getLogger(SignElf.class);
 
     private static final String CODESIGN_OFF = "0";
 
-    private static final char CODESIGN_BLOCK_TYPE = 3;
-
     private static int blockNum = 0;
+
+    private static final int PAGE_SIZE = 4096;
+
+    private static final int FILE_BUFFER_BLOCK = 16384;
 
     /**
      * Constructor of Method
@@ -63,33 +71,70 @@ public class SignElf {
     }
 
     /**
-     * Sign the bin file.
+     * Sign the elf file.
      *
-     * @param signerConfig Config of the bin file to be signed.
-     * @param signParams The input parameters of sign bin.
+     * @param signerConfig Config of the elf file to be signed.
+     * @param signParams The input parameters of sign elf.
      * @return true if sign successfully; false otherwise.
      */
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
         boolean isSuccess = false;
         /* 1. Make block head, write to output file. */
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
+        String tmpFile = alignFileBy4kBytes(inputFile);
+        if (tmpFile == null) {
+            LOGGER.error("copy input File failed");
+            return isSuccess;
+        }
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
         String profileSigned = signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED);
-        if (!writeBlockDataToFile(signerConfig, inputFile, outputFile, profileSigned, signParams)) {
-            LOGGER.error("The block head data made failed.");
+        if (!writeBlockDataToFile(signerConfig, tmpFile, outputFile, profileSigned, signParams)) {
+            LOGGER.error("The block head data made failed.`");
             ParamProcessUtil.delDir(new File(outputFile));
-            return false;
+            return isSuccess;
         }
         LOGGER.info("The block head data made success.");
 
         /* 2. Make sign data, and write to output file */
-        if (!writeSignHeadDataToOutputFile(inputFile, outputFile, blockNum)) {
+        if (!writeSignHeadDataToOutputFile(tmpFile, outputFile, blockNum)) {
             LOGGER.error("The sign head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
         } else {
             isSuccess = true;
         }
         return isSuccess;
+    }
+
+    private static String alignFileBy4kBytes(String inputFile) {
+        String tmp = "tmpFile" + new Date().getTime();
+        File tmpFile = new File(tmp);
+        try {
+            tmpFile.createNewFile();
+        } catch (IOException e) {
+            LOGGER.error("create tmp file Failed");
+            return null;
+        }
+        try (FileOutputStream output = new FileOutputStream(tmpFile);
+             FileInputStream input = new FileInputStream(inputFile)) {
+            byte[] buffer = new byte[FILE_BUFFER_BLOCK];
+            int read;
+            while ((read = input.read(buffer)) != FileUtils.FILE_END) {
+                output.write(buffer, 0, read);
+            }
+
+            long addLength = PAGE_SIZE - (tmpFile.length() % PAGE_SIZE);
+            if (isLongOverflowInteger(addLength)) {
+                LOGGER.error("File alignment error");
+                return null;
+            }
+            byte[] bytes = new byte[(int) addLength];
+            java.util.Arrays.fill(bytes, (byte) 0);
+            FileUtils.writeByteToOutFile(bytes, tmp);
+        } catch (IOException e) {
+            LOGGER.error("copy inFile Failed");
+            return null;
+        }
+        return tmp;
     }
 
     private static boolean writeBlockDataToFile(SignerConfig signerConfig,
@@ -101,14 +146,14 @@ public class SignElf {
 
             long binFileLen = FileUtils.getFileLen(inputFile);
             if (binFileLen == -1) {
-                LOGGER.error("file length is invalid, bin file len: " + binFileLen);
+                LOGGER.error("file length is invalid, elf file len: " + binFileLen);
                 throw new IOException();
             }
             // 1. generate sign data
             if (!StringUtils.isEmpty(signParams.get(ParamConstants.PARAM_BASIC_PROFILE))) {
                 signDataList.add(generateProfileSignByte(profileFile, profileSigned));
             }
-            blockNum = signDataList.size();
+            blockNum = signDataList.size() + 1; // other sign block num + codesign block 1
             SignBlockData codeSign = generateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen);
             if (codeSign != null) {
                 signDataList.add(0, codeSign);
@@ -160,7 +205,7 @@ public class SignElf {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("writeSignedBin failed.", e);
+            LOGGER.error("writeSignedElf failed.", e);
             return false;
         }
         return true;
