@@ -169,13 +169,13 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -appCertFile : application signature certificate file, required fields on localSign mode, optional fields on remoteSign mode;
         -profileFile : signed Provision Profile file, p7b format, required fields;
         -profileSigned : indicates whether the profile file has a signature.The options are as follows: 1:yes; 0:no; default value:1. optional fields;
-        -inFile : input original application package file, hap or bin format, required fields;
+        -inFile : input original application package file, .hap, .bin, and .elf format, required fields;
         -signAlg : signature algorithm, required fields, including SHA256withRSA/SHA384withRSA/SHA256withECDSA/SHA384withECDSA;
         -keystoreFile : keystore file, if signature mode is localSign, required fields on localSign mode, JKS or P12 format;
         -keystorePwd : keystore password, optional fields on localSign mode;
         -outFile : output the signed Provision Profile file, required fields;
         -extCfgFile : Extend Profile, optional fields;
-        -inForm : enter the format of the original file, the format is .zip or .bin;
+        -inForm : Enter the format of the original file. The supported file formats include .zip, .bin, and .elf.;
         -compatibleVersion : min compatible api version for running app, required fields while input original application package file format is hap;
         -signServer : remote signer plugin, required fields on remoteSign mode;
         -signerPlugin : remote sign service url, required fields on remoteSign mode;
@@ -193,6 +193,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -outCertChain : signed certificate chain file, required fields;
         -outProfile : profile file in application package, required fields;
         -extCfgFile : Extend Profile, optional fields;
+        -inForm : Enter the format of the original file. The supported file formats include .zip, .bin, and .elf.;
 
     EXAMPLE:
         verify-app -inFile "D:\OH\app1-signed.hap" -outCertChain "outCertChain.cer" -outProfile "outprofile.p7b"

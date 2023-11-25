@@ -43,7 +43,6 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.Arrays;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,6 +50,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -151,7 +152,9 @@ public class VerifyHap {
                 throw new IOException();
             }
             String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
-            writeCertificate(outputCertPath, verifyResult.getCertificates());
+            if (verifyResult.getCertificates() != null) {
+                writeCertificate(outputCertPath, verifyResult.getCertificates());
+            }
         } catch (IOException e) {
             LOGGER.error("Write certificate chain error", e);
             return false;
@@ -202,13 +205,17 @@ public class VerifyHap {
                 }
             }
         }
+        byte[] profile = verifyResult.getProfile();
+        if (profile != null) {
+            writeOptionalBytesToFile(profile, outputProfileFile);
+        }
     }
 
     private void writeOptionalBytesToFile(byte[] data, String outputFile) throws IOException {
         if (outputFile == null || outputFile.isEmpty()) {
             return;
         }
-        try (OutputStream out = new FileOutputStream(outputFile)) {
+        try (OutputStream out = Files.newOutputStream(Paths.get(outputFile))) {
             out.write(data);
             out.flush();
         }
@@ -222,31 +229,6 @@ public class VerifyHap {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Verify signature of hap.
-     *
-     * @param hapFilePath path of hap file
-     * @param outCertPath path to output certificate file
-     * @param outProvisionFile path to output provision file
-     * @return verify result
-     */
-    public VerifyResult verifyHap(String hapFilePath, String outCertPath, String outProvisionFile) {
-        VerifyResult verifyResult = verifyHap(hapFilePath);
-        if (!verifyResult.isVerified()) {
-            return verifyResult;
-        }
-        List<X509Certificate> certificates = verifyResult.getCertificates();
-        try {
-            writeCertificate(outCertPath, certificates);
-            outputOptionalBlocks(outProvisionFile, null, null, verifyResult);
-        } catch (IOException e) {
-            LOGGER.error("Write certificate chain or profile error", e);
-            verifyResult.setIsResult(false);
-            return verifyResult;
-        }
-        return verifyResult;
     }
 
     /**
@@ -274,7 +256,7 @@ public class VerifyHap {
             List<SigningBlock> optionalBlocks = blockPair.getSecond();
             Collections.reverse(optionalBlocks);
             if (!checkCodeSign(hapFilePath, optionalBlocks)) {
-                String errMsg = "ZIP64 code sign data error";
+                String errMsg = "code sign verify failed";
                 return new VerifyResult(false, VerifyResult.RET_CODESIGN_DATA_ERROR, errMsg);
             }
             HapVerify verifyEngine = getHapVerify(hapFile, zipInfo, hapSigningBlockAndOffsetInFile,
@@ -340,9 +322,10 @@ public class VerifyHap {
                 .collect(Collectors.toMap(SigningBlock::getType, SigningBlock::getValue));
         byte[] propertyBlockArray = map.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
         if (propertyBlockArray != null && propertyBlockArray.length > 0) {
+            LOGGER.info("trying verify codesign block");
             String[] fileNameArray = hapFilePath.split("\\.");
             if (fileNameArray.length < ParamConstants.FILE_NAME_MIN_LENGTH) {
-                LOGGER.error("ZIP46 format not supported");
+                LOGGER.error("ZIP64 format not supported");
                 return false;
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(propertyBlockArray);
@@ -364,8 +347,10 @@ public class VerifyHap {
                 LOGGER.error("Verify Hap has no code sign data error!");
                 return false;
             }
+            LOGGER.info("verify codesign success");
             return true;
         }
+        LOGGER.info("can not find codesign block");
         return true;
     }
 

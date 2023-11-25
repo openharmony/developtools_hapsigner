@@ -185,6 +185,7 @@ public class ElfSignBlock {
             throw new VerifyCodeSignException("Invalid fs-verify descriptor with signature length of ElfSignBlock");
         }
         byte[] fsdArray = new byte[FsVerityDescriptor.DESCRIPTOR_SIZE];
+        bf.get(fsdArray);
         FsVerityDescriptor fsd = FsVerityDescriptor.fromByteArray(fsdArray);
         if (inFsdLength != fsd.getSignSize() + FsVerityDescriptor.DESCRIPTOR_SIZE) {
             throw new VerifyCodeSignException("Invalid sign size of ElfSignBlock");
