@@ -12,7 +12,9 @@
 
 #### 简介
 
-为了保证OpenHarmony应用的完整性和来源可靠，在应用构建时需要对应用进行签名。经过签名的应用才能在真机设备上安装、运行、和调试。本仓提供了签名工具的源码，包含密钥对生成、CSR文件生成、证书生成、Profile文件签名、Hap包签名等功能。
+为了保证OpenHarmony应用和调试工具的完整性和来源可靠，需要对应用和调试工具进行签名。经过签名的应用和调试工具才能在真机设备上安装、运行、和调试。本仓提供了签名工具的源码，包含密钥对生成、CSR文件生成、证书生成、Profile文件签名、Hap包签名、调试工具签名等功能。
+除基础的包签名外，签名工具额外提供了代码签名机制。代码签名机制可以为应用提供运行时的合法性校验以及完整性保护，杜绝未经审核的恶意代码在端侧任意执行，或应用代码被攻击者恶意篡改。
+签名工具默认开启代码签名机制，若用户确定不需要强制执行代码签名，可参考以下说明，关闭代码签名功能。签名工具当前仅支持对hap格式应用和调试工具执行代码签名。
 
 
 #### 目录
@@ -29,8 +31,8 @@
 
 
 #### 约束
-Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
-（附：一键签名等脚本文件基于Python语言开发，使用需配置环境python3.x）
+- Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行。
+- 一键签名等脚本文件基于Python语言开发，使用需配置环境python3.5及以上。
 #### 编译构建
 
  1. 该工具基于Gradle 7.1编译构建，请确认环境已安装配置Gradle环境，并且版本正确
@@ -107,13 +109,13 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -appCertFile       #应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，必填项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
-         ├── -inForm            #输入的原始文件的格式，zip格式或bin格式，默认zip格式；可选项
-         ├── -inFile            #输入的原始APP包文件，zip格式或bin格式，必填项
+         ├── -inForm            #输入的原始文件的格式，zip格式、elf格式或bin格式，默认zip格式；可选项
+         ├── -inFile            #输入的原始APP包文件，hap格式或bin格式，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的包文件，必填项
-         ├── -signcode          #指示包文件是否带有代码签名，1表示有代码签名，0表示没有代码签名，默认1。可选项
+         ├── -signcode          #是否启用代码签名，1表示开启代码签名，0表示关闭代码签名，默认为1。可选项
 
 
 2.一键签名
@@ -270,31 +272,32 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 
      verify-profile : ProvisionProfile文件验签
            ├── -inFile       # 已签名的Provision Profile文件，p7b格式，必填项
-           ├── -outFile       # 验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台
+           ├── -outFile      # 验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台
 
-9.hap应用包签名
+9.hap应用包和调试工具签名
   
-     sign-app : hap应用包签名 
+     sign-app : hap应用包和调试工具签名
           ├── -mode          # 签名模式，必填项，包括localSign，remoteSign，remoteResign
           ├── -keyAlias      # 密钥别名，必填项
           ├── -keyPwd        # 密钥口令，可选项
           ├── -appCertFile   # 应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式,必填项
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
-          ├── -inForm        # 输入的原始文件的格式，zip格式或bin格式，默认zip格式，可选项
-          ├── -inFile        # 输入的原始APP包文件，zip格式或bin格式，必填项
+          ├── -inForm        # 输入的原始文件的格式，zip格式、elf格式或bin格式，默认zip格式，可选项
+          ├── -inFile        # 输入的原始APP包文件，hap格式或bin格式，必填项
           ├── -signAlg       # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
           ├── -keystorePwd   # 密钥库口令，可选项
           ├── -outFile       # 输出签名后的包文件，必填项
-          ├── -signcode      # 指示包文件是否带有代码签名，1表示有代码签名，0表示没有代码签名，默认1。可选项    
+          ├── -signcode      # 是否启用代码签名，1表示开启代码签名，0表示关闭代码签名，默认为1。可选项
 
-10.hap应用包文件验签
+10.hap应用包和调试工具文件验签
 
-      verify-app : hap应用包文件验签
-         ├── -inFile          # 已签名的应用包文件，zip格式或bin格式，必填项
+      verify-app : hap应用包和调试工具文件验签
+         ├── -inFile          # 已签名的应用包文件，hap格式或bin格式，必填项
          ├── -outCertChain    # 签名的证书链文件，必填项
          ├── -outProfile      # 应用包中的profile文件，必填项
+         ├── -inForm          # 输入的原始文件的格式，zip格式、elf格式或bin格式，默认zip格式，可选项
 
 
 
