@@ -20,6 +20,7 @@
         <policylist>
             <policy name="projectPolicy" desc="">
                 <policyitem type="license" name="MIT" path="NOTICE" desc="The MIT license is allowed"/>
+                <policyitem type="license" name="GPL" path="NOTICE" desc="The GPL license is allowed"/>
             </policy>
         </policylist>
         <filefilterlist>
