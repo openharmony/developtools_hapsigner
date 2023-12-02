@@ -29,6 +29,7 @@ import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
+import com.ohos.hapsigntool.hap.entity.zip.Zip;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
 import com.ohos.hapsigntool.hap.exception.MissingParamsException;
@@ -504,6 +505,7 @@ public abstract class SignProvider {
      */
     private void copyFileAndAlignment(File input, File tmpOutput, int alignment)
             throws IOException, HapFormatException {
+        Zip zip = new Zip(input);
         try (JarFile inputJar = new JarFile(input, false);
              FileOutputStream outputFile = new FileOutputStream(tmpOutput);
              JarOutputStream outputJar = new JarOutputStream(outputFile)) {

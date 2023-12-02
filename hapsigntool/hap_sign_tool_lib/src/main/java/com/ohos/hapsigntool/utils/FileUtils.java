@@ -58,7 +58,7 @@ public final class FileUtils {
     /**
      * File reader block size
      */
-    public static final int FILE_BUFFER_BLOCK = 4096;
+    public static final int FILE_BUFFER_BLOCK = 16 * 1024;
     /**
      * File end
      */
@@ -96,7 +96,25 @@ public final class FileUtils {
      * @throws IOException Read failed
      */
     public static byte[] readFile(File file) throws IOException {
-        return read(new FileInputStream(file));
+        return read(Files.newInputStream(file.toPath()), 0L, file.length());
+    }
+
+    /**
+     * Read byte from input file.
+     *
+     * @param file Which file to read
+     * @return byte content
+     * @throws IOException Read failed
+     */
+    public static byte[] readFileByOffsetAndLength(File file, long offset, long length) throws IOException {
+        if (offset > file.length()) {
+            throw new IOException("read file failed: offset " + offset + "is too large");
+        }
+
+        if (length + offset > file.length()) {
+            throw new IOException("read file failed");
+        }
+        return read(Files.newInputStream(file.toPath()), offset, length);
     }
 
     /**
@@ -112,6 +130,35 @@ public final class FileUtils {
             int read;
             while ((read = input.read(buffer)) != FILE_END) {
                 output.write(buffer, 0, read);
+            }
+            return output.toByteArray();
+        } finally {
+            close(input);
+        }
+    }
+
+    /**
+     * Read byte from input stream.
+     *
+     * @param input Input stream
+     * @return File content
+     * @throws IOException Read failed
+     */
+    public static byte[] read(InputStream input, long offset, long length) throws IOException {
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[FILE_BUFFER_BLOCK];
+            int read;
+            long readSum = 0;
+            input.skip(offset);
+            while ((read = input.read(buffer)) != FILE_END) {
+                readSum += read;
+                if (readSum <= length) {
+                    output.write(buffer, 0, read);
+                } else {
+                    long outputLength = length % FILE_BUFFER_BLOCK;
+                    output.write(buffer, 0, (int) outputLength);
+                    break;
+                }
             }
             return output.toByteArray();
         } finally {
