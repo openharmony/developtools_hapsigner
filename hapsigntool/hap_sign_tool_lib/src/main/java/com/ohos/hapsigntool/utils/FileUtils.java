@@ -58,7 +58,7 @@ public final class FileUtils {
     /**
      * File reader block size
      */
-    public static final int FILE_BUFFER_BLOCK = 16 * 1024;
+    public static final int FILE_BUFFER_BLOCK = 1024 * 1024;
     /**
      * File end
      */
@@ -236,6 +236,46 @@ public final class FileUtils {
     /**
      * Write data in file to output stream
      *
+     * @param inFile input file path.
+     * @param outFile output file path.
+     * @param offset file read offset
+     * @param size file read size
+     * @return true, if write successfully.
+     */
+    public static boolean writeFileByOffsetToFile(String inFile, String outFile, long offset, long size) {
+        if (StringUtils.isEmpty(outFile)) {
+            return false;
+        }
+        File src = new File(inFile);
+        File outPutFile = new File(outFile);
+        try (FileInputStream fileStream = new FileInputStream(src);
+             FileOutputStream fos = new FileOutputStream(outPutFile, true)) {
+            byte[] buffer = new byte[FILE_BUFFER_BLOCK];
+            int read;
+            long readSum = 0;
+            fileStream.skip(offset);
+            while ((read = fileStream.read(buffer)) != FILE_END) {
+                readSum += read;
+                if (readSum <= size) {
+                    fos.write(buffer, 0, read);
+                } else {
+                    long outputLength = size % FILE_BUFFER_BLOCK;
+                    fos.write(buffer, 0, (int) outputLength);
+                    break;
+                }
+            }
+            return true;
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to get input stream object.");
+        } catch (IOException e) {
+            LOGGER.error("Failed to read or write data.");
+        }
+        return false;
+    }
+
+    /**
+     * Write data in file to output stream
+     *
      * @param file input file path.
      * @param dos output stream.
      * @return true, if write successfully.
@@ -297,13 +337,13 @@ public final class FileUtils {
     /**
      * Write byte array data to output file.
      *
-     * @param signHeadByte byte array data.
+     * @param bytes byte array data.
      * @param outFile output file path.
      * @return true, if write successfully.
      */
-    public static boolean writeByteToOutFile(byte[] signHeadByte, String outFile) {
+    public static boolean writeByteToOutFile(byte[] bytes, String outFile) {
         try (OutputStream ops = new FileOutputStream(outFile, true)) {
-            ops.write(signHeadByte, 0, signHeadByte.length);
+            ops.write(bytes, 0, bytes.length);
             ops.flush();
             return true;
         } catch (FileNotFoundException e) {

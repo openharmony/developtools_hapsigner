@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * resolve zip CentralDirectory data
+ *
+ * @since 2023/12/02
+ */
 class CentralDirectory {
     public static final int cdLength = 46;
 
@@ -126,6 +131,8 @@ class CentralDirectory {
      */
     private String comment;
 
+    private int length;
+
     public static CentralDirectory initCentralDirectory(byte[] bytes, int offset) {
         if (bytes.length < offset) {
             return null;
@@ -155,7 +162,9 @@ class CentralDirectory {
         cd.setExternalFile(bf.getInt());
         cd.setOffset(bf.getInt());
         if (cd.getFileNameLength() > 0) {
-            cd.setFileName(new String(bf.array(), StandardCharsets.UTF_8));
+            byte[] fileName = new byte[cd.getFileNameLength()];
+            bf.get(fileName);
+            cd.setFileName(new String(fileName, StandardCharsets.UTF_8));
         }
         if (cd.getExtraLength() > 0) {
             byte[] extra = new byte[cd.getExtraLength()];
@@ -163,13 +172,15 @@ class CentralDirectory {
             cd.setExtraData(extra);
         }
         if (cd.getCommentLength() > 0) {
-            cd.setComment(new String(bf.array(), StandardCharsets.UTF_8));
+            byte[] comment = new byte[cd.getCommentLength()];
+            bf.get(comment);
+            cd.setComment(new String(comment, StandardCharsets.UTF_8));
         }
+        cd.setLength(cdLength + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
         return cd;
     }
 
     public byte[] toBytes() {
-        int length = cdLength + fileNameLength + extraLength + commentLength;
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(signature);
         bf.putShort(version);
@@ -350,5 +361,13 @@ class CentralDirectory {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 }
