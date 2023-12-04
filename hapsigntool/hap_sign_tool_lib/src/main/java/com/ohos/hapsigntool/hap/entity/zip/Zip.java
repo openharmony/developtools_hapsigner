@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,13 +18,22 @@ package com.ohos.hapsigntool.hap.entity.zip;
 
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * resolve zip data
+ *
+ * @since 2023/12/02
+ */
 public class Zip {
+    private static final Logger LOGGER = LogManager.getLogger(Zip.class);
+
     private List<ZipEntry> zipEntries;
 
     private long signingOffset;
@@ -33,24 +42,38 @@ public class Zip {
 
     private long CDOffset;
 
-    private List<CentralDirectory> centralDirectories;
-
     private long EOCDOffset;
 
     private EndOfCentralDirectory endOfCentralDirectory;
 
     private String file;
 
+    private final List<String> suffix4K = new ArrayList<String>() {{
+        add(".so");
+        add(".abc");
+    }};
+
+    private final short unCompressMethod = 0;
+
     public Zip(File file) throws IOException {
+        long start = System.currentTimeMillis();
         this.file = file.getPath();
         // 1. get eocd data
         endOfCentralDirectory = getZipEndOfCentralDirectory(file);
+        long EOCD = System.currentTimeMillis();
+        LOGGER.info("read EOCD use " + (EOCD - start) + "ms");
         // 2. use eocd's cd offset, get cd data
-        centralDirectories = getZipCentralDirectory(file);
+        getZipCentralDirectory(file);
+        long CD = System.currentTimeMillis();
+        LOGGER.info("read CD use " + (CD - EOCD) + "ms");
         // 3. use cd's entry offset and file size, get entry data
-        zipEntries = getZipEntries(file);
-        // 4. file data - eocd - cd - entry = sign block
+        getZipEntries(file);
+        long entry = System.currentTimeMillis();
+        LOGGER.info("read entry use " + (entry - CD) + "ms");
+        // 4. file all data - eocd - cd - entry = sign block
         signingBlock = getSigningBlock(file);
+        long signBlock = System.currentTimeMillis();
+        LOGGER.info("read signBlock use " + (signBlock - entry) + "ms");
     }
 
     private EndOfCentralDirectory getZipEndOfCentralDirectory(File file) throws IOException {
@@ -83,8 +106,8 @@ public class Zip {
         throw new ZipException("read zip failed: can not find eocd in file");
     }
 
-    private List<CentralDirectory> getZipCentralDirectory(File file) throws IOException {
-        List<CentralDirectory> cdList = new ArrayList<>(endOfCentralDirectory.getCDTotal());
+    private void getZipCentralDirectory(File file) throws IOException {
+        zipEntries = new ArrayList<>(endOfCentralDirectory.getCDTotal());
         CDOffset = endOfCentralDirectory.getOffset();
         byte[] cdBytes = FileUtils.readFileByOffsetAndLength(file, CDOffset, endOfCentralDirectory.getCDSize());
         if (cdBytes.length < CentralDirectory.cdLength) {
@@ -96,77 +119,130 @@ public class Zip {
             if (cd == null) {
                 throw new ZipException("find zip cd failed");
             }
-            cdList.add(cd);
+            ZipEntry entry = new ZipEntry();
+            entry.setCentralDirectory(cd);
+            zipEntries.add(entry);
             offset += CentralDirectory.cdLength + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength();
         }
-        return cdList;
     }
 
     private byte[] getSigningBlock(File file) throws IOException {
         return FileUtils.readFileByOffsetAndLength(file, signingOffset, CDOffset - signingOffset);
     }
 
-    private List<ZipEntry> getZipEntries(File file) throws IOException {
-        List<ZipEntry> entryList = new ArrayList<>();
-        for (CentralDirectory cd : centralDirectories) {
+    private void getZipEntries(File file) throws IOException {
+        for (ZipEntry entry : zipEntries) {
+            CentralDirectory cd = entry.getCentralDirectory();
             long offset = cd.getOffset();
             long fileSize = cd.getCompressedSize();
-            entryList.add(initZipEntry(file, offset, fileSize));
+            short flag = cd.getFlag();
+            short i = 0x08;
+            // set desc null flag
+            boolean descFlag = (flag & i) != 0;
+            entry.setZipEntryData(ZipEntryData.initZipEntry(file, offset, fileSize, descFlag));
         }
-        return entryList;
+        ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
+        CentralDirectory endCD = endEntry.getCentralDirectory();
+        ZipEntryData endEntryData = endEntry.getZipEntryData();
+        signingOffset = endCD.getOffset() + endEntryData.getLength();
     }
 
-    private ZipEntry initZipEntry(File file, long entryOffset, long fileSize) throws IOException {
-        ZipEntry entry = new ZipEntry();
-        long offset = entryOffset;
-        byte[] headBytes = FileUtils.readFileByOffsetAndLength(file, offset, ZipEntryHeader.headerLength);
-        ZipEntryHeader zipEntryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
-        if (zipEntryHeader == null) {
-            throw new ZipException("find zip entry head failed");
+    public void toFile(String file) throws IOException {
+        File f = new File(file);
+        if (!f.exists()) {
+            f.createNewFile();
         }
-        offset += ZipEntryHeader.headerLength;
-        byte[] nameExtra = FileUtils.readFileByOffsetAndLength(file, offset, zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength());
-        zipEntryHeader.setNameAndExtra(nameExtra);
+        FileUtils.write(new byte[]{}, f);
+        long start = System.currentTimeMillis();
 
-        offset += zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
-        entry.setFileOffset(offset);
-        entry.setFileSize(fileSize);
-
-        offset += fileSize;
-        byte[] desBytes = FileUtils.readFileByOffsetAndLength(file, offset, DataDescriptor.desLength);
-        DataDescriptor dataDescriptor = DataDescriptor.initDataDescriptor(desBytes);
-        if (dataDescriptor == null) {
-            throw new ZipException("find zip entry desc failed");
-        }
-
-        entry.setDataDescriptor(dataDescriptor);
-        entry.setZipEntryHeader(zipEntryHeader);
-        return entry;
-    }
-
-    public void toFile(String file) {
-        for (ZipEntry zipEntry : zipEntries) {
-            FileUtils.writeByteToOutFile(zipEntry.getZipEntryHeader().toBytes(), file);
-            // TODO 需要根据源文件，按照offset写入压缩后数据
-//            FileUtils.wri(zipEntry.getZipEntryData(), file);
-            FileUtils.writeByteToOutFile(zipEntry.getDataDescriptor().toBytes(), file);
+        for (ZipEntry entry : zipEntries) {
+            ZipEntryData zipEntryData = entry.getZipEntryData();
+            FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), file);
+            FileUtils.writeFileByOffsetToFile(this.file, file, zipEntryData.getFileOffset(), zipEntryData.getFileSize());
+            if (zipEntryData.getDataDescriptor() != null) {
+                FileUtils.writeByteToOutFile(zipEntryData.getDataDescriptor().toBytes(), file);
+            }
         }
         FileUtils.writeByteToOutFile(signingBlock, file);
-        for (CentralDirectory cd : centralDirectories) {
+        for (ZipEntry entry : zipEntries) {
+            CentralDirectory cd = entry.getCentralDirectory();
             FileUtils.writeByteToOutFile(cd.toBytes(), file);
         }
         FileUtils.writeByteToOutFile(endOfCentralDirectory.toBytes(), file);
+        long end = System.currentTimeMillis();
+        LOGGER.info("write file use " + (end - start) + "ms");
     }
 
-    public void alignment() {
-        // TODO 字节对齐逻辑
-    }
-    public List<ZipEntry> getZipEntries() {
-        return zipEntries;
+    public void alignment() throws ZipException {
+        for (ZipEntry entry : zipEntries) {
+            ZipEntryData zipEntryData = entry.getZipEntryData();
+            short method = zipEntryData.getZipEntryHeader().getMethod();
+            // only align uncompressed entry.
+            if (method != unCompressMethod) {
+                continue;
+            }
+            // some file align 4096 byte.
+            if (is4kAlignSuffix(zipEntryData.getZipEntryHeader().getFileName())) {
+                short align4kBytes = 4096;
+                short alignment = zipEntryData.alignment(align4kBytes);
+                if (alignment > 0) {
+                    int offset = entry.getCentralDirectory().getOffset() + alignment;
+                    entry.getCentralDirectory().setOffset(offset);
+                    endOfCentralDirectory.setOffset(endOfCentralDirectory.getOffset() + alignment);
+                }
+            } else {
+            // other file align 4 byte.
+                short align4Bytes = 4;
+                short alignment = zipEntryData.alignment(align4Bytes);
+                if (alignment > 0) {
+                    int offset = entry.getCentralDirectory().getOffset() + alignment;
+                    entry.getCentralDirectory().setOffset(offset);
+                    endOfCentralDirectory.setOffset(endOfCentralDirectory.getOffset() + alignment);
+                }
+            }
+        }
     }
 
-    public void setZipEntries(List<ZipEntry> zipEntries) {
-        this.zipEntries = zipEntries;
+    public void sort() {
+        int unCompressOffset = 0;
+        int CompressOffset = zipEntries.size() - 1;
+        int pointer = 0;
+        // sort uncompress file (so, abc) - other uncompress file - compress file
+        while (pointer <= CompressOffset) {
+            ZipEntry entry = zipEntries.get(pointer);
+            if (is4kAlignSuffix(entry.getZipEntryData().getZipEntryHeader().getFileName())
+                    && entry.getZipEntryData().getZipEntryHeader().getMethod() == unCompressMethod) {
+                ZipEntry temp = zipEntries.get(unCompressOffset);
+                zipEntries.set(unCompressOffset, zipEntries.get(pointer));
+                zipEntries.set(pointer, temp);
+                unCompressOffset++;
+                pointer++;
+                continue;
+            }
+            if (entry.getZipEntryData().getZipEntryHeader().getMethod() != unCompressMethod) {
+                ZipEntry temp = zipEntries.get(CompressOffset);
+                zipEntries.set(CompressOffset, zipEntries.get(pointer));
+                zipEntries.set(pointer, temp);
+                CompressOffset--;
+                continue;
+            }
+            pointer++;
+        }
+        // reset offset
+        int offset = 0;
+        for (ZipEntry entry : zipEntries) {
+            entry.getCentralDirectory().setOffset(offset);
+            offset += entry.getZipEntryData().getLength();
+        }
+    }
+
+    private boolean is4kAlignSuffix(String name) {
+        for (String suffix : suffix4K) {
+            if (name.endsWith(suffix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public long getSigningOffset() {
@@ -193,14 +269,6 @@ public class Zip {
         this.CDOffset = CDOffset;
     }
 
-    public List<CentralDirectory> getCentralDirectories() {
-        return centralDirectories;
-    }
-
-    public void setCentralDirectories(List<CentralDirectory> centralDirectories) {
-        this.centralDirectories = centralDirectories;
-    }
-
     public long getEOCDOffset() {
         return EOCDOffset;
     }
@@ -223,5 +291,13 @@ public class Zip {
 
     public void setFile(String file) {
         this.file = file;
+    }
+
+    public List<ZipEntry> getZipEntries() {
+        return zipEntries;
+    }
+
+    public void setZipEntries(List<ZipEntry> zipEntries) {
+        this.zipEntries = zipEntries;
     }
 }

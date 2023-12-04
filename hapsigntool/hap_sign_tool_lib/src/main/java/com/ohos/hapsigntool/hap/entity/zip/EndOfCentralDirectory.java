@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * resolve zip EndOfCentralDirectory data
+ *
+ * @since 2023/12/04
+ */
 class EndOfCentralDirectory {
     public static final int eocdLength = 22;
 
@@ -68,6 +73,8 @@ class EndOfCentralDirectory {
      */
     private String comment;
 
+    private int length;
+
     public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes) {
         EndOfCentralDirectory eocd = new EndOfCentralDirectory();
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
@@ -89,6 +96,7 @@ class EndOfCentralDirectory {
             bf.get(comment);
             eocd.setComment(new String(comment, StandardCharsets.UTF_8));
         }
+        eocd.setLength(eocdLength + eocd.getCommentLength());
         if (bf.remaining() != 0) {
             return null;
         }
@@ -96,7 +104,7 @@ class EndOfCentralDirectory {
     }
 
     public byte[] toBytes() {
-        ByteBuffer bf = ByteBuffer.allocate(eocdLength + commentLength).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(signature);
         bf.putShort(diskNum);
         bf.putShort(CDStartDiskNum);
@@ -173,5 +181,13 @@ class EndOfCentralDirectory {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 }

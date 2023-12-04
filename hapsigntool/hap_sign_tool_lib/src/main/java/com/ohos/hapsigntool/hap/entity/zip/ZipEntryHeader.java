@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * resolve zip ZipEntryHeader data
+ *
+ * @since 2023/12/02
+ */
 class ZipEntryHeader {
 
     public static int headerLength = 30;
@@ -88,6 +93,8 @@ class ZipEntryHeader {
      */
     private byte[] extraData;
 
+    private int length;
+
     public static ZipEntryHeader initZipEntryHeader(byte[] bytes) {
         ZipEntryHeader entryHeader = new ZipEntryHeader();
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
@@ -107,7 +114,7 @@ class ZipEntryHeader {
         entryHeader.setUnCompressedSize(bf.getInt());
         entryHeader.setFileNameLength(bf.getShort());
         entryHeader.setExtraLength(bf.getShort());
-
+        entryHeader.setLength(headerLength + entryHeader.getFileNameLength() + entryHeader.getExtraLength());
         return entryHeader;
     }
 
@@ -129,7 +136,6 @@ class ZipEntryHeader {
     }
 
     public byte[] toBytes() {
-        int length = headerLength + fileNameLength + extraLength;
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(signature);
         bf.putShort(version);
@@ -149,14 +155,6 @@ class ZipEntryHeader {
             bf.put(extraData);
         }
         return bf.array();
-    }
-
-    public static int getHeaderLength() {
-        return headerLength;
-    }
-
-    public static void setHeaderLength(int headerLength) {
-        ZipEntryHeader.headerLength = headerLength;
     }
 
     public short getVersion() {
@@ -253,5 +251,13 @@ class ZipEntryHeader {
 
     public void setExtraData(byte[] extraData) {
         this.extraData = extraData;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 }
