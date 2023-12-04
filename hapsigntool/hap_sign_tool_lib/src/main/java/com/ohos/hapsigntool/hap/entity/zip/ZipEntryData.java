@@ -89,6 +89,13 @@ class ZipEntryData {
         zipEntryHeader.setExtraLength(length);
         byte[] extra = new byte[length];
         zipEntryHeader.setExtraData(extra);
+        zipEntryHeader.setExtraLength(length);
+        int newLength = ZipEntryHeader.headerLength +
+                zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraData().length;
+        if (zipEntryHeader.getLength() + add != newLength) {
+            throw new ZipException("can not align " + zipEntryHeader.getFileName());
+        }
+        zipEntryHeader.setLength(newLength);
         return (short) add;
     }
 
