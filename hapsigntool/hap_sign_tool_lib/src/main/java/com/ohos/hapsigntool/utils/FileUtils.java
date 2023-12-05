@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ohos.hapsigntool.error.ERROR;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,27 +43,31 @@ import java.nio.file.Files;
  * @since 2021/12/28
  */
 public final class FileUtils {
-
     /**
      * LOGGER.
      */
     private static final Logger LOGGER = LogManager.getLogger(FileUtils.class);
+
     /**
      * add GSON static.
      */
     public static final Gson GSON = (new GsonBuilder()).disableHtmlEscaping().create();
+
     /**
      * add GSON_PRETTY_PRINT static.
      */
     public static final Gson GSON_PRETTY_PRINT = (new GsonBuilder()).disableHtmlEscaping().setPrettyPrinting().create();
+
     /**
      * File reader block size
      */
     public static final int FILE_BUFFER_BLOCK = 1024 * 1024;
+
     /**
      * File end
      */
     public static final int FILE_END = -1;
+
     /**
      * Expected split string length
      */
@@ -103,18 +108,48 @@ public final class FileUtils {
      * Read byte from input file.
      *
      * @param file Which file to read
+     * @param offset read offset
+     * @param length read length
      * @return byte content
      * @throws IOException Read failed
      */
     public static byte[] readFileByOffsetAndLength(File file, long offset, long length) throws IOException {
-        if (offset > file.length()) {
-            throw new IOException("read file failed: offset " + offset + "is too large");
+        try (FileInputStream fs = new FileInputStream(file)) {
+            return readFileByOffsetAndLength(fs, offset, length);
         }
+    }
 
-        if (length + offset > file.length()) {
-            throw new IOException("read file failed");
+    /**
+     * Read byte from input file.
+     *
+     * @param fs Which file to read
+     * @param offset read offset
+     * @param length read length
+     * @return byte content
+     * @throws IOException Read failed
+     */
+    public static byte[] readFileByOffsetAndLength(FileInputStream fs, long offset, long length) throws IOException {
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer;
+            fs.skip(offset);
+            if (length > FILE_BUFFER_BLOCK) {
+                long num = length / FILE_BUFFER_BLOCK;
+                long remainder = length % FILE_BUFFER_BLOCK;
+                buffer = new byte[FILE_BUFFER_BLOCK];
+                byte[] suffix = new byte[(int) remainder];
+                for (int i = 0; i < num; i++) {
+                    int read = fs.read(buffer);
+                    output.write(buffer, 0, read);
+                }
+                int read = fs.read(suffix);
+                output.write(buffer, 0, read);
+            } else {
+                buffer = new byte[(int) length];
+                int read = fs.read(buffer);
+                output.write(buffer, 0, read);
+            }
+            return output.toByteArray();
         }
-        return read(Files.newInputStream(file.toPath()), offset, length);
     }
 
     /**
@@ -141,6 +176,8 @@ public final class FileUtils {
      * Read byte from input stream.
      *
      * @param input Input stream
+     * @param offset read offset
+     * @param length read length
      * @return File content
      * @throws IOException Read failed
      */
@@ -148,7 +185,7 @@ public final class FileUtils {
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[FILE_BUFFER_BLOCK];
             int read;
-            long readSum = 0;
+            long readSum = 0L;
             input.skip(offset);
             while ((read = input.read(buffer)) != FILE_END) {
                 readSum += read;
@@ -161,8 +198,6 @@ public final class FileUtils {
                 }
             }
             return output.toByteArray();
-        } finally {
-            close(input);
         }
     }
 
@@ -252,7 +287,7 @@ public final class FileUtils {
              FileOutputStream fos = new FileOutputStream(outPutFile, true)) {
             byte[] buffer = new byte[FILE_BUFFER_BLOCK];
             int read;
-            long readSum = 0;
+            long readSum = 0L;
             fileStream.skip(offset);
             while ((read = fileStream.read(buffer)) != FILE_END) {
                 readSum += read;
@@ -376,6 +411,7 @@ public final class FileUtils {
 
     /**
      * Open an input stream of input file safely.
+     *
      * @param file input file.
      * @return an input stream of input file
      * @throws IOException file is a directory or can't be read.
