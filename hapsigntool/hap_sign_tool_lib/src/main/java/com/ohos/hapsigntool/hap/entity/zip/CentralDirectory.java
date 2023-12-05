@@ -190,7 +190,7 @@ class CentralDirectory {
             bf.get(readComment);
             cd.setComment(new String(readComment, StandardCharsets.UTF_8));
         }
-        cd.setLength(byteLength);
+        cd.setLength(CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
         return cd;
     }
 
