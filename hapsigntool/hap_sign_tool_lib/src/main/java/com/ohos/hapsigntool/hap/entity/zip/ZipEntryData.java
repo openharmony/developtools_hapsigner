@@ -19,6 +19,7 @@ import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -41,41 +42,63 @@ class ZipEntryData {
         return zipEntryHeader;
     }
 
-    public static ZipEntryData initZipEntry(File file, long entryOffset, long fileSize, boolean descFlag) throws IOException {
-        ZipEntryData entry = new ZipEntryData();
-        long offset = entryOffset;
-        byte[] headBytes = FileUtils.readFileByOffsetAndLength(file, offset, ZipEntryHeader.headerLength);
-        ZipEntryHeader zipEntryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
-        if (zipEntryHeader == null) {
-            throw new ZipException("find zip entry head failed");
-        }
-        offset += ZipEntryHeader.headerLength;
-        byte[] nameAndExtra = FileUtils.readFileByOffsetAndLength(file, offset,
-                zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength());
-        zipEntryHeader.setNameAndExtra(nameAndExtra);
-
-        offset += zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
-        entry.setFileOffset(offset);
-        entry.setFileSize(fileSize);
-
-        offset += fileSize;
-        long length = zipEntryHeader.getLength() + fileSize;
-
-        if (descFlag) {
-            byte[] desBytes = FileUtils.readFileByOffsetAndLength(file, offset, DataDescriptor.desLength);
-            DataDescriptor dataDescriptor = DataDescriptor.initDataDescriptor(desBytes);
-            if (dataDescriptor == null) {
-                throw new ZipException("find zip entry desc failed");
+    /**
+     * init zip entry by file
+     *
+     * @param file zip file
+     * @param entryOffset entry start offset
+     * @param compress compress file size
+     * @param hasDesc has data descriptor
+     * @return zip entry
+     * @throws IOException read zip exception
+     */
+    public static ZipEntryData initZipEntry(File file, long entryOffset, long compress, boolean hasDesc)
+            throws IOException {
+        try (FileInputStream fs = new FileInputStream(file)) {
+            long offset = entryOffset;
+            fs.skip(offset);
+            byte[] headBytes = FileUtils.readFileByOffsetAndLength(fs, 0, ZipEntryHeader.HEADER_LENGTH);
+            ZipEntryHeader entryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
+            if (entryHeader == null) {
+                throw new ZipException("find zip entry head failed");
             }
-            length += DataDescriptor.desLength;
-            entry.setDataDescriptor(dataDescriptor);
-        }
+            offset += ZipEntryHeader.HEADER_LENGTH;
+            byte[] nameAndExtra = FileUtils.readFileByOffsetAndLength(fs, 0,
+                    entryHeader.getFileNameLength() + entryHeader.getExtraLength());
+            entryHeader.setNameAndExtra(nameAndExtra);
 
-        entry.setZipEntryHeader(zipEntryHeader);
-        entry.setLength(length);
-        return entry;
+            offset += entryHeader.getFileNameLength() + entryHeader.getExtraLength();
+
+            ZipEntryData entry = new ZipEntryData();
+            entry.setFileOffset(offset);
+            entry.setFileSize(compress);
+            fs.skip(compress);
+
+            offset += compress;
+            long entryLength = entryHeader.getLength() + compress;
+
+            if (hasDesc) {
+                byte[] desBytes = FileUtils.readFileByOffsetAndLength(fs, 0, DataDescriptor.DES_LENGTH);
+                DataDescriptor dataDesc = DataDescriptor.initDataDescriptor(desBytes);
+                if (dataDesc == null) {
+                    throw new ZipException("find zip entry desc failed");
+                }
+                entryLength += DataDescriptor.DES_LENGTH;
+                entry.setDataDescriptor(dataDesc);
+            }
+            entry.setZipEntryHeader(entryHeader);
+            entry.setLength(entryLength);
+            return entry;
+        }
     }
 
+    /**
+     * alignment one entry
+     *
+     * @param alignNum  need align bytes length
+     * @return add bytes length
+     * @throws ZipException alignment exception
+     */
     public short alignment(short alignNum) throws ZipException {
         long add = alignNum - length % alignNum;
         if (add > Short.MAX_VALUE) {
@@ -85,17 +108,18 @@ class ZipEntryData {
         if (newExtraLength > Short.MAX_VALUE) {
             throw new ZipException("can not align " + zipEntryHeader.getFileName());
         }
-        short length = (short) newExtraLength;
-        zipEntryHeader.setExtraLength(length);
-        byte[] extra = new byte[length];
+        short extraLength = (short) newExtraLength;
+        zipEntryHeader.setExtraLength(extraLength);
+        byte[] extra = new byte[extraLength];
         zipEntryHeader.setExtraData(extra);
-        zipEntryHeader.setExtraLength(length);
-        int newLength = ZipEntryHeader.headerLength +
-                zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraData().length;
+        zipEntryHeader.setExtraLength(extraLength);
+        int newLength = ZipEntryHeader.HEADER_LENGTH
+                + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraData().length;
         if (zipEntryHeader.getLength() + add != newLength) {
             throw new ZipException("can not align " + zipEntryHeader.getFileName());
         }
         zipEntryHeader.setLength(newLength);
+        this.length += length;
         return (short) add;
     }
 
