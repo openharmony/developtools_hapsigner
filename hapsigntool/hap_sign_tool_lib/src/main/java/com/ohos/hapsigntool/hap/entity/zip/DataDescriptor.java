@@ -24,23 +24,32 @@ import java.nio.ByteOrder;
  * @since 2023/12/02
  */
 public class DataDescriptor {
-    public static final int desLength = 12;
+    /**
+     * DataDescriptor invariable bytes length
+     */
+    public static final int DES_LENGTH = 12;
 
     /**
      * 4 bytes
      */
-    int crc32;
+    private int crc32;
 
     /**
      * 4 bytes
      */
-    int compressedSize;
+    private int compressedSize;
 
     /**
      * 4 bytes
      */
-    int unCompressedSize;
+    private int unCompressedSize;
 
+    /**
+     * init Central Directory
+     *
+     * @param bytes DataDescriptor bytes
+     * @return DataDescriptor
+     */
     public static DataDescriptor initDataDescriptor(byte[] bytes) {
         if (bytes.length != 12) {
             return null;
@@ -56,8 +65,13 @@ public class DataDescriptor {
         return data;
     }
 
+    /**
+     * change DataDescriptor to bytes
+     *
+     * @return bytes
+     */
     public byte[] toBytes() {
-        ByteBuffer bf = ByteBuffer.allocate(desLength).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bf = ByteBuffer.allocate(DES_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(crc32);
         bf.putInt(compressedSize);
         bf.putInt(unCompressedSize);
@@ -74,17 +88,3 @@ public class DataDescriptor {
 
     public int getCompressedSize() {
         return compressedSize;
-    }
-
-    public void setCompressedSize(int compressedSize) {
-        this.compressedSize = compressedSize;
-    }
-
-    public int getUnCompressedSize() {
-        return unCompressedSize;
-    }
-
-    public void setUnCompressedSize(int unCompressedSize) {
-        this.unCompressedSize = unCompressedSize;
-    }
-}
