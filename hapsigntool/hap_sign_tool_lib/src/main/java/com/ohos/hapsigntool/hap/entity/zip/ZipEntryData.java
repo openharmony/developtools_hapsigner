@@ -53,32 +53,31 @@ class ZipEntryData {
      * @throws IOException read zip exception
      */
     public static ZipEntryData initZipEntry(File file, long entryOffset, long compress, boolean hasDesc)
-            throws IOException {
-        try (FileInputStream fs = new FileInputStream(file)) {
+        throws IOException {
+        try (FileInputStream input = new FileInputStream(file)) {
             long offset = entryOffset;
-            fs.skip(offset);
-            byte[] headBytes = FileUtils.readFileByOffsetAndLength(fs, 0, ZipEntryHeader.HEADER_LENGTH);
+            byte[] headBytes = FileUtils.readInputByOffsetAndLength(input, entryOffset, ZipEntryHeader.HEADER_LENGTH);
             ZipEntryHeader entryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
             if (entryHeader == null) {
                 throw new ZipException("find zip entry head failed");
             }
             offset += ZipEntryHeader.HEADER_LENGTH;
-            byte[] nameAndExtra = FileUtils.readFileByOffsetAndLength(fs, 0,
-                    entryHeader.getFileNameLength() + entryHeader.getExtraLength());
+            int nameAndExtraLength = entryHeader.getFileNameLength() + entryHeader.getExtraLength();
+            byte[] nameAndExtra = FileUtils.readInputByLength(input, nameAndExtraLength);
             entryHeader.setNameAndExtra(nameAndExtra);
 
-            offset += entryHeader.getFileNameLength() + entryHeader.getExtraLength();
+            offset += nameAndExtraLength;
 
             ZipEntryData entry = new ZipEntryData();
             entry.setFileOffset(offset);
             entry.setFileSize(compress);
-            fs.skip(compress);
+            input.skip(compress);
 
             offset += compress;
             long entryLength = entryHeader.getLength() + compress;
 
             if (hasDesc) {
-                byte[] desBytes = FileUtils.readFileByOffsetAndLength(fs, 0, DataDescriptor.DES_LENGTH);
+                byte[] desBytes = FileUtils.readInputByLength(input, DataDescriptor.DES_LENGTH);
                 DataDescriptor dataDesc = DataDescriptor.initDataDescriptor(desBytes);
                 if (dataDesc == null) {
                     throw new ZipException("find zip entry desc failed");
