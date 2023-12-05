@@ -25,12 +25,15 @@ import java.nio.charset.StandardCharsets;
  * @since 2023/12/02
  */
 class CentralDirectory {
-    public static final int cdLength = 46;
+    /**
+     * central directory invariable bytes length
+     */
+    public static final int CD_LENGTH = 46;
 
     /**
-     * 4 bytes
+     * 4 bytes , central directory signature
      */
-    public static final int signature = 0x02014b50;
+    public static final int SIGNATURE = 0x02014b50;
 
     /**
      * 2 bytes
@@ -133,6 +136,13 @@ class CentralDirectory {
 
     private int length;
 
+    /**
+     * init Central Directory
+     *
+     * @param bytes Full Central Directory bytes
+     * @param offset One Central Directory offset
+     * @return CentralDirectory
+     */
     public static CentralDirectory initCentralDirectory(byte[] bytes, int offset) {
         if (bytes.length < offset) {
             return null;
@@ -142,7 +152,7 @@ class CentralDirectory {
         bf.put(bytes, offset, bytes.length - offset);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
-        if (bf.getInt() != signature) {
+        if (bf.getInt() != SIGNATURE) {
             return null;
         }
         cd.setVersion(bf.getShort());
@@ -162,9 +172,9 @@ class CentralDirectory {
         cd.setExternalFile(bf.getInt());
         cd.setOffset(bf.getInt());
         if (cd.getFileNameLength() > 0) {
-            byte[] fileName = new byte[cd.getFileNameLength()];
-            bf.get(fileName);
-            cd.setFileName(new String(fileName, StandardCharsets.UTF_8));
+            byte[] readFileName = new byte[cd.getFileNameLength()];
+            bf.get(readFileName);
+            cd.setFileName(new String(readFileName, StandardCharsets.UTF_8));
         }
         if (cd.getExtraLength() > 0) {
             byte[] extra = new byte[cd.getExtraLength()];
@@ -172,17 +182,22 @@ class CentralDirectory {
             cd.setExtraData(extra);
         }
         if (cd.getCommentLength() > 0) {
-            byte[] comment = new byte[cd.getCommentLength()];
-            bf.get(comment);
-            cd.setComment(new String(comment, StandardCharsets.UTF_8));
+            byte[] readComment = new byte[cd.getCommentLength()];
+            bf.get(readComment);
+            cd.setComment(new String(readComment, StandardCharsets.UTF_8));
         }
-        cd.setLength(cdLength + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
+        cd.setLength(CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
         return cd;
     }
 
+    /**
+     * change Central Directory to bytes
+     *
+     * @return bytes
+     */
     public byte[] toBytes() {
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
-        bf.putInt(signature);
+        bf.putInt(SIGNATURE);
         bf.putShort(version);
         bf.putShort(versionExtra);
         bf.putShort(flag);
