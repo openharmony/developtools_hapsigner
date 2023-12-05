@@ -15,267 +15,147 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
+import com.ohos.hapsigntool.error.ZipException;
+import com.ohos.hapsigntool.utils.FileUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
- * resolve zip ZipEntryHeader data
+ * resolve zip ZipEntry data
  *
- * @since 2023/12/02
+ * @since 2023/12/04
  */
-class ZipEntryHeader {
-    /**
-     * ZipEntryHeader invariable bytes length
-     */
-    public static final int HEADER_LENGTH = 30;
+class ZipEntryData {
+    private ZipEntryHeader zipEntryHeader;
+
+    private long fileOffset;
+
+    private long fileSize;
+
+    private DataDescriptor dataDescriptor;
+
+    private long length;
+
+    public ZipEntryHeader getZipEntryHeader() {
+        return zipEntryHeader;
+    }
 
     /**
-     * 4 bytes , entry header signature
-     */
-    public static final int SIGNATURE = 0x04034b50;
-
-    /**
-     * 2 bytes
-     */
-    private short version;
-
-    /**
-     * 2 bytes
-     */
-    private short flag;
-
-    /**
-     * 2 bytes
-     */
-    private short method;
-
-    /**
-     * 2 bytes
-     */
-    private short lastTime;
-
-    /**
-     * 2 bytes
-     */
-    private short lastDate;
-
-    /**
-     * 4 bytes
-     */
-    private int crc32;
-
-    /**
-     * 4 bytes
-     */
-    private int compressedSize;
-
-    /**
-     * 4 bytes
-     */
-    private int unCompressedSize;
-
-    /**
-     * 2 bytes
-     */
-    private short fileNameLength;
-
-    /**
-     * 2 bytes
-     */
-    private short extraLength;
-
-    /**
-     * n bytes
-     */
-    private String fileName;
-
-    /**
-     * n bytes
-     */
-    private byte[] extraData;
-
-    private int length;
-
-    /**
-     * init Zip Entry Header
+     * init zip entry by file
      *
-     * @param bytes ZipEntryHeader bytes
-     * @return ZipEntryHeader
+     * @param file zip file
+     * @param entryOffset entry start offset
+     * @param compress compress file size
+     * @param hasDesc has data descriptor
+     * @return zip entry
+     * @throws IOException read zip exception
      */
-    public static ZipEntryHeader initZipEntryHeader(byte[] bytes) {
-        ZipEntryHeader entryHeader = new ZipEntryHeader();
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes);
-        bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
-        if (bf.getInt() != ZipEntryHeader.SIGNATURE) {
-            return null;
+    public static ZipEntryData initZipEntry(File file, long entryOffset, long compress, boolean hasDesc)
+            throws IOException {
+        try (FileInputStream fs = new FileInputStream(file)) {
+            long offset = entryOffset;
+            fs.skip(offset);
+            byte[] headBytes = FileUtils.readFileByOffsetAndLength(fs, 0, ZipEntryHeader.HEADER_LENGTH);
+            ZipEntryHeader entryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
+            if (entryHeader == null) {
+                throw new ZipException("find zip entry head failed");
+            }
+            offset += ZipEntryHeader.HEADER_LENGTH;
+            byte[] nameAndExtra = FileUtils.readFileByOffsetAndLength(fs, 0,
+                    entryHeader.getFileNameLength() + entryHeader.getExtraLength());
+            entryHeader.setNameAndExtra(nameAndExtra);
+
+            offset += entryHeader.getFileNameLength() + entryHeader.getExtraLength();
+
+            ZipEntryData entry = new ZipEntryData();
+            entry.setFileOffset(offset);
+            entry.setFileSize(compress);
+            fs.skip(compress);
+
+            offset += compress;
+            long entryLength = entryHeader.getLength() + compress;
+
+            if (hasDesc) {
+                byte[] desBytes = FileUtils.readFileByOffsetAndLength(fs, 0, DataDescriptor.DES_LENGTH);
+                DataDescriptor dataDesc = DataDescriptor.initDataDescriptor(desBytes);
+                if (dataDesc == null) {
+                    throw new ZipException("find zip entry desc failed");
+                }
+                entryLength += DataDescriptor.DES_LENGTH;
+                entry.setDataDescriptor(dataDesc);
+            }
+            entry.setZipEntryHeader(entryHeader);
+            entry.setLength(entryLength);
+            return entry;
         }
-        entryHeader.setVersion(bf.getShort());
-        entryHeader.setFlag(bf.getShort());
-        entryHeader.setMethod(bf.getShort());
-        entryHeader.setLastTime(bf.getShort());
-        entryHeader.setLastDate(bf.getShort());
-        entryHeader.setCrc32(bf.getInt());
-        entryHeader.setCompressedSize(bf.getInt());
-        entryHeader.setUnCompressedSize(bf.getInt());
-        entryHeader.setFileNameLength(bf.getShort());
-        entryHeader.setExtraLength(bf.getShort());
-        entryHeader.setLength(HEADER_LENGTH + entryHeader.getFileNameLength() + entryHeader.getExtraLength());
-        return entryHeader;
     }
 
     /**
-     * set entry header name and extra
+     * alignment one entry
      *
-     * @param bytes name and extra bytes
+     * @param alignNum  need align bytes length
+     * @return add bytes length
+     * @throws ZipException alignment exception
      */
-    public void setNameAndExtra(byte[] bytes) {
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes);
-        bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
-        if (fileNameLength > 0) {
-            byte[] nameBytes = new byte[fileNameLength];
-            bf.get(nameBytes);
-            this.fileName = new String(nameBytes, StandardCharsets.UTF_8);
+    public short alignment(short alignNum) throws ZipException {
+        long add = alignNum - length % alignNum;
+        if (add > Short.MAX_VALUE) {
+            throw new ZipException("can not align " + zipEntryHeader.getFileName());
         }
-        if (extraLength > 0) {
-            byte[] extra = new byte[extraLength];
-            bf.get(extra);
-            this.extraData = extra;
+        int newExtraLength = zipEntryHeader.getExtraLength() + (short) add;
+        if (newExtraLength > Short.MAX_VALUE) {
+            throw new ZipException("can not align " + zipEntryHeader.getFileName());
         }
-    }
-
-    /**
-     * change Zip Entry Header to bytes
-     *
-     * @return bytes
-     */
-    public byte[] toBytes() {
-        ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
-        bf.putInt(SIGNATURE);
-        bf.putShort(version);
-        bf.putShort(flag);
-        bf.putShort(method);
-        bf.putShort(lastTime);
-        bf.putShort(lastDate);
-        bf.putInt(crc32);
-        bf.putInt(compressedSize);
-        bf.putInt(unCompressedSize);
-        bf.putShort(fileNameLength);
-        bf.putShort(extraLength);
-        if (fileNameLength > 0) {
-            bf.put(fileName.getBytes(StandardCharsets.UTF_8));
+        short extraLength = (short) newExtraLength;
+        zipEntryHeader.setExtraLength(extraLength);
+        byte[] extra = new byte[extraLength];
+        zipEntryHeader.setExtraData(extra);
+        zipEntryHeader.setExtraLength(extraLength);
+        int newLength = ZipEntryHeader.HEADER_LENGTH
+                + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraData().length;
+        if (zipEntryHeader.getLength() + add != newLength) {
+            throw new ZipException("can not align " + zipEntryHeader.getFileName());
         }
-        if (extraLength > 0) {
-            bf.put(extraData);
-        }
-        return bf.array();
+        zipEntryHeader.setLength(newLength);
+        this.length += length;
+        return (short) add;
     }
 
-    public short getFlag() {
-        return flag;
+    public void setZipEntryHeader(ZipEntryHeader zipEntryHeader) {
+        this.zipEntryHeader = zipEntryHeader;
     }
 
-    public void setFlag(short flag) {
-        this.flag = flag;
+    public DataDescriptor getDataDescriptor() {
+        return dataDescriptor;
     }
 
-    public short getMethod() {
-        return method;
+    public void setDataDescriptor(DataDescriptor dataDescriptor) {
+        this.dataDescriptor = dataDescriptor;
     }
 
-    public void setMethod(short method) {
-        this.method = method;
+    public long getFileOffset() {
+        return fileOffset;
     }
 
-    public short getVersion() {
-        return version;
+    public void setFileOffset(long fileOffset) {
+        this.fileOffset = fileOffset;
     }
 
-    public void setVersion(short version) {
-        this.version = version;
+    public long getFileSize() {
+        return fileSize;
     }
 
-    public short getLastTime() {
-        return lastTime;
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
     }
 
-    public void setLastTime(short lastTime) {
-        this.lastTime = lastTime;
-    }
-
-    public short getLastDate() {
-        return lastDate;
-    }
-
-    public void setLastDate(short lastDate) {
-        this.lastDate = lastDate;
-    }
-
-    public int getCrc32() {
-        return crc32;
-    }
-
-    public void setCrc32(int crc32) {
-        this.crc32 = crc32;
-    }
-
-    public int getCompressedSize() {
-        return compressedSize;
-    }
-
-    public void setCompressedSize(int compressedSize) {
-        this.compressedSize = compressedSize;
-    }
-
-    public int getUnCompressedSize() {
-        return unCompressedSize;
-    }
-
-    public void setUnCompressedSize(int unCompressedSize) {
-        this.unCompressedSize = unCompressedSize;
-    }
-
-    public short getFileNameLength() {
-        return fileNameLength;
-    }
-
-    public void setFileNameLength(short fileNameLength) {
-        this.fileNameLength = fileNameLength;
-    }
-
-    public short getExtraLength() {
-        return extraLength;
-    }
-
-    public void setExtraLength(short extraLength) {
-        this.extraLength = extraLength;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public byte[] getExtraData() {
-        return extraData;
-    }
-
-    public void setExtraData(byte[] extraData) {
-        this.extraData = extraData;
-    }
-
-    public int getLength() {
+    public long getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(long length) {
         this.length = length;
     }
 }
