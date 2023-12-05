@@ -106,20 +106,19 @@ public class Zip {
     private void getZipCentralDirectory(File file) throws IOException {
         zipEntries = new ArrayList<>(endOfCentralDirectory.getCDTotal());
         cDOffset = endOfCentralDirectory.getOffset();
+        // read full central directory bytes
         byte[] cdBytes = FileUtils.readFileByOffsetAndLength(file, cDOffset, endOfCentralDirectory.getCDSize());
         if (cdBytes.length < CentralDirectory.CD_LENGTH) {
             throw new ZipException("find zip cd failed");
         }
         int offset = 0;
+        // one by one format central directory
         while (offset < cdBytes.length) {
             CentralDirectory cd = CentralDirectory.initCentralDirectory(cdBytes, offset);
-            if (cd == null) {
-                throw new ZipException("find zip cd failed");
-            }
             ZipEntry entry = new ZipEntry();
             entry.setCentralDirectory(cd);
             zipEntries.add(entry);
-            offset += CentralDirectory.CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength();
+            offset += cd.getLength();
         }
     }
 
@@ -128,6 +127,7 @@ public class Zip {
     }
 
     private void getZipEntries(File file) throws IOException {
+        // use central directory data, find entry data
         for (ZipEntry entry : zipEntries) {
             CentralDirectory cd = entry.getCentralDirectory();
             long offset = cd.getOffset();

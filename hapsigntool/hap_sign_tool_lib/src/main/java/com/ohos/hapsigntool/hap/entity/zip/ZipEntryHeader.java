@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
+import com.ohos.hapsigntool.error.ZipException;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -102,15 +104,16 @@ class ZipEntryHeader {
      *
      * @param bytes ZipEntryHeader bytes
      * @return ZipEntryHeader
+     * @throws ZipException read entry header exception
      */
-    public static ZipEntryHeader initZipEntryHeader(byte[] bytes) {
+    public static ZipEntryHeader initZipEntryHeader(byte[] bytes) throws ZipException {
         ZipEntryHeader entryHeader = new ZipEntryHeader();
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
         bf.put(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
         if (bf.getInt() != ZipEntryHeader.SIGNATURE) {
-            return null;
+            throw new ZipException("find zip entry head failed");
         }
         entryHeader.setVersion(bf.getShort());
         entryHeader.setFlag(bf.getShort());

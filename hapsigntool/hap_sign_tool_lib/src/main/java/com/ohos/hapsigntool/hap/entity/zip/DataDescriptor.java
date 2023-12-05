@@ -60,7 +60,7 @@ public class DataDescriptor {
      */
     public static DataDescriptor initDataDescriptor(byte[] bytes) throws ZipException {
         if (bytes.length != DES_LENGTH) {
-            return null;
+            throw new ZipException("read Data Descriptor failed");
         }
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
         bf.put(bytes);
