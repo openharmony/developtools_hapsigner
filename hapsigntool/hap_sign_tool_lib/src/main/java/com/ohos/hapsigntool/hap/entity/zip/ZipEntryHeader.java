@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -26,12 +25,15 @@ import java.nio.charset.StandardCharsets;
  * @since 2023/12/02
  */
 class ZipEntryHeader {
-
-    public static int headerLength = 30;
     /**
-     * 4 bytes
+     * ZipEntryHeader invariable bytes length
      */
-    public static final int signature = 0x04034b50;
+    public static final int HEADER_LENGTH = 30;
+
+    /**
+     * 4 bytes , entry header signature
+     */
+    public static final int SIGNATURE = 0x04034b50;
 
     /**
      * 2 bytes
@@ -95,13 +97,19 @@ class ZipEntryHeader {
 
     private int length;
 
+    /**
+     * init Zip Entry Header
+     *
+     * @param bytes ZipEntryHeader bytes
+     * @return ZipEntryHeader
+     */
     public static ZipEntryHeader initZipEntryHeader(byte[] bytes) {
         ZipEntryHeader entryHeader = new ZipEntryHeader();
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
         bf.put(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
-        if (bf.getInt() != ZipEntryHeader.signature) {
+        if (bf.getInt() != ZipEntryHeader.SIGNATURE) {
             return null;
         }
         entryHeader.setVersion(bf.getShort());
@@ -114,10 +122,15 @@ class ZipEntryHeader {
         entryHeader.setUnCompressedSize(bf.getInt());
         entryHeader.setFileNameLength(bf.getShort());
         entryHeader.setExtraLength(bf.getShort());
-        entryHeader.setLength(headerLength + entryHeader.getFileNameLength() + entryHeader.getExtraLength());
+        entryHeader.setLength(HEADER_LENGTH + entryHeader.getFileNameLength() + entryHeader.getExtraLength());
         return entryHeader;
     }
 
+    /**
+     * set entry header name and extra
+     *
+     * @param bytes name and extra bytes
+     */
     public void setNameAndExtra(byte[] bytes) {
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
         bf.put(bytes);
@@ -135,9 +148,14 @@ class ZipEntryHeader {
         }
     }
 
+    /**
+     * change Zip Entry Header to bytes
+     *
+     * @return bytes
+     */
     public byte[] toBytes() {
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
-        bf.putInt(signature);
+        bf.putInt(SIGNATURE);
         bf.putShort(version);
         bf.putShort(flag);
         bf.putShort(method);
@@ -157,14 +175,6 @@ class ZipEntryHeader {
         return bf.array();
     }
 
-    public short getVersion() {
-        return version;
-    }
-
-    public void setVersion(short version) {
-        this.version = version;
-    }
-
     public short getFlag() {
         return flag;
     }
@@ -179,6 +189,14 @@ class ZipEntryHeader {
 
     public void setMethod(short method) {
         this.method = method;
+    }
+
+    public short getVersion() {
+        return version;
+    }
+
+    public void setVersion(short version) {
+        this.version = version;
     }
 
     public short getLastTime() {
