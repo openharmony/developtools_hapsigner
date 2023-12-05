@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
+import com.ohos.hapsigntool.error.ZipException;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -27,7 +29,12 @@ public class DataDescriptor {
     /**
      * DataDescriptor invariable bytes length
      */
-    public static final int DES_LENGTH = 12;
+    public static final int DES_LENGTH = 16;
+
+    /**
+     * 4 bytes , DataDescriptor signature
+     */
+    public static final int SIGNATURE = 0x08074b50;
 
     /**
      * 4 bytes
@@ -49,9 +56,10 @@ public class DataDescriptor {
      *
      * @param bytes DataDescriptor bytes
      * @return DataDescriptor
+     * @throws ZipException read data descriptor exception
      */
-    public static DataDescriptor initDataDescriptor(byte[] bytes) {
-        if (bytes.length != 12) {
+    public static DataDescriptor initDataDescriptor(byte[] bytes) throws ZipException {
+        if (bytes.length != DES_LENGTH) {
             return null;
         }
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
@@ -59,6 +67,9 @@ public class DataDescriptor {
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
         DataDescriptor data = new DataDescriptor();
+        if (bf.getInt() != SIGNATURE) {
+            throw new ZipException("read Data Descriptor failed");
+        }
         data.setCrc32(bf.getInt());
         data.setCompressedSize(bf.getInt());
         data.setUnCompressedSize(bf.getInt());
@@ -72,6 +83,7 @@ public class DataDescriptor {
      */
     public byte[] toBytes() {
         ByteBuffer bf = ByteBuffer.allocate(DES_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
+        bf.putInt(SIGNATURE);
         bf.putInt(crc32);
         bf.putInt(compressedSize);
         bf.putInt(unCompressedSize);
