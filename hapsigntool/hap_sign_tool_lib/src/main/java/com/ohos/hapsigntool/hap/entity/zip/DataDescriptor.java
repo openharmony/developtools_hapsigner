@@ -88,3 +88,17 @@ public class DataDescriptor {
 
     public int getCompressedSize() {
         return compressedSize;
+    }
+
+    public void setCompressedSize(int compressedSize) {
+        this.compressedSize = compressedSize;
+    }
+
+    public int getUnCompressedSize() {
+        return unCompressedSize;
+    }
+
+    public void setUnCompressedSize(int unCompressedSize) {
+        this.unCompressedSize = unCompressedSize;
+    }
+}
