@@ -56,32 +56,28 @@ class ZipEntryData {
         throws IOException {
         try (FileInputStream input = new FileInputStream(file)) {
             long offset = entryOffset;
+            // read entry header by file and offset.
             byte[] headBytes = FileUtils.readInputByOffsetAndLength(input, entryOffset, ZipEntryHeader.HEADER_LENGTH);
             ZipEntryHeader entryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
-            if (entryHeader == null) {
-                throw new ZipException("find zip entry head failed");
-            }
             offset += ZipEntryHeader.HEADER_LENGTH;
+
+            // read entry file name and extra by offset.
             int nameAndExtraLength = entryHeader.getFileNameLength() + entryHeader.getExtraLength();
             byte[] nameAndExtra = FileUtils.readInputByLength(input, nameAndExtraLength);
             entryHeader.setNameAndExtra(nameAndExtra);
-
             offset += nameAndExtraLength;
 
+            // skip file data , save file offset and size.
             ZipEntryData entry = new ZipEntryData();
             entry.setFileOffset(offset);
             entry.setFileSize(compress);
             input.skip(compress);
 
-            offset += compress;
             long entryLength = entryHeader.getLength() + compress;
-
             if (hasDesc) {
+                // if entry has data descriptor, read entry data descriptor.
                 byte[] desBytes = FileUtils.readInputByLength(input, DataDescriptor.DES_LENGTH);
                 DataDescriptor dataDesc = DataDescriptor.initDataDescriptor(desBytes);
-                if (dataDesc == null) {
-                    throw new ZipException("find zip entry desc failed");
-                }
                 entryLength += DataDescriptor.DES_LENGTH;
                 entry.setDataDescriptor(dataDesc);
             }

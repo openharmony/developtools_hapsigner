@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
+import com.ohos.hapsigntool.error.ZipException;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -142,18 +144,20 @@ class CentralDirectory {
      * @param bytes Full Central Directory bytes
      * @param offset One Central Directory offset
      * @return CentralDirectory
+     * @throws ZipException read Central Directory exception
      */
-    public static CentralDirectory initCentralDirectory(byte[] bytes, int offset) {
+    public static CentralDirectory initCentralDirectory(byte[] bytes, int offset) throws ZipException {
         if (bytes.length < offset) {
-            return null;
+            throw new ZipException("find zip central directory failed");
         }
         CentralDirectory cd = new CentralDirectory();
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes, offset, bytes.length - offset);
+        int byteLength = bytes.length - offset;
+        ByteBuffer bf = ByteBuffer.allocate(byteLength);
+        bf.put(bytes, offset, byteLength);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
         if (bf.getInt() != SIGNATURE) {
-            return null;
+            throw new ZipException("find zip central directory failed");
         }
         cd.setVersion(bf.getShort());
         cd.setVersionExtra(bf.getShort());
@@ -186,7 +190,10 @@ class CentralDirectory {
             bf.get(readComment);
             cd.setComment(new String(readComment, StandardCharsets.UTF_8));
         }
-        cd.setLength(CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
+        if (CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength() != byteLength) {
+            throw new ZipException("find zip central directory failed");
+        }
+        cd.setLength(byteLength);
         return cd;
     }
 
