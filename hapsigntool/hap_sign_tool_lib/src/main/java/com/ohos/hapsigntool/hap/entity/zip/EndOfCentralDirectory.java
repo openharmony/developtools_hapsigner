@@ -25,23 +25,25 @@ import java.nio.charset.StandardCharsets;
  * @since 2023/12/04
  */
 class EndOfCentralDirectory {
-    public static final int eocdLength = 22;
+    /**
+     * EndOfCentralDirectory invariable bytes length
+     */
+    public static final int EOCD_LENGTH = 22;
 
     /**
-     * 4 bytes
+     * 4 bytes , central directory signature
      */
-    public static final int signature = 0x06054b50;
+    public static final int SIGNATURE = 0x06054b50;
 
     /**
      * 2 bytes
      */
     private short diskNum;
 
-
     /**
      * 2 bytes
      */
-    private short CDStartDiskNum;
+    private short cDStartDiskNum;
 
     /**
      * 2 bytes
@@ -51,12 +53,12 @@ class EndOfCentralDirectory {
     /**
      * 2 bytes
      */
-    private short CDTotal;
+    private short cDTotal;
 
     /**
      * 4 bytes
      */
-    private int CDSize;
+    private int cDSize;
 
     /**
      * 4 bytes
@@ -75,13 +77,19 @@ class EndOfCentralDirectory {
 
     private int length;
 
+    /**
+     * init End Of Central Directory
+     *
+     * @param bytes End Of Central Directory bytes
+     * @return End Of Central Directory
+     */
     public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes) {
         EndOfCentralDirectory eocd = new EndOfCentralDirectory();
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
         bf.put(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
-        if (bf.getInt() != signature) {
+        if (bf.getInt() != SIGNATURE) {
             return null;
         }
         eocd.setDiskNum(bf.getShort());
@@ -92,25 +100,30 @@ class EndOfCentralDirectory {
         eocd.setOffset(bf.getInt());
         eocd.setCommentLength(bf.getShort());
         if (eocd.getCommentLength() > 0) {
-            byte[] comment = new byte[eocd.getCommentLength()];
-            bf.get(comment);
-            eocd.setComment(new String(comment, StandardCharsets.UTF_8));
+            byte[] readComment = new byte[eocd.getCommentLength()];
+            bf.get(readComment);
+            eocd.setComment(new String(readComment, StandardCharsets.UTF_8));
         }
-        eocd.setLength(eocdLength + eocd.getCommentLength());
+        eocd.setLength(EOCD_LENGTH + eocd.getCommentLength());
         if (bf.remaining() != 0) {
             return null;
         }
         return eocd;
     }
 
+    /**
+     * change End Of Central Directory to bytes
+     *
+     * @return bytes
+     */
     public byte[] toBytes() {
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
-        bf.putInt(signature);
+        bf.putInt(SIGNATURE);
         bf.putShort(diskNum);
-        bf.putShort(CDStartDiskNum);
+        bf.putShort(cDStartDiskNum);
         bf.putShort(thisDiskCDNum);
-        bf.putShort(CDTotal);
-        bf.putInt(CDSize);
+        bf.putShort(cDTotal);
+        bf.putInt(cDSize);
         bf.putInt(offset);
         bf.putShort(commentLength);
         if (commentLength > 0) {
@@ -128,11 +141,11 @@ class EndOfCentralDirectory {
     }
 
     public short getCDStartDiskNum() {
-        return CDStartDiskNum;
+        return cDStartDiskNum;
     }
 
-    public void setCDStartDiskNum(short CDStartDiskNum) {
-        this.CDStartDiskNum = CDStartDiskNum;
+    public void setCDStartDiskNum(short cDStartDiskNum) {
+        this.cDStartDiskNum = cDStartDiskNum;
     }
 
     public short getThisDiskCDNum() {
@@ -144,19 +157,19 @@ class EndOfCentralDirectory {
     }
 
     public short getCDTotal() {
-        return CDTotal;
+        return cDTotal;
     }
 
-    public void setCDTotal(short CDTotal) {
-        this.CDTotal = CDTotal;
+    public void setCDTotal(short cDTotal) {
+        this.cDTotal = cDTotal;
     }
 
     public int getCDSize() {
-        return CDSize;
+        return cDSize;
     }
 
-    public void setCDSize(int CDSize) {
-        this.CDSize = CDSize;
+    public void setCDSize(int cDSize) {
+        this.cDSize = cDSize;
     }
 
     public int getOffset() {
@@ -175,19 +188,18 @@ class EndOfCentralDirectory {
         this.commentLength = commentLength;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public int getLength() {
         return length;
     }
 
     public void setLength(int length) {
         this.length = length;
+    }
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
