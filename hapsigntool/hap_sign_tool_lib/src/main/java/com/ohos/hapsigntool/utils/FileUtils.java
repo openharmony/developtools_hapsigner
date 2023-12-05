@@ -184,7 +184,7 @@ public final class FileUtils {
             }
             byte[] suffix = new byte[(int) remainder];
             int read = input.read(suffix);
-            output.write(buffer, 0, read);
+            output.write(suffix, 0, read);
         } else {
             buffer = new byte[(int) length];
             int read = input.read(buffer);
