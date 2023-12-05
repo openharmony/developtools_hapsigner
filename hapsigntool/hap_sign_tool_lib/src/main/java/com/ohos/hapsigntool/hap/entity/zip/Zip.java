@@ -32,8 +32,6 @@ import java.util.List;
  * @since 2023/12/02
  */
 public class Zip {
-    private static final Logger LOGGER = LogManager.getLogger(Zip.class);
-
     private List<ZipEntry> zipEntries;
 
     private long signingOffset;
@@ -48,7 +46,7 @@ public class Zip {
 
     private String file;
 
-    private final List<String> suffix4K = new ArrayList<>() {{
+    private final List<String> suffix4K = new ArrayList<String>() {{
         add(".so");
         add(".abc");
     }};
@@ -63,6 +61,9 @@ public class Zip {
      */
     public Zip(File file) throws IOException {
         this.file = file.getPath();
+        if (!file.exists()) {
+            throw new ZipException("read zip file failed");
+        }
         // 1. get eocd data
         endOfCentralDirectory = getZipEndOfCentralDirectory(file);
         // 2. use eocd's cd offset, get cd data
@@ -158,8 +159,11 @@ public class Zip {
         for (ZipEntry entry : zipEntries) {
             ZipEntryData zipEntryData = entry.getZipEntryData();
             FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), file);
-            FileUtils.writeFileByOffsetToFile(this.file, file,
+            boolean isSuccess = FileUtils.appendWriteFileByOffsetToFile(this.file, file,
                     zipEntryData.getFileOffset(), zipEntryData.getFileSize());
+            if (!isSuccess) {
+                throw new ZipException("write zip data failed");
+            }
             if (zipEntryData.getDataDescriptor() != null) {
                 FileUtils.writeByteToOutFile(zipEntryData.getDataDescriptor().toBytes(), file);
             }

@@ -508,15 +508,7 @@ public abstract class SignProvider {
         Zip zip = new Zip(input);
         zip.alignment();
         zip.sort();
-        zip.toFile("a.zip");
-        try (JarFile inputJar = new JarFile(input, false);
-             FileOutputStream outputFile = new FileOutputStream(tmpOutput);
-             JarOutputStream outputJar = new JarOutputStream(outputFile)) {
-            long timestamp = TIMESTAMP;
-            timestamp -= TimeZone.getDefault().getOffset(timestamp);
-            outputJar.setLevel(COMPRESSION_MODE);
-            SignHap.copyFiles(inputJar, outputJar, timestamp, alignment);
-        }
+        zip.toFile(tmpOutput.getPath());
     }
 
     /**

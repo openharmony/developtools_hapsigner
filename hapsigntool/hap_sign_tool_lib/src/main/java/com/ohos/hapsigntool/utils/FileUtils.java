@@ -101,55 +101,7 @@ public final class FileUtils {
      * @throws IOException Read failed
      */
     public static byte[] readFile(File file) throws IOException {
-        return read(Files.newInputStream(file.toPath()), 0L, file.length());
-    }
-
-    /**
-     * Read byte from input file.
-     *
-     * @param file Which file to read
-     * @param offset read offset
-     * @param length read length
-     * @return byte content
-     * @throws IOException Read failed
-     */
-    public static byte[] readFileByOffsetAndLength(File file, long offset, long length) throws IOException {
-        try (FileInputStream fs = new FileInputStream(file)) {
-            return readFileByOffsetAndLength(fs, offset, length);
-        }
-    }
-
-    /**
-     * Read byte from input file.
-     *
-     * @param fs Which file to read
-     * @param offset read offset
-     * @param length read length
-     * @return byte content
-     * @throws IOException Read failed
-     */
-    public static byte[] readFileByOffsetAndLength(FileInputStream fs, long offset, long length) throws IOException {
-        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            byte[] buffer;
-            fs.skip(offset);
-            if (length > FILE_BUFFER_BLOCK) {
-                long num = length / FILE_BUFFER_BLOCK;
-                long remainder = length % FILE_BUFFER_BLOCK;
-                buffer = new byte[FILE_BUFFER_BLOCK];
-                byte[] suffix = new byte[(int) remainder];
-                for (int i = 0; i < num; i++) {
-                    int read = fs.read(buffer);
-                    output.write(buffer, 0, read);
-                }
-                int read = fs.read(suffix);
-                output.write(buffer, 0, read);
-            } else {
-                buffer = new byte[(int) length];
-                int read = fs.read(buffer);
-                output.write(buffer, 0, read);
-            }
-            return output.toByteArray();
-        }
+        return read(Files.newInputStream(file.toPath()));
     }
 
     /**
@@ -173,31 +125,70 @@ public final class FileUtils {
     }
 
     /**
+     * Read byte from input file.
+     *
+     * @param file input file
+     * @param offset offset
+     * @param length length
+     * @return data bytes
+     */
+    public static byte[] readFileByOffsetAndLength(File file, long offset, long length) throws IOException {
+        try (FileInputStream input = new FileInputStream(file)) {
+            return readInputByOffsetAndLength(input, offset, length);
+        }
+    }
+
+    /**
      * Read byte from input stream.
      *
-     * @param input Input stream
-     * @param offset read offset
-     * @param length read length
-     * @return File content
-     * @throws IOException Read failed
+     * @param input input stream
+     * @param offset offset
+     * @param length length
+     * @return data bytes
+     * @throws IOException read exception
      */
-    public static byte[] read(InputStream input, long offset, long length) throws IOException {
+    public static byte[] readInputByOffsetAndLength(InputStream input, long offset, long length) throws IOException {
+        long skip = input.skip(offset);
+        if (skip < offset) {
+            throw new IOException("can not read bytes by offset");
+        }
+        return readInputByLength(input, length);
+    }
+
+    /**
+     * Read byte from input stream.
+     *
+     * @param input InputStream
+     * @param length length
+     * @return data bytes
+     */
+    public static byte[] readInputByLength(InputStream input, long length) throws IOException {
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[FILE_BUFFER_BLOCK];
-            int read;
-            long readSum = 0L;
-            input.skip(offset);
-            while ((read = input.read(buffer)) != FILE_END) {
-                readSum += read;
-                if (readSum <= length) {
-                    output.write(buffer, 0, read);
-                } else {
-                    long outputLength = length % FILE_BUFFER_BLOCK;
-                    output.write(buffer, 0, (int) outputLength);
-                    break;
-                }
-            }
+            writeInputToOutPut(input, output, length);
             return output.toByteArray();
+        }
+    }
+
+    /**
+     * write input to output by length
+     */
+    private static void writeInputToOutPut(InputStream input, OutputStream output, long length) throws IOException {
+        byte[] buffer;
+        if (length > FILE_BUFFER_BLOCK) {
+            long times = length / FILE_BUFFER_BLOCK;
+            long remainder = length % FILE_BUFFER_BLOCK;
+            buffer = new byte[FILE_BUFFER_BLOCK];
+            for (int i = 0; i < times; i++) {
+                int read = input.read(buffer);
+                output.write(buffer, 0, read);
+            }
+            byte[] suffix = new byte[(int) remainder];
+            int read = input.read(suffix);
+            output.write(buffer, 0, read);
+        } else {
+            buffer = new byte[(int) length];
+            int read = input.read(buffer);
+            output.write(buffer, 0, read);
         }
     }
 
@@ -214,6 +205,34 @@ public final class FileUtils {
                 out.write(con);
             }
         }
+    }
+
+    /**
+     * Write data in file to output stream
+     *
+     * @param inFile input file path.
+     * @param outFile output file path.
+     * @param offset file read offset
+     * @param size file read size
+     * @return true, if write successfully.
+     */
+    public static boolean appendWriteFileByOffsetToFile(String inFile, String outFile, long offset, long size) {
+        if (StringUtils.isEmpty(outFile)) {
+            return false;
+        }
+        File inputFile = new File(inFile);
+        File outPutFile = new File(outFile);
+        try (FileInputStream fis = new FileInputStream(inputFile);
+             FileOutputStream fos = new FileOutputStream(outPutFile, true)) {
+            fis.skip(offset);
+            writeInputToOutPut(fis, fos, size);
+            return true;
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to get input stream object.");
+        } catch (IOException e) {
+            LOGGER.error("Failed to read or write data.");
+        }
+        return false;
     }
 
     /**
@@ -266,46 +285,6 @@ public final class FileUtils {
             return "";
         }
         return temps[temps.length - 1];
-    }
-
-    /**
-     * Write data in file to output stream
-     *
-     * @param inFile input file path.
-     * @param outFile output file path.
-     * @param offset file read offset
-     * @param size file read size
-     * @return true, if write successfully.
-     */
-    public static boolean writeFileByOffsetToFile(String inFile, String outFile, long offset, long size) {
-        if (StringUtils.isEmpty(outFile)) {
-            return false;
-        }
-        File src = new File(inFile);
-        File outPutFile = new File(outFile);
-        try (FileInputStream fileStream = new FileInputStream(src);
-             FileOutputStream fos = new FileOutputStream(outPutFile, true)) {
-            byte[] buffer = new byte[FILE_BUFFER_BLOCK];
-            int read;
-            long readSum = 0L;
-            fileStream.skip(offset);
-            while ((read = fileStream.read(buffer)) != FILE_END) {
-                readSum += read;
-                if (readSum <= size) {
-                    fos.write(buffer, 0, read);
-                } else {
-                    long outputLength = size % FILE_BUFFER_BLOCK;
-                    fos.write(buffer, 0, (int) outputLength);
-                    break;
-                }
-            }
-            return true;
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Failed to get input stream object.");
-        } catch (IOException e) {
-            LOGGER.error("Failed to read or write data.");
-        }
-        return false;
     }
 
     /**
