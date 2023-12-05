@@ -190,9 +190,6 @@ class CentralDirectory {
             bf.get(readComment);
             cd.setComment(new String(readComment, StandardCharsets.UTF_8));
         }
-        if (CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength() != byteLength) {
-            throw new ZipException("find zip central directory failed");
-        }
         cd.setLength(byteLength);
         return cd;
     }
