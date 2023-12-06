@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
-import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
 
 import java.io.File;
@@ -85,39 +84,6 @@ class ZipEntryData {
             entry.setLength(entryLength);
             return entry;
         }
-    }
-
-    /**
-     * alignment one entry
-     *
-     * @param alignNum  need align bytes length
-     * @return add bytes length
-     * @throws ZipException alignment exception
-     */
-    public short alignment(short alignNum) throws ZipException {
-        long add = alignNum - length % alignNum;
-        if (add == alignNum) {
-            return 0;
-        }
-        if (add > Short.MAX_VALUE) {
-            throw new ZipException("can not align " + zipEntryHeader.getFileName());
-        }
-        int newExtraLength = zipEntryHeader.getExtraLength() + (short) add;
-        if (newExtraLength > Short.MAX_VALUE) {
-            throw new ZipException("can not align " + zipEntryHeader.getFileName());
-        }
-        short extraLength = (short) newExtraLength;
-        zipEntryHeader.setExtraLength(extraLength);
-        byte[] extra = new byte[extraLength];
-        zipEntryHeader.setExtraData(extra);
-        int newLength = ZipEntryHeader.HEADER_LENGTH
-                + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraData().length;
-        if (zipEntryHeader.getLength() + add != newLength) {
-            throw new ZipException("can not align " + zipEntryHeader.getFileName());
-        }
-        zipEntryHeader.setLength(newLength);
-        this.length += add;
-        return (short) add;
     }
 
     public void setZipEntryHeader(ZipEntryHeader zipEntryHeader) {
