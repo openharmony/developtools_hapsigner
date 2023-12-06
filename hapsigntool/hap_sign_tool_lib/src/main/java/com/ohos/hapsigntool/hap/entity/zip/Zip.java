@@ -21,7 +21,11 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * resolve zip data
@@ -29,6 +33,12 @@ import java.util.List;
  * @since 2023/12/02
  */
 public class Zip {
+    private static final Map<String, String> suffixRegex = new HashMap<String, String>() {{
+        put("so", "\\w+\\.so(\\.[0-9]*)*$");
+        put("abc", "\\w+\\.abc$");
+        put("an", "\\w+\\.an$");
+    }};
+
     private List<ZipEntry> zipEntries;
 
     private long signingOffset;
@@ -42,11 +52,6 @@ public class Zip {
     private EndOfCentralDirectory endOfCentralDirectory;
 
     private String file;
-
-    private final List<String> suffix4K = new ArrayList<String>() {{
-        add(".so");
-        add(".abc");
-    }};
 
     private final short unCompressMethod = 0;
 
@@ -179,26 +184,32 @@ public class Zip {
      * @throws ZipException alignment exception
      */
     public void alignment() throws ZipException {
+        sort();
+        boolean is4KAlign = true;
         for (ZipEntry entry : zipEntries) {
             ZipEntryData zipEntryData = entry.getZipEntryData();
             short method = zipEntryData.getZipEntryHeader().getMethod();
             if (method != unCompressMethod) {
                 // only align uncompressed entry.
-                continue;
+                break;
             }
-            // normal file align 4 byte.
-            short alignBytes = 4;
-            if (is4kAlignSuffix(zipEntryData.getZipEntryHeader().getFileName())) {
+            short alignBytes;
+            if (isRunnableFile(zipEntryData.getZipEntryHeader().getFileName())) {
                 // .abc and .so file align 4096 byte.
                 alignBytes = 4096;
+            } else {
+                // the first file after runnable file, align 4096 byte.
+                if (is4KAlign) {
+                    alignBytes = 4096;
+                    is4KAlign = false;
+                } else {
+                    // normal file align 4 byte.
+                    alignBytes = 4;
+                }
             }
-            short alignment = zipEntryData.alignment(alignBytes);
+            short alignment = entry.alignment(alignBytes);
             if (alignment > 0) {
-                int offset = entry.getCentralDirectory().getOffset() + alignment;
-                entry.getCentralDirectory().setOffset(offset);
-                endOfCentralDirectory.setOffset(endOfCentralDirectory.getOffset() + alignment);
-                eOCDOffset += alignment;
-                cDOffset += alignment;
+                resetOffset();
             }
         }
     }
@@ -206,14 +217,14 @@ public class Zip {
     /**
      * sort uncompress entry in the front.
      */
-    public void sort() {
+    private void sort() {
         int unCompressOffset = 0;
         int compressOffset = zipEntries.size() - 1;
         int pointer = 0;
-        // sort uncompress file (so, abc) - other uncompress file - compress file
+        // sort uncompress file (so, abc, an) - other uncompress file - compress file
         while (pointer <= compressOffset) {
             ZipEntry entry = zipEntries.get(pointer);
-            if (is4kAlignSuffix(entry.getZipEntryData().getZipEntryHeader().getFileName())
+            if (isRunnableFile(entry.getZipEntryData().getZipEntryHeader().getFileName())
                     && entry.getZipEntryData().getZipEntryHeader().getMethod() == unCompressMethod) {
                 ZipEntry temp = zipEntries.get(unCompressOffset);
                 zipEntries.set(unCompressOffset, zipEntries.get(pointer));
@@ -231,17 +242,35 @@ public class Zip {
             }
             pointer++;
         }
-        // reset offset
+        resetOffset();
+    }
+
+    private void resetOffset() {
         int offset = 0;
+        int cdLength = 0;
         for (ZipEntry entry : zipEntries) {
             entry.getCentralDirectory().setOffset(offset);
             offset += entry.getZipEntryData().getLength();
+            cdLength += entry.getCentralDirectory().getLength();
         }
+        offset += signingBlock.length;
+        cDOffset = offset;
+        endOfCentralDirectory.setOffset(offset);
+        offset += cdLength;
+        eOCDOffset = offset;
     }
 
-    private boolean is4kAlignSuffix(String name) {
-        for (String suffix : suffix4K) {
-            if (name.endsWith(suffix)) {
+    /**
+     * regex filename
+     *
+     * @param name filename
+     * @return boolean
+     */
+    public static boolean isRunnableFile(String name) {
+        for (String regex : suffixRegex.values()) {
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(name);
+            if (matcher.matches()) {
                 return true;
             }
         }
@@ -302,10 +331,6 @@ public class Zip {
 
     public void setFile(String file) {
         this.file = file;
-    }
-
-    public List<String> getSuffix4K() {
-        return suffix4K;
     }
 
     public short getUnCompressMethod() {
