@@ -15,6 +15,10 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
+import com.ohos.hapsigntool.error.ZipException;
+
+import java.util.Arrays;
+
 /**
  * ZipEntry and CentralDirectory data
  *
@@ -24,6 +28,42 @@ class ZipEntry {
     private ZipEntryData zipEntryData;
 
     private CentralDirectory centralDirectory;
+
+    /**
+     * alignment one entry
+     *
+     * @param alignNum  need align bytes length
+     * @return add bytes length
+     * @throws ZipException alignment exception
+     */
+    public short alignment(short alignNum) throws ZipException {
+        long add = (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
+        if (add == 0) {
+            return 0;
+        }
+        int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + (short) add;
+        if (newExtraLength > Short.MAX_VALUE) {
+            throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
+        }
+        short extraLength = (short) newExtraLength;
+        zipEntryData.getZipEntryHeader().setExtraLength(extraLength);
+        byte[] oldExtraData = zipEntryData.getZipEntryHeader().getExtraData();
+        byte[] newExtra;
+        if (oldExtraData == null) {
+            newExtra = new byte[newExtraLength];
+        } else {
+            newExtra = Arrays.copyOf(oldExtraData, newExtraLength);
+        }
+        zipEntryData.getZipEntryHeader().setExtraData(newExtra);
+        int newLength = ZipEntryHeader.HEADER_LENGTH + zipEntryData.getZipEntryHeader().getFileNameLength()
+                + newExtraLength;
+        if (zipEntryData.getZipEntryHeader().getLength() + add != newLength) {
+            throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
+        }
+        zipEntryData.getZipEntryHeader().setLength(newLength);
+        zipEntryData.setLength(zipEntryData.getLength() + add);
+        return (short) add;
+    }
 
     public ZipEntryData getZipEntryData() {
         return zipEntryData;
