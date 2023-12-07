@@ -55,7 +55,7 @@ templates = {
     },
     'sign-app': {
         'required': ['keyAlias', 'signAlg', 'mode', 'appCertFile', 'profileFile', 'inFile', 'keystoreFile', 'outFile'],
-        'others': ['keyPwd', 'keystorePwd', 'inForm', 'signcode']
+        'others': ['keyPwd', 'keystorePwd', 'inForm', 'signCode']
     },
 }
 
