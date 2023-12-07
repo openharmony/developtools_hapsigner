@@ -135,9 +135,9 @@ public class Zip {
             long offset = cd.getOffset();
             long fileSize = cd.getCompressedSize();
             short flag = cd.getFlag();
-            short i = 0x08;
+            short mask = 0x08;
             // set desc null flag
-            boolean hasDesc = (flag & i) != 0;
+            boolean hasDesc = (flag & mask) != 0;
             entry.setZipEntryData(ZipEntryData.initZipEntry(file, offset, fileSize, hasDesc));
         }
         ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
@@ -183,7 +183,7 @@ public class Zip {
      *
      * @throws ZipException alignment exception
      */
-    public void alignment() throws ZipException {
+    public void alignment(int alignment) throws ZipException {
         sort();
         boolean is4KAlign = true;
         for (ZipEntry entry : zipEntries) {
@@ -193,7 +193,7 @@ public class Zip {
                 // only align uncompressed entry.
                 break;
             }
-            short alignBytes;
+            int alignBytes;
             if (isRunnableFile(zipEntryData.getZipEntryHeader().getFileName())) {
                 // .abc and .so file align 4096 byte.
                 alignBytes = 4096;
@@ -204,11 +204,11 @@ public class Zip {
                     is4KAlign = false;
                 } else {
                     // normal file align 4 byte.
-                    alignBytes = 4;
+                    alignBytes = alignment;
                 }
             }
-            short alignment = entry.alignment(alignBytes);
-            if (alignment > 0) {
+            int add = entry.alignment(alignBytes);
+            if (add > 0) {
                 resetOffset();
             }
         }

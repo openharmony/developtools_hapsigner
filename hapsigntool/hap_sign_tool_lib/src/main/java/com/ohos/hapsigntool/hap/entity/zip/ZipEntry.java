@@ -36,17 +36,16 @@ class ZipEntry {
      * @return add bytes length
      * @throws ZipException alignment exception
      */
-    public short alignment(short alignNum) throws ZipException {
+    public int alignment(int alignNum) throws ZipException {
         long add = (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
         if (add == 0) {
             return 0;
         }
-        int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + (short) add;
+        int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + (int) add;
         if (newExtraLength > Short.MAX_VALUE) {
             throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
         }
-        short extraLength = (short) newExtraLength;
-        zipEntryData.getZipEntryHeader().setExtraLength(extraLength);
+        zipEntryData.getZipEntryHeader().setExtraLength((short) newExtraLength);
         byte[] oldExtraData = zipEntryData.getZipEntryHeader().getExtraData();
         byte[] newExtra;
         if (oldExtraData == null) {
@@ -62,7 +61,7 @@ class ZipEntry {
         }
         zipEntryData.getZipEntryHeader().setLength(newLength);
         zipEntryData.setLength(zipEntryData.getLength() + add);
-        return (short) add;
+        return (int) add;
     }
 
     public ZipEntryData getZipEntryData() {
