@@ -506,7 +506,7 @@ public abstract class SignProvider {
     private void copyFileAndAlignment(File input, File tmpOutput, int alignment)
             throws IOException, HapFormatException {
         Zip zip = new Zip(input);
-        zip.alignment();
+        zip.alignment(alignment);
         zip.toFile(tmpOutput.getPath());
     }
 
