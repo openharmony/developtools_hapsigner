@@ -35,6 +35,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Common file operation.
@@ -42,33 +46,46 @@ import java.nio.file.Files;
  * @since 2021/12/28
  */
 public final class FileUtils {
-
     /**
      * LOGGER.
      */
     private static final Logger LOGGER = LogManager.getLogger(FileUtils.class);
+
+    /**
+     * suffix regex map
+     */
+    public static final Map<String, Pattern> SUFFIX_REGEX_MAP = new HashMap<>();
+
     /**
      * add GSON static.
      */
     public static final Gson GSON = (new GsonBuilder()).disableHtmlEscaping().create();
+
     /**
      * add GSON_PRETTY_PRINT static.
      */
     public static final Gson GSON_PRETTY_PRINT = (new GsonBuilder()).disableHtmlEscaping().setPrettyPrinting().create();
+
     /**
      * File reader block size
      */
     public static final int FILE_BUFFER_BLOCK = 4096;
+
     /**
      * File end
      */
     public static final int FILE_END = -1;
+
     /**
      * Expected split string length
      */
     public static final int SPLIT_LENGTH = 2;
 
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+    static {
+        SUFFIX_REGEX_MAP.put("so", Pattern.compile("\\.so(\\.[0-9]*){0,3}$"));
+    }
 
     private FileUtils() {
     }
@@ -289,6 +306,7 @@ public final class FileUtils {
 
     /**
      * Open an input stream of input file safely.
+     *
      * @param file input file.
      * @return an input stream of input file
      * @throws IOException file is a directory or can't be read.
@@ -368,5 +386,27 @@ public final class FileUtils {
                 LOGGER.warn("delete file '{}' error, error message: {}", file, e.getMessage());
             }
         }
+    }
+
+    /**
+     * regex filename
+     *
+     * @param name filename
+     * @return boolean
+     */
+    public static boolean isRunnableFile(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return false;
+        }
+        if (name.endsWith(".an") || name.endsWith(".abc")) {
+            return true;
+        }
+        for (Pattern pattern : SUFFIX_REGEX_MAP.values()) {
+            Matcher matcher = pattern.matcher(name);
+            if (matcher.find()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
