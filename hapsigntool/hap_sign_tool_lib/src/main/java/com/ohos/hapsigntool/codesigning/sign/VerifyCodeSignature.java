@@ -62,17 +62,6 @@ import java.util.jar.JarFile;
 public class VerifyCodeSignature {
     private static final Logger LOGGER = LogManager.getLogger(VerifyCodeSignature.class);
 
-    private static final String NATIVE_LIB_AN_SUFFIX = ".an";
-
-    private static final String NATIVE_LIB_SO_SUFFIX = ".so";
-
-    private static final List<String> EXTRACTED_NATIVE_LIB_SUFFIXS = new ArrayList<>();
-
-    static {
-        EXTRACTED_NATIVE_LIB_SUFFIXS.add(NATIVE_LIB_AN_SUFFIX);
-        EXTRACTED_NATIVE_LIB_SUFFIXS.add(NATIVE_LIB_SO_SUFFIX);
-    }
-
     private static void checkOwnerID(byte[] signature, String profileOwnerID, String profileType)
         throws CMSException, VerifyCodeSignException {
         String ownerID = profileOwnerID;
@@ -331,40 +320,5 @@ public class VerifyCodeSignature {
         FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
         fsVerityGenerator.generateFsVerityDigest(inputStream, size, merkleTreeOffset);
         return Pair.create(fsVerityGenerator.getFsVerityDigest(), fsVerityGenerator.getTreeBytes());
-    }
-
-    /**
-     * Get entry name of all native files in hap
-     *
-     * @param hap the given hap
-     * @return list of entry name
-     */
-    private static List<String> getNativeEntriesFromHap(JarFile hap) {
-        List<String> result = new ArrayList<>();
-        for (Enumeration<JarEntry> e = hap.entries(); e.hasMoreElements();) {
-            JarEntry entry = e.nextElement();
-            if (!entry.isDirectory()) {
-                if (!isNativeFile(entry.getName())) {
-                    continue;
-                }
-                result.add(entry.getName());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Check whether the entry is a native file
-     *
-     * @param entryName the name of entry
-     * @return true if it is a native file, and false otherwise
-     */
-    private static boolean isNativeFile(String entryName) {
-        for (String suffix : EXTRACTED_NATIVE_LIB_SUFFIXS) {
-            if (entryName.endsWith(suffix)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

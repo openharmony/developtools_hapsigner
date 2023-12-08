@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -721,6 +723,40 @@ public class CmdUnitTest {
             assertFalse(result);
         } catch (Exception exception) {
             logger.info(exception, () -> exception.getMessage());
+        }
+    }
+
+    /**
+     * Test Method: isRunnableFile()
+     */
+    @Test
+    public void testIsRunnableFile() {
+        List<String> correctName = new ArrayList<>();
+        correctName.add("中文.so");
+        correctName.add("srtjdwrtj.an");
+        correctName.add("srtjdwrtj.abc");
+        correctName.add("srtjdwrtj.so");
+        correctName.add("srtjdwrtj.so.1");
+        correctName.add("srtjdwrtj.so.1.1");
+        correctName.add("srtjdwrtj.so.1.1.1");
+        correctName.add("srtjdwrtj.so.111.111.1111");
+        correctName.add("libs\\srtjdwrtj.so.111.111.1111");
+        correctName.add("中文.so.111.111.1111");
+        for (String name : correctName) {
+            assertTrue(FileUtils.isRunnableFile(name));
+        }
+
+        List<String> incorrectName = new ArrayList<>();
+        incorrectName.add("srtjdwrtj.so.111.111.1111.54645");
+        incorrectName.add("srtjdwrtjso.111.111.11111");
+        incorrectName.add("libs\\srtjdwrtj.so.111.%%%.1111");
+        incorrectName.add("srtjdwrtj.so.abc.111.111.1111");
+        incorrectName.add("srtjdwrtj.so.111.111.json");
+        incorrectName.add("srtjdwrtj.abc.json");
+        incorrectName.add("srtjdwrtj.an.json");
+        incorrectName.add("中文.so.111.111.json");
+        for (String name : incorrectName) {
+            assertFalse(FileUtils.isRunnableFile(name));
         }
     }
 

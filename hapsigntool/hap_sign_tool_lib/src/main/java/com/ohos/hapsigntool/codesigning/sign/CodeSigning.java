@@ -32,6 +32,8 @@ import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.signer.LocalSigner;
+import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
@@ -53,6 +55,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * core functions of code signing
@@ -296,8 +300,16 @@ public class CodeSigning {
      * @return true if it is a native file, and false otherwise
      */
     private boolean isNativeFile(String entryName) {
-        for (String suffix : extractedNativeLibSuffixs) {
-            if (entryName.endsWith(suffix)) {
+        if (StringUtils.isEmpty(entryName)) {
+            return false;
+        }
+        if (entryName.endsWith(NATIVE_LIB_AN_SUFFIX)) {
+            return true;
+        }
+        if (extractedNativeLibSuffixs.contains(NATIVE_LIB_SO_SUFFIX)) {
+            Pattern pattern = FileUtils.SUFFIX_REGEX_MAP.get("so");
+            Matcher matcher = pattern.matcher(entryName);
+            if (matcher.find()) {
                 return true;
             }
         }
