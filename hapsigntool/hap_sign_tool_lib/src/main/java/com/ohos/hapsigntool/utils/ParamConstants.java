@@ -249,7 +249,7 @@ public class ParamConstants {
     /**
      * The code sign params of resign hap
      */
-    public static final String PARAM_SIGN_CODE = "signcode";
+    public static final String PARAM_SIGN_CODE = "signCode";
 
     /**
      * file name split . of min length
