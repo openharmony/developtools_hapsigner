@@ -30,8 +30,8 @@ import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.hap.entity.Pair;
-
 import com.ohos.hapsigntool.hap.exception.ProfileException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -45,12 +45,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
