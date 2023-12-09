@@ -76,32 +76,32 @@ class CentralDirectory {
     /**
      * 4 bytes
      */
-    private int compressedSize;
+    private long compressedSize;
 
     /**
      * 4 bytes
      */
-    private int unCompressedSize;
+    private long unCompressedSize;
 
     /**
      * 2 bytes
      */
-    private short fileNameLength;
+    private int fileNameLength;
 
     /**
      * 2 bytes
      */
-    private short extraLength;
+    private int extraLength;
 
     /**
      * 2 bytes
      */
-    private short commentLength;
+    private int commentLength;
 
     /**
      * 2 bytes
      */
-    private short diskNumStart;
+    private int diskNumStart;
 
 
     /**
@@ -119,7 +119,7 @@ class CentralDirectory {
     /**
      * 4 bytes
      */
-    private int offset;
+    private long offset;
 
     /**
      * n bytes
@@ -159,6 +159,7 @@ class CentralDirectory {
         if (bf.getInt() != SIGNATURE) {
             throw new ZipException("find zip central directory failed");
         }
+
         cd.setVersion(bf.getShort());
         cd.setVersionExtra(bf.getShort());
         cd.setFlag(bf.getShort());
@@ -166,15 +167,15 @@ class CentralDirectory {
         cd.setLastTime(bf.getShort());
         cd.setLastDate(bf.getShort());
         cd.setCrc32(bf.getInt());
-        cd.setCompressedSize(bf.getInt());
-        cd.setUnCompressedSize(bf.getInt());
-        cd.setFileNameLength(bf.getShort());
-        cd.setExtraLength(bf.getShort());
-        cd.setCommentLength(bf.getShort());
-        cd.setDiskNumStart(bf.getShort());
+        cd.setCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        cd.setUnCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        cd.setFileNameLength(UnsignedDecimalUtil.getUnsignedShort(bf));
+        cd.setExtraLength(UnsignedDecimalUtil.getUnsignedShort(bf));
+        cd.setCommentLength(UnsignedDecimalUtil.getUnsignedShort(bf));
+        cd.setDiskNumStart(UnsignedDecimalUtil.getUnsignedShort(bf));
         cd.setInternalFile(bf.getShort());
         cd.setExternalFile(bf.getInt());
-        cd.setOffset(bf.getInt());
+        cd.setOffset(UnsignedDecimalUtil.getUnsignedInt(bf));
         if (cd.getFileNameLength() > 0) {
             byte[] readFileName = new byte[cd.getFileNameLength()];
             bf.get(readFileName);
@@ -202,22 +203,22 @@ class CentralDirectory {
     public byte[] toBytes() {
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(SIGNATURE);
-        bf.putShort(version);
-        bf.putShort(versionExtra);
-        bf.putShort(flag);
-        bf.putShort(method);
-        bf.putShort(lastTime);
-        bf.putShort(lastDate);
-        bf.putInt(crc32);
-        bf.putInt(compressedSize);
-        bf.putInt(unCompressedSize);
-        bf.putShort(fileNameLength);
-        bf.putShort(extraLength);
-        bf.putShort(commentLength);
-        bf.putShort(diskNumStart);
-        bf.putShort(internalFile);
-        bf.putInt(externalFile);
-        bf.putInt(offset);
+        UnsignedDecimalUtil.setUnsignedShort(bf, version);
+        UnsignedDecimalUtil.setUnsignedShort(bf, versionExtra);
+        UnsignedDecimalUtil.setUnsignedShort(bf, flag);
+        UnsignedDecimalUtil.setUnsignedShort(bf, method);
+        UnsignedDecimalUtil.setUnsignedShort(bf, lastTime);
+        UnsignedDecimalUtil.setUnsignedShort(bf, lastDate);
+        UnsignedDecimalUtil.setUnsignedInt(bf, crc32);
+        UnsignedDecimalUtil.setUnsignedInt(bf, compressedSize);
+        UnsignedDecimalUtil.setUnsignedInt(bf, unCompressedSize);
+        UnsignedDecimalUtil.setUnsignedShort(bf, fileNameLength);
+        UnsignedDecimalUtil.setUnsignedShort(bf, extraLength);
+        UnsignedDecimalUtil.setUnsignedShort(bf, commentLength);
+        UnsignedDecimalUtil.setUnsignedShort(bf, diskNumStart);
+        UnsignedDecimalUtil.setUnsignedShort(bf, internalFile);
+        UnsignedDecimalUtil.setUnsignedInt(bf, externalFile);
+        UnsignedDecimalUtil.setUnsignedInt(bf, offset);
         if (fileNameLength > 0) {
             bf.put(fileName.getBytes(StandardCharsets.UTF_8));
         }
@@ -228,6 +229,14 @@ class CentralDirectory {
             bf.put(comment.getBytes(StandardCharsets.UTF_8));
         }
         return bf.array();
+    }
+
+    public static int getCdLength() {
+        return CD_LENGTH;
+    }
+
+    public static int getSIGNATURE() {
+        return SIGNATURE;
     }
 
     public short getVersion() {
@@ -286,51 +295,51 @@ class CentralDirectory {
         this.crc32 = crc32;
     }
 
-    public int getCompressedSize() {
+    public long getCompressedSize() {
         return compressedSize;
     }
 
-    public void setCompressedSize(int compressedSize) {
+    public void setCompressedSize(long compressedSize) {
         this.compressedSize = compressedSize;
     }
 
-    public int getUnCompressedSize() {
+    public long getUnCompressedSize() {
         return unCompressedSize;
     }
 
-    public void setUnCompressedSize(int unCompressedSize) {
+    public void setUnCompressedSize(long unCompressedSize) {
         this.unCompressedSize = unCompressedSize;
     }
 
-    public short getFileNameLength() {
+    public int getFileNameLength() {
         return fileNameLength;
     }
 
-    public void setFileNameLength(short fileNameLength) {
+    public void setFileNameLength(int fileNameLength) {
         this.fileNameLength = fileNameLength;
     }
 
-    public short getExtraLength() {
+    public int getExtraLength() {
         return extraLength;
     }
 
-    public void setExtraLength(short extraLength) {
+    public void setExtraLength(int extraLength) {
         this.extraLength = extraLength;
     }
 
-    public short getCommentLength() {
+    public int getCommentLength() {
         return commentLength;
     }
 
-    public void setCommentLength(short commentLength) {
+    public void setCommentLength(int commentLength) {
         this.commentLength = commentLength;
     }
 
-    public short getDiskNumStart() {
+    public int getDiskNumStart() {
         return diskNumStart;
     }
 
-    public void setDiskNumStart(short diskNumStart) {
+    public void setDiskNumStart(int diskNumStart) {
         this.diskNumStart = diskNumStart;
     }
 
@@ -350,11 +359,11 @@ class CentralDirectory {
         this.externalFile = externalFile;
     }
 
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(long offset) {
         this.offset = offset;
     }
 
