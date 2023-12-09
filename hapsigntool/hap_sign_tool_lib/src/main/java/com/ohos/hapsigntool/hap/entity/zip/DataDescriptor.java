@@ -44,12 +44,12 @@ public class DataDescriptor {
     /**
      * 4 bytes
      */
-    private int compressedSize;
+    private long compressedSize;
 
     /**
      * 4 bytes
      */
-    private int unCompressedSize;
+    private long unCompressedSize;
 
     /**
      * init Central Directory
@@ -71,8 +71,8 @@ public class DataDescriptor {
             throw new ZipException("read Data Descriptor failed");
         }
         data.setCrc32(bf.getInt());
-        data.setCompressedSize(bf.getInt());
-        data.setUnCompressedSize(bf.getInt());
+        data.setCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        data.setUnCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
         return data;
     }
 
@@ -85,9 +85,17 @@ public class DataDescriptor {
         ByteBuffer bf = ByteBuffer.allocate(DES_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(SIGNATURE);
         bf.putInt(crc32);
-        bf.putInt(compressedSize);
-        bf.putInt(unCompressedSize);
+        UnsignedDecimalUtil.setUnsignedInt(bf, compressedSize);
+        UnsignedDecimalUtil.setUnsignedInt(bf, unCompressedSize);
         return bf.array();
+    }
+
+    public static int getDesLength() {
+        return DES_LENGTH;
+    }
+
+    public static int getSIGNATURE() {
+        return SIGNATURE;
     }
 
     public int getCrc32() {
@@ -98,19 +106,19 @@ public class DataDescriptor {
         this.crc32 = crc32;
     }
 
-    public int getCompressedSize() {
+    public long getCompressedSize() {
         return compressedSize;
     }
 
-    public void setCompressedSize(int compressedSize) {
+    public void setCompressedSize(long compressedSize) {
         this.compressedSize = compressedSize;
     }
 
-    public int getUnCompressedSize() {
+    public long getUnCompressedSize() {
         return unCompressedSize;
     }
 
-    public void setUnCompressedSize(int unCompressedSize) {
+    public void setUnCompressedSize(long unCompressedSize) {
         this.unCompressedSize = unCompressedSize;
     }
 }
