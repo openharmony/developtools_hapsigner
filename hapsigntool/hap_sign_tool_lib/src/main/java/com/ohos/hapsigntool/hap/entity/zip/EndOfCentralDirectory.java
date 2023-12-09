@@ -38,37 +38,37 @@ class EndOfCentralDirectory {
     /**
      * 2 bytes
      */
-    private short diskNum;
+    private int diskNum;
 
     /**
      * 2 bytes
      */
-    private short cDStartDiskNum;
+    private int cDStartDiskNum;
 
     /**
      * 2 bytes
      */
-    private short thisDiskCDNum;
+    private int thisDiskCDNum;
 
     /**
      * 2 bytes
      */
-    private short cDTotal;
+    private int cDTotal;
 
     /**
      * 4 bytes
      */
-    private int cDSize;
+    private long cDSize;
 
     /**
      * 4 bytes
      */
-    private int offset;
+    private long offset;
 
     /**
      * 2 bytes
      */
-    private short commentLength;
+    private int commentLength;
 
     /**
      * n bytes
@@ -92,13 +92,13 @@ class EndOfCentralDirectory {
         if (bf.getInt() != SIGNATURE) {
             return null;
         }
-        eocd.setDiskNum(bf.getShort());
-        eocd.setCDStartDiskNum(bf.getShort());
-        eocd.setThisDiskCDNum(bf.getShort());
-        eocd.setCDTotal(bf.getShort());
-        eocd.setCDSize(bf.getInt());
-        eocd.setOffset(bf.getInt());
-        eocd.setCommentLength(bf.getShort());
+        eocd.setDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
+        eocd.setcDStartDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
+        eocd.setThisDiskCDNum(UnsignedDecimalUtil.getUnsignedShort(bf));
+        eocd.setcDTotal(UnsignedDecimalUtil.getUnsignedShort(bf));
+        eocd.setcDSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        eocd.setOffset(UnsignedDecimalUtil.getUnsignedInt(bf));
+        eocd.setCommentLength(UnsignedDecimalUtil.getUnsignedShort(bf));
         if (eocd.getCommentLength() > 0) {
             byte[] readComment = new byte[eocd.getCommentLength()];
             bf.get(readComment);
@@ -119,73 +119,89 @@ class EndOfCentralDirectory {
     public byte[] toBytes() {
         ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(SIGNATURE);
-        bf.putShort(diskNum);
-        bf.putShort(cDStartDiskNum);
-        bf.putShort(thisDiskCDNum);
-        bf.putShort(cDTotal);
-        bf.putInt(cDSize);
-        bf.putInt(offset);
-        bf.putShort(commentLength);
+        UnsignedDecimalUtil.setUnsignedShort(bf, diskNum);
+        UnsignedDecimalUtil.setUnsignedShort(bf, cDStartDiskNum);
+        UnsignedDecimalUtil.setUnsignedShort(bf, thisDiskCDNum);
+        UnsignedDecimalUtil.setUnsignedShort(bf, cDTotal);
+        UnsignedDecimalUtil.setUnsignedInt(bf, cDSize);
+        UnsignedDecimalUtil.setUnsignedInt(bf, offset);
+        UnsignedDecimalUtil.setUnsignedShort(bf, commentLength);
         if (commentLength > 0) {
             bf.put(comment.getBytes(StandardCharsets.UTF_8));
         }
         return bf.array();
     }
 
-    public short getDiskNum() {
+    public static int getEocdLength() {
+        return EOCD_LENGTH;
+    }
+
+    public static int getSIGNATURE() {
+        return SIGNATURE;
+    }
+
+    public int getDiskNum() {
         return diskNum;
     }
 
-    public void setDiskNum(short diskNum) {
+    public void setDiskNum(int diskNum) {
         this.diskNum = diskNum;
     }
 
-    public short getCDStartDiskNum() {
+    public int getcDStartDiskNum() {
         return cDStartDiskNum;
     }
 
-    public void setCDStartDiskNum(short cDStartDiskNum) {
+    public void setcDStartDiskNum(int cDStartDiskNum) {
         this.cDStartDiskNum = cDStartDiskNum;
     }
 
-    public short getThisDiskCDNum() {
+    public int getThisDiskCDNum() {
         return thisDiskCDNum;
     }
 
-    public void setThisDiskCDNum(short thisDiskCDNum) {
+    public void setThisDiskCDNum(int thisDiskCDNum) {
         this.thisDiskCDNum = thisDiskCDNum;
     }
 
-    public short getCDTotal() {
+    public int getcDTotal() {
         return cDTotal;
     }
 
-    public void setCDTotal(short cDTotal) {
+    public void setcDTotal(int cDTotal) {
         this.cDTotal = cDTotal;
     }
 
-    public int getCDSize() {
+    public long getcDSize() {
         return cDSize;
     }
 
-    public void setCDSize(int cDSize) {
+    public void setcDSize(long cDSize) {
         this.cDSize = cDSize;
     }
 
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(long offset) {
         this.offset = offset;
     }
 
-    public short getCommentLength() {
+    public int getCommentLength() {
         return commentLength;
     }
 
-    public void setCommentLength(short commentLength) {
+    public void setCommentLength(int commentLength) {
         this.commentLength = commentLength;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public int getLength() {
@@ -194,12 +210,5 @@ class EndOfCentralDirectory {
 
     public void setLength(int length) {
         this.length = length;
-    }
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 }
