@@ -15,200 +15,110 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
+import com.ohos.hapsigntool.error.ZipException;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 
 /**
- * resolve zip EndOfCentralDirectory data
+ * resolve zip DataDescriptor data
  *
- * @since 2023/12/04
+ * @since 2023/12/02
  */
-class EndOfCentralDirectory {
+public class DataDescriptor {
     /**
-     * EndOfCentralDirectory invariable bytes length
+     * DataDescriptor invariable bytes length
      */
-    public static final int EOCD_LENGTH = 22;
+    public static final int DES_LENGTH = 16;
 
     /**
-     * 4 bytes , central directory signature
+     * 4 bytes , DataDescriptor signature
      */
-    public static final int SIGNATURE = 0x06054b50;
-
-    /**
-     * 2 bytes
-     */
-    private int diskNum;
-
-    /**
-     * 2 bytes
-     */
-    private int cDStartDiskNum;
-
-    /**
-     * 2 bytes
-     */
-    private int thisDiskCDNum;
-
-    /**
-     * 2 bytes
-     */
-    private int cDTotal;
+    public static final int SIGNATURE = 0x08074b50;
 
     /**
      * 4 bytes
      */
-    private long cDSize;
+    private int crc32;
 
     /**
      * 4 bytes
      */
-    private long offset;
+    private long compressedSize;
 
     /**
-     * 2 bytes
+     * 4 bytes
      */
-    private int commentLength;
+    private long unCompressedSize;
 
     /**
-     * n bytes
-     */
-    private String comment;
-
-    private int length;
-
-    /**
-     * init End Of Central Directory
+     * init Central Directory
      *
-     * @param bytes End Of Central Directory bytes
-     * @return End Of Central Directory
+     * @param bytes DataDescriptor bytes
+     * @return DataDescriptor
+     * @throws ZipException read data descriptor exception
      */
-    public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes) {
-        EndOfCentralDirectory eocd = new EndOfCentralDirectory();
+    public static DataDescriptor initDataDescriptor(byte[] bytes) throws ZipException {
+        if (bytes.length != DES_LENGTH) {
+            throw new ZipException("read Data Descriptor failed");
+        }
         ByteBuffer bf = ByteBuffer.allocate(bytes.length);
         bf.put(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         bf.flip();
+        DataDescriptor data = new DataDescriptor();
         if (bf.getInt() != SIGNATURE) {
-            return null;
+            throw new ZipException("read Data Descriptor failed");
         }
-        eocd.setDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
-        eocd.setcDStartDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
-        eocd.setThisDiskCDNum(UnsignedDecimalUtil.getUnsignedShort(bf));
-        eocd.setcDTotal(UnsignedDecimalUtil.getUnsignedShort(bf));
-        eocd.setcDSize(UnsignedDecimalUtil.getUnsignedInt(bf));
-        eocd.setOffset(UnsignedDecimalUtil.getUnsignedInt(bf));
-        eocd.setCommentLength(UnsignedDecimalUtil.getUnsignedShort(bf));
-        if (eocd.getCommentLength() > 0) {
-            byte[] readComment = new byte[eocd.getCommentLength()];
-            bf.get(readComment);
-            eocd.setComment(new String(readComment, StandardCharsets.UTF_8));
-        }
-        eocd.setLength(EOCD_LENGTH + eocd.getCommentLength());
-        if (bf.remaining() != 0) {
-            return null;
-        }
-        return eocd;
+        data.setCrc32(bf.getInt());
+        data.setCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        data.setUnCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        return data;
     }
 
     /**
-     * change End Of Central Directory to bytes
+     * change DataDescriptor to bytes
      *
      * @return bytes
      */
     public byte[] toBytes() {
-        ByteBuffer bf = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bf = ByteBuffer.allocate(DES_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
         bf.putInt(SIGNATURE);
-        UnsignedDecimalUtil.setUnsignedShort(bf, diskNum);
-        UnsignedDecimalUtil.setUnsignedShort(bf, cDStartDiskNum);
-        UnsignedDecimalUtil.setUnsignedShort(bf, thisDiskCDNum);
-        UnsignedDecimalUtil.setUnsignedShort(bf, cDTotal);
-        UnsignedDecimalUtil.setUnsignedInt(bf, cDSize);
-        UnsignedDecimalUtil.setUnsignedInt(bf, offset);
-        UnsignedDecimalUtil.setUnsignedShort(bf, commentLength);
-        if (commentLength > 0) {
-            bf.put(comment.getBytes(StandardCharsets.UTF_8));
-        }
+        bf.putInt(crc32);
+        UnsignedDecimalUtil.setUnsignedInt(bf, compressedSize);
+        UnsignedDecimalUtil.setUnsignedInt(bf, unCompressedSize);
         return bf.array();
     }
 
-    public static int getEocdLength() {
-        return EOCD_LENGTH;
+    public static int getDesLength() {
+        return DES_LENGTH;
     }
 
     public static int getSIGNATURE() {
         return SIGNATURE;
     }
 
-    public int getDiskNum() {
-        return diskNum;
+    public int getCrc32() {
+        return crc32;
     }
 
-    public void setDiskNum(int diskNum) {
-        this.diskNum = diskNum;
+    public void setCrc32(int crc32) {
+        this.crc32 = crc32;
     }
 
-    public int getcDStartDiskNum() {
-        return cDStartDiskNum;
+    public long getCompressedSize() {
+        return compressedSize;
     }
 
-    public void setcDStartDiskNum(int cDStartDiskNum) {
-        this.cDStartDiskNum = cDStartDiskNum;
+    public void setCompressedSize(long compressedSize) {
+        this.compressedSize = compressedSize;
     }
 
-    public int getThisDiskCDNum() {
-        return thisDiskCDNum;
+    public long getUnCompressedSize() {
+        return unCompressedSize;
     }
 
-    public void setThisDiskCDNum(int thisDiskCDNum) {
-        this.thisDiskCDNum = thisDiskCDNum;
-    }
-
-    public int getcDTotal() {
-        return cDTotal;
-    }
-
-    public void setcDTotal(int cDTotal) {
-        this.cDTotal = cDTotal;
-    }
-
-    public long getcDSize() {
-        return cDSize;
-    }
-
-    public void setcDSize(long cDSize) {
-        this.cDSize = cDSize;
-    }
-
-    public long getOffset() {
-        return offset;
-    }
-
-    public void setOffset(long offset) {
-        this.offset = offset;
-    }
-
-    public int getCommentLength() {
-        return commentLength;
-    }
-
-    public void setCommentLength(int commentLength) {
-        this.commentLength = commentLength;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
+    public void setUnCompressedSize(long unCompressedSize) {
+        this.unCompressedSize = unCompressedSize;
     }
 }
