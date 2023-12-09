@@ -70,22 +70,22 @@ class ZipEntryHeader {
     /**
      * 4 bytes
      */
-    private int compressedSize;
+    private long compressedSize;
 
     /**
      * 4 bytes
      */
-    private int unCompressedSize;
+    private long unCompressedSize;
 
     /**
      * 2 bytes
      */
-    private short fileNameLength;
+    private int fileNameLength;
 
     /**
      * 2 bytes
      */
-    private short extraLength;
+    private int extraLength;
 
     /**
      * n bytes
@@ -121,10 +121,10 @@ class ZipEntryHeader {
         entryHeader.setLastTime(bf.getShort());
         entryHeader.setLastDate(bf.getShort());
         entryHeader.setCrc32(bf.getInt());
-        entryHeader.setCompressedSize(bf.getInt());
-        entryHeader.setUnCompressedSize(bf.getInt());
-        entryHeader.setFileNameLength(bf.getShort());
-        entryHeader.setExtraLength(bf.getShort());
+        entryHeader.setCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        entryHeader.setUnCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        entryHeader.setFileNameLength(UnsignedDecimalUtil.getUnsignedShort(bf));
+        entryHeader.setExtraLength(UnsignedDecimalUtil.getUnsignedShort(bf));
         entryHeader.setLength(HEADER_LENGTH + entryHeader.getFileNameLength() + entryHeader.getExtraLength());
         return entryHeader;
     }
@@ -165,10 +165,10 @@ class ZipEntryHeader {
         bf.putShort(lastTime);
         bf.putShort(lastDate);
         bf.putInt(crc32);
-        bf.putInt(compressedSize);
-        bf.putInt(unCompressedSize);
-        bf.putShort(fileNameLength);
-        bf.putShort(extraLength);
+        UnsignedDecimalUtil.setUnsignedInt(bf, compressedSize);
+        UnsignedDecimalUtil.setUnsignedInt(bf, unCompressedSize);
+        UnsignedDecimalUtil.setUnsignedShort(bf, fileNameLength);
+        UnsignedDecimalUtil.setUnsignedShort(bf, extraLength);
         if (fileNameLength > 0) {
             bf.put(fileName.getBytes(StandardCharsets.UTF_8));
         }
@@ -176,6 +176,22 @@ class ZipEntryHeader {
             bf.put(extraData);
         }
         return bf.array();
+    }
+
+    public static int getHeaderLength() {
+        return HEADER_LENGTH;
+    }
+
+    public static int getSIGNATURE() {
+        return SIGNATURE;
+    }
+
+    public short getVersion() {
+        return version;
+    }
+
+    public void setVersion(short version) {
+        this.version = version;
     }
 
     public short getFlag() {
@@ -192,14 +208,6 @@ class ZipEntryHeader {
 
     public void setMethod(short method) {
         this.method = method;
-    }
-
-    public short getVersion() {
-        return version;
-    }
-
-    public void setVersion(short version) {
-        this.version = version;
     }
 
     public short getLastTime() {
@@ -226,35 +234,35 @@ class ZipEntryHeader {
         this.crc32 = crc32;
     }
 
-    public int getCompressedSize() {
+    public long getCompressedSize() {
         return compressedSize;
     }
 
-    public void setCompressedSize(int compressedSize) {
+    public void setCompressedSize(long compressedSize) {
         this.compressedSize = compressedSize;
     }
 
-    public int getUnCompressedSize() {
+    public long getUnCompressedSize() {
         return unCompressedSize;
     }
 
-    public void setUnCompressedSize(int unCompressedSize) {
+    public void setUnCompressedSize(long unCompressedSize) {
         this.unCompressedSize = unCompressedSize;
     }
 
-    public short getFileNameLength() {
+    public int getFileNameLength() {
         return fileNameLength;
     }
 
-    public void setFileNameLength(short fileNameLength) {
+    public void setFileNameLength(int fileNameLength) {
         this.fileNameLength = fileNameLength;
     }
 
-    public short getExtraLength() {
+    public int getExtraLength() {
         return extraLength;
     }
 
-    public void setExtraLength(short extraLength) {
+    public void setExtraLength(int extraLength) {
         this.extraLength = extraLength;
     }
 
