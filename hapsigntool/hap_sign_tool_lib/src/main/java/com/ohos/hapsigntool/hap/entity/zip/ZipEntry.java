@@ -37,8 +37,8 @@ class ZipEntry {
      * @throws ZipException alignment exception
      */
     public int alignment(int alignNum) throws ZipException {
-        long add = (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
-        if (add == 0) {
+        long add = alignNum - (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
+        if (add == 0 || add == alignNum) {
             return 0;
         }
         int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + (int) add;
