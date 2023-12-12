@@ -34,9 +34,9 @@ import java.util.regex.Pattern;
  */
 public class Zip {
     private static final Map<String, String> suffixRegex = new HashMap<String, String>() {{
-        put("so", "\\w+\\.so(\\.[0-9]*)*$");
-        put("abc", "\\w+\\.abc$");
-        put("an", "\\w+\\.an$");
+        put("so", ".*\\.so(\\.[0-9]*)*$");
+        put("abc", ".*\\.abc$");
+        put("an", ".*\\.an$");
     }};
 
     private List<ZipEntry> zipEntries;
