@@ -201,7 +201,7 @@ public class Zip {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
                 short method = zipEntryData.getZipEntryHeader().getMethod();
                 if (method != unCompressMethod && !is4KAlign) {
-                    // only align uncompressed entry.
+                    // only align uncompressed entry and the first compress entry.
                     break;
                 }
                 int alignBytes;
@@ -260,8 +260,8 @@ public class Zip {
     }
 
     private void resetOffset() {
-        long offset = 0;
-        long cdLength = 0;
+        long offset = 0L;
+        long cdLength = 0L;
         for (ZipEntry entry : zipEntries) {
             entry.getCentralDirectory().setOffset(offset);
             offset += entry.getZipEntryData().getLength();

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
  
- package com.ohos.hapsigntool.error;
+package com.ohos.hapsigntool.error;
 
 import java.io.IOException;
 

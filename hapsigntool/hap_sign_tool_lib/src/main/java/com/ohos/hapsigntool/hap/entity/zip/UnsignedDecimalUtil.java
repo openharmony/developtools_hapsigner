@@ -64,11 +64,11 @@ public class UnsignedDecimalUtil {
      * @param l long
      */
     public static void setUnsignedInt(ByteBuffer bf, long l) {
-        byte[] bytes = {
+        byte[] bytes = new byte[] {
                 (byte) (l & 0xff),
                 (byte) ((l >> BIT_SIZE) & 0xff),
                 (byte) ((l >> DOUBLE_BIT_SIZE) & 0xff),
-                (byte) ((l >> TRIPLE_BIT_SIZE) & 0xff),
+                (byte) ((l >> TRIPLE_BIT_SIZE) & 0xff)
         };
         bf.put(bytes);
     }
@@ -80,9 +80,9 @@ public class UnsignedDecimalUtil {
      * @param i int
      */
     public static void setUnsignedShort(ByteBuffer bf, int i) {
-        byte[] bytes = {
+        byte[] bytes = new byte[] {
                 (byte) (i & 0xff),
-                (byte) ((i >> BIT_SIZE) & 0xff),
+                (byte) ((i >> BIT_SIZE) & 0xff)
         };
         bf.put(bytes);
     }
