@@ -21,6 +21,7 @@ import com.ohos.hapsigntool.hap.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.SignatureException;
+import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.HapUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ZipDataInput;
@@ -87,7 +88,7 @@ public abstract class SignHap {
         String lastAlignmentEntryName = "";
         for (JarEntry inEntry : entryListStored) {
             String entryName = inEntry.getName();
-            if (!(entryName.endsWith(".so")) && !(entryName.endsWith(".abc"))) {
+            if (!FileUtils.isRunnableFile(entryName)) {
                 lastAlignmentEntryName = entryName;
                 break;
             }
@@ -142,8 +143,8 @@ public abstract class SignHap {
             String name1 = entry1.getName();
             String name2 = entry2.getName();
             // files ending with .abc or .so are placed before other files
-            boolean isSpecial1 = name1.endsWith(".abc") || name1.endsWith(".so");
-            boolean isSpecial2 = name2.endsWith(".abc") || name2.endsWith(".so");
+            boolean isSpecial1 = FileUtils.isRunnableFile(name1);
+            boolean isSpecial2 = FileUtils.isRunnableFile(name2);
             if (isSpecial1 && !isSpecial2) {
                 return -1;
             } else if (!isSpecial1 && isSpecial2) {
@@ -246,7 +247,7 @@ public abstract class SignHap {
         if (!StringUtils.isEmpty(lastAlignmentEntryName) && entryName.equals(lastAlignmentEntryName)) {
             return STORED_ENTRY_SO_ALIGNMENT;
         }
-        if (entryName.endsWith(".so") || entryName.endsWith("abc")) {
+        if (FileUtils.isRunnableFile(entryName)) {
             return STORED_ENTRY_SO_ALIGNMENT;
         }
         return defaultAlignment;

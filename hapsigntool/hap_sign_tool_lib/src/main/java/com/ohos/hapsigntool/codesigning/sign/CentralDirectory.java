@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.codesigning.sign;
 
+import com.ohos.hapsigntool.utils.FileUtils;
+
 import org.bouncycastle.util.Strings;
 
 import java.util.Locale;
@@ -70,7 +72,7 @@ public class CentralDirectory {
      * @return true if entry is an executable file
      */
     public boolean isCodeFile() {
-        return this.getFileName().endsWith(".abc") || this.getFileName().endsWith(".so");
+        return FileUtils.isRunnableFile(this.getFileName());
     }
 
     /**
