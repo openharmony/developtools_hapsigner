@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.hap.entity.zip;
 
+import com.ohos.hapsigntool.error.CustomException;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
 
@@ -61,19 +63,24 @@ public class Zip {
      * @param file file
      * @throws IOException read file exception
      */
-    public Zip(File file) throws IOException {
-        this.file = file.getPath();
-        if (!file.exists()) {
-            throw new ZipException("read zip file failed");
+    public Zip(File file) {
+        try {
+            this.file = file.getPath();
+            if (!file.exists()) {
+                throw new ZipException("read zip file failed");
+            }
+            // 1. get eocd data
+            endOfCentralDirectory = getZipEndOfCentralDirectory(file);
+            // 2. use eocd's cd offset, get cd data
+            getZipCentralDirectory(file);
+            // 3. use cd's entry offset and file size, get entry data
+            getZipEntries(file);
+            // 4. file all data - eocd - cd - entry = sign block
+            signingBlock = getSigningBlock(file);
+        } catch (IOException e) {
+            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
         }
-        // 1. get eocd data
-        endOfCentralDirectory = getZipEndOfCentralDirectory(file);
-        // 2. use eocd's cd offset, get cd data
-        getZipCentralDirectory(file);
-        // 3. use cd's entry offset and file size, get entry data
-        getZipEntries(file);
-        // 4. file all data - eocd - cd - entry = sign block
-        signingBlock = getSigningBlock(file);
+
     }
 
     private EndOfCentralDirectory getZipEndOfCentralDirectory(File file) throws IOException {
@@ -150,67 +157,74 @@ public class Zip {
      * output zip to zip file
      *
      * @param file file path
-     * @throws IOException write exception
      */
-    public void toFile(String file) throws IOException {
-        File f = new File(file);
-        if (!f.exists()) {
-            f.createNewFile();
-        }
-        FileUtils.write(new byte[]{}, f);
-        for (ZipEntry entry : zipEntries) {
-            ZipEntryData zipEntryData = entry.getZipEntryData();
-            FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), file);
-            boolean isSuccess = FileUtils.appendWriteFileByOffsetToFile(this.file, file,
-                    zipEntryData.getFileOffset(), zipEntryData.getFileSize());
-            if (!isSuccess) {
-                throw new ZipException("write zip data failed");
+    public void toFile(String file) {
+        try {
+            File f = new File(file);
+            if (!f.exists()) {
+                f.createNewFile();
             }
-            if (zipEntryData.getDataDescriptor() != null) {
-                FileUtils.writeByteToOutFile(zipEntryData.getDataDescriptor().toBytes(), file);
+            FileUtils.write(new byte[]{}, f);
+            for (ZipEntry entry : zipEntries) {
+                ZipEntryData zipEntryData = entry.getZipEntryData();
+                FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), file);
+                boolean isSuccess = FileUtils.appendWriteFileByOffsetToFile(this.file, file,
+                        zipEntryData.getFileOffset(), zipEntryData.getFileSize());
+                if (!isSuccess) {
+                    throw new ZipException("write zip data failed");
+                }
+                if (zipEntryData.getDataDescriptor() != null) {
+                    FileUtils.writeByteToOutFile(zipEntryData.getDataDescriptor().toBytes(), file);
+                }
             }
+            FileUtils.writeByteToOutFile(signingBlock, file);
+            for (ZipEntry entry : zipEntries) {
+                CentralDirectory cd = entry.getCentralDirectory();
+                FileUtils.writeByteToOutFile(cd.toBytes(), file);
+            }
+            FileUtils.writeByteToOutFile(endOfCentralDirectory.toBytes(), file);
+        } catch (IOException e) {
+            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
         }
-        FileUtils.writeByteToOutFile(signingBlock, file);
-        for (ZipEntry entry : zipEntries) {
-            CentralDirectory cd = entry.getCentralDirectory();
-            FileUtils.writeByteToOutFile(cd.toBytes(), file);
-        }
-        FileUtils.writeByteToOutFile(endOfCentralDirectory.toBytes(), file);
     }
 
     /**
      * alignment uncompress entry
      *
-     * @throws ZipException alignment exception
+     * @param alignment int alignment
      */
-    public void alignment(int alignment) throws ZipException {
-        sort();
-        boolean is4KAlign = true;
-        for (ZipEntry entry : zipEntries) {
-            ZipEntryData zipEntryData = entry.getZipEntryData();
-            short method = zipEntryData.getZipEntryHeader().getMethod();
-            if (method != unCompressMethod) {
-                // only align uncompressed entry.
-                break;
-            }
-            int alignBytes;
-            if (isRunnableFile(zipEntryData.getZipEntryHeader().getFileName())) {
-                // .abc and .so file align 4096 byte.
-                alignBytes = 4096;
-            } else {
-                // the first file after runnable file, align 4096 byte.
-                if (is4KAlign) {
+    public void alignment(int alignment) {
+        try {
+            sort();
+            boolean is4KAlign = true;
+            for (ZipEntry entry : zipEntries) {
+                ZipEntryData zipEntryData = entry.getZipEntryData();
+                short method = zipEntryData.getZipEntryHeader().getMethod();
+                if (method != unCompressMethod && !is4KAlign) {
+                    // only align uncompressed entry.
+                    break;
+                }
+                int alignBytes;
+                if (isRunnableFile(zipEntryData.getZipEntryHeader().getFileName())) {
+                    // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
-                    is4KAlign = false;
                 } else {
-                    // normal file align 4 byte.
-                    alignBytes = alignment;
+                    // the first file after runnable file, align 4096 byte.
+                    if (is4KAlign) {
+                        alignBytes = 4096;
+                        is4KAlign = false;
+                    } else {
+                        // normal file align 4 byte.
+                        alignBytes = alignment;
+                    }
+                }
+                int add = entry.alignment(alignBytes);
+                if (add > 0) {
+                    resetOffset();
                 }
             }
-            int add = entry.alignment(alignBytes);
-            if (add > 0) {
-                resetOffset();
-            }
+        } catch (ZipException e) {
+            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
         }
     }
 
