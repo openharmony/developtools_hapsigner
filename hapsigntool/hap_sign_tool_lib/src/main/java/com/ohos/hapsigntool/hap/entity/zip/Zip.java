@@ -256,6 +256,7 @@ public class Zip {
         offset += signingBlock.length;
         cDOffset = offset;
         endOfCentralDirectory.setOffset(offset);
+        endOfCentralDirectory.setcDSize(cdLength);
         offset += cdLength;
         eOCDOffset = offset;
     }
