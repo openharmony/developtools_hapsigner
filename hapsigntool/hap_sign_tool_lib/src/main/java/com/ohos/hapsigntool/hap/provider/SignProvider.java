@@ -330,7 +330,7 @@ public abstract class SignProvider {
             checkCompatibleVersion();
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
-            String suffix = getFileSuffix(output);
+            String suffix = getFileSuffix(input);
             if (input.getCanonicalPath().equals(output.getCanonicalPath())) {
                 tmpOutput = File.createTempFile("signedHap", "." + suffix);
                 isPathOverlap = true;
