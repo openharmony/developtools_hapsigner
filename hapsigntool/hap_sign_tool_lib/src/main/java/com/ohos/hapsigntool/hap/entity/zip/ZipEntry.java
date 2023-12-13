@@ -61,6 +61,10 @@ class ZipEntry {
         }
         zipEntryData.getZipEntryHeader().setLength(newLength);
         zipEntryData.setLength(zipEntryData.getLength() + add);
+
+        centralDirectory.setExtraData(newExtra);
+        centralDirectory.setLength(centralDirectory.getLength() - centralDirectory.getExtraLength() + newExtraLength);
+        centralDirectory.setExtraLength(newExtraLength);
         return (int) add;
     }
 
