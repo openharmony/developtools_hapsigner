@@ -43,6 +43,8 @@ public class Zip {
      */
     public static final int FILE_UNCOMPRESS_METHOD_FLAG = 0;
 
+    public static final int MAX_COMMENT_LENGTH = 65535;
+
     private List<ZipEntry> zipEntries;
 
     private long signingOffset;
@@ -58,9 +60,6 @@ public class Zip {
     private String file;
 
     private final short unCompressMethod = 0;
-
-    private final int MAX_COMMENT_LENGTH = 65535;
-
 
     /**
      * create Zip by file
@@ -227,15 +226,13 @@ public class Zip {
                         zipEntryData.getZipEntryHeader().getFileName())) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
-                } else {
+                } else if (isFirstUnRunnableFile){
                     // the first file after runnable file, align 4096 byte.
-                    if (isFirstUnRunnableFile) {
                         alignBytes = 4096;
                         isFirstUnRunnableFile = false;
-                    } else {
-                        // normal file align 4 byte.
-                        alignBytes = alignment;
-                    }
+                } else {
+                    // normal file align 4 byte.
+                    alignBytes = alignment;
                 }
                 int add = entry.alignment(alignBytes);
                 if (add > 0) {

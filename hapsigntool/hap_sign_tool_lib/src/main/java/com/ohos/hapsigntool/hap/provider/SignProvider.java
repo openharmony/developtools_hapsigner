@@ -505,7 +505,7 @@ public abstract class SignProvider {
         zip.alignment(alignment);
         zip.removeSignBlock();
         long start = System.currentTimeMillis();
-        zip.toFile(tmpOutput.getAbsolutePath());
+        zip.toFile(tmpOutput.getCanonicalPath());
         long end = System.currentTimeMillis();
         LOGGER.debug("zip to file use {} ms", end - start);
     }
