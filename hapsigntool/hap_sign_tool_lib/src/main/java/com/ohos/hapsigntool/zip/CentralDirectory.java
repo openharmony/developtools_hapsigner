@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity.zip;
+package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.error.ZipException;
 
@@ -141,21 +141,12 @@ class CentralDirectory {
     /**
      * init Central Directory
      *
-     * @param bytes Full Central Directory bytes
-     * @param offset One Central Directory offset
+     * @param bf ByteBuffer
      * @return CentralDirectory
      * @throws ZipException read Central Directory exception
      */
-    public static CentralDirectory initCentralDirectory(byte[] bytes, int offset) throws ZipException {
-        if (bytes.length < offset) {
-            throw new ZipException("find zip central directory failed");
-        }
+    public static CentralDirectory initCentralDirectory(ByteBuffer bf) throws ZipException {
         CentralDirectory cd = new CentralDirectory();
-        int byteLength = bytes.length - offset;
-        ByteBuffer bf = ByteBuffer.allocate(byteLength);
-        bf.put(bytes, offset, byteLength);
-        bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
         if (bf.getInt() != SIGNATURE) {
             throw new ZipException("find zip central directory failed");
         }

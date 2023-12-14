@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity.zip;
+package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.error.ZipException;
 

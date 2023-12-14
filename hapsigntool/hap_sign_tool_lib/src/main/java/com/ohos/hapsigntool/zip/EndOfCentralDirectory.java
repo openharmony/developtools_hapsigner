@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity.zip;
+package com.ohos.hapsigntool.zip;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -78,17 +78,26 @@ class EndOfCentralDirectory {
     private int length;
 
     /**
-     * init End Of Central Directory
+     * init End Of Central Directory, default offset is 0
      *
      * @param bytes End Of Central Directory bytes
      * @return End Of Central Directory
      */
     public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes) {
+        return initEOCDByBytes(bytes, 0);
+    }
+    /**
+     * init End Of Central Directory
+     *
+     * @param bytes End Of Central Directory bytes
+     * @param offset offset
+     * @return End Of Central Directory
+     */
+    public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes, int offset) {
         EndOfCentralDirectory eocd = new EndOfCentralDirectory();
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes);
+        int length = bytes.length - offset;
+        ByteBuffer bf = ByteBuffer.wrap(bytes, offset, length);
         bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
         if (bf.getInt() != SIGNATURE) {
             return null;
         }

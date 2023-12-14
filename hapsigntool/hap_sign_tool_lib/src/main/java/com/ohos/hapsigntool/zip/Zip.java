@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity.zip;
+package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
@@ -22,6 +22,8 @@ import com.ohos.hapsigntool.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +63,6 @@ public class Zip {
      * create Zip by file
      *
      * @param file file
-     * @throws IOException read file exception
      */
     public Zip(File file) {
         try {
@@ -80,7 +81,6 @@ public class Zip {
         } catch (IOException e) {
             CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
         }
-
     }
 
     private EndOfCentralDirectory getZipEndOfCentralDirectory(File file) throws IOException {
@@ -103,7 +103,7 @@ public class Zip {
         eOCDOffset = file.length() - eocdMaxLength;
         bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdMaxLength);
         for (int start = 0; start < eocdMaxLength; start++) {
-            eocd = EndOfCentralDirectory.initEOCDByBytes(bytes);
+            eocd = EndOfCentralDirectory.initEOCDByBytes(bytes, start);
             if (eocd != null) {
                 eOCDOffset += start;
                 return eocd;
@@ -120,10 +120,12 @@ public class Zip {
         if (cdBytes.length < CentralDirectory.CD_LENGTH) {
             throw new ZipException("find zip cd failed");
         }
+        ByteBuffer bf = ByteBuffer.wrap(cdBytes);
+        bf.order(ByteOrder.LITTLE_ENDIAN);
         int offset = 0;
         // one by one format central directory
         while (offset < cdBytes.length) {
-            CentralDirectory cd = CentralDirectory.initCentralDirectory(cdBytes, offset);
+            CentralDirectory cd = CentralDirectory.initCentralDirectory(bf);
             ZipEntry entry = new ZipEntry();
             entry.setCentralDirectory(cd);
             zipEntries.add(entry);
