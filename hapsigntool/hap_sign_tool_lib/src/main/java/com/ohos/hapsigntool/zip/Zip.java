@@ -43,6 +43,9 @@ public class Zip {
      */
     public static final int FILE_UNCOMPRESS_METHOD_FLAG = 0;
 
+    /**
+     * max comment length
+     */
     public static final int MAX_COMMENT_LENGTH = 65535;
 
     private List<ZipEntry> zipEntries;
@@ -226,10 +229,10 @@ public class Zip {
                         zipEntryData.getZipEntryHeader().getFileName())) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
-                } else if (isFirstUnRunnableFile){
+                } else if (isFirstUnRunnableFile) {
                     // the first file after runnable file, align 4096 byte.
-                        alignBytes = 4096;
-                        isFirstUnRunnableFile = false;
+                    alignBytes = 4096;
+                    isFirstUnRunnableFile = false;
                 } else {
                     // normal file align 4 byte.
                     alignBytes = alignment;
