@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * resolve zip data
@@ -57,25 +55,28 @@ public class Zip {
 
     private final short unCompressMethod = 0;
 
+    private final int MAX_COMMENT_LENGTH = 65535;
+
+
     /**
      * create Zip by file
      *
-     * @param file file
+     * @param inputFile file
      */
-    public Zip(File file) {
+    public Zip(File inputFile) {
         try {
-            this.file = file.getPath();
-            if (!file.exists()) {
+            this.file = inputFile.getPath();
+            if (!inputFile.exists()) {
                 throw new ZipException("read zip file failed");
             }
             // 1. get eocd data
-            endOfCentralDirectory = getZipEndOfCentralDirectory(file);
+            endOfCentralDirectory = getZipEndOfCentralDirectory(inputFile);
             // 2. use eocd's cd offset, get cd data
-            getZipCentralDirectory(file);
+            getZipCentralDirectory(inputFile);
             // 3. use cd's entry offset and file size, get entry data
-            getZipEntries(file);
+            getZipEntries(inputFile);
             // 4. file all data - eocd - cd - entry = sign block
-            signingBlock = getSigningBlock(file);
+            signingBlock = getSigningBlock(inputFile);
         } catch (IOException e) {
             CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
         }
@@ -90,18 +91,17 @@ public class Zip {
         int eocdLength = EndOfCentralDirectory.EOCD_LENGTH;
         eOCDOffset = file.length() - eocdLength;
         byte[] bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdLength);
-        EndOfCentralDirectory eocd = EndOfCentralDirectory.initEOCDByBytes(bytes);
+        EndOfCentralDirectory eocd = EndOfCentralDirectory.getEOCDByBytes(bytes);
         if (eocd != null) {
             return eocd;
         }
 
         // try to search EOCD with comment
-        int maxCommentLength = 65535;
-        long eocdMaxLength = Math.min(EndOfCentralDirectory.EOCD_LENGTH + maxCommentLength, file.length());
+        long eocdMaxLength = Math.min(EndOfCentralDirectory.EOCD_LENGTH + MAX_COMMENT_LENGTH, file.length());
         eOCDOffset = file.length() - eocdMaxLength;
         bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdMaxLength);
         for (int start = 0; start < eocdMaxLength; start++) {
-            eocd = EndOfCentralDirectory.initEOCDByBytes(bytes, start);
+            eocd = EndOfCentralDirectory.getEOCDByBytes(bytes, start);
             if (eocd != null) {
                 eOCDOffset += start;
                 return eocd;
@@ -123,7 +123,7 @@ public class Zip {
         int offset = 0;
         // one by one format central directory
         while (offset < cdBytes.length) {
-            CentralDirectory cd = CentralDirectory.initCentralDirectory(bf);
+            CentralDirectory cd = CentralDirectory.getCentralDirectory(bf);
             ZipEntry entry = new ZipEntry();
             entry.setCentralDirectory(cd);
             zipEntries.add(entry);
@@ -144,7 +144,7 @@ public class Zip {
             long compressedSize = cd.getCompressedSize();
             long fileSize = cd.getMethod() == FILE_UNCOMPRESS_METHOD_FLAG ? unCompressedSize : compressedSize;
 
-            entry.setZipEntryData(ZipEntryData.initZipEntry(file, offset, fileSize));
+            entry.setZipEntryData(ZipEntryData.getZipEntry(file, offset, fileSize));
         }
         ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
         CentralDirectory endCD = endEntry.getCentralDirectory();

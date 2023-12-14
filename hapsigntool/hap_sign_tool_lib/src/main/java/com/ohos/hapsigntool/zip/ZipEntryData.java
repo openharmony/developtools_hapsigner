@@ -60,7 +60,7 @@ class ZipEntryData {
      * @return zip entry
      * @throws IOException read zip exception
      */
-    public static ZipEntryData initZipEntry(File file, long entryOffset, long fileSize)
+    public static ZipEntryData getZipEntry(File file, long entryOffset, long fileSize)
         throws IOException {
         try (FileInputStream input = new FileInputStream(file)) {
             long offset = entryOffset;

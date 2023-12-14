@@ -41,12 +41,10 @@ class CentralDirectory {
      * 2 bytes
      */
     private short version;
-
     /**
      * 2 bytes
      */
     private short versionExtra;
-
 
     /**
      * 2 bytes
@@ -103,18 +101,15 @@ class CentralDirectory {
      */
     private int diskNumStart;
 
-
     /**
      * 2 bytes
      */
     private short internalFile;
 
-
     /**
      * 4 bytes
      */
     private int externalFile;
-
 
     /**
      * 4 bytes
@@ -145,7 +140,7 @@ class CentralDirectory {
      * @return CentralDirectory
      * @throws ZipException read Central Directory exception
      */
-    public static CentralDirectory initCentralDirectory(ByteBuffer bf) throws ZipException {
+    public static CentralDirectory getCentralDirectory(ByteBuffer bf) throws ZipException {
         CentralDirectory cd = new CentralDirectory();
         if (bf.getInt() != SIGNATURE) {
             throw new ZipException("find zip central directory failed");
