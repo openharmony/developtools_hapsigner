@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity.zip;
+package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.error.ZipException;
 
@@ -62,10 +62,8 @@ public class DataDescriptor {
         if (bytes.length != DES_LENGTH) {
             throw new ZipException("read Data Descriptor failed");
         }
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes);
+        ByteBuffer bf = ByteBuffer.wrap(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
         DataDescriptor data = new DataDescriptor();
         if (bf.getInt() != SIGNATURE) {
             throw new ZipException("read Data Descriptor failed");

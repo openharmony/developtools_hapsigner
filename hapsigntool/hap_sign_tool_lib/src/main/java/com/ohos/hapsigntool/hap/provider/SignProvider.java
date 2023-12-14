@@ -29,7 +29,7 @@ import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-import com.ohos.hapsigntool.hap.entity.zip.Zip;
+import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
 import com.ohos.hapsigntool.hap.exception.MissingParamsException;
@@ -64,7 +64,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity.zip;
+package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.error.ZipException;
 
@@ -108,10 +108,8 @@ class ZipEntryHeader {
      */
     public static ZipEntryHeader initZipEntryHeader(byte[] bytes) throws ZipException {
         ZipEntryHeader entryHeader = new ZipEntryHeader();
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes);
+        ByteBuffer bf = ByteBuffer.wrap(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
         if (bf.getInt() != ZipEntryHeader.SIGNATURE) {
             throw new ZipException("find zip entry head failed");
         }
@@ -135,10 +133,8 @@ class ZipEntryHeader {
      * @param bytes name and extra bytes
      */
     public void setNameAndExtra(byte[] bytes) {
-        ByteBuffer bf = ByteBuffer.allocate(bytes.length);
-        bf.put(bytes);
+        ByteBuffer bf = ByteBuffer.wrap(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
-        bf.flip();
         if (fileNameLength > 0) {
             byte[] nameBytes = new byte[fileNameLength];
             bf.get(nameBytes);
