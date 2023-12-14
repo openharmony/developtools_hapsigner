@@ -89,9 +89,9 @@ public class Zip {
         }
 
         // try to read EOCD without comment
-        int eocdMaxLength = EndOfCentralDirectory.EOCD_LENGTH;
-        eOCDOffset = file.length() - eocdMaxLength;
-        byte[] bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdMaxLength);
+        int eocdLength = EndOfCentralDirectory.EOCD_LENGTH;
+        eOCDOffset = file.length() - eocdLength;
+        byte[] bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdLength);
         EndOfCentralDirectory eocd = EndOfCentralDirectory.initEOCDByBytes(bytes);
         if (eocd != null) {
             return eocd;
@@ -99,7 +99,7 @@ public class Zip {
 
         // try to search EOCD with comment
         int maxCommentLength = 65535;
-        eocdMaxLength = EndOfCentralDirectory.EOCD_LENGTH + maxCommentLength;
+        long eocdMaxLength = Math.min(EndOfCentralDirectory.EOCD_LENGTH + maxCommentLength, file.length());
         eOCDOffset = file.length() - eocdMaxLength;
         bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdMaxLength);
         for (int start = 0; start < eocdMaxLength; start++) {
