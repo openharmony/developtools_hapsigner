@@ -35,6 +35,7 @@ import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
+import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
@@ -430,7 +431,7 @@ public class CodeSigning {
             byte[] attributes
                 = new byte[CentralDirectory.BYTE_SIZE_BETWEEN_FILE_COMMENT_LENGTH_AND_LOCHDR_RELATIVE_OFFSET];
             cdBuffer.get(attributes);
-            int locHdrOffset = cdBuffer.getInt();
+            long locHdrOffset = UnsignedDecimalUtil.getUnsignedInt(cdBuffer);
             builder.setFileNameLength(fileNameLength).setExtraFieldLength(extraFieldLength)
                 .setFileCommentLength(fileCommentLength).setRelativeOffsetOfLocalHeader(locHdrOffset);
             byte[] fileNameBuffer = new byte[fileNameLength];
