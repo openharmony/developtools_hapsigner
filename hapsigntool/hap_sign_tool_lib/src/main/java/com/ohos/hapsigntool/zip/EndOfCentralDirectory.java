@@ -86,6 +86,7 @@ class EndOfCentralDirectory {
     public static EndOfCentralDirectory getEOCDByBytes(byte[] bytes) {
         return getEOCDByBytes(bytes, 0);
     }
+
     /**
      * init End Of Central Directory
      *
@@ -95,8 +96,8 @@ class EndOfCentralDirectory {
      */
     public static EndOfCentralDirectory getEOCDByBytes(byte[] bytes, int offset) {
         EndOfCentralDirectory eocd = new EndOfCentralDirectory();
-        int length = bytes.length - offset;
-        ByteBuffer bf = ByteBuffer.wrap(bytes, offset, length);
+        int remainingDataLen = bytes.length - offset;
+        ByteBuffer bf = ByteBuffer.wrap(bytes, offset, remainingDataLen);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         if (bf.getInt() != SIGNATURE) {
             return null;
