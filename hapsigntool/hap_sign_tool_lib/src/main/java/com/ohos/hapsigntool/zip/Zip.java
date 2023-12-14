@@ -160,7 +160,9 @@ public class Zip {
     public void toFile(String file) {
         try {
             File f = new File(file);
-            if (!f.exists()) {
+            if (f.exists()) {
+                FileUtils.write(new byte[]{}, f);
+            } else {
                 f.createNewFile();
             }
         } catch (IOException e) {
