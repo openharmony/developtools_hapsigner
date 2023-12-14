@@ -128,11 +128,11 @@ class ZipEntryHeader {
     }
 
     /**
-     * set entry header name and extra
+     * set entry header name
      *
-     * @param bytes name and extra bytes
+     * @param bytes name bytes
      */
-    public void setNameAndExtra(byte[] bytes) {
+    public void readFileName(byte[] bytes) {
         ByteBuffer bf = ByteBuffer.wrap(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         if (fileNameLength > 0) {
@@ -140,6 +140,16 @@ class ZipEntryHeader {
             bf.get(nameBytes);
             this.fileName = new String(nameBytes, StandardCharsets.UTF_8);
         }
+    }
+
+    /**
+     * set entry header  extra
+     *
+     * @param bytes extra bytes
+     */
+    public void readExtra(byte[] bytes) {
+        ByteBuffer bf = ByteBuffer.wrap(bytes);
+        bf.order(ByteOrder.LITTLE_ENDIAN);
         if (extraLength > 0) {
             byte[] extra = new byte[extraLength];
             bf.get(extra);

@@ -503,7 +503,8 @@ public abstract class SignProvider {
             throws IOException, HapFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
-        zip.toFile(tmpOutput.getPath());
+        zip.removeSignBlock();
+        zip.toFile(tmpOutput.getAbsolutePath());
     }
 
     /**

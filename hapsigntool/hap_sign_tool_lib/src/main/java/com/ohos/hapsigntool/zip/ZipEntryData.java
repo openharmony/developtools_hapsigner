@@ -27,6 +27,16 @@ import java.io.IOException;
  * @since 2023/12/04
  */
 class ZipEntryData {
+    /**
+     * data descriptor has or not mask
+     */
+    public static final short HAS_DATA_DESCRIPTOR_MASK = 0x08;
+
+    /**
+     * data descriptor has or not flag mask
+     */
+    public static final short NOT_HAS_DATA_DESCRIPTOR_FLAG = 0;
+
     private ZipEntryHeader zipEntryHeader;
 
     private long fileOffset;
@@ -46,12 +56,11 @@ class ZipEntryData {
      *
      * @param file zip file
      * @param entryOffset entry start offset
-     * @param compress compress file size
-     * @param hasDesc has data descriptor
+     * @param fileSize compress file size
      * @return zip entry
      * @throws IOException read zip exception
      */
-    public static ZipEntryData initZipEntry(File file, long entryOffset, long compress, boolean hasDesc)
+    public static ZipEntryData initZipEntry(File file, long entryOffset, long fileSize)
         throws IOException {
         try (FileInputStream input = new FileInputStream(file)) {
             long offset = entryOffset;
@@ -61,18 +70,28 @@ class ZipEntryData {
             offset += ZipEntryHeader.HEADER_LENGTH;
 
             // read entry file name and extra by offset.
-            int nameAndExtraLength = entryHeader.getFileNameLength() + entryHeader.getExtraLength();
-            byte[] nameAndExtra = FileUtils.readInputByLength(input, nameAndExtraLength);
-            entryHeader.setNameAndExtra(nameAndExtra);
-            offset += nameAndExtraLength;
+            if (entryHeader.getFileNameLength() > 0) {
+                byte[] fileNameBytes = FileUtils.readInputByLength(input, entryHeader.getFileNameLength());
+                entryHeader.readFileName(fileNameBytes);
+                offset += entryHeader.getFileNameLength();
+            }
+
+            if (entryHeader.getExtraLength() > 0) {
+                byte[] fileNameBytes = FileUtils.readInputByLength(input, entryHeader.getExtraLength());
+                entryHeader.readExtra(fileNameBytes);
+                offset += entryHeader.getExtraLength();
+            }
 
             // skip file data , save file offset and size.
             ZipEntryData entry = new ZipEntryData();
             entry.setFileOffset(offset);
-            entry.setFileSize(compress);
-            input.skip(compress);
+            entry.setFileSize(fileSize);
+            input.skip(fileSize);
 
-            long entryLength = entryHeader.getLength() + compress;
+            long entryLength = entryHeader.getLength() + fileSize;
+            short flag = entryHeader.getFlag();
+            // set desc null flag
+            boolean hasDesc = (flag & HAS_DATA_DESCRIPTOR_MASK) != NOT_HAS_DATA_DESCRIPTOR_FLAG;
             if (hasDesc) {
                 // if entry has data descriptor, read entry data descriptor.
                 byte[] desBytes = FileUtils.readInputByLength(input, DataDescriptor.DES_LENGTH);

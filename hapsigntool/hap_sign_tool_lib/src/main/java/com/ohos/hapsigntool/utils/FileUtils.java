@@ -161,10 +161,10 @@ public final class FileUtils {
      * @throws IOException read exception
      */
     public static byte[] readInputByOffsetAndLength(InputStream input, long offset, long length) throws IOException {
-        long skip = input.skip(offset);
-        if (skip < offset) {
+        if (input.available() < offset) {
             throw new IOException("can not read bytes by offset");
         }
+        input.skip(offset);
         return readInputByLength(input, length);
     }
 
@@ -176,6 +176,9 @@ public final class FileUtils {
      * @return data bytes
      */
     public static byte[] readInputByLength(InputStream input, long length) throws IOException {
+        if (input.available() < length) {
+            throw new IOException("can not read bytes by length");
+        }
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             writeInputToOutPut(input, output, length);
             return output.toByteArray();
@@ -186,6 +189,9 @@ public final class FileUtils {
      * write input to output by length
      */
     private static void writeInputToOutPut(InputStream input, OutputStream output, long length) throws IOException {
+        if (input.available() < length) {
+            throw new IOException("can not read bytes by length");
+        }
         byte[] buffer;
         if (length > FILE_BUFFER_BLOCK) {
             long times = length / FILE_BUFFER_BLOCK;
@@ -370,8 +376,26 @@ public final class FileUtils {
      */
     public static boolean writeByteToOutFile(byte[] bytes, String outFile) {
         try (OutputStream ops = new FileOutputStream(outFile, true)) {
-            ops.write(bytes, 0, bytes.length);
-            ops.flush();
+            return writeByteToOutFile(bytes, ops);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to get output stream object, outfile: " + outFile);
+        } catch (IOException e) {
+            LOGGER.error("Failed to write data to ops, outfile: " + outFile);
+        }
+        return false;
+    }
+
+    /**
+     * Write byte array data to output file.
+     *
+     * @param bytes byte array data.
+     * @param outFile output file path.
+     * @return true, if write successfully.
+     */
+    public static boolean writeByteToOutFile(byte[] bytes, OutputStream outFile) {
+        try {
+            outFile.write(bytes, 0, bytes.length);
+            outFile.flush();
             return true;
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to get output stream object, outfile: " + outFile);
