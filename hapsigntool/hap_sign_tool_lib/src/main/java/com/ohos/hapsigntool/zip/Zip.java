@@ -37,7 +37,7 @@ public class Zip {
     /**
      * file is uncompress file flag
      */
-    public final int FILE_UNCOMPRESS_METHOD_FLAG = 0;
+    public static final int FILE_UNCOMPRESS_METHOD_FLAG = 0;
 
     private List<ZipEntry> zipEntries;
 
@@ -249,14 +249,14 @@ public class Zip {
      */
     private void sort() {
         // sort uncompress file (so, abc, an) - other uncompress file - compress file
-        zipEntries.sort((entry1, entry2) ->{
+        zipEntries.sort((entry1, entry2) -> {
             short entry1Method = entry1.getZipEntryData().getZipEntryHeader().getMethod();
             short entry2Method = entry2.getZipEntryData().getZipEntryHeader().getMethod();
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
 
             if (entry1Method == unCompressMethod && entry2Method == unCompressMethod) {
-                if (FileUtils.isRunnableFile(entry1FileName)  && FileUtils.isRunnableFile(entry2FileName)) {
+                if (FileUtils.isRunnableFile(entry1FileName) && FileUtils.isRunnableFile(entry2FileName)) {
                     return entry1FileName.compareTo(entry2FileName);
                 } else if (FileUtils.isRunnableFile(entry1FileName)) {
                     return -1;

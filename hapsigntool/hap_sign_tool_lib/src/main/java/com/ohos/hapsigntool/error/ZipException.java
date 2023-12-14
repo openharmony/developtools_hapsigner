@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package com.ohos.hapsigntool.error;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class ZipException extends IOException {
     /**
      * new ZipException
-     * 
+     *
      * @param message exception message
      */
     public ZipException(String message) {
@@ -34,7 +34,7 @@ public class ZipException extends IOException {
 
     /**
      * new ZipException
-     * 
+     *
      * @param message exception message
      * @param e exception
      */
