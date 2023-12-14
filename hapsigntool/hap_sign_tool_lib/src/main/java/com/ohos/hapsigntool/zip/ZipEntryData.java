@@ -26,7 +26,7 @@ import java.io.IOException;
  *
  * @since 2023/12/04
  */
-class ZipEntryData {
+public class ZipEntryData {
     /**
      * data descriptor has or not mask
      */

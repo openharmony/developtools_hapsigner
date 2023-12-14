@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @since 2023/12/02
  */
-class CentralDirectory {
+public class CentralDirectory {
     /**
      * central directory invariable bytes length
      */

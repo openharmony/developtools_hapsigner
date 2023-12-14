@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntoolcmd;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,6 +23,7 @@ import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
 
+import com.ohos.hapsigntool.zip.Zip;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -910,6 +912,27 @@ public class CmdUnitTest {
         for (String name : incorrectName) {
             assertFalse(FileUtils.isRunnableFile(name));
         }
+    }
+
+
+    /**
+     * Test Method: testByteToZip()
+     */
+    @Test
+    public void testByteToZip() throws IOException {
+        String hapFile = "test.hap";
+        loadFile(hapFile);
+        File file = new File(hapFile);
+        Zip zip = new Zip(file);
+        String outFileName = "testOut.hap";
+        zip.toFile(outFileName);
+        File outFile = new File(outFileName);
+        byte[] bytes = FileUtils.readFile(file);
+        byte[] outBytes = FileUtils.readFile(outFile);
+        assertArrayEquals(outBytes, bytes);
+
+        deleteFile(hapFile);
+        deleteFile(outFileName);
     }
 
     private boolean generateAppRootCa() {
