@@ -24,7 +24,7 @@ import java.util.Arrays;
  *
  * @since 2023/12/02
  */
-class ZipEntry {
+public class ZipEntry {
     private ZipEntryData zipEntryData;
 
     private CentralDirectory centralDirectory;

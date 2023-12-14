@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @since 2023/12/02
  */
-class ZipEntryHeader {
+public class ZipEntryHeader {
     /**
      * ZipEntryHeader invariable bytes length
      */
