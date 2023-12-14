@@ -37,12 +37,13 @@ class ZipEntry {
      * @throws ZipException alignment exception
      */
     public int alignment(int alignNum) throws ZipException {
-        long add = alignNum - (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
-        if (add == 0 || add == alignNum) {
+        int remainder = (int) (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
+        if (remainder == 0) {
             return 0;
         }
-        int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + (int) add;
-        if (newExtraLength > Short.MAX_VALUE) {
+        int add = alignNum - remainder;
+        int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + add;
+        if (newExtraLength > UnsignedDecimalUtil.MAX_UNSIGNED_SHORT_VALUE) {
             throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
         }
         zipEntryData.getZipEntryHeader().setExtraLength((short) newExtraLength);
@@ -65,7 +66,7 @@ class ZipEntry {
         centralDirectory.setExtraData(newExtra);
         centralDirectory.setLength(centralDirectory.getLength() - centralDirectory.getExtraLength() + newExtraLength);
         centralDirectory.setExtraLength(newExtraLength);
-        return (int) add;
+        return add;
     }
 
     public ZipEntryData getZipEntryData() {

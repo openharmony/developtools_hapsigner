@@ -23,6 +23,16 @@ import java.nio.ByteBuffer;
  * @since 2023/12/09
  */
 public class UnsignedDecimalUtil {
+    /**
+     * max unsigned int value
+     */
+    public static final long MAX_UNSIGNED_INT_VALUE = 0xFFFFFFFFL;
+
+    /**
+     * max unsigned int value
+     */
+    public static final int MAX_UNSIGNED_SHORT_VALUE = 0xFFFF;
+
     private static final int BIT_SIZE = 8;
 
     private static final int DOUBLE_BIT_SIZE = 16;
@@ -40,7 +50,7 @@ public class UnsignedDecimalUtil {
         if (i >= 0) {
             return i;
         }
-        return i & 0xFFFFFFFFL;
+        return i & MAX_UNSIGNED_INT_VALUE;
     }
 
     /**
@@ -54,7 +64,7 @@ public class UnsignedDecimalUtil {
         if (s >= 0) {
             return s;
         }
-        return s & 0xFFFF;
+        return s & MAX_UNSIGNED_SHORT_VALUE;
     }
 
     /**
@@ -65,10 +75,10 @@ public class UnsignedDecimalUtil {
      */
     public static void setUnsignedInt(ByteBuffer bf, long l) {
         byte[] bytes = new byte[] {
-                (byte) (l & 0xff),
-                (byte) ((l >> BIT_SIZE) & 0xff),
-                (byte) ((l >> DOUBLE_BIT_SIZE) & 0xff),
-                (byte) ((l >> TRIPLE_BIT_SIZE) & 0xff)
+                (byte) (l & 0xFF),
+                (byte) ((l >> BIT_SIZE) & 0xFF),
+                (byte) ((l >> DOUBLE_BIT_SIZE) & 0xFF),
+                (byte) ((l >> TRIPLE_BIT_SIZE) & 0xFF)
         };
         bf.put(bytes);
     }
@@ -81,8 +91,8 @@ public class UnsignedDecimalUtil {
      */
     public static void setUnsignedShort(ByteBuffer bf, int i) {
         byte[] bytes = new byte[] {
-                (byte) (i & 0xff),
-                (byte) ((i >> BIT_SIZE) & 0xff)
+                (byte) (i & 0xFF),
+                (byte) ((i >> BIT_SIZE) & 0xFF)
         };
         bf.put(bytes);
     }
