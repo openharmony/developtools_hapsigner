@@ -83,8 +83,8 @@ class EndOfCentralDirectory {
      * @param bytes End Of Central Directory bytes
      * @return End Of Central Directory
      */
-    public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes) {
-        return initEOCDByBytes(bytes, 0);
+    public static EndOfCentralDirectory getEOCDByBytes(byte[] bytes) {
+        return getEOCDByBytes(bytes, 0);
     }
     /**
      * init End Of Central Directory
@@ -93,7 +93,7 @@ class EndOfCentralDirectory {
      * @param offset offset
      * @return End Of Central Directory
      */
-    public static EndOfCentralDirectory initEOCDByBytes(byte[] bytes, int offset) {
+    public static EndOfCentralDirectory getEOCDByBytes(byte[] bytes, int offset) {
         EndOfCentralDirectory eocd = new EndOfCentralDirectory();
         int length = bytes.length - offset;
         ByteBuffer bf = ByteBuffer.wrap(bytes, offset, length);
