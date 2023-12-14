@@ -41,6 +41,7 @@ class CentralDirectory {
      * 2 bytes
      */
     private short version;
+
     /**
      * 2 bytes
      */
