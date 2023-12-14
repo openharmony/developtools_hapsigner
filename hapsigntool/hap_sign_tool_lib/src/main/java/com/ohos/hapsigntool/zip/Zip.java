@@ -19,6 +19,8 @@ import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +36,8 @@ import java.util.List;
  * @since 2023/12/02
  */
 public class Zip {
+    private static final Logger LOGGER = LogManager.getLogger(Zip.class);
+
     /**
      * file is uncompress file flag
      */
@@ -69,12 +73,19 @@ public class Zip {
             if (!inputFile.exists()) {
                 throw new ZipException("read zip file failed");
             }
+            long start = System.currentTimeMillis();
             // 1. get eocd data
             endOfCentralDirectory = getZipEndOfCentralDirectory(inputFile);
+            long eocdEnd = System.currentTimeMillis();
+            LOGGER.debug("getZipEndOfCentralDirectory use {} ms", eocdEnd - start);
             // 2. use eocd's cd offset, get cd data
             getZipCentralDirectory(inputFile);
+            long cdEnd = System.currentTimeMillis();
+            LOGGER.debug("getZipCentralDirectory use {} ms", cdEnd - start);
             // 3. use cd's entry offset and file size, get entry data
             getZipEntries(inputFile);
+            long entryEnd = System.currentTimeMillis();
+            LOGGER.debug("getZipEntries use {} ms", entryEnd - start);
             // 4. file all data - eocd - cd - entry = sign block
             signingBlock = getSigningBlock(inputFile);
         } catch (IOException e) {

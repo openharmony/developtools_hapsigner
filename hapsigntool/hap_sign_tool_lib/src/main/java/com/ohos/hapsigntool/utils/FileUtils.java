@@ -161,9 +161,6 @@ public final class FileUtils {
      * @throws IOException read exception
      */
     public static byte[] readInputByOffsetAndLength(InputStream input, long offset, long length) throws IOException {
-        if (input.available() < offset) {
-            throw new IOException("can not read bytes by offset");
-        }
         input.skip(offset);
         return readInputByLength(input, length);
     }
@@ -176,9 +173,6 @@ public final class FileUtils {
      * @return data bytes
      */
     public static byte[] readInputByLength(InputStream input, long length) throws IOException {
-        if (input.available() < length) {
-            throw new IOException("can not read bytes by length");
-        }
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             writeInputToOutPut(input, output, length);
             return output.toByteArray();
@@ -189,9 +183,6 @@ public final class FileUtils {
      * write input to output by length
      */
     private static void writeInputToOutPut(InputStream input, OutputStream output, long length) throws IOException {
-        if (input.available() < length) {
-            throw new IOException("can not read bytes by length");
-        }
         byte[] buffer;
         if (length > FILE_BUFFER_BLOCK) {
             long times = length / FILE_BUFFER_BLOCK;
