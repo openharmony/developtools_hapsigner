@@ -46,11 +46,7 @@ public class UnsignedDecimalUtil {
      * @return long
      */
     public static long getUnsignedInt(ByteBuffer bf) {
-        int value = bf.getInt();
-        if (value >= 0) {
-            return value;
-        }
-        return value & MAX_UNSIGNED_INT_VALUE;
+        return bf.getInt() & MAX_UNSIGNED_INT_VALUE;
     }
 
     /**
@@ -60,25 +56,21 @@ public class UnsignedDecimalUtil {
      * @return int
      */
     public static int getUnsignedShort(ByteBuffer bf) {
-        short value = bf.getShort();
-        if (value >= 0) {
-            return value;
-        }
-        return value & MAX_UNSIGNED_SHORT_VALUE;
+        return bf.getShort() & MAX_UNSIGNED_SHORT_VALUE;
     }
 
     /**
      * set long to unsigned int
      *
      * @param bf byteBuffer
-     * @param l long
+     * @param value long
      */
-    public static void setUnsignedInt(ByteBuffer bf, long l) {
+    public static void setUnsignedInt(ByteBuffer bf, long value) {
         byte[] bytes = new byte[] {
-                (byte) (l & 0xFF),
-                (byte) ((l >> BIT_SIZE) & 0xFF),
-                (byte) ((l >> DOUBLE_BIT_SIZE) & 0xFF),
-                (byte) ((l >> TRIPLE_BIT_SIZE) & 0xFF)
+                (byte) (value & 0xFF),
+                (byte) ((value >> BIT_SIZE) & 0xFF),
+                (byte) ((value >> DOUBLE_BIT_SIZE) & 0xFF),
+                (byte) ((value >> TRIPLE_BIT_SIZE) & 0xFF)
         };
         bf.put(bytes);
     }
@@ -87,12 +79,12 @@ public class UnsignedDecimalUtil {
      * set int to unsigned short
      *
      * @param bf byteBuffer
-     * @param i int
+     * @param value int
      */
-    public static void setUnsignedShort(ByteBuffer bf, int i) {
+    public static void setUnsignedShort(ByteBuffer bf, int value) {
         byte[] bytes = new byte[] {
-                (byte) (i & 0xFF),
-                (byte) ((i >> BIT_SIZE) & 0xFF)
+                (byte) (value & 0xFF),
+                (byte) ((value >> BIT_SIZE) & 0xFF)
         };
         bf.put(bytes);
     }

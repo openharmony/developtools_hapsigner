@@ -22,8 +22,10 @@ import java.nio.ByteOrder;
 
 /**
  * resolve zip DataDescriptor data
- * File data MAY be followed by a "data descriptor" for the file.  Data
- * descriptors are used to facilitate ZIP file streaming.
+ * DataDescriptor format:
+ * crc-32                          4 bytes
+ * compressed size                 4 bytes
+ * uncompressed size               4 bytes
  *
  * @since 2023/12/02
  */

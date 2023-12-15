@@ -70,7 +70,7 @@ public class Zip {
      */
     public Zip(File inputFile) {
         try {
-            this.file = inputFile.getPath();
+            this.file = inputFile.getCanonicalPath();
             if (!inputFile.exists()) {
                 throw new ZipException("read zip file failed");
             }
@@ -150,7 +150,7 @@ public class Zip {
     private byte[] getSigningBlock(File file) throws IOException {
         long size = cDOffset - signingOffset;
         if (size < 0) {
-            throw new ZipException("cd offset in front of entry end");
+            throw new ZipException("signing offset in front of entry end");
         }
         if (size == 0) {
             return new byte[0];
@@ -167,7 +167,11 @@ public class Zip {
             long compressedSize = cd.getCompressedSize();
             long fileSize = cd.getMethod() == FILE_UNCOMPRESS_METHOD_FLAG ? unCompressedSize : compressedSize;
 
-            entry.setZipEntryData(ZipEntryData.getZipEntry(file, offset, fileSize));
+            ZipEntryData zipEntryData = ZipEntryData.getZipEntry(file, offset, fileSize);
+            if (cDOffset - offset < zipEntryData.getLength()) {
+                throw new ZipException("cd offset in front of entry end");
+            }
+            entry.setZipEntryData(zipEntryData);
         }
     }
 
@@ -260,13 +264,15 @@ public class Zip {
             short entry2Method = entry2.getZipEntryData().getZipEntryHeader().getMethod();
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
+            boolean runnableFile1 = FileUtils.isRunnableFile(entry1FileName);
+            boolean runnableFile2 = FileUtils.isRunnableFile(entry2FileName);
 
             if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG && entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
-                if (FileUtils.isRunnableFile(entry1FileName) && FileUtils.isRunnableFile(entry2FileName)) {
+                if (runnableFile1 && runnableFile2) {
                     return entry1FileName.compareTo(entry2FileName);
-                } else if (FileUtils.isRunnableFile(entry1FileName)) {
+                } else if (runnableFile1) {
                     return -1;
-                } else if (FileUtils.isRunnableFile(entry2FileName)) {
+                } else if (runnableFile2) {
                     return 1;
                 }
             } else if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG) {
