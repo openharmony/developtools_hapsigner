@@ -23,6 +23,10 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * resolve zip ZipEntryHeader data
+ * Each file placed into a ZIP file MUST be preceded by  a "local
+ * file header" record for that file.  Each "local file header" MUST be
+ * accompanied by a corresponding "central directory header" record within
+ * the central directory section of the ZIP file.
  *
  * @since 2023/12/02
  */
@@ -100,13 +104,13 @@ public class ZipEntryHeader {
     private int length;
 
     /**
-     * init Zip Entry Header
+     * get Zip Entry Header
      *
      * @param bytes ZipEntryHeader bytes
      * @return ZipEntryHeader
      * @throws ZipException read entry header exception
      */
-    public static ZipEntryHeader initZipEntryHeader(byte[] bytes) throws ZipException {
+    public static ZipEntryHeader getZipEntryHeader(byte[] bytes) throws ZipException {
         ZipEntryHeader entryHeader = new ZipEntryHeader();
         ByteBuffer bf = ByteBuffer.wrap(bytes);
         bf.order(ByteOrder.LITTLE_ENDIAN);

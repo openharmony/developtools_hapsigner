@@ -17,10 +17,16 @@ package com.ohos.hapsigntool.zip;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * resolve zip EndOfCentralDirectory data
+ * A ZIP file MUST contain an "end of central directory record". A ZIP
+ * file containing only an "end of central directory record" is considered an
+ * empty ZIP file.  Files MAY be added or replaced within a ZIP file, or deleted.
+ * A ZIP file MUST have only one "end of central directory record".  Other
+ * records defined in this specification MAY be used as needed to support
+ * storage requirements for individual ZIP files.
  *
  * @since 2023/12/04
  */
@@ -83,7 +89,7 @@ public class EndOfCentralDirectory {
      * @param bytes End Of Central Directory bytes
      * @return End Of Central Directory
      */
-    public static EndOfCentralDirectory getEOCDByBytes(byte[] bytes) {
+    public static Optional<EndOfCentralDirectory> getEOCDByBytes(byte[] bytes) {
         return getEOCDByBytes(bytes, 0);
     }
 
@@ -94,13 +100,16 @@ public class EndOfCentralDirectory {
      * @param offset offset
      * @return End Of Central Directory
      */
-    public static EndOfCentralDirectory getEOCDByBytes(byte[] bytes, int offset) {
+    public static Optional<EndOfCentralDirectory> getEOCDByBytes(byte[] bytes, int offset) {
         EndOfCentralDirectory eocd = new EndOfCentralDirectory();
         int remainingDataLen = bytes.length - offset;
+        if (remainingDataLen < EOCD_LENGTH) {
+            return Optional.empty();
+        }
         ByteBuffer bf = ByteBuffer.wrap(bytes, offset, remainingDataLen);
         bf.order(ByteOrder.LITTLE_ENDIAN);
         if (bf.getInt() != SIGNATURE) {
-            return null;
+            return Optional.empty();
         }
         eocd.setDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
         eocd.setcDStartDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
@@ -109,6 +118,9 @@ public class EndOfCentralDirectory {
         eocd.setcDSize(UnsignedDecimalUtil.getUnsignedInt(bf));
         eocd.setOffset(UnsignedDecimalUtil.getUnsignedInt(bf));
         eocd.setCommentLength(UnsignedDecimalUtil.getUnsignedShort(bf));
+        if (bf.remaining() != eocd.getCommentLength()) {
+            return Optional.empty();
+        }
         if (eocd.getCommentLength() > 0) {
             byte[] readComment = new byte[eocd.getCommentLength()];
             bf.get(readComment);
@@ -116,9 +128,9 @@ public class EndOfCentralDirectory {
         }
         eocd.setLength(EOCD_LENGTH + eocd.getCommentLength());
         if (bf.remaining() != 0) {
-            return null;
+            return Optional.empty();
         }
-        return eocd;
+        return Optional.of(eocd);
     }
 
     /**

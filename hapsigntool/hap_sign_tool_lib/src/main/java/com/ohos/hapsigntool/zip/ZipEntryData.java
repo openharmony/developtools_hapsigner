@@ -66,7 +66,7 @@ public class ZipEntryData {
             long offset = entryOffset;
             // read entry header by file and offset.
             byte[] headBytes = FileUtils.readInputByOffsetAndLength(input, entryOffset, ZipEntryHeader.HEADER_LENGTH);
-            ZipEntryHeader entryHeader = ZipEntryHeader.initZipEntryHeader(headBytes);
+            ZipEntryHeader entryHeader = ZipEntryHeader.getZipEntryHeader(headBytes);
             offset += ZipEntryHeader.HEADER_LENGTH;
 
             // read entry file name and extra by offset.

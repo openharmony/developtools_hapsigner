@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * resolve zip data
@@ -76,6 +77,7 @@ public class Zip {
             long start = System.currentTimeMillis();
             // 1. get eocd data
             endOfCentralDirectory = getZipEndOfCentralDirectory(inputFile);
+            cDOffset = endOfCentralDirectory.getOffset();
             long eocdEnd = System.currentTimeMillis();
             LOGGER.debug("getZipEndOfCentralDirectory use {} ms", eocdEnd - start);
             // 2. use eocd's cd offset, get cd data
@@ -84,6 +86,10 @@ public class Zip {
             LOGGER.debug("getZipCentralDirectory use {} ms", cdEnd - start);
             // 3. use cd's entry offset and file size, get entry data
             getZipEntries(inputFile);
+            ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
+            CentralDirectory endCD = endEntry.getCentralDirectory();
+            ZipEntryData endEntryData = endEntry.getZipEntryData();
+            signingOffset = endCD.getOffset() + endEntryData.getLength();
             long entryEnd = System.currentTimeMillis();
             LOGGER.debug("getZipEntries use {} ms", entryEnd - start);
             // 4. file all data - eocd - cd - entry = sign block
@@ -102,9 +108,9 @@ public class Zip {
         int eocdLength = EndOfCentralDirectory.EOCD_LENGTH;
         eOCDOffset = file.length() - eocdLength;
         byte[] bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdLength);
-        EndOfCentralDirectory eocd = EndOfCentralDirectory.getEOCDByBytes(bytes);
-        if (eocd != null) {
-            return eocd;
+        Optional<EndOfCentralDirectory> eocdByBytes = EndOfCentralDirectory.getEOCDByBytes(bytes);
+        if (eocdByBytes.isPresent()) {
+            return eocdByBytes.get();
         }
 
         // try to search EOCD with comment
@@ -112,10 +118,10 @@ public class Zip {
         eOCDOffset = file.length() - eocdMaxLength;
         bytes = FileUtils.readFileByOffsetAndLength(file, eOCDOffset, eocdMaxLength);
         for (int start = 0; start < eocdMaxLength; start++) {
-            eocd = EndOfCentralDirectory.getEOCDByBytes(bytes, start);
-            if (eocd != null) {
+            eocdByBytes = EndOfCentralDirectory.getEOCDByBytes(bytes, start);
+            if (eocdByBytes.isPresent()) {
                 eOCDOffset += start;
-                return eocd;
+                return eocdByBytes.get();
             }
         }
         throw new ZipException("read zip failed: can not find eocd in file");
@@ -123,7 +129,6 @@ public class Zip {
 
     private void getZipCentralDirectory(File file) throws IOException {
         zipEntries = new ArrayList<>(endOfCentralDirectory.getcDTotal());
-        cDOffset = endOfCentralDirectory.getOffset();
         // read full central directory bytes
         byte[] cdBytes = FileUtils.readFileByOffsetAndLength(file, cDOffset, endOfCentralDirectory.getcDSize());
         if (cdBytes.length < CentralDirectory.CD_LENGTH) {
@@ -143,7 +148,14 @@ public class Zip {
     }
 
     private byte[] getSigningBlock(File file) throws IOException {
-        return FileUtils.readFileByOffsetAndLength(file, signingOffset, cDOffset - signingOffset);
+        long size = cDOffset - signingOffset;
+        if (size < 0) {
+            throw new ZipException("cd offset in front of entry end");
+        }
+        if (size == 0) {
+            return null;
+        }
+        return FileUtils.readFileByOffsetAndLength(file, signingOffset, size);
     }
 
     private void getZipEntries(File file) throws IOException {
@@ -157,34 +169,19 @@ public class Zip {
 
             entry.setZipEntryData(ZipEntryData.getZipEntry(file, offset, fileSize));
         }
-        ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
-        CentralDirectory endCD = endEntry.getCentralDirectory();
-        ZipEntryData endEntryData = endEntry.getZipEntryData();
-        signingOffset = endCD.getOffset() + endEntryData.getLength();
     }
 
     /**
      * output zip to zip file
      *
-     * @param file file path
+     * @param outFile file path
      */
-    public void toFile(String file) {
-        try {
-            File f = new File(file);
-            if (f.exists()) {
-                FileUtils.write(new byte[]{}, f);
-            } else {
-                f.createNewFile();
-            }
-        } catch (IOException e) {
-            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
-        }
-
-        try (FileOutputStream fos = new FileOutputStream(file, true)) {
+    public void toFile(String outFile) {
+        try (FileOutputStream fos = new FileOutputStream(outFile)) {
             for (ZipEntry entry : zipEntries) {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
                 FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), fos);
-                boolean isSuccess = FileUtils.appendWriteFileByOffsetToFile(this.file, file,
+                boolean isSuccess = FileUtils.appendWriteFileByOffsetToFile(file, fos,
                         zipEntryData.getFileOffset(), zipEntryData.getFileSize());
                 if (!isSuccess) {
                     throw new ZipException("write zip data failed");
