@@ -917,6 +917,8 @@ public class CmdUnitTest {
 
     /**
      * Test Method: testByteToZip()
+     *
+     * @exception IOException read file exception
      */
     @Test
     public void testByteToZip() throws IOException {
