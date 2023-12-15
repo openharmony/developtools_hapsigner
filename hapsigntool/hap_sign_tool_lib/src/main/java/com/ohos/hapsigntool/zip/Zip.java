@@ -153,7 +153,7 @@ public class Zip {
             throw new ZipException("cd offset in front of entry end");
         }
         if (size == 0) {
-            return null;
+            return new byte[0];
         }
         return FileUtils.readFileByOffsetAndLength(file, signingOffset, size);
     }
