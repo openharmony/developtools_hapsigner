@@ -52,13 +52,13 @@ public class DataDescriptor {
     private long unCompressedSize;
 
     /**
-     * init Central Directory
+     * get Data Descriptor
      *
      * @param bytes DataDescriptor bytes
      * @return DataDescriptor
      * @throws ZipException read data descriptor exception
      */
-    public static DataDescriptor initDataDescriptor(byte[] bytes) throws ZipException {
+    public static DataDescriptor getDataDescriptor(byte[] bytes) throws ZipException {
         if (bytes.length != DES_LENGTH) {
             throw new ZipException("read Data Descriptor failed");
         }

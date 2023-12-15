@@ -46,11 +46,11 @@ public class UnsignedDecimalUtil {
      * @return long
      */
     public static long getUnsignedInt(ByteBuffer bf) {
-        int i = bf.getInt();
-        if (i >= 0) {
-            return i;
+        int value = bf.getInt();
+        if (value >= 0) {
+            return value;
         }
-        return i & MAX_UNSIGNED_INT_VALUE;
+        return value & MAX_UNSIGNED_INT_VALUE;
     }
 
     /**
@@ -60,11 +60,11 @@ public class UnsignedDecimalUtil {
      * @return int
      */
     public static int getUnsignedShort(ByteBuffer bf) {
-        short s = bf.getShort();
-        if (s >= 0) {
-            return s;
+        short value = bf.getShort();
+        if (value >= 0) {
+            return value;
         }
-        return s & MAX_UNSIGNED_SHORT_VALUE;
+        return value & MAX_UNSIGNED_SHORT_VALUE;
     }
 
     /**

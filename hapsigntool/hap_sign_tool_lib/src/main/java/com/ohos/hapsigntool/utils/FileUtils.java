@@ -186,22 +186,16 @@ public final class FileUtils {
      * write input to output by length
      */
     private static void writeInputToOutPut(InputStream input, OutputStream output, long length) throws IOException {
-        byte[] buffer;
-        if (length > FILE_BUFFER_BLOCK) {
-            long times = length / FILE_BUFFER_BLOCK;
-            long remainder = length % FILE_BUFFER_BLOCK;
-            buffer = new byte[FILE_BUFFER_BLOCK];
-            for (int i = 0; i < times; i++) {
-                int read = input.read(buffer);
-                output.write(buffer, 0, read);
+        byte[] buffer = new byte[FILE_BUFFER_BLOCK];
+        long hasReadLen = 0L;
+        while (hasReadLen < length) {
+            int readLen = (int) Math.min(length - hasReadLen, FILE_BUFFER_BLOCK);
+            int len = input.read(buffer, 0, readLen);
+            if (len != readLen) {
+                throw new IOException("read" + hasReadLen + "bytes data less than " + length);
             }
-            byte[] suffix = new byte[(int) remainder];
-            int read = input.read(suffix);
-            output.write(suffix, 0, read);
-        } else {
-            buffer = new byte[(int) length];
-            int read = input.read(buffer);
-            output.write(buffer, 0, read);
+            output.write(buffer, 0, len);
+            hasReadLen += len;
         }
     }
 

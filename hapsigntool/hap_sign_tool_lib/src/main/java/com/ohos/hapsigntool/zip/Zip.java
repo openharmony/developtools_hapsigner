@@ -62,8 +62,6 @@ public class Zip {
 
     private String file;
 
-    private final short unCompressMethod = 0;
-
     /**
      * create Zip by file
      *
@@ -220,12 +218,12 @@ public class Zip {
             for (ZipEntry entry : zipEntries) {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
                 short method = zipEntryData.getZipEntryHeader().getMethod();
-                if (method != unCompressMethod && !isFirstUnRunnableFile) {
+                if (method != FILE_UNCOMPRESS_METHOD_FLAG && !isFirstUnRunnableFile) {
                     // only align uncompressed entry and the first compress entry.
                     break;
                 }
                 int alignBytes;
-                if (method == unCompressMethod && FileUtils.isRunnableFile(
+                if (method == FILE_UNCOMPRESS_METHOD_FLAG && FileUtils.isRunnableFile(
                         zipEntryData.getZipEntryHeader().getFileName())) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
@@ -266,7 +264,7 @@ public class Zip {
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
 
-            if (entry1Method == unCompressMethod && entry2Method == unCompressMethod) {
+            if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG && entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
                 if (FileUtils.isRunnableFile(entry1FileName) && FileUtils.isRunnableFile(entry2FileName)) {
                     return entry1FileName.compareTo(entry2FileName);
                 } else if (FileUtils.isRunnableFile(entry1FileName)) {
@@ -274,9 +272,9 @@ public class Zip {
                 } else if (FileUtils.isRunnableFile(entry2FileName)) {
                     return 1;
                 }
-            } else if (entry1Method == unCompressMethod) {
+            } else if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG) {
                 return -1;
-            } else if (entry2Method == unCompressMethod) {
+            } else if (entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
                 return 1;
             }
             return entry1FileName.compareTo(entry2FileName);
@@ -356,9 +354,5 @@ public class Zip {
 
     public void setFile(String file) {
         this.file = file;
-    }
-
-    public short getUnCompressMethod() {
-        return unCompressMethod;
     }
 }
