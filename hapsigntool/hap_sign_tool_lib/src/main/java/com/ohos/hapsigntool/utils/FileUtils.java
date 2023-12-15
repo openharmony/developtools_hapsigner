@@ -218,16 +218,16 @@ public final class FileUtils {
      * Write data in file to output stream
      *
      * @param inFile input file path.
-     * @param outFile output file path.
+     * @param out output file path.
      * @param offset file read offset
      * @param size file read size
      * @return true, if write successfully.
      */
-    public static boolean appendWriteFileByOffsetToFile(String inFile, FileOutputStream outFile, long offset, long size) {
+    public static boolean appendWriteFileByOffsetToFile(String inFile, FileOutputStream out, long offset, long size) {
         File inputFile = new File(inFile);
         try (FileInputStream fis = new FileInputStream(inputFile)) {
             fis.skip(offset);
-            writeInputToOutPut(fis, outFile, size);
+            writeInputToOutPut(fis, out, size);
             return true;
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to get input stream object.");
