@@ -30,6 +30,7 @@ import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
+import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
@@ -330,7 +331,7 @@ public class VerifyHap {
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(propertyBlockArray);
             ByteBuffer header = HapUtils.reverseSliceBuffer(byteBuffer, 0, ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH);
-            int blockOffset = header.getInt();
+            long blockOffset = UnsignedDecimalUtil.getUnsignedInt(header);
             int blockLength = header.getInt();
             int blockType = header.getInt();
             if (blockType != HapUtils.HAP_CODE_SIGN_BLOCK_ID) {
