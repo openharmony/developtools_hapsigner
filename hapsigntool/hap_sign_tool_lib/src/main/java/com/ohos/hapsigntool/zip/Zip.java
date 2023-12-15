@@ -264,10 +264,9 @@ public class Zip {
             short entry2Method = entry2.getZipEntryData().getZipEntryHeader().getMethod();
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
-            boolean runnableFile1 = FileUtils.isRunnableFile(entry1FileName);
-            boolean runnableFile2 = FileUtils.isRunnableFile(entry2FileName);
-
             if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG && entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
+                boolean runnableFile1 = FileUtils.isRunnableFile(entry1FileName);
+                boolean runnableFile2 = FileUtils.isRunnableFile(entry2FileName);
                 if (runnableFile1 && runnableFile2) {
                     return entry1FileName.compareTo(entry2FileName);
                 } else if (runnableFile1) {
