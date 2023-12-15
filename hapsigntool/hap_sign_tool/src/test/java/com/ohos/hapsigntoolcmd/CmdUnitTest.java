@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
-
 import com.ohos.hapsigntool.zip.Zip;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
