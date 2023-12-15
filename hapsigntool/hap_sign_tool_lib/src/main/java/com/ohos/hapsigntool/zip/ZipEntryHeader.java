@@ -23,10 +23,20 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * resolve zip ZipEntryHeader data
- * Each file placed into a ZIP file MUST be preceded by  a "local
- * file header" record for that file.  Each "local file header" MUST be
- * accompanied by a corresponding "central directory header" record within
- * the central directory section of the ZIP file.
+ * end of central dir signature    4 bytes  (0x06054b50)
+ * number of this disk             2 bytes
+ * number of the disk with the
+ * start of the central directory  2 bytes
+ * total number of entries in the
+ * central directory on this disk  2 bytes
+ * total number of entries in
+ * the central directory           2 bytes
+ * size of the central directory   4 bytes
+ * offset of start of central
+ * directory with respect to
+ * the starting disk number        4 bytes
+ * .ZIP file comment length        2 bytes
+ * .ZIP file comment       (variable size)
  *
  * @since 2023/12/02
  */

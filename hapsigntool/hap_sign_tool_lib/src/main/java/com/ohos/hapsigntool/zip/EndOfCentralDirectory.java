@@ -21,12 +21,21 @@ import java.util.Optional;
 
 /**
  * resolve zip EndOfCentralDirectory data
- * A ZIP file MUST contain an "end of central directory record". A ZIP
- * file containing only an "end of central directory record" is considered an
- * empty ZIP file.  Files MAY be added or replaced within a ZIP file, or deleted.
- * A ZIP file MUST have only one "end of central directory record".  Other
- * records defined in this specification MAY be used as needed to support
- * storage requirements for individual ZIP files.
+ * EndOfCentralDirectory format for:
+ * end of central dir signature    4 bytes  (0x06054b50)
+ * number of this disk             2 bytes
+ * number of the disk with the
+ * start of the central directory  2 bytes
+ * total number of entries in the
+ * central directory on this disk  2 bytes
+ * total number of entries in
+ * the central directory           2 bytes
+ * size of the central directory   4 bytes
+ * offset of start of central
+ * directory with respect to
+ * the starting disk number        4 bytes
+ * .ZIP file comment length        2 bytes
+ * .ZIP file comment       (variable size)
  *
  * @since 2023/12/04
  */
