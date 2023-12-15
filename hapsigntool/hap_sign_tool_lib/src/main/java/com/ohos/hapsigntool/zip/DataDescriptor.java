@@ -22,6 +22,8 @@ import java.nio.ByteOrder;
 
 /**
  * resolve zip DataDescriptor data
+ * File data MAY be followed by a "data descriptor" for the file.  Data
+ * descriptors are used to facilitate ZIP file streaming.
  *
  * @since 2023/12/02
  */

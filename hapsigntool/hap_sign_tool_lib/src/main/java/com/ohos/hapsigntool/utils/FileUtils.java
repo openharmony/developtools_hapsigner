@@ -175,7 +175,7 @@ public final class FileUtils {
     public static byte[] readInputByLength(InputStream input, long length) throws IOException {
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             if (length > Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("Size cannot be greater than Integer max value: " + length);
+                throw new IOException("Size cannot be greater than Integer max value: " + length);
             }
             writeInputToOutPut(input, output, length);
             return output.toByteArray();
@@ -223,16 +223,11 @@ public final class FileUtils {
      * @param size file read size
      * @return true, if write successfully.
      */
-    public static boolean appendWriteFileByOffsetToFile(String inFile, String outFile, long offset, long size) {
-        if (StringUtils.isEmpty(outFile)) {
-            return false;
-        }
+    public static boolean appendWriteFileByOffsetToFile(String inFile, FileOutputStream outFile, long offset, long size) {
         File inputFile = new File(inFile);
-        File outPutFile = new File(outFile);
-        try (FileInputStream fis = new FileInputStream(inputFile);
-             FileOutputStream fos = new FileOutputStream(outPutFile, true)) {
+        try (FileInputStream fis = new FileInputStream(inputFile)) {
             fis.skip(offset);
-            writeInputToOutPut(fis, fos, size);
+            writeInputToOutPut(fis, outFile, size);
             return true;
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to get input stream object.");
