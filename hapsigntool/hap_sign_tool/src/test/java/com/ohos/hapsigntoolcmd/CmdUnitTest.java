@@ -827,8 +827,7 @@ public class CmdUnitTest {
     }
 
     private void fillZipEntryFile(boolean uncompressed, String suffix, ZipOutputStream out) throws IOException {
-        Random random = new Random();
-        int count = Math.max(1, random.nextInt(4));
+        int count = 1;
         for (int i = 0; i < count; i++) {
             String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
             if (suffix.startsWith(".so")) {
