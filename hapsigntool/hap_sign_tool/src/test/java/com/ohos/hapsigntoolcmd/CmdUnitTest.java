@@ -922,19 +922,22 @@ public class CmdUnitTest {
      */
     @Test
     public void testByteToZip() throws IOException {
-        String hapFile = "test.hap";
-        loadFile(hapFile);
-        File file = new File(hapFile);
-        Zip zip = new Zip(file);
-        String outFileName = "testOut.hap";
-        zip.toFile(outFileName);
-        File outFile = new File(outFileName);
-        byte[] bytes = FileUtils.readFile(file);
-        byte[] outBytes = FileUtils.readFile(outFile);
-        assertArrayEquals(outBytes, bytes);
+        File dir = new File("test");
+        dir.mkdir();
+        for (int i = 0; i < 10; i++) {
+            File file = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
+                    FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED);
+            Zip zip = new Zip(file);
+            String outFileName = "test/testOut.hap";
+            zip.toFile(outFileName);
+            File outFile = new File(outFileName);
+            byte[] bytes = FileUtils.readFile(file);
+            byte[] outBytes = FileUtils.readFile(outFile);
+            assertArrayEquals(outBytes, bytes);
 
-        deleteFile(hapFile);
-        deleteFile(outFileName);
+            deleteFile(file.getCanonicalPath());
+            deleteFile(outFileName);
+        }
     }
 
     private boolean generateAppRootCa() {

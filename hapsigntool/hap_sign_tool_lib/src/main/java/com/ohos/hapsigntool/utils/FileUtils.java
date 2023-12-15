@@ -174,6 +174,9 @@ public final class FileUtils {
      */
     public static byte[] readInputByLength(InputStream input, long length) throws IOException {
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            if (length > Integer.MAX_VALUE) {
+                throw new IllegalArgumentException("Size cannot be greater than Integer max value: " + length);
+            }
             writeInputToOutPut(input, output, length);
             return output.toByteArray();
         }
