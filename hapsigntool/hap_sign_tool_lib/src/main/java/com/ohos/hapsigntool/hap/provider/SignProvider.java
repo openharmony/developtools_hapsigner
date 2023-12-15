@@ -394,8 +394,7 @@ public abstract class SignProvider {
         if (signParams.get(ParamConstants.PARAM_SIGN_CODE)
                 .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
             // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
-            int codeSignOffset = (int)
-                    (centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4)));
+            long codeSignOffset = centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4));
             // create CodeSigning Object
             CodeSigning codeSigning = new CodeSigning(signerConfig);
             byte[] codeSignArray = codeSigning.getCodeSignBlock(tmpOutput, codeSignOffset, suffix, profileContent);
@@ -403,7 +402,7 @@ public abstract class SignProvider {
             result.order(ByteOrder.LITTLE_ENDIAN);
             result.putInt(HapUtils.HAP_CODE_SIGN_BLOCK_ID); // type
             result.putInt(codeSignArray.length); // length
-            result.putInt(codeSignOffset); // offset
+            result.putInt((int) codeSignOffset); // offset
             result.put(codeSignArray);
             SigningBlock propertyBlock = new SigningBlock(HapUtils.HAP_PROPERTY_BLOCK_ID, result.array());
             optionalBlocks.add(0, propertyBlock);
