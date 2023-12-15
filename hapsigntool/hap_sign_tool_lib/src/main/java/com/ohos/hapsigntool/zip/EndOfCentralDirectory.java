@@ -73,7 +73,7 @@ public class EndOfCentralDirectory {
     /**
      * n bytes
      */
-    private String comment;
+    private byte[] comment;
 
     private int length;
 
@@ -112,7 +112,7 @@ public class EndOfCentralDirectory {
         if (eocd.getCommentLength() > 0) {
             byte[] readComment = new byte[eocd.getCommentLength()];
             bf.get(readComment);
-            eocd.setComment(new String(readComment, StandardCharsets.UTF_8));
+            eocd.setComment(readComment);
         }
         eocd.setLength(EOCD_LENGTH + eocd.getCommentLength());
         if (bf.remaining() != 0) {
@@ -137,7 +137,7 @@ public class EndOfCentralDirectory {
         UnsignedDecimalUtil.setUnsignedInt(bf, offset);
         UnsignedDecimalUtil.setUnsignedShort(bf, commentLength);
         if (commentLength > 0) {
-            bf.put(comment.getBytes(StandardCharsets.UTF_8));
+            bf.put(comment);
         }
         return bf.array();
     }
@@ -206,11 +206,11 @@ public class EndOfCentralDirectory {
         this.commentLength = commentLength;
     }
 
-    public String getComment() {
+    public byte[] getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(byte[] comment) {
         this.comment = comment;
     }
 

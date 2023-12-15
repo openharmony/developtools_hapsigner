@@ -130,12 +130,12 @@ public class CentralDirectory {
     /**
      * n bytes
      */
-    private String comment;
+    private byte[] comment;
 
     private int length;
 
     /**
-     * init Central Directory
+     * get Central Directory
      *
      * @param bf ByteBuffer
      * @return CentralDirectory
@@ -176,7 +176,7 @@ public class CentralDirectory {
         if (cd.getCommentLength() > 0) {
             byte[] readComment = new byte[cd.getCommentLength()];
             bf.get(readComment);
-            cd.setComment(new String(readComment, StandardCharsets.UTF_8));
+            cd.setComment(readComment);
         }
         cd.setLength(CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
         return cd;
@@ -213,7 +213,7 @@ public class CentralDirectory {
             bf.put(extraData);
         }
         if (commentLength > 0) {
-            bf.put(comment.getBytes(StandardCharsets.UTF_8));
+            bf.put(extraData);
         }
         return bf.array();
     }
@@ -370,11 +370,11 @@ public class CentralDirectory {
         this.extraData = extraData;
     }
 
-    public String getComment() {
+    public byte[] getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(byte[] comment) {
         this.comment = comment;
     }
 

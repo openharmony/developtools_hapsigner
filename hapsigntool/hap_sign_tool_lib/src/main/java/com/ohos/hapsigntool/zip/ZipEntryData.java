@@ -95,7 +95,7 @@ public class ZipEntryData {
             if (hasDesc) {
                 // if entry has data descriptor, read entry data descriptor.
                 byte[] desBytes = FileUtils.readInputByLength(input, DataDescriptor.DES_LENGTH);
-                DataDescriptor dataDesc = DataDescriptor.initDataDescriptor(desBytes);
+                DataDescriptor dataDesc = DataDescriptor.getDataDescriptor(desBytes);
                 entryLength += DataDescriptor.DES_LENGTH;
                 entry.setDataDescriptor(dataDesc);
             }
