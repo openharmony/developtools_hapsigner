@@ -184,6 +184,11 @@ public class Zip {
      * @param outFile file path
      */
     public void toFile(String outFile) {
+        File tempFile = new File(outFile);
+        File parentFile = tempFile.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
         try (FileOutputStream fos = new FileOutputStream(outFile)) {
             for (ZipEntry entry : zipEntries) {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
