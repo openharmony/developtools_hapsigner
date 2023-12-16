@@ -145,6 +145,9 @@ public class Zip {
             zipEntries.add(entry);
             offset += cd.getLength();
         }
+        if (offset + cDOffset != eOCDOffset) {
+            throw new ZipException("cd end offset not equals to eocd offset, maybe this is a zip64 file");
+        }
     }
 
     private byte[] getSigningBlock(File file) throws IOException {
