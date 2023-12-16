@@ -15,12 +15,14 @@
 
 package com.ohos.hapsigntoolcmd;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.zip.Zip;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -825,32 +827,28 @@ public class CmdUnitTest {
     }
 
     private void fillZipEntryFile(boolean uncompressed, String suffix, ZipOutputStream out) throws IOException {
-        Random random = new Random();
-        int count = Math.max(1, random.nextInt(4));
-        for (int i = 0; i < count; i++) {
-            String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
-            if (suffix.startsWith(".so")) {
-                fileName = "libs\\" + fileName;
-            }
-            if (suffix.startsWith(".an")) {
-                fileName = "an\\" + fileName;
-            }
-            ZipEntry zipEntry = new ZipEntry(fileName);
-            byte[] bytes = generateChunkBytes();
-            if (uncompressed) {
-                zipEntry.setMethod(ZipEntry.STORED);
-                zipEntry.setSize(bytes.length);
-                CRC32 crc32 = new CRC32();
-                crc32.reset();
-                crc32.update(bytes, 0, bytes.length);
-                zipEntry.setCrc(crc32.getValue());
-            } else {
-                zipEntry.setMethod(ZipEntry.DEFLATED);
-            }
-            out.putNextEntry(zipEntry);
-            out.write(bytes);
-            out.closeEntry();
+        String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
+        if (suffix.startsWith(".so")) {
+            fileName = "libs\\" + fileName;
         }
+        if (suffix.startsWith(".an")) {
+            fileName = "an\\" + fileName;
+        }
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        byte[] bytes = generateChunkBytes();
+        if (uncompressed) {
+            zipEntry.setMethod(ZipEntry.STORED);
+            zipEntry.setSize(bytes.length);
+            CRC32 crc32 = new CRC32();
+            crc32.reset();
+            crc32.update(bytes, 0, bytes.length);
+            zipEntry.setCrc(crc32.getValue());
+        } else {
+            zipEntry.setMethod(ZipEntry.DEFLATED);
+        }
+        out.putNextEntry(zipEntry);
+        out.write(bytes);
+        out.closeEntry();
     }
 
     private byte[] generateChunkBytes() {
@@ -909,6 +907,32 @@ public class CmdUnitTest {
         incorrectName.add("中文.so.111.111.json");
         for (String name : incorrectName) {
             assertFalse(FileUtils.isRunnableFile(name));
+        }
+    }
+
+
+    /**
+     * Test Method: testByteToZip()
+     *
+     * @throws IOException read file exception
+     */
+    @Test
+    public void testByteToZip() throws IOException {
+        File dir = new File("test");
+        dir.mkdir();
+        for (int i = 0; i < 10; i++) {
+            File file = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
+                    FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED);
+            Zip zip = new Zip(file);
+            String outFileName = "test/testOut.hap";
+            zip.toFile(outFileName);
+            File outFile = new File(outFileName);
+            byte[] bytes = FileUtils.readFile(file);
+            byte[] outBytes = FileUtils.readFile(outFile);
+            assertArrayEquals(outBytes, bytes);
+
+            deleteFile(file.getCanonicalPath());
+            deleteFile(outFileName);
         }
     }
 

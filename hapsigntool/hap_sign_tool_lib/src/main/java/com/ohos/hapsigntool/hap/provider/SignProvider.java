@@ -55,6 +55,7 @@ import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
+import com.ohos.hapsigntool.zip.Zip;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +64,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -83,9 +83,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TimeZone;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
 
 /**
  * Sign provider super class
@@ -329,7 +326,7 @@ public abstract class SignProvider {
             checkCompatibleVersion();
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
-            String suffix = getFileSuffix(output);
+            String suffix = getFileSuffix(input);
             if (input.getCanonicalPath().equals(output.getCanonicalPath())) {
                 tmpOutput = File.createTempFile("signedHap", "." + suffix);
                 isPathOverlap = true;
@@ -397,8 +394,7 @@ public abstract class SignProvider {
         if (signParams.get(ParamConstants.PARAM_SIGN_CODE)
                 .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
             // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
-            int codeSignOffset = (int)
-                    (centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4)));
+            long codeSignOffset = centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4));
             // create CodeSigning Object
             CodeSigning codeSigning = new CodeSigning(signerConfig);
             byte[] codeSignArray = codeSigning.getCodeSignBlock(tmpOutput, codeSignOffset, suffix, profileContent);
@@ -406,7 +402,7 @@ public abstract class SignProvider {
             result.order(ByteOrder.LITTLE_ENDIAN);
             result.putInt(HapUtils.HAP_CODE_SIGN_BLOCK_ID); // type
             result.putInt(codeSignArray.length); // length
-            result.putInt(codeSignOffset); // offset
+            result.putInt((int) codeSignOffset); // offset
             result.put(codeSignArray);
             SigningBlock propertyBlock = new SigningBlock(HapUtils.HAP_PROPERTY_BLOCK_ID, result.array());
             optionalBlocks.add(0, propertyBlock);
@@ -504,14 +500,13 @@ public abstract class SignProvider {
      */
     private void copyFileAndAlignment(File input, File tmpOutput, int alignment)
             throws IOException, HapFormatException {
-        try (JarFile inputJar = new JarFile(input, false);
-             FileOutputStream outputFile = new FileOutputStream(tmpOutput);
-             JarOutputStream outputJar = new JarOutputStream(outputFile)) {
-            long timestamp = TIMESTAMP;
-            timestamp -= TimeZone.getDefault().getOffset(timestamp);
-            outputJar.setLevel(COMPRESSION_MODE);
-            SignHap.copyFiles(inputJar, outputJar, timestamp, alignment);
-        }
+        Zip zip = new Zip(input);
+        zip.alignment(alignment);
+        zip.removeSignBlock();
+        long start = System.currentTimeMillis();
+        zip.toFile(tmpOutput.getCanonicalPath());
+        long end = System.currentTimeMillis();
+        LOGGER.debug("zip to file use {} ms", end - start);
     }
 
     /**
