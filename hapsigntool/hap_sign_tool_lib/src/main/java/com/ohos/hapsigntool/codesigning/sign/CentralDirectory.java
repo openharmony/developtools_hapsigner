@@ -53,7 +53,7 @@ public class CentralDirectory {
 
     private final char fileCommentLength;
 
-    private final int relativeOffsetOfLocalHeader;
+    private final long relativeOffsetOfLocalHeader;
 
     private final byte[] fileName;
 
@@ -88,7 +88,7 @@ public class CentralDirectory {
         return Strings.fromByteArray(this.fileName);
     }
 
-    public int getRelativeOffsetOfLocalHeader() {
+    public long getRelativeOffsetOfLocalHeader() {
         return relativeOffsetOfLocalHeader;
     }
 
@@ -130,7 +130,7 @@ public class CentralDirectory {
 
         private char fileCommentLength;
 
-        private int relativeOffsetOfLocalHeader;
+        private long relativeOffsetOfLocalHeader;
 
         private byte[] fileName;
 
@@ -154,7 +154,7 @@ public class CentralDirectory {
             return this;
         }
 
-        public Builder setRelativeOffsetOfLocalHeader(int relativeOffsetOfLocalHeader) {
+        public Builder setRelativeOffsetOfLocalHeader(long relativeOffsetOfLocalHeader) {
             this.relativeOffsetOfLocalHeader = relativeOffsetOfLocalHeader;
             return this;
         }

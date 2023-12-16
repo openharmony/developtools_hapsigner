@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ohos.hapsigntool.error.ERROR;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,7 +70,7 @@ public final class FileUtils {
     /**
      * File reader block size
      */
-    public static final int FILE_BUFFER_BLOCK = 4096;
+    public static final int FILE_BUFFER_BLOCK = 1024 * 1024;
 
     /**
      * File end
@@ -113,7 +114,7 @@ public final class FileUtils {
      * @throws IOException Read failed
      */
     public static byte[] readFile(File file) throws IOException {
-        return read(new FileInputStream(file));
+        return read(Files.newInputStream(file.toPath()));
     }
 
     /**
@@ -137,6 +138,68 @@ public final class FileUtils {
     }
 
     /**
+     * Read byte from input file.
+     *
+     * @param file input file
+     * @param offset offset
+     * @param length length
+     * @return data bytes
+     */
+    public static byte[] readFileByOffsetAndLength(File file, long offset, long length) throws IOException {
+        try (FileInputStream input = new FileInputStream(file)) {
+            return readInputByOffsetAndLength(input, offset, length);
+        }
+    }
+
+    /**
+     * Read byte from input stream.
+     *
+     * @param input input stream
+     * @param offset offset
+     * @param length length
+     * @return data bytes
+     * @throws IOException read exception
+     */
+    public static byte[] readInputByOffsetAndLength(InputStream input, long offset, long length) throws IOException {
+        input.skip(offset);
+        return readInputByLength(input, length);
+    }
+
+    /**
+     * Read byte from input stream.
+     *
+     * @param input InputStream
+     * @param length length
+     * @return data bytes
+     */
+    public static byte[] readInputByLength(InputStream input, long length) throws IOException {
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            if (length > Integer.MAX_VALUE) {
+                throw new IOException("Size cannot be greater than Integer max value: " + length);
+            }
+            writeInputToOutPut(input, output, length);
+            return output.toByteArray();
+        }
+    }
+
+    /**
+     * write input to output by length
+     */
+    private static void writeInputToOutPut(InputStream input, OutputStream output, long length) throws IOException {
+        byte[] buffer = new byte[FILE_BUFFER_BLOCK];
+        long hasReadLen = 0L;
+        while (hasReadLen < length) {
+            int readLen = (int) Math.min(length - hasReadLen, FILE_BUFFER_BLOCK);
+            int len = input.read(buffer, 0, readLen);
+            if (len != readLen) {
+                throw new IOException("read" + hasReadLen + "bytes data less than " + length);
+            }
+            output.write(buffer, 0, len);
+            hasReadLen += len;
+        }
+    }
+
+    /**
      * Out put content to file.
      *
      * @param content Which content to out put
@@ -149,6 +212,29 @@ public final class FileUtils {
                 out.write(con);
             }
         }
+    }
+
+    /**
+     * Write data in file to output stream
+     *
+     * @param inFile input file path.
+     * @param out output file path.
+     * @param offset file read offset
+     * @param size file read size
+     * @return true, if write successfully.
+     */
+    public static boolean appendWriteFileByOffsetToFile(String inFile, FileOutputStream out, long offset, long size) {
+        File inputFile = new File(inFile);
+        try (FileInputStream fis = new FileInputStream(inputFile)) {
+            fis.skip(offset);
+            writeInputToOutPut(fis, out, size);
+            return true;
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to get input stream object.");
+        } catch (IOException e) {
+            LOGGER.error("Failed to read or write data.");
+        }
+        return false;
     }
 
     /**
@@ -267,14 +353,32 @@ public final class FileUtils {
     /**
      * Write byte array data to output file.
      *
-     * @param signHeadByte byte array data.
+     * @param bytes byte array data.
      * @param outFile output file path.
      * @return true, if write successfully.
      */
-    public static boolean writeByteToOutFile(byte[] signHeadByte, String outFile) {
+    public static boolean writeByteToOutFile(byte[] bytes, String outFile) {
         try (OutputStream ops = new FileOutputStream(outFile, true)) {
-            ops.write(signHeadByte, 0, signHeadByte.length);
-            ops.flush();
+            return writeByteToOutFile(bytes, ops);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to get output stream object, outfile: " + outFile);
+        } catch (IOException e) {
+            LOGGER.error("Failed to write data to ops, outfile: " + outFile);
+        }
+        return false;
+    }
+
+    /**
+     * Write byte array data to output file.
+     *
+     * @param bytes byte array data.
+     * @param outFile output file path.
+     * @return true, if write successfully.
+     */
+    public static boolean writeByteToOutFile(byte[] bytes, OutputStream outFile) {
+        try {
+            outFile.write(bytes, 0, bytes.length);
+            outFile.flush();
             return true;
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to get output stream object, outfile: " + outFile);
