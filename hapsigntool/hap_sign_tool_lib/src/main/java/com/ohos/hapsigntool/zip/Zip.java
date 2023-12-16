@@ -19,6 +19,7 @@ import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -273,13 +274,13 @@ public class Zip {
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
             if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG && entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
-                boolean runnableFile1 = FileUtils.isRunnableFile(entry1FileName);
-                boolean runnableFile2 = FileUtils.isRunnableFile(entry2FileName);
-                if (runnableFile1 && runnableFile2) {
+                boolean isRunnableFile1 = FileUtils.isRunnableFile(entry1FileName);
+                boolean isRunnableFile2 = FileUtils.isRunnableFile(entry2FileName);
+                if (isRunnableFile1 && isRunnableFile2) {
                     return entry1FileName.compareTo(entry2FileName);
-                } else if (runnableFile1) {
+                } else if (isRunnableFile1) {
                     return -1;
-                } else if (runnableFile2) {
+                } else if (isRunnableFile2) {
                     return 1;
                 }
             } else if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG) {
