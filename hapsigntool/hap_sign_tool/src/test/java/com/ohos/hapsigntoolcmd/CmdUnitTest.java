@@ -827,31 +827,28 @@ public class CmdUnitTest {
     }
 
     private void fillZipEntryFile(boolean uncompressed, String suffix, ZipOutputStream out) throws IOException {
-        int count = 1;
-        for (int i = 0; i < count; i++) {
-            String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
-            if (suffix.startsWith(".so")) {
-                fileName = "libs\\" + fileName;
-            }
-            if (suffix.startsWith(".an")) {
-                fileName = "an\\" + fileName;
-            }
-            ZipEntry zipEntry = new ZipEntry(fileName);
-            byte[] bytes = generateChunkBytes();
-            if (uncompressed) {
-                zipEntry.setMethod(ZipEntry.STORED);
-                zipEntry.setSize(bytes.length);
-                CRC32 crc32 = new CRC32();
-                crc32.reset();
-                crc32.update(bytes, 0, bytes.length);
-                zipEntry.setCrc(crc32.getValue());
-            } else {
-                zipEntry.setMethod(ZipEntry.DEFLATED);
-            }
-            out.putNextEntry(zipEntry);
-            out.write(bytes);
-            out.closeEntry();
+        String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
+        if (suffix.startsWith(".so")) {
+            fileName = "libs\\" + fileName;
         }
+        if (suffix.startsWith(".an")) {
+            fileName = "an\\" + fileName;
+        }
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        byte[] bytes = generateChunkBytes();
+        if (uncompressed) {
+            zipEntry.setMethod(ZipEntry.STORED);
+            zipEntry.setSize(bytes.length);
+            CRC32 crc32 = new CRC32();
+            crc32.reset();
+            crc32.update(bytes, 0, bytes.length);
+            zipEntry.setCrc(crc32.getValue());
+        } else {
+            zipEntry.setMethod(ZipEntry.DEFLATED);
+        }
+        out.putNextEntry(zipEntry);
+        out.write(bytes);
+        out.closeEntry();
     }
 
     private byte[] generateChunkBytes() {
