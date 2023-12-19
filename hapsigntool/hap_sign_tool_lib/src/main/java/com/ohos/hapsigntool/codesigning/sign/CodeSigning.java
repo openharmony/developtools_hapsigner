@@ -255,11 +255,8 @@ public class CodeSigning {
             CodeSignException {
         // 'an' libs are always signed
         extractedNativeLibSuffixs.add(NATIVE_LIB_AN_SUFFIX);
-        if (HapUtils.checkCompressNativeLibs(input)) {
-            LOGGER.info("compressNativeLibs equals true, sign so libs as well.");
-            // sign so libs only if compressNativeLibs equals true
-            extractedNativeLibSuffixs.add(NATIVE_LIB_SO_SUFFIX);
-        }
+        // 'so' libs are always signed
+        extractedNativeLibSuffixs.add(NATIVE_LIB_SO_SUFFIX);
 
         // sign native files
         try (JarFile inputJar = new JarFile(input, false)) {
