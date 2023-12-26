@@ -34,11 +34,13 @@ import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
-import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
-import com.ohos.hapsigntool.zip.ZipUtils;
+import com.ohos.hapsigntool.zip.Zip;
+import com.ohos.hapsigntool.zip.ZipEntryHeader;
+import com.ohos.hapsigntool.zip.ZipEntryData;
+import com.ohos.hapsigntool.zip.ZipEntry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -166,16 +168,13 @@ public class CodeSigning {
      * @throws FsVerityDigestException  computing FsVerity digest error
      * @throws ProfileException         profile of the hap error
      */
-    public byte[] getCodeSignBlock(File input, long offset, String inForm, String profileContent)
+    public byte[] getCodeSignBlock(File input, long offset, String inForm, String profileContent, Zip zip)
         throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
-        if (SUPPORT_BIN_FILE_FORM.contains(inForm)) {
-            return getElfCodeSignBlock(input, offset, inForm, profileContent);
-        }
         if (!SUPPORT_FILE_FORM.contains(inForm)) {
             throw new CodeSignException("file's format is unsupported");
         }
-        long dataSize = computeDataSize(input);
+        long dataSize = computeDataSize(zip);
         timestamp = System.currentTimeMillis();
         // generate CodeSignBlock
         this.codeSignBlock = new CodeSignBlock();
@@ -210,45 +209,28 @@ public class CodeSigning {
         return generated;
     }
 
-    private long computeDataSize(File file) throws IOException, HapFormatException {
-        long centralDirectoryOffset;
-        int centralDirectorySize;
-        int centralDirectoryEntryCount;
-        // parse central directory
-        try (RandomAccessFile outputHap = new RandomAccessFile(file, "rw")) {
-            ZipDataInput outputHapIn = new RandomAccessFileZipDataInput(outputHap);
-            ZipFileInfo zipInfo = ZipUtils.findZipInfo(outputHapIn);
-            centralDirectoryOffset = zipInfo.getCentralDirectoryOffset();
-            centralDirectorySize = zipInfo.getCentralDirectorySize();
-            centralDirectoryEntryCount = zipInfo.getCentralDirectoryEntryCount();
-        }
-        // centralDirectoryOffset is where all data ends, including abc/so/an and resources
-        try (FileInputStream input = new FileInputStream(file)) {
-            input.skip(centralDirectoryOffset);
-            byte[] centralDirectoryBuffer = new byte[centralDirectorySize];
-            input.read(centralDirectoryBuffer);
-            List<CentralDirectory> cdList = parseCentralDirectory(centralDirectoryBuffer, centralDirectoryEntryCount);
-            long dataSize = 0L;
-            for (CentralDirectory entry : cdList) {
-                if (entry.isCodeFile() && entry.isUncompressed()) {
-                    continue;
-                }
-                // if the first file is not uncompressed abc or so, set dataSize to zero
-                if (entry.getRelativeOffsetOfLocalHeader() == 0) {
-                    dataSize = 0;
-                    break;
-                }
-                // the first entry which is not abc/so/an is found, return its data offset
-                dataSize = entry.getRelativeOffsetOfLocalHeader() + JarFile.LOCHDR + entry.getFileNameLength()
-                    + entry.getExtraFieldLength();
+    private long computeDataSize(Zip zip) throws HapFormatException {
+        long dataSize = 0L;
+        for (ZipEntry entry : zip.getZipEntries()) {
+            ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
+            if (FileUtils.isRunnableFile(zipEntryHeader.getFileName())
+              && zipEntryHeader.getMethod() == Zip.FILE_UNCOMPRESS_METHOD_FLAG) {
+                continue;
+            }
+            // if the first file is not uncompressed abc or so, set dataSize to zero
+            if (entry.getCentralDirectory().getOffset() == 0) {
                 break;
             }
-            if ((dataSize % CodeSignBlock.PAGE_SIZE_4K) != 0) {
-                throw new HapFormatException(
-                    String.format(Locale.ROOT, "Invalid dataSize(%d), not a multiple of 4096", dataSize));
-            }
-            return dataSize;
+            // the first entry which is not abc/so/an is found, return its data offset
+            dataSize = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
+                    + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
+            break;
         }
+        if ((dataSize % CodeSignBlock.PAGE_SIZE_4K) != 0) {
+            throw new HapFormatException(
+                String.format(Locale.ROOT, "Invalid dataSize(%d), not a multiple of 4096", dataSize));
+        }
+        return dataSize;
     }
 
     private void signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException,
