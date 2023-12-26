@@ -46,14 +46,10 @@ public class ZipEntry {
         if (newExtraLength > UnsignedDecimalUtil.MAX_UNSIGNED_SHORT_VALUE) {
             throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
         }
+        // add entry extra
         zipEntryData.getZipEntryHeader().setExtraLength((short) newExtraLength);
         byte[] oldExtraData = zipEntryData.getZipEntryHeader().getExtraData();
-        byte[] newExtra;
-        if (oldExtraData == null) {
-            newExtra = new byte[newExtraLength];
-        } else {
-            newExtra = Arrays.copyOf(oldExtraData, newExtraLength);
-        }
+        byte[] newExtra = getAlignmentNewExtra(add, oldExtraData);
         zipEntryData.getZipEntryHeader().setExtraData(newExtra);
         int newLength = ZipEntryHeader.HEADER_LENGTH + zipEntryData.getZipEntryHeader().getFileNameLength()
                 + newExtraLength;
@@ -63,10 +59,23 @@ public class ZipEntry {
         zipEntryData.getZipEntryHeader().setLength(newLength);
         zipEntryData.setLength(zipEntryData.getLength() + add);
 
-        centralDirectory.setExtraData(newExtra);
-        centralDirectory.setLength(centralDirectory.getLength() - centralDirectory.getExtraLength() + newExtraLength);
-        centralDirectory.setExtraLength(newExtraLength);
+        // add cd extra
+        byte[] oldCDExtra = centralDirectory.getExtraData();
+        byte[] newCDExtra = getAlignmentNewExtra(add, oldCDExtra);
+        centralDirectory.setExtraData(newCDExtra);
+        centralDirectory.setLength(centralDirectory.getLength() - centralDirectory.getExtraLength() + newCDExtra.length);
+        centralDirectory.setExtraLength(newCDExtra.length);
         return add;
+    }
+
+    private byte[] getAlignmentNewExtra(int add, byte[] old) {
+        if (old == null) {
+            return new byte[add];
+        }
+        int newCDExtraLength = old.length + add;
+        byte[] newCDExtra;
+        newCDExtra = Arrays.copyOf(old, newCDExtraLength);
+        return newCDExtra;
     }
 
     public ZipEntryData getZipEntryData() {
