@@ -37,22 +37,14 @@ public class ZipEntry {
      * @throws ZipException alignment exception
      */
     public int alignment(int alignNum) throws ZipException {
+        // if cd extra len bigger than entry extra len, make cd and entry extra length equals
+        int add = alignmentCDAndEntry();
         int remainder = (int) (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
-        int entryExtraLen = zipEntryData.getZipEntryHeader().getExtraLength();
-        int cdExtraLen = centralDirectory.getExtraLength();
 
         if (remainder == 0) {
-            if (cdExtraLen == entryExtraLen) {
-                return 0;
-            } else if (cdExtraLen < entryExtraLen) {
-                setCenterDirectoryNewExtraLength(entryExtraLen);
-                return entryExtraLen - cdExtraLen;
-            } else {
-                setEntryHeaderNewExtraLength(cdExtraLen);
-                return alignment(alignNum);
-            }
+            return add;
         }
-        int add = alignNum - remainder;
+        add += alignNum - remainder;
         int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + add;
         if (newExtraLength > UnsignedDecimalUtil.MAX_UNSIGNED_SHORT_VALUE) {
             throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
@@ -61,6 +53,16 @@ public class ZipEntry {
         setCenterDirectoryNewExtraLength(newExtraLength);
 
         return add;
+    }
+
+    public int alignmentCDAndEntry() throws ZipException {
+        int entryExtraLen = zipEntryData.getZipEntryHeader().getExtraLength();
+        int cdExtraLen = centralDirectory.getExtraLength();
+        if (cdExtraLen > entryExtraLen) {
+            setEntryHeaderNewExtraLength(cdExtraLen);
+            return cdExtraLen - entryExtraLen;
+        }
+        return 0;
     }
 
     private void setCenterDirectoryNewExtraLength(int newLength) throws ZipException {
