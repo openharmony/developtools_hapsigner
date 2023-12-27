@@ -38,40 +38,56 @@ public class ZipEntry {
      */
     public int alignment(int alignNum) throws ZipException {
         int remainder = (int) (zipEntryData.getZipEntryHeader().getLength() + centralDirectory.getOffset()) % alignNum;
+        int entryExtraLen = zipEntryData.getZipEntryHeader().getExtraLength();
+        int cdExtraLen = centralDirectory.getExtraLength();
+
         if (remainder == 0) {
-            return 0;
+            if (cdExtraLen == entryExtraLen) {
+                return 0;
+            } else if (cdExtraLen < entryExtraLen) {
+                setCenterDirectoryNewExtraLength(entryExtraLen);
+                return entryExtraLen - cdExtraLen;
+            } else {
+                setEntryHeaderNewExtraLength(cdExtraLen);
+                return alignment(alignNum);
+            }
         }
         int add = alignNum - remainder;
         int newExtraLength = zipEntryData.getZipEntryHeader().getExtraLength() + add;
         if (newExtraLength > UnsignedDecimalUtil.MAX_UNSIGNED_SHORT_VALUE) {
             throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
         }
-        // add entry extra
-        zipEntryData.getZipEntryHeader().setExtraLength(newExtraLength);
-        byte[] oldExtraData = zipEntryData.getZipEntryHeader().getExtraData();
-        byte[] newExtra = getAlignmentNewExtra(newExtraLength, oldExtraData);
-        zipEntryData.getZipEntryHeader().setExtraData(newExtra);
-        int newLength = ZipEntryHeader.HEADER_LENGTH + zipEntryData.getZipEntryHeader().getFileNameLength()
-                + newExtraLength;
-        if (zipEntryData.getZipEntryHeader().getLength() + add != newLength) {
-            throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
-        }
-        zipEntryData.getZipEntryHeader().setLength(newLength);
-        zipEntryData.setLength(zipEntryData.getLength() + add);
+        setEntryHeaderNewExtraLength(newExtraLength);
+        setCenterDirectoryNewExtraLength(newExtraLength);
 
-        // add cd extra
-        byte[] oldCDExtra = centralDirectory.getExtraData();
-        byte[] newCDExtra = getAlignmentNewExtra(newExtraLength, oldCDExtra);
-        centralDirectory.setExtraData(newCDExtra);
-        centralDirectory.setLength(centralDirectory.getLength()
-                - centralDirectory.getExtraLength() + newCDExtra.length);
-        centralDirectory.setExtraLength(newCDExtra.length);
         return add;
     }
 
-    private byte[] getAlignmentNewExtra(int newLength, byte[] old) {
+    private void setCenterDirectoryNewExtraLength(int newLength) throws ZipException {
+        byte[] newCDExtra = getAlignmentNewExtra(newLength, centralDirectory.getExtraData());
+        centralDirectory.setExtraData(newCDExtra);
+        centralDirectory.setExtraLength(newLength);
+        centralDirectory.setLength(CentralDirectory.CD_LENGTH + centralDirectory.getFileNameLength()
+                + centralDirectory.getExtraLength() + centralDirectory.getCommentLength());
+    }
+
+    private void setEntryHeaderNewExtraLength(int newLength) throws ZipException {
+        ZipEntryHeader zipEntryHeader = zipEntryData.getZipEntryHeader();
+        byte[] newExtra = getAlignmentNewExtra(newLength, zipEntryHeader.getExtraData());
+        zipEntryHeader.setExtraData(newExtra);
+        zipEntryHeader.setExtraLength(newLength);
+        zipEntryHeader.setLength(ZipEntryHeader.HEADER_LENGTH + zipEntryHeader.getExtraLength()
+                + zipEntryHeader.getFileNameLength());
+        zipEntryData.setLength(zipEntryHeader.getLength() + zipEntryData.getFileSize()
+                + (zipEntryData.getDataDescriptor() == null ? 0 : DataDescriptor.DES_LENGTH));
+    }
+
+    private byte[] getAlignmentNewExtra(int newLength, byte[] old) throws ZipException {
         if (old == null) {
             return new byte[newLength];
+        }
+        if (newLength < old.length) {
+            throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
         }
         return Arrays.copyOf(old, newLength);
     }
