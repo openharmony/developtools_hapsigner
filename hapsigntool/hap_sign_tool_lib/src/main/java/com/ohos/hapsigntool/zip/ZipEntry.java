@@ -47,9 +47,9 @@ public class ZipEntry {
             throw new ZipException("can not align " + zipEntryData.getZipEntryHeader().getFileName());
         }
         // add entry extra
-        zipEntryData.getZipEntryHeader().setExtraLength((short) newExtraLength);
+        zipEntryData.getZipEntryHeader().setExtraLength(newExtraLength);
         byte[] oldExtraData = zipEntryData.getZipEntryHeader().getExtraData();
-        byte[] newExtra = getAlignmentNewExtra(add, oldExtraData);
+        byte[] newExtra = getAlignmentNewExtra(newExtraLength, oldExtraData);
         zipEntryData.getZipEntryHeader().setExtraData(newExtra);
         int newLength = ZipEntryHeader.HEADER_LENGTH + zipEntryData.getZipEntryHeader().getFileNameLength()
                 + newExtraLength;
@@ -61,21 +61,18 @@ public class ZipEntry {
 
         // add cd extra
         byte[] oldCDExtra = centralDirectory.getExtraData();
-        byte[] newCDExtra = getAlignmentNewExtra(add, oldCDExtra);
+        byte[] newCDExtra = getAlignmentNewExtra(newExtraLength, oldCDExtra);
         centralDirectory.setExtraData(newCDExtra);
         centralDirectory.setLength(centralDirectory.getLength() - centralDirectory.getExtraLength() + newCDExtra.length);
         centralDirectory.setExtraLength(newCDExtra.length);
         return add;
     }
 
-    private byte[] getAlignmentNewExtra(int add, byte[] old) {
+    private byte[] getAlignmentNewExtra(int newLength, byte[] old) {
         if (old == null) {
-            return new byte[add];
+            return new byte[newLength];
         }
-        int newCDExtraLength = old.length + add;
-        byte[] newCDExtra;
-        newCDExtra = Arrays.copyOf(old, newCDExtraLength);
-        return newCDExtra;
+        return Arrays.copyOf(old, newLength);
     }
 
     public ZipEntryData getZipEntryData() {
