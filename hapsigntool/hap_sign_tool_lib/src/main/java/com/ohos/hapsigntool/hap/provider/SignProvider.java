@@ -51,11 +51,11 @@ import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataOutput;
+import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
-import com.ohos.hapsigntool.zip.Zip;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -378,6 +378,7 @@ public abstract class SignProvider {
      * @param tmpOutput temp output file
      * @param suffix suffix
      * @param centralDirectoryOffset central directory offset
+     * @param zip zip
      * @throws FsVerityDigestException FsVerity digest on error
      * @throws CodeSignException code sign on error
      * @throws IOException IO error
@@ -495,6 +496,7 @@ public abstract class SignProvider {
      * @param input file input
      * @param tmpOutput file tmpOutput
      * @param alignment alignment
+     * @return zip zip
      * @throws IOException io error
      * @throws HapFormatException hap format error
      */

@@ -35,11 +35,8 @@ import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
-import com.ohos.hapsigntool.zip.ZipDataInput;
-import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipEntryHeader;
-import com.ohos.hapsigntool.zip.ZipEntryData;
 import com.ohos.hapsigntool.zip.ZipEntry;
 
 import org.apache.logging.log4j.LogManager;
@@ -49,7 +46,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -161,6 +157,7 @@ public class CodeSigning {
      * @param offset position of codesign block based on start of the file
      * @param inForm file's format
      * @param profileContent profile of the hap
+     * @param zip zip
      * @return byte array of code sign block
      * @throws CodeSignException        code signing exception
      * @throws IOException              io error
@@ -214,7 +211,7 @@ public class CodeSigning {
         for (ZipEntry entry : zip.getZipEntries()) {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
             if (FileUtils.isRunnableFile(zipEntryHeader.getFileName())
-              && zipEntryHeader.getMethod() == Zip.FILE_UNCOMPRESS_METHOD_FLAG) {
+                && zipEntryHeader.getMethod() == Zip.FILE_UNCOMPRESS_METHOD_FLAG) {
                 continue;
             }
             // if the first file is not uncompressed abc or so, set dataSize to zero
@@ -401,14 +398,14 @@ public class CodeSigning {
             cdBuffer.get(bytesBeforeCompressionMethod);
             char compressionMode = cdBuffer.getChar();
             CentralDirectory.Builder builder = new CentralDirectory.Builder().setCompressionMethod(compressionMode);
-            byte[] bytesBetweenCmprMethodAndFileNameLength
-                = new byte[CentralDirectory.BYTE_SIZE_BETWEEN_COMPRESSION_MODE_AND_FILE_SIZE];
+            byte[] bytesBetweenCmprMethodAndFileNameLength =
+                    new byte[CentralDirectory.BYTE_SIZE_BETWEEN_COMPRESSION_MODE_AND_FILE_SIZE];
             cdBuffer.get(bytesBetweenCmprMethodAndFileNameLength);
             char fileNameLength = cdBuffer.getChar();
             char extraFieldLength = cdBuffer.getChar();
             char fileCommentLength = cdBuffer.getChar();
-            byte[] attributes
-                = new byte[CentralDirectory.BYTE_SIZE_BETWEEN_FILE_COMMENT_LENGTH_AND_LOCHDR_RELATIVE_OFFSET];
+            byte[] attributes =
+                    new byte[CentralDirectory.BYTE_SIZE_BETWEEN_FILE_COMMENT_LENGTH_AND_LOCHDR_RELATIVE_OFFSET];
             cdBuffer.get(attributes);
             long locHdrOffset = UnsignedDecimalUtil.getUnsignedInt(cdBuffer);
             builder.setFileNameLength(fileNameLength).setExtraFieldLength(extraFieldLength)
