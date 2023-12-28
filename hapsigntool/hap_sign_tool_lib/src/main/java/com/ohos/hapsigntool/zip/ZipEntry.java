@@ -63,6 +63,10 @@ public class ZipEntry {
             setEntryHeaderNewExtraLength(cdExtraLen);
             return cdExtraLen - entryExtraLen;
         }
+        if (cdExtraLen < entryExtraLen) {
+            setCenterDirectoryNewExtraLength(entryExtraLen);
+            return entryExtraLen - cdExtraLen;
+        }
         return 0;
     }
 
