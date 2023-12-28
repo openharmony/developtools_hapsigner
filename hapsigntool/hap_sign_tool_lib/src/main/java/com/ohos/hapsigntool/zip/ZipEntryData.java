@@ -77,8 +77,8 @@ public class ZipEntryData {
             }
 
             if (entryHeader.getExtraLength() > 0) {
-                byte[] fileNameBytes = FileUtils.readInputByLength(input, entryHeader.getExtraLength());
-                entryHeader.readExtra(fileNameBytes);
+                byte[] extraBytes = FileUtils.readInputByLength(input, entryHeader.getExtraLength());
+                entryHeader.readExtra(extraBytes);
                 offset += entryHeader.getExtraLength();
             }
 

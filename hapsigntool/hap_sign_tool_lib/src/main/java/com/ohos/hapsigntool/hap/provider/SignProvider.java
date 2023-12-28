@@ -51,11 +51,11 @@ import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataOutput;
+import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
-import com.ohos.hapsigntool.zip.Zip;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -335,7 +335,7 @@ public abstract class SignProvider {
             }
             // copy file and Alignment
             int alignment = Integer.parseInt(signParams.get(ParamConstants.PARAM_BASIC_ALIGNMENT));
-            copyFileAndAlignment(input, tmpOutput, alignment);
+            Zip zip = copyFileAndAlignment(input, tmpOutput, alignment);
             // generate sign block and output signedHap
             try (RandomAccessFile outputHap = new RandomAccessFile(tmpOutput, "rw")) {
                 ZipDataInput outputHapIn = new RandomAccessFileZipDataInput(outputHap);
@@ -353,7 +353,7 @@ public abstract class SignProvider {
                 signerConfig.setCompatibleVersion(Integer.parseInt(
                         signParams.get(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION)));
                 ZipDataInput[] contents = {beforeCentralDir, centralDirectory, eocd};
-                appendCodeSignBlock(signerConfig, tmpOutput, suffix, centralDirectoryOffset);
+                appendCodeSignBlock(signerConfig, tmpOutput, suffix, centralDirectoryOffset, zip);
                 byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;
                 ZipUtils.setCentralDirectoryOffset(eocdBuffer, newCentralDirectoryOffset);
@@ -378,6 +378,7 @@ public abstract class SignProvider {
      * @param tmpOutput temp output file
      * @param suffix suffix
      * @param centralDirectoryOffset central directory offset
+     * @param zip zip
      * @throws FsVerityDigestException FsVerity digest on error
      * @throws CodeSignException code sign on error
      * @throws IOException IO error
@@ -385,7 +386,7 @@ public abstract class SignProvider {
      * @throws ProfileException profile of app is invalid
      */
     private void appendCodeSignBlock(SignerConfig signerConfig, File tmpOutput, String suffix,
-        long centralDirectoryOffset)
+        long centralDirectoryOffset, Zip zip)
             throws FsVerityDigestException, CodeSignException, IOException, HapFormatException, ProfileException {
         if (!SUPPORT_BIN_FILE_FORM.contains(suffix) && !SUPPORT_FILE_FORM.contains(suffix)) {
             LOGGER.warn("no need to sign code for :" + suffix);
@@ -397,7 +398,7 @@ public abstract class SignProvider {
             long codeSignOffset = centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4));
             // create CodeSigning Object
             CodeSigning codeSigning = new CodeSigning(signerConfig);
-            byte[] codeSignArray = codeSigning.getCodeSignBlock(tmpOutput, codeSignOffset, suffix, profileContent);
+            byte[] codeSignArray = codeSigning.getCodeSignBlock(tmpOutput, codeSignOffset, suffix, profileContent, zip);
             ByteBuffer result = ByteBuffer.allocate(codeSignArray.length + (4 + 4 + 4));
             result.order(ByteOrder.LITTLE_ENDIAN);
             result.putInt(HapUtils.HAP_CODE_SIGN_BLOCK_ID); // type
@@ -495,10 +496,11 @@ public abstract class SignProvider {
      * @param input file input
      * @param tmpOutput file tmpOutput
      * @param alignment alignment
+     * @return zip zip
      * @throws IOException io error
      * @throws HapFormatException hap format error
      */
-    private void copyFileAndAlignment(File input, File tmpOutput, int alignment)
+    private Zip copyFileAndAlignment(File input, File tmpOutput, int alignment)
             throws IOException, HapFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
@@ -507,6 +509,7 @@ public abstract class SignProvider {
         zip.toFile(tmpOutput.getCanonicalPath());
         long end = System.currentTimeMillis();
         LOGGER.debug("zip to file use {} ms", end - start);
+        return zip;
     }
 
     /**
