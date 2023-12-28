@@ -30,6 +30,7 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -249,7 +250,7 @@ public class SignElf {
         CodeSigning codeSigning = new CodeSigning(signerConfig);
         long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
         String profileContent = signParams.get(ParamConstants.PARAM_PROFILE_JSON_CONTENT);
-        byte[] codesignData = codeSigning.getCodeSignBlock(new File(inputFile), offset,
+        byte[] codesignData = codeSigning.getElfCodeSignBlock(new File(inputFile), offset,
                 signParams.get(ParamConstants.PARAM_IN_FORM), profileContent);
         return new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
     }
