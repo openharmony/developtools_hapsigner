@@ -56,7 +56,7 @@ public class ZipEntry {
         return add;
     }
 
-    public int calZeroPaddingLengthForEntryExtra() throws ZipException {
+    private int calZeroPaddingLengthForEntryExtra() throws ZipException {
         int entryExtraLen = zipEntryData.getZipEntryHeader().getExtraLength();
         int cdExtraLen = centralDirectory.getExtraLength();
         if (cdExtraLen > entryExtraLen) {
