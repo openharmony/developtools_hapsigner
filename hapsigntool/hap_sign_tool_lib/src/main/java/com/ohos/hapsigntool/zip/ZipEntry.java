@@ -74,7 +74,8 @@ public class ZipEntry {
         byte[] newCDExtra = getAlignmentNewExtra(newLength, fileEntryIncentralDirectory.getExtraData());
         fileEntryIncentralDirectory.setExtraData(newCDExtra);
         fileEntryIncentralDirectory.setExtraLength(newLength);
-        fileEntryIncentralDirectory.setLength(CentralDirectory.CD_LENGTH + fileEntryIncentralDirectory.getFileNameLength()
+        fileEntryIncentralDirectory.setLength(CentralDirectory.CD_LENGTH
+                + fileEntryIncentralDirectory.getFileNameLength()
                 + fileEntryIncentralDirectory.getExtraLength() + fileEntryIncentralDirectory.getCommentLength());
     }
 
