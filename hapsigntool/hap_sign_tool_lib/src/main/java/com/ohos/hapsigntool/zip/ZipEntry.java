@@ -27,7 +27,7 @@ import java.util.Arrays;
 public class ZipEntry {
     private ZipEntryData zipEntryData;
 
-    private CentralDirectory centralDirectory;
+    private CentralDirectory fileEntryIncentralDirectory;
 
     /**
      * alignment one entry
@@ -40,7 +40,7 @@ public class ZipEntry {
         // if cd extra len bigger than entry extra len, make cd and entry extra length equals
         int padding = calZeroPaddingLengthForEntryExtra();
         int remainder = (int) ((zipEntryData.getZipEntryHeader().getLength()
-                + centralDirectory.getOffset()) % alignNum);
+                + fileEntryIncentralDirectory.getOffset()) % alignNum);
 
         if (remainder == 0) {
             return padding;
@@ -58,7 +58,7 @@ public class ZipEntry {
 
     private int calZeroPaddingLengthForEntryExtra() throws ZipException {
         int entryExtraLen = zipEntryData.getZipEntryHeader().getExtraLength();
-        int cdExtraLen = centralDirectory.getExtraLength();
+        int cdExtraLen = fileEntryIncentralDirectory.getExtraLength();
         if (cdExtraLen > entryExtraLen) {
             setEntryHeaderNewExtraLength(cdExtraLen);
             return cdExtraLen - entryExtraLen;
@@ -71,11 +71,11 @@ public class ZipEntry {
     }
 
     private void setCenterDirectoryNewExtraLength(int newLength) throws ZipException {
-        byte[] newCDExtra = getAlignmentNewExtra(newLength, centralDirectory.getExtraData());
-        centralDirectory.setExtraData(newCDExtra);
-        centralDirectory.setExtraLength(newLength);
-        centralDirectory.setLength(CentralDirectory.CD_LENGTH + centralDirectory.getFileNameLength()
-                + centralDirectory.getExtraLength() + centralDirectory.getCommentLength());
+        byte[] newCDExtra = getAlignmentNewExtra(newLength, fileEntryIncentralDirectory.getExtraData());
+        fileEntryIncentralDirectory.setExtraData(newCDExtra);
+        fileEntryIncentralDirectory.setExtraLength(newLength);
+        fileEntryIncentralDirectory.setLength(CentralDirectory.CD_LENGTH + fileEntryIncentralDirectory.getFileNameLength()
+                + fileEntryIncentralDirectory.getExtraLength() + fileEntryIncentralDirectory.getCommentLength());
     }
 
     private void setEntryHeaderNewExtraLength(int newLength) throws ZipException {
@@ -108,10 +108,10 @@ public class ZipEntry {
     }
 
     public CentralDirectory getCentralDirectory() {
-        return centralDirectory;
+        return fileEntryIncentralDirectory;
     }
 
     public void setCentralDirectory(CentralDirectory centralDirectory) {
-        this.centralDirectory = centralDirectory;
+        this.fileEntryIncentralDirectory = centralDirectory;
     }
 }
