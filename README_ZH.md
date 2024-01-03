@@ -12,7 +12,9 @@
 
 #### 简介
 
-为了保证OpenHarmony应用的完整性和来源可靠，在应用构建时需要对应用进行签名。经过签名的应用才能在真机设备上安装、运行、和调试。本仓提供了签名工具的源码，包含密钥对生成、CSR文件生成、证书生成、Profile文件签名、Hap包签名等功能。
+为了保证OpenHarmony应用和二进制工具（如：lldb-server）的完整性和来源可靠，需要对应用和二进制工具进行签名。经过签名的应用和二进制工具才能在真机设备上安装、运行和调试。本仓提供了签名工具的源码，包含密钥对生成、CSR文件生成、证书生成、Profile文件签名、Hap包签名、二进制工具签名等功能。
+在支持强制代码签名机制的设备上，该机制可以为应用提供运行时的合法性校验以及完整性保护，杜绝未经审核的恶意代码在端侧任意执行，或应用代码被攻击者恶意篡改。
+签名工具默认开启代码签名，若用户确定不需要强制执行代码签名，可参考以下说明，关闭代码签名功能。签名工具当前仅支持对hap格式应用和二进制工具执行代码签名。
 
 
 #### 目录
@@ -29,8 +31,8 @@
 
 
 #### 约束
-Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行
-（附：一键签名等脚本文件基于Python语言开发，使用需配置环境python3.x）
+- Hap包签名工具基于Java语言开发，需要在Java8以上Java环境运行。
+- 一键签名等脚本文件基于Python语言开发，使用需配置环境python3.5及以上。
 #### 编译构建
 
  1. 该工具基于Gradle 7.1编译构建，请确认环境已安装配置Gradle环境，并且版本正确
@@ -69,7 +71,7 @@ Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileT
 以下说明中使用jar包为编译构建中生成的二进制文件
 
 1.命令行签名
-   命令行签名分为profile文件签名和hap包签名。
+   命令行签名分为profile文件签名和hap包或二进制工具签名。
 
    （1）签名profile文件的命令实例如下：
 
@@ -92,49 +94,51 @@ java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAl
 
 
 
-（2）签名Hap包的命令实例如下：
+（2）签名Hap包或二进制工具的命令实例如下：
 
 
 ```shell
-java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456"
+java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -signCode "1"
 ```
 该命令的参数说明如下:
 
-    sign-app : hap应用包签名
+    sign-app : hap应用包和二进制工具签名
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
          ├── -keyAlias          #密钥别名，必填项
          ├── -keyPwd            #密钥口令，可选项
          ├── -appCertFile       #应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
-         ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，必填项
+         ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，hap应用包签名必填项，二进制工具签名选填
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
-         ├── -inForm            #输入的原始文件的格式，zip格式或bin格式，默认zip格式；可选项
-         ├── -inFile            #输入的原始APP包文件，zip格式或bin格式，必填项
+         ├── -inForm            #输入的原始文件的格式，枚举值：zip、elf或bin；zip和elf支持代码签名，hap 应用包对应zip，二进制工具对应elf，默认zip；可选项
+         ├── -inFile            #输入的原始文件，hap应用、elf或bin文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的包文件，必填项
-         
+         ├── -signCode          #是否启用代码签名，1表示开启代码签名，0表示关闭代码签名，默认为1。可选项
 
 2.一键签名
 
 
-为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、最终实体证书、签名profile包、签名hap包的命令。
+为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、最终实体证书、签名profile包、签名hap包和二进制工具的命令。
 脚本以及配置文件位于目录 autosign 下：
 
  - create_root.sh/create_root.bat
  - create_appcert_sign_profile.sh/create_appcert_sign_profile.bat
  - sign_hap.sh/sign_hap.bat
+ - sign_elf.sh/sign_elf.bat
  - createAppCertAndProfile.config
  - createRootAndSubCert.config
  - signHap.config
+ - signElf.config
 
 使用指导：
 1. 准备依赖环境 python3.5 以上
 2. 准备签名工具jar包：hap-sign-tool.jar（参照上文编译生成的产物）
-3. 准备待签名的应用hap包和 Provision profile 模板文件
-4. 使用文本编辑器编辑 createAppCertAndProfile.config 和 signHap.config，修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
+3. 准备待签名的应用hap包、二进制工具和 Provision profile 模板文件
+4. 使用文本编辑器编辑 createAppCertAndProfile.config、signElf.config 和 signHap.config，修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
 5. Linux运行 create_appcert_sign_profile.sh、Windows运行 create_appcert_sign_profile.bat 生成签名所需文件
-6. Linux运行 sign_hap.sh、Windows运行 sign_hap.bat 对hap包进行签名
+6. Linux运行 sign_hap.sh、Windows运行 sign_hap.bat 对hap包进行签名；Linux运行 sign_elf.sh、Windows运行 sign_elf.bat 对二进制工具进行签名
 
  > 说明：如需自定义生成密钥库文件，根CA，中间CA证书，profile签名证书，可执行以下步骤
  1.使用文本编辑器编辑 createRootAndSubCert.config 修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
@@ -269,32 +273,32 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 
      verify-profile : ProvisionProfile文件验签
            ├── -inFile       # 已签名的Provision Profile文件，p7b格式，必填项
-           ├── -outFile       # 验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台
+           ├── -outFile      # 验证结果文件（包含验证结果和profile内容），json格式，可选项；如果不填，则直接输出到控制台
 
-9.hap应用包签名
+9.hap应用包和二进制工具签名
   
-     sign-app : hap应用包签名 
+     sign-app : hap应用包和二进制工具签名
           ├── -mode          # 签名模式，必填项，包括localSign，remoteSign，remoteResign
           ├── -keyAlias      # 密钥别名，必填项
           ├── -keyPwd        # 密钥口令，可选项
           ├── -appCertFile   # 应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
-          ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式,必填项
+          ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式，hap应用包签名必填项，二进制工具签名选填
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
-          ├── -inForm        # 输入的原始文件的格式，zip格式或bin格式，默认zip格式，可选项
-          ├── -inFile        # 输入的原始APP包文件，zip格式或bin格式，必填项
+          ├── -inForm        # 输入的原始文件的格式，枚举值：zip、elf或bin；zip和elf支持代码签名，hap 应用包对应zip，二进制工具对应elf，默认zip；可选项
+          ├── -inFile        # 输入的原始文件，hap应用、elf或bin文件，必填项
           ├── -signAlg       # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
           ├── -keystorePwd   # 密钥库口令，可选项
           ├── -outFile       # 输出签名后的包文件，必填项
+          ├── -signCode      # 是否启用代码签名，1表示开启代码签名，0表示关闭代码签名，默认为1。可选项
 
-10.hap应用包文件验签
+10.hap应用包和二进制工具文件验签
 
-      verify-app : hap应用包文件验签
-         ├── -inFile          # 已签名的应用包文件，zip格式或bin格式，必填项
+      verify-app : hap应用包和二进制工具文件验签
+         ├── -inFile          # 已签名的文件，hap应用、elf或bin文件，必填项
          ├── -outCertChain    # 签名的证书链文件，必填项
          ├── -outProfile      # 应用包中的profile文件，必填项
-
-
+         ├── -inForm          # 输入的原始文件的格式，枚举值：zip、elf或bin；zip和elf支持代码签名，hap 应用包对应zip，二进制工具对应elf，默认zip；可选项
 
   
 #### 相关仓

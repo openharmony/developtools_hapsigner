@@ -17,6 +17,9 @@ package com.ohos.hapsigntool;
 
 import com.ohos.hapsigntool.api.LocalizationAdapter;
 import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.error.CustomException;
+import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.profile.VerifyHelper;
@@ -140,7 +143,12 @@ public class ProfileTest {
         byte[] p7b = ProfileSignTool.signProfile(provisionContent, signer, adapter.getSignAlg());
         assertNotNull(p7b);
         VerifyHelper verifyHelper = new VerifyHelper();
-        VerificationResult verificationResult = verifyHelper.verify(p7b);
+        VerificationResult verificationResult = null;
+        try {
+            verificationResult = verifyHelper.verify(p7b);
+        } catch (VerifyException e) {
+            CustomException.throwException(ERROR.VERIFY_ERROR, e.getMessage());
+        }
         assertTrue(verificationResult.isVerifiedPassed());
 
         try {

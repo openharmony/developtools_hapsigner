@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.profile;
 import com.google.gson.JsonObject;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertChainUtils;
@@ -129,9 +130,10 @@ public class VerifyHelper implements IProvisionVerifier {
      *
      * @param p7b signed p7b content
      * @return result
+     * @throws VerifyException verify p7b failed
      */
     @Override
-    public VerificationResult verify(byte[] p7b) {
+    public VerificationResult verify(byte[] p7b) throws VerifyException {
         VerificationResult result = new VerificationResult();
 
         try {
