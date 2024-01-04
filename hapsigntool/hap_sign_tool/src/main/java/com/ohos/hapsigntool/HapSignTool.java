@@ -69,11 +69,13 @@ public final class HapSignTool {
      */
     private static final String NOT_SIGNED = "0";
 
-    private static List<String> informList = new ArrayList<String>(){{
-        add("bin");
-        add("elf");
-        add("zip");
-    }};
+    private static List<String> informList = new ArrayList<>();
+
+    static {
+        informList.add("bin");
+        informList.add("elf");
+        informList.add("zip");
+    }
 
     private HapSignTool() {
     }
