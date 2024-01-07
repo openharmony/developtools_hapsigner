@@ -69,6 +69,7 @@ public final class CmdUtil {
             if (readKey) {
                 // prepare key
                 if (value.startsWith("-")) {
+                    value = value.equals("-signcode") ? "-signCode" : value;
                     boolean isTrust = trustList.contains(value);
                     ValidateUtils.throwIfNotMatches(isTrust,
                             ERROR.COMMAND_PARAM_ERROR, "Not support command param");

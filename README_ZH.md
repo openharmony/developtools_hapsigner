@@ -120,7 +120,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 2.一键签名
 
 
-为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、最终实体证书、签名profile包、签名hap包和二进制工具的命令。
+为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、实体证书、签名profile包、签名hap包和二进制工具的命令。
 脚本以及配置文件位于目录 autosign 下：
 
  - create_root.sh/create_root.bat
