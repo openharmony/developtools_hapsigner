@@ -183,7 +183,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -username : user account for online auth, required fields on remoteSign mode with account auth mode;
         -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
         -ext : extend parameters for remote signer plugin, optional fields;
-        -signCode : Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.
+        -signcode : Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.
 
     EXAMPLE:
         sign-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "D:\OH\app-release-cert.cer" -profileFile "D:\OH\signed-profile.p7b" -inFile "D:\OH\app1-unsigned.hap" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outFile "D:\OH\app1-signed.hap -compatibleVersion 8" -signCode "1"
