@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -169,13 +169,13 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -appCertFile : application signature certificate file, required fields on localSign mode, optional fields on remoteSign mode;
         -profileFile : signed Provision Profile file, p7b format, required fields;
         -profileSigned : indicates whether the profile file has a signature.The options are as follows: 1:yes; 0:no; default value:1. optional fields;
-        -inFile : input original application package file, .hap, .bin, and .elf format, required fields;
+        -inFile : input original application package file, hap or bin format, required fields;
         -signAlg : signature algorithm, required fields, including SHA256withRSA/SHA384withRSA/SHA256withECDSA/SHA384withECDSA;
         -keystoreFile : keystore file, if signature mode is localSign, required fields on localSign mode, JKS or P12 format;
         -keystorePwd : keystore password, optional fields on localSign mode;
         -outFile : output the signed Provision Profile file, required fields;
         -extCfgFile : Extend Profile, optional fields;
-        -inForm : Enter the format of the original file. The supported file formats include .zip, .bin, and .elf.;
+        -inForm : enter the format of the original file, the format is .zip or .bin;
         -compatibleVersion : min compatible api version for running app, required fields while input original application package file format is hap;
         -signServer : remote signer plugin, required fields on remoteSign mode;
         -signerPlugin : remote sign service url, required fields on remoteSign mode;
@@ -183,17 +183,15 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -username : user account for online auth, required fields on remoteSign mode with account auth mode;
         -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
         -ext : extend parameters for remote signer plugin, optional fields;
-        -signCode : Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means disable sign code. The default value is 1. It is optional.
 
     EXAMPLE:
-        sign-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "D:\OH\app-release-cert.cer" -profileFile "D:\OH\signed-profile.p7b" -inFile "D:\OH\app1-unsigned.hap" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outFile "D:\OH\app1-signed.hap -compatibleVersion 8" -signCode "1"
+        sign-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "D:\OH\app-release-cert.cer" -profileFile "D:\OH\signed-profile.p7b" -inFile "D:\OH\app1-unsigned.hap" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outFile "D:\OH\app1-signed.hap -compatibleVersion 8"
 
     verify-app [options]:
         -inFile : signed application package file, hap or bin format, required fields;
         -outCertChain : signed certificate chain file, required fields;
         -outProfile : profile file in application package, required fields;
         -extCfgFile : Extend Profile, optional fields;
-        -inForm : Enter the format of the original file. The supported file formats include .zip, .bin, and .elf.;
 
     EXAMPLE:
         verify-app -inFile "D:\OH\app1-signed.hap" -outCertChain "outCertChain.cer" -outProfile "outprofile.p7b"

@@ -55,7 +55,7 @@ templates = {
     },
     'sign-app': {
         'required': ['keyAlias', 'signAlg', 'mode', 'appCertFile', 'profileFile', 'inFile', 'keystoreFile', 'outFile'],
-        'others': ['keyPwd', 'keystorePwd', 'inForm', 'signCode']
+        'others': ['keyPwd', 'keystorePwd']
     },
 }
 
@@ -161,13 +161,6 @@ def do_sign_hap(jar):
     run_with_engine(sign_hap_engine_config, jar)
 
 
-def do_sign_elf(jar):
-    sign_elf_engine_config = {
-        'sign.app': 'sign-app'
-    }
-    run_with_engine(sign_elf_engine_config, jar)
-
-
 def do_generate(jar):
     cert_engine_config = {
         'app.keypair': 'generate-keypair',
@@ -241,7 +234,7 @@ def process_cmd():
         exit(0)
 
     action = args[1]
-    if action not in ['createRootAndSubCert', 'createAppCertAndProfile', 'signHap', 'signElf']:
+    if action not in ['createRootAndSubCert', 'createAppCertAndProfile', 'signHap']:
         print("Not support cmd")
         print_help()
         exit(1)
@@ -302,7 +295,3 @@ if __name__ == '__main__':
         load_config('signHap.config')
         jar_file = process_jar()
         do_sign_hap(jar_file)
-    elif act == 'signElf':
-        load_config('signElf.config')
-        jar_file = process_jar()
-        do_sign_elf(jar_file)

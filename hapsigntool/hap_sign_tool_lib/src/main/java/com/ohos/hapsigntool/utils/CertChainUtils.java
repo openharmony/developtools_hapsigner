@@ -17,7 +17,6 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.error.VerifyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,10 +88,9 @@ public class CertChainUtils {
      * @param serial       serial number
      * @param root         root cert
      * @param signTime     signing time
-     * @throws VerifyException verifyException
      */
     public static void verifyCertChain(List<X509Certificate> certificates, X500Principal issuer, BigInteger serial,
-        X509Certificate root, Date signTime) throws VerifyException {
+                                       X509Certificate root, Date signTime) {
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             trustStore.load(null, null);
@@ -117,7 +115,8 @@ public class CertChainUtils {
             }
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException | CertificateException
                 | KeyStoreException | CertPathBuilderException | CertPathValidatorException exception) {
-            throw new VerifyException("Cert chain verify failed! " + exception.getMessage());
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.VERIFY_ERROR, "Failed to verify signature: " + exception.getMessage());
         }
     }
 }

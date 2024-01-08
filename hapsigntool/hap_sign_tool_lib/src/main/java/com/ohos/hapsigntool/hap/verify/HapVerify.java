@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -91,17 +91,8 @@ public class HapVerify {
 
     private JcaX509CRLConverter crlConverter = new JcaX509CRLConverter();
 
-    private boolean isPrintCert;
+    private boolean printCert;
 
-    /**
-     * Init Zip HapVerify
-     *
-     * @param beforeApkSigningBlock beforeApkSigningBlock
-     * @param signatureSchemeBlock signatureSchemeBlock
-     * @param centralDirectoryBlock centralDirectoryBlock
-     * @param eocd eocd
-     * @param optionalBlocks optionalBlocks
-     */
     public HapVerify(
             ZipDataInput beforeApkSigningBlock,
             ByteBuffer signatureSchemeBlock,
@@ -116,12 +107,6 @@ public class HapVerify {
     }
 
     /**
-     * init HapVerify
-     */
-    public HapVerify() {
-    }
-
-    /**
      * Verify hap signature.
      *
      * @return verify result.
@@ -130,22 +115,12 @@ public class HapVerify {
         return parserSigner(signatureSchemeBlock);
     }
 
-    /**
-     * Verify elf signature.
-     *
-     * @param profile profile byte
-     * @return verify result.
-     */
-    public VerifyResult verifyElfProfile(byte[] profile) {
-        return parserSigner(ByteBuffer.wrap(profile), false);
-    }
-
-    public void setIsPrintCert(boolean isPrintCert) {
-        this.isPrintCert = isPrintCert;
+    public void setPrintCert(boolean printCert) {
+        this.printCert = printCert;
     }
 
     private boolean checkCRL(X509CRL crl, List<X509Certificate> certificates) {
-        boolean isRet = false;
+        boolean ret = false;
         for (X509Certificate cert : certificates) {
             if (!crl.getIssuerDN().getName().equals(cert.getIssuerDN().getName())) {
                 continue;
@@ -154,12 +129,12 @@ public class HapVerify {
             if (entry != null) {
                 LOGGER.info("cert(subject DN = {}) is revoked by crl (IssuerDN = {})",
                         cert.getSubjectDN().getName(), crl.getIssuerDN().getName());
-                isRet = false;
+                ret = false;
                 break;
             }
-            isRet = true;
+            ret = true;
         }
-        return isRet;
+        return ret;
     }
 
     private boolean verifyCRL(X509CRL crl, X509Certificate cert, List<X509Certificate> certificates)
@@ -177,33 +152,33 @@ public class HapVerify {
     }
 
     private boolean verifyCRL(X509CRL crl, List<X509Certificate> certificates) throws SignatureException {
-        boolean isRevoked = true;
+        boolean revoked = true;
         for (X509Certificate cert : certificates) {
             if (!crl.getIssuerDN().getName().equals(cert.getSubjectDN().getName())) {
                 continue;
             }
             if (!verifyCRL(crl, cert, certificates)) {
-                isRevoked = false;
+                revoked = false;
             }
         }
-        return isRevoked;
+        return revoked;
     }
 
     private void verifyCRLs(List<X509CRL> crls, List<X509Certificate> certificates) throws VerifyHapException {
         if (crls == null) {
             return;
         }
-        boolean isRevoked = true;
+        boolean revoked = true;
         try {
             for (X509CRL crl : crls) {
                 if (!verifyCRL(crl, certificates)) {
-                    isRevoked = false;
+                    revoked = false;
                 }
             }
         } catch (SignatureException e) {
             throw new VerifyHapException("Verify CRL error!", e);
         }
-        if (!isRevoked) {
+        if (!revoked) {
             throw new VerifyHapException("Certificate is revoked!");
         }
     }
@@ -211,8 +186,8 @@ public class HapVerify {
     private CMSSignedData verifyCmsSignedData(byte[] signingBlock) throws VerifyHapException {
         try {
             CMSSignedData cmsSignedData = new CMSSignedData(signingBlock);
-            boolean isVerifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
-            if (!isVerifyResult) {
+            boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
+            if (!verifyResult) {
                 throw new VerifyHapException("Verify PKCS7 cms data failed!");
             }
             return cmsSignedData;
@@ -222,10 +197,6 @@ public class HapVerify {
     }
 
     private VerifyResult parserSigner(ByteBuffer signer) {
-        return parserSigner(signer, true);
-    }
-
-    private VerifyResult parserSigner(ByteBuffer signer, boolean verifyContent) {
         byte[] signingBlock = new byte[signer.remaining()];
         signer.get(signingBlock);
         try {
@@ -233,9 +204,7 @@ public class HapVerify {
             List<X509Certificate> certificates = getCertChain(cmsSignedData);
             List<X509CRL> crlList = getCrlList(cmsSignedData);
             verifyCRLs(crlList, certificates);
-            if (verifyContent) {
-                checkContentDigest(cmsSignedData);
-            }
+            checkContentDigest(cmsSignedData);
             List<SignerInformation> signerInfos = getSignerInformations(cmsSignedData);
             VerifyResult result = new VerifyResult(true, VerifyResult.RET_SUCCESS, "Verify success");
             result.setCrls(crlList);
@@ -245,7 +214,7 @@ public class HapVerify {
             result.setOptionalBlocks(optionalBlocks);
             return result;
         } catch (VerifyHapException e) {
-            LOGGER.error("Verify profile error!", e);
+            LOGGER.error("Verify Hap error!", e);
             return new VerifyResult(false, VerifyResult.RET_UNKNOWN_ERROR, e.getMessage());
         }
     }
@@ -269,8 +238,8 @@ public class HapVerify {
             throw new VerifyHapException("PKCS cms content is not a byte array!");
         }
         try {
-            boolean isCheckResult = parserContentinfo(contentBytes);
-            if (!isCheckResult) {
+            boolean checkResult = parserContentinfo(contentBytes);
+            if (!checkResult) {
                 throw new VerifyHapException("Hap content digest check failed.");
             }
         } catch (DigestException | SignatureException | IOException e) {
@@ -285,7 +254,7 @@ public class HapVerify {
             if (certificateList == null || certificateList.size() == 0) {
                 throw new VerifyHapException("Certificate chain is empty!");
             }
-            if (isPrintCert) {
+            if (printCert) {
                 for (int i = 0; i < certificateList.size(); i++) {
                     LOGGER.info("+++++++++++++++++++++++++++certificate #{} +++++++++++++++++++++++++++++++", i);
                     printCert(certificateList.get(i));
@@ -320,7 +289,7 @@ public class HapVerify {
     }
 
     private List<X509Certificate> certStoreToCertList(Store<X509CertificateHolder> certificates)
-            throws CertificateException {
+        throws CertificateException {
         if (certificates == null) {
             return Collections.emptyList();
         }
@@ -339,6 +308,7 @@ public class HapVerify {
 
     private boolean parserContentinfo(byte[] data)
             throws DigestException, SignatureException, IOException {
+        boolean result = true;
         ByteBuffer digestDatas = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
         while (digestDatas.remaining() > 4) {
             /**
@@ -374,22 +344,22 @@ public class HapVerify {
         Set<ContentDigestAlgorithm> keySet = digestMap.keySet();
         Map<ContentDigestAlgorithm, byte[]> actualDigestMap = HapUtils.computeDigests(
                 keySet, new ZipDataInput[]{beforeApkSigningBlock, centralDirectoryBlock, eocd}, optionalBlocks);
-        boolean isResult = true;
+
         for (Entry<ContentDigestAlgorithm, byte[]> entry : digestMap.entrySet()) {
             ContentDigestAlgorithm digestAlg = entry.getKey();
             byte[] exceptDigest = entry.getValue();
             byte[] actualDigest = actualDigestMap.get(digestAlg);
             if (!Arrays.equals(actualDigest, exceptDigest)) {
-                isResult = false;
+                result = false;
                 LOGGER.error(
-                        "degist data do not match! DigestAlgorithm: {}, actualDigest: <{}> VS exceptDigest : <{}>",
-                        digestAlg.getDigestAlgorithm(),
-                        HapUtils.toHex(actualDigest, ""),
-                        HapUtils.toHex(exceptDigest, ""));
+                    "degist data do not match! DigestAlgorithm: {}, actualDigest: <{}> VS exceptDigest : <{}>",
+                    digestAlg.getDigestAlgorithm(),
+                    HapUtils.toHex(actualDigest, ""),
+                    HapUtils.toHex(exceptDigest, ""));
             }
-            LOGGER.info("Digest verify result: {}, DigestAlgorithm: {}", isResult, digestAlg.getDigestAlgorithm());
+            LOGGER.info("Digest verify result: {}, DigestAlgorithm: {}", result, digestAlg.getDigestAlgorithm());
         }
-        return isResult;
+        return result;
     }
 
     private void printCert(X509Certificate cert) throws CertificateEncodingException {
