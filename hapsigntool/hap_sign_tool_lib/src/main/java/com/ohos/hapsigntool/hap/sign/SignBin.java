@@ -60,10 +60,6 @@ public class SignBin {
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
         boolean result = false;
         /* 1. Make block head, write to output file. */
-        String codesign = signParams.get(ParamConstants.PARAM_SIGN_CODE);
-        if (ParamConstants.ProfileSignFlag.ENABLE_SIGN_CODE.getSignFlag().equals(codesign)) {
-            LOGGER.warn("can not sign bin with codesign");
-        }
         String inputFile = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
         String outputFile = signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE);
         String profileFile = signParams.get(ParamConstants.PARAM_BASIC_PROFILE);
@@ -176,7 +172,7 @@ public class SignBin {
         }
         HwSignHead signHeadData = new HwSignHead();
         byte[] signHeadByte = signHeadData.getSignHead((int) size);
-        if (signHeadByte == null || signHeadByte.length == 0) {
+        if (signHeadByte == null) {
             LOGGER.error("Failed to get sign head data.");
             return false;
         }

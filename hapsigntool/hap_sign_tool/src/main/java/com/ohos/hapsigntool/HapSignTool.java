@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool;
 
+
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.api.model.Options;
@@ -26,12 +27,8 @@ import com.ohos.hapsigntoolcmd.CmdUtil;
 import com.ohos.hapsigntoolcmd.CmdUtil.Method;
 import com.ohos.hapsigntoolcmd.HelpDocument;
 import com.ohos.hapsigntoolcmd.Params;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * HapSignTool.
@@ -69,14 +66,6 @@ public final class HapSignTool {
      */
     private static final String NOT_SIGNED = "0";
 
-    private static List<String> informList = new ArrayList<>();
-
-    static {
-        informList.add("bin");
-        informList.add("elf");
-        informList.add("zip");
-    }
-
     private HapSignTool() {
     }
 
@@ -87,14 +76,13 @@ public final class HapSignTool {
      */
     public static void main(String[] args) {
         try {
-            boolean isSuccess = processCmd(args);
-            if (!isSuccess) {
+            boolean result = processCmd(args);
+            if (!result) {
                 System.exit(1);
             }
         } catch (CustomException exception) {
             LOGGER.debug(exception.getMessage(), exception);
             LOGGER.error(exception.getMessage());
-            System.exit(1);
         }
     }
 
@@ -117,65 +105,67 @@ public final class HapSignTool {
             Params params = CmdUtil.convert2Params(args);
             LOGGER.debug(params.toString());
             LOGGER.info("Start {}", params.getMethod());
-            boolean isSuccess = dispatchParams(params, api);
-            if (isSuccess) {
+            boolean result;
+            result = dispatchParams(params, api);
+            if (result) {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "success"));
             } else {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "failed"));
             }
-            return isSuccess;
+            return result;
         }
         return true;
     }
 
     private static boolean callGenerators(Params params, ServiceApi api) {
-        boolean isSuccess = false;
+        boolean result = false;
         switch (params.getMethod()) {
             case Method.GENERATE_APP_CERT:
-                isSuccess = runAppCert(params.getOptions(), api);
+                result = runAppCert(params.getOptions(), api);
                 break;
             case Method.GENERATE_CA:
-                isSuccess = runCa(params.getOptions(), api);
+                result = runCa(params.getOptions(), api);
                 break;
             case Method.GENERATE_CERT:
-                isSuccess = runCert(params.getOptions(), api);
+                result = runCert(params.getOptions(), api);
                 break;
             case Method.GENERATE_CSR:
-                isSuccess = runCsr(params.getOptions(), api);
+                result = runCsr(params.getOptions(), api);
                 break;
             case Method.GENERATE_KEYPAIR:
-                isSuccess = runKeypair(params.getOptions(), api);
+                result = runKeypair(params.getOptions(), api);
                 break;
             case Method.GENERATE_PROFILE_CERT:
-                isSuccess = runProfileCert(params.getOptions(), api);
+                result = runProfileCert(params.getOptions(), api);
                 break;
             default:
                 CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
                 break;
         }
-        return isSuccess;
+        return result;
     }
 
     private static boolean dispatchParams(Params params, ServiceApi api) {
-        boolean isSuccess;
+        boolean result;
         switch (params.getMethod()) {
             case Method.SIGN_APP:
-                isSuccess = runSignApp(params.getOptions(), api);
+                result = runSignApp(params.getOptions(), api);
                 break;
             case Method.SIGN_PROFILE:
-                isSuccess = runSignProfile(params.getOptions(), api);
+                result = runSignProfile(params.getOptions(), api);
                 break;
             case Method.VERIFY_APP:
-                isSuccess = runVerifyApp(params.getOptions(), api);
+                result = runVerifyApp(params.getOptions(), api);
                 break;
             case Method.VERIFY_PROFILE:
-                isSuccess = runVerifyProfile(params.getOptions(), api);
+                result = runVerifyProfile(params.getOptions(), api);
                 break;
             default:
-                isSuccess = callGenerators(params, api);
+                result = callGenerators(params, api);
                 break;
         }
-        return isSuccess;
+
+        return result;
     }
 
     private static void checkEndCertArguments(Options params) {
@@ -195,7 +185,7 @@ public final class HapSignTool {
         String keyStoreFile = params.getString(Options.KEY_STORE_FILE);
         FileUtils.validFileType(keyStoreFile, "p12", "jks");
 
-        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
+        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)){
             String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
             FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
         }
@@ -235,7 +225,7 @@ public final class HapSignTool {
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
+        if (params.containsKey(Options.ISSUER_KEY_STORE_FILE)){
             String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
             FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
         }
@@ -272,7 +262,7 @@ public final class HapSignTool {
     }
 
     private static boolean runSignApp(Options params, ServiceApi api) {
-        params.required(Options.MODE, Options.IN_FILE, Options.OUT_FILE, Options.SIGN_ALG);
+        params.required(Options.MODE, Options.IN_FILE, Options.OUT_FILE, Options.PROFILE_FILE, Options.SIGN_ALG);
         String mode = params.getString(Options.MODE);
         if (!LOCAL_SIGN.equalsIgnoreCase(mode)
                 && !REMOTE_SIGN.equalsIgnoreCase(mode)
@@ -286,7 +276,7 @@ public final class HapSignTool {
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !informList.contains(inForm)) {
+        if (!StringUtils.isEmpty(inForm) && !"zip".equalsIgnoreCase(inForm) && !"bin".equalsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
@@ -296,13 +286,8 @@ public final class HapSignTool {
     }
 
     private static void checkProfile(Options params) {
-        String inForm = params.getString(Options.IN_FORM);
         String profileFile = params.getString(Options.PROFILE_FILE);
-        String profileSigned = params.getString(Options.PROFILE_SIGNED, SIGNED);
-
-        if ("elf".equalsIgnoreCase(inForm) && StringUtils.isEmpty(profileFile)) {
-            return;
-        }
+        String profileSigned = params.getString(Options.PROFILE_SIGNED,SIGNED);
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
         }
@@ -335,10 +320,7 @@ public final class HapSignTool {
     private static boolean runVerifyApp(Options params, ServiceApi api) {
         params.required(Options.IN_FILE, Options.OUT_CERT_CHAIN,
                 Options.OUT_PROFILE);
-        String inForm = params.getString(Options.IN_FORM, "zip");
-        if (!informList.contains(inForm)) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
-        }
+        FileUtils.validFileType(params.getString(Options.IN_FILE), "hap", "bin");
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");
         return api.verifyHap(params);
