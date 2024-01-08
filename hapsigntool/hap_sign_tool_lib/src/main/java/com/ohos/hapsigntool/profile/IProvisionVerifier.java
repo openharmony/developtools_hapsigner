@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.profile;
 
-import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 
 /**
@@ -30,7 +29,6 @@ public interface IProvisionVerifier {
      *
      * @param p7b signed p7b content
      * @return result
-     * @throws VerifyException verify p7b failed
      */
-    VerificationResult verify(byte[] p7b) throws VerifyException;
+    VerificationResult verify(byte[] p7b);
 }

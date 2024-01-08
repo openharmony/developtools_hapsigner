@@ -25,34 +25,11 @@ public class SigningBlock {
     private int length;
     private byte[] value;
 
-    private int offset;
-
-    /**
-     * Init Signing Block type and value
-     *
-     * @param type signing type
-     * @param value signing value
-     */
     public SigningBlock(int type, byte[] value) {
         super();
         this.type = type;
         this.length = value.length;
         this.value = value;
-    }
-
-    /**
-     * Init Signing Block type and value
-     *
-     * @param type signing type
-     * @param value signing value
-     * @param offset signing block offset
-     */
-    public SigningBlock(int type, byte[] value, int offset) {
-        super();
-        this.type = type;
-        this.length = value.length;
-        this.value = value;
-        this.offset = offset;
     }
 
     public int getType() {
@@ -65,9 +42,5 @@ public class SigningBlock {
 
     public byte[] getValue() {
         return value;
-    }
-
-    public int getOffset() {
-        return offset;
     }
 }
