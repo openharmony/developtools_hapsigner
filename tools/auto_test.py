@@ -298,11 +298,10 @@ def run_target(case, cmd):
         if len(error) > 0:
             f.writelines(cmd + "\r\n")
         for line in error:
+            success = False
             f.writelines(str(line.strip()) + "\r\n")
 
-    code = command.wait()
-    if code != 0:
-        success = False
+    command.wait()
     end = time.time()
     case_result['total_cost'] = case_result['total_cost'] + (end - start)
 

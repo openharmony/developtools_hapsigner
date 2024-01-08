@@ -15,15 +15,9 @@
 
 package com.ohos.hapsigntoolcmd;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.zip.Zip;
-
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -32,19 +26,14 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * CmdUnitTest.
@@ -202,26 +191,6 @@ public class CmdUnitTest {
      * Command line parameter validity.
      */
     public static final String CMD_VALIDITY = "-validity";
-
-    /**
-     * Command line parameter appCertFile.
-     */
-    public static final String CMD_APP_CERT_FILE = "-appCertFile";
-
-    /**
-     * Command line parameter appCertFile.
-     */
-    public static final String CMD_PROFILE_FILE = "-profileFile";
-
-    /**
-     * Command line parameter appCertFile.
-     */
-    public static final String CMD_OUT_CERT_CHAIN = "-outCertChain";
-
-    /**
-     * Command line parameter appCertFile.
-     */
-    public static final String CMD_OUT_PROFILE = "-outProfile";
 
     /**
      * Command line parameter false.
@@ -755,187 +724,6 @@ public class CmdUnitTest {
         }
     }
 
-    /**
-     * test sign and verify hap file include multi lib
-     *
-     * @throws IOException error
-     */
-    @Order(11)
-    @Test
-    public void testCmdMultiHap() throws IOException {
-        File dir = new File("test");
-        dir.mkdir();
-        for (FileType abcFile : FileType.values()) {
-            for (FileType soFile : FileType.values()) {
-                for (FileType anFile : FileType.values()) {
-                    File unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_NOT_EXISTED);
-                    signAndVerifyHap(unsignedHap.getAbsolutePath());
-
-                    unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_UNCOMPRESSED);
-                    signAndVerifyHap(unsignedHap.getAbsolutePath());
-
-                    unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_COMPRESSED);
-                    signAndVerifyHap(unsignedHap.getAbsolutePath());
-                }
-            }
-        }
-        for (File file : dir.listFiles()) {
-            file.delete();
-        }
-        dir.delete();
-    }
-
-    private File generateHapFile(FileType abc, FileType so, FileType an, FileType otherFile) throws IOException {
-        File unsignedHap = new File("test\\unsigned-" + new BigInteger(Long.SIZE, new Random()) + ".hap");
-        try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(unsignedHap))) {
-            if (FileType.FILE_UNCOMPRESSED.equals(abc)) {
-                fillZipEntryFile(true, ".abc", out);
-            } else if (FileType.FILE_COMPRESSED.equals(abc)) {
-                fillZipEntryFile(false, ".abc", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-            if (FileType.FILE_UNCOMPRESSED.equals(so)) {
-                fillZipEntryFile(true, ".so", out);
-                fillZipEntryFile(true, ".so.111", out);
-                fillZipEntryFile(true, ".so.111.111", out);
-                fillZipEntryFile(true, ".so.111.111.111", out);
-            } else if (FileType.FILE_COMPRESSED.equals(so)) {
-                fillZipEntryFile(false, ".so", out);
-                fillZipEntryFile(false, ".so.111", out);
-                fillZipEntryFile(false, ".so.111.111", out);
-                fillZipEntryFile(false, ".so.111.111.111", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-            if (FileType.FILE_UNCOMPRESSED.equals(an)) {
-                fillZipEntryFile(true, ".an", out);
-            } else if (FileType.FILE_COMPRESSED.equals(an)) {
-                fillZipEntryFile(false, ".an", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-            if (FileType.FILE_UNCOMPRESSED.equals(otherFile)) {
-                fillZipEntryFile(true, ".json", out);
-            } else if (FileType.FILE_COMPRESSED.equals(otherFile)) {
-                fillZipEntryFile(false, ".json", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-        }
-        return unsignedHap;
-    }
-
-    private void fillZipEntryFile(boolean uncompressed, String suffix, ZipOutputStream out) throws IOException {
-        String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
-        if (suffix.startsWith(".so")) {
-            fileName = "libs\\" + fileName;
-        }
-        if (suffix.startsWith(".an")) {
-            fileName = "an\\" + fileName;
-        }
-        ZipEntry zipEntry = new ZipEntry(fileName);
-        byte[] bytes = generateChunkBytes();
-        if (uncompressed) {
-            zipEntry.setMethod(ZipEntry.STORED);
-            zipEntry.setSize(bytes.length);
-            CRC32 crc32 = new CRC32();
-            crc32.reset();
-            crc32.update(bytes, 0, bytes.length);
-            zipEntry.setCrc(crc32.getValue());
-        } else {
-            zipEntry.setMethod(ZipEntry.DEFLATED);
-        }
-        out.putNextEntry(zipEntry);
-        out.write(bytes);
-        out.closeEntry();
-    }
-
-    private byte[] generateChunkBytes() {
-        Random random = new Random();
-        int size = Math.max(4096, random.nextInt(1024 * 1024 * 2));
-        byte[] bytes = new byte[size];
-        random.nextBytes(bytes);
-        return bytes;
-    }
-
-    private void signAndVerifyHap(String unsignedHap) throws IOException {
-        String signedHap = File.createTempFile("signed-", ".hap", new File("test")).getAbsolutePath();
-        boolean result = HapSignTool.processCmd(new String[] {
-            CmdUtil.Method.SIGN_APP, CMD_MODE, CMD_LOCAL_SIGN, CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1, CMD_KEY_RIGHTS,
-            CMD_RIGHTS_123456, CMD_APP_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH, CMD_PROFILE_FILE,
-            CMD_SIGN_PROFILE_PATH, CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA, CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
-            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456, CMD_IN_FILE, unsignedHap, CMD_OUT_FILE, signedHap
-        });
-        assertTrue(result);
-
-        result = HapSignTool.processCmd(new String[] {
-            CmdUtil.Method.VERIFY_APP, CMD_IN_FILE, signedHap, CMD_OUT_CERT_CHAIN, "test\\1.cer", CMD_OUT_PROFILE,
-            "test\\1.p7b"
-        });
-        assertTrue(result);
-    }
-
-    /**
-     * Test Method: isRunnableFile()
-     */
-    @Test
-    public void testIsRunnableFile() {
-        List<String> correctName = new ArrayList<>();
-        correctName.add("中文.so");
-        correctName.add("srtjdwrtj.an");
-        correctName.add("srtjdwrtj.abc");
-        correctName.add("srtjdwrtj.so");
-        correctName.add("srtjdwrtj.so.1");
-        correctName.add("srtjdwrtj.so.1.1");
-        correctName.add("srtjdwrtj.so.1.1.1");
-        correctName.add("srtjdwrtj.so.111.111.1111");
-        correctName.add("libs\\srtjdwrtj.so.111.111.1111");
-        correctName.add("中文.so.111.111.1111");
-        for (String name : correctName) {
-            assertTrue(FileUtils.isRunnableFile(name));
-        }
-
-        List<String> incorrectName = new ArrayList<>();
-        incorrectName.add("srtjdwrtj.so.111.111.1111.54645");
-        incorrectName.add("srtjdwrtjso.111.111.11111");
-        incorrectName.add("libs\\srtjdwrtj.so.111.%%%.1111");
-        incorrectName.add("srtjdwrtj.so.abc.111.111.1111");
-        incorrectName.add("srtjdwrtj.so.111.111.json");
-        incorrectName.add("srtjdwrtj.abc.json");
-        incorrectName.add("srtjdwrtj.an.json");
-        incorrectName.add("中文.so.111.111.json");
-        for (String name : incorrectName) {
-            assertFalse(FileUtils.isRunnableFile(name));
-        }
-    }
-
-
-    /**
-     * Test Method: testByteToZip()
-     *
-     * @throws IOException read file exception
-     */
-    @Test
-    public void testByteToZip() throws IOException {
-        File dir = new File("test");
-        dir.mkdir();
-        for (int i = 0; i < 10; i++) {
-            File file = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
-                    FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED);
-            Zip zip = new Zip(file);
-            String outFileName = "test/testOut.hap";
-            zip.toFile(outFileName);
-            File outFile = new File(outFileName);
-            byte[] bytes = FileUtils.readFile(file);
-            byte[] outBytes = FileUtils.readFile(outFile);
-            assertArrayEquals(outBytes, bytes);
-
-            deleteFile(file.getCanonicalPath());
-            deleteFile(outFileName);
-        }
-    }
-
     private boolean generateAppRootCa() {
         boolean result = HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
@@ -1022,14 +810,5 @@ public class CmdUnitTest {
             Path path = Paths.get(filePath);
             Files.delete(path);
         }
-    }
-
-    /**
-     * Enumerated value of file type in zip.
-     */
-    public enum FileType {
-        FILE_NOT_EXISTED,
-        FILE_UNCOMPRESSED,
-        FILE_COMPRESSED;
     }
 }

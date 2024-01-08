@@ -16,7 +16,6 @@
 package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
@@ -91,17 +90,7 @@ public class VerifyResult {
      */
     public static final int RET_CRL_ERROR = 10011;
 
-    /**
-     * Return code of file code sign data error.
-     */
-    public static final int RET_CODESIGN_DATA_ERROR = 10012;
-
-    /**
-     * Return code of verify code sign error.
-     */
-    public static final int RET_CODE_SIGN_BLOCK_ERROR = 10013;
-
-    private boolean isResult;
+    private boolean result;
     private int code;
     private String message;
 
@@ -117,8 +106,6 @@ public class VerifyResult {
 
     private int signBlockVersion;
 
-    private byte[] profile;
-
     /**
      * Empty constructor
      */
@@ -128,22 +115,22 @@ public class VerifyResult {
     /**
      * Verify result constructor
      *
-     * @param isResult verify result
+     * @param result verify result
      * @param code error code
      * @param message error message
      */
-    public VerifyResult(boolean isResult, int code, String message) {
-        this.isResult = isResult;
+    public VerifyResult(boolean result, int code, String message) {
+        this.result = result;
         this.code = code;
         this.message = message;
     }
 
     public boolean isVerified() {
-        return isResult;
+        return result;
     }
 
-    public void setIsResult(boolean isResult) {
-        this.isResult = isResult;
+    public void setResult(boolean result) {
+        this.result = result;
     }
 
     public int getCode() {
@@ -208,13 +195,5 @@ public class VerifyResult {
 
     public void setSignBlockVersion(int signBlockVersion) {
         this.signBlockVersion = signBlockVersion;
-    }
-
-    public byte[] getProfile() {
-        return profile;
-    }
-
-    public void setProfile(byte[] profile) {
-        this.profile = profile;
     }
 }

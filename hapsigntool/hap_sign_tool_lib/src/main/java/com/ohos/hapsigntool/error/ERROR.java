@@ -88,12 +88,7 @@ public enum ERROR {
     /**
      * Enum constant IO_CSR_ERROR.
      */
-    IO_CSR_ERROR(118),
-
-    /**
-     * Enum constant ZIP_ERROR.
-     */
-    ZIP_ERROR(119);
+    IO_CSR_ERROR(118);
 
     /**
      * Field errorCode.
