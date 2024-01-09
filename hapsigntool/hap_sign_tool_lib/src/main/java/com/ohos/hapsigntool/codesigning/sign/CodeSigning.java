@@ -64,9 +64,9 @@ import java.util.regex.Pattern;
  */
 public class CodeSigning {
     /**
-     * Only hap and hsp bundle supports code signing, concatenate then with '/' for verification usage
+     * Only hap and hsp, hqf bundle supports code signing, concatenate then with '/' for verification usage
      */
-    public static final String SUPPORT_FILE_FORM = "hap/hsp";
+    public static final String SUPPORT_FILE_FORM = "hap/hsp/hqf";
 
     /**
      * Only elf file supports bin code signing, concatenate then with '/' for verification usage
