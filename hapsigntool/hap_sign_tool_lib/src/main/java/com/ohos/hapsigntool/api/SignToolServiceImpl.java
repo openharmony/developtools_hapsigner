@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,22 +15,25 @@
 
 package com.ohos.hapsigntool.api;
 
-
 import com.ohos.hapsigntool.api.model.Options;
 import com.ohos.hapsigntool.cert.CertTools;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.provider.LocalJKSSignProvider;
 import com.ohos.hapsigntool.hap.provider.RemoteSignProvider;
 import com.ohos.hapsigntool.hap.provider.SignProvider;
+import com.ohos.hapsigntool.hap.verify.VerifyElf;
 import com.ohos.hapsigntool.hap.verify.VerifyHap;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.profile.VerifyHelper;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ProfileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -43,10 +46,8 @@ import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Main entry of lib.
@@ -54,10 +55,6 @@ import java.util.Arrays;
  * @since 2021/12/28
  */
 public class SignToolServiceImpl implements ServiceApi {
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
     /**
      * App signing Capabilty Bytes.
      */
@@ -72,6 +69,10 @@ public class SignToolServiceImpl implements ServiceApi {
      * Logger.
      */
     private static final Logger logger = LogManager.getLogger(ServiceApi.class);
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * Generate keyStore.
@@ -122,7 +123,7 @@ public class SignToolServiceImpl implements ServiceApi {
         adapter.errorIfNotExist(issuerAlias);
 
         KeyPair subjectKeyPair = adapter.getAliasKey(false);
-        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
             adapter.setKeyStoreHelper(null);
             adapter.setIssuerKeyStoreFile(true);
         }
@@ -143,28 +144,28 @@ public class SignToolServiceImpl implements ServiceApi {
     @Override
     public boolean generateCA(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
-        boolean genRootCA = StringUtils.isEmpty(options.getString(Options.ISSUER_KEY_ALIAS));
+        boolean isEmpty = StringUtils.isEmpty(options.getString(Options.ISSUER_KEY_ALIAS));
         KeyPair subKey = adapter.getAliasKey(true);
         KeyPair rootKey;
         String ksFile = options.getString(Options.KEY_STORE_FILE);
         String iksFile = options.getString(Options.ISSUER_KEY_STORE_FILE);
-        if (genRootCA) {
-            if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)){
+        if (isEmpty) {
+            if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)) {
                 CustomException.throwException(ERROR.WRITE_FILE_ERROR,
-                        String.format("Parameter '%s' and parameter '%s' are inconsistent",ksFile,iksFile));
+                        String.format("Parameter '%s' and parameter '%s' are inconsistent", ksFile, iksFile));
             }
-            if (options.containsKey(Options.ISSUER_KEY_STORE_RIGHTS) ){
+            if (options.containsKey(Options.ISSUER_KEY_STORE_RIGHTS)) {
                 boolean isEqual = Arrays.equals(options.getChars(Options.KEY_STORE_RIGHTS),
                         options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
-                if (!isEqual){
+                if (!isEqual) {
                     CustomException.throwException(ERROR.WRITE_FILE_ERROR,
                             String.format("Parameter '%s' and parameter '%s' are inconsistent",
-                                    Options.KEY_STORE_RIGHTS,Options.ISSUER_KEY_STORE_RIGHTS));
+                                    Options.KEY_STORE_RIGHTS, Options.ISSUER_KEY_STORE_RIGHTS));
                 }
             }
             rootKey = subKey;
         } else {
-            if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+            if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
                 FileUtils.validFileType(options.getString(Options.ISSUER_KEY_STORE_FILE), "p12", "jks");
                 adapter.setKeyStoreHelper(null);
                 adapter.setIssuerKeyStoreFile(true);
@@ -175,7 +176,7 @@ public class SignToolServiceImpl implements ServiceApi {
 
         byte[] csr = CertTools.generateCsr(subKey, adapter.getSignAlg(), adapter.getSubject());
         X509Certificate cert;
-        if (genRootCA) {
+        if (isEmpty) {
             cert = CertTools.generateRootCaCert(rootKey, csr, adapter);
         } else {
             cert = CertTools.generateSubCert(rootKey, csr, adapter);
@@ -193,7 +194,7 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean generateAppCert(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
         KeyPair keyPair = adapter.getAliasKey(false);
-        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
             adapter.setKeyStoreHelper(null);
             adapter.setIssuerKeyStoreFile(true);
         }
@@ -202,15 +203,7 @@ public class SignToolServiceImpl implements ServiceApi {
 
         byte[] csr = CertTools.generateCsr(keyPair, adapter.getSignAlg(), adapter.getSubject());
         X509Certificate cert = CertTools.generateEndCert(issueKeyPair, csr, adapter, APP_SIGNING_CAPABILITY);
-        if (adapter.isOutFormChain()) {
-            List<X509Certificate> certificates = new ArrayList<>();
-            certificates.add(cert);
-            certificates.add(adapter.getSubCaCertFile());
-            certificates.add(adapter.getCaCertFile());
-            return outputCertChain(certificates, adapter.getOutFile());
-        } else {
-            return outputCert(cert, adapter.getOutFile());
-        }
+        return getOutputCert(adapter, cert);
     }
 
     /**
@@ -223,7 +216,7 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean generateProfileCert(Options options) {
         LocalizationAdapter adapter = new LocalizationAdapter(options);
         KeyPair keyPair = adapter.getAliasKey(false);
-        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)){
+        if (options.containsKey(Options.ISSUER_KEY_STORE_FILE)) {
             adapter.setKeyStoreHelper(null);
             adapter.setIssuerKeyStoreFile(true);
         }
@@ -232,6 +225,10 @@ public class SignToolServiceImpl implements ServiceApi {
 
         byte[] csr = CertTools.generateCsr(keyPair, adapter.getSignAlg(), adapter.getSubject());
         X509Certificate cert = CertTools.generateEndCert(issueKeyPair, csr, adapter, PROFILE_SIGNING_CAPABILITY);
+        return getOutputCert(adapter, cert);
+    }
+
+    private boolean getOutputCert(LocalizationAdapter adapter, X509Certificate cert) {
         if (adapter.isOutFormChain()) {
             List<X509Certificate> certificates = new ArrayList<>();
             certificates.add(cert);
@@ -251,19 +248,19 @@ public class SignToolServiceImpl implements ServiceApi {
      */
     @Override
     public boolean signProfile(Options options) {
-        boolean result;
+        boolean isSuccess;
         try {
             LocalizationAdapter adapter = new LocalizationAdapter(options);
             byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
-            result = true;
+            isSuccess = true;
         } catch (IOException exception) {
             logger.debug(exception.getMessage(), exception);
             logger.error(exception.getMessage());
-            result = false;
+            isSuccess = false;
         }
-        return result;
+        return isSuccess;
     }
 
     /**
@@ -274,23 +271,26 @@ public class SignToolServiceImpl implements ServiceApi {
      */
     @Override
     public boolean verifyProfile(Options options) {
-        boolean result;
+        boolean isSign;
         try {
             LocalizationAdapter adapter = new LocalizationAdapter(options);
             VerifyHelper verifyHelper = new VerifyHelper();
             byte[] p7b = FileUtils.readFile(new File(adapter.getInFile()));
             VerificationResult verificationResult = verifyHelper.verify(p7b);
-            result = verificationResult.isVerifiedPassed();
-            if (!result) {
+            isSign = verificationResult.isVerifiedPassed();
+            if (!isSign) {
                 logger.error(verificationResult.getMessage());
             }
             outputString(FileUtils.GSON_PRETTY_PRINT.toJson(verificationResult), adapter.getOutFile());
         } catch (IOException exception) {
             logger.debug(exception.getMessage(), exception);
             logger.error(exception.getMessage());
-            result = false;
+            isSign = false;
+        } catch (VerifyException e) {
+            CustomException.throwException(ERROR.VERIFY_ERROR, "Verify Profile Failed! " + e.getMessage());
+            isSign = false;
         }
-        return result;
+        return isSign;
     }
 
     /**
@@ -306,7 +306,7 @@ public class SignToolServiceImpl implements ServiceApi {
         SignProvider signProvider;
         if ("localSign".equalsIgnoreCase(mode)) {
             signProvider = new LocalJKSSignProvider();
-        } else if ("remoteSign".equalsIgnoreCase(mode)){
+        } else if ("remoteSign".equalsIgnoreCase(mode)) {
             signProvider = new RemoteSignProvider();
         } else {
             logger.info("Resign mode. But not implement yet");
@@ -317,6 +317,8 @@ public class SignToolServiceImpl implements ServiceApi {
         String inForm = options.getString(Options.IN_FORM, "zip");
         if ("zip".equalsIgnoreCase(inForm)) {
             return signProvider.sign(options);
+        } else if ("elf".equalsIgnoreCase(inForm)) {
+            return signProvider.signElf(options);
         } else {
             return signProvider.signBin(options);
         }
@@ -324,8 +326,13 @@ public class SignToolServiceImpl implements ServiceApi {
 
     @Override
     public boolean verifyHap(Options options) {
-        VerifyHap hapVerify = new VerifyHap();
-        return hapVerify.verify(options);
+        if ("zip".equals(options.getOrDefault(ParamConstants.PARAM_IN_FORM, "zip"))) {
+            VerifyHap hapVerify = new VerifyHap();
+            return hapVerify.verify(options);
+        } else {
+            VerifyElf verifyElf = new VerifyElf();
+            return verifyElf.verify(options);
+        }
     }
 
     /**
