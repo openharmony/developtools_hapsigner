@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,9 +88,9 @@ public class LocalJKSSignProvider extends SignProvider {
     public void checkParams(Options options) throws InvalidParamsException, MissingParamsException {
         super.checkParams(options);
         String[] paramFileds = {
-            ParamConstants.PARAM_LOCAL_JKS_KEYSTORE,
-            ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE,
-            ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE
+                ParamConstants.PARAM_LOCAL_JKS_KEYSTORE,
+                ParamConstants.PARAM_LOCAL_JKS_KEYSTORE_CODE,
+                ParamConstants.PARAM_LOCAL_JKS_KEYALIAS_CODE
         };
 
         Set<String> paramSet = ParamProcessUtil.initParamField(paramFileds);
@@ -103,7 +104,7 @@ public class LocalJKSSignProvider extends SignProvider {
                 }
             }
         }
-
+        checkSignCode();
         checkPublicKeyPath();
     }
 }
