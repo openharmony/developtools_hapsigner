@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.profile;
 import com.ohos.hapsigntool.api.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.signer.ISigner;
 import com.ohos.hapsigntool.signer.SignerFactory;
@@ -88,7 +89,12 @@ public final class ProfileSignTool {
         ISigner signer = new SignerFactory().getSigner(adapter);
         byte[] p7b = signProfile(content, signer, adapter.getSignAlg());
         VerifyHelper verifyHelper = new VerifyHelper();
-        VerificationResult verificationResult = verifyHelper.verify(p7b);
+        VerificationResult verificationResult = null;
+        try {
+            verificationResult = verifyHelper.verify(p7b);
+        } catch (VerifyException e) {
+            CustomException.throwException(ERROR.VERIFY_ERROR, "Generate Profile Failed! " + e.getMessage());
+        }
         ValidateUtils.throwIfNotMatches(verificationResult.isVerifiedPassed(), ERROR.SIGN_ERROR,
                 verificationResult.getMessage());
         return p7b;

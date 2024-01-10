@@ -64,11 +64,12 @@ public final class CmdUtil {
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
             if (StringUtils.isEmpty(value)) {
-                continue;
+                CustomException.throwException(ERROR.COMMAND_ERROR, "param value could not be empty");
             }
             if (readKey) {
                 // prepare key
                 if (value.startsWith("-")) {
+                    value = value.equals("-signcode") ? "-signCode" : value;
                     boolean isTrust = trustList.contains(value);
                     ValidateUtils.throwIfNotMatches(isTrust,
                             ERROR.COMMAND_PARAM_ERROR, "Not support command param");
