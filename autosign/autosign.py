@@ -283,8 +283,8 @@ def replace_cert_in_profile():
     profile["bundle-info"]["distribution-certificate"] = app_cert
 
     # save profile
-    flags = os.O_WRONLY
-    modes = stat.S_IWUSR | stat.S_IRUSR
+    flags = os.O_WRONLY | os.O_TRUNC
+    modes = stat.S_IWUSR
     with os.fdopen(os.open(profile_file, flags, modes), 'w') as profile_write:
         json.dump(profile, profile_write)
 
