@@ -17,6 +17,7 @@
 import json
 import os
 import re
+import stat
 import sys
 from subprocess import Popen
 from subprocess import PIPE
@@ -112,7 +113,7 @@ def load_engine(engine_config):
 
 
 def run_target(cmd):
-    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
+    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False)
     out = command.stdout.readlines()
     with open("log.txt", mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
@@ -282,7 +283,9 @@ def replace_cert_in_profile():
     profile["bundle-info"]["distribution-certificate"] = app_cert
 
     # save profile
-    with open(profile_file, 'w', encoding='utf-8') as profile_write:
+    flags = os.O_WRONLY
+    modes = stat.S_IWUSR | stat.S_IRUSR
+    with os.fdopen(os.open(profile_file, flags, modes), 'w') as profile_write:
         json.dump(profile, profile_write)
 
 
