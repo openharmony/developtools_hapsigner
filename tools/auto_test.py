@@ -425,9 +425,9 @@ def prepare_env():
 
 
 def process_cmd(args):
-    run_round = 1
-    run_scope = 'simple'
-    is_random = False
+    run_round: int = 1
+    run_scope: str = 'simple'
+    is_random: bool = False
 
     if len(args) <= 1 or ('.jar' not in args[1]) or '--help' == args[1] or '-h' == args[1]:
         print_help()
@@ -474,9 +474,9 @@ def process_cmd(args):
             run_simple_case(run_scope, jar_file)
 
 def get_run_format(args):
-    run_round = 1
-    run_scope = 'simple'
-    is_random = False
+    run_round: int = 1
+    run_scope: str = 'simple'
+    is_random: bool = False
     try:
         for i in range(2, len(args), 1):
             if args[i] == '-n':
@@ -497,9 +497,8 @@ if __name__ == '__main__':
     print("========================")
     for rk, rv in test_result.items():
         times = rv['times']
-        if(times == 0):
-            times == 1
-        print("Case {}, run times: {}, avg cost: {}s, total success: {}, total fail: {}".format(rk, times, round(
-            rv['total_cost'] / times, 2), rv['success'], rv['fail']))
+        if(times != 0):
+            print("Case {}, run times: {}, avg cost: {}s, total success: {}, total fail: {}".format(rk, times, round(
+                rv['total_cost'] / times, 2), rv['success'], rv['fail']))
     print("========================")
     print("See log.txt / error.txt")
