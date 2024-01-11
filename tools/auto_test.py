@@ -497,7 +497,7 @@ if __name__ == '__main__':
     print("========================")
     for rk, rv in test_result.items():
         times = rv['times']
-        if(times != 0):
+        if times != 0:
             print("Case {}, run times: {}, avg cost: {}s, total success: {}, total fail: {}".format(rk, times, round(
                 rv['total_cost'] / times, 2), rv['success'], rv['fail']))
     print("========================")
