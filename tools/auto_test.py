@@ -280,7 +280,7 @@ def run_target(case, cmd):
     case_result['times'] = case_result['times'] + 1
     start = time.time()
 
-    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
+    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False)
 
 
 
@@ -425,9 +425,9 @@ def prepare_env():
 
 
 def process_cmd(args):
-    run_round = 1
-    run_scope = 'simple'
-    is_random = False
+    run_round: int = 1
+    run_scope: str = 'simple'
+    is_random: bool = False
 
     if len(args) <= 1 or ('.jar' not in args[1]) or '--help' == args[1] or '-h' == args[1]:
         print_help()
@@ -439,19 +439,10 @@ def process_cmd(args):
         exit(0)
 
     if len(args) >= 3:
-        try:
-            for i in range(2, len(args), 1):
-                if args[i] == '-n':
-                    run_round = int(args[i + 1])
-                elif args[i] == '-scope':
-                    run_scope = args[i + 1]
-                elif args[i] == '--random':
-                    is_random = True
-                elif args[i] == '-runtest':
-                    run_scope = 'runtest'
-        except IndexError:
-            print_help()
-            exit(0)
+        round, scope, random = get_run_format(args)
+        run_round: int = round
+        run_scope: str = scope
+        is_random: bool = random
 
     print('===  Start testing  ===')
     print('Scope: {}. Round: {}. Random: {}'.format(run_scope, run_round, is_random))
@@ -485,13 +476,32 @@ def process_cmd(args):
         else:
             run_simple_case(run_scope, jar_file)
 
-
+def get_run_format(args) -> int,str,bool:
+    run_round: int = 1
+    run_scope: str = 'simple'
+    is_random: bool = False
+    try:
+        for i in range(2, len(args), 1):
+            if args[i] == '-n':
+                run_round = int(args[i + 1])
+            elif args[i] == '-scope':
+                run_scope = args[i + 1]
+            elif args[i] == '--random':
+                is_random = True
+            elif args[i] == '-runtest':
+                run_scope = 'runtest'
+    except IndexError:
+        print_help()
+        exit(0)
+    return run_round, run_scope, is_random
 if __name__ == '__main__':
     process_cmd(sys.argv)
     print("All test done")
     print("========================")
     for rk, rv in test_result.items():
-        print("Case {}, run times: {}, avg cost: {}s, total success: {}, total fail: {}".format(rk, rv['times'], round(
-            rv['total_cost'] / rv['times'], 2), rv['success'], rv['fail']))
+        times = rv['times']
+        if times != 0:
+            print("Case {}, run times: {}, avg cost: {}s, total success: {}, total fail: {}".format(rk, times, round(
+                rv['total_cost'] / times, 2), rv['success'], rv['fail']))
     print("========================")
     print("See log.txt / error.txt")
