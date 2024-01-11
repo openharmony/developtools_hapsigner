@@ -439,7 +439,10 @@ def process_cmd(args):
         exit(0)
 
     if len(args) >= 3:
-        run_round, run_scope, is_random = get_run_format(args)
+        round, scope, random = get_run_format(args)
+        run_round: int = round
+        run_scope: str = scope
+        is_random: bool = random
 
     print('===  Start testing  ===')
     print('Scope: {}. Round: {}. Random: {}'.format(run_scope, run_round, is_random))
@@ -473,7 +476,7 @@ def process_cmd(args):
         else:
             run_simple_case(run_scope, jar_file)
 
-def get_run_format(args):
+def get_run_format(args) -> int,str,bool:
     run_round: int = 1
     run_scope: str = 'simple'
     is_random: bool = False
