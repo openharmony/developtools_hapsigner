@@ -85,7 +85,7 @@ java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAl
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
          ├── -keyAlias          #密钥别名，必填项
          ├── -keyPwd            #密钥口令，可选项
-         ├── -profileCertFile   #Profile签名证书（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
+         ├── -profileCertFile   #Profile签名证书（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -inFile            #输入的原始Provision Profile文件，必填项
          ├── -signAlg           #签名算法，必填项，包括 SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
@@ -106,7 +106,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
          ├── -keyAlias          #密钥别名，必填项
          ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
+         ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，hap应用包签名必填项，二进制工具签名选填
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inForm            #输入的原始文件的格式，枚举值：zip、elf或bin；zip和elf支持代码签名，hap 应用包对应zip，二进制工具对应elf，默认zip；可选项
@@ -262,7 +262,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -mode            # 签名模式，必填项，包括localSign，remoteSign
           ├── -keyAlias        # 密钥别名，必填项
           ├── -keyPwd          # 密钥口令，可选项
-          ├── -profileCertFile # Profile签名证书（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
+          ├── -profileCertFile # Profile签名证书（证书链，顺序为实体证书-中间CA证书-根证书），必填项
           ├── -inFile          # 输入的原始Provision Profile文件，必填项
           ├── -signAlg         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile    # 密钥库文件，localSign模式时为必填项，JKS或P12格式
@@ -281,7 +281,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -mode          # 签名模式，必填项，包括localSign，remoteSign，remoteResign
           ├── -keyAlias      # 密钥别名，必填项
           ├── -keyPwd        # 密钥口令，可选项
-          ├── -appCertFile   # 应用签名证书文件（证书链，顺序为最终实体证书-中间CA证书-根证书），必填项
+          ├── -appCertFile   # 应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式，hap应用包签名必填项，二进制工具签名选填
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
           ├── -inForm        # 输入的原始文件的格式，枚举值：zip、elf或bin；zip和elf支持代码签名，hap 应用包对应zip，二进制工具对应elf，默认zip；可选项
