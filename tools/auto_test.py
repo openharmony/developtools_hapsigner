@@ -476,7 +476,7 @@ def process_cmd(args):
         else:
             run_simple_case(run_scope, jar_file)
 
-def get_run_format(args) -> int,str,bool:
+def get_run_format(args):
     run_round: int = 1
     run_scope: str = 'simple'
     is_random: bool = False
