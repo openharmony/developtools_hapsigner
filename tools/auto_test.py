@@ -431,10 +431,10 @@ def process_cmd(args):
         exit(0)
 
     if len(args) >= 3:
-        format_round, scope, need_random = get_run_format(args)
-        run_round: int = format_round
-        run_scope: str = scope
-        is_random: bool = need_random
+        temp_round, temp_scope, temp_random = get_run_format(args)
+        run_round: int = temp_round
+        run_scope: str = temp_scope
+        is_random: bool = temp_random
 
     print('===  Start testing  ===')
     print('Scope: {}. Round: {}. Random: {}'.format(run_scope, run_round, is_random))
