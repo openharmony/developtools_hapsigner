@@ -316,6 +316,7 @@ def run_simple_case(case, jar_file):
         result = run_target(case, cmd)
         print("== Done command: {}".format(result))
 
+
 def run_test_case(case, jar_file):
     test_case = test_scope.get(case, None)
     if not test_case:
@@ -430,8 +431,8 @@ def process_cmd(args):
         exit(0)
 
     if len(args) >= 3:
-        round, scope, need_random = get_run_format(args)
-        run_round: int = round
+        format_round, scope, need_random = get_run_format(args)
+        run_round: int = format_round
         run_scope: str = scope
         is_random: bool = need_random
 
