@@ -42,16 +42,6 @@ def print_help():
     print(content)
     pass
 
-
-def random_pwd():
-    min_pwd = 100000
-    max_pwd = 999999
-    return random.randint(min_pwd, max_pwd), random.randint(min_pwd, max_pwd)
-
-
-keystorePwd, keyPwd = random_pwd()
-
-
 random_scope = {
     'generate-keypair': {
         'required': {
@@ -262,6 +252,7 @@ simple_scope = {
     ]
 }
 
+
 def get_test_scope_from_file():
     with open('commands.config', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -324,6 +315,7 @@ def run_simple_case(case, jar_file):
         print("== Run command: {}".format(cmd))
         result = run_target(case, cmd)
         print("== Done command: {}".format(result))
+
 
 def run_test_case(case, jar_file):
     test_case = test_scope.get(case, None)
@@ -439,10 +431,10 @@ def process_cmd(args):
         exit(0)
 
     if len(args) >= 3:
-        round, scope, random = get_run_format(args)
-        run_round: int = round
-        run_scope: str = scope
-        is_random: bool = random
+        temp_round, temp_scope, temp_random = get_run_format(args)
+        run_round: int = temp_round
+        run_scope: str = temp_scope
+        is_random: bool = temp_random
 
     print('===  Start testing  ===')
     print('Scope: {}. Round: {}. Random: {}'.format(run_scope, run_round, is_random))
@@ -476,7 +468,8 @@ def process_cmd(args):
         else:
             run_simple_case(run_scope, jar_file)
 
-def get_run_format(args) -> int,str,bool:
+
+def get_run_format(args):
     run_round: int = 1
     run_scope: str = 'simple'
     is_random: bool = False
