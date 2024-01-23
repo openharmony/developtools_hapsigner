@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.ohos</groupId>
         <artifactId>hapsigntool</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>hap_sign_tool</artifactId>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.ohos</groupId>
             <artifactId>hap_sign_tool_lib</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -58,6 +58,11 @@
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

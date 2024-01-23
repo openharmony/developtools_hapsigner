@@ -35,15 +35,15 @@
 - 一键签名等脚本文件基于Python语言开发，使用需配置环境python3.5及以上。
 #### 编译构建
 
- 1. 该工具基于Gradle 7.1编译构建，请确认环境已安装配置Gradle环境，并且版本正确
+ 1. 该工具基于Maven3编译构建，请确认环境已安装配置Maven3环境，并且版本正确
   
-        gradle -v
+        mvn -version
 
  2. 下载代码，命令行打开文件目录至developtools_hapsigner/hapsigntool，执行命令进行编译打包
             
-        gradle build 或者 gradle jar
+        mvn package
 
- 3. 编译后得到二进制文件，目录为: ./hap_sign_tool/build/libs/hap-sign-tool.jar
+ 3. 编译后得到二进制文件，目录为: ./hap_sign_tool/target
 
 ****
 #### 说明
