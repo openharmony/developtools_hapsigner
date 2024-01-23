@@ -223,12 +223,7 @@ public class KeyStoreHelper {
             return;
         }
         X509Certificate cert = (X509Certificate) certificate;
-        try {
-            cert.checkValidity();
-            certificates.add(cert);
-        } catch (CertificateExpiredException | CertificateNotYetValidException exception) {
-            logger.debug(exception.getMessage(), exception);
-        }
+        certificates.add(cert);
     }
 
     /**
