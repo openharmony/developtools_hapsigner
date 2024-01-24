@@ -25,6 +25,7 @@
         </policylist>
         <filefilterlist>
             <filefilter name="defaultPolicyFilter" desc="Files that do not need to be applied specified policy, will be merged with the filter items which has the same filefilter name">
+                <filteritem type="filename" name="pom.xml"/>
                 <filteritem type="filename" name="README.OpenSource"/>
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
