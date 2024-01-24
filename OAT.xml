@@ -34,6 +34,7 @@
                 <filteritem type="filename" name="*.sh" desc="script file"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="">
+                <filteritem type="filename" name="pom.xml"/>
                 <filteritem type="filename" name="README.OpenSource"/>
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
@@ -43,6 +44,7 @@
                 <filteritem type="filename" name="*.sh" desc="script file"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="">
+                <filteritem type="filename" name="pom.xml"/>
             </filefilter>
             <filefilter name="readmeFileNamePolicyFilter" desc="">
             </filefilter>
