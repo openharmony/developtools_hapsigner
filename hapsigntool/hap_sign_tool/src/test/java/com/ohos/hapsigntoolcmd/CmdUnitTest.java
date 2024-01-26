@@ -24,6 +24,8 @@ import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.zip.Zip;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -402,6 +404,29 @@ public class CmdUnitTest {
     private static final Logger logger = LoggerFactory.getLogger(CmdUnitTest.class);
 
     /**
+     * create test dir
+     */
+    @BeforeAll
+    public static void mkTestDir() {
+        File dir = new File("test");
+        dir.mkdir();
+    }
+
+    /**
+     * delete test dir
+     */
+    @AfterAll
+    public static void delTestDir() {
+        File dir = new File("test");
+        if (dir.exists()) {
+            for (File file : dir.listFiles()) {
+                file.delete();
+            }
+            dir.delete();
+        }
+    }
+
+    /**
      * test cmdKeypair
      * @throws IOException io error
      */
@@ -763,80 +788,68 @@ public class CmdUnitTest {
     @Order(11)
     @Test
     public void testCmdMultiHap() throws IOException {
-        File dir = new File("test");
-        dir.mkdir();
+        multiBundleTest(".hap");
+    }
+
+    /**
+     * test sign and verify hqf file include multi lib
+     *
+     * @throws IOException error
+     */
+    @Order(12)
+    @Test
+    public void testCmdMultiHqf() throws IOException {
+        multiBundleTest(".hqf");
+    }
+
+    private void multiBundleTest(String bundleSuffix) throws IOException {
         for (FileType abcFile : FileType.values()) {
             for (FileType soFile : FileType.values()) {
                 for (FileType anFile : FileType.values()) {
-                    File unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_NOT_EXISTED);
-                    signAndVerifyHap(unsignedHap.getAbsolutePath());
+                    File unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_NOT_EXISTED,
+                        bundleSuffix);
+                    signAndVerifyHap(unsignedHap.getAbsolutePath(), bundleSuffix);
 
-                    unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_UNCOMPRESSED);
-                    signAndVerifyHap(unsignedHap.getAbsolutePath());
+                    unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_UNCOMPRESSED, bundleSuffix);
+                    signAndVerifyHap(unsignedHap.getAbsolutePath(), bundleSuffix);
 
-                    unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_COMPRESSED);
-                    signAndVerifyHap(unsignedHap.getAbsolutePath());
+                    unsignedHap = generateHapFile(abcFile, soFile, anFile, FileType.FILE_COMPRESSED, bundleSuffix);
+                    signAndVerifyHap(unsignedHap.getAbsolutePath(), bundleSuffix);
                 }
             }
         }
-        for (File file : dir.listFiles()) {
-            file.delete();
-        }
-        dir.delete();
     }
 
-    private File generateHapFile(FileType abc, FileType so, FileType an, FileType otherFile) throws IOException {
-        File unsignedHap = new File("test\\unsigned-" + new BigInteger(Long.SIZE, new Random()) + ".hap");
+    private File generateHapFile(FileType abc, FileType so, FileType an, FileType otherFile, String bundleSuffix)
+        throws IOException {
+        File unsignedHap = File.createTempFile("unsigned-", bundleSuffix, new File("test"));
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(unsignedHap))) {
-            if (FileType.FILE_UNCOMPRESSED.equals(abc)) {
-                fillZipEntryFile(true, ".abc", out);
-            } else if (FileType.FILE_COMPRESSED.equals(abc)) {
-                fillZipEntryFile(false, ".abc", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-            if (FileType.FILE_UNCOMPRESSED.equals(so)) {
-                fillZipEntryFile(true, ".so", out);
-                fillZipEntryFile(true, ".so.111", out);
-                fillZipEntryFile(true, ".so.111.111", out);
-                fillZipEntryFile(true, ".so.111.111.111", out);
-            } else if (FileType.FILE_COMPRESSED.equals(so)) {
-                fillZipEntryFile(false, ".so", out);
-                fillZipEntryFile(false, ".so.111", out);
-                fillZipEntryFile(false, ".so.111.111", out);
-                fillZipEntryFile(false, ".so.111.111.111", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-            if (FileType.FILE_UNCOMPRESSED.equals(an)) {
-                fillZipEntryFile(true, ".an", out);
-            } else if (FileType.FILE_COMPRESSED.equals(an)) {
-                fillZipEntryFile(false, ".an", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
-            if (FileType.FILE_UNCOMPRESSED.equals(otherFile)) {
-                fillZipEntryFile(true, ".json", out);
-            } else if (FileType.FILE_COMPRESSED.equals(otherFile)) {
-                fillZipEntryFile(false, ".json", out);
-            } else {
-                fillZipEntryFile(true, "", out);
-            }
+            fillZipEntryFile(abc, ".abc", out);
+            fillZipEntryFile(so, ".so", out);
+            fillZipEntryFile(so, ".so.111", out);
+            fillZipEntryFile(so, ".so.111.111", out);
+            fillZipEntryFile(so, ".so.111.111.111", out);
+            fillZipEntryFile(an, ".an", out);
+            fillZipEntryFile(otherFile, ".json", out);
         }
         return unsignedHap;
     }
 
-    private void fillZipEntryFile(boolean uncompressed, String suffix, ZipOutputStream out) throws IOException {
-        String fileName = new BigInteger(Long.SIZE, new Random()).toString() + suffix;
-        if (suffix.startsWith(".so")) {
-            fileName = "libs\\" + fileName;
+    private void fillZipEntryFile(FileType ft, String suffix, ZipOutputStream out) throws IOException {
+        String tempSuffix = suffix;
+        if (FileType.FILE_NOT_EXISTED.equals(ft)) {
+            tempSuffix = "";
         }
-        if (suffix.startsWith(".an")) {
-            fileName = "an\\" + fileName;
+        String fileName = new BigInteger(Long.SIZE, new Random()).toString() + tempSuffix;
+        if (tempSuffix.startsWith(".so")) {
+            fileName = "libs" + File.separator + fileName;
+        }
+        if (tempSuffix.startsWith(".an")) {
+            fileName = "an" + File.separator + fileName;
         }
         ZipEntry zipEntry = new ZipEntry(fileName);
         byte[] bytes = generateChunkBytes();
-        if (uncompressed) {
+        if (FileType.FILE_UNCOMPRESSED.equals(ft)) {
             zipEntry.setMethod(ZipEntry.STORED);
             zipEntry.setSize(bytes.length);
             CRC32 crc32 = new CRC32();
@@ -859,8 +872,8 @@ public class CmdUnitTest {
         return bytes;
     }
 
-    private void signAndVerifyHap(String unsignedHap) throws IOException {
-        String signedHap = File.createTempFile("signed-", ".hap", new File("test")).getAbsolutePath();
+    private void signAndVerifyHap(String unsignedHap, String bundleSuffix) throws IOException {
+        String signedHap = File.createTempFile("signed-", bundleSuffix, new File("test")).getAbsolutePath();
         boolean result = HapSignTool.processCmd(new String[] {
             CmdUtil.Method.SIGN_APP, CMD_MODE, CMD_LOCAL_SIGN, CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1, CMD_KEY_RIGHTS,
             CMD_RIGHTS_123456, CMD_APP_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH, CMD_PROFILE_FILE,
@@ -870,8 +883,8 @@ public class CmdUnitTest {
         assertTrue(result);
 
         result = HapSignTool.processCmd(new String[] {
-            CmdUtil.Method.VERIFY_APP, CMD_IN_FILE, signedHap, CMD_OUT_CERT_CHAIN, "test\\1.cer", CMD_OUT_PROFILE,
-            "test\\1.p7b"
+            CmdUtil.Method.VERIFY_APP, CMD_IN_FILE, signedHap, CMD_OUT_CERT_CHAIN, "test" + File.separator + "1.cer",
+            CMD_OUT_PROFILE, "test" + File.separator + "1.p7b"
         });
         assertTrue(result);
     }
@@ -890,7 +903,7 @@ public class CmdUnitTest {
         correctName.add("srtjdwrtj.so.1.1");
         correctName.add("srtjdwrtj.so.1.1.1");
         correctName.add("srtjdwrtj.so.111.111.1111");
-        correctName.add("libs\\srtjdwrtj.so.111.111.1111");
+        correctName.add("libs" + File.separator + "srtjdwrtj.so.111.111.1111");
         correctName.add("中文.so.111.111.1111");
         for (String name : correctName) {
             assertTrue(FileUtils.isRunnableFile(name));
@@ -899,7 +912,7 @@ public class CmdUnitTest {
         List<String> incorrectName = new ArrayList<>();
         incorrectName.add("srtjdwrtj.so.111.111.1111.54645");
         incorrectName.add("srtjdwrtjso.111.111.11111");
-        incorrectName.add("libs\\srtjdwrtj.so.111.%%%.1111");
+        incorrectName.add("libs" + File.separator + "srtjdwrtj.so.111.%%%.1111");
         incorrectName.add("srtjdwrtj.so.abc.111.111.1111");
         incorrectName.add("srtjdwrtj.so.111.111.json");
         incorrectName.add("srtjdwrtj.abc.json");
@@ -918,13 +931,11 @@ public class CmdUnitTest {
      */
     @Test
     public void testByteToZip() throws IOException {
-        File dir = new File("test");
-        dir.mkdir();
         for (int i = 0; i < 10; i++) {
             File file = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
-                    FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED);
+                FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
             Zip zip = new Zip(file);
-            String outFileName = "test/testOut.hap";
+            String outFileName = "test" + File.separator + "testOut.hap";
             zip.toFile(outFileName);
             File outFile = new File(outFileName);
             byte[] bytes = FileUtils.readFile(file);
