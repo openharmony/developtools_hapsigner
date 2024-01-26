@@ -225,10 +225,10 @@ public class KeyStoreHelper {
         X509Certificate cert = (X509Certificate) certificate;
         try {
             cert.checkValidity();
-            certificates.add(cert);
         } catch (CertificateExpiredException | CertificateNotYetValidException exception) {
-            logger.debug(exception.getMessage(), exception);
+            logger.info("p12's certificates is not valid");
         }
+        certificates.add(cert);
     }
 
     /**
