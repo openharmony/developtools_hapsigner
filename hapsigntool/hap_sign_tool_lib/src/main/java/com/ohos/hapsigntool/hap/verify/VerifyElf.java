@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.hap.verify;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;

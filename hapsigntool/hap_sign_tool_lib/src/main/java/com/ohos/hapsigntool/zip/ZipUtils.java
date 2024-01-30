@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.zip;
 
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
 
 import java.io.IOException;

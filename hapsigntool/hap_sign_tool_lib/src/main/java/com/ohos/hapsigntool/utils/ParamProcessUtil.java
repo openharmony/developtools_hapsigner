@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.utils;
 
-import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
+import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

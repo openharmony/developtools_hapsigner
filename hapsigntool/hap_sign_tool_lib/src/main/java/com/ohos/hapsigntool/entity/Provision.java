@@ -13,10 +13,15 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.profile.model;
+package com.ohos.hapsigntool.entity;
 
 import com.google.gson.annotations.SerializedName;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.profile.model.Acls;
+import com.ohos.hapsigntool.profile.model.BundleInfo;
+import com.ohos.hapsigntool.profile.model.DebugInfo;
+import com.ohos.hapsigntool.profile.model.Permissions;
+import com.ohos.hapsigntool.profile.model.Validity;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 
 /**

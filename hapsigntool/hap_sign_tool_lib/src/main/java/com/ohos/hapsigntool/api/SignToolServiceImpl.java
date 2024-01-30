@@ -15,8 +15,9 @@
 
 package com.ohos.hapsigntool.api;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.cert.CertTools;
+import com.ohos.hapsigntool.entity.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyException;

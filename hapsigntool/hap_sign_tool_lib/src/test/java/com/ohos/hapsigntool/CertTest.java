@@ -15,8 +15,8 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.api.LocalizationAdapter;
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.LocalizationAdapter;
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.cert.CertTools;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.CertUtils;
