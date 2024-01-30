@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.utils;
 
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
 import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;

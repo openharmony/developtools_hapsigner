@@ -15,9 +15,10 @@
 
 package com.ohos.hapsigntool.hap.sign;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
+import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.SignatureException;
