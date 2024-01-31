@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.exception;
+package com.ohos.hapsigntool.error;
 
+import com.ohos.hapsigntool.hap.exception.SignatureException;
 import com.ohos.hapsigntool.utils.ParamConstants;
 
 /**
