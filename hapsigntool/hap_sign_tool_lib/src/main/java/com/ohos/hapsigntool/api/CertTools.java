@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.cert;
+package com.ohos.hapsigntool.api;
 
 import com.ohos.hapsigntool.cert.CertBuilder;
 import com.ohos.hapsigntool.cert.CertLevel;
