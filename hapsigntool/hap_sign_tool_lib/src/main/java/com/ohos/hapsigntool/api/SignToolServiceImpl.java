@@ -16,8 +16,8 @@
 package com.ohos.hapsigntool.api;
 
 import com.ohos.hapsigntool.entity.Options;
-import com.ohos.hapsigntool.cert.CertTools;
-import com.ohos.hapsigntool.entity.LocalizationAdapter;
+import com.ohos.hapsigntool.utils.CertTools;
+import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyException;
@@ -31,7 +31,7 @@ import com.ohos.hapsigntool.profile.VerifyHelper;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.ProfileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 

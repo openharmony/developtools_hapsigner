@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.utils;
+package com.ohos.hapsigntool.entity;
 
 /**
  * Define const parameters

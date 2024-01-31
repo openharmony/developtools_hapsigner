@@ -27,7 +27,7 @@ import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.sign.SignElf;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.StringUtils;
 
 import org.apache.logging.log4j.LogManager;

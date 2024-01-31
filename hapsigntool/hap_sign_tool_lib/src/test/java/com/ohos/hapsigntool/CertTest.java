@@ -15,9 +15,9 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.entity.LocalizationAdapter;
+import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.entity.Options;
-import com.ohos.hapsigntool.cert.CertTools;
+import com.ohos.hapsigntool.utils.CertTools;
 import com.ohos.hapsigntool.key.KeyPairTools;
 import com.ohos.hapsigntool.utils.CertUtils;
 import org.bouncycastle.asn1.x500.X500Name;

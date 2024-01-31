@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.error;
 
 import com.ohos.hapsigntool.hap.exception.SignatureException;
-import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.entity.ParamConstants;
 
 /**
  * Exception that occurs if the Hap file format is incorrect.

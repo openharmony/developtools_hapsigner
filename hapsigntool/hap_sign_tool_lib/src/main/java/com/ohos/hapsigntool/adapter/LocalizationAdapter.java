@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.entity;
+package com.ohos.hapsigntool.adapter;
 
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;

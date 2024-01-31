@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.cert;
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.utils.CertTools;
 import com.ohos.hapsigntool.utils.CertUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
