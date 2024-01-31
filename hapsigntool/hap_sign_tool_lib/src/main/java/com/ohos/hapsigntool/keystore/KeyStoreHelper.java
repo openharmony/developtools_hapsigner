@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.keystore;
 
-import com.ohos.hapsigntool.cert.CertTools;
+import com.ohos.hapsigntool.utils.CertTools;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.CertUtils;
@@ -32,7 +32,6 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;

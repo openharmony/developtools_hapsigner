@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.entity.LocalizationAdapter;
+import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
