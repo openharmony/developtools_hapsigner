@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
+import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;

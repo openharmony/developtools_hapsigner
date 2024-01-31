@@ -16,8 +16,8 @@
 package com.ohos.hapsigntool.hap.provider;
 
 import com.ohos.hapsigntool.entity.Options;
-import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
-import com.ohos.hapsigntool.hap.exception.MissingParamsException;
+import com.ohos.hapsigntool.error.InvalidParamsException;
+import com.ohos.hapsigntool.error.MissingParamsException;
 
 import java.security.cert.X509Certificate;
 

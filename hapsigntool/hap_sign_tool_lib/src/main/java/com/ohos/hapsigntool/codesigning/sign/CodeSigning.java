@@ -30,7 +30,7 @@ import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.HapFormatException;
-import com.ohos.hapsigntool.hap.exception.ProfileException;
+import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
