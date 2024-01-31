@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.utils;
+package com.ohos.hapsigntool.cert;
 
 import com.ohos.hapsigntool.cert.CertBuilder;
 import com.ohos.hapsigntool.cert.CertLevel;
@@ -22,6 +22,7 @@ import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
