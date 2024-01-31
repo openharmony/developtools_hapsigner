@@ -32,7 +32,7 @@ import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
 import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
-import com.ohos.hapsigntool.hap.exception.SignatureException;
+import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
 import com.ohos.hapsigntool.hap.sign.SignBin;
 import com.ohos.hapsigntool.hap.sign.SignElf;

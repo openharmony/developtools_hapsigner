@@ -20,7 +20,7 @@ import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyException;
-import com.ohos.hapsigntool.key.KeyPairTools;
+import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.profile.VerifyHelper;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
