@@ -23,7 +23,7 @@ import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.HapUtils;
+import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 

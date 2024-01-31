@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.utils;
+package com.ohos.hapsigntool.hap.utils;
 
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;

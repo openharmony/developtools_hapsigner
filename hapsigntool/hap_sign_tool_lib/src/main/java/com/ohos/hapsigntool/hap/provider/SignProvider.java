@@ -43,7 +43,7 @@ import com.ohos.hapsigntool.utils.CertificateUtils;
 import com.ohos.hapsigntool.utils.DigestUtils;
 import com.ohos.hapsigntool.utils.EscapeCharacter;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.HapUtils;
+import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;

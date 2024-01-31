@@ -25,7 +25,7 @@ import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
 import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.HapUtils;
+import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
