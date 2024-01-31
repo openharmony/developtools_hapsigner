@@ -21,7 +21,7 @@ import com.ohos.hapsigntool.hap.entity.HwSignHead;
 import com.ohos.hapsigntool.hap.entity.SignContentInfo;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTags;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
-import com.ohos.hapsigntool.hap.exception.SignatureException;
+import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.HashUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
