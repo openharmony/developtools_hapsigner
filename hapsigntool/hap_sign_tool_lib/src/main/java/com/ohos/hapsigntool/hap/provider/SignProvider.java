@@ -28,7 +28,7 @@ import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-import com.ohos.hapsigntool.hap.exception.HapFormatException;
+import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
 import com.ohos.hapsigntool.hap.exception.MissingParamsException;
 import com.ohos.hapsigntool.hap.exception.ProfileException;
