@@ -18,7 +18,7 @@ package com.ohos.hapsigntool.adapter;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
+import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.KeyStoreHelper;
 import com.ohos.hapsigntool.utils.CertUtils;

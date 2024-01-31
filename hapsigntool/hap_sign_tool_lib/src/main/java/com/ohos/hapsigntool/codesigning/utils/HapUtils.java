@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.ohos.hapsigntool.entity.Pair;
-import com.ohos.hapsigntool.hap.exception.ProfileException;
+import com.ohos.hapsigntool.error.ProfileException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

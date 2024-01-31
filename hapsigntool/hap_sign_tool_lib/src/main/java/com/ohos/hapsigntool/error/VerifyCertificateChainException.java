@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.exception;
+package com.ohos.hapsigntool.error;
 
 /**
- * Exception that occurs when the required parameters are missing.
+ * Exception that occurs when verifying certificate chains.
  *
  * @since 2021/12/20
  */
-public class MissingParamsException extends Exception {
-    public MissingParamsException(String message) {
+public class VerifyCertificateChainException extends Exception {
+    public VerifyCertificateChainException(String message) {
         super(message);
     }
 
-    public MissingParamsException(String message, Throwable cause) {
+    public VerifyCertificateChainException(String message, Throwable cause) {
         super(message, cause);
     }
 }

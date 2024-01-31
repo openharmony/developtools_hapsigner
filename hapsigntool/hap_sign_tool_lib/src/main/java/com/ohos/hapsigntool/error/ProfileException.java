@@ -13,21 +13,19 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.exception;
+package com.ohos.hapsigntool.error;
 
 /**
- * Exception that occurs when finding signature in the signed hap file.
+ * Exception that occurs if the profile is invalid.
  *
  * @since 2021/12/20
  */
-public class SignatureNotFoundException extends Exception {
-    private static final long serialVersionUID = 1L;
-
-    public SignatureNotFoundException(String message) {
+public class ProfileException extends Exception {
+    public ProfileException(String message) {
         super(message);
     }
 
-    public SignatureNotFoundException(String message, Throwable cause) {
+    public ProfileException(String message, Throwable cause) {
         super(message, cause);
     }
 }

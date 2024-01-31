@@ -30,7 +30,7 @@ import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.entity.Pair;
-import com.ohos.hapsigntool.hap.exception.ProfileException;
+import com.ohos.hapsigntool.error.ProfileException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

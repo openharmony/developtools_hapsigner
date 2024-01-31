@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.utils;
 
-import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
+import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 
 import java.io.File;
 import java.io.FileInputStream;
