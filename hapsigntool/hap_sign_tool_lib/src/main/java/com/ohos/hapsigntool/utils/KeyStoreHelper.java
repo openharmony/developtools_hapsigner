@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.utils;
 
+import com.ohos.hapsigntool.cert.CertTools;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
