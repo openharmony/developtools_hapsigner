@@ -56,7 +56,7 @@ templates = {
     },
     'sign-app': {
         'required': ['keyAlias', 'signAlg', 'mode', 'appCertFile', 'profileFile', 'inFile', 'keystoreFile', 'outFile'],
-        'others': ['keyPwd', 'keystorePwd']
+        'others': ['keyPwd', 'keystorePwd', 'inForm', 'signCode']
     },
 }
 
@@ -165,6 +165,13 @@ def do_sign_hap(jar):
         'sign.app': 'sign-app'
     }
     run_with_engine(sign_hap_engine_config, jar)
+
+
+def do_sign_elf(jar):
+    sign_elf_engine_config = {
+        'sign.app': 'sign-app'
+    }
+    run_with_engine(sign_elf_engine_config, jar)
 
 
 def do_generate(jar):
@@ -302,3 +309,8 @@ if __name__ == '__main__':
         load_config('signHap.config')
         jar_file = process_jar()
         do_sign_hap(jar_file)
+    elif act == 'signElf':
+        load_config('signElf.config')
+        jar_file = process_jar()
+        do_sign_elf(jar_file)
+        
