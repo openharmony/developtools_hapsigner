@@ -247,7 +247,7 @@ def process_cmd():
         exit(0)
 
     action = args[1]
-    if action not in ['createRootAndSubCert', 'createAppCertAndProfile', 'signHap']:
+    if action not in ['createRootAndSubCert', 'createAppCertAndProfile', 'signHap', 'signElf']:
         print("Not support cmd")
         print_help()
         exit(1)
@@ -292,6 +292,7 @@ def replace_cert_in_profile():
     modes = stat.S_IWUSR
     with os.fdopen(os.open(profile_file, flags, modes), 'w') as profile_write:
         json.dump(profile, profile_write)
+
 
 if __name__ == '__main__':
     act = process_cmd()
