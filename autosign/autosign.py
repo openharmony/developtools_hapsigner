@@ -291,7 +291,7 @@ def replace_cert_in_profile():
     flags = os.O_WRONLY | os.O_TRUNC
     modes = stat.S_IWUSR
     with os.fdopen(os.open(profile_file, flags, modes), 'w') as profile_write:
-        profile_write.write("""{"1111" : 111}""")
+        json.dump(profile, profile_write)
 
 if __name__ == '__main__':
     act = process_cmd()
