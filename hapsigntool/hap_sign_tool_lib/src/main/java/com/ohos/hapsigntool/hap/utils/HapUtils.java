@@ -18,8 +18,7 @@ package com.ohos.hapsigntool.hap.utils;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.SignatureNotFoundException;
-import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
-import com.ohos.hapsigntool.hap.sign.SignHap;
+import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.zip.MessageDigestZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
@@ -148,6 +147,8 @@ public class HapUtils {
      * The min size of hap signature block
      */
     public static final int HAP_SIG_BLOCK_MIN_SIZE = HAP_SIG_BLOCK_HEADER_SIZE;
+
+    public static final int BLOCK_SIZE = 8;
 
     /**
      * The set of IDs of optional blocks in hap signature block.
@@ -525,7 +526,7 @@ public class HapUtils {
             throw new SignatureNotFoundException("No Hap Signing Block before ZIP Central Directory");
         }
         if ((hapSigBlockSize < HAP_SIG_BLOCK_HEADER_SIZE)
-                || (hapSigBlockSize > Integer.MAX_VALUE - SignHap.getBlockSize())) {
+                || (hapSigBlockSize > Integer.MAX_VALUE - BLOCK_SIZE)) {
             throw new SignatureNotFoundException("Hap Signing Block size out of range: " + hapSigBlockSize);
         }
         int totalSize = (int) hapSigBlockSize;

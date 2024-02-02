@@ -15,10 +15,8 @@
 
 package com.ohos.hapsigntool.utils;
 
-import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.encoders.Base64;
@@ -86,7 +84,7 @@ public final class KeyPairTools {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = LogManager.getLogger(ServiceApi.class);
+    private static final Logger LOGGER = LogManager.getLogger(KeyPairTools.class);
 
 
     /**
