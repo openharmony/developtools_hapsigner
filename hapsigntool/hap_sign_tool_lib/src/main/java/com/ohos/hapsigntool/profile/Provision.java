@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.entity;
+package com.ohos.hapsigntool.profile;
 
 import com.google.gson.annotations.SerializedName;
 import com.ohos.hapsigntool.error.ERROR;
