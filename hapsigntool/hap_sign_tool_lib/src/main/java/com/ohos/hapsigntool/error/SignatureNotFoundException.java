@@ -13,19 +13,21 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.exception;
+package com.ohos.hapsigntool.error;
 
 /**
- * Exception that occurs when verifying certificate chains.
+ * Exception that occurs when finding signature in the signed hap file.
  *
  * @since 2021/12/20
  */
-public class VerifyCertificateChainException extends Exception {
-    public VerifyCertificateChainException(String message) {
+public class SignatureNotFoundException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    public SignatureNotFoundException(String message) {
         super(message);
     }
 
-    public VerifyCertificateChainException(String message, Throwable cause) {
+    public SignatureNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -13,15 +13,11 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.keystore;
+package com.ohos.hapsigntool.utils;
 
-import com.ohos.hapsigntool.cert.CertTools;
+import com.ohos.hapsigntool.api.CertTools;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.utils.CertUtils;
-import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.StringUtils;
-import com.ohos.hapsigntool.utils.ValidateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -32,7 +28,6 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;

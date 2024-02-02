@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.utils;
+package com.ohos.hapsigntool.hap.utils;
 
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
+import com.ohos.hapsigntool.error.SignatureNotFoundException;
 import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.zip.MessageDigestZipDataOutput;

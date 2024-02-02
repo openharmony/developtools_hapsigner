@@ -17,9 +17,9 @@ package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
-import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
+import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.utils.DigestUtils;
-import com.ohos.hapsigntool.utils.HapUtils;
+import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 
 import org.apache.logging.log4j.LogManager;

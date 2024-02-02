@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.key.KeyPairTools;
+import com.ohos.hapsigntool.utils.KeyPairTools;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;

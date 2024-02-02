@@ -15,11 +15,11 @@
 
 package com.ohos.hapsigntool.hap.provider;
 
-import com.ohos.hapsigntool.api.model.Options;
-import com.ohos.hapsigntool.hap.exception.InvalidParamsException;
-import com.ohos.hapsigntool.hap.exception.MissingParamsException;
+import com.ohos.hapsigntool.entity.Options;
+import com.ohos.hapsigntool.error.InvalidParamsException;
+import com.ohos.hapsigntool.error.MissingParamsException;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 
 import org.apache.logging.log4j.LogManager;

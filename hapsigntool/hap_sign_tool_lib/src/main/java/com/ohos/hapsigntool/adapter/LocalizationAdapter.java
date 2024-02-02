@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.api;
+package com.ohos.hapsigntool.adapter;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.hap.exception.VerifyCertificateChainException;
-import com.ohos.hapsigntool.key.KeyPairTools;
-import com.ohos.hapsigntool.keystore.KeyStoreHelper;
+import com.ohos.hapsigntool.error.VerifyCertificateChainException;
+import com.ohos.hapsigntool.utils.KeyPairTools;
+import com.ohos.hapsigntool.utils.KeyStoreHelper;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;

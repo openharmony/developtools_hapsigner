@@ -15,10 +15,10 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.api.LocalizationAdapter;
-import com.ohos.hapsigntool.api.model.Options;
-import com.ohos.hapsigntool.cert.CertTools;
-import com.ohos.hapsigntool.key.KeyPairTools;
+import com.ohos.hapsigntool.adapter.LocalizationAdapter;
+import com.ohos.hapsigntool.entity.Options;
+import com.ohos.hapsigntool.api.CertTools;
+import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.CertUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

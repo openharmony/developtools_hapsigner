@@ -15,9 +15,10 @@
 
 package com.ohos.hapsigntool.hap.sign;
 
+import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
-import com.ohos.hapsigntool.hap.entity.Pair;
-import com.ohos.hapsigntool.hap.exception.SignatureException;
+import com.ohos.hapsigntool.entity.Pair;
+import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 
 import org.apache.logging.log4j.LogManager;
