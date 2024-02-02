@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.sign;
+package com.ohos.hapsigntool.entity;
 
 /**
  * Content digest algorithm

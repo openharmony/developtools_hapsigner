@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.hap.sign;
 
+import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
@@ -53,7 +54,6 @@ public abstract class SignHap {
     private static final int STORED_ENTRY_SO_ALIGNMENT = 4096;
     private static final int BUFFER_LENGTH = 4096;
     private static final int BLOCK_COUNT = 4;
-    private static final int BLOCK_SIZE = 8;
     private static final int BLOCK_MAGIC = 16;
     private static final int BLOCK_VERSION = 4;
     private static final long INIT_OFFSET_LEN = 4L;
@@ -62,10 +62,6 @@ public abstract class SignHap {
     private static final int OPTIONAL_OFFSET_SIZE = 4;
 
     private SignHap() {}
-
-    public static int getBlockSize() {
-        return BLOCK_SIZE;
-    }
 
     /**
      * Copy the jar file and align the storage entries.
@@ -320,7 +316,7 @@ public abstract class SignHap {
                         + optionalBlockSize // optional pair
                         + hapSignatureSchemeBlock.length // App signing pairs
                         + BLOCK_COUNT // block count
-                        + BLOCK_SIZE // size
+                        + HapUtils.BLOCK_SIZE // size
                         + BLOCK_MAGIC // magic
                         + BLOCK_VERSION; // version
         if (resultSize > Integer.MAX_VALUE) {

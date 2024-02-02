@@ -15,8 +15,6 @@
 
 package com.ohos.hapsigntool.entity;
 
-import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
-
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PSSParameterSpec;
