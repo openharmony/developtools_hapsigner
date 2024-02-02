@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 import com.google.gson.JsonParser;
-import com.ohos.hapsigntool.entity.Provision;
+import com.ohos.hapsigntool.profile.Provision;
 
 import java.io.File;
 import java.io.IOException;
