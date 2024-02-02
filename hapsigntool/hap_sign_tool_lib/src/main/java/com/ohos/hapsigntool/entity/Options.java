@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.api.model;
+package com.ohos.hapsigntool.entity;
 
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;

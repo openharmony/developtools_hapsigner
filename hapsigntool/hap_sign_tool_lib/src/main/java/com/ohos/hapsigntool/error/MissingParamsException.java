@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.exception;
+package com.ohos.hapsigntool.error;
 
 /**
- * Exception that occurs when the input parameters are invalid.
+ * Exception that occurs when the required parameters are missing.
  *
  * @since 2021/12/20
  */
-public class InvalidParamsException extends Exception {
-    public InvalidParamsException(String message) {
+public class MissingParamsException extends Exception {
+    public MissingParamsException(String message) {
         super(message);
     }
 
-    public InvalidParamsException(String message, Throwable cause) {
+    public MissingParamsException(String message, Throwable cause) {
         super(message, cause);
     }
 }

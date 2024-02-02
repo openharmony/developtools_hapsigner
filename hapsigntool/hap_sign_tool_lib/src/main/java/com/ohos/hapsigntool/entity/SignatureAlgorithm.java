@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.sign;
+package com.ohos.hapsigntool.entity;
 
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
 
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;

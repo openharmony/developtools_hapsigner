@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.api;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 
 /**
  * Public api of core lib to deal with signature.

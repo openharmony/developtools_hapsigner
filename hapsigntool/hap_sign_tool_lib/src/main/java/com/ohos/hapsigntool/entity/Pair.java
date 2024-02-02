@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.entity;
+package com.ohos.hapsigntool.entity;
 
 /**
  * Pair of two elements

@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-package com.ohos.hapsigntool.hap.exception;
+package com.ohos.hapsigntool.error;
 
 /**
- * Exception that occurs if the profile is invalid.
+ * Exception that occurs when the input parameters are invalid.
  *
  * @since 2021/12/20
  */
-public class ProfileException extends Exception {
-    public ProfileException(String message) {
+public class InvalidParamsException extends Exception {
+    public InvalidParamsException(String message) {
         super(message);
     }
 
-    public ProfileException(String message, Throwable cause) {
+    public InvalidParamsException(String message, Throwable cause) {
         super(message, cause);
     }
 }
