@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.ohos.hapsigntool.utils.KeyPairTools.ECC;
-
 /**
  * Cert Usage Util.
  *
@@ -71,6 +69,11 @@ public final class CertUtils {
      * number constant.
      */
     private static final int SECOND_INDEX = 2;
+
+    /**
+     * ECC.
+     */
+    private static final String ECC = "ECDSA";
 
     /**
      * Compile String.
