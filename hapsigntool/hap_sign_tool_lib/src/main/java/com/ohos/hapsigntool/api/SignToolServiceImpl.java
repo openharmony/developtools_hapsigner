@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.api;
 
+import com.google.gson.JsonParser;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
@@ -27,11 +28,11 @@ import com.ohos.hapsigntool.hap.verify.VerifyElf;
 import com.ohos.hapsigntool.hap.verify.VerifyHap;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.profile.VerifyHelper;
+import com.ohos.hapsigntool.profile.model.Provision;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
-import com.ohos.hapsigntool.utils.ProfileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 
 import org.apache.logging.log4j.LogManager;
@@ -251,7 +252,7 @@ public class SignToolServiceImpl implements ServiceApi {
         boolean isSuccess;
         try {
             LocalizationAdapter adapter = new LocalizationAdapter(options);
-            byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
+            byte[] provisionContent = getProvisionContent(new File(adapter.getInFile()));
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             isSuccess = true;
@@ -401,5 +402,19 @@ public class SignToolServiceImpl implements ServiceApi {
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Get provision content.
+     *
+     * @param input input provision profile
+     * @return file data
+     */
+    public static byte[] getProvisionContent(File input) throws IOException {
+        byte[] bytes = FileUtils.readFile(input);
+        String json = JsonParser.parseString(new String(bytes, StandardCharsets.UTF_8)).toString();
+        Provision provision = FileUtils.GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), Provision.class);
+        Provision.enforceValid(provision);
+        return json.getBytes(StandardCharsets.UTF_8);
     }
 }
