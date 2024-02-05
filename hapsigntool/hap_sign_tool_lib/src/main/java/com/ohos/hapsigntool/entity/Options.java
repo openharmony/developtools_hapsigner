@@ -258,10 +258,14 @@ public class Options extends HashMap<String, Object> {
      */
     public void required(String... keys) {
         for (String key : keys) {
-            if (!StringUtils.isEmpty(key) && !this.containsKey(key)) {
+            if (!isEmpty(key) && !this.containsKey(key)) {
                 CustomException.throwException(ERROR.COMMAND_ERROR, String.format("Params '%s' is required", key));
             }
         }
+    }
+
+    private boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
     }
 
     /**
