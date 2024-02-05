@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.utils;
 
-import com.ohos.hapsigntool.api.CertTools;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
@@ -291,7 +290,7 @@ public class KeyStoreHelper {
     }
 
     private X509Certificate createKeyOnly(KeyPair keyPair, String alias) {
-        ContentSigner contentSigner = CertTools.createFixedContentSigner(keyPair.getPrivate(), "SHA256withRSA");
+        ContentSigner contentSigner = CertUtils.createFixedContentSigner(keyPair.getPrivate(), "SHA256withRSA");
 
         X500NameBuilder nameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
         nameBuilder.addRDN(BCStyle.CN, alias);

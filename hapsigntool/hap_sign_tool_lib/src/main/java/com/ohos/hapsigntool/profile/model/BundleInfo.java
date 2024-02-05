@@ -16,7 +16,6 @@
 package com.ohos.hapsigntool.profile.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.ohos.hapsigntool.profile.Provision;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 

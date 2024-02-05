@@ -18,31 +18,22 @@ package com.ohos.hapsigntool.api;
 import com.ohos.hapsigntool.cert.CertBuilder;
 import com.ohos.hapsigntool.cert.CertLevel;
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
-import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.utils.ValidateUtils;
+import com.ohos.hapsigntool.utils.CertUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * CertTools.
@@ -69,11 +60,6 @@ public final class CertTools {
      * ECC.
      */
     private static final String ECC = "ECDSA";
-
-    /**
-     * Compile String.
-     */
-    private static final Pattern SIGN_ALGORITHM_PATTERN = Pattern.compile("^SHA([0-9]{3})with([A-Z]{1,5})$");
 
     /**
      * Logger.
@@ -197,7 +183,7 @@ public final class CertTools {
     public static byte[] generateCsr(KeyPair keyPair, String signAlgorithm, X500Name subject) {
         JcaPKCS10CertificationRequestBuilder csrBuilder = new JcaPKCS10CertificationRequestBuilder(subject,
                 keyPair.getPublic());
-        PKCS10CertificationRequest csr = csrBuilder.build(createFixedContentSigner(keyPair.getPrivate(),
+        PKCS10CertificationRequest csr = csrBuilder.build(CertUtils.createFixedContentSigner(keyPair.getPrivate(),
                 signAlgorithm));
         try {
             return csr.getEncoded();
@@ -208,34 +194,6 @@ public final class CertTools {
         }
     }
 
-    /**
-     * Auto fix algorithm according key type and create content signer.
-     *
-     * @param privateKey    Sign key
-     * @param signAlgorithm Sign algorithm
-     * @return ContentSigner
-     */
-    public static ContentSigner createFixedContentSigner(PrivateKey privateKey, String signAlgorithm) {
-        Matcher matcher = SIGN_ALGORITHM_PATTERN.matcher(signAlgorithm);
-        ValidateUtils.throwIfNotMatches(matcher.matches(), ERROR.NOT_SUPPORT_ERROR, "Not Support " + signAlgorithm);
-        // Auto fix signAlgorithm error
-        if (privateKey instanceof ECPrivateKey && signAlgorithm.contains("RSA")) {
-            signAlgorithm = signAlgorithm.replace("RSA", ECC);
-        } else {
-            if (privateKey instanceof RSAPrivateKey && signAlgorithm.contains(ECC)) {
-                signAlgorithm = signAlgorithm.replace(ECC, "RSA");
-            }
-        }
 
-        JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(signAlgorithm);
-        jcaContentSignerBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
-        try {
-            return jcaContentSignerBuilder.build(privateKey);
-        } catch (OperatorCreationException exception) {
-            LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.OPERATOR_CREATION_ERROR, exception.getMessage());
-        }
-        return null;
-    }
 
 }

@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.entity;
 
-import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.StringUtils;
@@ -43,7 +42,7 @@ public class Options extends HashMap<String, Object> {
     /**
      * Logger.
      */
-    private static final Logger logger = LogManager.getLogger(ServiceApi.class);
+    private static final Logger logger = LogManager.getLogger(Options.class);
 
     /**
      * App cert file parameter name.
