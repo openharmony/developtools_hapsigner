@@ -16,6 +16,7 @@
 package com.ohos.hapsigntool;
 
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
+import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
@@ -27,7 +28,6 @@ import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.signer.ISigner;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.ProfileUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
@@ -124,7 +124,7 @@ public class ProfileTest {
         try {
             Options options = new Options();
             LocalizationAdapter adapter = new LocalizationAdapter(options);
-            byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
+            byte[] provisionContent = SignToolServiceImpl.getProvisionContent(new File(adapter.getInFile()));
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             assertFalse(FileUtils.isFileExist(OUT_PATH));
@@ -137,7 +137,7 @@ public class ProfileTest {
         Options options = new Options();
         putParams(options);
         LocalizationAdapter adapter = new LocalizationAdapter(options);
-        byte[] provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
+        byte[] provisionContent = SignToolServiceImpl.getProvisionContent(new File(adapter.getInFile()));
         PrivateKey privateKey = KeyPairTools.stringToPrivateKey(KeyPairTools.ECC, PRIVATE_KEY_STR);
         ISigner signer = new LocalSigner(privateKey, adapter.getSignCertChain());
         byte[] p7b = ProfileSignTool.signProfile(provisionContent, signer, adapter.getSignAlg());
@@ -154,7 +154,7 @@ public class ProfileTest {
         try {
             options.put(Options.MODE, REMOTE_SIGN);
             adapter = new LocalizationAdapter(options);
-            provisionContent = ProfileUtils.getProvisionContent(new File(adapter.getInFile()));
+            provisionContent = SignToolServiceImpl.getProvisionContent(new File(adapter.getInFile()));
             p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             assertTrue(FileUtils.isFileExist(OUT_PATH));

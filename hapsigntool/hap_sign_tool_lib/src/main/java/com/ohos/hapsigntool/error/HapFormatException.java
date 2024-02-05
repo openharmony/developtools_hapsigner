@@ -15,8 +15,6 @@
 
 package com.ohos.hapsigntool.error;
 
-import com.ohos.hapsigntool.entity.ParamConstants;
-
 /**
  * Exception that occurs if the Hap file format is incorrect.
  *
@@ -25,12 +23,14 @@ import com.ohos.hapsigntool.entity.ParamConstants;
 public class HapFormatException extends SignatureException {
     private static final long serialVersionUID = -8095203467304334741L;
 
+    private static final int HAP_FORMAT_ERROR = 20001;
+
     public HapFormatException(String message) {
-        super(ParamConstants.HAP_FORMAT_ERROR, message);
+        super(HAP_FORMAT_ERROR, message);
     }
 
     public HapFormatException(String message, Throwable cause) {
-        super(ParamConstants.HAP_FORMAT_ERROR, message, cause);
+        super(HAP_FORMAT_ERROR, message, cause);
     }
 
     public HapFormatException(int errorCode, String message) {

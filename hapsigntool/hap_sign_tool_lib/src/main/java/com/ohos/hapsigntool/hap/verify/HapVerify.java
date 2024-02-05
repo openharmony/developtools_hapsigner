@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
+import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.utils.DigestUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;

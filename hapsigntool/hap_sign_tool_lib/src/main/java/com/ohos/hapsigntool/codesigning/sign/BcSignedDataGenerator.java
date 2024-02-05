@@ -20,7 +20,7 @@ import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.entity.Pair;
-import com.ohos.hapsigntool.hap.sign.ContentDigestAlgorithm;
+import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 
 import org.apache.logging.log4j.LogManager;

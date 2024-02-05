@@ -23,19 +23,28 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Cert Usage Util.
@@ -60,6 +69,16 @@ public final class CertUtils {
      * number constant.
      */
     private static final int SECOND_INDEX = 2;
+
+    /**
+     * ECC.
+     */
+    private static final String ECC = "ECDSA";
+
+    /**
+     * Compile String.
+     */
+    private static final Pattern SIGN_ALGORITHM_PATTERN = Pattern.compile("^SHA([0-9]{3})with([A-Z]{1,5})$");
 
     private CertUtils() {
         // Empty constructor
@@ -242,5 +261,35 @@ public final class CertUtils {
                 Collections.reverse(certificates);
             }
         }
+    }
+
+    /**
+     * Auto fix algorithm according key type and create content signer.
+     *
+     * @param privateKey    Sign key
+     * @param signAlgorithm Sign algorithm
+     * @return ContentSigner
+     */
+    public static ContentSigner createFixedContentSigner(PrivateKey privateKey, String signAlgorithm) {
+        Matcher matcher = SIGN_ALGORITHM_PATTERN.matcher(signAlgorithm);
+        ValidateUtils.throwIfNotMatches(matcher.matches(), ERROR.NOT_SUPPORT_ERROR, "Not Support " + signAlgorithm);
+        // Auto fix signAlgorithm error
+        if (privateKey instanceof ECPrivateKey && signAlgorithm.contains("RSA")) {
+            signAlgorithm = signAlgorithm.replace("RSA", ECC);
+        } else {
+            if (privateKey instanceof RSAPrivateKey && signAlgorithm.contains(ECC)) {
+                signAlgorithm = signAlgorithm.replace(ECC, "RSA");
+            }
+        }
+
+        JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(signAlgorithm);
+        jcaContentSignerBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
+        try {
+            return jcaContentSignerBuilder.build(privateKey);
+        } catch (OperatorCreationException exception) {
+            LOGGER.debug(exception.getMessage(), exception);
+            CustomException.throwException(ERROR.OPERATOR_CREATION_ERROR, exception.getMessage());
+        }
+        return null;
     }
 }
