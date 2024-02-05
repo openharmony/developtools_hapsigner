@@ -57,11 +57,6 @@ public final class CertTools {
     private static final byte[] NO_CSR = {};
 
     /**
-     * ECC.
-     */
-    private static final String ECC = "ECDSA";
-
-    /**
      * Logger.
      */
     private static final Logger LOGGER = LogManager.getLogger(ServiceApi.class);
