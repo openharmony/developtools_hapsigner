@@ -44,7 +44,7 @@ Below config must be replaced:
 3. Prepare your unsigned app and provision profile. Make sure correct config file location.
 4. Run the `create_appcert_sign_profile.sh` file in the terminal to generate app certs.
     ```bash
-        ./create_appcert_sign_profile.sh
+    ./create_appcert_sign_profile.sh
     ```
 5. Run the `sign_hap.sh` file in the terminal to start signing.
    ```bash
