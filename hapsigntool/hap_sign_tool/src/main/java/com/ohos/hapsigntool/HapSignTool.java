@@ -285,8 +285,8 @@ public final class HapSignTool {
             FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
         }
         checkProfile(params);
-        String inForm = params.getString(Options.IN_FORM);
-        if (!StringUtils.isEmpty(inForm) && !informList.contains(inForm)) {
+        String inForm = params.getString(Options.IN_FORM, "zip");
+        if (!StringUtils.isEmpty(inForm) && !containsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
@@ -336,7 +336,7 @@ public final class HapSignTool {
         params.required(Options.IN_FILE, Options.OUT_CERT_CHAIN,
                 Options.OUT_PROFILE);
         String inForm = params.getString(Options.IN_FORM, "zip");
-        if (!informList.contains(inForm)) {
+        if (!containsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
         }
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
@@ -367,5 +367,14 @@ public final class HapSignTool {
      */
     public static void help() {
         HelpDocument.printHelp(LOGGER);
+    }
+
+    private static boolean containsIgnoreCase(String inForm) {
+        for (String s : informList) {
+            if (s.equalsIgnoreCase(inForm)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
