@@ -116,6 +116,7 @@ public class CodeSigning {
      */
     public byte[] getElfCodeSignBlock(File input, long offset, String inForm, String profileContent)
         throws CodeSignException, FsVerityDigestException, IOException, ProfileException {
+        LOGGER.info("Start to sign code.");
         if (!SUPPORT_BIN_FILE_FORM.equalsIgnoreCase(inForm)) {
             throw new CodeSignException("file's format is unsupported");
         }

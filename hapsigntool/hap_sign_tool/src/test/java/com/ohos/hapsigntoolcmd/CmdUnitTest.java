@@ -825,11 +825,15 @@ public class CmdUnitTest {
         File unsignedHap = File.createTempFile("unsigned-", bundleSuffix, new File("test"));
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(unsignedHap))) {
             fillZipEntryFile(abc, ".abc", out);
-            fillZipEntryFile(so, ".so", out);
-            fillZipEntryFile(so, ".so.111", out);
-            fillZipEntryFile(so, ".so.111.111", out);
-            fillZipEntryFile(so, ".so.111.111.111", out);
-            fillZipEntryFile(an, ".an", out);
+            if (".hqf".equals(bundleSuffix)) {
+                fillZipEntryFile(so, ".so.diff", out);
+            } else {
+                fillZipEntryFile(so, ".so", out);
+                fillZipEntryFile(so, ".so.111", out);
+                fillZipEntryFile(so, ".so.111.111", out);
+                fillZipEntryFile(so, ".so.111.111.111", out);
+                fillZipEntryFile(an, ".an", out);
+            }
             fillZipEntryFile(otherFile, ".json", out);
         }
         return unsignedHap;
