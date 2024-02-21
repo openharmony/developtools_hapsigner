@@ -29,21 +29,6 @@ import java.util.HashMap;
  */
 public class Options extends HashMap<String, Object> {
     /**
-     * Serial version UID.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Empty char.
-     */
-    private static final char[] NO_CHAR = {};
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LogManager.getLogger(Options.class);
-
-    /**
      * App cert file parameter name.
      */
     public static final String APP_CERT_FILE = "appCertFile";
@@ -249,6 +234,22 @@ public class Options extends HashMap<String, Object> {
      * Out form includes all forms.
      */
     public static final String OUT_FORM_SCOPE = "cert,certChain";
+
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Empty char.
+     */
+    private static final char[] NO_CHAR = {};
+
+    /**
+     * Logger.
+     */
+    private static final Logger logger = LogManager.getLogger(Options.class);
+
 
     /**
      * Check required key, throw exception
