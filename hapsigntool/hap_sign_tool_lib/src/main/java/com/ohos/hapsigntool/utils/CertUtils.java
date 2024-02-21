@@ -273,16 +273,17 @@ public final class CertUtils {
     public static ContentSigner createFixedContentSigner(PrivateKey privateKey, String signAlgorithm) {
         Matcher matcher = SIGN_ALGORITHM_PATTERN.matcher(signAlgorithm);
         ValidateUtils.throwIfNotMatches(matcher.matches(), ERROR.NOT_SUPPORT_ERROR, "Not Support " + signAlgorithm);
+        String signAlg = signAlgorithm;
         // Auto fix signAlgorithm error
         if (privateKey instanceof ECPrivateKey && signAlgorithm.contains("RSA")) {
-            signAlgorithm = signAlgorithm.replace("RSA", ECC);
+            signAlg = signAlgorithm.replace("RSA", ECC);
         } else {
             if (privateKey instanceof RSAPrivateKey && signAlgorithm.contains(ECC)) {
-                signAlgorithm = signAlgorithm.replace(ECC, "RSA");
+                signAlg = signAlgorithm.replace(ECC, "RSA");
             }
         }
 
-        JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(signAlgorithm);
+        JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(signAlg);
         jcaContentSignerBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
         try {
             return jcaContentSignerBuilder.build(privateKey);

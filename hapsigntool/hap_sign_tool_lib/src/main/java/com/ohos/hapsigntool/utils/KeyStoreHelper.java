@@ -290,8 +290,6 @@ public class KeyStoreHelper {
     }
 
     private X509Certificate createKeyOnly(KeyPair keyPair, String alias) {
-        ContentSigner contentSigner = CertUtils.createFixedContentSigner(keyPair.getPrivate(), "SHA256withRSA");
-
         X500NameBuilder nameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
         nameBuilder.addRDN(BCStyle.CN, alias);
 
@@ -306,6 +304,7 @@ public class KeyStoreHelper {
                 nameBuilder.build(),
                 keyPair.getPublic()
         );
+        ContentSigner contentSigner = CertUtils.createFixedContentSigner(keyPair.getPrivate(), "SHA256withRSA");
         try {
             return new JcaX509CertificateConverter().setProvider("BC")
                     .getCertificate(certificateBuilder.build(contentSigner));

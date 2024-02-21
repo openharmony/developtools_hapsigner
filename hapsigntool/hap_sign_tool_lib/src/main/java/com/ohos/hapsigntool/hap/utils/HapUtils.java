@@ -148,6 +148,9 @@ public class HapUtils {
      */
     public static final int HAP_SIG_BLOCK_MIN_SIZE = HAP_SIG_BLOCK_HEADER_SIZE;
 
+    /**
+     * hap block size
+     */
     public static final int BLOCK_SIZE = 8;
 
     /**
