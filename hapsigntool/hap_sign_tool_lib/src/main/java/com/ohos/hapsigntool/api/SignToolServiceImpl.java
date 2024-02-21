@@ -409,6 +409,7 @@ public class SignToolServiceImpl implements ServiceApi {
      *
      * @param input input provision profile
      * @return file data
+     * @throws IOException IOException
      */
     public static byte[] getProvisionContent(File input) throws IOException {
         byte[] bytes = FileUtils.readFile(input);

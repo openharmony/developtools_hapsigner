@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
-
 /**
  * CertTools.
  *

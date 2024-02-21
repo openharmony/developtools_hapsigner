@@ -17,7 +17,6 @@ package com.ohos.hapsigntool.entity;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,21 +28,6 @@ import java.util.HashMap;
  * @since 2021/12/28
  */
 public class Options extends HashMap<String, Object> {
-    /**
-     * Serial version UID.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Empty char.
-     */
-    private static final char[] NO_CHAR = {};
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LogManager.getLogger(Options.class);
-
     /**
      * App cert file parameter name.
      */
@@ -250,6 +234,22 @@ public class Options extends HashMap<String, Object> {
      * Out form includes all forms.
      */
     public static final String OUT_FORM_SCOPE = "cert,certChain";
+
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Empty char.
+     */
+    private static final char[] NO_CHAR = {};
+
+    /**
+     * Logger.
+     */
+    private static final Logger logger = LogManager.getLogger(Options.class);
+
 
     /**
      * Check required key, throw exception
