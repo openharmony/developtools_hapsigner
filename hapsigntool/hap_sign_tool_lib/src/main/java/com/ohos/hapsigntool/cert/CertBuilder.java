@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.cert;
 
-import com.ohos.hapsigntool.api.CertTools;
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
