@@ -15,18 +15,18 @@
 
 package com.ohos.hapsigntool.hap.verify;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-import com.ohos.hapsigntool.hap.exception.HapFormatException;
-import com.ohos.hapsigntool.hap.exception.ProfileException;
-import com.ohos.hapsigntool.hap.exception.SignatureNotFoundException;
+import com.ohos.hapsigntool.error.HapFormatException;
+import com.ohos.hapsigntool.error.ProfileException;
+import com.ohos.hapsigntool.error.SignatureNotFoundException;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.HapUtils;
-import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.hap.utils.HapUtils;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;

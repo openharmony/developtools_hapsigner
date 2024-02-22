@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntoolcmd;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 
 import java.util.Map;
 

@@ -15,8 +15,8 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.key.KeyPairTools;
-import com.ohos.hapsigntool.keystore.KeyStoreHelper;
+import com.ohos.hapsigntool.utils.KeyPairTools;
+import com.ohos.hapsigntool.utils.KeyStoreHelper;
 import com.ohos.hapsigntool.utils.FileUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;

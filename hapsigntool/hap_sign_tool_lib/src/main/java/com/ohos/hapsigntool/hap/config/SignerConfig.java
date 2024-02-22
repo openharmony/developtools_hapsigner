@@ -15,9 +15,9 @@
 
 package com.ohos.hapsigntool.hap.config;
 
-import com.ohos.hapsigntool.api.LocalizationAdapter;
-import com.ohos.hapsigntool.api.model.Options;
-import com.ohos.hapsigntool.hap.sign.SignatureAlgorithm;
+import com.ohos.hapsigntool.adapter.LocalizationAdapter;
+import com.ohos.hapsigntool.entity.Options;
+import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.signer.ISigner;
 import com.ohos.hapsigntool.signer.SignerFactory;
 

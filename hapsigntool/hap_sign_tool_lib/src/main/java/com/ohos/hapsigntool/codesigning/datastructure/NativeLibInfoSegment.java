@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
-import com.ohos.hapsigntool.hap.entity.Pair;
+import com.ohos.hapsigntool.entity.Pair;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
