@@ -209,7 +209,7 @@ public class CertBuilder {
      * @return X509Certificate
      */
     public X509Certificate build(String signAlgorithm) {
-        ContentSigner contentSigner = CertTools.createFixedContentSigner(keyPair.getPrivate(), signAlgorithm);
+        ContentSigner contentSigner = CertUtils.createFixedContentSigner(keyPair.getPrivate(), signAlgorithm);
         X509Certificate cert = null;
         try {
             cert = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME)
