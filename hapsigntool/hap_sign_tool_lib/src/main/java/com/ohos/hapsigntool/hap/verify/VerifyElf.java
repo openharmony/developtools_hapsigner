@@ -15,7 +15,7 @@
 
 package com.ohos.hapsigntool.hap.verify;
 
-import com.ohos.hapsigntool.api.model.Options;
+import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
@@ -24,10 +24,10 @@ import com.ohos.hapsigntool.hap.entity.HwBlockHead;
 import com.ohos.hapsigntool.hap.entity.HwSignHead;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
-import com.ohos.hapsigntool.hap.exception.ProfileException;
+import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.sign.SignElf;
 import com.ohos.hapsigntool.utils.FileUtils;
-import com.ohos.hapsigntool.utils.ParamConstants;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.StringUtils;
 
 import org.apache.logging.log4j.LogManager;

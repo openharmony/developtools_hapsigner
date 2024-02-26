@@ -29,15 +29,15 @@ Code signing is enabled by default for hapsigner. If you do not need the mandato
 
 ## Build
 
- 1. Check that Gradle 7.1 has been installed.
+ 1. Check that Maven 3 has been installed.
 
-        gradle -v
+        mvn -version
 
  2. Download the code, open the directory **developtools_hapsigner/hapsigntool**, and run the following command to build the code:
 
-        gradle build or gradle jar
+        mvn package
 
- 3. Check that **hap-sign-tool.jar** (binary files) is generated in the **./hap_sign_tool/build/libs** directory.
+ 3. Check that **hap-sign-tool.jar** (binary files) is generated in the **./hap_sign_tool/target** directory.
 
 
 ## Usage
