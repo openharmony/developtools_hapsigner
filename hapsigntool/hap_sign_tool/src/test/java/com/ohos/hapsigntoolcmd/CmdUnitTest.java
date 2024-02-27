@@ -827,13 +827,12 @@ public class CmdUnitTest {
             fillZipEntryFile(abc, ".abc", out);
             if (".hqf".equals(bundleSuffix)) {
                 fillZipEntryFile(so, ".so.diff", out);
-            } else {
-                fillZipEntryFile(so, ".so", out);
-                fillZipEntryFile(so, ".so.111", out);
-                fillZipEntryFile(so, ".so.111.111", out);
-                fillZipEntryFile(so, ".so.111.111.111", out);
-                fillZipEntryFile(an, ".an", out);
             }
+            fillZipEntryFile(so, ".so", out);
+            fillZipEntryFile(so, ".so.111", out);
+            fillZipEntryFile(so, ".so.111.111", out);
+            fillZipEntryFile(so, ".so.111.111.111", out);
+            fillZipEntryFile(an, ".an", out);
             fillZipEntryFile(otherFile, ".json", out);
         }
         return unsignedHap;
