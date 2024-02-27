@@ -50,8 +50,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -64,12 +66,12 @@ import java.util.regex.Pattern;
  */
 public class CodeSigning {
     /**
-     * Only hap and hsp, hqf bundle supports code signing, concatenate then with '/' for verification usage
+     * Only hap and hsp, hqf bundle supports code signing
      */
-    public static final String SUPPORT_FILE_FORM = "hap/hsp/hqf";
+    public static final String[] SUPPORT_FILE_FORM = {"hap", "hsp", "hqf"};
 
     /**
-     * Only elf file supports bin code signing, concatenate then with '/' for verification usage
+     * Only elf file supports bin code signing
      */
     public static final String SUPPORT_BIN_FILE_FORM = "elf";
 
@@ -169,7 +171,7 @@ public class CodeSigning {
     public byte[] getCodeSignBlock(File input, long offset, String inForm, String profileContent, Zip zip)
         throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
-        if (!SUPPORT_FILE_FORM.contains(inForm)) {
+        if (!StringUtils.containsIgnoreCase(SUPPORT_FILE_FORM, inForm)) {
             throw new CodeSignException("file's format is unsupported");
         }
         long dataSize = computeDataSize(zip);

@@ -31,6 +31,7 @@ import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.ProfileException;
+import com.ohos.hapsigntool.utils.StringUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,7 +102,7 @@ public class VerifyCodeSignature {
      * @param file       signed elf file
      * @param offset     start position of code sign block based on the start of the elf file
      * @param length     byte size of code sign block
-     * @param fileFormat elf or hqf or hsp, etc.
+     * @param fileFormat elf etc.
      * @param profileContent profile json string
      * @return true if signature verify succeed and false otherwise
      * @throws IOException             If an input or output exception occurred
@@ -112,7 +113,7 @@ public class VerifyCodeSignature {
      */
     public static boolean verifyElf(File file, long offset, long length, String fileFormat, String profileContent)
             throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
-        if (!CodeSigning.SUPPORT_BIN_FILE_FORM.contains(fileFormat)) {
+        if (!CodeSigning.SUPPORT_BIN_FILE_FORM.equalsIgnoreCase(fileFormat)) {
             LOGGER.info("Not elf file, skip code signing verify");
             return true;
         }
@@ -156,7 +157,7 @@ public class VerifyCodeSignature {
      */
     public static boolean verifyHap(File file, long offset, long length, String fileFormat, String profileContent)
             throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
-        if (!CodeSigning.SUPPORT_FILE_FORM.contains(fileFormat)) {
+        if (!StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, fileFormat)) {
             LOGGER.info("Not hap or hsp file, skip code signing verify");
             return true;
         }
