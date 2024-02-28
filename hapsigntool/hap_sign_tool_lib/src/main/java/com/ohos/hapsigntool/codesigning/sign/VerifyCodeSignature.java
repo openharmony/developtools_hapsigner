@@ -102,7 +102,7 @@ public class VerifyCodeSignature {
      * @param file       signed elf file
      * @param offset     start position of code sign block based on the start of the elf file
      * @param length     byte size of code sign block
-     * @param fileFormat elf etc.
+     * @param fileFormat elf
      * @param profileContent profile json string
      * @return true if signature verify succeed and false otherwise
      * @throws IOException             If an input or output exception occurred
@@ -158,7 +158,7 @@ public class VerifyCodeSignature {
     public static boolean verifyHap(File file, long offset, long length, String fileFormat, String profileContent)
             throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
         if (!StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, fileFormat)) {
-            LOGGER.info("Not hap or hsp file, skip code signing verify");
+            LOGGER.info("Not hap or hsp, hsp file, skip code signing verify");
             return true;
         }
         Pair<String, String> pairResult = HapUtils.parseAppIdentifier(profileContent);
