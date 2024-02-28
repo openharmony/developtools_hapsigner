@@ -33,4 +33,23 @@ public final class StringUtils {
     public static boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
+
+    /**
+     * Check whether the array contains string ignoring case.
+     *
+     * @param array input string array
+     * @param str input string
+     * @return true, if the array contains the str ignoring case
+     */
+    public static boolean containsIgnoreCase(String[] array, String str) {
+        if (array == null) {
+            return false;
+        }
+        for (String s : array) {
+            if (s != null && s.equalsIgnoreCase(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
