@@ -14,7 +14,7 @@
 
 为了保证OpenHarmony应用和二进制工具（如：lldb-server）的完整性和来源可靠，需要对应用和二进制工具进行签名。经过签名的应用和二进制工具才能在真机设备上安装、运行和调试。本仓提供了签名工具的源码，包含密钥对生成、CSR文件生成、证书生成、Profile文件签名、应用包签名、二进制工具签名等功能。
 在支持强制代码签名机制的设备上，该机制可以为应用提供运行时的合法性校验以及完整性保护，杜绝未经审核的恶意代码在端侧任意执行，或应用代码被攻击者恶意篡改。
-签名工具默认开启代码签名，若用户确定不需要强制执行代码签名，可参考以下说明，关闭代码签名功能。签名工具当前仅支持对hap、hsp、hqf格式的应用包和二进制工具执行代码签名（可对.app格式应用包签名，但不支持代码签名）。
+签名工具默认开启代码签名，若用户确定不需要强制执行代码签名，可参考以下说明，关闭代码签名功能。签名工具当前仅支持对hap、hsp、hqf格式的应用包和二进制工具执行代码签名。
 
 
 #### 目录
@@ -109,7 +109,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，应用包签名必填项，二进制工具签名选填
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
-         ├── -inForm            #输入的原始文件的格式，枚举值：zip、elf或bin；应用包对应zip，二进制工具对应elf，其他为bin，默认zip；可选项
+         ├── -inForm            #输入的原始文件的格式，枚举值：zip、elf或bin；zip应用包对应zip，二进制工具对应elf，bin应用包为bin，默认zip；可选项
          ├── -inFile            #输入的原始文件，应用包、elf或bin文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
@@ -284,7 +284,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
           ├── -appCertFile   # 应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式，应用包签名必填项，二进制工具签名选填
           ├── -profileSigned # 指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
-          ├── -inForm        # 输入的原始文件的格式，枚举值：zip、elf或bin；zip和elf支持代码签名，应用包对应zip，二进制工具对应elf，其他为bin，默认zip；可选项
+          ├── -inForm        # 输入的原始文件的格式，枚举值：zip、elf或bin；zip应用包对应zip，二进制工具对应elf，bin应用包为bin，默认zip；可选项
           ├── -inFile        # 输入的原始文件，应用包、elf或bin文件，必填项
           ├── -signAlg       # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
           ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
@@ -298,7 +298,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
          ├── -inFile          # 已签名的文件，应用包、elf或bin文件，必填项
          ├── -outCertChain    # 签名的证书链文件，必填项
          ├── -outProfile      # 应用包中的profile文件，必填项
-         ├── -inForm          # 输入的原始文件的格式，枚举值：zip、elf或bin；应用包对应zip，二进制工具对应elf，其他为bin，默认zip；可选项
+         ├── -inForm          # 输入的原始文件的格式，枚举值：zip、elf或bin；zip应用包对应zip，二进制工具对应elf，bin应用包为bin，默认zip；可选项
 
   
 #### 相关仓
