@@ -1,4 +1,4 @@
-# Hap包签名工具
+# 应用包签名工具
 
 * 简介
 * 目录
@@ -14,7 +14,7 @@
 
 为了保证OpenHarmony应用和二进制工具（如：lldb-server）的完整性和来源可靠，需要对应用和二进制工具进行签名。经过签名的应用和二进制工具才能在真机设备上安装、运行和调试。本仓提供了签名工具的源码，包含密钥对生成、CSR文件生成、证书生成、Profile文件签名、应用包签名、二进制工具签名等功能。
 在支持强制代码签名机制的设备上，该机制可以为应用提供运行时的合法性校验以及完整性保护，杜绝未经审核的恶意代码在端侧任意执行，或应用代码被攻击者恶意篡改。
-签名工具默认开启代码签名，若用户确定不需要强制执行代码签名，可参考以下说明，关闭代码签名功能。签名工具当前仅支持对应用包（hap格式和hsp共享包、hqf快速修复包，下同）和二进制工具执行代码签名。
+签名工具默认开启代码签名，若用户确定不需要强制执行代码签名，可参考以下说明，关闭代码签名功能。签名工具当前仅支持对应用包（hap应用程序包和hsp共享包、hqf快速修复包，下同）和二进制工具执行代码签名。
 说明：可对.app格式应用包签名，但不支持代码签名。
 
 
@@ -121,7 +121,7 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 2.一键签名
 
 
-为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、实体证书、签名profile、签名hap包和二进制工具的命令。
+为降低学习成本，提高开发效率，本项目还将基于应用签名工具提供一键签名脚本，免于输入繁杂的参数命令，脚本内容包括生成密钥对、实体证书、签名profile、签名应用包和二进制工具的命令。
 脚本以及配置文件位于目录 autosign 下：
 
  - create_root.sh/create_root.bat
@@ -136,10 +136,10 @@ java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256
 使用指导：
 1. 准备依赖环境 python3.5 以上
 2. 准备签名工具jar包：hap-sign-tool.jar（参照上文编译生成的产物）
-3. 准备待签名的应用hap包、二进制工具和 Provision profile 模板文件
+3. 准备待签名的应用应用包、二进制工具和 Provision profile 模板文件
 4. 使用文本编辑器编辑 createAppCertAndProfile.config、signElf.config 和 signHap.config，修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
 5. Linux运行 create_appcert_sign_profile.sh、Windows运行 create_appcert_sign_profile.bat 生成签名所需文件
-6. Linux运行 sign_hap.sh、Windows运行 sign_hap.bat 对hap包进行签名；Linux运行 sign_elf.sh、Windows运行 sign_elf.bat 对二进制工具进行签名
+6. Linux运行 sign_hap.sh、Windows运行 sign_hap.bat 对应用包进行签名；Linux运行 sign_elf.sh、Windows运行 sign_elf.bat 对二进制工具进行签名
 
  > 说明：如需自定义生成密钥库文件，根CA，中间CA证书，profile签名证书，可执行以下步骤
  1.使用文本编辑器编辑 createRootAndSubCert.config 修改配置文件中的配置信息：common.keyPwd 和 common.issuerKeyPwd 参数值改成自己定义的口令信息
