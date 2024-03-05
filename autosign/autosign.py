@@ -17,6 +17,7 @@
 import json
 import os
 import re
+import stat
 import sys
 from subprocess import Popen
 from subprocess import PIPE
@@ -96,27 +97,29 @@ def load_engine(engine_config):
     cmds = []
     for eng_k, eng_v in engine_config.items():
         template = templates.get(eng_v)
-        cmd = eng_v
+        cmd = [eng_v]
         for required_key in template.get('required'):
             param = get_from_single_config(eng_k, required_key, True)
             if required_key.endswith('File') and required_key != 'inFile' and os.path.basename(param) == param:
                 param = os.path.join(tar_dir, param)
-            cmd = '{} -{} "{}"'.format(cmd, required_key, param)
+            cmd.append('-{}'.format(required_key))
+            cmd.append(param)
 
         for others_key in template.get('others'):
             param = get_from_single_config(eng_k, others_key, False)
             if param:
-                cmd = '{} -{} "{}"'.format(cmd, others_key, param)
+                cmd.append('-{}'.format(others_key))
+                cmd.append(param)
         cmds.append(cmd)
     return cmds
 
 
 def run_target(cmd):
-    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
+    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False)
     out = command.stdout.readlines()
     with open("log.txt", mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
-            f.writelines(cmd + "\r\n")
+            f.writelines(' '.join(cmd) + "\r\n")
         for line in out:
             f.writelines(str(line.strip()) + "\r\n")
 
@@ -124,7 +127,7 @@ def run_target(cmd):
     error = command.stderr.readlines()
     with open("error.txt", mode='a+', encoding='utf-8') as f:
         if len(error) > 0:
-            f.writelines(cmd + "\r\n")
+            f.writelines(' '.join(cmd) + "\r\n")
 
         for line in error:
             success = False
@@ -137,10 +140,13 @@ def run_target(cmd):
 def run_with_engine(engine, jar):
     cmds = load_engine(engine)
     for cmd in cmds:
-        result = run_target('java -jar {} {}'.format(jar, cmd))
+        cmd.insert(0, jar)
+        cmd.insert(0, '-jar')
+        cmd.insert(0, 'java')
+        result = run_target(cmd)
         if not result:
             print("Command error on executing cmd, please check error.txt")
-            print(cmd)
+            print(' '.join(cmd))
             exit(1)
     print("Success!")
     pass
@@ -282,7 +288,9 @@ def replace_cert_in_profile():
     profile["bundle-info"]["distribution-certificate"] = app_cert
 
     # save profile
-    with open(profile_file, 'w', encoding='utf-8') as profile_write:
+    flags = os.O_WRONLY | os.O_TRUNC
+    modes = stat.S_IWUSR
+    with os.fdopen(os.open(profile_file, flags, modes), 'w') as profile_write:
         json.dump(profile, profile_write)
 
 
