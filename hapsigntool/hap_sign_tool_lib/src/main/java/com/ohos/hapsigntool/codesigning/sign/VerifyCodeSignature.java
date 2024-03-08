@@ -158,7 +158,7 @@ public class VerifyCodeSignature {
     public static boolean verifyHap(File file, long offset, long length, String fileFormat, String profileContent)
             throws IOException, VerifyCodeSignException, FsVerityDigestException, CMSException, ProfileException {
         if (!StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, fileFormat)) {
-            LOGGER.info("Not hap or hsp, hsp file, skip code signing verify");
+            LOGGER.info("Not hap, hsp or hqf file, skip code signing verify");
             return true;
         }
         Pair<String, String> pairResult = HapUtils.parseAppIdentifier(profileContent);
