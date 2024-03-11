@@ -15,9 +15,6 @@
 
 package com.ohos.hapsigntool.hap.provider;
 
-import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_BIN_FILE_FORM;
-import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_FILE_FORM;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -388,12 +385,12 @@ public abstract class SignProvider {
     private void appendCodeSignBlock(SignerConfig signerConfig, File tmpOutput, String suffix,
         long centralDirectoryOffset, Zip zip)
             throws FsVerityDigestException, CodeSignException, IOException, HapFormatException, ProfileException {
-        if (!SUPPORT_BIN_FILE_FORM.contains(suffix) && !SUPPORT_FILE_FORM.contains(suffix)) {
-            LOGGER.warn("no need to sign code for :" + suffix);
-            return;
-        }
         if (signParams.get(ParamConstants.PARAM_SIGN_CODE)
-                .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
+            .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
+            if (!StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)) {
+                LOGGER.info("no need to sign code for :" + suffix);
+                return;
+            }
             // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
             long codeSignOffset = centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2) + (4 + 4 + 4));
             // create CodeSigning Object
