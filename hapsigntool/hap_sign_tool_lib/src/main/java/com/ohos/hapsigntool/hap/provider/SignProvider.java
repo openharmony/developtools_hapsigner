@@ -15,8 +15,6 @@
 
 package com.ohos.hapsigntool.hap.provider;
 
-import static com.ohos.hapsigntool.codesigning.sign.CodeSigning.SUPPORT_FILE_FORM;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -389,7 +387,7 @@ public abstract class SignProvider {
             throws FsVerityDigestException, CodeSignException, IOException, HapFormatException, ProfileException {
         if (signParams.get(ParamConstants.PARAM_SIGN_CODE)
             .equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())) {
-            if (!SUPPORT_FILE_FORM.contains(suffix)) {
+            if (!StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)) {
                 LOGGER.info("no need to sign code for :" + suffix);
                 return;
             }
