@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertPathBuilderResult;
 import java.security.cert.CertPathValidator;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.CertPathValidatorResult;
@@ -50,6 +51,8 @@ import java.util.List;
 
 /**
  * Check cert list is cert chain.
+ *
+ * @since 2021/12/28
  */
 public class CertChainUtils {
     private static final Logger LOGGER = LogManager.getLogger(CertUtils.class);
@@ -72,12 +75,14 @@ public class CertChainUtils {
             params.setDate(signTime);
             params.setRevocationEnabled(false);
             CertPathBuilder certPathBuilder = CertPathBuilder.getInstance("PKIX");
-            PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) certPathBuilder.build(params);
-            return result.getCertPath();
-        } else {
-            CertificateFactory factory = CertificateFactory.getInstance("X.509");
-            return factory.generateCertPath(certificates);
+            CertPathBuilderResult build = certPathBuilder.build(params);
+            if (build instanceof PKIXCertPathBuilderResult) {
+                PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) build;
+                return result.getCertPath();
+            }
         }
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+        return factory.generateCertPath(certificates);
     }
 
 

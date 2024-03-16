@@ -225,38 +225,47 @@ public final class CmdUtil {
          * Generate app cert method name.
          */
         public static final String GENERATE_APP_CERT = "generate-app-cert";
+
         /**
          * Generate ca method name.
          */
         public static final String GENERATE_CA = "generate-ca";
+
         /**
          * Generate cert method name.
          */
         public static final String GENERATE_CERT = "generate-cert";
+
         /**
          * Generate csr method name.
          */
         public static final String GENERATE_CSR = "generate-csr";
+
         /**
          * Generate key pair method name.
          */
         public static final String GENERATE_KEYPAIR = "generate-keypair";
+
         /**
          * Generate profile cert method name.
          */
         public static final String GENERATE_PROFILE_CERT = "generate-profile-cert";
+
         /**
          * Sign app method name.
          */
         public static final String SIGN_APP = "sign-app";
+
         /**
          * Sign profile method name.
          */
         public static final String SIGN_PROFILE = "sign-profile";
+
         /**
          * Verify app method name.
          */
         public static final String VERIFY_APP = "verify-app";
+
         /**
          * Verify profile method name.
          */

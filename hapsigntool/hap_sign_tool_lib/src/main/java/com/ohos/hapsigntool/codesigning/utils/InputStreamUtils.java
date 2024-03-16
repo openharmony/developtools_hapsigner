@@ -43,9 +43,10 @@ public class InputStreamUtils {
         if (inputStreamSize < 0) {
             throw new IllegalArgumentException("inputStreamSize: " + inputStreamSize + "is less than zero: ");
         }
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        copy(inputStream, inputStreamSize, output);
-        return output.toByteArray();
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            copy(inputStream, inputStreamSize, output);
+            return output.toByteArray();
+        }
     }
 
     private static int copy(InputStream inputStream, int inputStreamSize, OutputStream output) throws IOException {

@@ -142,7 +142,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
     }
 
     private SignerInfo getSignerInfo(
-            SignatureAlgorithm signatureAlgorithm,byte[] unsignedHapDigest, SignerConfig signerConfig)
+            SignatureAlgorithm signatureAlgorithm, byte[] unsignedHapDigest, SignerConfig signerConfig)
             throws SignatureException, IOException, NoSuchAlgorithmException {
         Pair<String, ? extends AlgorithmParameterSpec> signatureParams = signatureAlgorithm.getSignatureAlgAndParams();
         ContentDigestAlgorithm contentDigestAlg = signatureAlgorithm.getContentDigestAlgorithm();

@@ -37,13 +37,13 @@ import java.util.Base64;
  * @since 2021-12-13
  */
 public class DigestUtils {
+    private static final Logger LOGGER = LogManager.getLogger(DigestUtils.class);
+
     /**
      * Constructor of Method
      */
     private DigestUtils() {
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(DigestUtils.class);
 
     /**
      * digest the inputContent with SHA-256
@@ -123,7 +123,7 @@ public class DigestUtils {
                 LOGGER.error("generateCertificate is not x509");
                 return x509Certificate;
             }
-            x509Certificate = (X509Certificate)obj;
+            x509Certificate = (X509Certificate) obj;
         } catch (UnsupportedEncodingException | CertificateException e) {
             LOGGER.error("Decode Base64 certificate failed!", e);
         }
@@ -147,7 +147,7 @@ public class DigestUtils {
                 LOGGER.error("generateCRL is not x509");
                 return x509CRL;
             }
-            x509CRL = (X509CRL)obj;
+            x509CRL = (X509CRL) obj;
         } catch (CertificateException | CRLException e) {
             LOGGER.error("Decode Base64 crl failed!");
         }

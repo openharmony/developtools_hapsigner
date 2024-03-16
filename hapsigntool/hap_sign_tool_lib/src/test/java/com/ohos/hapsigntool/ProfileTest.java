@@ -117,7 +117,8 @@ public class ProfileTest {
 
     /**
      * test profile
-     * @throws IOException
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testProfile() throws IOException {
@@ -171,10 +172,11 @@ public class ProfileTest {
 
     private void loadFile(String filePath) throws IOException {
         ClassLoader classLoader = ProfileTest.class.getClassLoader();
-        InputStream fileInputStream = classLoader.getResourceAsStream(filePath);
-        if (fileInputStream != null) {
-            byte[] fileData = FileUtils.read(fileInputStream);
-            FileUtils.write(fileData, new File(filePath));
+        try (InputStream fileInputStream = classLoader.getResourceAsStream(filePath)) {
+            if (fileInputStream != null) {
+                byte[] fileData = FileUtils.read(fileInputStream);
+                FileUtils.write(fileData, new File(filePath));
+            }
         }
     }
 

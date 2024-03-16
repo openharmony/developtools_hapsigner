@@ -153,13 +153,12 @@ public class Provision {
     /**
      * Dto for provision profile.
      */
-    public Provision() {
-        // Empty constructor of Provision.
-    }
+    public Provision() {}
 
     /**
      * buildType valid
-     * @param buildType  buildType
+     *
+     * @param buildType buildType
      * @return BuildType Valid
      */
     public static boolean isBuildTypeValid(String buildType) {
@@ -296,22 +295,22 @@ public class Provision {
                 + "uuid:" + uuid + NEWLINE_CHARACTER
                 + "type:" + type + NEWLINE_CHARACTER
                 + "app-distribution-type:" + appDistributionType + NEWLINE_CHARACTER
-                + "validity:"+NEWLINE_CHARACTER
+                + "validity:" + NEWLINE_CHARACTER
                 + "\t not-before:" + getValidity().getNotBefore() + NEWLINE_CHARACTER
                 + "\t not-after:" + getValidity().getNotAfter() + NEWLINE_CHARACTER
-                + "bundle-info"+NEWLINE_CHARACTER
+                + "bundle-info" + NEWLINE_CHARACTER
                 + "\t developer-id:" + getBundleInfo().getDeveloperId() + NEWLINE_CHARACTER
                 + "\t development-certificate:" + getBundleInfo().getDevelopmentCertificate() + NEWLINE_CHARACTER
                 + "\t distribution-certificate:" + getBundleInfo().getDistributionCertificate() + NEWLINE_CHARACTER
                 + "\t bundle-name:" + getBundleInfo().getBundleName() + NEWLINE_CHARACTER
                 + "\t apl:" + getBundleInfo().getApl() + NEWLINE_CHARACTER
                 + "\t app-feature:" + getBundleInfo().getAppFeature() + NEWLINE_CHARACTER
-                + "acls:"+NEWLINE_CHARACTER
+                + "acls:" + NEWLINE_CHARACTER
                 + "\t allowed-acls:" + getAcls().getAllowedAcls() + NEWLINE_CHARACTER
-                + "permissions:"+NEWLINE_CHARACTER
+                + "permissions:" + NEWLINE_CHARACTER
                 + "\t restricted-permissions:" + getPermissions().getRestrictedPermissions() + NEWLINE_CHARACTER
                 + "\t restricted-capabilities:" + getPermissions().getRestrictedCapabilities() + NEWLINE_CHARACTER
-                + "debug-info"+NEWLINE_CHARACTER
+                + "debug-info" + NEWLINE_CHARACTER
                 + "\t device-id-type:" + getDebuginfo().getDeviceIdType() + NEWLINE_CHARACTER
                 + "\t device-ids:" + getDebuginfo().getDeviceIds() + NEWLINE_CHARACTER
                 + "issuer:" + getIssuer();

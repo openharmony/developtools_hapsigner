@@ -34,17 +34,17 @@ import java.util.Collection;
  * @since 2021/12/20
  */
 public class VerifyUtils {
-    /**
-     * Constructor of Method
-     */
-    private VerifyUtils() {
-    }
-
     static {
         Provider bc = Security.getProvider("BC");
         if (bc == null) {
             Security.addProvider(new BouncyCastleProvider());
         }
+    }
+
+    /**
+     * Constructor of Method
+     */
+    private VerifyUtils() {
     }
 
     /**
@@ -57,7 +57,7 @@ public class VerifyUtils {
     @SuppressWarnings("unchecked")
     public static boolean verifyCmsSignedData(CMSSignedData cmsSignedData) throws CMSException {
         Store<X509CertificateHolder> certs = cmsSignedData.getCertificates();
-        boolean verifyResult = cmsSignedData.verifySignatures(sid -> {
+        return cmsSignedData.verifySignatures(sid -> {
             try {
                 Collection<X509CertificateHolder> collection = certs.getMatches(sid);
                 if ((collection == null) || (collection.size() != 1)) {
@@ -70,6 +70,5 @@ public class VerifyUtils {
                 throw new OperatorCreationException("Failed to verify BC signatures: " + e.getMessage(), e);
             }
         });
-        return verifyResult;
     }
 }

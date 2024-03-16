@@ -59,7 +59,7 @@ public class HashUtils {
         if ("SHA-384".equals(algMethod)) {
             result = HashAlgs.USE_SHA384;
         }
-        if ("SHA-512".equals(algMethod)){
+        if ("SHA-512".equals(algMethod)) {
             result = HashAlgs.USE_SHA512;
         }
         return result;
@@ -127,13 +127,7 @@ public class HashUtils {
      *
      * @since 2021/12/21
      */
-   static class HashAlgs {
-        /**
-         * Constructor of Method
-         */
-        private HashAlgs() {
-        }
-
+    static class HashAlgs {
         /**
          * None
          */
@@ -183,6 +177,13 @@ public class HashUtils {
          * The RIPEMD-160 message digest.
          */
         public static final int USE_RIPEMD160 = 9;
+
+        /**
+         * Constructor of Method
+         */
+        private HashAlgs() {
+        }
+
     }
 }
 

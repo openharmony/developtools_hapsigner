@@ -25,6 +25,9 @@ import com.ohos.hapsigntool.error.SignatureException;
  */
 @FunctionalInterface
 public interface Pkcs7Generator {
+    /**
+     * PKCS#7 Generator
+     */
     Pkcs7Generator BC = new BcPkcs7Generator();
 
     /**

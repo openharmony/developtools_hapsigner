@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package com.ohos.hapsigntoolcmd;
 
 import com.ohos.hapsigntool.error.CustomException;
