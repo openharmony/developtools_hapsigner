@@ -40,9 +40,7 @@ public class Permissions {
     /**
      * Sub dto of Provision.
      */
-    public Permissions() {
-        // Empty constructor of Permissions.
-    }
+    public Permissions() {}
 
     public List<String> getRestrictedPermissions() {
         return restrictedPermissions;

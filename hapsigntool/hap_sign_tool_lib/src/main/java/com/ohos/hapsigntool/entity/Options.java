@@ -355,7 +355,7 @@ public class Options extends HashMap<String, Object> {
         }
         if (value instanceof String) {
             try {
-                defValue = Integer.parseInt((String) value);
+                return Integer.parseInt((String) value);
             } catch (NumberFormatException exception) {
                 logger.debug(exception.getMessage(), exception);
                 return defValue;

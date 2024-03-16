@@ -88,13 +88,16 @@ public final class KeyPairTools {
 
 
     /**
+     * generateKeyPair
+     *
      * @param algorithm RSA/ECC
      * @param keySize   RSA_2048/3072/4096 NIST_P_256/384
      * @return Generated keypair
      */
     public static KeyPair generateKeyPair(String algorithm, int keySize) {
+        String alg = algorithm;
         if (algorithm.equalsIgnoreCase(ECC_INPUT)) {
-            algorithm = ECC;
+            alg = ECC;
         }
         if (algorithm.equalsIgnoreCase(RSA)) {
             ValidateUtils.throwIfNotMatches((keySize == RSA_2048 || keySize == RSA_3072 || keySize == RSA_4096),
@@ -107,7 +110,7 @@ public final class KeyPairTools {
         }
 
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(alg);
             keyPairGenerator.initialize(keySize);
             return keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {

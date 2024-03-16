@@ -33,10 +33,10 @@ import java.util.Set;
  * @since 2021/12/21
  */
 public class ParamProcessUtil {
+    private static final Logger LOGGER = LogManager.getLogger(ParamProcessUtil.class);
+
     private ParamProcessUtil() {
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(ParamProcessUtil.class);
 
     /**
      * Use string array to init string set

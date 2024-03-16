@@ -72,9 +72,7 @@ public class VerifyHelper implements IProvisionVerifier {
     /**
      * Signed provision profile verifier.
      */
-    public VerifyHelper() {
-        // Empty constructor
-    }
+    public VerifyHelper() {}
 
     /**
      * Checked signed data with public key.

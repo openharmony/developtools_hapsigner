@@ -27,6 +27,11 @@ import java.util.ArrayList;
  */
 class SignContentHash {
     /**
+     * Length of two chars, one short,and one int
+     */
+    private static final int CONTENT_HEAD_SIZE = 8;
+
+    /**
      * the signature sub-block type
      */
     protected char type;
@@ -55,11 +60,6 @@ class SignContentHash {
      * the length of content
      */
     protected int contentHashLen;
-
-    /**
-     * Length of two chars, one short,and one int
-     */
-    private static final int CONTENT_HEAD_SIZE = 8;
 
     SignContentHash(char type, char tag, short algId, int length, byte[] hash) {
         this.type = type;

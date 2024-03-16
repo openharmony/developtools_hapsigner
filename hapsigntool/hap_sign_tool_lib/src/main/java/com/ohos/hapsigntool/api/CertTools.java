@@ -146,6 +146,7 @@ public final class CertTools {
      * @param keyPair keyPair
      * @param csr     csr
      * @param adapter adapter
+     * @param signingCapabiltyBytes signingCapabiltyBytes
      * @return X509Certificate
      */
     public static X509Certificate generateEndCert(KeyPair keyPair, byte[] csr, LocalizationAdapter adapter,

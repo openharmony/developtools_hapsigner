@@ -79,21 +79,21 @@ public final class ParamsTrustlist {
             if (inputStream == null) {
                 return ;
             }
-            InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(isr);
-            String cmdStandBy = null;
-            while ((str = br.readLine()) != null) {
-                String param = str.trim();
-                if (COMMONDS.contains(param)) {
-                    cmdStandBy = param;
-                } else {
-                    putTrustMap(cmdStandBy, param);
+            try (InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                BufferedReader br = new BufferedReader(isr)) {
+                String cmdStandBy = null;
+                while ((str = br.readLine()) != null) {
+                    String param = str.trim();
+                    if (COMMONDS.contains(param)) {
+                        cmdStandBy = param;
+                    } else {
+                        putTrustMap(cmdStandBy, param);
+                    }
                 }
             }
         } catch (IOException ioe) {
             CustomException.throwException(ERROR.READ_FILE_ERROR, "Failed to read " + page + " resource");
         }
-
     }
 
     /**

@@ -42,18 +42,19 @@ public class EscapeCharacter {
     private static final int INTERCEPT2_LEN = 4;
 
     /**
+     * Base number
+     */
+    private static final int RADIX_NUM = 16;
+
+    /**
      * Constructor of Method
      */
     private EscapeCharacter() {
     }
 
     /**
-     * Base number
-     */
-    private static final int RADIX_NUM = 16;
-
-    /**
      * Phase string which is escaped
+     *
      * @param src escaped string
      * @return string after unescape.
      */

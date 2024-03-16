@@ -428,6 +428,7 @@ public class CmdUnitTest {
 
     /**
      * test cmdKeypair
+     *
      * @throws IOException io error
      */
     @Order(1)
@@ -951,7 +952,7 @@ public class CmdUnitTest {
     }
 
     private boolean generateAppRootCa() {
-        boolean result = HapSignTool.processCmd(new String[]{
+        return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
@@ -964,11 +965,10 @@ public class CmdUnitTest {
             CMD_VALIDITY, CMD_VALIDITY_365,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
-        return result;
     }
 
     private boolean generateProfileRootCa() {
-        boolean result = HapSignTool.processCmd(new String[]{
+        return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
@@ -981,11 +981,10 @@ public class CmdUnitTest {
             CMD_VALIDITY, CMD_VALIDITY_365,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
-        return result;
     }
 
     private boolean generateAppSubCa() {
-        boolean result = HapSignTool.processCmd(new String[]{
+        return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_SUB_APP_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
@@ -1001,11 +1000,10 @@ public class CmdUnitTest {
             CMD_VALIDITY, CMD_VALIDITY_365,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
-        return result;
     }
 
     private boolean generateProfileSubCa() {
-        boolean result = HapSignTool.processCmd(new String[]{
+        return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_SUB_PROFILE_CA_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
@@ -1021,14 +1019,14 @@ public class CmdUnitTest {
             CMD_VALIDITY, CMD_VALIDITY_365,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
-        return result;
     }
 
     private void loadFile(String filePath) throws IOException {
         ClassLoader classLoader = CmdUnitTest.class.getClassLoader();
-        InputStream fileInputStream = classLoader.getResourceAsStream(filePath);
-        byte[] fileData = FileUtils.read(fileInputStream);
-        FileUtils.write(fileData, new File(filePath));
+        try (InputStream fileInputStream = classLoader.getResourceAsStream(filePath)) {
+            byte[] fileData = FileUtils.read(fileInputStream);
+            FileUtils.write(fileData, new File(filePath));
+        }
     }
 
     private void deleteFile(String filePath) throws IOException {

@@ -190,10 +190,11 @@ public class VerifyCodeSignature {
                     throw new VerifyCodeSignException(
                         String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
                 }
-                InputStream entryInputStream = inputJar.getInputStream(entry);
-                // temporary merkleTreeOffset 0
-                verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
-                checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+                try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
+                    // temporary merkleTreeOffset 0
+                    verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
+                    checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+                }
             }
         }
         return true;

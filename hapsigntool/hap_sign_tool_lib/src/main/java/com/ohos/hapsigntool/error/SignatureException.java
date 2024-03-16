@@ -24,20 +24,44 @@ public class SignatureException extends Exception {
     private static final long serialVersionUID = 1L;
     private int errorCode;
 
+    /**
+     * SignatureException
+     *
+     * @param message message
+     */
     public SignatureException(String message) {
         super(message);
     }
 
+    /**
+     * SignatureException
+     *
+     * @param errorCode error code
+     * @param message message
+     */
     public SignatureException(int errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
+    /**
+     * SignatureException
+     *
+     * @param errorCode error code
+     * @param message message
+     * @param cause cause
+     */
     public SignatureException(int errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
     }
 
+    /**
+     * SignatureException
+     *
+     * @param message message
+     * @param cause cause
+     */
     public SignatureException(String message, Throwable cause) {
         super(message, cause);
     }
