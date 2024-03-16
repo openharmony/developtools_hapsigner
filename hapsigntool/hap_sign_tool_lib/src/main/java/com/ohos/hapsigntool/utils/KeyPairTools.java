@@ -96,17 +96,17 @@ public final class KeyPairTools {
      */
     public static KeyPair generateKeyPair(String algorithm, int keySize) {
         String alg = algorithm;
-        if (algorithm.equalsIgnoreCase(ECC_INPUT)) {
+        if (alg.equalsIgnoreCase(ECC_INPUT)) {
             alg = ECC;
         }
-        if (algorithm.equalsIgnoreCase(RSA)) {
+        if (alg.equalsIgnoreCase(RSA)) {
             ValidateUtils.throwIfNotMatches((keySize == RSA_2048 || keySize == RSA_3072 || keySize == RSA_4096),
                     ERROR.NOT_SUPPORT_ERROR, "Algorithm 'RSA' not support size: " + keySize);
-        } else if (algorithm.equalsIgnoreCase(ECC)) {
+        } else if (alg.equalsIgnoreCase(ECC)) {
             ValidateUtils.throwIfNotMatches((keySize == NIST_P_256 || keySize == NIST_P_384),
                     ERROR.NOT_SUPPORT_ERROR, "Algorithm 'ECC' not support size: " + keySize);
         } else {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "Not support algorithm: " + algorithm);
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "Not support algorithm: " + alg);
         }
 
         try {
