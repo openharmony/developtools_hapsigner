@@ -69,7 +69,7 @@ public final class HapSignTool {
      */
     private static final String NOT_SIGNED = "0";
 
-    private static List<String> informList = new ArrayList<>();
+    private static final List<String> informList = new ArrayList<>();
 
     static {
         informList.add("bin");
@@ -376,5 +376,17 @@ public final class HapSignTool {
             }
         }
         return false;
+    }
+
+    public static boolean signHap(String[] param) {
+        try {
+            ServiceApi api = new SignToolServiceImpl();
+            Params params = CmdUtil.convert2Params(param);
+            LOGGER.debug(params.toString());
+            LOGGER.info("Start {}", params.getMethod());
+            return runSignApp(params.getOptions(), api);
+        } catch (CustomException e) {
+            return false;
+        }
     }
 }

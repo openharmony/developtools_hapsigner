@@ -74,25 +74,29 @@ public final class ParamsTrustlist {
             return ;
         }
         String page = "help.txt";
-        String str = "";
         try (InputStream inputStream = classLoader.getResourceAsStream(page)) {
             if (inputStream == null) {
                 return ;
             }
             try (InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                 BufferedReader br = new BufferedReader(isr)) {
-                String cmdStandBy = null;
-                while ((str = br.readLine()) != null) {
-                    String param = str.trim();
-                    if (COMMONDS.contains(param)) {
-                        cmdStandBy = param;
-                    } else {
-                        putTrustMap(cmdStandBy, param);
-                    }
-                }
+                readHelpParam(br);
             }
         } catch (IOException ioe) {
             CustomException.throwException(ERROR.READ_FILE_ERROR, "Failed to read " + page + " resource");
+        }
+    }
+
+    private static void readHelpParam(BufferedReader br) throws IOException {
+        String str;
+        String cmdStandBy = null;
+        while ((str = br.readLine()) != null) {
+            String param = str.trim();
+            if (COMMONDS.contains(param)) {
+                cmdStandBy = param;
+            } else {
+                putTrustMap(cmdStandBy, param);
+            }
         }
     }
 
