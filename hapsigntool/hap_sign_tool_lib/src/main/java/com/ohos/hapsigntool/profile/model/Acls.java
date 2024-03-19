@@ -34,9 +34,7 @@ public class Acls {
     /**
      * Sub dto of Provision.
      */
-    public Acls() {
-        // Empty constructor of Acls.
-    }
+    public Acls() {}
 
     public List<String> getAllowedAcls() {
         return allowedAcls;

@@ -85,7 +85,7 @@ public class HwSignHead {
                 throw new IOException();
             }
         } catch (IOException e) {
-            return null;
+            return new byte[0];
         }
         return signHead;
     }

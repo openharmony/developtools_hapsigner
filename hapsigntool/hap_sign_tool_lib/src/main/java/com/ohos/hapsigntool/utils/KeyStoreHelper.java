@@ -29,6 +29,7 @@ import org.bouncycastle.operator.ContentSigner;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -45,7 +46,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 
 /**
  * Read and save Keypair and certificate.
@@ -98,10 +98,6 @@ public class KeyStoreHelper {
      */
     private final KeyStore keyStore;
 
-    public String getKeyStorePath() {
-        return keyStorePath;
-    }
-
     /**
      * Helper to load and save pair.
      *
@@ -109,29 +105,34 @@ public class KeyStoreHelper {
      * @param storePwd passwd of key store
      */
     public KeyStoreHelper(String keyStorePath, char[] storePwd) {
+        char[] pwd = storePwd;
         ValidateUtils.throwIfMatches(StringUtils.isEmpty(keyStorePath), ERROR.COMMAND_ERROR,
                 "Missed params: 'keyStorePath'");
-        if (storePwd == null) {
-            storePwd = new char[0];
+        if (pwd == null) {
+            pwd = new char[0];
         }
-        this.keyStorePwd = storePwd;
+        this.keyStorePwd = pwd;
         this.keyStorePath = keyStorePath;
         this.keyStore = createKeyStoreAccordingFileType(keyStorePath);
         FileInputStream fis = null;
         try {
             if (FileUtils.isFileExist(keyStorePath)) {
-                logger.info("{} is exist. Try to load it with given passwd",keyStorePath);
+                logger.info("{} is exist. Try to load it with given passwd", keyStorePath);
                 fis = new FileInputStream(keyStorePath);
-                keyStore.load(fis, storePwd);
+                keyStore.load(fis, pwd);
             } else {
                 keyStore.load(null, null);
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
-        }finally {
+        } finally {
             FileUtils.close(fis);
         }
+    }
+
+    public String getKeyStorePath() {
+        return keyStorePath;
     }
 
     /**
@@ -191,11 +192,15 @@ public class KeyStoreHelper {
      * @return private key
      */
     public PrivateKey loadPrivateKey(String alias, char[] certPwd) {
-        if (certPwd == null) {
-            certPwd = new char[0];
+        char[] pwd = certPwd;
+        if (pwd == null) {
+            pwd = new char[0];
         }
         try {
-            return (PrivateKey) keyStore.getKey(alias, certPwd);
+            Key key = keyStore.getKey(alias, pwd);
+            if (key instanceof PrivateKey) {
+                return (PrivateKey) key;
+            }
         } catch (KeyStoreException | NoSuchAlgorithmException exception) {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
@@ -270,15 +275,17 @@ public class KeyStoreHelper {
      */
     public boolean store(String alias, char[] keyPwd, KeyPair keyPair, X509Certificate[] certs) {
         errorOnExist(alias);
-        if (keyPwd == null) {
-            keyPwd = new char[0];
+        char[] pwd = keyPwd;
+        if (pwd == null) {
+            pwd = new char[0];
         }
-        if (certs == null) {
+        X509Certificate[] certificates = certs;
+        if (certificates == null) {
             X509Certificate certificate = createKeyOnly(keyPair, alias);
-            certs = new X509Certificate[]{certificate};
+            certificates = new X509Certificate[]{certificate};
         }
-        try (FileOutputStream fos = new FileOutputStream(keyStorePath)){
-            keyStore.setKeyEntry(alias, keyPair.getPrivate(), keyPwd, certs);
+        try (FileOutputStream fos = new FileOutputStream(keyStorePath)) {
+            keyStore.setKeyEntry(alias, keyPair.getPrivate(), pwd, certificates);
             keyStore.store(fos, keyStorePwd);
             fos.flush();
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {

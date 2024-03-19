@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 public interface ZipDataOutput {
     /**
      * Write data into this ZipDataOutput
+     *
      * @param buffer data bytes
      * @param offset offset index of data bytes
      * @param length the number of bytes to use, starting at offset index

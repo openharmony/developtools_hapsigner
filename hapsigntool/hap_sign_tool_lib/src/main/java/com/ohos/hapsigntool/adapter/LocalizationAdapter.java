@@ -82,6 +82,7 @@ public class LocalizationAdapter {
 
     /**
      * Set keyStoreHelper
+     *
      * @param keyStoreHelper keyStoreHelper
      */
     public void setKeyStoreHelper(KeyStoreHelper keyStoreHelper) {
@@ -90,6 +91,7 @@ public class LocalizationAdapter {
 
     /**
      * Set issuerKeyStoreFile
+     *
      * @param issuerKeyStoreFile issuerKeyStoreFile
      */
     public void setIssuerKeyStoreFile(boolean issuerKeyStoreFile) {
@@ -112,11 +114,11 @@ public class LocalizationAdapter {
         }
 
         String keyStore ;
-        if (this.isIssuerKeyStoreFile){
+        if (this.isIssuerKeyStoreFile) {
             keyStore = options.getString(Options.ISSUER_KEY_STORE_FILE, "");
             keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
-        }else {
-            keyStore =  options.getString(Options.KEY_STORE_FILE, "");
+        } else {
+            keyStore = options.getString(Options.KEY_STORE_FILE, "");
             keyStoreHelper = new KeyStoreHelper(keyStore, options.getChars(Options.KEY_STORE_RIGHTS));
         }
         this.setIssuerKeyStoreFile(false);

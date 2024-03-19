@@ -78,10 +78,6 @@ public class CertTest {
      */
     private static final byte[] APP_SIGNING_CAPABILITY = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
     /**
      * Add log info.
      */
@@ -91,6 +87,10 @@ public class CertTest {
      * Generate keystore file.
      */
     private final KeyPair keyPair = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.RSA_2048);
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * test RootCaCert

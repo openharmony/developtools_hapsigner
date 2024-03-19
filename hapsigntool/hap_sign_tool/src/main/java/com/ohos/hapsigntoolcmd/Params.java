@@ -38,9 +38,7 @@ public class Params {
     /**
      * Constructor of Params.
      */
-    public Params() {
-        // Empty constructor of Params
-    }
+    public Params() {}
 
     public String getMethod() {
         return method;

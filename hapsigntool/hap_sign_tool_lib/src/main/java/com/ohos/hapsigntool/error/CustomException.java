@@ -30,7 +30,7 @@ public class CustomException extends RuntimeException {
      * @param message Error msg to throw
      */
     CustomException(ERROR error, String message) {
-        super(String.format(Locale.ROOT,"%s, code: %d. Details: %s", error.toString(), error.getErrorCode(), message));
+        super(String.format(Locale.ROOT, "%s, code: %d. Details: %s", error.toString(), error.getErrorCode(), message));
     }
 
     /**

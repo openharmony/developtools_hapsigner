@@ -63,6 +63,7 @@ public interface ZipDataInput {
 
     /**
      * Create a new ZipDataInput whose content is shared by this ZipDataInput
+     *
      * @param offset offset index at the ZipDataInput
      * @param size size of the data block
      * @return new ZipDataInput
