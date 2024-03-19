@@ -42,13 +42,13 @@ import java.util.Map;
  * @since 2021/12/21
  */
 public class SignBin {
+    private static final Logger LOGGER = LogManager.getLogger(SignBin.class);
+
     /**
      * Constructor of Method
      */
     private SignBin() {
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(SignBin.class);
 
     /**
      * Sign the bin file.
@@ -58,7 +58,6 @@ public class SignBin {
      * @return true if sign successfully; false otherwise.
      */
     public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
-        boolean result = false;
         /* 1. Make block head, write to output file. */
         String codesign = signParams.get(ParamConstants.PARAM_SIGN_CODE);
         if (ParamConstants.ProfileSignFlag.ENABLE_SIGN_CODE.getSignFlag().equals(codesign)) {
@@ -83,15 +82,14 @@ public class SignBin {
             return false;
         }
         LOGGER.info("The data signed success.");
-
         /* 3. Make sign data, and write to output file */
         if (!writeSignHeadDataToOutputFile(inputFile, outputFile)) {
             LOGGER.error("The sign head data made failed.");
             ParamProcessUtil.delDir(new File(outputFile));
         } else {
-            result = true;
+            return true;
         }
-        return result;
+        return false;
     }
 
     private static boolean writeBlockDataToFile(

@@ -37,8 +37,7 @@ public class RemoteSigner implements ISigner {
      *
      * @param params Preset map configurations
      */
-    public RemoteSigner(Map<String, Object> params) {
-    }
+    public RemoteSigner(Map<String, Object> params) {}
 
     /**
      * Signed by remote signer.

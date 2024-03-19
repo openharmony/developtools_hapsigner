@@ -28,11 +28,20 @@ import java.nio.channels.FileChannel;
  */
 public class RandomAccessFileZipDataInput implements ZipDataInput {
     private static final int MAX_READ_BLOCK_SIZE = 1024 * 1024;
+
     private final RandomAccessFile file;
+
     private final FileChannel fileChannel;
+
     private final long startIndex;
+
     private final long size;
 
+    /**
+     * Random Access File Zip Data Input
+     *
+     * @param file zip file
+     */
     public RandomAccessFileZipDataInput(RandomAccessFile file) {
         this.file = file;
         this.fileChannel = file.getChannel();
@@ -40,6 +49,13 @@ public class RandomAccessFileZipDataInput implements ZipDataInput {
         this.size = -1;
     }
 
+    /**
+     * Random Access File Zip Data Input
+     *
+     * @param file zip file
+     * @param offset offset
+     * @param size size
+     */
     public RandomAccessFileZipDataInput(RandomAccessFile file, long offset, long size) {
         if (offset < 0) {
             throw new IndexOutOfBoundsException("offset: " + offset);

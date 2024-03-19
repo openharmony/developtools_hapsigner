@@ -33,6 +33,7 @@ public final class ValidateUtils {
      * @param isMatch Want a true value
      * @param error     Error enum to throw
      * @param errorMsg  Error msg to throw
+     * @throws CustomException CustomException
      */
     public static void throwIfNotMatches(boolean isMatch, ERROR error, String errorMsg) throws CustomException {
         if (!isMatch) {
@@ -46,6 +47,7 @@ public final class ValidateUtils {
      * @param isMatch Want a false value
      * @param error     Error enum to throw
      * @param errorMsg  Error msg to throw
+     * @throws CustomException CustomException
      */
     public static void throwIfMatches(boolean isMatch, ERROR error, String errorMsg) throws CustomException {
         throwIfNotMatches(!isMatch, error, errorMsg);
