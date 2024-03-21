@@ -16,7 +16,7 @@
 package com.ohos.hapsigntoolcmd;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,16 +74,12 @@ public final class ParamsTrustlist {
             return ;
         }
         String page = "help.txt";
-        try (InputStream inputStream = classLoader.getResourceAsStream(page)) {
-            if (inputStream == null) {
-                return ;
-            }
-            try (InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                BufferedReader br = new BufferedReader(isr)) {
-                readHelpParam(br);
-            }
+        try (InputStream inputStream = classLoader.getResourceAsStream(page);
+             InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)) {
+            readHelpParam(br);
         } catch (IOException ioe) {
-            CustomException.throwException(ERROR.READ_FILE_ERROR, "Failed to read " + page + " resource");
+            CustomException.throwException(Error.READ_FILE_ERROR, "Failed to read " + page + " resource");
         }
     }
 

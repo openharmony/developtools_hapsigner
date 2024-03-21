@@ -19,7 +19,7 @@ import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
@@ -106,14 +106,14 @@ public class ProfileTest {
     private static final String PRIVATE_KEY_STR = "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCQfrM8g" +
             "55vQ5tZXx1T6FwAP7WDe+bexD/Ti/qvIYXpJw==";
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
     /**
      * Add log info.
      */
     private static final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * test profile
@@ -129,7 +129,7 @@ public class ProfileTest {
             byte[] p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             assertFalse(FileUtils.isFileExist(OUT_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
         loadFile(IN_FILE_PATH);
@@ -148,7 +148,7 @@ public class ProfileTest {
         try {
             verificationResult = verifyHelper.verify(p7b);
         } catch (VerifyException e) {
-            CustomException.throwException(ERROR.VERIFY_ERROR, e.getMessage());
+            CustomException.throwException(Error.VERIFY_ERROR, e.getMessage());
         }
         assertTrue(verificationResult.isVerifiedPassed());
 
@@ -159,13 +159,13 @@ public class ProfileTest {
             p7b = ProfileSignTool.generateP7b(adapter, provisionContent);
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             assertTrue(FileUtils.isFileExist(OUT_PATH));
-        } catch (Exception exception) {
+        } catch (UnsupportedOperationException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
         try {
             verificationResult = verifyHelper.verify(ERROR_PROFILE_CONTENT.getBytes(StandardCharsets.UTF_8));
             assertFalse(verificationResult.isVerifiedPassed());
-        } catch (Exception exception) {
+        } catch (CustomException | VerifyException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
     }

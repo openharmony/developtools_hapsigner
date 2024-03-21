@@ -30,10 +30,21 @@ public class RandomAccessFileZipDataOutput implements ZipDataOutput {
     private final FileChannel fileChannel;
     private long position;
 
+    /**
+     * RandomAccessFileZipDataOutput
+     *
+     * @param file zip file
+     */
     public RandomAccessFileZipDataOutput(RandomAccessFile file) {
         this(file, 0);
     }
 
+    /**
+     * RandomAccessFileZipDataOutput
+     *
+     * @param file zip file
+     * @param startPosition startPosition
+     */
     public RandomAccessFileZipDataOutput(RandomAccessFile file, long startPosition) {
         if (file == null) {
             throw new NullPointerException("file is null");

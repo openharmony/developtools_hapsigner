@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,10 +61,12 @@ public final class CertUtils {
      * Max length to print certificate string.
      */
     private static final int MAX_LINE_LENGTH = 65;
+
     /**
      * Length of serial security random number.
      */
     private static final int RANDOM_SERIAL_LENGTH = 32;
+
     /**
      * number constant.
      */
@@ -80,9 +82,7 @@ public final class CertUtils {
      */
     private static final Pattern SIGN_ALGORITHM_PATTERN = Pattern.compile("^SHA([0-9]{3})with([A-Z]{1,5})$");
 
-    private CertUtils() {
-        // Empty constructor
-    }
+    private CertUtils() {}
 
     /**
      * Parse string to key usage.
@@ -156,6 +156,7 @@ public final class CertUtils {
 
     /**
      * buildDN
+     *
      * @param nameString nameString
      * @return X500Name
      */
@@ -166,7 +167,7 @@ public final class CertUtils {
             dn = new X500Name(nameString);
         } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.COMMAND_ERROR,
+            CustomException.throwException(Error.COMMAND_ERROR,
                     String.format("Error params near: %s. Reason: %s", nameString, exception.getMessage()));
         }
         return dn;
@@ -180,14 +181,14 @@ public final class CertUtils {
      */
     private static void checkDN(String nameString) {
         String errorMsg = String.format("Format error, must be \"X=xx,XX=xxx,...\", please check: \"%s\"", nameString);
-        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString), ERROR.COMMAND_ERROR, errorMsg);
+        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString), Error.COMMAND_ERROR, errorMsg);
         String[] pairs = nameString.split(",");
         for (String pair : pairs) {
-            ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString.trim()), ERROR.COMMAND_ERROR, errorMsg);
+            ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString.trim()), Error.COMMAND_ERROR, errorMsg);
             String[] kvPair = pair.split("=");
-            ValidateUtils.throwIfNotMatches(kvPair.length == SECOND_INDEX, ERROR.COMMAND_ERROR, errorMsg);
+            ValidateUtils.throwIfNotMatches(kvPair.length == SECOND_INDEX, Error.COMMAND_ERROR, errorMsg);
             // Key will be checked in X500NameStyle.attrNameToOID
-            ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(kvPair[1].trim()), ERROR.COMMAND_ERROR, errorMsg);
+            ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(kvPair[1].trim()), Error.COMMAND_ERROR, errorMsg);
         }
     }
 
@@ -272,7 +273,7 @@ public final class CertUtils {
      */
     public static ContentSigner createFixedContentSigner(PrivateKey privateKey, String signAlgorithm) {
         Matcher matcher = SIGN_ALGORITHM_PATTERN.matcher(signAlgorithm);
-        ValidateUtils.throwIfNotMatches(matcher.matches(), ERROR.NOT_SUPPORT_ERROR, "Not Support " + signAlgorithm);
+        ValidateUtils.throwIfNotMatches(matcher.matches(), Error.NOT_SUPPORT_ERROR, "Not Support " + signAlgorithm);
         String signAlg = signAlgorithm;
         // Auto fix signAlgorithm error
         if (privateKey instanceof ECPrivateKey && signAlgorithm.contains("RSA")) {
@@ -289,7 +290,7 @@ public final class CertUtils {
             return jcaContentSignerBuilder.build(privateKey);
         } catch (OperatorCreationException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.OPERATOR_CREATION_ERROR, exception.getMessage());
+            CustomException.throwException(Error.OPERATOR_CREATION_ERROR, exception.getMessage());
         }
         return null;
     }

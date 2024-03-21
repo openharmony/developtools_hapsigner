@@ -15,11 +15,13 @@
 
 package com.ohos.hapsigntool;
 
+import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
@@ -39,7 +41,7 @@ public class KeyPairTest {
     /**
      * Add log info.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ProfileTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeyPairTest.class);
 
     /**
      * test keyPair
@@ -74,13 +76,13 @@ public class KeyPairTest {
         try {
             KeyPair keyPairRsa = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.NIST_P_256);
             assertNull(keyPairRsa);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
         try {
             KeyPair keyPairEcc = KeyPairTools.generateKeyPair(KeyPairTools.ECC, KeyPairTools.RSA_3072);
             assertNull(keyPairEcc);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
     }

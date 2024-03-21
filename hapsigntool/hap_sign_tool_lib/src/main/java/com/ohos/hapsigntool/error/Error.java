@@ -20,7 +20,7 @@ package com.ohos.hapsigntool.error;
  *
  * @since 2021/12/28
  */
-public enum ERROR {
+public enum Error {
     /**
      * Enum constant COMMAND_ERROR.
      */
@@ -109,7 +109,7 @@ public enum ERROR {
         return this.errorCode;
     }
 
-    ERROR(int code) {
+    Error(int code) {
         this.errorCode = code;
     }
 }
