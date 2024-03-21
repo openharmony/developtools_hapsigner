@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.encoders.Base64;
@@ -38,9 +38,6 @@ import java.security.spec.X509EncodedKeySpec;
  * @since 2021/12/28
  */
 public final class KeyPairTools {
-    private KeyPairTools() {
-    }
-
     /**
      * Field RSA.
      */
@@ -86,6 +83,7 @@ public final class KeyPairTools {
      */
     private static final Logger LOGGER = LogManager.getLogger(KeyPairTools.class);
 
+    private KeyPairTools() {}
 
     /**
      * generateKeyPair
@@ -95,18 +93,21 @@ public final class KeyPairTools {
      * @return Generated keypair
      */
     public static KeyPair generateKeyPair(String algorithm, int keySize) {
+        if (algorithm == null) {
+            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "Not support algorithm: null");
+        }
         String alg = algorithm;
-        if (alg.equalsIgnoreCase(ECC_INPUT)) {
+        if (ECC_INPUT.equalsIgnoreCase(alg)) {
             alg = ECC;
         }
-        if (alg.equalsIgnoreCase(RSA)) {
+        if (RSA.equalsIgnoreCase(alg)) {
             ValidateUtils.throwIfNotMatches((keySize == RSA_2048 || keySize == RSA_3072 || keySize == RSA_4096),
-                    ERROR.NOT_SUPPORT_ERROR, "Algorithm 'RSA' not support size: " + keySize);
-        } else if (alg.equalsIgnoreCase(ECC)) {
+                    Error.NOT_SUPPORT_ERROR, "Algorithm 'RSA' not support size: " + keySize);
+        } else if (ECC.equalsIgnoreCase(alg)) {
             ValidateUtils.throwIfNotMatches((keySize == NIST_P_256 || keySize == NIST_P_384),
-                    ERROR.NOT_SUPPORT_ERROR, "Algorithm 'ECC' not support size: " + keySize);
+                    Error.NOT_SUPPORT_ERROR, "Algorithm 'ECC' not support size: " + keySize);
         } else {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "Not support algorithm: " + alg);
+            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "Not support algorithm: " + alg);
         }
 
         try {
@@ -115,7 +116,7 @@ public final class KeyPairTools {
             return keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             LOGGER.debug(e.getMessage(), e);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, e.getMessage());
+            CustomException.throwException(Error.NOT_SUPPORT_ERROR, e.getMessage());
             return null;
         }
     }
@@ -144,7 +145,7 @@ public final class KeyPairTools {
             result = KeyFactory.getInstance(algorithm).generatePublic(spec);
         } catch (InvalidKeySpecException | NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(Error.ACCESS_ERROR, exception.getMessage());
         }
         return result;
     }
@@ -163,7 +164,7 @@ public final class KeyPairTools {
             result = KeyFactory.getInstance(algorithm).generatePrivate(spec);
         } catch (InvalidKeySpecException | NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(Error.ACCESS_ERROR, exception.getMessage());
         }
         return result;
     }

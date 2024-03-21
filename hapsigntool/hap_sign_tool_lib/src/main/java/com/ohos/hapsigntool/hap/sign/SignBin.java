@@ -83,12 +83,11 @@ public class SignBin {
         }
         LOGGER.info("The data signed success.");
         /* 3. Make sign data, and write to output file */
-        if (!writeSignHeadDataToOutputFile(inputFile, outputFile)) {
-            LOGGER.error("The sign head data made failed.");
-            ParamProcessUtil.delDir(new File(outputFile));
-        } else {
+        if (writeSignHeadDataToOutputFile(inputFile, outputFile)) {
             return true;
         }
+        LOGGER.error("The sign head data made failed.");
+        ParamProcessUtil.delDir(new File(outputFile));
         return false;
     }
 

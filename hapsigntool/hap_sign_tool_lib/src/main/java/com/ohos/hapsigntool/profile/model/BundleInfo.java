@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.profile.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 
 /**
@@ -122,10 +122,10 @@ public class BundleInfo {
     public void enforceValid(String buildType) {
         if (Provision.isBuildTypeRelease(buildType)) {
             ValidateUtils.throwIfMatches(this.distributionCertificate == null,
-                    ERROR.SIGN_ERROR, "Require cert in bundleInfo!");
+                    Error.SIGN_ERROR, "Require cert in bundleInfo!");
         } else {
             ValidateUtils.throwIfMatches(this.developmentCertificate == null,
-                    ERROR.SIGN_ERROR, "Require cert in bundleInfo!");
+                    Error.SIGN_ERROR, "Require cert in bundleInfo!");
         }
     }
 }

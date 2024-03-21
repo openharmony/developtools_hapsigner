@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -256,7 +256,7 @@ public final class FileUtils {
     public static void validFileType(String filePath, String... types) {
         String suffix = getSuffix(filePath);
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(suffix),
-                ERROR.NOT_SUPPORT_ERROR, "Not support file: " + filePath);
+                Error.NOT_SUPPORT_ERROR, "Not support file: " + filePath);
         boolean isMatches = false;
         for (String type : types) {
             if (StringUtils.isEmpty(type)) {
@@ -267,7 +267,7 @@ public final class FileUtils {
                 break;
             }
         }
-        ValidateUtils.throwIfNotMatches(isMatches, ERROR.NOT_SUPPORT_ERROR, "Not support file: " + filePath);
+        ValidateUtils.throwIfNotMatches(isMatches, Error.NOT_SUPPORT_ERROR, "Not support file: " + filePath);
     }
 
     /**

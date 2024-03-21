@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Sub dto of Provision.
+ * Sub dto of .
  *
  * @since 2021/12/28
  */

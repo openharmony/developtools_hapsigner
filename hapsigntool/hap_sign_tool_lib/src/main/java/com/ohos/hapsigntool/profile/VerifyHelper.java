@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.profile;
 
 import com.google.gson.JsonObject;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
@@ -87,10 +87,10 @@ public class VerifyHelper implements IProvisionVerifier {
             Signature signature = Signature.getInstance(algorithm);
             signature.initVerify(cert);
             signature.update(unsignedData);
-            ValidateUtils.throwIfNotMatches(signature.verify(signedData), ERROR.SIGN_ERROR, "Signature not matched!");
+            ValidateUtils.throwIfNotMatches(signature.verify(signedData), Error.SIGN_ERROR, "Signature not matched!");
         } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.SIGN_ERROR, "Failed to verify signature: " + exception.getMessage());
+            CustomException.throwException(Error.SIGN_ERROR, "Failed to verify signature: " + exception.getMessage());
         }
     }
 
@@ -103,10 +103,10 @@ public class VerifyHelper implements IProvisionVerifier {
     public static List<X509Certificate> certStoreToCertList(Store<X509CertificateHolder> certificates) {
         String errorMsg = "Verify failed, not found cert chain";
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
-        ValidateUtils.throwIfMatches(certificates == null, ERROR.VERIFY_ERROR, errorMsg);
+        ValidateUtils.throwIfMatches(certificates == null, Error.VERIFY_ERROR, errorMsg);
         Collection<X509CertificateHolder> matches = certificates.getMatches(null);
         ValidateUtils.throwIfMatches(matches == null || !matches.iterator().hasNext(),
-                ERROR.VERIFY_ERROR, errorMsg);
+                Error.VERIFY_ERROR, errorMsg);
 
         Iterator<X509CertificateHolder> iterator = matches.iterator();
         List<X509Certificate> certificateList = new ArrayList<>();
@@ -117,9 +117,9 @@ public class VerifyHelper implements IProvisionVerifier {
             }
         } catch (CertificateException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.VERIFY_ERROR, errorMsg);
+            CustomException.throwException(Error.VERIFY_ERROR, errorMsg);
         }
-        ValidateUtils.throwIfMatches(certificateList.size() == 0, ERROR.VERIFY_ERROR, errorMsg);
+        ValidateUtils.throwIfMatches(certificateList.size() == 0, Error.VERIFY_ERROR, errorMsg);
         return certificateList;
     }
 
@@ -191,12 +191,12 @@ public class VerifyHelper implements IProvisionVerifier {
         try {
             cmsSignedData = new CMSSignedData(p7b);
             boolean verifyResult = VerifyUtils.verifyCmsSignedData(cmsSignedData);
-            ValidateUtils.throwIfNotMatches(verifyResult, ERROR.VERIFY_ERROR,
+            ValidateUtils.throwIfNotMatches(verifyResult, Error.VERIFY_ERROR,
                     "Failed to verify BC signatures");
             return cmsSignedData;
         } catch (CMSException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.VERIFY_ERROR, "Failed to verify BC signatures: "
+            CustomException.throwException(Error.VERIFY_ERROR, "Failed to verify BC signatures: "
                     + exception.getMessage());
         }
         return cmsSignedData;
