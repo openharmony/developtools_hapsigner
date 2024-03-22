@@ -74,11 +74,15 @@ public final class ParamsTrustlist {
             return ;
         }
         String page = "help.txt";
-        try (InputStream inputStream = classLoader.getResourceAsStream(page);
-             InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(isr)) {
-            readHelpParam(br);
-        } catch (NullPointerException | IOException e) {
+        try (InputStream inputStream = classLoader.getResourceAsStream(page)) {
+            if (inputStream == null) {
+                return;
+            }
+            try (InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                BufferedReader br = new BufferedReader(isr)) {
+                readHelpParam(br);
+             }
+        } catch (IOException e) {
             CustomException.throwException(Error.READ_FILE_ERROR, "Failed to read " + page + " resource");
         }
     }
