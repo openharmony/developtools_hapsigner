@@ -43,7 +43,7 @@ public class RandomAccessFileZipDataOutput implements ZipDataOutput {
      * RandomAccessFileZipDataOutput
      *
      * @param file zip file
-     * @param startPosition startPosition
+     * @param startPosition start position offset
      */
     public RandomAccessFileZipDataOutput(RandomAccessFile file, long startPosition) {
         if (file == null) {
