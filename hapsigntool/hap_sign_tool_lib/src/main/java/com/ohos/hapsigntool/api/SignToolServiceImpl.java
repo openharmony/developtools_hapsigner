@@ -19,7 +19,7 @@ import com.google.gson.JsonParser;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.provider.LocalJKSSignProvider;
 import com.ohos.hapsigntool.hap.provider.RemoteSignProvider;
@@ -152,14 +152,14 @@ public class SignToolServiceImpl implements ServiceApi {
         String iksFile = options.getString(Options.ISSUER_KEY_STORE_FILE);
         if (isEmpty) {
             if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)) {
-                CustomException.throwException(ERROR.WRITE_FILE_ERROR,
+                CustomException.throwException(Error.WRITE_FILE_ERROR,
                         String.format("Parameter '%s' and parameter '%s' are inconsistent", ksFile, iksFile));
             }
             if (options.containsKey(Options.ISSUER_KEY_STORE_RIGHTS)) {
                 boolean isEqual = Arrays.equals(options.getChars(Options.KEY_STORE_RIGHTS),
                         options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
                 if (!isEqual) {
-                    CustomException.throwException(ERROR.WRITE_FILE_ERROR,
+                    CustomException.throwException(Error.WRITE_FILE_ERROR,
                             String.format("Parameter '%s' and parameter '%s' are inconsistent",
                                     Options.KEY_STORE_RIGHTS, Options.ISSUER_KEY_STORE_RIGHTS));
                 }
@@ -288,7 +288,7 @@ public class SignToolServiceImpl implements ServiceApi {
             logger.error(exception.getMessage());
             isSign = false;
         } catch (VerifyException e) {
-            CustomException.throwException(ERROR.VERIFY_ERROR, "Verify Profile Failed! " + e.getMessage());
+            CustomException.throwException(Error.VERIFY_ERROR, "Verify Profile Failed! " + e.getMessage());
             isSign = false;
         }
         return isSign;
@@ -350,7 +350,7 @@ public class SignToolServiceImpl implements ServiceApi {
                 FileUtils.write(content.getBytes(StandardCharsets.UTF_8), new File(file));
             } catch (IOException exception) {
                 logger.debug(exception.getMessage(), exception);
-                CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+                CustomException.throwException(Error.WRITE_FILE_ERROR, exception.getMessage());
             }
         }
     }
@@ -373,7 +373,7 @@ public class SignToolServiceImpl implements ServiceApi {
             return true;
         } catch (CertificateException | IOException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+            CustomException.throwException(Error.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }
     }
@@ -399,7 +399,7 @@ public class SignToolServiceImpl implements ServiceApi {
             return true;
         } catch (CertificateException | IOException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+            CustomException.throwException(Error.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }
     }

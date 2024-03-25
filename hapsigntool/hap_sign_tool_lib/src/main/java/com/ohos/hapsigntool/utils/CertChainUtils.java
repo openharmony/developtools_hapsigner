@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.error.VerifyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +63,7 @@ public class CertChainUtils {
     private static CertPath getCertPath(List<X509Certificate> certificates, KeyStore trustStore, X500Principal issuer,
                                         BigInteger serial, Date signTime) throws KeyStoreException,
             InvalidAlgorithmParameterException, NoSuchAlgorithmException, CertPathBuilderException,
-            CertificateException {
+            CertificateException, VerifyException {
         if (certificates.size() != 1 && (issuer != null || serial != null)) {
             X509CertSelector targetCertSelector = new X509CertSelector();
             targetCertSelector.setIssuer(issuer);
@@ -75,10 +75,12 @@ public class CertChainUtils {
             params.setDate(signTime);
             params.setRevocationEnabled(false);
             CertPathBuilder certPathBuilder = CertPathBuilder.getInstance("PKIX");
-            CertPathBuilderResult build = certPathBuilder.build(params);
-            if (build instanceof PKIXCertPathBuilderResult) {
-                PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) build;
+            CertPathBuilderResult certPathBuilderResult = certPathBuilder.build(params);
+            if (certPathBuilderResult instanceof PKIXCertPathBuilderResult) {
+                PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) certPathBuilderResult;
                 return result.getCertPath();
+            } else {
+                throw new VerifyException("get profile cert path failed");
             }
         }
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
@@ -111,14 +113,14 @@ public class CertChainUtils {
             CertPathValidator validator = CertPathValidator.getInstance("PKIX");
             CertPathValidatorResult validatorResult = validator.validate(certPath, params);
             ValidateUtils.throwIfNotMatches(validatorResult instanceof PKIXCertPathValidatorResult,
-                    ERROR.VERIFY_ERROR, "Validator result not target type");
+                    Error.VERIFY_ERROR, "Validator result not target type");
             if (validatorResult instanceof PKIXCertPathValidatorResult) {
                 PKIXCertPathValidatorResult pkixValidatorResult = (PKIXCertPathValidatorResult) validatorResult;
                 ValidateUtils.throwIfNotMatches(params.getTrustAnchors().contains(pkixValidatorResult.getTrustAnchor()),
-                        ERROR.VERIFY_ERROR, "Anchor is not trusted: " + Base64.getEncoder().encodeToString(
+                        Error.VERIFY_ERROR, "Anchor is not trusted: " + Base64.getEncoder().encodeToString(
                                 pkixValidatorResult.getTrustAnchor().getTrustedCert().getEncoded()));
             } else {
-                CustomException.throwException(ERROR.VERIFY_ERROR, "Validator result not target type");
+                CustomException.throwException(Error.VERIFY_ERROR, "Validator result not target type");
             }
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException | CertificateException
                 | KeyStoreException | CertPathBuilderException | CertPathValidatorException exception) {

@@ -19,7 +19,7 @@ import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntoolcmd.CmdUtil;
@@ -150,7 +150,7 @@ public final class HapSignTool {
                 isSuccess = runProfileCert(params.getOptions(), api);
                 break;
             default:
-                CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
+                CustomException.throwException(Error.COMMAND_ERROR, "Unsupported cmd");
                 break;
         }
         return isSuccess;
@@ -277,7 +277,7 @@ public final class HapSignTool {
         if (!LOCAL_SIGN.equalsIgnoreCase(mode)
                 && !REMOTE_SIGN.equalsIgnoreCase(mode)
                 && !"remoteResign".equalsIgnoreCase(mode)) {
-            CustomException.throwException(ERROR.COMMAND_ERROR, "mode params is incorrect");
+            CustomException.throwException(Error.COMMAND_ERROR, "mode params is incorrect");
         }
 
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
@@ -287,7 +287,7 @@ public final class HapSignTool {
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM, "zip");
         if (!StringUtils.isEmpty(inForm) && !containsIgnoreCase(inForm)) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
+            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeEndSignAlgType(signAlg);
@@ -304,7 +304,7 @@ public final class HapSignTool {
             return;
         }
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
+            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
         }
         if (SIGNED.equals(profileSigned)) {
             FileUtils.validFileType(profileFile, "p7b");
@@ -317,7 +317,7 @@ public final class HapSignTool {
         params.required(Options.MODE, Options.SIGN_ALG, Options.OUT_FILE, Options.IN_FILE);
         String mode = params.getString(Options.MODE);
         if (!LOCAL_SIGN.equalsIgnoreCase(mode) && !REMOTE_SIGN.equalsIgnoreCase(mode)) {
-            CustomException.throwException(ERROR.COMMAND_ERROR, "mode params is incorrect");
+            CustomException.throwException(Error.COMMAND_ERROR, "mode params is incorrect");
         }
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.PROFILE_CERT_FILE);
@@ -337,7 +337,7 @@ public final class HapSignTool {
                 Options.OUT_PROFILE);
         String inForm = params.getString(Options.IN_FORM, "zip");
         if (!containsIgnoreCase(inForm)) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
+            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
         }
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");

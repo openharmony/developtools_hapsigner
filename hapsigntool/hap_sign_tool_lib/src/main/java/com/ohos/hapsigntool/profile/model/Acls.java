@@ -32,7 +32,7 @@ public class Acls {
     private List<String> allowedAcls;
 
     /**
-     * Sub dto of Provision.
+     * allowed acls of Provision.
      */
     public Acls() {}
 

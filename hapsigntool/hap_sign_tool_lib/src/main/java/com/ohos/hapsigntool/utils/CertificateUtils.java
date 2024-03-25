@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * Utils of certificate processing.
  *
@@ -49,6 +48,7 @@ public class CertificateUtils {
 
     /**
      * Check cert list is cert chain.
+     *
      * @param certs certs
      * @throws VerifyCertificateChainException certificates in file are not certificate chain
      */
@@ -56,17 +56,17 @@ public class CertificateUtils {
         if (certs.size() <= 1) {
             return;
         }
-        for(int i = 1; i < certs.size(); i++) {
+        for (int i = 1; i < certs.size(); i++) {
             try {
                 certs.get(i - 1).verify(certs.get(i).getPublicKey());
                 certs.get(i - 1).checkValidity();
-                if (!certs.get(i - 1).getIssuerDN().equals(certs.get(i).getSubjectDN())){
+                if (!certs.get(i - 1).getIssuerDN().equals(certs.get(i).getSubjectDN())) {
                     throw new CertificateException("verify certificate chain issuer subject failed") ;
                 }
                 if (i == certs.size() - 1) {
                     certs.get(i).checkValidity();
                 }
-            } catch (CertificateExpiredException |  CertificateNotYetValidException e) {
+            } catch (CertificateExpiredException | CertificateNotYetValidException e) {
                 throw new VerifyCertificateChainException("The certificate has expired! " + e.getMessage());
             } catch (CertificateException | NoSuchAlgorithmException | InvalidKeyException
                 | NoSuchProviderException | SignatureException e) {

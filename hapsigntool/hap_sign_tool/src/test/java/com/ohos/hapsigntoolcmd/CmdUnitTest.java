@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.ohos.hapsigntool.HapSignTool;
+import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.zip.Zip;
@@ -441,7 +442,7 @@ public class CmdUnitTest {
             assertFalse(result);
             assertFalse(FileUtils.isFileExist(CMD_KEY_APP_STORE_PATH));
             assertFalse(FileUtils.isFileExist(CMD_KEY_PROFILE_STORE_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
 
@@ -482,7 +483,7 @@ public class CmdUnitTest {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CSR});
             assertFalse(result);
             assertFalse(FileUtils.isFileExist(CMD_CSR_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
 
@@ -513,7 +514,7 @@ public class CmdUnitTest {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CERT});
             assertFalse(result);
             assertFalse(FileUtils.isFileExist(CMD_CERT_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
 
@@ -562,7 +563,7 @@ public class CmdUnitTest {
             assertFalse(FileUtils.isFileExist(CMD_ROOT_PROFILE_CA_PATH));
             assertFalse(FileUtils.isFileExist(CMD_SUB_APP_CA_PATH));
             assertFalse(FileUtils.isFileExist(CMD_SUB_PROFILE_CA_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
         deleteFile(CMD_ROOT_APP_CA_PATH);
@@ -598,7 +599,7 @@ public class CmdUnitTest {
             assertFalse(result);
             assertFalse(FileUtils.isFileExist(CMD_APP_DEBUG_CERT_PATH));
             assertFalse(FileUtils.isFileExist(CMD_APP_RELEASE_CERT_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
         deleteFile(CMD_APP_DEBUG_CERT_PATH);
@@ -656,7 +657,7 @@ public class CmdUnitTest {
             assertFalse(result);
             assertFalse(FileUtils.isFileExist(CMD_PROFILE_DEBUG_CERT_PATH));
             assertFalse(FileUtils.isFileExist(CMD_PROFILE_RELEASE_CERT_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
         deleteFile(CMD_PROFILE_DEBUG_CERT_PATH);
@@ -712,7 +713,7 @@ public class CmdUnitTest {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.SIGN_PROFILE});
             assertFalse(result);
             assertFalse(FileUtils.isFileExist(CMD_SIGN_PROFILE_PATH));
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
 
@@ -742,7 +743,7 @@ public class CmdUnitTest {
         try {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.VERIFY_PROFILE});
             assertFalse(result);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
 
@@ -762,7 +763,7 @@ public class CmdUnitTest {
         try {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.SIGN_APP});
             assertFalse(result);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
     }
@@ -776,7 +777,7 @@ public class CmdUnitTest {
         try {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.VERIFY_APP});
             assertFalse(result);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
     }
