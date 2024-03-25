@@ -18,6 +18,7 @@ package com.ohos.hapsigntool;
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.api.CertTools;
+import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.CertUtils;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -83,14 +85,14 @@ public class CertTest {
      */
     private static final Logger logger = LoggerFactory.getLogger(CertTest.class);
 
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     /**
      * Generate keystore file.
      */
     private final KeyPair keyPair = KeyPairTools.generateKeyPair(KeyPairTools.RSA, KeyPairTools.RSA_2048);
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     /**
      * test RootCaCert
@@ -129,7 +131,7 @@ public class CertTest {
             options.put(Options.SIGN_ALG, "");
             rootCaCert = CertTools.generateRootCaCert(keyPair, csr, new LocalizationAdapter(options));
             assertNull(rootCaCert);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.error(exception, () -> exception.getMessage());
         }
     }
@@ -169,7 +171,7 @@ public class CertTest {
             options.put(Options.SIGN_ALG, "");
             subCaCert = CertTools.generateSubCert(keyPair, csr, new LocalizationAdapter(options));
             assertNull(subCaCert);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
     }
@@ -209,7 +211,7 @@ public class CertTest {
             options.put(Options.SIGN_ALG, "");
             appCert = CertTools.generateEndCert(keyPair, csr, new LocalizationAdapter(options), APP_SIGNING_CAPABILITY);
             assertNull(appCert);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
             logger.info(exception, () -> exception.getMessage());
         }
     }
@@ -231,7 +233,6 @@ public class CertTest {
     }
 
     private byte[] generateCsrParameters(X500Name name) {
-        byte[] csr = CertTools.generateCsr(keyPair, SHA_384_WITH_RSA, name);
-        return csr;
+        return CertTools.generateCsr(keyPair, SHA_384_WITH_RSA, name);
     }
 }

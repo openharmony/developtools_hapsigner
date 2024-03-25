@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.profile.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 
 /**
@@ -79,6 +79,7 @@ public class Provision {
      * Number 100.
      */
     public static final int NUM_ONE_HUNDRED = 100;
+
     /**
      * newline character
      */
@@ -167,6 +168,7 @@ public class Provision {
 
     /**
      * buildType valid
+     *
      * @param buildType buildType
      * @return  Is the buildType release
      */
@@ -193,9 +195,9 @@ public class Provision {
      */
     public static void enforceValid(Provision provision) {
         ValidateUtils.throwIfMatches(provision.type == null || !isBuildTypeValid(provision.type),
-                ERROR.SIGN_ERROR, "Require build type must be debug or release, current is :" + provision.type);
+                Error.SIGN_ERROR, "Require build type must be debug or release, current is :" + provision.type);
 
-        ValidateUtils.throwIfMatches(provision.bundleInfo == null, ERROR.SIGN_ERROR,
+        ValidateUtils.throwIfMatches(provision.bundleInfo == null, Error.SIGN_ERROR,
                 "Require bundleInfo in provision!");
         provision.bundleInfo.enforceValid(provision.type);
     }

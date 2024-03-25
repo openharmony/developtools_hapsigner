@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.Error;
 
 /**
  * ValidateUtils.
@@ -35,7 +35,7 @@ public final class ValidateUtils {
      * @param errorMsg  Error msg to throw
      * @throws CustomException CustomException
      */
-    public static void throwIfNotMatches(boolean isMatch, ERROR error, String errorMsg) throws CustomException {
+    public static void throwIfNotMatches(boolean isMatch, Error error, String errorMsg) throws CustomException {
         if (!isMatch) {
             CustomException.throwException(error, errorMsg);
         }
@@ -49,7 +49,7 @@ public final class ValidateUtils {
      * @param errorMsg  Error msg to throw
      * @throws CustomException CustomException
      */
-    public static void throwIfMatches(boolean isMatch, ERROR error, String errorMsg) throws CustomException {
+    public static void throwIfMatches(boolean isMatch, Error error, String errorMsg) throws CustomException {
         throwIfNotMatches(!isMatch, error, errorMsg);
     }
 }
