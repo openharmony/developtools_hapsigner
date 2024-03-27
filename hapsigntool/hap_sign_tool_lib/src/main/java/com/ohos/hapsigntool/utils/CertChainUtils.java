@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -61,9 +62,7 @@ public class CertChainUtils {
     }
 
     private static CertPath getCertPath(List<X509Certificate> certificates, KeyStore trustStore, X500Principal issuer,
-                                        BigInteger serial, Date signTime) throws KeyStoreException,
-            InvalidAlgorithmParameterException, NoSuchAlgorithmException, CertPathBuilderException,
-            CertificateException, VerifyException {
+            BigInteger serial, Date signTime) throws GeneralSecurityException, VerifyException {
         if (certificates.size() != 1 && (issuer != null || serial != null)) {
             X509CertSelector targetCertSelector = new X509CertSelector();
             targetCertSelector.setIssuer(issuer);
@@ -122,8 +121,7 @@ public class CertChainUtils {
             } else {
                 CustomException.throwException(Error.VERIFY_ERROR, "Validator result not target type");
             }
-        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException | CertificateException
-                | KeyStoreException | CertPathBuilderException | CertPathValidatorException exception) {
+        } catch (IOException | GeneralSecurityException exception) {
             throw new VerifyException("Cert chain verify failed! " + exception.getMessage());
         }
     }
