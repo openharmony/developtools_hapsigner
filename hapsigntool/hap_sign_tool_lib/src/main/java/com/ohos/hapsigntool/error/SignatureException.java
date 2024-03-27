@@ -22,6 +22,7 @@ package com.ohos.hapsigntool.error;
  */
 public class SignatureException extends Exception {
     private static final long serialVersionUID = 1L;
+    
     private int errorCode;
 
     /**
