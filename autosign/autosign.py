@@ -285,7 +285,10 @@ def replace_cert_in_profile():
     with open(profile_file, 'r', encoding='utf-8') as f:
         profile = json.load(f)
 
-    profile["bundle-info"]["distribution-certificate"] = app_cert
+    try:
+        profile["bundle-info"]["distribution-certificate"] = app_cert
+    except KeyError:
+        print("could not find distribution-certificate key in profile")
 
     # save profile
     flags = os.O_WRONLY | os.O_TRUNC
