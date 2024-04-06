@@ -21,17 +21,29 @@ package com.ohos.entity;
  * @since 2024/04/06
  */
 public class RetMsg {
+    /**
+     * success return code
+     */
+    public static final int SUCCESS_CODE = 0;
+
+    /**
+     * sign failed return code
+     */
+    public static final int SIGN_FAILED_CODE = 100;
+
+    /**
+     * param error return code
+     */
+    public static final int PARAM_ERROR_CODE = 200;
+
+    /**
+     * unknown error return code
+     */
+    public static final int UNKNOWN_ERROR_CODE = 300;
+
     private int errCode;
 
     private String errMessage;
-
-    public static int SUCCESS_CODE = 0;
-
-    public static int SIGN_FAILED_CODE = 100;
-
-    public static int PARAM_ERROR_CODE = 200;
-
-    public static int UNKNOWN_ERROR_CODE = 300;
 
     public RetMsg(int errCode, String errMessage) {
         this.errCode = errCode;
