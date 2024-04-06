@@ -22,6 +22,7 @@ import com.ohos.entity.VerifyAppParameters;
 import com.ohos.entity.VerifyProfileParameters;
 import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.utils.FileUtils;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -81,6 +82,13 @@ public class ConcurrencyTest {
         }
     }
 
+    /**
+     * test Sign Hap
+     * 
+     * @throws IOException IOException
+     * @throws ExecutionException ExecutionException
+     * @throws InterruptedException InterruptedException
+     */
     @RepeatedTest(5)
     public void testSignHapConcurrent() throws IOException, ExecutionException, InterruptedException {
         executeConcurrentTask();

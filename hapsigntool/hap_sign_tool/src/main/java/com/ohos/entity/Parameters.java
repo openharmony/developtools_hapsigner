@@ -24,5 +24,11 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public interface Parameters {
+    /**
+     * Run Parameters
+     *
+     * @return Options
+     * @throws ParamException ParamException
+     */
     Options toOptions() throws ParamException;
 }
