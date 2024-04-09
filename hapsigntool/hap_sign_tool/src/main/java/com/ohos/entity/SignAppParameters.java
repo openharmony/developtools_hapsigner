@@ -25,7 +25,7 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public class SignAppParameters implements Parameters {
-    private String mode;
+    private Mode mode;
 
     private String keyAlias;
 
@@ -35,9 +35,9 @@ public class SignAppParameters implements Parameters {
 
     private String profileFile;
 
-    private Integer profileSigned;
+    private ProFileSigned profileSigned;
 
-    private String inForm;
+    private InForm inForm;
 
     private String inFile;
 
@@ -49,7 +49,7 @@ public class SignAppParameters implements Parameters {
 
     private String outFile;
 
-    private String signCode;
+    private SignCode signCode;
 
     @Override
     public Options toOptions() throws ParamException {
@@ -57,7 +57,7 @@ public class SignAppParameters implements Parameters {
         if (mode == null) {
             throw new ParamException(Options.MODE);
         }
-        options.put(Options.MODE, mode);
+        options.put(Options.MODE, mode.getValue());
         if (keyAlias == null) {
             throw new ParamException(Options.KEY_ALIAS);
         }
@@ -74,10 +74,10 @@ public class SignAppParameters implements Parameters {
         }
         options.put(Options.PROFILE_FILE, profileFile);
         if (profileSigned != null) {
-            options.put(Options.PROFILE_SIGNED, profileSigned);
+            options.put(Options.PROFILE_SIGNED, profileSigned.getValue());
         }
         if (inForm != null) {
-            options.put(Options.IN_FORM, inForm);
+            options.put(Options.IN_FORM, inForm.getValue());
         }
         if (inFile == null) {
             throw new ParamException(Options.IN_FILE);
@@ -99,16 +99,16 @@ public class SignAppParameters implements Parameters {
         }
         options.put(Options.OUT_FILE, outFile);
         if (signCode != null) {
-            options.put(ParamConstants.PARAM_SIGN_CODE, signCode);
+            options.put(ParamConstants.PARAM_SIGN_CODE, signCode.getValue());
         }
         return options;
     }
 
-    public String getMode() {
+    public Mode getMode() {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public void setMode(Mode mode) {
         this.mode = mode;
     }
 
@@ -144,19 +144,19 @@ public class SignAppParameters implements Parameters {
         this.profileFile = profileFile;
     }
 
-    public Integer getProfileSigned() {
+    public ProFileSigned getProfileSigned() {
         return profileSigned;
     }
 
-    public void setProfileSigned(Integer profileSigned) {
+    public void setProfileSigned(ProFileSigned profileSigned) {
         this.profileSigned = profileSigned;
     }
 
-    public String getInForm() {
+    public InForm getInForm() {
         return inForm;
     }
 
-    public void setInForm(String inForm) {
+    public void setInForm(InForm inForm) {
         this.inForm = inForm;
     }
 
@@ -200,11 +200,11 @@ public class SignAppParameters implements Parameters {
         this.outFile = outFile;
     }
 
-    public String getSignCode() {
+    public SignCode getSignCode() {
         return signCode;
     }
 
-    public void setSignCode(String signCode) {
+    public void setSignCode(SignCode signCode) {
         this.signCode = signCode;
     }
 }

@@ -24,7 +24,7 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public class SignProfileParameters implements Parameters {
-    private String mode;
+    private Mode mode;
 
     private String keyAlias;
 
@@ -48,7 +48,7 @@ public class SignProfileParameters implements Parameters {
         if (mode == null) {
             throw new ParamException(Options.MODE);
         }
-        options.put(Options.MODE, mode);
+        options.put(Options.MODE, mode.getValue());
         if (keyAlias == null) {
             throw new ParamException(Options.KEY_ALIAS);
         }
@@ -82,11 +82,11 @@ public class SignProfileParameters implements Parameters {
         return options;
     }
 
-    public String getMode() {
+    public Mode getMode() {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public void setMode(Mode mode) {
         this.mode = mode;
     }
 
