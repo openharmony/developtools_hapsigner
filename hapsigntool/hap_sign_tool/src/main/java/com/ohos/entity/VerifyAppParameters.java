@@ -30,7 +30,7 @@ public class VerifyAppParameters implements Parameters {
 
     private String outProfile;
 
-    private String inForm;
+    private InForm inForm;
 
     @Override
     public Options toOptions() throws ParamException {
@@ -48,7 +48,7 @@ public class VerifyAppParameters implements Parameters {
         }
         options.put(Options.OUT_PROFILE, outProfile);
         if (inForm != null) {
-            options.put(Options.IN_FORM, inForm);
+            options.put(Options.IN_FORM, inForm.getValue());
         }
         return options;
     }
@@ -77,11 +77,11 @@ public class VerifyAppParameters implements Parameters {
         this.outProfile = outProfile;
     }
 
-    public String getInForm() {
+    public InForm getInForm() {
         return inForm;
     }
 
-    public void setInForm(String inForm) {
+    public void setInForm(InForm inForm) {
         this.inForm = inForm;
     }
 }

@@ -15,8 +15,12 @@
 
 package com.ohos.hapsigntoolcmd;
 
+import com.ohos.entity.InForm;
+import com.ohos.entity.Mode;
+import com.ohos.entity.ProFileSigned;
 import com.ohos.entity.RetMsg;
 import com.ohos.entity.SignAppParameters;
+import com.ohos.entity.SignCode;
 import com.ohos.entity.SignProfileParameters;
 import com.ohos.entity.VerifyAppParameters;
 import com.ohos.entity.VerifyProfileParameters;
@@ -195,7 +199,7 @@ public class ConcurrencyTest {
 
         private boolean signProfile() throws IOException {
             SignProfileParameters signProfileParameters = new SignProfileParameters();
-            signProfileParameters.setMode("localSign");
+            signProfileParameters.setMode(Mode.localSign);
             signProfileParameters.setKeyAlias("oh-app1-key-v1");
             signProfileParameters.setKeyPwd("123456".toCharArray());
             signProfileParameters.setProfileCertFile("../../tools/profile-debug1.pem");
@@ -216,7 +220,7 @@ public class ConcurrencyTest {
 
         private boolean signApp() throws IOException {
             SignAppParameters signAppParameters = new SignAppParameters();
-            signAppParameters.setMode("localSign");
+            signAppParameters.setMode(Mode.localSign);
             signAppParameters.setKeyAlias("oh-app1-key-v1");
             signAppParameters.setKeyPwd("123456".toCharArray());
             signAppParameters.setAppCertFile("../../tools/app1.pem");
@@ -226,6 +230,9 @@ public class ConcurrencyTest {
             signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
             signAppParameters.setKeystorePwd("123456".toCharArray());
             signAppParameters.setOutFile(outputFile.getCanonicalPath());
+            signAppParameters.setProfileSigned(ProFileSigned.signed);
+            signAppParameters.setInForm(InForm.zip);
+            signAppParameters.setSignCode(SignCode.open);
             return HapSignTool.signApp(signAppParameters).getErrCode() == RetMsg.SUCCESS_CODE;
         }
 
