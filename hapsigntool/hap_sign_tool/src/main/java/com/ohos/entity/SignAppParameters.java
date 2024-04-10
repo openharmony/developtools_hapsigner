@@ -73,10 +73,14 @@ public class SignAppParameters implements Parameters {
             throw new ParamException(Options.PROFILE_FILE);
         }
         options.put(Options.PROFILE_FILE, profileFile);
-        if (profileSigned != null) {
+        if (profileSigned == null) {
+            options.put(Options.PROFILE_SIGNED, ProFileSigned.signed.getValue());
+        } else {
             options.put(Options.PROFILE_SIGNED, profileSigned.getValue());
         }
-        if (inForm != null) {
+        if (inForm == null) {
+            options.put(Options.IN_FORM, InForm.zip.getValue());
+        } else {
             options.put(Options.IN_FORM, inForm.getValue());
         }
         if (inFile == null) {

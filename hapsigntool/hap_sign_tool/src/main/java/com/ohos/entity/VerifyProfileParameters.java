@@ -35,10 +35,9 @@ public class VerifyProfileParameters implements Parameters {
             throw new ParamException(Options.IN_FILE);
         }
         options.put(Options.IN_FILE, inFile);
-        if (outFile == null) {
-            throw new ParamException(Options.OUT_FILE);
+        if (outFile != null) {
+            options.put(Options.OUT_FILE, outFile);
         }
-        options.put(Options.OUT_FILE, outFile);
         return options;
     }
 
