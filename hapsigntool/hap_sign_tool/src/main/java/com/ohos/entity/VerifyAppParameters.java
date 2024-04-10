@@ -47,7 +47,9 @@ public class VerifyAppParameters implements Parameters {
             throw new ParamException(Options.OUT_PROFILE);
         }
         options.put(Options.OUT_PROFILE, outProfile);
-        if (inForm != null) {
+        if (inForm == null) {
+            options.put(Options.IN_FORM, InForm.zip.getValue());
+        } else {
             options.put(Options.IN_FORM, inForm.getValue());
         }
         return options;

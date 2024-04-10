@@ -37,6 +37,6 @@ public class ParamException extends Exception {
      * @param message message
      */
     public ParamException(String key, String message) {
-        super("param " + key + message);
+        super("param " + key + " " + message);
     }
 }
