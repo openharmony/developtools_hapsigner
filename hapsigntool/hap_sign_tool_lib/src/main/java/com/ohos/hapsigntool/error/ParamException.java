@@ -21,7 +21,22 @@ package com.ohos.hapsigntool.error;
  * @since 2024/04/06
  */
 public class ParamException extends Exception {
+    /**
+     *ParamException
+     *
+     * @param key key
+     */
     public ParamException(String key) {
         super("param " + key + " is null");
+    }
+
+    /**
+     * ParamException
+     *
+     * @param key key
+     * @param message message
+     */
+    public ParamException(String key, String message) {
+        super("param " + key + message);
     }
 }

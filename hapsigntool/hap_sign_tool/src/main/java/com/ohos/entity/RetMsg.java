@@ -15,46 +15,28 @@
 
 package com.ohos.entity;
 
+import com.ohos.hapsigntool.error.Error;
+
 /**
  * RetMsg.
  *
  * @since 2024/04/06
  */
 public class RetMsg {
-    /**
-     * success return code
-     */
-    public static final int SUCCESS_CODE = 0;
-
-    /**
-     * sign failed return code
-     */
-    public static final int SIGN_FAILED_CODE = 100;
-
-    /**
-     * param error return code
-     */
-    public static final int PARAM_ERROR_CODE = 200;
-
-    /**
-     * unknown error return code
-     */
-    public static final int UNKNOWN_ERROR_CODE = 300;
-
-    private int errCode;
+    private Error errCode;
 
     private String errMessage;
 
-    public RetMsg(int errCode, String errMessage) {
+    public RetMsg(Error errCode, String errMessage) {
         this.errCode = errCode;
         this.errMessage = errMessage;
     }
 
-    public int getErrCode() {
+    public Error getErrCode() {
         return errCode;
     }
 
-    public void setErrCode(int errCode) {
+    public void setErrCode(Error errCode) {
         this.errCode = errCode;
     }
 

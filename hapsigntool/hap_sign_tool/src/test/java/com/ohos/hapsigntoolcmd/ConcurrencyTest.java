@@ -18,13 +18,13 @@ package com.ohos.hapsigntoolcmd;
 import com.ohos.entity.InForm;
 import com.ohos.entity.Mode;
 import com.ohos.entity.ProFileSigned;
-import com.ohos.entity.RetMsg;
 import com.ohos.entity.SignAppParameters;
 import com.ohos.entity.SignCode;
 import com.ohos.entity.SignProfileParameters;
 import com.ohos.entity.VerifyAppParameters;
 import com.ohos.entity.VerifyProfileParameters;
 import com.ohos.hapsigntool.HapSignTool;
+import com.ohos.hapsigntool.error.Error;
 import com.ohos.hapsigntool.utils.FileUtils;
 
 import org.junit.jupiter.api.AfterAll;
@@ -64,6 +64,8 @@ public class ConcurrencyTest {
 
     private static final int CONCURRENT_TASK_COUNT = 100;
 
+    private static final int LOOP_COUNT = 5;
+
     private static final int KEEP_ALIVE_TIMES = 30;
 
     private static final int MAX_ENTRY_SIZE = 10 * 1024 * 1024;
@@ -93,7 +95,7 @@ public class ConcurrencyTest {
      * @throws ExecutionException ExecutionException
      * @throws InterruptedException InterruptedException
      */
-    @RepeatedTest(5)
+    @RepeatedTest(2)
     public void testSignHapConcurrent() throws IOException, ExecutionException, InterruptedException {
         executeConcurrentTask();
     }
@@ -180,18 +182,23 @@ public class ConcurrencyTest {
         @Override
         public Boolean call() throws IOException {
             try {
-                if (!signProfile()) {
-                    return false;
-                }
+                for (int i = 0; i < LOOP_COUNT; i++) {
+                    if (!signProfile()) {
+                        return false;
+                    }
 
-                if (!verifyProfile()) {
-                    return false;
-                }
+                    if (!verifyProfile()) {
+                        return false;
+                    }
 
-                if (!signApp()) {
-                    return false;
+                    if (!signApp()) {
+                        return false;
+                    }
+                    if (!verifyApp()) {
+                        return false;
+                    }
                 }
-                return verifyApp();
+                return true;
             } finally {
                 countDownLatch.countDown();
             }
@@ -208,14 +215,14 @@ public class ConcurrencyTest {
             signProfileParameters.setKeyStoreFile("../../tools/ohtest.jks");
             signProfileParameters.setKeystorePwd("123456".toCharArray());
             signProfileParameters.setOutFile(profile.getCanonicalPath());
-            return HapSignTool.signProfile(signProfileParameters).getErrCode() == RetMsg.SUCCESS_CODE;
+            return HapSignTool.signProfile(signProfileParameters).getErrCode() == Error.SUCCESS_CODE;
         }
 
         private boolean verifyProfile() throws IOException {
             VerifyProfileParameters verifyProfileParameters = new VerifyProfileParameters();
             verifyProfileParameters.setInFile(profile.getCanonicalPath());
             verifyProfileParameters.setOutFile("out.json");
-            return HapSignTool.verifyProfile(verifyProfileParameters).getErrCode() == RetMsg.SUCCESS_CODE;
+            return HapSignTool.verifyProfile(verifyProfileParameters).getErrCode() == Error.SUCCESS_CODE;
         }
 
         private boolean signApp() throws IOException {
@@ -233,7 +240,7 @@ public class ConcurrencyTest {
             signAppParameters.setProfileSigned(ProFileSigned.signed);
             signAppParameters.setInForm(InForm.zip);
             signAppParameters.setSignCode(SignCode.open);
-            return HapSignTool.signApp(signAppParameters).getErrCode() == RetMsg.SUCCESS_CODE;
+            return HapSignTool.signApp(signAppParameters).getErrCode() == Error.SUCCESS_CODE;
         }
 
         private boolean verifyApp() throws IOException {
@@ -241,7 +248,7 @@ public class ConcurrencyTest {
             verifyAppParameters.setInFile(outputFile.getCanonicalPath());
             verifyAppParameters.setOutCertChain("out.cer");
             verifyAppParameters.setOutProfile("out.p7b");
-            return HapSignTool.verifyApp(verifyAppParameters).getErrCode() == RetMsg.SUCCESS_CODE;
+            return HapSignTool.verifyApp(verifyAppParameters).getErrCode() == Error.SUCCESS_CODE;
         }
     }
 }

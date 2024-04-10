@@ -384,71 +384,107 @@ public final class HapSignTool {
         return false;
     }
 
+    /**
+     * sign App
+     *
+     * @param signAppParameters verifyProfileParameters
+     * @return RetMsg
+     */
     public static RetMsg signApp(SignAppParameters signAppParameters) {
         try {
+            if (signAppParameters == null) {
+                throw new ParamException("params is null");
+            }
             Options options = signAppParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runSignApp(options, api)) {
-                return new RetMsg(RetMsg.SUCCESS_CODE, "success");
+                return new RetMsg(Error.SUCCESS_CODE, "sign app success");
             }
-            return new RetMsg(RetMsg.SIGN_FAILED_CODE, "sign app failed");
+            return new RetMsg(Error.SIGN_ERROR, "sign app failed");
         } catch (CustomException e) {
-            return new RetMsg(e.getError().getErrorCode(), e.getMessage());
+            return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(RetMsg.PARAM_ERROR_CODE, "paramException : " + e.getMessage());
+            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(RetMsg.UNKNOWN_ERROR_CODE, "unknownException : " + e.getMessage());
+            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 
+    /**
+     * verify App
+     *
+     * @param verifyAppParameters verifyProfileParameters
+     * @return RetMsg
+     */
     public static RetMsg verifyApp(VerifyAppParameters verifyAppParameters) {
         try {
+            if (verifyAppParameters == null) {
+                throw new ParamException("params is null");
+            }
             Options options = verifyAppParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runVerifyApp(options, api)) {
-                return new RetMsg(RetMsg.SUCCESS_CODE, "success");
+                return new RetMsg(Error.SUCCESS_CODE, "verify app success");
             }
-            return new RetMsg(RetMsg.SIGN_FAILED_CODE, "verify app failed");
+            return new RetMsg(Error.VERIFY_ERROR, "verify app failed");
         } catch (CustomException e) {
-            return new RetMsg(e.getError().getErrorCode(), e.getMessage());
+            return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(RetMsg.PARAM_ERROR_CODE, "paramException : " + e.getMessage());
+            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(RetMsg.UNKNOWN_ERROR_CODE, "unknownException : " + e.getMessage());
+            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 
+    /**
+     * sign Profile
+     *
+     * @param signProfileParameters verifyProfileParameters
+     * @return RetMsg
+     */
     public static RetMsg signProfile(SignProfileParameters signProfileParameters) {
         try {
+            if (signProfileParameters == null) {
+                throw new ParamException("params is null");
+            }
             Options options = signProfileParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runSignProfile(options, api)) {
-                return new RetMsg(RetMsg.SUCCESS_CODE, "success");
+                return new RetMsg(Error.SUCCESS_CODE, "sign profile success");
             }
-            return new RetMsg(RetMsg.SIGN_FAILED_CODE, "sign profile failed");
+            return new RetMsg(Error.SIGN_ERROR, "sign profile failed");
         } catch (CustomException e) {
-            return new RetMsg(e.getError().getErrorCode(), e.getMessage());
+            return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(RetMsg.PARAM_ERROR_CODE, "paramException : " + e.getMessage());
+            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(RetMsg.UNKNOWN_ERROR_CODE, "unknownException : " + e.getMessage());
+            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 
+    /**
+     * verify Profile
+     *
+     * @param verifyProfileParameters verifyProfileParameters
+     * @return RetMsg
+     */
     public static RetMsg verifyProfile(VerifyProfileParameters verifyProfileParameters) {
         try {
+            if (verifyProfileParameters == null) {
+                throw new ParamException("params is null");
+            }
             Options options = verifyProfileParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runVerifyProfile(options, api)) {
-                return new RetMsg(RetMsg.SUCCESS_CODE, "success");
+                return new RetMsg(Error.SUCCESS_CODE, "sign profile success");
             }
-            return new RetMsg(RetMsg.SIGN_FAILED_CODE, "verify profile failed");
+            return new RetMsg(Error.VERIFY_ERROR, "verify profile failed");
         } catch (CustomException e) {
-            return new RetMsg(e.getError().getErrorCode(), e.getMessage());
+            return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(RetMsg.PARAM_ERROR_CODE, "paramException : " + e.getMessage());
+            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(RetMsg.UNKNOWN_ERROR_CODE, "unknownException : " + e.getMessage());
+            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 }

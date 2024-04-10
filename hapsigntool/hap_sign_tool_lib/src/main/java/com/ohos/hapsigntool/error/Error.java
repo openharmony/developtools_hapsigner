@@ -22,6 +22,14 @@ package com.ohos.hapsigntool.error;
  */
 public enum Error {
     /**
+     * success return code
+     */
+    SUCCESS_CODE(0),
+    /**
+     * unknown error code
+     */
+    UNKNOWN_ERROR(100),
+    /**
      * Enum constant COMMAND_ERROR.
      */
     COMMAND_ERROR(101),
