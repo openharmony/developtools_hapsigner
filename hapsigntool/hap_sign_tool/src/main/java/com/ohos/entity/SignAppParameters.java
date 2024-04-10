@@ -51,6 +51,18 @@ public class SignAppParameters implements Parameters {
 
     private SignCode signCode;
 
+    private String userName;
+
+    private String userPwd;
+
+    private String signServer;
+
+    private String signerPlugin;
+
+    private String compatibleVersion;
+
+    private String onlineAuthMode;
+
     @Override
     public Options toOptions() throws ParamException {
         Options options = new Options();
@@ -104,6 +116,19 @@ public class SignAppParameters implements Parameters {
         options.put(Options.OUT_FILE, outFile);
         if (signCode != null) {
             options.put(ParamConstants.PARAM_SIGN_CODE, signCode.getValue());
+        }
+
+        if (mode == Mode.remoteSign) {
+            if (signServer == null || userPwd == null || userName == null || signerPlugin == null ||
+                    compatibleVersion == null || onlineAuthMode == null) {
+                throw new ParamException("remote sign params failed");
+            }
+            options.put("signServer", signServer);
+            options.put("userPwd", userPwd);
+            options.put("userName", userName);
+            options.put("signerPlugin", signerPlugin);
+            options.put("compatibleVersion", compatibleVersion);
+            options.put("onlineAuthMode", onlineAuthMode);
         }
         return options;
     }
