@@ -77,10 +77,9 @@ public class SignAppParameters implements Parameters {
         if (keyPwd != null) {
             options.put(Options.KEY_RIGHTS, keyPwd);
         }
-        if (appCertFile == null) {
-            throw new ParamException(Options.APP_CERT_FILE);
+        if (appCertFile != null) {
+            options.put(Options.APP_CERT_FILE, appCertFile);
         }
-        options.put(Options.APP_CERT_FILE, appCertFile);
         if (profileFile == null) {
             throw new ParamException(Options.PROFILE_FILE);
         }
@@ -99,10 +98,9 @@ public class SignAppParameters implements Parameters {
             throw new ParamException(Options.SIGN_ALG);
         }
         options.put(Options.SIGN_ALG, signAlg);
-        if (keyStoreFile == null) {
-            throw new ParamException(Options.KEY_STORE_FILE);
+        if (keyStoreFile != null) {
+            options.put(Options.KEY_STORE_FILE, keyStoreFile);
         }
-        options.put(Options.KEY_STORE_FILE, keyStoreFile);
         if (keystorePwd != null) {
             options.put(Options.KEY_STORE_RIGHTS, keystorePwd);
         }
@@ -232,5 +230,53 @@ public class SignAppParameters implements Parameters {
 
     public void setSignCode(SignCode signCode) {
         this.signCode = signCode;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserPwd() {
+        return userPwd;
+    }
+
+    public void setUserPwd(String userPwd) {
+        this.userPwd = userPwd;
+    }
+
+    public String getSignServer() {
+        return signServer;
+    }
+
+    public void setSignServer(String signServer) {
+        this.signServer = signServer;
+    }
+
+    public String getSignerPlugin() {
+        return signerPlugin;
+    }
+
+    public void setSignerPlugin(String signerPlugin) {
+        this.signerPlugin = signerPlugin;
+    }
+
+    public String getCompatibleVersion() {
+        return compatibleVersion;
+    }
+
+    public void setCompatibleVersion(String compatibleVersion) {
+        this.compatibleVersion = compatibleVersion;
+    }
+
+    public String getOnlineAuthMode() {
+        return onlineAuthMode;
+    }
+
+    public void setOnlineAuthMode(String onlineAuthMode) {
+        this.onlineAuthMode = onlineAuthMode;
     }
 }
