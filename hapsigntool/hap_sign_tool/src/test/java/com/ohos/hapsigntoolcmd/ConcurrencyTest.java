@@ -211,10 +211,10 @@ public class ConcurrencyTest {
             signProfileParameters.setMode(Mode.LOCAL_SIGN);
             signProfileParameters.setKeyAlias("oh-app1-key-v1");
             signProfileParameters.setKeyPwd("123456".toCharArray());
-            signProfileParameters.setProfileCertFile("../../tools/profile-debug1.pem");
+            signProfileParameters.setProfileCertFile("../../tools/app1.pem");
             signProfileParameters.setInFile("../../tools/profile.json");
             signProfileParameters.setSignAlg("SHA256withECDSA");
-            signProfileParameters.setKeyStoreFile("../../tools/ohtest.jks");
+            signProfileParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
             signProfileParameters.setKeystorePwd("123456".toCharArray());
             signProfileParameters.setOutFile(profile.getCanonicalPath());
             return HapSignTool.signProfile(signProfileParameters).getErrCode() == Error.SUCCESS_CODE;

@@ -77,7 +77,9 @@ public class SignAppParameters implements Parameters {
         if (keyPwd != null) {
             options.put(Options.KEY_RIGHTS, keyPwd);
         }
-        if (appCertFile != null) {
+        if (mode == Mode.LOCAL_SIGN && appCertFile == null) {
+            throw new ParamException(Options.APP_CERT_FILE);
+        } else if (appCertFile != null) {
             options.put(Options.APP_CERT_FILE, appCertFile);
         }
         if (profileFile == null) {
@@ -98,7 +100,9 @@ public class SignAppParameters implements Parameters {
             throw new ParamException(Options.SIGN_ALG);
         }
         options.put(Options.SIGN_ALG, signAlg);
-        if (keyStoreFile != null) {
+        if (mode == Mode.LOCAL_SIGN && keyStoreFile == null) {
+            throw new ParamException(Options.KEY_STORE_FILE);
+        } else if (keyStoreFile != null) {
             options.put(Options.KEY_STORE_FILE, keyStoreFile);
         }
         if (keystorePwd != null) {
