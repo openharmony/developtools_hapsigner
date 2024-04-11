@@ -21,8 +21,8 @@ package com.ohos.entity;
  * @since 2024/04/09
  */
 public enum ProFileSigned {
-    signed(1),
-    unsigned(0);
+    SIGNED(1),
+    UNSIGNED(0);
 
     private final int value;
 

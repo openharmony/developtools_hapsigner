@@ -239,7 +239,7 @@ public class ConcurrencyTest {
             signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
             signAppParameters.setKeystorePwd("123456".toCharArray());
             signAppParameters.setOutFile(outputFile.getCanonicalPath());
-            signAppParameters.setProfileSigned(ProFileSigned.signed);
+            signAppParameters.setProfileSigned(ProFileSigned.SIGNED);
             signAppParameters.setInForm(InForm.ZIP);
             signAppParameters.setSignCode(SignCode.OPEN);
             return HapSignTool.signApp(signAppParameters).getErrCode() == Error.SUCCESS_CODE;
