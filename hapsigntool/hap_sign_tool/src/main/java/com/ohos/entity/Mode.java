@@ -21,8 +21,8 @@ package com.ohos.entity;
  * @since 2024/04/09
  */
 public enum Mode {
-    localSign("localSign"),
-    remoteSign("remoteSign");
+    LOCAL_SIGN("localSign"),
+    REMOTE_SIGN("remoteSign");
 
     private final String value;
 

@@ -37,7 +37,7 @@ public class SignAppParameters implements Parameters {
 
     private ProFileSigned profileSigned = ProFileSigned.signed;
 
-    private InForm inForm = InForm.zip;
+    private InForm inForm = InForm.ZIP;
 
     private String inFile;
 
@@ -116,7 +116,7 @@ public class SignAppParameters implements Parameters {
         if (compatibleVersion != null) {
             options.put("compatibleVersion", compatibleVersion);
         }
-        if (mode == Mode.remoteSign) {
+        if (mode == Mode.REMOTE_SIGN) {
             if (signServer == null || userPwd == null || userName == null ||
                     signerPlugin == null || onlineAuthMode == null) {
                 throw new ParamException("remote sign params failed");

@@ -30,7 +30,6 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -108,6 +107,7 @@ public class ConcurrencyTest {
         File profile = File.createTempFile(TMP_SIGNED_FILE, TMP_PROFILE_SUFFIX, TMP_DIR);
         tmpSource.add(new Cleanable(inputFile));
         tmpSource.add(new Cleanable(outputFile));
+        tmpSource.add(new Cleanable(profile));
         generateHap(inputFile);
         return new MultiSignHapTask(inputFile, outputFile, profile, countDownLatch);
     }
@@ -208,7 +208,7 @@ public class ConcurrencyTest {
 
         private boolean signProfile() throws IOException {
             SignProfileParameters signProfileParameters = new SignProfileParameters();
-            signProfileParameters.setMode(Mode.localSign);
+            signProfileParameters.setMode(Mode.LOCAL_SIGN);
             signProfileParameters.setKeyAlias("oh-app1-key-v1");
             signProfileParameters.setKeyPwd("123456".toCharArray());
             signProfileParameters.setProfileCertFile("../../tools/profile-debug1.pem");
@@ -229,7 +229,7 @@ public class ConcurrencyTest {
 
         private boolean signApp() throws IOException {
             SignAppParameters signAppParameters = new SignAppParameters();
-            signAppParameters.setMode(Mode.localSign);
+            signAppParameters.setMode(Mode.LOCAL_SIGN);
             signAppParameters.setKeyAlias("oh-app1-key-v1");
             signAppParameters.setKeyPwd("123456".toCharArray());
             signAppParameters.setAppCertFile("../../tools/app1.pem");
@@ -240,8 +240,8 @@ public class ConcurrencyTest {
             signAppParameters.setKeystorePwd("123456".toCharArray());
             signAppParameters.setOutFile(outputFile.getCanonicalPath());
             signAppParameters.setProfileSigned(ProFileSigned.signed);
-            signAppParameters.setInForm(InForm.zip);
-            signAppParameters.setSignCode(SignCode.open);
+            signAppParameters.setInForm(InForm.ZIP);
+            signAppParameters.setSignCode(SignCode.OPEN);
             return HapSignTool.signApp(signAppParameters).getErrCode() == Error.SUCCESS_CODE;
         }
 
@@ -263,7 +263,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyAlias("oh-app1-key-v1");
         signAppParameters.setKeyPwd("123456".toCharArray());
         signAppParameters.setAppCertFile("../../tools/app1.pem");
@@ -291,7 +291,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyAlias("oh-app1-key-v1");
         signAppParameters.setKeyPwd("123456".toCharArray());
         signAppParameters.setAppCertFile("../../tools/app1.pem");
@@ -301,7 +301,7 @@ public class ConcurrencyTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        signAppParameters.setInForm(InForm.elf);
+        signAppParameters.setInForm(InForm.ELF);
         Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
     }
 
@@ -314,7 +314,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyPwd("123456".toCharArray());
         signAppParameters.setAppCertFile("../../tools/app1.pem");
         signAppParameters.setProfileFile("../../tools/app1-profile.p7b");
@@ -335,7 +335,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyAlias("oh-app1-key-v1");
         signAppParameters.setKeyPwd("123456".toCharArray());
         signAppParameters.setAppCertFile("../../tools/app1.pem");
@@ -357,7 +357,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyAlias("oh-app1-key-v1");
         signAppParameters.setAppCertFile("../../tools/app1.pem");
         signAppParameters.setProfileFile("../../tools/app1-profile.p7b");
@@ -378,7 +378,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyAlias("oh-app1-key-v1");
         signAppParameters.setKeyPwd("123456".toCharArray());
         signAppParameters.setProfileFile("../../tools/app1-profile.p7b");
@@ -399,7 +399,7 @@ public class ConcurrencyTest {
         tmpSource.add(new Cleanable(outputFile));
 
         SignAppParameters signAppParameters = new SignAppParameters();
-        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setMode(Mode.LOCAL_SIGN);
         signAppParameters.setKeyAlias("oh-app1-key-v1");
         signAppParameters.setKeyPwd("123456".toCharArray());
         signAppParameters.setProfileFile("../../tools/app1-profile.p7b");

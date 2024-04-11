@@ -21,9 +21,9 @@ package com.ohos.entity;
  * @since 2024/04/09
  */
 public enum InForm {
-    zip("zip"),
-    elf("elf"),
-    bin("bin");
+    ZIP("zip"),
+    ELF("elf"),
+    BIN("bin");
 
     private final String value;
 
