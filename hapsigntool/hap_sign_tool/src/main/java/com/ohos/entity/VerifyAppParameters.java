@@ -30,7 +30,7 @@ public class VerifyAppParameters implements Parameters {
 
     private String outProfile;
 
-    private InForm inForm = InForm.zip;
+    private InForm inForm = InForm.ZIP;
 
     @Override
     public Options toOptions() throws ParamException {

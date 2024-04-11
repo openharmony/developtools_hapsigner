@@ -21,8 +21,8 @@ package com.ohos.entity;
  * @since 2024/04/09
  */
 public enum SignCode {
-    open("1"),
-    close("0");
+    OPEN("1"),
+    CLOSE("0");
 
     private final String value;
 
