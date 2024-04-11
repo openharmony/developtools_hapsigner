@@ -30,7 +30,7 @@ public class VerifyAppParameters implements Parameters {
 
     private String outProfile;
 
-    private InForm inForm;
+    private InForm inForm = InForm.zip;
 
     @Override
     public Options toOptions() throws ParamException {
@@ -47,9 +47,7 @@ public class VerifyAppParameters implements Parameters {
             throw new ParamException(Options.OUT_PROFILE);
         }
         options.put(Options.OUT_PROFILE, outProfile);
-        if (inForm == null) {
-            options.put(Options.IN_FORM, InForm.zip.getValue());
-        } else {
+        if (inForm != null) {
             options.put(Options.IN_FORM, inForm.getValue());
         }
         return options;

@@ -35,9 +35,9 @@ public class SignAppParameters implements Parameters {
 
     private String profileFile;
 
-    private ProFileSigned profileSigned;
+    private ProFileSigned profileSigned = ProFileSigned.signed;
 
-    private InForm inForm;
+    private InForm inForm = InForm.zip;
 
     private String inFile;
 
@@ -85,14 +85,10 @@ public class SignAppParameters implements Parameters {
             throw new ParamException(Options.PROFILE_FILE);
         }
         options.put(Options.PROFILE_FILE, profileFile);
-        if (profileSigned == null) {
-            options.put(Options.PROFILE_SIGNED, ProFileSigned.signed.getValue());
-        } else {
+        if (profileSigned != null) {
             options.put(Options.PROFILE_SIGNED, profileSigned.getValue());
         }
-        if (inForm == null) {
-            options.put(Options.IN_FORM, InForm.zip.getValue());
-        } else {
+        if (inForm != null) {
             options.put(Options.IN_FORM, inForm.getValue());
         }
         if (inFile == null) {
@@ -117,17 +113,18 @@ public class SignAppParameters implements Parameters {
         if (signCode != null) {
             options.put(ParamConstants.PARAM_SIGN_CODE, signCode.getValue());
         }
-
+        if (compatibleVersion != null) {
+            options.put("compatibleVersion", compatibleVersion);
+        }
         if (mode == Mode.remoteSign) {
-            if (signServer == null || userPwd == null || userName == null || signerPlugin == null ||
-                    compatibleVersion == null || onlineAuthMode == null) {
+            if (signServer == null || userPwd == null || userName == null ||
+                    signerPlugin == null || onlineAuthMode == null) {
                 throw new ParamException("remote sign params failed");
             }
             options.put("signServer", signServer);
             options.put("userPwd", userPwd);
-            options.put("userName", userName);
+            options.put("username", userName);
             options.put("signerPlugin", signerPlugin);
-            options.put("compatibleVersion", compatibleVersion);
             options.put("onlineAuthMode", onlineAuthMode);
         }
         return options;
