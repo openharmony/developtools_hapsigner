@@ -283,6 +283,29 @@ public class ConcurrencyTest {
     }
 
     /**
+     * test sign elf
+     */
+    @Test
+    public void testSignElf() throws IOException {
+        File outputFile = File.createTempFile(TMP_SIGNED_FILE, TMP_HAP_SUFFIX, TMP_DIR);
+        tmpSource.add(new Cleanable(outputFile));
+
+        SignAppParameters signAppParameters = new SignAppParameters();
+        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setKeyAlias("oh-app1-key-v1");
+        signAppParameters.setKeyPwd("123456".toCharArray());
+        signAppParameters.setAppCertFile("../../tools/app1.pem");
+        signAppParameters.setProfileFile("../../tools/app1-profile.p7b");
+        signAppParameters.setInFile("../../tools/test/elf_unittest.elf");
+        signAppParameters.setSignAlg("SHA256withECDSA");
+        signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
+        signAppParameters.setKeystorePwd("123456".toCharArray());
+        signAppParameters.setOutFile(outputFile.getCanonicalPath());
+        signAppParameters.setInForm(InForm.elf);
+        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+    }
+
+    /**
      * test Param Without KeyAlias
      */
     @Test
@@ -341,6 +364,48 @@ public class ConcurrencyTest {
         signAppParameters.setInFile("../../tools/test/app1-unsigned.hap");
         signAppParameters.setSignAlg("SHA256withECDSA");
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
+        signAppParameters.setKeystorePwd("123456".toCharArray());
+        signAppParameters.setOutFile(outputFile.getCanonicalPath());
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+    }
+
+    /**
+     * test Param Without AppCertFile
+     */
+    @Test
+    public void testParamWithoutAppCertFile() throws IOException {
+        File outputFile = File.createTempFile(TMP_SIGNED_FILE, TMP_HAP_SUFFIX, TMP_DIR);
+        tmpSource.add(new Cleanable(outputFile));
+
+        SignAppParameters signAppParameters = new SignAppParameters();
+        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setKeyAlias("oh-app1-key-v1");
+        signAppParameters.setKeyPwd("123456".toCharArray());
+        signAppParameters.setProfileFile("../../tools/app1-profile.p7b");
+        signAppParameters.setInFile("../../tools/test/app1-unsigned.hap");
+        signAppParameters.setSignAlg("SHA256withECDSA");
+        signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
+        signAppParameters.setKeystorePwd("123456".toCharArray());
+        signAppParameters.setOutFile(outputFile.getCanonicalPath());
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+    }
+
+    /**
+     * test Param Without KeyStoreFile
+     */
+    @Test
+    public void testParamWithoutKeyStoreFile() throws IOException {
+        File outputFile = File.createTempFile(TMP_SIGNED_FILE, TMP_HAP_SUFFIX, TMP_DIR);
+        tmpSource.add(new Cleanable(outputFile));
+
+        SignAppParameters signAppParameters = new SignAppParameters();
+        signAppParameters.setMode(Mode.localSign);
+        signAppParameters.setKeyAlias("oh-app1-key-v1");
+        signAppParameters.setKeyPwd("123456".toCharArray());
+        signAppParameters.setProfileFile("../../tools/app1-profile.p7b");
+        signAppParameters.setInFile("../../tools/test/app1-unsigned.hap");
+        signAppParameters.setSignAlg("SHA256withECDSA");
+        signAppParameters.setAppCertFile("../../tools/app1.pem");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
         Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
