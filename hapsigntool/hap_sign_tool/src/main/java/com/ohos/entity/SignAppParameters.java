@@ -35,7 +35,7 @@ public class SignAppParameters implements Parameters {
 
     private String profileFile;
 
-    private ProFileSigned profileSigned = ProFileSigned.signed;
+    private ProFileSigned profileSigned = ProFileSigned.SIGNED;
 
     private InForm inForm = InForm.ZIP;
 
