@@ -145,8 +145,7 @@ public class SignAppParameters implements Parameters {
                 throw new ParamException(Options.APP_CERT_FILE);
             }
             options.put(Options.APP_CERT_FILE, appCertFile);
-        }
-        if (mode == Mode.REMOTE_SIGN) {
+        } else {
             if (appCertFile != null) {
                 options.put(Options.APP_CERT_FILE, appCertFile);
             }
