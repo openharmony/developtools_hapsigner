@@ -132,8 +132,7 @@ public class SignAppParameters implements Parameters {
                 throw new ParamException(Options.KEY_STORE_FILE);
             }
             options.put(Options.KEY_STORE_FILE, keyStoreFile);
-        }
-        if (mode == Mode.REMOTE_SIGN) {
+        } else {
             if (keyStoreFile != null) {
                 throw new ParamException(Options.KEY_STORE_FILE, "remote sign do not use this param");
             }
