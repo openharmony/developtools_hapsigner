@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @since 2024/04/12
  */
-public class MethodTest {
+public class HapSIgnToolTest {
     private static final String TMP_SIGNED_FILE = "signed-";
 
     private static final String TMP_HAP_SUFFIX = ".hap";

@@ -39,14 +39,17 @@ public class VerifyAppParameters implements Parameters {
             throw new ParamException(Options.IN_FILE);
         }
         options.put(Options.IN_FILE, inFile);
+
         if (outCertChain == null) {
             throw new ParamException(Options.OUT_CERT_CHAIN);
         }
         options.put(Options.OUT_CERT_CHAIN, outCertChain);
+
         if (outProfile == null) {
             throw new ParamException(Options.OUT_PROFILE);
         }
         options.put(Options.OUT_PROFILE, outProfile);
+
         if (inForm != null) {
             options.put(Options.IN_FORM, inForm.getValue());
         }
