@@ -77,11 +77,7 @@ public class SignAppParameters implements Parameters {
         if (keyPwd != null) {
             options.put(Options.KEY_RIGHTS, keyPwd);
         }
-        if (mode == Mode.LOCAL_SIGN && appCertFile == null) {
-            throw new ParamException(Options.APP_CERT_FILE);
-        } else if (appCertFile != null) {
-            options.put(Options.APP_CERT_FILE, appCertFile);
-        }
+        appCertFileToOptions(options);
         if (profileFile == null) {
             throw new ParamException(Options.PROFILE_FILE);
         }
@@ -100,11 +96,7 @@ public class SignAppParameters implements Parameters {
             throw new ParamException(Options.SIGN_ALG);
         }
         options.put(Options.SIGN_ALG, signAlg);
-        if (mode == Mode.LOCAL_SIGN && keyStoreFile == null) {
-            throw new ParamException(Options.KEY_STORE_FILE);
-        } else if (keyStoreFile != null) {
-            options.put(Options.KEY_STORE_FILE, keyStoreFile);
-        }
+        keyStoreFileToOptions(options);
         if (keystorePwd != null) {
             options.put(Options.KEY_STORE_RIGHTS, keystorePwd);
         }
@@ -118,10 +110,44 @@ public class SignAppParameters implements Parameters {
         if (compatibleVersion != null) {
             options.put("compatibleVersion", compatibleVersion);
         }
+        remoteSignParamToOptions(options);
+        return options;
+    }
+
+    private void keyStoreFileToOptions(Options options) throws ParamException {
+        if (mode == Mode.LOCAL_SIGN && keyStoreFile == null) {
+            throw new ParamException(Options.KEY_STORE_FILE);
+        } else if (mode == Mode.REMOTE_SIGN && keyStoreFile != null) {
+            throw new ParamException(Options.KEY_STORE_FILE, "remote sign do not use this param");
+        }
+        options.put(Options.KEY_STORE_FILE, keyStoreFile);
+    }
+
+    private void appCertFileToOptions(Options options) throws ParamException {
+        if (mode == Mode.LOCAL_SIGN && appCertFile == null) {
+            throw new ParamException(Options.APP_CERT_FILE);
+        }
+        if (appCertFile != null) {
+            options.put(Options.APP_CERT_FILE, appCertFile);
+        }
+    }
+
+    private void remoteSignParamToOptions(Options options) throws ParamException {
         if (mode == Mode.REMOTE_SIGN) {
-            if (signServer == null || userPwd == null || userName == null ||
-                    signerPlugin == null || onlineAuthMode == null) {
-                throw new ParamException("remote sign params failed");
+            if (signServer == null) {
+                throw new ParamException("signServer");
+            }
+            if (userPwd == null) {
+                throw new ParamException("userPwd");
+            }
+            if (userName == null) {
+                throw new ParamException("username");
+            }
+            if (signerPlugin == null) {
+                throw new ParamException("signerPlugin");
+            }
+            if (onlineAuthMode == null) {
+                throw new ParamException("onlineAuthMode");
             }
             options.put("signServer", signServer);
             options.put("userPwd", userPwd);
@@ -129,7 +155,6 @@ public class SignAppParameters implements Parameters {
             options.put("signerPlugin", signerPlugin);
             options.put("onlineAuthMode", onlineAuthMode);
         }
-        return options;
     }
 
     public Mode getMode() {
