@@ -70,91 +70,114 @@ public class SignAppParameters implements Parameters {
             throw new ParamException(Options.MODE);
         }
         options.put(Options.MODE, mode.getValue());
+
         if (keyAlias == null) {
             throw new ParamException(Options.KEY_ALIAS);
         }
         options.put(Options.KEY_ALIAS, keyAlias);
+
         if (keyPwd != null) {
             options.put(Options.KEY_RIGHTS, keyPwd);
         }
-        appCertFileToOptions(options);
+
         if (profileFile == null) {
             throw new ParamException(Options.PROFILE_FILE);
         }
         options.put(Options.PROFILE_FILE, profileFile);
+
         if (profileSigned != null) {
             options.put(Options.PROFILE_SIGNED, profileSigned.getValue());
         }
+
         if (inForm != null) {
             options.put(Options.IN_FORM, inForm.getValue());
         }
+
         if (inFile == null) {
             throw new ParamException(Options.IN_FILE);
         }
         options.put(Options.IN_FILE, inFile);
+
         if (signAlg == null) {
             throw new ParamException(Options.SIGN_ALG);
         }
         options.put(Options.SIGN_ALG, signAlg);
-        keyStoreFileToOptions(options);
+
         if (keystorePwd != null) {
             options.put(Options.KEY_STORE_RIGHTS, keystorePwd);
         }
+
         if (outFile == null) {
             throw new ParamException(Options.OUT_FILE);
         }
         options.put(Options.OUT_FILE, outFile);
+
         if (signCode != null) {
             options.put(ParamConstants.PARAM_SIGN_CODE, signCode.getValue());
         }
+
         if (compatibleVersion != null) {
             options.put("compatibleVersion", compatibleVersion);
         }
+
+        keyStoreFileToOptions(options);
+        appCertFileToOptions(options);
         remoteSignParamToOptions(options);
         return options;
     }
 
     private void keyStoreFileToOptions(Options options) throws ParamException {
-        if (mode == Mode.LOCAL_SIGN && keyStoreFile == null) {
-            throw new ParamException(Options.KEY_STORE_FILE);
-        } else if (mode == Mode.REMOTE_SIGN && keyStoreFile != null) {
-            throw new ParamException(Options.KEY_STORE_FILE, "remote sign do not use this param");
+        if (mode == Mode.LOCAL_SIGN) {
+            if (keyStoreFile == null) {
+                throw new ParamException(Options.KEY_STORE_FILE);
+            }
+            options.put(Options.KEY_STORE_FILE, keyStoreFile);
         }
-        options.put(Options.KEY_STORE_FILE, keyStoreFile);
+        if (mode == Mode.REMOTE_SIGN) {
+            if (keyStoreFile != null) {
+                throw new ParamException(Options.KEY_STORE_FILE, "remote sign do not use this param");
+            }
+        }
     }
 
     private void appCertFileToOptions(Options options) throws ParamException {
-        if (mode == Mode.LOCAL_SIGN && appCertFile == null) {
-            throw new ParamException(Options.APP_CERT_FILE);
-        }
-        if (appCertFile != null) {
+        if (mode == Mode.LOCAL_SIGN) {
+            if (appCertFile == null) {
+                throw new ParamException(Options.APP_CERT_FILE);
+            }
             options.put(Options.APP_CERT_FILE, appCertFile);
+        }
+        if (mode == Mode.REMOTE_SIGN) {
+            if (appCertFile != null) {
+                options.put(Options.APP_CERT_FILE, appCertFile);
+            }
         }
     }
 
     private void remoteSignParamToOptions(Options options) throws ParamException {
-        if (mode == Mode.REMOTE_SIGN) {
-            if (signServer == null) {
-                throw new ParamException("signServer");
-            }
-            if (userPwd == null) {
-                throw new ParamException("userPwd");
-            }
-            if (userName == null) {
-                throw new ParamException("username");
-            }
-            if (signerPlugin == null) {
-                throw new ParamException("signerPlugin");
-            }
-            if (onlineAuthMode == null) {
-                throw new ParamException("onlineAuthMode");
-            }
-            options.put("signServer", signServer);
-            options.put("userPwd", userPwd);
-            options.put("username", userName);
-            options.put("signerPlugin", signerPlugin);
-            options.put("onlineAuthMode", onlineAuthMode);
+        if (mode == Mode.LOCAL_SIGN) {
+            return;
         }
+        if (signServer == null) {
+            throw new ParamException("signServer");
+        }
+        if (userPwd == null) {
+            throw new ParamException("userPwd");
+        }
+        if (userName == null) {
+            throw new ParamException("username");
+        }
+        if (signerPlugin == null) {
+            throw new ParamException("signerPlugin");
+        }
+        if (onlineAuthMode == null) {
+            throw new ParamException("onlineAuthMode");
+        }
+        options.put("signServer", signServer);
+        options.put("userPwd", userPwd);
+        options.put("username", userName);
+        options.put("signerPlugin", signerPlugin);
+        options.put("onlineAuthMode", onlineAuthMode);
     }
 
     public Mode getMode() {
