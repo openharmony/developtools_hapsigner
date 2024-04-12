@@ -49,32 +49,40 @@ public class SignProfileParameters implements Parameters {
             throw new ParamException(Options.MODE);
         }
         options.put(Options.MODE, mode.getValue());
+
         if (keyAlias == null) {
             throw new ParamException(Options.KEY_ALIAS);
         }
         options.put(Options.KEY_ALIAS, keyAlias);
+
         if (keyPwd != null) {
             options.put(Options.KEY_RIGHTS, keyPwd);
         }
+
         if (profileCertFile == null) {
             throw new ParamException(Options.PROFILE_CERT_FILE);
         }
         options.put(Options.PROFILE_CERT_FILE, profileCertFile);
+
         if (inFile == null) {
             throw new ParamException(Options.IN_FILE);
         }
         options.put(Options.IN_FILE, inFile);
+
         if (signAlg == null) {
             throw new ParamException(Options.SIGN_ALG);
         }
         options.put(Options.SIGN_ALG, signAlg);
+
         if (keyStoreFile == null) {
             throw new ParamException(Options.KEY_STORE_FILE);
         }
         options.put(Options.KEY_STORE_FILE, keyStoreFile);
+
         if (keystorePwd != null) {
             options.put(Options.KEY_STORE_RIGHTS, keystorePwd);
         }
+
         if (outFile == null) {
             throw new ParamException(Options.OUT_FILE);
         }
