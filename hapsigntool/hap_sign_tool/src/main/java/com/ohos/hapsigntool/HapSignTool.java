@@ -476,7 +476,7 @@ public final class HapSignTool {
             Options options = verifyProfileParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runVerifyProfile(options, api)) {
-                return new RetMsg(Error.SUCCESS_CODE, "sign profile success");
+                return new RetMsg(Error.SUCCESS_CODE, "verify profile success");
             }
             return new RetMsg(Error.VERIFY_ERROR, "verify profile failed");
         } catch (CustomException e) {
