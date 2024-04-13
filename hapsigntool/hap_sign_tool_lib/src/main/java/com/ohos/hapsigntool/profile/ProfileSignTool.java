@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.profile;
 
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.signer.ISigner;
@@ -93,9 +93,9 @@ public final class ProfileSignTool {
         try {
             verificationResult = verifyHelper.verify(p7b);
         } catch (VerifyException e) {
-            CustomException.throwException(Error.VERIFY_ERROR, "Generate Profile Failed! " + e.getMessage());
+            CustomException.throwException(ERROR.VERIFY_ERROR, "Generate Profile Failed! " + e.getMessage());
         }
-        ValidateUtils.throwIfNotMatches(verificationResult.isVerifiedPassed(), Error.SIGN_ERROR,
+        ValidateUtils.throwIfNotMatches(verificationResult.isVerifiedPassed(), ERROR.SIGN_ERROR,
                 verificationResult.getMessage());
         return p7b;
     }
@@ -135,7 +135,7 @@ public final class ProfileSignTool {
             return contentInfo.getEncoded("DER");
         } catch (OperatorCreationException | IOException | CertificateEncodingException | CRLException e) {
             LOGGER.debug(e.getMessage(), e);
-            CustomException.throwException(Error.SIGN_ERROR, e.getMessage());
+            CustomException.throwException(ERROR.SIGN_ERROR, e.getMessage());
         }
         return NO_BYTE;
     }

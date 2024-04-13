@@ -24,7 +24,7 @@ import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ParamException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
@@ -156,7 +156,7 @@ public final class HapSignTool {
                 isSuccess = runProfileCert(params.getOptions(), api);
                 break;
             default:
-                CustomException.throwException(Error.COMMAND_ERROR, "Unsupported cmd");
+                CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
                 break;
         }
         return isSuccess;
@@ -283,7 +283,7 @@ public final class HapSignTool {
         if (!LOCAL_SIGN.equalsIgnoreCase(mode)
                 && !REMOTE_SIGN.equalsIgnoreCase(mode)
                 && !"remoteResign".equalsIgnoreCase(mode)) {
-            CustomException.throwException(Error.COMMAND_ERROR, "mode params is incorrect");
+            CustomException.throwException(ERROR.COMMAND_ERROR, "mode params is incorrect");
         }
 
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
@@ -293,7 +293,7 @@ public final class HapSignTool {
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM, "zip");
         if (!StringUtils.isEmpty(inForm) && !containsIgnoreCase(inForm)) {
-            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "inForm params is incorrect");
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params is incorrect");
         }
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeEndSignAlgType(signAlg);
@@ -310,7 +310,7 @@ public final class HapSignTool {
             return;
         }
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
-            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "profileSigned params is incorrect");
         }
         if (SIGNED.equals(profileSigned)) {
             FileUtils.validFileType(profileFile, "p7b");
@@ -323,7 +323,7 @@ public final class HapSignTool {
         params.required(Options.MODE, Options.SIGN_ALG, Options.OUT_FILE, Options.IN_FILE);
         String mode = params.getString(Options.MODE);
         if (!LOCAL_SIGN.equalsIgnoreCase(mode) && !REMOTE_SIGN.equalsIgnoreCase(mode)) {
-            CustomException.throwException(Error.COMMAND_ERROR, "mode params is incorrect");
+            CustomException.throwException(ERROR.COMMAND_ERROR, "mode params is incorrect");
         }
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.PROFILE_CERT_FILE);
@@ -343,7 +343,7 @@ public final class HapSignTool {
                 Options.OUT_PROFILE);
         String inForm = params.getString(Options.IN_FORM, "zip");
         if (!containsIgnoreCase(inForm)) {
-            CustomException.throwException(Error.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, "inForm params must is " + informList);
         }
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");
@@ -398,15 +398,15 @@ public final class HapSignTool {
             Options options = signAppParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runSignApp(options, api)) {
-                return new RetMsg(Error.SUCCESS_CODE, "sign app success");
+                return new RetMsg(ERROR.SUCCESS_CODE, "sign app success");
             }
-            return new RetMsg(Error.SIGN_ERROR, "sign app failed");
+            return new RetMsg(ERROR.SIGN_ERROR, "sign app failed");
         } catch (CustomException e) {
             return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
+            return new RetMsg(ERROR.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
+            return new RetMsg(ERROR.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 
@@ -424,15 +424,15 @@ public final class HapSignTool {
             Options options = verifyAppParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runVerifyApp(options, api)) {
-                return new RetMsg(Error.SUCCESS_CODE, "verify app success");
+                return new RetMsg(ERROR.SUCCESS_CODE, "verify app success");
             }
-            return new RetMsg(Error.VERIFY_ERROR, "verify app failed");
+            return new RetMsg(ERROR.VERIFY_ERROR, "verify app failed");
         } catch (CustomException e) {
             return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
+            return new RetMsg(ERROR.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
+            return new RetMsg(ERROR.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 
@@ -450,15 +450,15 @@ public final class HapSignTool {
             Options options = signProfileParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runSignProfile(options, api)) {
-                return new RetMsg(Error.SUCCESS_CODE, "sign profile success");
+                return new RetMsg(ERROR.SUCCESS_CODE, "sign profile success");
             }
-            return new RetMsg(Error.SIGN_ERROR, "sign profile failed");
+            return new RetMsg(ERROR.SIGN_ERROR, "sign profile failed");
         } catch (CustomException e) {
             return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
+            return new RetMsg(ERROR.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
+            return new RetMsg(ERROR.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 
@@ -476,15 +476,15 @@ public final class HapSignTool {
             Options options = verifyProfileParameters.toOptions();
             ServiceApi api = new SignToolServiceImpl();
             if (runVerifyProfile(options, api)) {
-                return new RetMsg(Error.SUCCESS_CODE, "verify profile success");
+                return new RetMsg(ERROR.SUCCESS_CODE, "verify profile success");
             }
-            return new RetMsg(Error.VERIFY_ERROR, "verify profile failed");
+            return new RetMsg(ERROR.VERIFY_ERROR, "verify profile failed");
         } catch (CustomException e) {
             return new RetMsg(e.getError(), e.getMessage());
         } catch (ParamException e) {
-            return new RetMsg(Error.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
+            return new RetMsg(ERROR.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
         } catch (Exception e) {
-            return new RetMsg(Error.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
+            return new RetMsg(ERROR.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
         }
     }
 }

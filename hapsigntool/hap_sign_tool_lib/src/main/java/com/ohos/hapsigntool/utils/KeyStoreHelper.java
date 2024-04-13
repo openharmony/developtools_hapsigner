@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -106,7 +106,7 @@ public class KeyStoreHelper {
      */
     public KeyStoreHelper(String keyStorePath, char[] storePwd) {
         char[] pwd = storePwd;
-        ValidateUtils.throwIfMatches(StringUtils.isEmpty(keyStorePath), Error.COMMAND_ERROR,
+        ValidateUtils.throwIfMatches(StringUtils.isEmpty(keyStorePath), ERROR.COMMAND_ERROR,
                 "Missed params: 'keyStorePath'");
         if (pwd == null) {
             pwd = new char[0];
@@ -125,7 +125,7 @@ public class KeyStoreHelper {
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
         } finally {
             FileUtils.close(fis);
         }
@@ -141,7 +141,7 @@ public class KeyStoreHelper {
      * @param alias alias of key
      */
     public void errorOnExist(String alias) {
-        ValidateUtils.throwIfMatches(this.hasAlias(alias), Error.ACCESS_ERROR,
+        ValidateUtils.throwIfMatches(this.hasAlias(alias), ERROR.ACCESS_ERROR,
                 String.format("Could not overwrite! Already exist '%s' in %s", alias, this.keyStorePath));
     }
 
@@ -151,7 +151,7 @@ public class KeyStoreHelper {
      * @param alias alias of key
      */
     public void errorIfNotExist(String alias) {
-        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), Error.FILE_NOT_FOUND,
+        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), ERROR.FILE_NOT_FOUND,
                 String.format("Not exist '%s' in %s", alias, this.keyStorePath));
     }
 
@@ -166,7 +166,7 @@ public class KeyStoreHelper {
             return keyStore.containsAlias(alias);
         } catch (KeyStoreException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
             return false;
         }
     }
@@ -203,10 +203,10 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException | NoSuchAlgorithmException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
         } catch (UnrecoverableKeyException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.ACCESS_ERROR, "Password error of '" + alias + "'");
+            CustomException.throwException(ERROR.ACCESS_ERROR, "Password error of '" + alias + "'");
         }
         return null;
     }
@@ -237,7 +237,7 @@ public class KeyStoreHelper {
      * @return certificates of alias
      */
     public List<X509Certificate> loadCertificates(String alias) {
-        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), Error.FILE_NOT_FOUND,
+        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), ERROR.FILE_NOT_FOUND,
                 String.format("Not found '%s' in %s", alias, this.keyStorePath));
 
         List<X509Certificate> certificates = new ArrayList<>();
@@ -255,10 +255,10 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.KEYSTORE_OPERATION_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
         }
 
-        ValidateUtils.throwIfNotMatches(certificates.size() > 0, Error.ACCESS_ERROR,
+        ValidateUtils.throwIfNotMatches(certificates.size() > 0, ERROR.ACCESS_ERROR,
                 "No usable cert found in " + this.keyStorePath);
         return certificates;
     }
@@ -290,7 +290,7 @@ public class KeyStoreHelper {
             fos.flush();
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.WRITE_FILE_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }
         return true;
@@ -317,7 +317,7 @@ public class KeyStoreHelper {
                     .getCertificate(certificateBuilder.build(contentSigner));
         } catch (CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
             return null;
         }
     }
@@ -341,7 +341,7 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.KEYSTORE_OPERATION_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
         }
         return typeKeyStore;
     }

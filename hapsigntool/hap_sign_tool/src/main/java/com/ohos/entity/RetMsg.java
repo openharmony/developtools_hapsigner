@@ -15,7 +15,7 @@
 
 package com.ohos.entity;
 
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 
 /**
  * RetMsg.
@@ -23,20 +23,20 @@ import com.ohos.hapsigntool.error.Error;
  * @since 2024/04/06
  */
 public class RetMsg {
-    private Error errCode;
+    private ERROR errCode;
 
     private String errMessage;
 
-    public RetMsg(Error errCode, String errMessage) {
+    public RetMsg(ERROR errCode, String errMessage) {
         this.errCode = errCode;
         this.errMessage = errMessage;
     }
 
-    public Error getErrCode() {
+    public ERROR getErrCode() {
         return errCode;
     }
 
-    public void setErrCode(Error errCode) {
+    public void setErrCode(ERROR errCode) {
         this.errCode = errCode;
     }
 
