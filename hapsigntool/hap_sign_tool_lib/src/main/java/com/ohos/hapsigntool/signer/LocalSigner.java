@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.signer;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,7 +86,7 @@ public class LocalSigner implements ISigner {
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException
                 | SignatureException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.SIGN_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
         }
         return signData;
     }

@@ -20,7 +20,7 @@ package com.ohos.hapsigntool.error;
  *
  * @since 2021/12/28
  */
-public enum Error {
+public enum ERROR {
     /**
      * success return code
      */
@@ -117,7 +117,7 @@ public enum Error {
         return this.errorCode;
     }
 
-    Error(int code) {
+    ERROR(int code) {
         this.errorCode = code;
     }
 }
