@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.adapter;
 
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.KeyStoreHelper;
@@ -186,7 +186,7 @@ public class LocalizationAdapter {
         if (keyStoreHelper == null) {
             initKeyStore();
         }
-        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(alias), Error.ACCESS_ERROR, "Alias could not be empty");
+        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(alias), ERROR.ACCESS_ERROR, "Alias could not be empty");
         KeyPair keyPair = null;
         if (keyStoreHelper.hasAlias(alias)) {
             keyPair = keyStoreHelper.loadKeyPair(alias, keyPwd);
@@ -198,7 +198,7 @@ public class LocalizationAdapter {
                 keyStoreHelper.store(alias, keyPwd, keyPair, null);
             }
         }
-        ValidateUtils.throwIfNotMatches(keyPair != null, Error.PARAM_NOT_EXIST_ERROR,
+        ValidateUtils.throwIfNotMatches(keyPair != null, ERROR.PARAM_NOT_EXIST_ERROR,
                 String.format("%s: '%s' is not exist in %s", Options.KEY_ALIAS, alias,
                         keyStoreHelper.getKeyStorePath()));
         return keyPair;
@@ -218,7 +218,7 @@ public class LocalizationAdapter {
 
         ValidateUtils.throwIfNotMatches(
                 certificates.size() >= MIN_CERT_CHAIN_SIZE && certificates.size() <= MAX_CERT_CHAIN_SIZE,
-                Error.NOT_SUPPORT_ERROR, String.format("Profile cert '%s' must a cert chain", certPath)
+                ERROR.NOT_SUPPORT_ERROR, String.format("Profile cert '%s' must a cert chain", certPath)
         );
         return certificates;
     }
@@ -261,20 +261,20 @@ public class LocalizationAdapter {
      * @return certificates
      */
     public List<X509Certificate> getCertsFromFile(String certPath, String logTitle) {
-        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(certPath), Error.PARAM_NOT_EXIST_ERROR,
+        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(certPath), ERROR.PARAM_NOT_EXIST_ERROR,
                 String.format("Params '%s' not exist", logTitle));
 
         File certFile = new File(certPath);
-        ValidateUtils.throwIfNotMatches(certFile.exists(), Error.FILE_NOT_FOUND,
+        ValidateUtils.throwIfNotMatches(certFile.exists(), ERROR.FILE_NOT_FOUND,
                 String.format("%s: '%s' not exist", logTitle, certPath));
         List<X509Certificate> certificates = null;
         try {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
         } catch (IOException | CertificateException | VerifyCertificateChainException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
         }
-        ValidateUtils.throwIfNotMatches(certificates != null && certificates.size() > 0, Error.READ_FILE_ERROR,
+        ValidateUtils.throwIfNotMatches(certificates != null && certificates.size() > 0, ERROR.READ_FILE_ERROR,
                 String.format("Read fail from %s, bot found certificates", certPath));
         return certificates;
     }
@@ -387,7 +387,7 @@ public class LocalizationAdapter {
      */
     public String getInFile() {
         String file = options.getString(Options.IN_FILE);
-        ValidateUtils.throwIfNotMatches(new File(file).exists(), Error.FILE_NOT_FOUND,
+        ValidateUtils.throwIfNotMatches(new File(file).exists(), ERROR.FILE_NOT_FOUND,
                 String.format("Required %s: '%s' not exist", Options.IN_FILE, file));
         return file;
     }

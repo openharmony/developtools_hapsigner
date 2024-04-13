@@ -16,7 +16,7 @@
 package com.ohos.hapsigntool.entity;
 
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -259,7 +259,7 @@ public class Options extends HashMap<String, Object> {
     public void required(String... keys) {
         for (String key : keys) {
             if (!isEmpty(key) && !this.containsKey(key)) {
-                CustomException.throwException(Error.COMMAND_ERROR, String.format("Params '%s' is required", key));
+                CustomException.throwException(ERROR.COMMAND_ERROR, String.format("Params '%s' is required", key));
             }
         }
     }

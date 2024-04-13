@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.cert;
 
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.CertUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +88,7 @@ public class CertBuilder {
             request = new PKCS10CertificationRequest(csr);
         } catch (IOException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.IO_CSR_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CSR_ERROR, exception.getMessage());
         }
         x509v3CertificateBuilder = new X509v3CertificateBuilder(
                 issuer, CertUtils.randomSerial(), Date.from(notBefore.atZone(ZoneId.systemDefault()).toInstant()),
@@ -100,10 +100,10 @@ public class CertBuilder {
                     extUtils.createSubjectKeyIdentifier(request.getSubjectPublicKeyInfo()));
         } catch (NoSuchAlgorithmException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         } catch (CertIOException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
     }
 
@@ -123,10 +123,10 @@ public class CertBuilder {
             }
         } catch (NoSuchAlgorithmException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         } catch (CertIOException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return this;
     }
@@ -217,16 +217,16 @@ public class CertBuilder {
             cert.verify(keyPair.getPublic());
         } catch (InvalidKeyException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.KEY_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEY_ERROR, exception.getMessage());
         } catch (SignatureException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.SIGN_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
         } catch (CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.CERTIFICATE_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.CERTIFICATE_ERROR, exception.getMessage());
         } catch (NoSuchAlgorithmException | NoSuchProviderException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(Error.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         }
         return cert;
     }

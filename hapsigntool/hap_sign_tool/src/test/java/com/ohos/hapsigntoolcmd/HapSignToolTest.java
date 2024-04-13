@@ -20,7 +20,7 @@ import com.ohos.entity.Mode;
 import com.ohos.entity.SignAppParameters;
 import com.ohos.entity.VerifyAppParameters;
 import com.ohos.hapsigntool.HapSignTool;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @since 2024/04/12
  */
-public class HapSIgnToolTest {
+public class HapSignToolTest {
     private static final String TMP_SIGNED_FILE = "signed-";
 
     private static final String TMP_HAP_SUFFIX = ".hap";
@@ -60,6 +60,8 @@ public class HapSIgnToolTest {
 
     /**
      * test sign params default value
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testDefaultValue() throws IOException {
@@ -77,17 +79,19 @@ public class HapSIgnToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
 
         VerifyAppParameters verifyAppParameters = new VerifyAppParameters();
         verifyAppParameters.setInFile(outputFile.getCanonicalPath());
         verifyAppParameters.setOutCertChain("out.cer");
         verifyAppParameters.setOutProfile("out.p7b");
-        Assertions.assertSame(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertSame(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
      * test sign elf
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testSignElf() throws IOException {
@@ -106,11 +110,13 @@ public class HapSIgnToolTest {
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
         signAppParameters.setInForm(InForm.ELF);
-        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
      * test Param Without KeyAlias
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testParamWithoutKeyAlias() throws IOException {
@@ -127,11 +133,13 @@ public class HapSIgnToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
      * test Param Without SignAlg
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testParamWithoutSignAlg() throws IOException {
@@ -148,12 +156,14 @@ public class HapSIgnToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
 
     /**
      * test Param Without KeyPwd
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testParamWithoutKeyPwd() throws IOException {
@@ -170,11 +180,13 @@ public class HapSIgnToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
      * test Param Without AppCertFile
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testParamWithoutAppCertFile() throws IOException {
@@ -191,11 +203,13 @@ public class HapSIgnToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
      * test Param Without KeyStoreFile
+     *
+     * @throws IOException IOException
      */
     @Test
     public void testParamWithoutKeyStoreFile() throws IOException {
@@ -212,7 +226,7 @@ public class HapSIgnToolTest {
         signAppParameters.setAppCertFile("../../tools/app1.pem");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), Error.SUCCESS_CODE);
+        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     private static class Cleanable {

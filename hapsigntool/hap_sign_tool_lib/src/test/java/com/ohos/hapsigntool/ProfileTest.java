@@ -19,7 +19,7 @@ import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
@@ -148,7 +148,7 @@ public class ProfileTest {
         try {
             verificationResult = verifyHelper.verify(p7b);
         } catch (VerifyException e) {
-            CustomException.throwException(Error.VERIFY_ERROR, e.getMessage());
+            CustomException.throwException(ERROR.VERIFY_ERROR, e.getMessage());
         }
         assertTrue(verificationResult.isVerifiedPassed());
 
