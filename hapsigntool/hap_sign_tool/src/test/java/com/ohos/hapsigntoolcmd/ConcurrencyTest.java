@@ -24,7 +24,7 @@ import com.ohos.entity.SignProfileParameters;
 import com.ohos.entity.VerifyAppParameters;
 import com.ohos.entity.VerifyProfileParameters;
 import com.ohos.hapsigntool.HapSignTool;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.FileUtils;
 
 import org.junit.jupiter.api.AfterAll;
@@ -96,7 +96,7 @@ public class ConcurrencyTest {
 
     /**
      * test Sign Hap
-     * 
+     *
      * @throws IOException IOException
      * @throws ExecutionException ExecutionException
      * @throws InterruptedException InterruptedException
@@ -222,14 +222,14 @@ public class ConcurrencyTest {
             signProfileParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
             signProfileParameters.setKeystorePwd("123456".toCharArray());
             signProfileParameters.setOutFile(profile.getCanonicalPath());
-            return HapSignTool.signProfile(signProfileParameters).getErrCode() == Error.SUCCESS_CODE;
+            return HapSignTool.signProfile(signProfileParameters).getErrCode() == ERROR.SUCCESS_CODE;
         }
 
         private boolean verifyProfile() throws IOException {
             VerifyProfileParameters verifyProfileParameters = new VerifyProfileParameters();
             verifyProfileParameters.setInFile(profile.getCanonicalPath());
             verifyProfileParameters.setOutFile("out.json");
-            return HapSignTool.verifyProfile(verifyProfileParameters).getErrCode() == Error.SUCCESS_CODE;
+            return HapSignTool.verifyProfile(verifyProfileParameters).getErrCode() == ERROR.SUCCESS_CODE;
         }
 
         private boolean signApp() throws IOException {
@@ -247,7 +247,7 @@ public class ConcurrencyTest {
             signAppParameters.setProfileSigned(ProFileSigned.SIGNED);
             signAppParameters.setInForm(InForm.ZIP);
             signAppParameters.setSignCode(SignCode.OPEN);
-            return HapSignTool.signApp(signAppParameters).getErrCode() == Error.SUCCESS_CODE;
+            return HapSignTool.signApp(signAppParameters).getErrCode() == ERROR.SUCCESS_CODE;
         }
 
         private boolean verifyApp() throws IOException {
@@ -255,7 +255,7 @@ public class ConcurrencyTest {
             verifyAppParameters.setInFile(outputFile.getCanonicalPath());
             verifyAppParameters.setOutCertChain("out.cer");
             verifyAppParameters.setOutProfile("out.p7b");
-            return HapSignTool.verifyApp(verifyAppParameters).getErrCode() == Error.SUCCESS_CODE;
+            return HapSignTool.verifyApp(verifyAppParameters).getErrCode() == ERROR.SUCCESS_CODE;
         }
     }
 }

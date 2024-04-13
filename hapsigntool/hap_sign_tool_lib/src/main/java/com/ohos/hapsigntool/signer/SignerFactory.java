@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.signer;
 
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
-import com.ohos.hapsigntool.error.Error;
+import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.StringUtils;
 
 import org.apache.logging.log4j.LogManager;
@@ -137,7 +137,7 @@ public class SignerFactory {
     private File getClassLocation() {
         String jarPath = SignerFactory.class.getProtectionDomain().getCodeSource().getLocation().getFile();
         if (StringUtils.isEmpty(jarPath)) {
-            CustomException.throwException(Error.COMMAND_ERROR, "class path is empty");
+            CustomException.throwException(ERROR.COMMAND_ERROR, "class path is empty");
         }
         try {
             jarPath = URLDecoder.decode(URLEncoder.encode(jarPath, "utf-8"), "utf-8");
@@ -146,7 +146,7 @@ public class SignerFactory {
         }
         File jarFile = new File(jarPath);
         if (!jarFile.exists()) {
-            CustomException.throwException(Error.COMMAND_ERROR, "class path" + jarFile + "is not exists");
+            CustomException.throwException(ERROR.COMMAND_ERROR, "class path" + jarFile + "is not exists");
         }
         if (jarFile.isFile()) {
             return jarFile.getParentFile();

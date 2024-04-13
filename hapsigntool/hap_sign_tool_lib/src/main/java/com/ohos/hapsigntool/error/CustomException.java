@@ -23,7 +23,7 @@ import java.util.Locale;
  * @since 2021/12/28
  */
 public class CustomException extends RuntimeException {
-    private Error error;
+    private ERROR error;
 
     private String message;
 
@@ -33,7 +33,7 @@ public class CustomException extends RuntimeException {
      * @param error   Error enum to throw
      * @param message Error msg to throw
      */
-    CustomException(Error error, String message) {
+    CustomException(ERROR error, String message) {
         super(String.format(Locale.ROOT, "%s, code: %d. Details: %s", error.toString(),
                 error.getErrorCode(), message));
         this.error = error;
@@ -46,15 +46,15 @@ public class CustomException extends RuntimeException {
      * @param error   Error enum to throw
      * @param message Error msg to throw
      */
-    public static void throwException(Error error, String message) {
+    public static void throwException(ERROR error, String message) {
         throw new CustomException(error, message);
     }
 
-    public Error getError() {
+    public ERROR getError() {
         return error;
     }
 
-    public void setError(Error error) {
+    public void setError(ERROR error) {
         this.error = error;
     }
 
