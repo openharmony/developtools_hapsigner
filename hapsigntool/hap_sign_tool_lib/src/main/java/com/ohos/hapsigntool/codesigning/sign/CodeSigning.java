@@ -284,12 +284,8 @@ public class CodeSigning {
         if (entryName.endsWith(NATIVE_LIB_AN_SUFFIX)) {
             return true;
         }
-        if (extractedNativeLibSuffixs.contains(NATIVE_LIB_SO_SUFFIX)) {
-            Pattern pattern = FileUtils.SUFFIX_REGEX_MAP.get("so");
-            Matcher matcher = pattern.matcher(entryName);
-            if (matcher.find()) {
-                return true;
-            }
+        if (entryName.startsWith(FileUtils.LIBS_PATH_PREFIX)) {
+            return true;
         }
         return false;
     }

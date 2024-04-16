@@ -900,24 +900,25 @@ public class CmdUnitTest {
     @Test
     public void testIsRunnableFile() {
         List<String> correctName = new ArrayList<>();
-        correctName.add("中文.so");
+        correctName.add("libs" + File.separator + "中文.so");
         correctName.add("srtjdwrtj.an");
         correctName.add("srtjdwrtj.abc");
-        correctName.add("srtjdwrtj.so");
-        correctName.add("srtjdwrtj.so.1");
-        correctName.add("srtjdwrtj.so.1.1");
-        correctName.add("srtjdwrtj.so.1.1.1");
-        correctName.add("srtjdwrtj.so.111.111.1111");
+        correctName.add("libs" + File.separator + "srtjdwrtj.so");
+        correctName.add("libs" + File.separator + "srtjdwrtj.so.1");
+        correctName.add("libs" + File.separator + "srtjdwrtj.so.1.1");
+        correctName.add("libs" + File.separator + "srtjdwrtj.so.1.1.1");
+        correctName.add("libs" + File.separator + "srtjdwrtj.aaaa.111.111.1111");
         correctName.add("libs" + File.separator + "srtjdwrtj.so.111.111.1111");
-        correctName.add("中文.so.111.111.1111");
+        correctName.add("libs" + File.separator + "中文.so.111.111.1111");
+        correctName.add("libs" + File.separator + "srtjdwrtj.so.111.%%%.1111");
         for (String name : correctName) {
             assertTrue(FileUtils.isRunnableFile(name));
         }
 
         List<String> incorrectName = new ArrayList<>();
+        incorrectName.add("srtjdwrtj.so");
         incorrectName.add("srtjdwrtj.so.111.111.1111.54645");
         incorrectName.add("srtjdwrtjso.111.111.11111");
-        incorrectName.add("libs" + File.separator + "srtjdwrtj.so.111.%%%.1111");
         incorrectName.add("srtjdwrtj.so.abc.111.111.1111");
         incorrectName.add("srtjdwrtj.so.111.111.json");
         incorrectName.add("srtjdwrtj.abc.json");

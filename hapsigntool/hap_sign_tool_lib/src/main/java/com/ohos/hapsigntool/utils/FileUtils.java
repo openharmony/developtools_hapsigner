@@ -36,10 +36,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Common file operation.
@@ -51,11 +47,6 @@ public final class FileUtils {
      * LOGGER.
      */
     private static final Logger LOGGER = LogManager.getLogger(FileUtils.class);
-
-    /**
-     * suffix regex map
-     */
-    public static final Map<String, Pattern> SUFFIX_REGEX_MAP = new HashMap<>();
 
     /**
      * add GSON static.
@@ -82,11 +73,12 @@ public final class FileUtils {
      */
     public static final int SPLIT_LENGTH = 2;
 
-    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    /**
+     * libs dir path
+     */
+    public static final String LIBS_PATH_PREFIX = "libs" + File.separator;
 
-    static {
-        SUFFIX_REGEX_MAP.put("so", Pattern.compile("\\.so(\\.[0-9]*){0,3}$"));
-    }
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     private FileUtils() {
     }
@@ -505,11 +497,8 @@ public final class FileUtils {
         if (name.endsWith(".an") || name.endsWith(".abc")) {
             return true;
         }
-        for (Pattern pattern : SUFFIX_REGEX_MAP.values()) {
-            Matcher matcher = pattern.matcher(name);
-            if (matcher.find()) {
-                return true;
-            }
+        if (name.startsWith(LIBS_PATH_PREFIX)) {
+            return true;
         }
         return false;
     }
