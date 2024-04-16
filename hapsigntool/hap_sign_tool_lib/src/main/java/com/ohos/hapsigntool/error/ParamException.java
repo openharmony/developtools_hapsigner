@@ -22,7 +22,7 @@ package com.ohos.hapsigntool.error;
  */
 public class ParamException extends Exception {
     /**
-     *ParamException
+     * ParamException
      *
      * @param key key
      */
