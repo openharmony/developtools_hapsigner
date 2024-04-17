@@ -21,16 +21,16 @@ package com.ohos.entity;
  * @since 2024/04/09
  */
 public enum ProFileSigned {
-    SIGNED(1),
-    UNSIGNED(0);
+    SIGNED("1"),
+    UNSIGNED("0");
 
-    private final int value;
+    private final String value;
 
-    ProFileSigned(int value) {
+    ProFileSigned(String value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 }

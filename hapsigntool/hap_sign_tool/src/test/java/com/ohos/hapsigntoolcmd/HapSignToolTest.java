@@ -111,6 +111,13 @@ public class HapSignToolTest {
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
         signAppParameters.setInForm(InForm.ELF);
         Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+
+        VerifyAppParameters verifyAppParameters = new VerifyAppParameters();
+        verifyAppParameters.setInFile(outputFile.getCanonicalPath());
+        verifyAppParameters.setOutCertChain("out.cer");
+        verifyAppParameters.setOutProfile("out.p7b");
+        verifyAppParameters.setInForm(InForm.ELF);
+        Assertions.assertSame(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
