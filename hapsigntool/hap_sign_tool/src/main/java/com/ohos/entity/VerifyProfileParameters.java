@@ -24,8 +24,14 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public class VerifyProfileParameters implements Parameters {
+    /**
+     * signed Provision Profile file, p7b format, required fields
+     */
     private String inFile;
 
+    /**
+     * Verification result file, json format, optional
+     */
     private String outFile;
 
     @Override

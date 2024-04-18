@@ -24,22 +24,49 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public class SignProfileParameters implements Parameters {
+    /**
+     * signature mode, required fields, including localSign/remoteSign
+     */
     private Mode mode;
 
+    /**
+     * key alias, required fields
+     */
     private String keyAlias;
 
+    /**
+     * key password, optional fields on localSign mode
+     */
     private char[] keyPwd;
 
+    /**
+     * profile signing certificate, required fields
+     */
     private String profileCertFile;
 
+    /**
+     * input original application package file
+     */
     private String inFile;
 
+    /**
+     * signature algorithm, required fields
+     */
     private String signAlg;
 
+    /**
+     * keystore file, if signature mode is localSign, required fields on localSign mode, JKS or P12 format
+     */
     private String keyStoreFile;
 
+    /**
+     * keystore password, optional fields on localSign mode
+     */
     private char[] keystorePwd;
 
+    /**
+     * output the signed Provision Profile file, required fields
+     */
     private String outFile;
 
     @Override
