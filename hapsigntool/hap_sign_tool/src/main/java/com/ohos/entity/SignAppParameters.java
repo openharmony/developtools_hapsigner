@@ -25,42 +25,99 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public class SignAppParameters implements Parameters {
+    /**
+     * signature mode, required fields, including localSign/remoteSign
+     */
     private Mode mode;
 
+    /**
+     * key alias, required fields
+     */
     private String keyAlias;
 
+    /**
+     * key password, optional fields on localSign mode
+     */
     private char[] keyPwd;
 
+    /**
+     * application signature certificate file, required fields on localSign mode, optional fields on remoteSign mode
+     */
     private String appCertFile;
 
+    /**
+     * signed Provision Profile file, p7b format, required fields
+     */
     private String profileFile;
 
+    /**
+     * indicates whether the profile file has a signature.The options are as follows: SIGNED, UNSIGNED; default :SIGNED
+     */
     private ProFileSigned profileSigned = ProFileSigned.SIGNED;
 
+    /**
+     * Enter the format of the original file, ZIP, BIN, and ELF format, default:ZIP
+     */
     private InForm inForm = InForm.ZIP;
 
+    /**
+     * input original application package file
+     */
     private String inFile;
 
+    /**
+     * signature algorithm, required fields
+     */
     private String signAlg;
 
+    /**
+     * keystore file, if signature mode is localSign, required fields on localSign mode, JKS or P12 format
+     */
     private String keyStoreFile;
 
+    /**
+     * keystore password, optional fields on localSign mode
+     */
     private char[] keystorePwd;
 
+    /**
+     * output the signed Provision Profile file, required fields
+     */
     private String outFile;
 
+    /**
+     * Whether the HAP file is signed code, default execution codesign
+     */
     private SignCode signCode;
 
+    /**
+     * user account for online auth, required fields on remoteSign mode with account auth mode
+     */
     private String userName;
 
+    /**
+     * user password for online auth, required fields on remoteSign mode with account auth mode
+     */
     private String userPwd;
 
+    /**
+     * remote sign service url, required fields on remoteSign mode
+     */
     private String signServer;
 
+    /**
+     * remote signer plugin, required fields on remoteSign mode
+     */
     private String signerPlugin;
 
+    /**
+     * min compatible api version for running app
+     */
     private String compatibleVersion;
 
+    /**
+     * remote sign auth mode, required fields on remoteSign mode, including account
+     */
     private String onlineAuthMode;
 
     @Override
