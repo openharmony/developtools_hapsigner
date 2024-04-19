@@ -106,7 +106,7 @@ public class SignAppParameters implements Parameters {
     private String signServer;
 
     /**
-     * remote signer plugin, required fields on remoteSign mode
+     * remote signer plug-in component, required fields on remoteSign mode
      */
     private String signerPlugin;
 
