@@ -61,7 +61,7 @@ public class SignAppParameters implements Parameters {
     private InForm inForm = InForm.ZIP;
 
     /**
-     * input original application package file
+     * input original application package file, required fields
      */
     private String inFile;
 
@@ -86,7 +86,7 @@ public class SignAppParameters implements Parameters {
     private String outFile;
 
     /**
-     * Whether the HAP file is signed code, default execution codesign
+     * Whether the infile is signed code, optional fields, default signed code
      */
     private SignCode signCode;
 
@@ -96,7 +96,7 @@ public class SignAppParameters implements Parameters {
     private String userName;
 
     /**
-     * user password for online auth, required fields on remoteSign mode with account auth mode
+     * user password for online authentication, required fields on remoteSign mode with account auth mode
      */
     private String userPwd;
 
