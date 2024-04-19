@@ -45,7 +45,7 @@ public class SignProfileParameters implements Parameters {
     private String profileCertFile;
 
     /**
-     * input original application package file
+     * input original profile file, required fields
      */
     private String inFile;
 
