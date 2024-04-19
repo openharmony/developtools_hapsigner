@@ -91,7 +91,7 @@ public class SignAppParameters implements Parameters {
     private SignCode signCode;
 
     /**
-     * user account for online auth, required fields on remoteSign mode with account auth mode
+     * user account for online authentication, required fields on remoteSign mode with account auth mode
      */
     private String userName;
 
