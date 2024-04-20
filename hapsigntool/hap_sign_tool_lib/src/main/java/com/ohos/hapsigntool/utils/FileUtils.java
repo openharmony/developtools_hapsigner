@@ -76,7 +76,7 @@ public final class FileUtils {
     /**
      * libs dir path
      */
-    public static final String LIBS_PATH_PREFIX = "libs" + File.separator;
+    public static final String LIBS_PATH_PREFIX = "libs/";
 
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
