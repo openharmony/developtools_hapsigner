@@ -694,6 +694,9 @@ public abstract class SignProvider {
         if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE_SIGNED)) {
             signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
         }
+        if (StringUtils.isEmpty(signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED))) {
+            signParams.put(ParamConstants.PARAM_BASIC_PROFILE_SIGNED, "1");
+        }
         checkSignCode();
         checkSignatureAlg();
         checkSignAlignment();
