@@ -24,12 +24,24 @@ import com.ohos.hapsigntool.error.ParamException;
  * @since 2024/04/06
  */
 public class VerifyAppParameters implements Parameters {
+    /**
+     * verify application package file, hap or elf format, required fields
+     */
     private String inFile;
 
+    /**
+     * verify certificate chain file, required fields
+     */
     private String outCertChain;
 
+    /**
+     * profile file in application package, required fields
+     */
     private String outProfile;
 
+    /**
+     * Enter the format of the original file. The supported file formats include ZIP, BIN, and ELF, default value ZIP
+     */
     private InForm inForm = InForm.ZIP;
 
     @Override
