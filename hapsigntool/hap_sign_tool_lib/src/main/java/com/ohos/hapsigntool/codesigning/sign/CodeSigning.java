@@ -84,8 +84,6 @@ public class CodeSigning {
 
     private static final String NATIVE_LIB_SO_SUFFIX = ".so";
 
-    private final List<String> extractedNativeLibSuffixs = new ArrayList<>();
-
     private final SignerConfig signConfig;
 
     private CodeSignBlock codeSignBlock;
@@ -233,11 +231,6 @@ public class CodeSigning {
 
     private void signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException,
             CodeSignException {
-        // 'an' libs are always signed
-        extractedNativeLibSuffixs.add(NATIVE_LIB_AN_SUFFIX);
-        // 'so' libs are always signed
-        extractedNativeLibSuffixs.add(NATIVE_LIB_SO_SUFFIX);
-
         // sign native files
         try (JarFile inputJar = new JarFile(input, false)) {
             List<String> entryNames = getNativeEntriesFromHap(inputJar);
