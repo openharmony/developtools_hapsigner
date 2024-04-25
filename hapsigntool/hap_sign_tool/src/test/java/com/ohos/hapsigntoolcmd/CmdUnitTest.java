@@ -830,6 +830,7 @@ public class CmdUnitTest {
             if (".hqf".equals(bundleSuffix)) {
                 fillZipEntryFile(so, ".so.diff", out);
             }
+            fillZipEntryFile(so, ".solib", out);
             fillZipEntryFile(so, ".so", out);
             fillZipEntryFile(so, ".so.111", out);
             fillZipEntryFile(so, ".so.111.111", out);
@@ -847,10 +848,10 @@ public class CmdUnitTest {
         }
         String fileName = new BigInteger(Long.SIZE, new Random()).toString() + tempSuffix;
         if (tempSuffix.startsWith(".so")) {
-            fileName = "libs" + File.separator + fileName;
+            fileName = "libs/"+ fileName;
         }
         if (tempSuffix.startsWith(".an")) {
-            fileName = "an" + File.separator + fileName;
+            fileName = "an/" + fileName;
         }
         ZipEntry zipEntry = new ZipEntry(fileName);
         byte[] bytes = generateChunkBytes();
@@ -900,24 +901,25 @@ public class CmdUnitTest {
     @Test
     public void testIsRunnableFile() {
         List<String> correctName = new ArrayList<>();
-        correctName.add("中文.so");
+        correctName.add("libs/中文.so");
         correctName.add("srtjdwrtj.an");
         correctName.add("srtjdwrtj.abc");
-        correctName.add("srtjdwrtj.so");
-        correctName.add("srtjdwrtj.so.1");
-        correctName.add("srtjdwrtj.so.1.1");
-        correctName.add("srtjdwrtj.so.1.1.1");
-        correctName.add("srtjdwrtj.so.111.111.1111");
-        correctName.add("libs" + File.separator + "srtjdwrtj.so.111.111.1111");
-        correctName.add("中文.so.111.111.1111");
+        correctName.add("libs/srtjdwrtj.so");
+        correctName.add("libs/srtjdwrtj.so.1");
+        correctName.add("libs/srtjdwrtj.so.1.1");
+        correctName.add("libs/srtjdwrtj.so.1.1.1");
+        correctName.add("libs/srtjdwrtj.aaaa.111.111.1111");
+        correctName.add("libs/srtjdwrtj.so.111.111.1111");
+        correctName.add("libs/中文.so.111.111.1111");
+        correctName.add("libs/srtjdwrtj.so.111.%%%.1111");
         for (String name : correctName) {
             assertTrue(FileUtils.isRunnableFile(name));
         }
 
         List<String> incorrectName = new ArrayList<>();
+        incorrectName.add("srtjdwrtj.so");
         incorrectName.add("srtjdwrtj.so.111.111.1111.54645");
         incorrectName.add("srtjdwrtjso.111.111.11111");
-        incorrectName.add("libs" + File.separator + "srtjdwrtj.so.111.%%%.1111");
         incorrectName.add("srtjdwrtj.so.abc.111.111.1111");
         incorrectName.add("srtjdwrtj.so.111.111.json");
         incorrectName.add("srtjdwrtj.abc.json");
