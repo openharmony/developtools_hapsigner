@@ -20,6 +20,7 @@ import random
 import sys
 import time
 import ast
+import re
 from subprocess import Popen
 from subprocess import PIPE
 
@@ -41,6 +42,7 @@ def print_help():
 
     print(content)
     pass
+
 
 random_scope = {
     'generate-keypair': {
@@ -258,6 +260,7 @@ def get_test_scope_from_file():
         content = f.read()
         return ast.literal_eval(content)
 
+
 test_scope = get_test_scope_from_file()
 
 test_result = {}
@@ -273,13 +276,10 @@ def run_target(case, cmd):
 
     command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False)
 
-
-
-
     out = command.stdout.readlines()
     with open("log.txt", mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
-            f.writelines(cmd + "\r\n")
+            f.writelines(' '.join(cmd) + "\r\n")
         for line in out:
             f.writelines(str(line.strip()) + "\r\n")
 
@@ -287,7 +287,7 @@ def run_target(case, cmd):
     error = command.stderr.readlines()
     with open("error.txt", mode='a+', encoding='utf-8') as f:
         if len(error) > 0:
-            f.writelines(cmd + "\r\n")
+            f.writelines(' '.join(cmd) + "\r\n")
         for line in error:
             f.writelines(str(line.strip()) + "\r\n")
 
@@ -311,7 +311,7 @@ def run_simple_case(case, jar_file):
         exit(0)
 
     for k in test_case:
-        cmd = 'java -jar {} {}'.format(jar_file, k)
+        cmd = ['java', '-jar', jar_file] + [s.replace('"', '') for s in (re.split(r' \s*(?![^"]*\" )', k.strip()))]
         print("== Run command: {}".format(cmd))
         result = run_target(case, cmd)
         print("== Done command: {}".format(result))
@@ -323,17 +323,14 @@ def run_test_case(case, jar_file):
         print("Not found test case: {}".format(case))
         exit(0)
 
-
-
     for k in test_case:
-        cmd = 'java -jar {} {}'.format(jar_file, k)
+        cmd = ['java', '-jar', jar_file] + [s.replace('"', '') for s in (re.split(r' \s*(?![^"]*\" )', k.strip()))]
         print("== Run command: {}".format(cmd))
         result = run_target(case, cmd)
 
         with open('test_result.log', 'r', encoding='utf-8') as f:
             content = f.read()
             test_result_dict = ast.literal_eval(content)
-
 
         if case == 'case-assert-true':
             if result:
@@ -347,7 +344,6 @@ def run_test_case(case, jar_file):
                 print("== Done command: Expected False but tested True")
             else:
                 print("== Done command: Expected False and tested False")
-
 
         with open("test_result.log", mode='w', encoding='utf-8') as tr:
             tr.write(json.dumps(test_result_dict, indent=4))
@@ -367,20 +363,24 @@ def run_random_case(case, jar_file):
         print("Not found test case: {}".format(case))
         exit(0)
 
-    cmd = 'java -jar {} {}'.format(jar_file, case)
+    cmd = ['java', '-jar', jar_file, case]
     for k, v in test_case.get('required').items():
         r = random.choice(['none', 'choice', 'choice', 'random'])
         if r == 'choice':
-            cmd = cmd + ' -{} "{}" '.format(k, random.choice(v) if isinstance(v, list) else v)
+            cmd.append('-' + k)
+            cmd.append(random.choice(v) if isinstance(v, list) else v)
         elif r == 'random':
-            cmd = cmd + ' -{} "{}" '.format(k, random_str())
+            cmd.append('-' + k)
+            cmd.append(random_str())
 
     for k, v in test_case.get('others').items():
         r = random.choice(['none', 'choice', 'choice', 'random'])
         if r == 'choice':
-            cmd = cmd + ' -{} "{}" '.format(k, random.choice(v) if isinstance(v, list) else v)
+            cmd.append('-' + k)
+            cmd.append(random.choice(v) if isinstance(v, list) else v)
         elif r == 'random':
-            cmd = cmd + ' -{} "{}" '.format(k, random_str())
+            cmd.append('-' + k)
+            cmd.append(random_str())
 
     print("== Run command: {}".format(cmd))
     result = run_target(case, cmd)
@@ -393,9 +393,10 @@ def run_all_case(case, jar_file):
         print("Not found test case: {}".format(case))
         exit(0)
 
-    cmd = 'java -jar {} {}'.format(jar_file, case)
+    cmd = ['java', '-jar', jar_file, case]
     for ak, av in test_case.get('required').items():
-        cmd = cmd + ' -{} "{}" '.format(ak, random.choice(av) if isinstance(av, list) else av)
+        cmd.append('-' + ak)
+        cmd.append(random.choice(av) if isinstance(av, list) else av)
 
     print("== Run command: {}".format(cmd))
     result = run_target(case, cmd)
@@ -487,6 +488,8 @@ def get_run_format(args):
         print_help()
         exit(0)
     return run_round, run_scope, is_random
+
+
 if __name__ == '__main__':
     process_cmd(sys.argv)
     print("All test done")
