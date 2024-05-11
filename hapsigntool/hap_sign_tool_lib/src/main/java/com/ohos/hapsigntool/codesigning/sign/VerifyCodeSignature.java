@@ -49,8 +49,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * Verify code signature given a file with code sign block
@@ -65,7 +67,47 @@ public class VerifyCodeSignature {
         String ownerID = profileOwnerID;
         // if profileType is debug, check the app-id in signature, should be null or DEBUG_LIB_ID
         if ("debug".equals(profileType)) {
-            ownerID = "DEBUG_LIB_ID";
+            ownerID = HapUtils.HAP_DEBUG_OWNER_ID;
+        }
+
+        CMSSignedData cmsSignedData = new CMSSignedData(signature);
+        Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+        Collection<String> results = null;
+        for (SignerInformation signer : signers) {
+            AttributeTable attrTable = signer.getSignedAttributes();
+            Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
+            // if app-id is null, if profileType is debug, it's ok.
+            if (attr == null) {
+                if ("debug".equals(profileType)) {
+                    continue;
+                }
+                if (ownerID == null) {
+                    continue;
+                } else {
+                    throw new VerifyCodeSignException("app-identifier is not in the signature");
+                }
+            }
+            if (ownerID == null) {
+                throw new VerifyCodeSignException("app-identifier in profile is null, but is not null in signature");
+            }
+            // if app-id in signature exists, it should be equal to the app-id in profile.
+            String resultOwnerID = attr.getAttrValues().getObjectAt(0).toString();
+            if (!ownerID.equals(resultOwnerID)) {
+                throw new VerifyCodeSignException("app-identifier in signature is invalid");
+            }
+        }
+    }
+
+    private static void checkHnpOwnerID(byte[] signature, String profileOwnerID, String profileType, String hnpType)
+        throws CMSException, VerifyCodeSignException {
+        String ownerID = profileOwnerID;
+        // if profileType is debug, check the app-id in signature, should be null or DEBUG_LIB_ID
+        if ("debug".equals(profileType)) {
+            ownerID = HapUtils.HAP_DEBUG_OWNER_ID;
+        } else if ("release".equals(profileType)) {
+            if ("public".equals(hnpType)) {
+                ownerID = HapUtils.HAP_SHARED_OWNER_ID;
+            }
         }
 
         CMSSignedData cmsSignedData = new CMSSignedData(signature);
@@ -181,23 +223,50 @@ public class VerifyCodeSignature {
             checkOwnerID(signature, pairResult.getFirst(), pairResult.getSecond());
         }
         // 3) verify native libs
+        verifyLibs(file,csb,pairResult);
+        return true;
+    }
+
+    private static void verifyLibs(File file, CodeSignBlock csb,Pair<String, String> pairResult)
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
         try (JarFile inputJar = new JarFile(file, false)) {
+            //get module.json
+            Map<String, String> hnpsMap = HapUtils.getHnpsFromJson(inputJar);
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
-                byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
-                JarEntry entry = inputJar.getJarEntry(entryName);
-                if (entry.getSize() != csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize()) {
-                    throw new VerifyCodeSignException(
-                        String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
-                }
-                try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
-                    // temporary merkleTreeOffset 0
-                    verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
-                    checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+                LOGGER.info("verify lib: " + entryName);
+                if (entryName.contains("!/")) {
+                    String[] filePath = entryName.split("!/");
+                    JarEntry hnpEntry = inputJar.getJarEntry(filePath[0]);
+                    try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+                        ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
+                        java.util.zip.ZipEntry libEntry = null;
+                        while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                            if (!libEntry.getName().equals(filePath[1])) {
+                                continue;
+                            }
+                            byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
+                            long dataSize = csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize();
+                            String hnpType = hnpsMap.get(filePath[0]);
+                            verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
+                            checkHnpOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond(), hnpType);
+                        }
+                    }
+                } else {
+                    JarEntry entry = inputJar.getJarEntry(entryName);
+                    if (entry.getSize() != csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize()) {
+                        throw new VerifyCodeSignException(
+                            String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
+                    }
+                    byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
+                    try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
+                        // temporary merkleTreeOffset 0
+                        verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
+                        checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+                    }
                 }
             }
         }
-        return true;
     }
 
     private static CodeSignBlock generateCodeSignBlock(File file, long offset, long length)
