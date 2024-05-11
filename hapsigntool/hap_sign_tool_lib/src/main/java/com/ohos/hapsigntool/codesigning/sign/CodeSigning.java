@@ -255,13 +255,13 @@ public class CodeSigning {
             //get hnp entry
             for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
                 JarEntry entry = e.nextElement();
-                if (entry.isDirectory() || hnpFileNames.keySet()
-                    .stream()
-                    .noneMatch((hnp) -> entry.getName().endsWith(hnp))) {
+                String[] strings = entry.getName().split("/");
+                String hnpFileName = strings[strings.length - 1];
+                if (entry.isDirectory() || !hnpFileNames.containsKey(hnpFileName)) {
                     continue;
                 }
                 LOGGER.info("Sign entry name = " + entry.getName());
-                String type = hnpFileNames.get(entry.getName());
+                String type = hnpFileNames.get(hnpFileName);
                 String hnpOwnerId = ownerID;
                 if ("public".equals(type)) {
                     hnpOwnerId = HapUtils.getHnpOwnerId(profileContent);

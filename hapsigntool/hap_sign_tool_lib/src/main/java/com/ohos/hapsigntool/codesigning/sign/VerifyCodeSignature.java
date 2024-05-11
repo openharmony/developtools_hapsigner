@@ -231,7 +231,7 @@ public class VerifyCodeSignature {
         throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
         try (JarFile inputJar = new JarFile(file, false)) {
             //get module.json
-            Map<String, String> hnpsMap = HapUtils.getHnpsFromJson(inputJar);
+            Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
                 LOGGER.info("verify lib: " + entryName);
@@ -247,7 +247,9 @@ public class VerifyCodeSignature {
                             }
                             byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
                             long dataSize = csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize();
-                            String hnpType = hnpsMap.get(filePath[0]);
+                            String[] strings = filePath[0].split("/");
+                            String hnpFileName = strings[strings.length - 1];
+                            String hnpType = hnpFileNames.get(hnpFileName);
                             verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
                             checkHnpOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond(), hnpType);
                         }
