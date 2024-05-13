@@ -193,7 +193,7 @@ public class CodeSigning {
         // update native lib info segment in CodeSignBlock
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         nativeLibInfoList.addAll(signNativeLibs(input, ownerID));
-        nativeLibInfoList.addAll(signNativeHnps(input, profileContent,ownerID));
+        nativeLibInfoList.addAll(signNativeHnps(input, profileContent, ownerID));
         // update SoInfoSegment in CodeSignBlock
         this.codeSignBlock.getSoInfoSegment().setSoInfoList(nativeLibInfoList);
 
@@ -230,8 +230,8 @@ public class CodeSigning {
         return dataSize;
     }
 
-    private List<Pair<String, SignInfo>> signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException,
-            CodeSignException {
+    private List<Pair<String, SignInfo>> signNativeLibs(File input, String ownerID)
+        throws IOException, FsVerityDigestException, CodeSignException {
         // sign native files
         try (JarFile inputJar = new JarFile(input, false)) {
             List<String> entryNames = getNativeEntriesFromHap(inputJar);
@@ -243,7 +243,7 @@ public class CodeSigning {
         }
     }
 
-    private List<Pair<String, SignInfo>> signNativeHnps(File input,String profileContent, String ownerID)
+    private List<Pair<String, SignInfo>> signNativeHnps(File input, String profileContent, String ownerID)
         throws IOException, FsVerityDigestException, CodeSignException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         try (JarFile inputJar = new JarFile(input, false)) {
@@ -252,7 +252,7 @@ public class CodeSigning {
                 LOGGER.info("not exists hnp dir or hnp_package is empty");
                 return new ArrayList<>();
             }
-            //get hnp entry
+            // get hnp entry
             for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
                 JarEntry entry = e.nextElement();
                 String[] strings = entry.getName().split("/");
@@ -274,7 +274,6 @@ public class CodeSigning {
 
     private void signHnpLibs(JarFile inputJar, JarEntry hnpEntry, String ownerID,
         List<Pair<String, SignInfo>> nativeLibInfoList) throws IOException, FsVerityDigestException, CodeSignException {
-
         // hnp file
         Map<String, Long> jarEntries = new HashMap<>();
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
@@ -283,13 +282,15 @@ public class CodeSigning {
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {
                 byte[] bytes = new byte[4];
                 int read = hnpInputStream.read(bytes, 0, 4);
-                if (read != -1 && isElfFile(bytes)) {
-                    long entrySize = 4;
-                    while (hnpInputStream.skip(1) > 0) {
-                        entrySize++;
-                    }
-                    jarEntries.put(libEntry.getName(), entrySize);
+                if (read == -1 || !isElfFile(bytes)) {
+                    hnpInputStream.closeEntry();
+                    continue;
                 }
+                long entrySize = 4;
+                while (hnpInputStream.skip(1) > 0) {
+                    entrySize++;
+                }
+                jarEntries.put(libEntry.getName(), entrySize);
                 hnpInputStream.closeEntry();
             }
         }
