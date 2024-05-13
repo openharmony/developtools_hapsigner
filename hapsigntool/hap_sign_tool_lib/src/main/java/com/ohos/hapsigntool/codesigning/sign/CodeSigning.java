@@ -46,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -255,12 +256,19 @@ public class CodeSigning {
             // get hnp entry
             for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
                 JarEntry entry = e.nextElement();
-                String[] strings = entry.getName().split("/");
-                String hnpFileName = strings[strings.length - 1];
-                if (entry.isDirectory() || !hnpFileNames.containsKey(hnpFileName)) {
+                if (entry.isDirectory() || !entry.getName().startsWith("hnp/")) {
                     continue;
                 }
-                LOGGER.info("Sign entry name = " + entry.getName());
+                String[] strings = entry.getName().split("/");
+                if (strings.length < 3) {
+                    continue;
+                }
+                strings = Arrays.copyOfRange(strings, 2, strings.length);
+                String hnpFileName = String.join("/", strings);
+                if (!hnpFileNames.containsKey(hnpFileName)) {
+                    continue;
+                }
+                LOGGER.info("Sign hnp name = " + entry.getName());
                 String type = hnpFileNames.get(hnpFileName);
                 String hnpOwnerId = ownerID;
                 if ("public".equals(type)) {
