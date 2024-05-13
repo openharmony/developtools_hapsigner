@@ -222,7 +222,7 @@ public class HapUtils {
      *
      * @param inputJar hap file
      * @return packageName-type map
-     * @throws IOException
+     * @throws IOException when IO error occurred
      */
     public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException {
         // get module.json

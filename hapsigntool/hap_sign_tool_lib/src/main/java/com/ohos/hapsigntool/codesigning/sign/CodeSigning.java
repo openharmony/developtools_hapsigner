@@ -294,7 +294,7 @@ public class CodeSigning {
                     hnpInputStream.closeEntry();
                     continue;
                 }
-                long entrySize = 4;
+                long entrySize = 4L;
                 while (hnpInputStream.skip(1) > 0) {
                     entrySize++;
                 }
