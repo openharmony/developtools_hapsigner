@@ -24,6 +24,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.HapInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.NativeLibInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.SegmentHeader;
+import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
@@ -227,50 +228,69 @@ public class VerifyCodeSignature {
         return true;
     }
 
-    private static void verifyLibs(File file, CodeSignBlock csb,Pair<String, String> pairResult)
+    private static void verifyLibs(File file, CodeSignBlock csb, Pair<String, String> pairResult)
         throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
         try (JarFile inputJar = new JarFile(file, false)) {
             // get module.json
             Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
+                SignInfo signInfo = csb.getSoInfoSegment().getSignInfoList().get(i);
                 LOGGER.info("verify lib: " + entryName);
                 if (entryName.contains("!/")) {
-                    String[] filePath = entryName.split("!/");
-                    JarEntry hnpEntry = inputJar.getJarEntry(filePath[0]);
-                    try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
-                        ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
-                        java.util.zip.ZipEntry libEntry = null;
-                        while ((libEntry = hnpInputStream.getNextEntry()) != null) {
-                            if (!libEntry.getName().equals(filePath[1])) {
-                                continue;
-                            }
-                            byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
-                            long dataSize = csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize();
-                            String[] strings = filePath[0].split("/");
-                            String hnpFileName = strings[strings.length - 1];
-                            String hnpType = hnpFileNames.get(hnpFileName);
-                            verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
-                            checkHnpOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond(), hnpType);
-                            hnpInputStream.closeEntry();
-                        }
-                    }
+                    verifyHnpLib(inputJar, entryName, hnpFileNames, signInfo, pairResult);
                 } else {
-                    JarEntry entry = inputJar.getJarEntry(entryName);
-                    if (entry.getSize() != csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize()) {
-                        throw new VerifyCodeSignException(
-                            String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
-                    }
-                    byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
-                    try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
-                        // temporary merkleTreeOffset 0
-                        verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
-                        checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
-                    }
+                    verifyHapLib(inputJar, entryName, signInfo, pairResult);
                 }
             }
         }
     }
+
+    private static void verifyHapLib(JarFile inputJar, String entryName, SignInfo signInfo,
+        Pair<String, String> pairResult)
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
+
+        JarEntry entry = inputJar.getJarEntry(entryName);
+        if (entry.getSize() != signInfo.getDataSize()) {
+            throw new VerifyCodeSignException(
+                String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
+        }
+        byte[] entrySig = signInfo.getSignature();
+        try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
+            // temporary merkleTreeOffset 0
+            verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
+            checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+        }
+    }
+
+    private static void verifyHnpLib(JarFile inputJar, String entryName, Map<String, String> hnpFileNames,
+        SignInfo signInfo, Pair<String, String> pairResult)
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
+        String[] filePath = entryName.split("!/");
+        JarEntry hnpEntry = inputJar.getJarEntry(filePath[0]);
+        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+            ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
+            String[] strings = filePath[0].split("/");
+            if (strings.length < 3) {
+                return;
+            }
+            strings = Arrays.copyOfRange(strings, 2, strings.length);
+            String hnpFileName = String.join("/", strings);
+            String hnpType = hnpFileNames.get(hnpFileName);
+            java.util.zip.ZipEntry libEntry = null;
+            while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                if (!libEntry.getName().equals(filePath[1])) {
+                    continue;
+                }
+                byte[] entrySig = signInfo.getSignature();
+                long dataSize = signInfo.getDataSize();
+                verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
+                checkHnpOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond(), hnpType);
+                hnpInputStream.closeEntry();
+            }
+        }
+    }
+
 
     private static CodeSignBlock generateCodeSignBlock(File file, long offset, long length)
         throws IOException, VerifyCodeSignException {
