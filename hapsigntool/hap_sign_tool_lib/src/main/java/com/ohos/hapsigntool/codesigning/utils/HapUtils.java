@@ -195,12 +195,13 @@ public class HapUtils {
     }
 
     /**
+     * get hnp app-id from profile
      *
-     * @param profileContent
-     * @return
+     * @param profileContent the content of profile
+     * @return ownerid
      */
     public static String getHnpOwnerId(String profileContent) {
-        //property type
+        // property type
         String publicOwnerID = "";
         JsonElement parser = JsonParser.parseString(profileContent);
         JsonObject profileJson = parser.getAsJsonObject();
@@ -223,8 +224,8 @@ public class HapUtils {
      * @return packageName-type map
      * @throws IOException
      */
-    public static Map<String, String>  getHnpsFromJson(JarFile inputJar) throws IOException {
-        //module.json
+    public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException {
+        // get module.json
         Map<String, String> hnpNameMap = new HashMap<>();
         JarEntry moduleEntry = inputJar.getJarEntry("module.json");
         if (moduleEntry == null) {

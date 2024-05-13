@@ -223,14 +223,14 @@ public class VerifyCodeSignature {
             checkOwnerID(signature, pairResult.getFirst(), pairResult.getSecond());
         }
         // 3) verify native libs
-        verifyLibs(file,csb,pairResult);
+        verifyLibs(file, csb, pairResult);
         return true;
     }
 
     private static void verifyLibs(File file, CodeSignBlock csb,Pair<String, String> pairResult)
         throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
         try (JarFile inputJar = new JarFile(file, false)) {
-            //get module.json
+            // get module.json
             Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
@@ -252,6 +252,7 @@ public class VerifyCodeSignature {
                             String hnpType = hnpFileNames.get(hnpFileName);
                             verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
                             checkHnpOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond(), hnpType);
+                            hnpInputStream.closeEntry();
                         }
                     }
                 } else {
