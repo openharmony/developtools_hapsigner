@@ -73,7 +73,6 @@ public class VerifyCodeSignature {
 
         CMSSignedData cmsSignedData = new CMSSignedData(signature);
         Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-        Collection<String> results = null;
         for (SignerInformation signer : signers) {
             AttributeTable attrTable = signer.getSignedAttributes();
             Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
@@ -113,7 +112,6 @@ public class VerifyCodeSignature {
 
         CMSSignedData cmsSignedData = new CMSSignedData(signature);
         Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-        Collection<String> results = null;
         for (SignerInformation signer : signers) {
             AttributeTable attrTable = signer.getSignedAttributes();
             Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
