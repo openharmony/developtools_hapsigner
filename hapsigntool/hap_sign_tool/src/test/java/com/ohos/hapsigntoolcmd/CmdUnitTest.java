@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.error.CustomException;
+import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.zip.Zip;
@@ -39,7 +40,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -848,6 +848,12 @@ public class CmdUnitTest {
         File unsignedHap = new File(CMD_TEST_HAP_FILE_PATH);
         signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
     }
+    @Order(13)
+    @Test
+    public void test() throws IOException {
+        File unsignedHap = new File("C:\\Users\\zfx\\DevEcoStudioProjects\\MyApplication2\\entry\\build\\default\\outputs\\default\\entry-default-unsigned.hap");
+        signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
+    }
 
     private void multiBundleTest(String bundleSuffix) throws IOException {
         for (FileType abcFile : FileType.values()) {
@@ -1005,7 +1011,7 @@ public class CmdUnitTest {
     }
 
     @Test
-    public void testGetHnpsFromHap() throws IOException {
+    public void testGetHnpsFromHap() throws IOException, ProfileException {
         loadFile(CMD_TEST_HAP_FILE_PATH);
         File file = new File(CMD_TEST_HAP_FILE_PATH);
         try (JarFile inputJar = new JarFile(file, false)) {
@@ -1013,8 +1019,6 @@ public class CmdUnitTest {
             hnpMap.forEach((k, v) -> {
                 logger.info(() -> String.format("k :%s , \t v :%s ", k , v));
             });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
