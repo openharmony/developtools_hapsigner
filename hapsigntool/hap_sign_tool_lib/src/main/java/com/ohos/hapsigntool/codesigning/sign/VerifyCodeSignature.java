@@ -227,14 +227,14 @@ public class VerifyCodeSignature {
     }
 
     private static void verifyLibs(File file, CodeSignBlock csb, Pair<String, String> pairResult)
-        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException, ProfileException {
         try (JarFile inputJar = new JarFile(file, false)) {
             // get module.json
             Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
                 SignInfo signInfo = csb.getSoInfoSegment().getSignInfoList().get(i);
-                LOGGER.info("verify lib: " + entryName);
+                LOGGER.debug("verify lib: " + entryName);
                 if (entryName.contains("!/")) {
                     verifyHnpLib(inputJar, entryName, hnpFileNames, signInfo, pairResult);
                 } else {
@@ -268,12 +268,7 @@ public class VerifyCodeSignature {
         JarEntry hnpEntry = inputJar.getJarEntry(filePath[0]);
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
             ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
-            String[] strings = filePath[0].split("/");
-            if (strings.length < 3) {
-                return;
-            }
-            strings = Arrays.copyOfRange(strings, 2, strings.length);
-            String hnpFileName = String.join("/", strings);
+            String hnpFileName = HapUtils.parseHnpPath(filePath[0]);
             String hnpType = hnpFileNames.get(hnpFileName);
             java.util.zip.ZipEntry libEntry = null;
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {

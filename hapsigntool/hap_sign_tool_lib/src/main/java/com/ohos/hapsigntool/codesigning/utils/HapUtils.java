@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.codesigning.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -196,12 +198,12 @@ public class HapUtils {
     }
 
     /**
-     * get hnp app-id from profile
+     * get hnp app-id from profile when type is public
      *
      * @param profileContent the content of profile
      * @return ownerid
      */
-    public static String getHnpOwnerId(String profileContent) {
+    public static String getPublicHnpOwnerId(String profileContent) {
         // property type
         String publicOwnerID = "";
         JsonElement parser = JsonParser.parseString(profileContent);
@@ -219,13 +221,32 @@ public class HapUtils {
     }
 
     /**
+     * get hnp path behind "hnp/abi/"
+     *
+     * @param path filepath
+     * @return hnp path behind "hnp/abi/"
+     */
+    public static String parseHnpPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "";
+        }
+        String[] strings = path.split("/");
+        if (strings.length < 3) {
+            return "";
+        }
+        // get hnp path behind "hnp/abi/"
+        strings = Arrays.copyOfRange(strings, 2, strings.length);
+        return String.join("/", strings);
+    }
+
+    /**
      * get map of hnp name and type from module.json
      *
      * @param inputJar hap file
      * @return packageName-type map
      * @throws IOException when IO error occurred
      */
-    public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException {
+    public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException, ProfileException {
         // get module.json
         Map<String, String> hnpNameMap = new HashMap<>();
         JarEntry moduleEntry = inputJar.getJarEntry("module.json");
@@ -234,7 +255,6 @@ public class HapUtils {
         }
         try (JsonReader reader = new JsonReader(
             new InputStreamReader(inputJar.getInputStream(moduleEntry), StandardCharsets.UTF_8))) {
-
             JsonElement jsonElement = JsonParser.parseReader(reader);
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             JsonObject moduleObject = jsonObject.getAsJsonObject("module");
@@ -255,6 +275,9 @@ public class HapUtils {
                     hnpNameMap.put(hnpName.getAsString(), type.getAsString());
                 }
             });
+        } catch (JsonParseException e){
+            LOGGER.error(e.getMessage());
+            throw new ProfileException("profile json is invalid");
         }
         return hnpNameMap;
     }

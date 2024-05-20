@@ -245,34 +245,33 @@ public class CodeSigning {
     }
 
     private List<Pair<String, SignInfo>> signNativeHnps(File input, String profileContent, String ownerID)
-        throws IOException, FsVerityDigestException, CodeSignException {
+        throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         try (JarFile inputJar = new JarFile(input, false)) {
             Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
-            if (inputJar.getJarEntry("hnp/") == null || hnpFileNames.isEmpty()) {
-                LOGGER.info("not exists hnp dir or hnp_package is empty");
+            if (inputJar.getJarEntry("hnp/") == null) {
+                LOGGER.info("not exists hnp dir");
                 return new ArrayList<>();
             }
             // get hnp entry
             for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
                 JarEntry entry = e.nextElement();
-                if (entry.isDirectory() || !entry.getName().startsWith("hnp/")) {
+                String entryName = entry.getName();
+                if (entry.isDirectory() || !entryName.startsWith("hnp/")) {
                     continue;
                 }
-                String[] strings = entry.getName().split("/");
-                if (strings.length < 3) {
+                String hnpFileName = HapUtils.parseHnpPath(entryName);
+                if (!hnpFileName.toLowerCase(Locale.ROOT).endsWith(".hnp")) {
                     continue;
                 }
-                strings = Arrays.copyOfRange(strings, 2, strings.length);
-                String hnpFileName = String.join("/", strings);
                 if (!hnpFileNames.containsKey(hnpFileName)) {
-                    continue;
+                    throw new CodeSignException("hnp should be described in module.json");
                 }
-                LOGGER.info("Sign hnp name = " + entry.getName());
+                LOGGER.debug("Sign hnp name = " + entryName);
                 String type = hnpFileNames.get(hnpFileName);
                 String hnpOwnerId = ownerID;
                 if ("public".equals(type)) {
-                    hnpOwnerId = HapUtils.getHnpOwnerId(profileContent);
+                    hnpOwnerId = HapUtils.getPublicHnpOwnerId(profileContent);
                 }
                 signHnpLibs(inputJar, entry, hnpOwnerId, nativeLibInfoList);
             }
@@ -289,16 +288,15 @@ public class CodeSigning {
             java.util.zip.ZipEntry libEntry = null;
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {
                 byte[] bytes = new byte[4];
-                int read = hnpInputStream.read(bytes, 0, 4);
-                if (read == -1 || !isElfFile(bytes)) {
+                hnpInputStream.read(bytes, 0, 4);
+                if (!isElfFile(bytes)) {
                     hnpInputStream.closeEntry();
                     continue;
                 }
-                long entrySize = 4L;
-                while (hnpInputStream.skip(1) > 0) {
-                    entrySize++;
-                }
-                jarEntries.put(libEntry.getName(), entrySize);
+                // to read input stream end
+                byte[] tmp = new byte[4096];
+                while (hnpInputStream.read(tmp,0,4096) > 0) {}
+                jarEntries.put(libEntry.getName(), libEntry.getSize());
                 hnpInputStream.closeEntry();
             }
         }
