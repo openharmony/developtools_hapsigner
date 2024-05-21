@@ -245,6 +245,7 @@ public class HapUtils {
      * @param inputJar hap file
      * @return packageName-type map
      * @throws IOException when IO error occurred
+     * @throws ProfileException profile is invalid
      */
     public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException, ProfileException {
         // get module.json
@@ -275,7 +276,7 @@ public class HapUtils {
                     hnpNameMap.put(hnpName.getAsString(), type.getAsString());
                 }
             });
-        } catch (JsonParseException e){
+        } catch (JsonParseException e) {
             LOGGER.error(e.getMessage());
             throw new ProfileException("profile json is invalid");
         }
