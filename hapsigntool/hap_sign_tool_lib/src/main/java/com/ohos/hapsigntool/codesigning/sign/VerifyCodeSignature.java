@@ -25,6 +25,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.NativeLibInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.SegmentHeader;
 import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
+import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
@@ -49,8 +50,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipInputStream;
@@ -230,16 +234,23 @@ public class VerifyCodeSignature {
         throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException, ProfileException {
         try (JarFile inputJar = new JarFile(file, false)) {
             // get module.json
-            Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
+            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
+            Map<String, SignInfo> hnpLibSignInfoMap = new HashMap<>();
+            Set<String> hnpEntryNames = new HashSet<>();
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
                 SignInfo signInfo = csb.getSoInfoSegment().getSignInfoList().get(i);
-                LOGGER.debug("verify lib: " + entryName);
                 if (entryName.contains("!/")) {
-                    verifyHnpLib(inputJar, entryName, hnpFileNames, signInfo, pairResult);
+                    String[] filePath = entryName.split("!/");
+                    hnpEntryNames.add(filePath[0]);
+                    hnpLibSignInfoMap.put(entryName, signInfo);
                 } else {
+                    LOGGER.debug("verify lib: {}", entryName);
                     verifyHapLib(inputJar, entryName, signInfo, pairResult);
                 }
+            }
+            for (String hnpEntryName : hnpEntryNames) {
+                verifyHnpLib(inputJar, hnpEntryName, hnpLibSignInfoMap, hnpTypeMap, pairResult);
             }
         }
     }
@@ -261,20 +272,25 @@ public class VerifyCodeSignature {
         }
     }
 
-    private static void verifyHnpLib(JarFile inputJar, String entryName, Map<String, String> hnpFileNames,
-        SignInfo signInfo, Pair<String, String> pairResult)
+    private static void verifyHnpLib(JarFile inputJar, String hnpEntryName, Map<String, SignInfo> hnpLibSignInfoMap,
+        Map<String, String> hnpTypeMap, Pair<String, String> pairResult)
         throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
-        String[] filePath = entryName.split("!/");
-        JarEntry hnpEntry = inputJar.getJarEntry(filePath[0]);
+        JarEntry hnpEntry = inputJar.getJarEntry(hnpEntryName);
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
             ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
-            String hnpFileName = HapUtils.parseHnpPath(filePath[0]);
-            String hnpType = hnpFileNames.get(hnpFileName);
+            String hnpFileName = HapUtils.parseHnpPath(hnpEntryName);
+            if (!hnpTypeMap.containsKey(hnpFileName)) {
+                throw new VerifyCodeSignException("hnp should be described in module.json");
+            }
+            String hnpType = hnpTypeMap.get(hnpFileName);
             java.util.zip.ZipEntry libEntry = null;
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {
-                if (!libEntry.getName().equals(filePath[1])) {
+                String libPath = hnpEntry.getName() + "!/" + libEntry.getName();
+                if (!hnpLibSignInfoMap.containsKey(libPath)) {
                     continue;
                 }
+                LOGGER.debug("verify lib: {}", libPath);
+                SignInfo signInfo = hnpLibSignInfoMap.get(libPath);
                 byte[] entrySig = signInfo.getSignature();
                 long dataSize = signInfo.getDataSize();
                 verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
@@ -283,7 +299,6 @@ public class VerifyCodeSignature {
             }
         }
     }
-
 
     private static CodeSignBlock generateCodeSignBlock(File file, long offset, long length)
         throws IOException, VerifyCodeSignException {
