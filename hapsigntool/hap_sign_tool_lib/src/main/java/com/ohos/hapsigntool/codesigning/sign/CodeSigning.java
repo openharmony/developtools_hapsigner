@@ -295,7 +295,7 @@ public class CodeSigning {
                 }
                 // to read input stream end
                 byte[] tmp = new byte[4096];
-                while (hnpInputStream.read(tmp,0,4096) > 0) {}
+                while (hnpInputStream.read(tmp, 0, 4096) > 0) {}
                 jarEntries.put(libEntry.getName(), libEntry.getSize());
                 hnpInputStream.closeEntry();
             }
