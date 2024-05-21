@@ -233,8 +233,6 @@ public class VerifyCodeSignature {
     private static void verifyLibs(File file, CodeSignBlock csb, Pair<String, String> pairResult)
         throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException, ProfileException {
         try (JarFile inputJar = new JarFile(file, false)) {
-            // get module.json
-            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             Map<String, SignInfo> hnpLibSignInfoMap = new HashMap<>();
             Set<String> hnpEntryNames = new HashSet<>();
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
@@ -249,6 +247,8 @@ public class VerifyCodeSignature {
                     verifyHapLib(inputJar, entryName, signInfo, pairResult);
                 }
             }
+            // get module.json
+            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             for (String hnpEntryName : hnpEntryNames) {
                 verifyHnpLib(inputJar, hnpEntryName, hnpLibSignInfoMap, hnpTypeMap, pairResult);
             }
