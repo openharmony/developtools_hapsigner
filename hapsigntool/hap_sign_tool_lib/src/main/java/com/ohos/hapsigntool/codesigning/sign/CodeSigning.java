@@ -248,7 +248,7 @@ public class CodeSigning {
         throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         try (JarFile inputJar = new JarFile(input, false)) {
-            Map<String, String> hnpFileNames = HapUtils.getHnpsFromJson(inputJar);
+            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             if (inputJar.getJarEntry("hnp/") == null) {
                 LOGGER.info("not exists hnp dir");
                 return new ArrayList<>();
@@ -264,11 +264,11 @@ public class CodeSigning {
                 if (!hnpFileName.toLowerCase(Locale.ROOT).endsWith(".hnp")) {
                     continue;
                 }
-                if (!hnpFileNames.containsKey(hnpFileName)) {
+                if (!hnpTypeMap.containsKey(hnpFileName)) {
                     throw new CodeSignException("hnp should be described in module.json");
                 }
                 LOGGER.debug("Sign hnp name = " + entryName);
-                String type = hnpFileNames.get(hnpFileName);
+                String type = hnpTypeMap.get(hnpFileName);
                 String hnpOwnerId = ownerID;
                 if ("public".equals(type)) {
                     hnpOwnerId = HapUtils.getPublicHnpOwnerId(profileContent);
