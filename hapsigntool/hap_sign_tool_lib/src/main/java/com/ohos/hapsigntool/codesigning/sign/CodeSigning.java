@@ -267,7 +267,7 @@ public class CodeSigning {
                 if (!hnpTypeMap.containsKey(hnpFileName)) {
                     throw new CodeSignException("hnp should be described in module.json");
                 }
-                LOGGER.debug("Sign hnp name = " + entryName);
+                LOGGER.debug("Sign hnp name = {}", entryName);
                 String type = hnpTypeMap.get(hnpFileName);
                 String hnpOwnerId = ownerID;
                 if ("public".equals(type)) {
@@ -379,7 +379,7 @@ public class CodeSigning {
         throws IOException, FsVerityDigestException, CodeSignException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         for (String name : entryNames) {
-            LOGGER.debug("Sign entry name = " + name);
+            LOGGER.debug("Sign entry name = {}", name);
             JarEntry inEntry = hap.getJarEntry(name);
             try (InputStream inputStream = hap.getInputStream(inEntry)) {
                 long fileSize = inEntry.getSize();
