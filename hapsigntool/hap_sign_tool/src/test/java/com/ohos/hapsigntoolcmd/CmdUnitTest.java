@@ -840,18 +840,11 @@ public class CmdUnitTest {
         multiBundleTest(".hqf");
     }
 
-
     @Order(13)
     @Test
     public void testCmdMultiHnp() throws IOException {
         loadFile(CMD_TEST_HAP_FILE_PATH);
         File unsignedHap = new File(CMD_TEST_HAP_FILE_PATH);
-        signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
-    }
-    @Order(13)
-    @Test
-    public void test() throws IOException {
-        File unsignedHap = new File("C:\\Users\\zfx\\DevEcoStudioProjects\\MyApplication2\\entry\\build\\default\\outputs\\default\\entry-default-unsigned.hap");
         signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
     }
 
@@ -1016,9 +1009,11 @@ public class CmdUnitTest {
         File file = new File(CMD_TEST_HAP_FILE_PATH);
         try (JarFile inputJar = new JarFile(file, false)) {
             Map<String, String> hnpMap = HapUtils.getHnpsFromJson(inputJar);
-            hnpMap.forEach((k, v) -> {
-                logger.info(() -> String.format("k :%s , \t v :%s ", k , v));
-            });
+            assertTrue(hnpMap.size() == 4);
+            assertTrue("private".equals(hnpMap.get("entry-default-unsigned.hnp")));
+            assertTrue("public".equals(hnpMap.get("entry-default-unsigned1.hnp")));
+            assertTrue("private".equals(hnpMap.get("dd/entry-default-unsigned.hnp")));
+            assertTrue("public".equals(hnpMap.get("dd/entry-default-unsigned1.hnp")));
         }
     }
 
