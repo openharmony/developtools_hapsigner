@@ -34,10 +34,9 @@ import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
-import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 import com.ohos.hapsigntool.zip.Zip;
-import com.ohos.hapsigntool.zip.ZipEntryHeader;
 import com.ohos.hapsigntool.zip.ZipEntry;
+import com.ohos.hapsigntool.zip.ZipEntryHeader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,16 +45,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.zip.ZipInputStream;
 
 /**
  * core functions of code signing
@@ -87,8 +85,6 @@ public class CodeSigning {
     private final SignerConfig signConfig;
 
     private CodeSignBlock codeSignBlock;
-
-    private long timestamp = 0L;
 
     /**
      * provide code sign functions to sign a hap
@@ -126,7 +122,9 @@ public class CodeSigning {
             fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
             byte[] fsVerityDigest = fsVerityGenerator.getFsVerityDigest();
             // ownerID should be DEBUG_LIB_ID while signing ELF
-            String ownerID = (profileContent == null) ? "DEBUG_LIB_ID" : HapUtils.getAppIdentifier(profileContent);
+            String ownerID = (profileContent == null)
+                ? HapUtils.HAP_DEBUG_OWNER_ID
+                : HapUtils.getAppIdentifier(profileContent);
             byte[] signature = generateSignature(fsVerityDigest, ownerID);
             // add fs-verify info
             FsVerityDescriptor.Builder fsdbuilder = new FsVerityDescriptor.Builder().setFileSize(fileSize)
@@ -171,7 +169,6 @@ public class CodeSigning {
             throw new CodeSignException("file's format is unsupported");
         }
         long dataSize = computeDataSize(zip);
-        timestamp = System.currentTimeMillis();
         // generate CodeSignBlock
         this.codeSignBlock = new CodeSignBlock();
         // compute merkle tree offset, replace with computeMerkleTreeOffset if fs-verity descriptor supports
@@ -194,7 +191,11 @@ public class CodeSigning {
                 hapSignInfoAndMerkleTreeBytesPair.getSecond());
         }
         // update native lib info segment in CodeSignBlock
-        signNativeLibs(input, ownerID);
+        List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
+        nativeLibInfoList.addAll(signNativeLibs(input, ownerID));
+        nativeLibInfoList.addAll(signNativeHnps(input, profileContent, ownerID));
+        // update SoInfoSegment in CodeSignBlock
+        this.codeSignBlock.getSoInfoSegment().setSoInfoList(nativeLibInfoList);
 
         // last update codeSignBlock before generating its byte array representation
         updateCodeSignBlock(this.codeSignBlock);
@@ -229,18 +230,90 @@ public class CodeSigning {
         return dataSize;
     }
 
-    private void signNativeLibs(File input, String ownerID) throws IOException, FsVerityDigestException,
-            CodeSignException {
+    private List<Pair<String, SignInfo>> signNativeLibs(File input, String ownerID)
+        throws IOException, FsVerityDigestException, CodeSignException {
         // sign native files
         try (JarFile inputJar = new JarFile(input, false)) {
             List<String> entryNames = getNativeEntriesFromHap(inputJar);
             if (entryNames.isEmpty()) {
                 LOGGER.info("No native libs.");
-                return;
+                return new ArrayList<>();
             }
-            List<Pair<String, SignInfo>> nativeLibInfoList = signFilesFromJar(entryNames, inputJar, ownerID);
-            // update SoInfoSegment in CodeSignBlock
-            this.codeSignBlock.getSoInfoSegment().setSoInfoList(nativeLibInfoList);
+            return signFilesFromJar(entryNames, inputJar, ownerID);
+        }
+    }
+
+    private List<Pair<String, SignInfo>> signNativeHnps(File input, String profileContent, String ownerID)
+        throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
+        List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
+        try (JarFile inputJar = new JarFile(input, false)) {
+            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
+            if (inputJar.getJarEntry("hnp/") == null) {
+                LOGGER.info("not exists hnp dir");
+                return new ArrayList<>();
+            }
+            // get hnp entry
+            for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
+                JarEntry entry = e.nextElement();
+                String entryName = entry.getName();
+                if (entry.isDirectory() || !entryName.startsWith("hnp/")) {
+                    continue;
+                }
+                String hnpFileName = HapUtils.parseHnpPath(entryName);
+                if (!hnpFileName.toLowerCase(Locale.ROOT).endsWith(".hnp")) {
+                    continue;
+                }
+                if (!hnpTypeMap.containsKey(hnpFileName)) {
+                    throw new CodeSignException("hnp should be described in module.json");
+                }
+                LOGGER.debug("Sign hnp name = {}", entryName);
+                String type = hnpTypeMap.get(hnpFileName);
+                String hnpOwnerId = ownerID;
+                if ("public".equals(type)) {
+                    hnpOwnerId = HapUtils.getPublicHnpOwnerId(profileContent);
+                }
+                signHnpLibs(inputJar, entry, hnpOwnerId, nativeLibInfoList);
+            }
+        }
+        return nativeLibInfoList;
+    }
+
+    private void signHnpLibs(JarFile inputJar, JarEntry hnpEntry, String ownerID,
+        List<Pair<String, SignInfo>> nativeLibInfoList) throws IOException, FsVerityDigestException, CodeSignException {
+        // hnp file
+        Map<String, Long> jarEntries = new HashMap<>();
+        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+            ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
+            java.util.zip.ZipEntry libEntry = null;
+            while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                byte[] bytes = new byte[4];
+                hnpInputStream.read(bytes, 0, 4);
+                if (!isElfFile(bytes)) {
+                    hnpInputStream.closeEntry();
+                    continue;
+                }
+                // read input stream end to get entry size, can be adjusted based on performance testing
+                byte[] tmp = new byte[4096];
+                while (hnpInputStream.read(tmp, 0, 4096) > 0) {}
+                jarEntries.put(libEntry.getName(), libEntry.getSize());
+                hnpInputStream.closeEntry();
+            }
+        }
+        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+            ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
+            java.util.zip.ZipEntry libEntry = null;
+            while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                if (jarEntries.containsKey(libEntry.getName())) {
+                    long fileSize = jarEntries.get(libEntry.getName());
+                    // We don't store merkle tree in code signing of native libs
+                    // Therefore, the second value of pair returned is ignored
+                    Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(hnpInputStream, fileSize, false, 0,
+                        ownerID);
+                    nativeLibInfoList.add(Pair.create(hnpEntry.getName() + "!/" + libEntry.getName(),
+                        pairSignInfoAndMerkleTreeBytes.getFirst()));
+                }
+                hnpInputStream.closeEntry();
+            }
         }
     }
 
@@ -283,6 +356,13 @@ public class CodeSigning {
         return false;
     }
 
+    private boolean isElfFile(byte[] bytes) {
+        if (bytes == null || bytes.length != 4) {
+            return false;
+        }
+        return bytes[0] == 0x7F && bytes[1] == 0x45 && bytes[2] == 0x4C && bytes[3] == 0x46;
+    }
+
     /**
      * Sign specific entries in a hap
      *
@@ -298,7 +378,7 @@ public class CodeSigning {
         throws IOException, FsVerityDigestException, CodeSignException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         for (String name : entryNames) {
-            LOGGER.debug("Sign entry name = " + name);
+            LOGGER.debug("Sign entry name = {}", name);
             JarEntry inEntry = hap.getJarEntry(name);
             try (InputStream inputStream = hap.getInputStream(inEntry)) {
                 long fileSize = inEntry.getSize();
@@ -378,40 +458,4 @@ public class CodeSigning {
         codeSignBlock.computeSegmentOffset();
     }
 
-    private List<CentralDirectory> parseCentralDirectory(byte[] buffer, int count) {
-        List<CentralDirectory> cdList = new ArrayList<>();
-        ByteBuffer cdBuffer = ByteBuffer.allocate(buffer.length).order(ByteOrder.LITTLE_ENDIAN);
-        cdBuffer.put(buffer);
-        cdBuffer.rewind();
-        for (int i = 0; i < count; i++) {
-            byte[] bytesBeforeCompressionMethod = new byte[CentralDirectory.BYTE_SIZE_BEFORE_COMPRESSION_METHOD];
-            cdBuffer.get(bytesBeforeCompressionMethod);
-            char compressionMode = cdBuffer.getChar();
-            CentralDirectory.Builder builder = new CentralDirectory.Builder().setCompressionMethod(compressionMode);
-            byte[] bytesBetweenCmprMethodAndFileNameLength =
-                    new byte[CentralDirectory.BYTE_SIZE_BETWEEN_COMPRESSION_MODE_AND_FILE_SIZE];
-            cdBuffer.get(bytesBetweenCmprMethodAndFileNameLength);
-            char fileNameLength = cdBuffer.getChar();
-            char extraFieldLength = cdBuffer.getChar();
-            char fileCommentLength = cdBuffer.getChar();
-            byte[] attributes =
-                    new byte[CentralDirectory.BYTE_SIZE_BETWEEN_FILE_COMMENT_LENGTH_AND_LOCHDR_RELATIVE_OFFSET];
-            cdBuffer.get(attributes);
-            long locHdrOffset = UnsignedDecimalUtil.getUnsignedInt(cdBuffer);
-            builder.setFileNameLength(fileNameLength).setExtraFieldLength(extraFieldLength)
-                .setFileCommentLength(fileCommentLength).setRelativeOffsetOfLocalHeader(locHdrOffset);
-            byte[] fileNameBuffer = new byte[fileNameLength];
-            cdBuffer.get(fileNameBuffer);
-            if (extraFieldLength != 0) {
-                cdBuffer.get(new byte[extraFieldLength]);
-            }
-            if (fileCommentLength != 0) {
-                cdBuffer.get(new byte[fileCommentLength]);
-            }
-            CentralDirectory cd = builder.setFileName(fileNameBuffer).build();
-            cdList.add(cd);
-        }
-
-        return cdList;
-    }
 }

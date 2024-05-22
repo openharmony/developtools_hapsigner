@@ -24,6 +24,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.HapInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.NativeLibInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.SegmentHeader;
+import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
@@ -48,9 +49,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * Verify code signature given a file with code sign block
@@ -65,12 +71,29 @@ public class VerifyCodeSignature {
         String ownerID = profileOwnerID;
         // if profileType is debug, check the app-id in signature, should be null or DEBUG_LIB_ID
         if ("debug".equals(profileType)) {
-            ownerID = "DEBUG_LIB_ID";
+            ownerID = HapUtils.HAP_DEBUG_OWNER_ID;
         }
+        checkSignatureOwnerID(ownerID, signature, profileType);
+    }
 
+    private static void checkHnpOwnerID(byte[] signature, String profileOwnerID, String profileType, String hnpType)
+        throws CMSException, VerifyCodeSignException {
+        String ownerID = profileOwnerID;
+        // if profileType is debug, check the app-id in signature, should be null or DEBUG_LIB_ID
+        if ("debug".equals(profileType)) {
+            ownerID = HapUtils.HAP_DEBUG_OWNER_ID;
+        } else if ("release".equals(profileType)) {
+            if ("public".equals(hnpType)) {
+                ownerID = HapUtils.HAP_SHARED_OWNER_ID;
+            }
+        }
+        checkSignatureOwnerID(ownerID, signature, profileType);
+    }
+
+    private static void checkSignatureOwnerID(String ownerID, byte[] signature, String profileType)
+        throws CMSException, VerifyCodeSignException {
         CMSSignedData cmsSignedData = new CMSSignedData(signature);
         Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-        Collection<String> results = null;
         for (SignerInformation signer : signers) {
             AttributeTable attrTable = signer.getSignedAttributes();
             Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
@@ -181,23 +204,78 @@ public class VerifyCodeSignature {
             checkOwnerID(signature, pairResult.getFirst(), pairResult.getSecond());
         }
         // 3) verify native libs
+        verifyLibs(file, csb, pairResult);
+        return true;
+    }
+
+    private static void verifyLibs(File file, CodeSignBlock csb, Pair<String, String> pairResult)
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException, ProfileException {
         try (JarFile inputJar = new JarFile(file, false)) {
+            Map<String, SignInfo> hnpLibSignInfoMap = new HashMap<>();
+            Set<String> hnpEntryNames = new HashSet<>();
             for (int i = 0; i < csb.getSoInfoSegment().getSectionNum(); i++) {
                 String entryName = csb.getSoInfoSegment().getFileNameList().get(i);
-                byte[] entrySig = csb.getSoInfoSegment().getSignInfoList().get(i).getSignature();
-                JarEntry entry = inputJar.getJarEntry(entryName);
-                if (entry.getSize() != csb.getSoInfoSegment().getSignInfoList().get(i).getDataSize()) {
-                    throw new VerifyCodeSignException(
-                        String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
-                }
-                try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
-                    // temporary merkleTreeOffset 0
-                    verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
-                    checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+                SignInfo signInfo = csb.getSoInfoSegment().getSignInfoList().get(i);
+                if (entryName.contains("!/")) {
+                    String[] filePath = entryName.split("!/");
+                    hnpEntryNames.add(filePath[0]);
+                    hnpLibSignInfoMap.put(entryName, signInfo);
+                } else {
+                    LOGGER.debug("verify lib: {}", entryName);
+                    verifyHapLib(inputJar, entryName, signInfo, pairResult);
                 }
             }
+            // get module.json
+            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
+            for (String hnpEntryName : hnpEntryNames) {
+                verifyHnpLib(inputJar, hnpEntryName, hnpLibSignInfoMap, hnpTypeMap, pairResult);
+            }
         }
-        return true;
+    }
+
+    private static void verifyHapLib(JarFile inputJar, String entryName, SignInfo signInfo,
+        Pair<String, String> pairResult)
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
+
+        JarEntry entry = inputJar.getJarEntry(entryName);
+        if (entry.getSize() != signInfo.getDataSize()) {
+            throw new VerifyCodeSignException(
+                String.format(Locale.ROOT, "Invalid dataSize of native lib %s", entryName));
+        }
+        byte[] entrySig = signInfo.getSignature();
+        try (InputStream entryInputStream = inputJar.getInputStream(entry)) {
+            // temporary merkleTreeOffset 0
+            verifySingleFile(entryInputStream, entry.getSize(), entrySig, 0, null);
+            checkOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond());
+        }
+    }
+
+    private static void verifyHnpLib(JarFile inputJar, String hnpEntryName, Map<String, SignInfo> hnpLibSignInfoMap,
+        Map<String, String> hnpTypeMap, Pair<String, String> pairResult)
+        throws IOException, FsVerityDigestException, VerifyCodeSignException, CMSException {
+        JarEntry hnpEntry = inputJar.getJarEntry(hnpEntryName);
+        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+            ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
+            String hnpFileName = HapUtils.parseHnpPath(hnpEntryName);
+            if (!hnpTypeMap.containsKey(hnpFileName)) {
+                throw new VerifyCodeSignException("hnp should be described in module.json");
+            }
+            String hnpType = hnpTypeMap.get(hnpFileName);
+            java.util.zip.ZipEntry libEntry = null;
+            while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                String libPath = hnpEntry.getName() + "!/" + libEntry.getName();
+                if (!hnpLibSignInfoMap.containsKey(libPath)) {
+                    continue;
+                }
+                LOGGER.debug("verify lib: {}", libPath);
+                SignInfo signInfo = hnpLibSignInfoMap.get(libPath);
+                byte[] entrySig = signInfo.getSignature();
+                long dataSize = signInfo.getDataSize();
+                verifySingleFile(hnpInputStream, dataSize, entrySig, 0, null);
+                checkHnpOwnerID(entrySig, pairResult.getFirst(), pairResult.getSecond(), hnpType);
+                hnpInputStream.closeEntry();
+            }
+        }
     }
 
     private static CodeSignBlock generateCodeSignBlock(File file, long offset, long length)
