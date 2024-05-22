@@ -25,7 +25,6 @@ import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.NativeLibInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.SegmentHeader;
 import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
-import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
@@ -74,32 +73,7 @@ public class VerifyCodeSignature {
         if ("debug".equals(profileType)) {
             ownerID = HapUtils.HAP_DEBUG_OWNER_ID;
         }
-
-        CMSSignedData cmsSignedData = new CMSSignedData(signature);
-        Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-        for (SignerInformation signer : signers) {
-            AttributeTable attrTable = signer.getSignedAttributes();
-            Attribute attr = attrTable.get(new ASN1ObjectIdentifier(BcSignedDataGenerator.SIGNER_OID));
-            // if app-id is null, if profileType is debug, it's ok.
-            if (attr == null) {
-                if ("debug".equals(profileType)) {
-                    continue;
-                }
-                if (ownerID == null) {
-                    continue;
-                } else {
-                    throw new VerifyCodeSignException("app-identifier is not in the signature");
-                }
-            }
-            if (ownerID == null) {
-                throw new VerifyCodeSignException("app-identifier in profile is null, but is not null in signature");
-            }
-            // if app-id in signature exists, it should be equal to the app-id in profile.
-            String resultOwnerID = attr.getAttrValues().getObjectAt(0).toString();
-            if (!ownerID.equals(resultOwnerID)) {
-                throw new VerifyCodeSignException("app-identifier in signature is invalid");
-            }
-        }
+        checkSignatureOwnerID(ownerID, signature, profileType);
     }
 
     private static void checkHnpOwnerID(byte[] signature, String profileOwnerID, String profileType, String hnpType)
@@ -113,7 +87,11 @@ public class VerifyCodeSignature {
                 ownerID = HapUtils.HAP_SHARED_OWNER_ID;
             }
         }
+        checkSignatureOwnerID(ownerID, signature, profileType);
+    }
 
+    private static void checkSignatureOwnerID(String ownerID, byte[] signature, String profileType)
+        throws CMSException, VerifyCodeSignException {
         CMSSignedData cmsSignedData = new CMSSignedData(signature);
         Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
         for (SignerInformation signer : signers) {
