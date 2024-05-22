@@ -292,7 +292,7 @@ public class CodeSigning {
                     hnpInputStream.closeEntry();
                     continue;
                 }
-                // to read input stream end
+                // read input stream end to get entry size, can be adjusted based on performance testing
                 byte[] tmp = new byte[4096];
                 while (hnpInputStream.read(tmp, 0, 4096) > 0) {}
                 jarEntries.put(libEntry.getName(), libEntry.getSize());
