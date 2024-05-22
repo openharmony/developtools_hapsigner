@@ -15,10 +15,14 @@
 
 package com.ohos.hapsigntool.codesigning.utils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.ProfileException;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +31,11 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +49,16 @@ import java.util.jar.JarFile;
  * @since 2023/06/05
  */
 public class HapUtils {
+    /**
+     * DEBUG_LIB_ID
+     */
+    public static final String HAP_DEBUG_OWNER_ID = "DEBUG_LIB_ID";
+
+    /**
+     * SHARED_LIB_ID
+     */
+    public static final String HAP_SHARED_OWNER_ID = "SHARED_LIB_ID";
+
     private static final Logger LOGGER = LogManager.getLogger(HapUtils.class);
 
     private static final String COMPRESS_NATIVE_LIBS_OPTION = "compressNativeLibs";
@@ -51,8 +68,6 @@ public class HapUtils {
     private static final String HAP_FA_CONFIG_JSON_FILE = "config.json";
 
     private static final String HAP_STAGE_MODULE_JSON_FILE = "module.json";
-
-    private static final String HAP_DEBUG_OWNER_ID = "DEBUG_LIB_ID";
 
     private static final int MAX_APP_ID_LEN = 32; // max app-identifier in profile
 
@@ -178,6 +193,94 @@ public class HapUtils {
             LOGGER.error(e.getMessage());
             throw new ProfileException("profile json is invalid");
         }
+        LOGGER.info("profile type is: {}", profileType);
         return Pair.create(ownerID, profileType);
     }
+
+    /**
+     * get hnp app-id from profile when type is public
+     *
+     * @param profileContent the content of profile
+     * @return ownerid
+     */
+    public static String getPublicHnpOwnerId(String profileContent) {
+        // property type
+        String publicOwnerID = "";
+        JsonElement parser = JsonParser.parseString(profileContent);
+        JsonObject profileJson = parser.getAsJsonObject();
+        String profileTypeKey = "type";
+        JsonPrimitive profileType = profileJson.getAsJsonPrimitive(profileTypeKey);
+        if (profileType != null) {
+            if ("debug".equals(profileType.getAsString())) {
+                publicOwnerID = HAP_DEBUG_OWNER_ID;
+            } else if ("release".equals(profileType.getAsString())) {
+                publicOwnerID = HAP_SHARED_OWNER_ID;
+            }
+        }
+        return publicOwnerID;
+    }
+
+    /**
+     * get hnp path behind "hnp/abi/"
+     *
+     * @param path filepath
+     * @return hnp path behind "hnp/abi/"
+     */
+    public static String parseHnpPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "";
+        }
+        String[] strings = path.split("/");
+        if (strings.length < 3) {
+            return "";
+        }
+        // get hnp path behind "hnp/abi/"
+        strings = Arrays.copyOfRange(strings, 2, strings.length);
+        return String.join("/", strings);
+    }
+
+    /**
+     * get map of hnp name and type from module.json
+     *
+     * @param inputJar hap file
+     * @return packageName-type map
+     * @throws IOException when IO error occurred
+     * @throws ProfileException profile is invalid
+     */
+    public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException, ProfileException {
+        // get module.json
+        Map<String, String> hnpNameMap = new HashMap<>();
+        JarEntry moduleEntry = inputJar.getJarEntry("module.json");
+        if (moduleEntry == null) {
+            return hnpNameMap;
+        }
+        try (JsonReader reader = new JsonReader(
+            new InputStreamReader(inputJar.getInputStream(moduleEntry), StandardCharsets.UTF_8))) {
+            JsonElement jsonElement = JsonParser.parseReader(reader);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject moduleObject = jsonObject.getAsJsonObject("module");
+            JsonArray hnpPackageArr = moduleObject.getAsJsonArray("hnpPackages");
+            if (hnpPackageArr == null || hnpPackageArr.isEmpty()) {
+                LOGGER.info("profile has no hnp_package key or hnpPackages value is empty");
+                return hnpNameMap;
+            }
+            hnpPackageArr.iterator().forEachRemaining((element) -> {
+                JsonObject hnpPackage = element.getAsJsonObject();
+                JsonPrimitive hnpName = hnpPackage.getAsJsonPrimitive("package");
+                if (hnpName == null || hnpName.getAsString().isEmpty()) {
+                    return;
+                }
+                hnpNameMap.put(hnpName.getAsString(), "private");
+                JsonPrimitive type = hnpPackage.getAsJsonPrimitive("type");
+                if (type != null && !type.getAsString().isEmpty()) {
+                    hnpNameMap.put(hnpName.getAsString(), type.getAsString());
+                }
+            });
+        } catch (JsonParseException e) {
+            LOGGER.error(e.getMessage());
+            throw new ProfileException("profile json is invalid");
+        }
+        return hnpNameMap;
+    }
+
 }

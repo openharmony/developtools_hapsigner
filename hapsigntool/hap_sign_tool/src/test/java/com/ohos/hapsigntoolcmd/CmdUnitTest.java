@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.ohos.hapsigntool.HapSignTool;
+import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.error.CustomException;
+import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.zip.Zip;
@@ -37,14 +39,17 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.jar.JarFile;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -267,6 +272,11 @@ public class CmdUnitTest {
     public static final String CMD_JSON_FILE = "UnsgnedDebugProfileTemplate.json";
 
     /**
+     * Command line parameter json file is UnsgnedReleaseProfileTemplate.
+     */
+    public static final String CMD_RELEASE_JSON_FILE = "UnsgnedReleaseProfileTemplate.json";
+
+    /**
      * Command line parameter localSign.
      */
     public static final String CMD_LOCAL_SIGN = "localSign";
@@ -332,6 +342,11 @@ public class CmdUnitTest {
     public static final String CMD_SIGN_PROFILE_PATH = "test_sign_profile.p7b";
 
     /**
+     * Command line parameter p7b file is test_sign_profile.
+     */
+    public static final String CMD_SIGN_RELEASE_PROFILE_PATH = "test_sign_release_profile.p7b";
+
+    /**
      * Command line parameter cer file is test_profile-debug-cert.
      */
     public static final String CMD_PROFILE_DEBUG_CERT_PATH = "test_profile-debug-cert.pem";
@@ -345,6 +360,11 @@ public class CmdUnitTest {
      * Command line parameter cer file is test_verify_profile.
      */
     public static final String CMD_VERIFY_PROFILE_RESULT_PATH = "test_verify_profile_result.json";
+
+    /**
+     * Command line parameter cer file is test_verify_profile.
+     */
+    public static final String CMD_TEST_HAP_FILE_PATH = "entry-default-unsigned.hap";
 
     /**
      * Command line parameter oh-profile-key-v1.
@@ -724,7 +744,7 @@ public class CmdUnitTest {
             CMD_MODE, CMD_LOCAL_SIGN,
             CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
             CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
-            CMD_PROFILE_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH,
+            CMD_PROFILE_CERT_FILE, CMD_PROFILE_DEBUG_CERT_PATH,
             CMD_IN_FILE, CMD_JSON_FILE,
             CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
@@ -732,6 +752,22 @@ public class CmdUnitTest {
             CMD_OUT_FILE, CMD_SIGN_PROFILE_PATH});
         assertTrue(result);
         assertTrue(FileUtils.isFileExist(CMD_SIGN_PROFILE_PATH));
+
+        deleteFile(CMD_SIGN_RELEASE_PROFILE_PATH);
+        loadFile(CMD_RELEASE_JSON_FILE);
+        result = HapSignTool.processCmd(new String[]{
+            CmdUtil.Method.SIGN_PROFILE,
+            CMD_MODE, CMD_LOCAL_SIGN,
+            CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_PROFILE_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH,
+            CMD_IN_FILE, CMD_RELEASE_JSON_FILE,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
+            CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_OUT_FILE, CMD_SIGN_RELEASE_PROFILE_PATH});
+        assertTrue(result);
+        assertTrue(FileUtils.isFileExist(CMD_SIGN_RELEASE_PROFILE_PATH));
     }
 
     /**
@@ -802,6 +838,14 @@ public class CmdUnitTest {
     @Test
     public void testCmdMultiHqf() throws IOException {
         multiBundleTest(".hqf");
+    }
+
+    @Order(13)
+    @Test
+    public void testCmdMultiHnp() throws IOException {
+        loadFile(CMD_TEST_HAP_FILE_PATH);
+        File unsignedHap = new File(CMD_TEST_HAP_FILE_PATH);
+        signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
     }
 
     private void multiBundleTest(String bundleSuffix) throws IOException {
@@ -880,11 +924,40 @@ public class CmdUnitTest {
 
     private void signAndVerifyHap(String unsignedHap, String bundleSuffix) throws IOException {
         String signedHap = File.createTempFile("signed-", bundleSuffix, new File("test")).getAbsolutePath();
+        // debug
         boolean result = HapSignTool.processCmd(new String[] {
-            CmdUtil.Method.SIGN_APP, CMD_MODE, CMD_LOCAL_SIGN, CMD_KEY_ALIAS, CMD_OH_PROFILE_KEY_V1, CMD_KEY_RIGHTS,
-            CMD_RIGHTS_123456, CMD_APP_CERT_FILE, CMD_PROFILE_RELEASE_CERT_PATH, CMD_PROFILE_FILE,
-            CMD_SIGN_PROFILE_PATH, CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA, CMD_KEY_STORE_FILE, CMD_KEY_PROFILE_STORE_PATH,
-            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456, CMD_IN_FILE, unsignedHap, CMD_OUT_FILE, signedHap
+            CmdUtil.Method.SIGN_APP,
+            CMD_MODE, CMD_LOCAL_SIGN,
+            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_APP_CERT_FILE, CMD_APP_DEBUG_CERT_PATH,
+            CMD_PROFILE_FILE, CMD_SIGN_PROFILE_PATH,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_IN_FILE, unsignedHap,
+            CMD_OUT_FILE, signedHap
+        });
+        assertTrue(result);
+
+        result = HapSignTool.processCmd(new String[] {
+            CmdUtil.Method.VERIFY_APP, CMD_IN_FILE, signedHap, CMD_OUT_CERT_CHAIN, "test" + File.separator + "1.cer",
+            CMD_OUT_PROFILE, "test" + File.separator + "1.p7b"
+        });
+        assertTrue(result);
+        // release
+        result = HapSignTool.processCmd(new String[] {
+            CmdUtil.Method.SIGN_APP,
+            CMD_MODE, CMD_LOCAL_SIGN,
+            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_APP_CERT_FILE, CMD_APP_RELEASE_CERT_PATH,
+            CMD_PROFILE_FILE, CMD_SIGN_RELEASE_PROFILE_PATH,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_IN_FILE, unsignedHap,
+            CMD_OUT_FILE, signedHap
         });
         assertTrue(result);
 
@@ -930,6 +1003,19 @@ public class CmdUnitTest {
         }
     }
 
+    @Test
+    public void testGetHnpsFromHap() throws IOException, ProfileException {
+        loadFile(CMD_TEST_HAP_FILE_PATH);
+        File file = new File(CMD_TEST_HAP_FILE_PATH);
+        try (JarFile inputJar = new JarFile(file, false)) {
+            Map<String, String> hnpMap = HapUtils.getHnpsFromJson(inputJar);
+            assertTrue(hnpMap.size() == 4);
+            assertTrue("private".equals(hnpMap.get("entry-default-unsigned.hnp")));
+            assertTrue("public".equals(hnpMap.get("entry-default-unsigned1.hnp")));
+            assertTrue("private".equals(hnpMap.get("dd/entry-default-unsigned.hnp")));
+            assertTrue("public".equals(hnpMap.get("dd/entry-default-unsigned1.hnp")));
+        }
+    }
 
     /**
      * Test Method: testByteToZip()
@@ -1026,10 +1112,9 @@ public class CmdUnitTest {
 
     private void loadFile(String filePath) throws IOException {
         ClassLoader classLoader = CmdUnitTest.class.getClassLoader();
-        try (InputStream fileInputStream = classLoader.getResourceAsStream(filePath)) {
-            byte[] fileData = FileUtils.read(fileInputStream);
-            FileUtils.write(fileData, new File(filePath));
-        }
+        URL resource = classLoader.getResource(filePath);
+        assert resource != null;
+        Files.copy(new File(resource.getPath()).toPath(), new File(filePath).toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void deleteFile(String filePath) throws IOException {
