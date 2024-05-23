@@ -225,6 +225,10 @@ public class VerifyCodeSignature {
                     verifyHapLib(inputJar, entryName, signInfo, pairResult);
                 }
             }
+            if (hnpEntryNames.isEmpty()) {
+                // not exists hnp lib
+                return;
+            }
             // get module.json
             Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             for (String hnpEntryName : hnpEntryNames) {
