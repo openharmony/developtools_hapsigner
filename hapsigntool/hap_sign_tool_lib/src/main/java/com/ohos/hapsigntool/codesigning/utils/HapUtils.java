@@ -261,7 +261,7 @@ public class HapUtils {
             JsonObject moduleObject = jsonObject.getAsJsonObject("module");
             JsonArray hnpPackageArr = moduleObject.getAsJsonArray("hnpPackages");
             if (hnpPackageArr == null || hnpPackageArr.isEmpty()) {
-                LOGGER.info("profile has no hnp_package key or hnpPackages value is empty");
+                LOGGER.debug("profile has no hnpPackages key or hnpPackages value is empty");
                 return hnpNameMap;
             }
             hnpPackageArr.iterator().forEachRemaining((element) -> {

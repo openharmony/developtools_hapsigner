@@ -247,11 +247,11 @@ public class CodeSigning {
         throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         try (JarFile inputJar = new JarFile(input, false)) {
-            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             if (inputJar.getJarEntry("hnp/") == null) {
                 LOGGER.info("not exists hnp dir");
                 return new ArrayList<>();
             }
+            Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             // get hnp entry
             for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
                 JarEntry entry = e.nextElement();
@@ -294,7 +294,10 @@ public class CodeSigning {
                 }
                 // read input stream end to get entry size, can be adjusted based on performance testing
                 byte[] tmp = new byte[4096];
-                while (hnpInputStream.read(tmp, 0, 4096) > 0) {}
+                int readLen;
+                do {
+                    readLen = hnpInputStream.read(tmp, 0, 4096);
+                } while (readLen > 0);
                 jarEntries.put(libEntry.getName(), libEntry.getSize());
                 hnpInputStream.closeEntry();
             }
