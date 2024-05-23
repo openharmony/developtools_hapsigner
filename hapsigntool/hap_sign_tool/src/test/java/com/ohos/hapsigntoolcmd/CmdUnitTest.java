@@ -892,7 +892,7 @@ public class CmdUnitTest {
         }
         String fileName = new BigInteger(Long.SIZE, new Random()).toString() + tempSuffix;
         if (tempSuffix.startsWith(".so")) {
-            fileName = "libs/"+ fileName;
+            fileName = "libs/" + fileName;
         }
         if (tempSuffix.startsWith(".an")) {
             fileName = "an/" + fileName;
