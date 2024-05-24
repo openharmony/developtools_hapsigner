@@ -62,6 +62,8 @@
 				<filteritem type="filename" name="app1-unsigned.hap" desc="Keystore used in OpenHarmony app sign of test case"/>
                 <filteritem type="filename" name="*.pem" desc="OpenHarmony app sign certificates"/>
                 <filteritem type="filename" name="*.jar" desc="OpenHarmony app sign tool"/>
+                <filteritem type="filename" name="*.png" desc="readme picture"/>
+                <filteritem type="filename" name="*.elf" desc="OpenHarmony elf test file"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>
