@@ -247,10 +247,6 @@ public class CodeSigning {
         throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         try (JarFile inputJar = new JarFile(input, false)) {
-            if (inputJar.getJarEntry("hnp/") == null) {
-                LOGGER.info("not exists hnp dir");
-                return new ArrayList<>();
-            }
             Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
             // get hnp entry
             for (Enumeration<JarEntry> e = inputJar.entries(); e.hasMoreElements(); ) {
