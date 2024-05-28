@@ -367,19 +367,19 @@ def run_random_case(case, jar_file):
     for k, v in test_case.get('required').items():
         r = random.choice(['none', 'choice', 'choice', 'random'])
         if r == 'choice':
-            cmd.append('-' + k)
+            cmd.append('-'.join(k))
             cmd.append(random.choice(v) if isinstance(v, list) else v)
         elif r == 'random':
-            cmd.append('-' + k)
+            cmd.append('-'.join(k))
             cmd.append(random_str())
 
     for k, v in test_case.get('others').items():
         r = random.choice(['none', 'choice', 'choice', 'random'])
         if r == 'choice':
-            cmd.append('-' + k)
+            cmd.append('-'.join(k))
             cmd.append(random.choice(v) if isinstance(v, list) else v)
         elif r == 'random':
-            cmd.append('-' + k)
+            cmd.append('-'.join(k))
             cmd.append(random_str())
 
     print("== Run command: {}".format(cmd))
@@ -395,7 +395,7 @@ def run_all_case(case, jar_file):
 
     cmd = ['java', '-jar', jar_file, case]
     for ak, av in test_case.get('required').items():
-        cmd.append('-' + ak)
+        cmd.append('-'.join(ak))
         cmd.append(random.choice(av) if isinstance(av, list) else av)
 
     print("== Run command: {}".format(cmd))
