@@ -1,0 +1,48 @@
+#include "fs_verity_generator.h"
+using namespace OHOS::SignatureTools;
+const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
+const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
+const int8_t FsVerityGenerator::LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
+const FsVerityHashAlgorithm FsVerityGenerator::FS_VERITY_HASH_ALGORITHM = FS_SHA256;
+MerkleTree* FsVerityGenerator::GenerateMerkleTree(std::istream& inputStream, long size,
+    const FsVerityHashAlgorithm& fsVerityHashAlgorithm)
+{
+    std::unique_ptr<MerkleTreeBuilder>builder = std::make_unique<MerkleTreeBuilder>(MerkleTreeBuilder());
+    return builder->GenerateMerkleTree(inputStream, size, fsVerityHashAlgorithm);
+}
+void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset)
+{
+    std::vector<int8_t> emptyVector;
+    MerkleTree* merkleTree = nullptr;
+    if (size == 0) {
+        merkleTree = new MerkleTree(emptyVector, emptyVector, FS_SHA256);
+    } else {
+        merkleTree = GenerateMerkleTree(inputStream, size, FS_SHA256);
+    }
+    int flags = fsvTreeOffset == 0 ? 0 : FsVerityDescriptor::FLAG_STORE_MERKLE_TREE_OFFSET;
+    std::shared_ptr<MerkleTree> merkleTree_ptr(merkleTree);
+    // sign size is 0, cs version is 0
+    FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(size)
+        .SetHashAlgorithm(FS_SHA256.GetId())
+        .SetLog2BlockSize(LOG_2_OF_FSVERITY_HASH_PAGE_SIZE)
+        .SetSaltSize((uint8_t)GetSaltSize())
+        .SetSalt(salt)
+        .SetRawRootHash(merkleTree_ptr->rootHash)
+        .SetFlags(flags)
+        .SetMerkleTreeOffset(fsvTreeOffset);
+    std::vector<int8_t> fsVerityDescriptor = builder.Build().GetByteForGenerateDigest();
+    std::vector<int8_t> digest;
+    DigestUtils digestUtils(HASH_SHA256);
+    std::stringstream ss;
+    for (const auto& elem : fsVerityDescriptor) {
+        ss << elem;
+    }
+    digestUtils.AddData(ss.str());
+    std::string result = digestUtils.Result(DigestUtils::Type::BINARY);
+    for (int i = 0; i < result.size(); i++) {
+        digest.push_back(result[i]);
+    }
+    fsVerityDigest = FsVerityDigest::GetFsVerityDigest(FS_SHA256.GetId(), digest);
+    treeBytes = merkleTree_ptr->tree;
+    rootHash = merkleTree_ptr->rootHash;
+}

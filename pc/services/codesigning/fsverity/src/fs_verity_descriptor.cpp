@@ -1,0 +1,114 @@
+#include "fs_verity_descriptor.h"
+using namespace OHOS::SignatureTools;
+FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
+{
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
+    bf->PutData((char*)bytes.data(), bytes.size());
+    // after put, rewind is mandatory before get
+    bf->Flip();
+    std::unique_ptr<FsVerityDescriptor::Builder> builder =
+        std::make_unique<FsVerityDescriptor::Builder>(FsVerityDescriptor::Builder());
+    int8_t inFsVersion;
+    bf->GetInt8(inFsVersion);
+    if (FsVerityDescriptor::VERSION != inFsVersion) {
+        SIGNATURE_TOOLS_LOGE("Invalid fs-verify descriptor version of ElfSignBlock\n");
+        return builder->Build();
+    }
+    int8_t inFsHashAlgorithm;
+    bf->GetInt8(inFsHashAlgorithm);
+    int8_t inLog2BlockSize;
+    bf->GetInt8(inLog2BlockSize);
+    builder->SetVersion(inFsVersion).SetHashAlgorithm(inFsHashAlgorithm).SetLog2BlockSize(inLog2BlockSize);
+    int8_t inSaltSize;
+    bf->GetInt8(inSaltSize);
+    int32_t inSignSize;
+    bf->GetInt32(inSignSize);
+    long long inDataSize;
+    bf->GetInt64(inDataSize);
+    char inRootHashArr[FsVerityDescriptor::ROOT_HASH_FILED_SIZE];
+    bf->GetData(inRootHashArr, FsVerityDescriptor::ROOT_HASH_FILED_SIZE);
+    std::vector<int8_t> inRootHash(inRootHashArr, inRootHashArr + FsVerityDescriptor::ROOT_HASH_FILED_SIZE);
+    builder->SetSaltSize(inSaltSize).SetSignSize(inSignSize).SetFileSize(inDataSize).SetRawRootHash(inRootHash);
+    char inSaltArr[FsVerityDescriptor::SALT_SIZE];
+    bf->GetData(inSaltArr, FsVerityDescriptor::SALT_SIZE);
+    std::vector<int8_t> inSalt(inSaltArr, inSaltArr + FsVerityDescriptor::SALT_SIZE);
+    int32_t inFlags;
+    bf->GetInt32(inFlags);
+    bf->SetPosition(bf->GetPosition() + RESERVED_SIZE_AFTER_FLAGS);
+    long long inTreeOffset;
+    bf->GetInt64(inTreeOffset);
+    if (inTreeOffset % PAGE_SIZE_4K != 0) {
+        SIGNATURE_TOOLS_LOGE("Invalid merkle tree offset of ElfSignBlock\n");
+        return builder->Build();
+    }
+    bf->GetData((char*)(new int8_t[FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET]),
+        FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET);
+    int8_t inCsVersion;
+    bf->GetInt8(inCsVersion);
+    builder->SetSalt(inSalt).SetFlags(inFlags).SetMerkleTreeOffset(inTreeOffset).SetCsVersion(inCsVersion);
+    return builder->Build();
+}
+std::vector<int8_t> FsVerityDescriptor::ToByteArray()
+{
+    std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
+    buffer->PutByte(VERSION);
+    buffer->PutByte(hashAlgorithm);
+    buffer->PutByte(log2BlockSize);
+    if (this->saltSize > SALT_SIZE) {
+        SIGNATURE_TOOLS_LOGE("Salt is too long\n");
+        return std::vector<int8_t>();
+    }
+    buffer->PutByte(this->saltSize);
+    buffer->PutInt32(signSize);
+    buffer->PutInt64(fileSize);
+    WriteBytesWithSize(buffer.get(), rawRootHash, ROOT_HASH_FILED_SIZE);
+    WriteBytesWithSize(buffer.get(), salt, SALT_SIZE);
+    buffer->PutInt32(flags);
+    std::vector<int8_t> emptyVector;
+    WriteBytesWithSize(buffer.get(), emptyVector, RESERVED_SIZE_AFTER_FLAGS);
+    buffer->PutInt64(merkleTreeOffset);
+    WriteBytesWithSize(buffer.get(), emptyVector, RESERVED_SIZE_AFTER_TREE_OFFSET);
+    buffer->PutByte(csVersion);
+    buffer->Flip();
+    char dataArr[DESCRIPTOR_SIZE] = { 0 };
+    buffer->GetData(dataArr, DESCRIPTOR_SIZE);
+    std::vector<int8_t> ret(dataArr, dataArr + DESCRIPTOR_SIZE);
+    return ret;
+}
+std::vector<int8_t> FsVerityDescriptor::GetByteForGenerateDigest()
+{
+    std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
+    buffer->PutByte(CODE_SIGN_VERSION);
+    buffer->PutByte(hashAlgorithm);
+    buffer->PutByte(log2BlockSize);
+    if (this->saltSize > SALT_SIZE) {
+        SIGNATURE_TOOLS_LOGE("Salt is too long\n");
+        return std::vector<int8_t>();
+    }
+    buffer->PutByte(this->saltSize);
+    buffer->PutInt32(0);
+    buffer->PutInt64(fileSize);
+    WriteBytesWithSize(buffer.get(), rawRootHash, ROOT_HASH_FILED_SIZE);
+    WriteBytesWithSize(buffer.get(), salt, SALT_SIZE);
+    buffer->PutInt32(flags);
+    std::vector<int8_t> emptyVector;
+    WriteBytesWithSize(buffer.get(), emptyVector, RESERVED_SIZE_AFTER_FLAGS);
+    buffer->PutInt64(merkleTreeOffset);
+    buffer->Flip();
+    char dataArr[DESCRIPTOR_SIZE] = { 0 };
+    buffer->GetData(dataArr, DESCRIPTOR_SIZE);
+    std::vector<int8_t> ret(dataArr, dataArr + DESCRIPTOR_SIZE);
+    return ret;
+}
+void FsVerityDescriptor::WriteBytesWithSize(ByteBuffer* buffer, std::vector<int8_t>& src, int size)
+{
+    int pos = buffer->GetPosition();
+    if (!src.empty()) {
+        if (src.size() > size) {
+            buffer->PutData(0, (char*)src.data(), src.size());
+        } else {
+            buffer->PutData((char*)src.data(), src.size());
+        }
+    }
+    buffer->SetPosition(pos + size);
+}
