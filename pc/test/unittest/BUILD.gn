@@ -1,0 +1,155 @@
+import("../../signature_tools.gni")
+import("../../services/utils/signature_tools_utils.gni")
+import("../../services/zip/signature_tools_zip.gni")
+import("../../services/cmd/signature_tools_cmd.gni")
+import("../../services/codesigning/signature_tools_codesigning.gni")
+import("../../services/common/signature_tools_common.gni")
+import("../../services/hap/signature_tools_hap.gni")
+import("../../services/profile/signature_tools_profile.gni")
+
+import("//build/ohos.gni")
+import("//build/test.gni")
+
+module_out_path = "developtools/hapsigner/hapsigner_pc"
+
+signature_tools_unittest_include = [
+    # "${signature_tools_root_path}/utils",
+    # "//third_party/openssl/include",
+    # "//third_party/bzip2",
+    # "//third_party/zlib",
+    # "${signature_tools_service}/cmd/include",
+    # "${signature_tools_service}/adapter/include",
+    "${signature_tools_service}/api/include",
+    "${signature_tools_service}/signer/include",
+    "//third_party/openssl/include",
+    "//third_party/openssl/crypto/pkcs12"
+]
+
+signature_tools_unittest_src = [
+    "./hapSign/hap_sign_Test.cpp",
+    "./generateKeyPair/generate_keyPair_Test.cpp",
+
+    "./hapVerify/hap_verify_test.cpp",
+    "./hapVerify/hap_verify_v2_test.cpp",
+    "./hapVerify/hap_cert_verify_openssl_utils_test.cpp",
+    "./hapVerify/hap_byte_buffer_test.cpp",
+    "./hapVerify/hap_crl_manager_test.cpp",
+    "./hapVerify/random_access_file_test.cpp",
+    "./hapVerify/provision_verify_test.cpp",
+    "./hapVerify/hap_signing_block_utils_test.cpp",
+    "./hapVerify/hap_verify_result_test.cpp",
+
+    "./generateCsr/generate_csr_unittest.cpp",
+    "./generateCA/generate_ca_test.cpp",
+
+    "./codeSigning/datastructure/code_sign_block_header_test.cpp",
+    "./codeSigning/datastructure/code_sign_block_test.cpp",
+    "./codeSigning/datastructure/extension_test.cpp",
+    "./codeSigning/datastructure/fs_verity_info_segment_test.cpp",
+    "./codeSigning/datastructure/hap_info_segment_test.cpp",
+    "./codeSigning/datastructure/merkle_tree_extension_test.cpp",
+    "./codeSigning/datastructure/native_lib_info_segment_test.cpp",
+    "./codeSigning/datastructure/segment_header_test.cpp",
+    "./codeSigning/datastructure/sign_info_test.cpp",
+    "./codeSigning/datastructure/signed_file_pos_test.cpp",
+    "./codeSigning/utils/cms_utils_test.cpp",
+    "./codeSigning/utils/fs_digest_utils_test.cpp",
+    "./codeSigning/sign/bc_signeddata_generator_test.cpp",
+    "./codeSigning/sign/code_signing_test.cpp",
+    "./codeSigning/sign/verify_code_signature_test.cpp",
+    "./codeSigning/fsverity/fs_verity_descriptor_test.cpp",
+    "./codeSigning/fsverity/fs_verity_digest_test.cpp",
+    "./codeSigning/fsverity/fs_verity_generator_test.cpp",
+    "./codeSigning/fsverity/fs_verity_hash_algorithm_test.cpp",
+    "./codeSigning/fsverity/merkle_tree_builder_test.cpp",
+
+    "./zip/zip_test.cpp",
+    "./zip/random_access_file_test.cpp",
+
+    "./signProfile/sign_profile_unittest.cpp",
+
+    "${signature_tools_service}/api/src/localization_adapter.cpp",
+    "${signature_tools_service}/api/src/sign_tool_service_impl.cpp",
+    "${signature_tools_service}/api/src/cert_tools.cpp",
+    "${signature_tools_service}/signer/src/signer_factory.cpp",
+    "${signature_tools_service}/signer/src/local_signer.cpp",
+    "${signature_tools_service}/signer/src/isigner.cpp",
+]
+
+ohos_unittest("hapsigntool_pc_test") {
+  testonly = true
+  module_out_path = module_out_path
+  resource_config_file = "ohos_test.xml"
+
+  signature_tools_unittest_include += signature_tools_utils_include
+  signature_tools_unittest_include += signature_tools_zip_include
+  signature_tools_unittest_include += signature_tools_codesigning_include
+  signature_tools_unittest_include += signature_tools_common_include
+  signature_tools_unittest_include += signature_tools_hap_include
+  signature_tools_unittest_include += signature_tools_profile_include
+  signature_tools_unittest_include += signature_tools_cmd_include
+
+  # 在 //foundation/signaturetools/services/utils 模块里面定义编译脚本 signature_tools_utils.gni
+  signature_tools_unittest_src += signature_tools_utils_src
+  # 在 //foundation/signaturetools/services/zip 模块里面定义编译脚本 signature_tools_zip.gni 
+  signature_tools_unittest_src += signature_tools_zip_src
+  signature_tools_unittest_src += signature_tools_codesigning_src
+  signature_tools_unittest_src += signature_tools_common_src
+  signature_tools_unittest_src += signature_tools_hap_src
+  signature_tools_unittest_src += signature_tools_profile_src
+  signature_tools_unittest_src += signature_tools_cmd_src
+
+  include_dirs = signature_tools_unittest_include
+  sources = signature_tools_unittest_src
+
+
+
+  defines = [
+    "HI_LOG_ENABLE",
+    "SIGNATURE_LOG_TAG=\"SignatureTools\"",
+    "LOG_DOMAIN=0xD004100",
+  ]
+
+  deps = [
+#	"//third_party/jsoncpp:jsoncpp",
+#	"//third_party/cJSON:cjson_static",
+    "//third_party/zlib:shared_libz",
+    "//third_party/bzip2:libbz2",
+    "//third_party/openssl:libcrypto_shared",
+    "//third_party/openssl:libssl_shared",
+  ]
+
+  external_deps = [
+    "ability_runtime:abilitykit_native",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "ipc:ipc_single",
+    "safwk:system_ability_fwk",
+    "json:nlohmann_json_static",
+    "samgr:samgr_proxy",
+  ]
+
+  cflags = [
+     "--coverage"
+    #  "-fno-rtti",
+  ]
+
+  cflags_cc = [
+     "-std=c++17",
+     "--coverage"
+    #  "-fno-rtti",
+  ]
+
+  ldflags = [
+    "--coverage",
+     "-fPIC",
+     "-Wl,-E",
+  ]
+
+  install_images = [ "system" ]
+  install_enable = true
+  part_name = "hapsigner_pc"
+  subsystem_name = "developtools"
+}
