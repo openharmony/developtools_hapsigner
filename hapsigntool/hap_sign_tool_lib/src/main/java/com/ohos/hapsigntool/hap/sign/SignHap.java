@@ -374,7 +374,11 @@ public abstract class SignHap {
         try {
             signerBlock = generateSignerBlock(signerConfig, contentDigests);
         } catch (SignatureException e) {
-            throw new SignatureException("generate SignerBlock failed", e);
+            throw new SignatureException("generate SignerBlock failed"
+                    + "\nSolutions:"
+                    + "\n> maybe your param keyAlias is incorrect, please input a correct sign keyAlias"
+                    + "\n> maybe your certificate is incorrect, please check your certificate match the keyAlias"
+                    + "\n> keystore maybe created by a late JDK version, please update your JDK version", e);
         }
         return signerBlock;
     }
