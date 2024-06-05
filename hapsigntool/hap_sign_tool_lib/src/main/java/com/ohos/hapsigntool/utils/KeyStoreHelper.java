@@ -125,7 +125,11 @@ public class KeyStoreHelper {
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage());
+             CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage()
+                    + "\nSolutions:"
+                    + "\n> keystore file is not exist, please check keystore file path"
+                    + "\n> keystore password is incorrect, please input correct plaintext keystore password"
+                    + "\n> keystore maybe created by a late JDK version, please update your JDK version");
         } finally {
             FileUtils.close(fis);
         }
