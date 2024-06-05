@@ -272,7 +272,9 @@ public class LocalizationAdapter {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
         } catch (IOException | CertificateException | VerifyCertificateChainException exception) {
             logger.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage()
+                + "\nSolutions:"
+                + "\n> Maybe sign certificate is a incorrect certificate format, please check your appCertFile param");        
         }
         ValidateUtils.throwIfNotMatches(certificates != null && certificates.size() > 0, ERROR.READ_FILE_ERROR,
                 String.format("Read fail from %s, bot found certificates", certPath));
