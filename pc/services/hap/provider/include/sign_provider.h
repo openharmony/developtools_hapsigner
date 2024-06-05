@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -66,11 +66,13 @@ namespace OHOS {
         class SignProvider {
         public:
             bool Sign(Options* options);
+			bool SignElf(Options* options);
+            bool SignBin(Options* options);
             
         public:
             virtual std::optional<X509_CRL*> GetCrl();
             virtual bool CheckParams(Options* options);
-
+            virtual bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const;
             void StaticConstructor();
 
             SignProvider() = default;
@@ -96,13 +98,13 @@ namespace OHOS {
             bool CheckSignatureAlg();
 
             static bool CheckStringToint(const std::string& in, int& out);
-            void LoadOptionalBlock(const std::string& file, int type);
+            int LoadOptionalBlock(const std::string& file, int type);
             bool CheckFile(const std::string& filePath);
             
-            STACK_OF(X509)* GetX509Certificates(Options* options);
-            STACK_OF(X509)* GetPublicCerts(Options* options);
-            STACK_OF(X509)* GetCertificateChainFromFile(const std::string& certChianFile);
-            STACK_OF(X509)* GetCertListFromFile(const std::string& certsFile);
+            int GetX509Certificates(Options* options, STACK_OF(X509)* ret);
+            int GetPublicCerts(Options* options, STACK_OF(X509)* ret);
+            int GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)* ret);
+            int GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)* ret);
             
             bool AppendCodeSignBlock(SignerConfig &signerConfig, std::string outputFilePath,
                 const std::string &suffix, long long centralDirectoryOffset, Zip& zip);
@@ -118,9 +120,9 @@ namespace OHOS {
             //certificate which has a non - empty value of DN.
             int CheckProfileValid(STACK_OF(X509)* inputCerts);
             int CheckProfileInfo(const ProvisionInfo& info, STACK_OF(X509)* inputCerts)const;
-            bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const;
+
             bool CheckSignCode();
-            void LoadOptionalBlocks();
+            int LoadOptionalBlocks();
             bool CheckCompatibleVersion();
             
         protected:

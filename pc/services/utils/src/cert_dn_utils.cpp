@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "cert_dn_utils.h"
 #include "signature_tools_errno.h"
 /*
@@ -74,13 +88,13 @@ int OHOS::SignatureTools::CheckDN(std::string nameString, std::vector<pair<std::
 X509_NAME* OHOS::SignatureTools::BuildDN(std::string nameString, X509_REQ* req)
 {
     std::vector<pair<std::string, std::string>> pairs;
-    std::ostringstream oss;   
+    std::ostringstream oss;
     oss << "Format error, must be \"X=xx,XX=xxx,...\", please check: \"" << nameString << "\"";
     int ret = CheckDN(nameString, pairs);
     if (ret == FORMAT_ERROR) {
         SIGNATURE_TOOLS_LOGE(" Description The topic information verification failed %{public}d: %{public}s",
-                             ret, oss.str().c_str());
-		CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                ret, oss.str().c_str());
+        CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
 			oss.str().c_str());
         return nullptr;
     }

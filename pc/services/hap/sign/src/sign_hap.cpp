@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "sign_hap.h"
 #include "signature_tools_log.h"
 #include "signature_algorithm.h"
@@ -144,18 +158,20 @@ bool SignHap::GenerateHapSigningBlock(std::vector<char>& hapSignatureSchemeBlock
     int blockValueSizes = (int)(optionalBlockSize + hapSignatureSchemeBlock.size());
     char* blockValues = new char[blockValueSizes];
     for (const auto& elem : optionalBlocks) {
-        memcpy_s(blockValues + currentOffsetInBlockValue,
-            blockValueSizes,
-            elem.optionalBlockValue.GetBufferPtr(),
-            elem.optionalBlockValue.GetCapacity());
+        if (memcpy_s(blockValues + currentOffsetInBlockValue, blockValueSizes, elem.optionalBlockValue.GetBufferPtr(),
+            elem.optionalBlockValue.GetCapacity()) != 0) {
+            SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
+            return false;
+        }
         typeAndOffsetMap.insert({ elem.optionalType, currentOffset });
         currentOffset += elem.optionalBlockValue.GetCapacity();
         currentOffsetInBlockValue += elem.optionalBlockValue.GetCapacity();
     }
-    memcpy_s(blockValues + currentOffsetInBlockValue,
-        blockValueSizes,
-        hapSignatureSchemeBlock.data(),
-        hapSignatureSchemeBlock.size());
+    if (memcpy_s(blockValues + currentOffsetInBlockValue, blockValueSizes, hapSignatureSchemeBlock.data(),
+        hapSignatureSchemeBlock.size()) != 0) {
+        SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
+        return false;
+    }
     typeAndOffsetMap.insert({ HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID, currentOffset });
     ExtractedResult(optionalBlocks, result, typeAndOffsetMap);
     result.PutInt32(HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID); // type

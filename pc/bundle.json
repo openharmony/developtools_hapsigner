@@ -1,0 +1,68 @@
+{
+    "name": "@ohos/signature",
+    "version": "4.0",
+    "description": "hap包签名工具，支持.hsp、.hqf、.hap和.app等文件签名",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "Apache License 2.0",
+    "repository": "https://gitee.com/openharmony/signaturetools",
+    "domain": "os",
+    "language": "",
+    "publishAs": "code-segment",
+    "private": false,
+    "scripts": {},
+    "tags": [
+        "developtools"
+    ],
+    "keywords": [
+        "signature"
+    ],
+    "envs": {},
+    "dirs": {},
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": "",
+            "url": ""
+        }
+    ],
+    "segment": {
+        "destPath": "developtools/hapsigner/pc"
+    },
+    "component": {
+        "name": "hapsigner",
+        "subsystem": "developtools",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "c_utils",
+                "hilog",
+                "json"
+            ],
+            "third_party": [
+                "bzip2",
+                "openssl",
+                "jsoncpp",
+                "zlib"
+            ]
+        },
+        "build": {
+            "sub_component": [
+                "//developtools/hapsigner/pc/services:hapsigntool_pc_service"
+            ],
+            "inner_kits": [],
+            "test": [
+               "//developtools/hapsigner/pc/test/unittest:hapsigntool_pc_test"
+            ]
+        }
+    }
+}
+

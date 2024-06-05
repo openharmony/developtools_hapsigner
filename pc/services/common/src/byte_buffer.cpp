@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "byte_buffer.h"
 #include "signature_tools_log.h"
 #include "securec.h"
@@ -11,7 +25,11 @@ namespace OHOS {
         template<typename T>
         std::shared_ptr<T> make_shared_array(size_t size)
         {
-            T* buffer = new T[size];
+            T* buffer = new (std::nothrow)T[size];
+            if(!buffer) {
+                SIGNATURE_TOOLS_LOGE("new size failed");
+                return NULL;
+            }
             return std::shared_ptr<T>(buffer, [](T* p) {
                 delete[] p;
                 });
@@ -42,7 +60,7 @@ namespace OHOS {
         }
         ByteBuffer::~ByteBuffer()
         {
-            buffer = nullptr;
+            //buffer = nullptr;
         }
         void ByteBuffer::Init(int32_t bufferCapacity)
         {
@@ -443,8 +461,6 @@ namespace OHOS {
         }
         ByteBuffer* ByteBuffer::Duplicate()
         {
-            //std::unique_ptr<ByteBuffer> newBuffer = std::make_unique<ByteBuffer>(capacity);
-            //std::unique_ptr<char[]> newData = std::make_unique<char[]>(capacity);
             ByteBuffer* newBuffer = new ByteBuffer();
             newBuffer->buffer = this->buffer;
             newBuffer->limit = this->limit;

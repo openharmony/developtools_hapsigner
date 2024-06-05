@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 #include "code_signing.h"
-
+#include "elf_sign_block.h"
+#include "fs_verity_descriptor.h"
+#include "fs_verity_descriptor_with_sign.h"
 using namespace OHOS::SignatureTools;
 
 const int BUFFER_SIZE = 16 * 1024;
@@ -23,6 +25,12 @@ const int TUPLE_SIZE_INDEX = 2;
 const std::vector<std::string> CodeSigning::SUPPORT_FILE_FORM = { "hap", "hsp", "hqf" };
 const std::string CodeSigning::HAP_SIGNATURE_ENTRY_NAME = "Hap";
 const std::string CodeSigning::ENABLE_SIGN_CODE_VALUE = "1";
+const std::string CodeSigning::SUPPORT_BIN_FILE_FORM = "elf";
+
+const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
+const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
+const int8_t LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
+
 
 CodeSigning::CodeSigning(SignerConfig signConfig)
 {
@@ -141,6 +149,49 @@ bool CodeSigning::signFile(std::istream& inputStream, int64_t fileSize, bool sto
     return true;
 }
 
+std::vector<int8_t> CodeSigning::getElfCodeSignBlock(std::string input, int64_t offset, std::string inForm, std::string profileContent)
+{
+    SIGNATURE_TOOLS_LOGI("Start to sign elf code.\n");
+    if (CodeSigning::SUPPORT_BIN_FILE_FORM != inForm) {
+        SIGNATURE_TOOLS_LOGI("[SignElf] file's format is unsupported\n");
+    }
+
+
+    int paddingSize = ElfSignBlock::ComputeMerkleTreePaddingLength(offset);
+    int64_t fsvTreeOffset = offset + FsVerityDescriptorWithSign::INTEGER_BYTES * 2 + paddingSize;
+    std::ifstream inputstream(input, std::ios::binary | std::ios::ate);
+    if (!inputstream.is_open()) {
+        SIGNATURE_TOOLS_LOGI("[SignElf] input file open is fail\n");
+    }
+    std::streamsize fileSize = inputstream.tellg();
+    inputstream.seekg(0, std::ios::beg);
+    std::shared_ptr<FsVerityGenerator> fsVerityGenerator = std::make_shared<FsVerityGenerator>();
+    fsVerityGenerator->GenerateFsVerityDigest(inputstream, fileSize, fsvTreeOffset);
+    std::vector<int8_t> fsVerityDigest = fsVerityGenerator->GetFsVerityDigest();
+    std::string ownerID = profileContent.empty() ? "DEBUF_LIB_ID" : HapUtils::getAppIdentifier(profileContent);
+    std::vector<int8_t> signature;
+    if (!generateSignature(fsVerityDigest, ownerID, signature)) {
+        SIGNATURE_TOOLS_LOGI("[SignElf] generateSignature fail\n");
+    }
+
+    FsVerityDescriptor::Builder fsdbuilder = (new FsVerityDescriptor::Builder())->SetFileSize(fileSize)
+        .SetHashAlgorithm(FS_SHA256.GetId())
+        .SetLog2BlockSize(LOG_2_OF_FSVERITY_HASH_PAGE_SIZE)
+        .SetSaltSize(fsVerityGenerator->GetSaltSize())
+        .SetSignSize(signature.size())
+        .SetFileSize(fileSize)
+        .SetSalt(fsVerityGenerator->Getsalt())
+        .SetRawRootHash(fsVerityGenerator->GetRootHash())
+        .SetFlags(FsVerityDescriptor::FLAG_STORE_MERKLE_TREE_OFFSET)
+        .SetMerkleTreeOffset(fsvTreeOffset)
+        .SetCsVersion(FsVerityDescriptor::CODE_SIGN_VERSION);
+
+    FsVerityDescriptorWithSign fsVerityDescriptorWithSign = FsVerityDescriptorWithSign(FsVerityDescriptor(fsdbuilder), signature);
+    std::vector<int8_t> treeBytes = fsVerityGenerator->GetTreeBytes();
+    ElfSignBlock signBlock = ElfSignBlock(paddingSize, treeBytes, fsVerityDescriptorWithSign);
+    return signBlock.ToByteArray();
+}
+
 bool CodeSigning::signNativeLibs(std::string input, std::string ownerID)
 {
     // 'an' libs are always signed
@@ -196,11 +247,13 @@ std::vector<std::tuple<std::string, std::stringbuf, uLong>> CodeSigning::GetNati
     // search each file
     char* szReadBuffer = new char[BUFFER_SIZE];
     if (!handleZipGlobalInfo(zFile, zGlobalInfo, szReadBuffer, result)) {
+        unzClose(zFile);
         return std::vector<std::tuple<std::string, std::stringbuf, uLong>>();
     }
     unzCloseCurrentFile(zFile);
     unzGoToNextFile(zFile);
     delete[] szReadBuffer;
+    unzClose(zFile);
     return result;
 }
 
@@ -213,7 +266,8 @@ bool CodeSigning::handleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalIn
     char bzReadZeroBuf[BUFFER_SIZE] = { 0 };
     SIGNATURE_TOOLS_LOGI("zGlobalInfo.number_entry = %lu\n", zGlobalInfo.number_entry);
     for (uLong i = 0; i < zGlobalInfo.number_entry; ++i) {
-        memcpy_s(fileName, FILE_NAME_SIZE, fileNameZeroBuf, FILE_NAME_SIZE);
+        if (memcpy_s(fileName, FILE_NAME_SIZE, fileNameZeroBuf, FILE_NAME_SIZE) != 0)
+            return false;
         size_t nameLen = 0;
         if (!checkUnzParam(zFile, zFileInfo, fileName, &nameLen)) {
             return false;
@@ -227,7 +281,8 @@ bool CodeSigning::handleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalIn
         std::stringbuf sb;
         do {
             nReadFileSize = 0;
-            memcpy_s(szReadBuffer, BUFFER_SIZE, bzReadZeroBuf, BUFFER_SIZE);
+            if (memcpy_s(szReadBuffer, BUFFER_SIZE, bzReadZeroBuf, BUFFER_SIZE) != 0)
+                return false;
             nReadFileSize = unzReadCurrentFile(zFile, szReadBuffer, BUFFER_SIZE);
             if (nReadFileSize > 0) {
                 sb.sputn(szReadBuffer, nReadFileSize);
@@ -242,8 +297,6 @@ bool CodeSigning::handleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalIn
             delete[] szReadBuffer;
             return false;
         }
-        std::string str_tmp = sb.str();
-        std::vector<char> vec(str_tmp.begin(), str_tmp.end());
         result.push_back(std::make_tuple(fileName, std::move(sb), readFileSize));
         unzCloseCurrentFile(zFile);
         unzGoToNextFile(zFile);

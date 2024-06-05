@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,8 +34,7 @@ bool CmsUtils::CheckOwnerID(const std::string& signature, const std::string& pro
     const std::string& profileType)
 {
     std::string ownerID = profileOwnerID;
-    if ("debug" == profileType)
-        ownerID = "DEBUG_LIB_ID";
+    if ("debug" == profileType) ownerID = "DEBUG_LIB_ID";
     int nid = CreateNIDFromOID(OWNERID_OID, OWNERID_OID_SHORT_NAME, OWNERID_OID_LONG_NAME);
     const unsigned char* data = reinterpret_cast<const unsigned char*>(signature.c_str());
     PKCS7* p7 = d2i_PKCS7(NULL, &data, static_cast<long>(signature.size()));
@@ -53,9 +52,8 @@ bool CmsUtils::CheckOwnerID(const std::string& signature, const std::string& pro
         PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(signerInfosk, i);
         ASN1_TYPE* asn1Type = PKCS7_get_signed_attribute(signerInfo, nid);
         if (asn1Type == nullptr) {
-            if ("debug" == profileType) {
+            if ("debug" == profileType)
                 continue;
-            }
             if (ownerID.empty()) {
                 continue;
             } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -93,7 +93,7 @@ namespace OHOS {
             long merkleTreeOffset;
             uint8_t csVersion;
         public:
-            //FsVerityDescriptor() {}
+            FsVerityDescriptor();
             long GetFileSize()
             {
                 return fileSize;
@@ -128,7 +128,8 @@ namespace OHOS {
          * @throws FsVerityDigestException if error
          */
             std::vector<int8_t> GetByteForGenerateDigest();
-        private:
+
+        public:
             FsVerityDescriptor(Builder& builder)
             {
                 this->version = builder.version;
@@ -200,7 +201,7 @@ namespace OHOS {
                     this->saltSize = saltSize;
                     return *this;
                 }
-                Builder& SetSalt(std::vector<int8_t>& salt)
+                Builder& SetSalt(const std::vector<int8_t>& salt)
                 {
                     this->salt = salt;
                     return *this;

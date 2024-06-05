@@ -22,7 +22,6 @@ import("//build/test.gni")
 # }
 
 group("unittest") {
-  testonly = true
   deps = [ "./test/unittest:hapsigntool_pc_test" ]
 }
 

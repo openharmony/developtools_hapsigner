@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -116,7 +116,6 @@ namespace OHOS {
         private:
             static const int32_t MAX_PRINT_LENGTH;
             static const int32_t HEX_PRINT_LENGTH;
-            //char * buffer;
             std::shared_ptr<char> buffer;
             int32_t position = 0;
             int32_t limit = 0;

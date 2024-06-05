@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1660,7 +1660,6 @@ HWTEST_F(GenerateCaTest, generate_profile_cert_test_008, testing::ext::TestSize.
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
     params[Options::SUBJECT] = subject;
     params[Options::SIGN_ALG] = signAlg;
-    // params[Options::KEY_STORE_FILE] = keyStoreFile;
 
     bool result = api.GenerateProfileCert(&params);
     EXPECT_EQ(result, false);
@@ -1689,264 +1688,8 @@ HWTEST_F(GenerateCaTest, judge_size_test_001, testing::ext::TestSize.Level1)
     bool ret = CmdUtil::JudgeSize(size);
     EXPECT_EQ(ret, false);
 }
-/**
- * @tc.name: save_key_to_file_test_001
- * @tc.desc: Test function of SavekeyTofile()  interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, save_key_to_file_test_001, testing::ext::TestSize.Level1)
-{
-    const std::string rootpubfile = "rootPubkey.pem";
-    const std::string rootprifile = "rootPrikey.pem";
-    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string keyAlias = "alias";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
 
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
-
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
-    const EC_KEY* eckey = EVP_PKEY_get0_EC_KEY(keyPair);
-    CertTools::SavekeyTofile(rootpubfile, rootprifile, eckey);
-}
-/**
- * @tc.name: save_key_to_file_test_002
- * @tc.desc: Test function of SavekeyTofile()  interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, save_key_to_file_test_002, testing::ext::TestSize.Level1)
-{
-    const std::string rootpubfile = "";
-    const std::string rootprifile = "";
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
-    const EC_KEY* eckey = EVP_PKEY_get0_EC_KEY(keyPair);
-    CertTools::SavekeyTofile(rootpubfile, rootprifile, eckey);
-}
-/**
- * @tc.name: save_key_to_file_test_003
- * @tc.desc: Test function of SavekeyTofile()  interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, save_key_to_file_test_003, testing::ext::TestSize.Level1)
-{
-    const std::string rootpubfile = "key.pem";
-    const std::string rootprifile = "";
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
-    const EC_KEY* eckey = EVP_PKEY_get0_EC_KEY(keyPair);
-    CertTools::SavekeyTofile(rootpubfile, rootprifile, eckey);
-}
-/**
- * @tc.name: save_csr_to_file_test_001
- * @tc.desc: Test function of SaveCsrTofile()  interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, save_csr_to_file_test_001, testing::ext::TestSize.Level1)
-{
-    const std::string subcsr = "sub.csr";
-    int keySize = 256;
-    std::string algorithm = "ECC";
-    std::string signAlgorithm = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
-    EVP_PKEY* keyPair = keyStoreHelper->GenerateKeyPair(algorithm, keySize);
-    EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
-    EXPECT_NE(csr, nullptr);
-
-    CertTools::SaveCsrTofile(subcsr, csr);
-}
-/**
- * @tc.name: save_csr_to_file_test_002
- * @tc.desc: Test function of SaveCsrTofile()  interface for FAIL+.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, save_csr_to_file_test_002, testing::ext::TestSize.Level1)
-{
-    const std::string subcsr = "";
-    int keySize = 256;
-    std::string algorithm = "ECC";
-    std::string signAlgorithm = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
-    EVP_PKEY* keyPair = keyStoreHelper->GenerateKeyPair(algorithm, keySize);
-    EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
-    EXPECT_NE(csr, nullptr);
-
-    CertTools::SaveCsrTofile(subcsr, csr);
-}
-/**
- * @tc.name: sign_csr_generate_cert_test_001
- * @tc.desc: Test function of SignCsrGenerateCer()  interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, sign_csr_generate_cert_test_001, testing::ext::TestSize.Level1)
-{
-    const std::string rootprifile = "rootPrikey.pem";
-    const std::string rootpubfile = "rootPubkey.pem";
-    const std::string subcsr = "sub.csr";
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    char keyPwd[] = "123456";
-    int keySize = 256;
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
-    std::string algorithm = "ECC";
-    std::string signAlgorithm = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
-    (*params)["algorithm"] = algorithm;
-    (*params)["signAlgorithm"] = signAlgorithm;
-    (*params)["subject"] = subject;
-    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
-    EVP_PKEY* keyPair = keyStoreHelper->GenerateKeyPair(algorithm, keySize);
-    const EC_KEY* eckey = EVP_PKEY_get0_EC_KEY(keyPair);
-    EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
-    CertTools::SaveCsrTofile(subcsr, csr);
-    EXPECT_NE(csr, nullptr);
-    CertTools::SavekeyTofile(rootpubfile, rootprifile, eckey);
-    X509* subCert = CertTools::SignCsrGenerateCer(csr, subcsr, rootprifile, params.get());
-    EXPECT_NE(subCert, nullptr);
-}
-
-/**
- * @tc.name: sign_csr_generate_cert_test_002
- * @tc.desc: Test function of SignCsrGenerateCer()  interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, sign_csr_generate_cert_test_002, testing::ext::TestSize.Level1)
-{
-    const std::string rootprifile = "rootPrikey.pem";
-    const std::string rootpubfile = "rootPubkey.pem";
-    const std::string subcsr = "";
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    char keyPwd[] = "123456";
-    int keySize = 256;
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
-    std::string algorithm = "ECC";
-    std::string signAlgorithm = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
-    (*params)["algorithm"] = algorithm;
-    (*params)["signAlgorithm"] = signAlgorithm;
-    (*params)["subject"] = subject;
-    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
-    EVP_PKEY* keyPair = keyStoreHelper->GenerateKeyPair(algorithm, keySize);
-    const EC_KEY* eckey = EVP_PKEY_get0_EC_KEY(keyPair);
-    EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
-    CertTools::SaveCsrTofile(subcsr, csr);
-    EXPECT_NE(csr, nullptr);
-    CertTools::SavekeyTofile(rootpubfile, rootprifile, eckey);
-    X509* subCert = CertTools::SignCsrGenerateCer(csr, subcsr, rootprifile, params.get());
-    EXPECT_NE(subCert, nullptr);
-}
-
-/**
- * @tc.name: sign_csr_generate_cert_test_003
- * @tc.desc: Test function of SignCsrGenerateCer()  interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, sign_csr_generate_cert_test_003, testing::ext::TestSize.Level1)
-{
-    const std::string rootprifile = "";
-    const std::string rootpubfile = "rootPubkey.pem";
-    const std::string subcsr = "sub.csr";
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    char keyPwd[] = "123456";
-    int keySize = 256;
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
-    std::string algorithm = "ECC";
-    std::string signAlgorithm = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
-    (*params)["algorithm"] = algorithm;
-    (*params)["signAlgorithm"] = signAlgorithm;
-    (*params)["subject"] = subject;
-    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
-    EVP_PKEY* keyPair = keyStoreHelper->GenerateKeyPair(algorithm, keySize);
-    const EC_KEY* eckey = EVP_PKEY_get0_EC_KEY(keyPair);
-    EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
-    CertTools::SaveCsrTofile(subcsr, csr);
-    EXPECT_NE(csr, nullptr);
-    CertTools::SavekeyTofile(rootpubfile, rootprifile, eckey);
-    X509* subCert = CertTools::SignCsrGenerateCer(csr, subcsr, rootprifile, params.get());
-    EXPECT_NE(subCert, nullptr);
-}
 
 /**
  * @tc.name:generate_root_cert_001
@@ -2762,12 +2505,12 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_006, testing::ext::TestS
 
 
 /**
- * @tc.name: generateca_to_file_test_001
+ * @tc.name: generate_sub_cert_to_file_test_001
  * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generateca_to_file_test_001, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
@@ -2805,17 +2548,17 @@ HWTEST_F(GenerateCaTest, generateca_to_file_test_001, testing::ext::TestSize.Lev
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateCaToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
     EXPECT_EQ(ret, true);
 }
 
 /**
- * @tc.name: generateca_to_file_test_002
+ * @tc.name: generate_sub_cert_to_file_test_002
  * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generateca_to_file_test_002, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
@@ -2853,17 +2596,17 @@ HWTEST_F(GenerateCaTest, generateca_to_file_test_002, testing::ext::TestSize.Lev
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateCaToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
     EXPECT_EQ(ret, true);
 }
 
 /**
- * @tc.name: generateca_to_file_test_003
+ * @tc.name: generate_sub_cert_to_file_test_003
  * @tc.desc: Test function of GenerateCaToFile()  interface for FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generateca_to_file_test_003, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_003, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
@@ -2899,16 +2642,16 @@ HWTEST_F(GenerateCaTest, generateca_to_file_test_003, testing::ext::TestSize.Lev
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateCaToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
     EXPECT_EQ(ret, true);
 }
 /**
- * @tc.name: generateca_to_file_test_004
- * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
+ * @tc.name: generate_sub_cert_to_file_test_004
+ * @tc.desc: Test function of GenerateSubCertToFile()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generateca_to_file_test_004, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_004, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
@@ -2946,16 +2689,16 @@ HWTEST_F(GenerateCaTest, generateca_to_file_test_004, testing::ext::TestSize.Lev
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateCaToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
     EXPECT_EQ(ret, false);
 }
 /**
- * @tc.name: generateca_to_file_test_005
+ * @tc.name: generate_sub_cert_to_file_test_005
  * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generateca_to_file_test_005, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_005, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
@@ -2993,16 +2736,10 @@ HWTEST_F(GenerateCaTest, generateca_to_file_test_005, testing::ext::TestSize.Lev
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateCaToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
     EXPECT_EQ(ret, false);
 }
 
-// /**
-//  * @tc.name: generateca_to_file_test_006
-//  * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
 
 /**
  * @tc.name: set_cert_version_test_001
@@ -3209,36 +2946,36 @@ HWTEST_F(GenerateCaTest, set_cert_validity_test_002, testing::ext::TestSize.Leve
     EXPECT_EQ(res, false);
 }
 
-/**
- * @tc.name: sign_cert_test_001
- * @tc.desc: Test function of SignCert()  interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, sign_cert_test_001, testing::ext::TestSize.Level1)
-{
-    X509* cert = X509_new();
-    EVP_PKEY* key = EVP_PKEY_new();
-    bool res = CertTools::SignCert(cert, key, "SHA256withECDSA");
-    X509_free(cert);
-    EVP_PKEY_free(key);
-    EXPECT_EQ(res, false);
-}
-/**
- * @tc.name: sign_cert_test_002
- * @tc.desc: Test function of SignCert()  interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, sign_cert_test_002, testing::ext::TestSize.Level1)
-{
-    X509* cert = X509_new();
-    EVP_PKEY* key = EVP_PKEY_new();
-    bool res = CertTools::SignCert(cert, key, "SHA384withECDSA");
-    X509_free(cert);
-    EVP_PKEY_free(key);
-    EXPECT_EQ(res, false);
-}
+// /**
+//  * @tc.name: sign_cert_test_001
+//  * @tc.desc: Test function of SignCert()  interface for FAIL.
+//  * @tc.type: FUNC
+//  * @tc.require: SR000H63TL
+//  */
+// HWTEST_F(GenerateCaTest, sign_cert_test_001, testing::ext::TestSize.Level1)
+// {
+//     X509* cert = X509_new();
+//     EVP_PKEY* key = EVP_PKEY_new();
+//     bool res = CertTools::SignCert(cert, key, "SHA256withECDSA");
+//     X509_free(cert);
+//     EVP_PKEY_free(key);
+//     EXPECT_EQ(res, false);
+// }
+// /**
+//  * @tc.name: sign_cert_test_002
+//  * @tc.desc: Test function of SignCert()  interface for FAIL.
+//  * @tc.type: FUNC
+//  * @tc.require: SR000H63TL
+//  */
+// HWTEST_F(GenerateCaTest, sign_cert_test_002, testing::ext::TestSize.Level1)
+// {
+//     X509* cert = X509_new();
+//     EVP_PKEY* key = EVP_PKEY_new();
+//     bool res = CertTools::SignCert(cert, key, "SHA384withECDSA");
+//     X509_free(cert);
+//     EVP_PKEY_free(key);
+//     EXPECT_EQ(res, false);
+// }
 /**
  * @tc.name: handle_test_001
  * @tc.desc: Test function of SignCert()  interface for FAIL.

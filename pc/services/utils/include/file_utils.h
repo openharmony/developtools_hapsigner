@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -97,10 +97,15 @@ namespace OHOS {
          * @param size file read size
          * @return true, if write successfully.
          */
-            static bool AppendWriteFileByOffsetToFile(const std::string& inFile,
-                                                      std::ofstream& out, long offset, long size);
-            static bool AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstream& out, long offset, long size);
-            static int WriteInputToOutPut(std::ifstream& input, std::ofstream& output, long length);
+        static bool AppendWriteFileByOffsetToFile(const std::string& inFile,
+                                                    std::ofstream& out, long offset, long size);
+        static bool AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstream& out, long offset, long size);
+        static bool AppendWriteFileToFile(const std::string& inputFile, const std::string& outputFile);
+        static bool AppendWriteByteToFile(const std::string& bytes, const std::string& outputFile);
+
+        static int WriteInputToOutPut(std::ifstream& input, std::ofstream& output, long length);
+        static bool WriteInputToOutPut(const std::string& input, const std::string& output);
+
             /**
         * Write byte array data to output file.
         *
@@ -117,6 +122,7 @@ namespace OHOS {
         * @return true, if write successfully.
         */
             static bool WriteByteToOutFile(const std::string& bytes, std::ofstream& outFile);
+            static bool WriteByteToOutFile(const std::vector<int8_t>& bytes, std::ofstream& outFile);
             /**
          * regex filename
          *
@@ -124,6 +130,9 @@ namespace OHOS {
          * @return boolean
          */
             static bool IsRunnableFile(const std::string& name);
+
+            static int64_t GetFileLen(const std::string& file);
+            static void DelDir(const std::string& file);
         };
     } // namespace SignatureTools
 } // namespace OHOS

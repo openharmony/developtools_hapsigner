@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,35 +14,25 @@
  */
 #ifndef SIGNERTOOLS_SIGNING_BLOCK_H
 #define SIGNERTOOLS_SIGNING_BLOCK_H
+
 #include <vector>
+#include <string>
+#include "file_utils.h"
 namespace OHOS {
     namespace SignatureTools {
         class SigningBlock {
         private:
-            int type = 0;
-            int length = 0;
-            std::vector<signed char> value;
-            int offset = 0;
-            /**
-         * Init Signing Block type and value
-         *
-         * @param type signing type
-         * @param value signing value
-         */
+            int32_t type = 0;
+            int32_t length = 0;
+            std::vector<int8_t> value;
+            int32_t offset = 0;
         public:
-            SigningBlock(int type, std::vector<signed char>& value); //super();
-            /**
-         * Init Signing Block type and value
-         *
-         * @param type signing type
-         * @param value signing value
-         * @param offset signing block offset
-         */
-            SigningBlock(int type, std::vector<signed char>& value, int offset); //super();
-            virtual int getType();
-            virtual int getLength();
-            virtual std::vector<signed char> getValue();
-            virtual int getOffset();
+            SigningBlock(int32_t type, std::vector<int8_t> value);
+            SigningBlock(int32_t type, std::vector<int8_t> value, int32_t offset);
+            int32_t GetType();
+            int32_t GetLength();
+            std::vector<int8_t> GetValue();
+            int32_t GetOffset();
         };
     }
 }

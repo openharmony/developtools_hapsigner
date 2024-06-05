@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -82,6 +82,14 @@ namespace OHOS {
         ProvisionInfo HapVerifyResult::GetProvisionInfo() const
         {
             return provisionInfo;
+        }
+        std::vector<int8_t> HapVerifyResult::GetProfile() const
+        {
+            return profile;
+        }
+        void HapVerifyResult::SetProfile(std::vector<int8_t> profile)
+        {
+            this->profile = profile;
         }
     } // namespace SignatureTools
 } // namespace OHOS

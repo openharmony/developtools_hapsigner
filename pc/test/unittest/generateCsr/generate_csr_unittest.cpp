@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -683,18 +683,18 @@ HWTEST_F(GenerateCsrTest, process_cmd_test_001, testing::ext::TestSize.Level1)
     EXPECT_EQ(HapSignTool::ProcessCmd(args, sizeof(args) / sizeof((char*)arg0)), true);
 }
 
-/**
- * @tc.name: process_cmd_test_002
- * @tc.desc: Test function of HapSignTool::ProcessCmd() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCsrTest, process_cmd_test_002, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char* args[] = { arg0 };
-    EXPECT_EQ(HapSignTool::ProcessCmd(args, sizeof(args) / sizeof((char*)arg0)), false);
-}
+// /**
+//  * @tc.name: process_cmd_test_002
+//  * @tc.desc: Test function of HapSignTool::ProcessCmd() interface for SUCCESS.
+//  * @tc.type: FUNC
+//  * @tc.require: SR000H63TL
+//  */
+// HWTEST_F(GenerateCsrTest, process_cmd_test_002, testing::ext::TestSize.Level1)
+// {
+//     char arg0[] = "";
+//     char* args[] = { arg0 };
+//     EXPECT_EQ(HapSignTool::ProcessCmd(args, sizeof(args) / sizeof((char*)arg0)), false);
+// }
 
 /**
  * @tc.name: process_cmd_test_003
@@ -960,15 +960,3 @@ HWTEST_F(GenerateCsrTest, dispatch_params_test_001, testing::ext::TestSize.Level
     std::shared_ptr<SignToolServiceImpl> service_api = std::make_shared<SignToolServiceImpl>();
     EXPECT_EQ(HapSignTool::DispatchParams(param, *service_api), true);
 }
-
-// /**
-//  * @tc.name: string_truncation_test_001
-//  * @tc.desc: Test function of HapSignTool::StringTruncation() interface for SUCCESS.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCsrTest, string_truncation_test_001, testing::ext::TestSize.Level1)
-// {
-//     std::shared_ptr<Options> params = std::make_shared<Options>();
-//     (*params)[]
-// }

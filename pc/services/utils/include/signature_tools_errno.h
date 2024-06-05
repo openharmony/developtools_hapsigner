@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ namespace OHOS {
     namespace SignatureTools {
         const int  RET_OK = 0;
         const int  RET_FAILED = -1;
-		const int  RET_PASS_ERROR = -2;
+        const int  RET_PASS_ERROR = -2;
 		
         const int COMMAND_ERROR = -101;
         /**
@@ -157,6 +157,11 @@ namespace OHOS {
         * Enum constant MATCH_ERROR
         */
         const int MATCH_ERROR = -136;
+
+        /**
+        * Enum constant IO_ERROR
+        */
+        const int IO_ERROR = -137;
     } // namespace SignatureTools
 } // namespace OHOS
 #endif // OHOS_INDUSTRIAL_BUS_ERRNO_H

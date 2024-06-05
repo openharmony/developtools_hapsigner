@@ -1,4 +1,18 @@
-﻿#include "pkcs7_data.h"
+﻿/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "pkcs7_data.h"
 #include <vector>
 #include "signature_tools_log.h"
 #include "signature_tools_errno.h"
@@ -55,15 +69,16 @@ namespace OHOS::SignatureTools {
         if (op != ASN1_PKEY_CTRL_PKCS7_SIGN || arg1 != 0) {
             return 0;
         }
-        int snid, hnid;
-        X509_ALGOR* alg1, * alg2;
+        int snid = 0;
+        int hnid = 0;
+        X509_ALGOR* alg1;
+        X509_ALGOR* alg2;
         PKCS7_SIGNER_INFO_get0_algs(reinterpret_cast<PKCS7_SIGNER_INFO*>(arg2), NULL, &alg1, &alg2);
         if (alg1 == NULL || alg1->algorithm == NULL)
             return 0;
         hnid = OBJ_obj2nid(alg1->algorithm);
         if (hnid == NID_undef)
             return 0;
-        //if (!OBJ_find_sigid_by_algs(&snid, hnid, EVP_PKEY_id(pkey)))
         if (!OBJ_find_sigid_by_algs(&snid, hnid, NID_X9_62_id_ecPublicKey))
             return 0;
         if (X509_ALGOR_set0(alg2, OBJ_nid2obj(snid), V_ASN1_UNDEF, 0) != 1)
@@ -92,28 +107,25 @@ namespace OHOS::SignatureTools {
     static int PKCS7_type_is_other2(PKCS7* p7)
     {
         int isOther = 1;
-
         int nid = OBJ_obj2nid(p7->type);
-
         switch (nid) {
-        case NID_pkcs7_data:
-        case NID_pkcs7_signed:
-        case NID_pkcs7_enveloped:
-        case NID_pkcs7_signedAndEnveloped:
-        case NID_pkcs7_digest:
-        case NID_pkcs7_encrypted:
-            isOther = 0;
-            break;
-        default:
-            isOther = 1;
+            case NID_pkcs7_data:
+            case NID_pkcs7_signed:
+            case NID_pkcs7_enveloped:
+            case NID_pkcs7_signedAndEnveloped:
+            case NID_pkcs7_digest:
+            case NID_pkcs7_encrypted:
+                isOther = 0;
+                break;
+            default:
+                isOther = 1;
         }
 
         return isOther;
-
     }
 
 
-    PKCS7Data::PKCS7Data(int flags) :p7(nullptr), flags(flags) {}
+    PKCS7Data::PKCS7Data(int flags) : p7(nullptr), flags(flags) {}
 
     PKCS7Data::~PKCS7Data()
     {
@@ -125,7 +137,7 @@ namespace OHOS::SignatureTools {
                         const std::string& sigAlg, std::string& ret, std::vector<PKCS7Attr> attrs)
     {
         int result = 0;
-        if ((result = InitPkcs7(content, signer, sigAlg,attrs)) < 0) {
+        if ((result = InitPkcs7(content, signer, sigAlg, attrs)) < 0) {
             goto err;
         }
         
@@ -135,7 +147,7 @@ namespace OHOS::SignatureTools {
         }
         //释放资源
     err:
-        if (result < 0){
+        if (result < 0) {
             HapVerifyOpensslUtils::GetOpensslErrorMessage();
             printf("sign content failed\n");
         }
@@ -169,10 +181,6 @@ namespace OHOS::SignatureTools {
         return 0;
     }
 
-    //对content进行签名 会初始化pkcs7 并序列化pkcs7传入ret
-    /*int Sign(const std::string& content, std::shared_ptr<ISigner> signer, const std::string& sigAlg,
-    std::string& ret, std::vector<PKCS7Attr> attrs = std::vector<PKCS7Attr>());*/
-
     int PKCS7Data::Verify(const std::string& content) const
     {
         if (VerifySign(content) < 0) {
@@ -187,7 +195,8 @@ namespace OHOS::SignatureTools {
         return 0;
     }
 
-    int PKCS7Data::GetContent(std::string& originalRawData) const {
+    int PKCS7Data::GetContent(std::string& originalRawData) const
+    {
         BIO* oriBio = PKCS7_dataDecode(p7, NULL, NULL, NULL);
         if (oriBio == NULL) {
             SIGNATURE_TOOLS_LOGE("get pkcs7 raw data failed！\n");
@@ -203,7 +212,8 @@ namespace OHOS::SignatureTools {
         return 0;
     }
 
-    int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<ISigner> signer, const std::string& sigAlg, std::vector<PKCS7Attr> attrs)
+    int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<ISigner> signer,
+                             const std::string& sigAlg, std::vector<PKCS7Attr> attrs)
     {
         STACK_OF(X509)* certs = NULL;
         STACK_OF(X509)* certsDup = NULL; //certs的拷贝 并会去除掉实体证书
@@ -231,11 +241,9 @@ namespace OHOS::SignatureTools {
         }
         if (sigAlg == SIGN_ALG_384) {
             md = EVP_sha384();
-        }
-        else if (sigAlg == SIGN_ALG_256) {
+        } else if (sigAlg == SIGN_ALG_256) {
             md = EVP_sha256();
-        }
-        else {
+        } else {
             SIGNATURE_TOOLS_LOGE("Error sigAlg please use SHAwith384 or SHAwith256\n");
             result = INVALIDPARAM_ERROR;
             goto err;
@@ -243,7 +251,7 @@ namespace OHOS::SignatureTools {
         cert = sk_X509_delete(certsDup, 0); //从证书链中分离出实体证书
         this->p7 = PKCS7_sign2(cert, certsDup, md, content, this->flags, attrs);
         if (this->p7 == NULL) {
-            SIGNATURE_TOOLS_LOGE("pkcs7 sign profile failed\n");
+            SIGNATURE_TOOLS_LOGE("pkcs7 sign content failed\n");
             result = SIGN_ERROR;
             goto err;
         }
@@ -302,12 +310,18 @@ namespace OHOS::SignatureTools {
         ASN1_TIME_to_tm(asn1_tm, &tm_time);
         // 转换为本地时间（考虑时区）
         time_t t = mktime(&tm_time);
+        if (t < 0)
+            return "";
         struct tm* local_time = localtime(&t);
+        if (local_time == nullptr)
+            return "";
         // 打印本地时间
         char buf[128] = { 0 };
-        sprintf_s(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
+        if (sprintf_s(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
             local_time->tm_year + YEAR1900, local_time->tm_mon + 1, local_time->tm_mday,
-            local_time->tm_hour, local_time->tm_min, local_time->tm_sec);
+            local_time->tm_hour, local_time->tm_min, local_time->tm_sec) == -1) {
+            return "";
+        }
         return std::string(buf, strlen(buf));
     }
     void PKCS7Data::GetTextFromX509Name(X509_NAME* name, int32_t nId, std::string& text)
@@ -410,7 +424,7 @@ namespace OHOS::SignatureTools {
         BIO* inBio = NULL;
         if (this->flags & PKCS7_DETACHED) {
             inBio = BIO_new_mem_buf(reinterpret_cast<const void*>(content.c_str()),
-                static_cast<int>(content.size()));
+                                    static_cast<int>(content.size()));
             if (inBio == NULL) {
                 SIGNATURE_TOOLS_LOGE("new mem buf error!\n");
                 return MEMORY_ALLOC_ERROR;
@@ -452,7 +466,7 @@ namespace OHOS::SignatureTools {
     }
 
     int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* signerInfo,
-        STACK_OF(X509)* certs)const
+        STACK_OF(X509)* certs) const
     {
         if (signerInfo == NULL || certs == NULL) {
             SIGNATURE_TOOLS_LOGE("invalid input\n");
@@ -472,7 +486,7 @@ namespace OHOS::SignatureTools {
     }
 
     int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInfo,
-        STACK_OF(X509)* certs, STACK_OF(X509)* certChain)const
+                                             STACK_OF(X509)* certs, STACK_OF(X509)* certChain)const
     {
         X509* sigCert = PKCS7_cert_from_signer_info(p7, signerInfo);
         int j = 0;
@@ -543,9 +557,7 @@ namespace OHOS::SignatureTools {
 
     err:
         OPENSSL_free(abuf);
-        //EVP_MD_CTX_free(mctx);
         return result;
-
     }
 
 
@@ -610,7 +622,8 @@ namespace OHOS::SignatureTools {
         return NULL;
     }
 
-    static int PKCS7_dataFinal2_check(PKCS7* p7, BIO* bio, STACK_OF(PKCS7_SIGNER_INFO)** psi_sk, ASN1_OCTET_STRING** pos)
+    static int PKCS7_dataFinal2_check(PKCS7* p7, BIO* bio,
+                                      STACK_OF(PKCS7_SIGNER_INFO)** psi_sk, ASN1_OCTET_STRING** pos)
     {
         int i = 0;
 
@@ -629,20 +642,20 @@ namespace OHOS::SignatureTools {
         p7->state = PKCS7_S_HEADER;
 
         switch (i) {
-        case NID_pkcs7_signed:
-            *psi_sk = p7->d.sign->signer_info;
-            *pos = PKCS7_get_octet_string2(p7->d.sign->contents);
-            /* If detached data then the content is excluded */
-            if (PKCS7_type_is_data(p7->d.sign->contents) && p7->detached) {
-                ASN1_OCTET_STRING_free(*pos);
-                *pos = NULL;
-                p7->d.sign->contents->d.data = NULL;
+            case NID_pkcs7_signed:
+                *psi_sk = p7->d.sign->signer_info;
+                *pos = PKCS7_get_octet_string2(p7->d.sign->contents);
+                /* If detached data then the content is excluded */
+                if (PKCS7_type_is_data(p7->d.sign->contents) && p7->detached) {
+                    ASN1_OCTET_STRING_free(*pos);
+                    *pos = NULL;
+                    p7->d.sign->contents->d.data = NULL;
+                }
+                break;
+            default:
+                PKCS7err(PKCS7_F_PKCS7_DATAFINAL, PKCS7_R_UNSUPPORTED_CONTENT_TYPE);
+                return 0;
             }
-            break;
-        default:
-            PKCS7err(PKCS7_F_PKCS7_DATAFINAL, PKCS7_R_UNSUPPORTED_CONTENT_TYPE);
-            return 0;
-        }
         return 1;
     }
 
@@ -688,12 +701,10 @@ namespace OHOS::SignatureTools {
                 if (sk_X509_ATTRIBUTE_num(sk) > 0) {
                     if (!do_pkcs7_signed_attrib2(si, ctx_tmp))
                         goto err;
-                }
-                else {
+                } else {
                     unsigned char* abuf = NULL;
                     unsigned int abuflen = 0;
                     abuflen = EVP_PKEY_size(si->pkey);
-                    //abuf = OPENSSL_malloc(abuflen);
                     abuf = reinterpret_cast<unsigned char*>(OPENSSL_malloc(abuflen));
                     if (abuf == NULL)
                         goto err;
@@ -752,7 +763,6 @@ namespace OHOS::SignatureTools {
         STACK_OF(PKCS7_SIGNER_INFO)* si_sk = NULL;
         ASN1_OCTET_STRING* os = NULL;
 
-
         if (!PKCS7_dataFinal2_check(p7, bio, &si_sk, &os))
             goto err;
         if (!PKCS7_dataFinal2_sign_attr(si_sk, bio))
@@ -774,7 +784,6 @@ namespace OHOS::SignatureTools {
             return 0;
         }
 
-        //SMIME_crlf_copy(data, p7bio, flags);
         if (BIO_write(p7bio, content.c_str(), static_cast<int>(content.size())) <= 0) {
             SIGNATURE_TOOLS_LOGE("add json data to pkcs7 failed\n");
             goto err;
@@ -790,14 +799,11 @@ namespace OHOS::SignatureTools {
         if (VerifySignature(p7, p7bio) < 0) {
             goto err;
         }
-
         ret = 1;
 
     err:
         BIO_free_all(p7bio);
-
         return ret;
-
     }
 
     static int PKCS7_SIGNER_INFO_set2(PKCS7_SIGNER_INFO* p7i, X509* x509, const EVP_MD* dgst)
@@ -846,13 +852,6 @@ namespace OHOS::SignatureTools {
         return NULL;
     }
 
-    static int add_digest_smcap2(STACK_OF(X509_ALGOR)* sk, int nid, int arg)
-    {
-        if (EVP_get_digestbynid(nid))
-            return PKCS7_simple_smimecap(sk, nid, arg);
-        return 1;
-    }
-
     static int pkcs7_copy_existing_digest2(PKCS7* p7, PKCS7_SIGNER_INFO* si)
     {
         int i;
@@ -881,13 +880,6 @@ namespace OHOS::SignatureTools {
         return 0;
     }
 
-    static int add_cipher_smcap2(STACK_OF(X509_ALGOR)* sk, int nid, int arg)
-    {
-        if (EVP_get_cipherbynid(nid))
-            return PKCS7_simple_smimecap(sk, nid, arg);
-        return 1;
-    }
-
     static PKCS7_SIGNER_INFO* PKCS7_sign_add_signer2(PKCS7* p7, X509* signcert, const EVP_MD* md, int flags)
     {
         PKCS7_SIGNER_INFO* si = NULL;
@@ -903,29 +895,6 @@ namespace OHOS::SignatureTools {
         if (!(flags & PKCS7_NOATTR)) {
             if (!PKCS7_add_attrib_content_type(si, NULL))
                 goto err;
-            /* Add SMIMECapabilities */
-            if (!(flags & PKCS7_NOSMIMECAP)) {
-                if ((smcap = sk_X509_ALGOR_new_null()) == NULL) {
-                    PKCS7err(PKCS7_F_PKCS7_SIGN_ADD_SIGNER, ERR_R_MALLOC_FAILURE);
-                    goto err;
-                }
-                if (!add_cipher_smcap2(smcap, NID_aes_256_cbc, -1)
-                    || !add_digest_smcap2(smcap, NID_id_GostR3411_2012_256, -1)
-                    || !add_digest_smcap2(smcap, NID_id_GostR3411_2012_512, -1)
-                    || !add_digest_smcap2(smcap, NID_id_GostR3411_94, -1)
-                    || !add_cipher_smcap2(smcap, NID_id_Gost28147_89, -1)
-                    || !add_cipher_smcap2(smcap, NID_aes_192_cbc, -1)
-                    || !add_cipher_smcap2(smcap, NID_aes_128_cbc, -1)
-                    || !add_cipher_smcap2(smcap, NID_des_ede3_cbc, -1)
-                    || !add_cipher_smcap2(smcap, NID_rc2_cbc, 128)
-                    || !add_cipher_smcap2(smcap, NID_rc2_cbc, 64)
-                    || !add_cipher_smcap2(smcap, NID_des_cbc, -1)
-                    || !add_cipher_smcap2(smcap, NID_rc2_cbc, 40)
-                    || !PKCS7_add_attrib_smimecap(si, smcap))
-                    goto err;
-                sk_X509_ALGOR_pop_free(smcap, X509_ALGOR_free);
-                smcap = NULL;
-            }
             if (flags & PKCS7_REUSE_DIGEST) {
                 if (!pkcs7_copy_existing_digest2(p7, si))
                     goto err;

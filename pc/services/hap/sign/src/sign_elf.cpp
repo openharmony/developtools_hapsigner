@@ -1,0 +1,223 @@
+/*
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "sign_elf.h"
+#include "string_utils.h"
+#include "code_signing.h"
+#include "param_constants.h"
+#include "hw_block_head.h"
+#include "hw_sign_head.h"
+#include "signature_block_types.h"
+#include "signature_block_tags.h"
+using namespace OHOS::SignatureTools;
+int SignElf::blockNum = 0;
+const int SignElf::PAGE_SIZE = 4096;
+const int SignElf::FILE_BUFFER_BLOCK = 16384;
+const std::string SignElf::CODESIGN_OFF = "0";
+
+bool SignElf::sign(SignerConfig signerConfig, std::map<std::string, std::string> signParams)
+{
+    std::string inputFile = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
+    std::string tmpFile;
+    if (!alignFileBy4kBytes(inputFile, tmpFile)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] alignFileBy4kBytes error");
+        return false;
+    }
+    std::string outputFile = signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
+    std::string profileSigned = signParams.at(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
+    if (!writeBlockDataToFile(signerConfig, tmpFile, outputFile, profileSigned, signParams)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] writeBlockDataToFile error");
+        return false;
+    }
+    if (!writeSignHeadDataToOutputFile(tmpFile, outputFile, blockNum)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] The sign head data made failed.");
+        return false;
+    }
+    return true;
+}
+
+bool SignElf::alignFileBy4kBytes(std::string &inputFile, std::string &ret)
+{
+    auto now = std::chrono::system_clock::now();
+    auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+    std::string tmp = "tmpFile" + std::to_string(timestamp);
+    std::ofstream output(tmp);
+    if (!output.is_open()) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] unable to open %{public}s", tmp.c_str());
+        return false;
+    }
+    std::ifstream input(inputFile);
+    if (!input.is_open()) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] unable to open %{public}s", inputFile.c_str());
+        return false;
+    }
+    char buffer[FILE_BUFFER_BLOCK];
+    std::streamsize bytesRead;
+    int64_t output_length = 0;
+    while ((bytesRead = input.read(buffer, sizeof(buffer)).gcount()) > 0)
+    {
+        output.write(buffer, bytesRead);
+        output_length += bytesRead;
+    }
+    long addLength = PAGE_SIZE - (output_length % PAGE_SIZE);
+    if (isLongOverflowInteger(addLength)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] File alignment error");
+        return false;
+    }
+    std::vector<char> bytes(addLength, 0);
+    output.write(bytes.data(), addLength);
+    ret = tmp;
+    return true;
+}
+
+bool SignElf::writeBlockDataToFile(SignerConfig signerConfig,
+    std::string inputFile, std::string outputFile, std::string profileSigned, std::map<std::string, std::string> signParams)
+{
+    std::string profiliFile = signParams.at(ParamConstants::PARAM_BASIC_PROFILE);
+    std::list<SignBlockData> signDataList;
+    int64_t binFileLen = FileUtils::GetFileLen(inputFile);
+    if (binFileLen < 0 || isLongOverflowInteger(binFileLen)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] getFileLen or isLongOverflowInteger error");
+        return false;
+    }
+    if (!StringUtils::IsEmpty(signParams.at(ParamConstants::PARAM_BASIC_PROFILE))) {
+        signDataList.push_front(generateProfileSignByte(profiliFile, profileSigned));
+    }
+    blockNum = signDataList.size() + 1;
+    SignBlockData* codeSign = nullptr;
+    if (!generateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen, &codeSign) || !codeSign) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] generateCodeSignByte error");
+        if (codeSign) {
+            delete codeSign;
+        }
+        return false;
+    }
+    signDataList.push_front(*codeSign);
+    blockNum = signDataList.size();
+    if (!generateSignBlockHead(signDataList)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] generateSignBlockHead error");
+        delete codeSign;
+        return false;
+    }
+    delete codeSign;
+    return writeSignedElf(inputFile, signDataList, outputFile);
+}
+bool SignElf::writeSignedElf(std::string inputFile, std::list<SignBlockData> &signBlockList, std::string outputFile)
+{
+    std::ifstream fileInputStream(inputFile, std::ios::binary);
+    std::ofstream fileOutputStream(outputFile, std::ios::binary);
+    if (!fileInputStream.is_open() || !fileOutputStream.is_open()) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] inputFile or outputFile open error");
+        return false;
+    }
+    char buffer[FILE_BUFFER_BLOCK];
+    while(!fileInputStream.eof())
+    {
+        fileInputStream.read(buffer, sizeof(buffer));
+        fileOutputStream.write(buffer, fileInputStream.gcount());
+    }
+    for (auto signBlockData : signBlockList)
+    {
+        if (!FileUtils::WriteByteToOutFile(signBlockData.getBlockHead(), fileOutputStream)) {
+            SIGNATURE_TOOLS_LOGE("Failed to write Block Head to output file");
+            fileInputStream.close();
+            fileOutputStream.close();
+            return false;
+        }
+    }
+    for (auto signBlockData : signBlockList)
+    {
+        bool isSuccess;
+        if (signBlockData.getByte()) {
+            isSuccess = FileUtils::WriteByteToOutFile(signBlockData.getSignData(), fileOutputStream);
+        }else {
+            std::ifstream InputSignFileStream(signBlockData.getSignFile(), std::ios::binary);
+            if (!InputSignFileStream.is_open()) {
+                SIGNATURE_TOOLS_LOGE("[SignElf] InputSignFileStream open error");
+                return false;
+            }
+            int result = FileUtils::WriteInputToOutPut(InputSignFileStream, fileOutputStream, (long)signBlockData.getLen());
+            isSuccess = (result == 0 ? true : false);
+        }
+        if (!isSuccess) {
+            SIGNATURE_TOOLS_LOGE("Failed to WriteByteToOutFile");
+            fileInputStream.close();
+            fileOutputStream.close();
+            return false;
+        }
+    }
+    fileInputStream.close();
+    fileOutputStream.close();
+    return true;
+}
+bool SignElf::generateSignBlockHead(std::list<SignBlockData> &signDataList)
+{
+    long offset = HwBlockHead::GetElfBlockLen() * signDataList.size();
+    for (std::list<SignBlockData>::iterator it = signDataList.begin(); it != signDataList.end(); ++it)
+    {
+        std::vector<int8_t> tmp = HwBlockHead::getBlockHeadLittleEndian(it->getType(), SignatureBlockTags::DEFAULT, it->getLen(), offset);
+        it->setBlockHead(tmp);
+        offset += it->getLen();
+        if (isLongOverflowInteger(offset)) {
+            SIGNATURE_TOOLS_LOGE("[SignElf] The sign block offset is overflow integer");
+            return false;
+        }
+    }
+    return true;
+}
+SignBlockData SignElf::generateProfileSignByte(std::string profileFile, std::string profileSigned)
+{
+    int64_t profileDataLen = FileUtils::GetFileLen(profileFile);
+    if (profileDataLen < 0 || isLongOverflowShort(profileDataLen)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] generateProfileSignByte profileDataLen error");
+    }
+    char isSigned = SignatureBlockTypes::GetProfileBlockTypes(profileSigned);
+    return SignBlockData(profileFile, isSigned);
+}
+
+bool SignElf::generateCodeSignByte(SignerConfig signerConfig, std::map<std::string, std::string> signParams,
+    std::string inputFile, int blockNum, long binFileLen, SignBlockData** codeSign)
+{
+    if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CODESIGN_OFF) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] generateCodeSignByte PARAM_SIGN_CODE error");
+        return false;
+    }
+    CodeSigning codeSigning(signerConfig);
+    long offset = binFileLen + (long)HwBlockHead::GetElfBlockLen() * blockNum;
+    std::string profileContent = signParams.at(ParamConstants::PARAM_PROFILE_JSON_CONTENT);
+    std::vector<int8_t> codesignData = codeSigning.getElfCodeSignBlock(inputFile, offset,
+        signParams.at(ParamConstants::PARAM_IN_FORM), profileContent);
+    *codeSign = new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
+    return true;
+}
+bool SignElf::writeSignHeadDataToOutputFile(std::string inputFile, std::string outputFile, int blockNum)
+{
+    long size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile);
+    if (isLongOverflowInteger(size)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] writeSignHeadDataToOutputFile isLongOverflowInteger error");
+        return false;
+    }
+    HwSignHead signHeadData;
+    std::vector<int8_t> signHeadByte = signHeadData.getSignHeadLittleEndian((int)size, blockNum);
+    std::ofstream fileOutputStream(outputFile, std::ios::app | std::ios::binary);
+    return FileUtils::WriteByteToOutFile(signHeadByte, fileOutputStream);
+}
+bool SignElf::isLongOverflowInteger(long num)
+{
+    return (num - (num & 0xffffffffL)) != 0;
+}
+bool SignElf::isLongOverflowShort(long num)
+{
+    return (num - (num & 0xffffL)) != 0;
+}

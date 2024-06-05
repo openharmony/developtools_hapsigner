@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "file_utils.h"
 #include "string_utils.h"
 #include <fstream>
@@ -195,6 +209,54 @@ bool FileUtils::AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstrea
     return true;
 }
 
+bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::string& outputFile) {
+    std::ifstream input(inputFile, std::ios::binary);
+    std::ofstream output(outputFile, std::ios::binary | std::ios::app);
+
+    if (0 != input.rdstate()) {
+        printf("Failed to get input stream object!\n");
+        return false;
+    }
+    if (0 != output.rdstate()) {
+        printf("Failed to get output stream object!\n");
+        return false;
+    }
+
+    char* buffer = new char[FILE_BUFFER_BLOCK]; // ÿ������1M
+    while (!input.eof()) {
+        input.read(buffer, FILE_BUFFER_BLOCK);
+
+        if (input.fail() && !input.eof()) {
+            printf("error occurred while reading data\n");
+            delete[]buffer;
+            return false;
+        }
+
+        std::streamsize readLen = input.gcount();// ���ش��������һ�ζ�ȡ���ֽ���
+        if (readLen > 0) {
+            output.write(buffer, readLen);
+        }
+
+        if (!output) {
+            printf("error occurred while writing data\n");
+            delete[]buffer;
+            return false;
+        }
+    }
+    delete[]buffer;
+    return true;
+}
+
+bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::string& outputFile) {
+    std::ofstream output(outputFile, std::ios::binary | std::ios::app);
+
+    if (WriteByteToOutFile(bytes, output) == false) {
+        printf("Failed to write data to output stream, outfile: %s\n", outputFile.c_str());
+        return false;
+    }
+    return true;
+}
+
 int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, long length)
 {
     char* buffer = new char[FILE_BUFFER_BLOCK];
@@ -219,6 +281,45 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, l
     }
     delete[] buffer;
     return 0;
+}
+
+bool FileUtils::WriteInputToOutPut(const std::string &input, const std::string &output) {
+    std::ifstream in(input, std::ios::binary);
+    std::ofstream out(output, std::ios::binary);
+
+    if (in.rdstate() != 0) {
+        printf("Failed to get input stream object!\n");
+        return false;
+    }
+
+    if (out.rdstate() != 0) {
+        printf("Failed to get output stream object!\n");
+        return false;
+    }
+   
+    char *buffer = new char[FILE_BUFFER_BLOCK]; // ÿ������1M
+    while (!in.eof()) {
+        in.read(buffer, FILE_BUFFER_BLOCK);
+
+        if (in.fail() && !in.eof()) {
+            printf("error occurred while reading data\n");
+            delete[]buffer;
+            return false;
+        }
+
+        std::streamsize readLen = in.gcount();
+        if (readLen > 0) {
+            out.write(buffer, readLen);
+        }
+
+        if (!out) {
+            printf("error occurred while writing data\n");
+            delete[]buffer;
+            return false;
+        }
+    }
+    delete[]buffer;
+    return true;
 }
 
 bool FileUtils::WriteByteToOutFile(const std::string& bytes, const std::string& outFile)
@@ -249,7 +350,24 @@ bool FileUtils::WriteByteToOutFile(const std::string& bytes, std::ofstream& outF
     }
     return true;
 }
-
+bool FileUtils::WriteByteToOutFile(const std::vector<int8_t> &bytes, std::ofstream& outFile)
+{
+    if (outFile.rdstate() != 0) {
+        printf("Failed to get output stream object, outfile\n");
+        return false;
+    }
+    outFile.write((char *)&bytes[0], bytes.size());
+    if (outFile.rdstate() != 0) {
+        printf("Failed to write data to ops, outfile \n");
+        return false;
+    }
+    outFile.flush();
+    if (outFile.rdstate() != 0) {
+        printf("Flush error\n");
+        return false;
+    }
+    return true;
+}
 bool FileUtils::IsRunnableFile(const std::string& name)
 {
     if (name.empty()) {
@@ -284,4 +402,26 @@ bool FileUtils::IsValidFile(std::string file)
         return false;
     }
     return true;
+}
+
+int64_t FileUtils::GetFileLen(const std::string &file) {
+    std::filesystem::path filePath = file;
+    if (std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath)) {
+        return std::filesystem::file_size(filePath);
+    }
+    return -1;
+}
+
+void FileUtils::DelDir(const std::string& file) {
+    std::filesystem::path filePath = file;
+    
+    // ��������Ŀ¼
+    if (std::filesystem::is_directory(filePath)) {
+        for (auto &p : std::filesystem::recursive_directory_iterator(filePath)) {
+            DelDir(p.path());
+        }
+    }
+
+    std::filesystem::remove(file);
+    return;
 }

@@ -18,7 +18,6 @@
 using namespace OHOS::SignatureTools;
 int main(int argc, char** argv)
 {
-    // prepare modes vector by macro DEFINE_MODE which subscribe UPDATER_MAIN_PRE_EVENT event
     std::unique_ptr<HapSignTool> hapSignToolPtr = std::make_unique<HapSignTool>();
     bool isSuccess = hapSignToolPtr->ProcessCmd(argv, argc);
     if (isSuccess) {

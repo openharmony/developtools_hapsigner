@@ -1,4 +1,18 @@
-﻿#include "hap_sign_tool.h"
+﻿/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "hap_sign_tool.h"
 #include "constant.h"
 #include <memory>
 
@@ -40,7 +54,6 @@ bool HapSignTool::ProcessCmd(char** args, size_t size)
     } else {
         std::shared_ptr<SignToolServiceImpl> service_api = std::make_shared<SignToolServiceImpl>();
         CmdUtil cmdUtil;
-        //Params param;
         ParamsSharedPtr param = std::make_shared<Params>();
         if (!cmdUtil.Convert2Params(args, size, param)) {
             return false;
@@ -144,7 +157,7 @@ bool HapSignTool::CheckProfile(Options& params)
         }
         return true;
     } else {
-        if (!FileUtils::ValidFileType(profileFile, { "json" })) {           
+        if (!FileUtils::ValidFileType(profileFile, { "json" })) {
             return false;
         }
         return true;
@@ -178,22 +191,7 @@ bool HapSignTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& ap
     return isSuccess;
 }
 
-bool HapSignTool::StringTruncation(std::string issuer)
-{
-    std::vector<pair<std::string, std::string>> pairs;
-    if (!CheckDN(issuer, pairs)) {
-        if (issuer.size() == 0) {
-            CMD_ERROR_MSG("COMMAND_ERROR", COMMAND_ERROR, "param value could not be empty");
-        } else if (pairs.back().first != "CN") {
-            SIGNATURE_TOOLS_LOGW(" lastPair.first %{public}s is not CN,please check",
-                                 pairs.back().first.c_str());
-        } else {
-            SIGNATURE_TOOLS_LOGE("The issuer is error,please check params");
-        }
-        return false;
-    }
-    return true;
-}
+
 
 bool HapSignTool::RunCa(Options* params, SignToolServiceImpl& api)
 {
@@ -216,10 +214,7 @@ bool HapSignTool::RunCa(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" })) {
         return false;
     }
-    if (params->find(Options::ISSUER) != params->end()) {
-        std::string issuer = params->GetString(Options::ISSUER);
-        StringTruncation(issuer);
-    }
+    
     return api.GenerateCA(params);
 }
 bool HapSignTool::RunCert(Options* params, SignToolServiceImpl& api)
@@ -230,12 +225,13 @@ bool HapSignTool::RunCert(Options* params, SignToolServiceImpl& api)
         return false;
     }
     std::string keyusage = params->GetString(Options::KEY_USAGE);
-    if (!CmdUtil::VerifyType(keyusage)) {
+    if (!CmdUtil::VerifyTypes(keyusage)) {
         return false;
     }
     std::string extkeyusage = params->GetString(Options::EXT_KEY_USAGE);
     if (!extkeyusage.empty()) {
         if (!CmdUtil::VerifyType(extkeyusage)) {
+            return false;
         }
     }
     std::string signAlg = params->GetString(Options::SIGN_ALG);

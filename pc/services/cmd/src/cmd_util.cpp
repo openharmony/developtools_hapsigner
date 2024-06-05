@@ -1,5 +1,20 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "cmd_util.h"
 #include "filesystem"
+#include<set>
 using namespace OHOS::SignatureTools;
 const std::regex INTEGER_PATTERN = std::regex("\\d{1,10}");
 static const std::string SIGN_ALG_256 = "SHA256withECDSA";
@@ -17,9 +32,11 @@ static constexpr bool DEFAULT_BASIC_CONSTRAINTS_CRITICAL = false;
 static constexpr bool DEFAULT_BASIC_CONSTRAINTS_CA = false;
 static const std::string ZIP = "zip";
 static const std::string SIGN_APP = "sign-app";
-static const std::string VERIFY_APP = "verify-app";
+static const std::string GENERATE_CA = "generate-ca";
 static const std::string GENERATE_APP_CERT = "generate-app-cert";
 static const std::string GENERATE_PROFILE_CERT = "generate-profile-cert";
+static const std::string GENERATE_CERT = "generate-cert";
+static const std::string VERIFY_APP = "verify-app";
 static const std::string OUT_FORM_CERT = "cert";
 static const std::string OUT_FORM_CERT_CHAIN = "certChain";
 #define INVALIDCHAR 3
@@ -50,7 +67,7 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
             return false;
         }
         (*options)[Options::BASIC_CONSTRAINTS_PATH_LEN] = basicConstraintsPathLen;
-    } else {
+    } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS_PATH_LEN] = DEFAULT_BASIC_CONSTRAINTS_PATH_LEN;
     }
 
@@ -65,13 +82,13 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
         }
         try {
             validity = stoi(val);
-        }
-        catch (std::exception& e) {
+        } catch (std::exception& e) {
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid validity");
             return false;
         }
         (*options)[Options::VALIDITY] = validity;
-    } else {
+    } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_APP_CERT ||
+              param->GetMethod() == GENERATE_PROFILE_CERT || param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::VALIDITY] = DEFAULT_VALIDITY;
     }
     return true;
@@ -90,7 +107,7 @@ static bool UpdateParamForVariantBool_1(ParamsSharedPtr param)
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid key usage critical");
             return false;
         }
-    } else {
+    } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::KEY_USAGE_CRITICAL] = DEFAULT_KEY_USAGE_CRITICAL;
     }
     //bool 类型 仅generate-cert模块使用
@@ -104,10 +121,15 @@ static bool UpdateParamForVariantBool_1(ParamsSharedPtr param)
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid exit key usage critical");
             return false;
         }
-    } else {
+    } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::EXT_KEY_USAGE_CRITICAL] = DEFAULT_EXT_KEY_USAGE_CRITICAL;
     }
+    return true;
+}
 
+static bool UpdateParamForVariantBool_2(ParamsSharedPtr param)
+{
+    Options* options = param->GetOptions();
     if (options->count(Options::BASIC_CONSTRAINTS)) { //bool 类型 仅generate-cert模块使用
         std::string val = options->GetString(Options::BASIC_CONSTRAINTS);
         if (val == "1" || val == "true" || val == "TRUE") {
@@ -118,15 +140,9 @@ static bool UpdateParamForVariantBool_1(ParamsSharedPtr param)
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basic constraints");
             return false;
         }
-    } else {
+    } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS;
     }
-    return true;
-}
-
-static bool UpdateParamForVariantBool_2(ParamsSharedPtr param)
-{
-    Options* options = param->GetOptions();
     if (options->count(Options::BASIC_CONSTRAINTS_CRITICAL)) { //bool 类型 仅generate-cert模块使用
         std::string val = options->GetString(Options::BASIC_CONSTRAINTS_CRITICAL);
         if (val == "1" || val == "true" || val == "TRUE") {
@@ -137,9 +153,15 @@ static bool UpdateParamForVariantBool_2(ParamsSharedPtr param)
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basic constraints critial");
             return false;
         }
-    } else {
+    } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS_CRITICAL] = DEFAULT_BASIC_CONSTRAINTS_CRITICAL;
     }
+    return true;
+}
+
+static bool UpdateParamForVariantBool_3(ParamsSharedPtr param)
+{
+    Options* options = param->GetOptions();
     if (options->count(Options::BASIC_CONSTRAINTS_CA)) { //bool 类型 仅generate-cert模块使用
         std::string val = options->GetString(Options::BASIC_CONSTRAINTS_CA);
         if (val == "1" || val == "true" || val == "TRUE") {
@@ -150,7 +172,7 @@ static bool UpdateParamForVariantBool_2(ParamsSharedPtr param)
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basic constraints ca");
             return false;
         }
-    } else {
+    } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS_CA] = DEFAULT_BASIC_CONSTRAINTS_CA;
     }
     if (options->count(Options::PROFILE_SIGNED)) { //bool 类型 仅sign-app模块使用
@@ -163,10 +185,9 @@ static bool UpdateParamForVariantBool_2(ParamsSharedPtr param)
             CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "invalid profile signed");
             return false;
         }
-    } else {
+    } else if (param->GetMethod() == SIGN_APP) {
         (*options)[Options::PROFILE_SIGNED] = DEFAULT_PROFILE_SIGNED_1;
     }
-    return true;
     return true;
 }
 
@@ -317,6 +338,9 @@ static bool UpdateParam(ParamsSharedPtr param)
     if (UpdateParamForVariantBool_2(param) == false) {
         return false;
     }
+    if (UpdateParamForVariantBool_3(param) == false) {
+        return false;
+    }
     if (UpdateParamForCheckFile(param) == false) {
         return false;
     }
@@ -407,8 +431,6 @@ bool CmdUtil::ValidAndPutParam(ParamsSharedPtr params, const std::string& key, c
         CMD_ERROR_MSG("COMMAND_ERROR", COMMAND_ERROR, "duplicate param '" + key + "'. stop processing!");
         result = false;
     } else if (key.length() >= str.length() && key.substr(key.length() - INVALIDCHAR) == str) {
-        //如果是密码走这
-        //params->GetOptions()->at(key) = value;
         params->GetOptions()->emplace(key, value);
         result = true;
     } else {
@@ -442,31 +464,48 @@ bool CmdUtil::JudgeSignAlgType(std::string signAlg)
     }
     return true;
 }
+
+bool CmdUtil::VerifyTypes(std::string inputType)
+{
+    if (inputType.size() == 0) {
+        return false;
+    }
+    std::vector<std::string> vecs = StringUtils::SplitString(inputType.c_str(), ',');
+    std::set<std::string> sets;
+    sets.insert("digitalSignature");
+    sets.insert("nonRepudiation");
+    sets.insert("keyEncipherment");
+    sets.insert("dataEncipherment");
+    sets.insert("keyAgreement");
+    sets.insert("certificateSignature");
+    sets.insert("crlSignature");
+    sets.insert("encipherOnly");
+    sets.insert("decipherOnly");
+    for (const auto& val : vecs) {
+        if (sets.count(val) == 0) {
+            CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + " in  params list is not support");
+            return false;
+        }
+    }   
+    return true;
+}
+
+
 bool CmdUtil::VerifyType(std::string inputType)
 {
-    std::list<std::string> lst;
-    lst.push_back("digitalSignature");
-    lst.push_back("nonRepudiation");
-    lst.push_back("keyEncipherment");
-    lst.push_back("dataEncipherment");
-    lst.push_back("keyAgreement");
-    lst.push_back("certificateSignature");
-    lst.push_back("crlSignature");
-    lst.push_back("encipherOnly");
-    lst.push_back("decipherOnly");
-    lst.push_back("clientAuthentication");
-    lst.push_back("serverAuthentication");
-    lst.push_back("codeSignature");
-    lst.push_back("emailProtection");
-    lst.push_back("smartCardLogin");
-    lst.push_back("timestamp");
-    lst.push_back("ocspSignature");
-    for (auto it = lst.begin(); it != lst.end(); it++) {
-        if (*it == inputType) {
-            return true;
-        }
+    std::set<std::string> sets; 
+    sets.insert("clientAuthentication");
+    sets.insert("serverAuthentication");
+    sets.insert("codeSignature");
+    sets.insert("emailProtection");
+    sets.insert("smartCardLogin");
+    sets.insert("timestamp");
+    sets.insert("ocspSignature"); 
+    if (sets.count(inputType) == 0) {
+         CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, inputType + " in  params list is not support");
+         return false;
     }
-    return false;
+    return true;
 }
 bool CmdUtil::VerifyType(std::string inputtype, std::string supportTypes)
 {

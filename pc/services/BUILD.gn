@@ -37,7 +37,7 @@ ohos_copy("copy_signature_tools_resource"){
   outputs = [ "${target_out_dir}/toolchains/hapsigntool_pc/{{source_file_part}}" ]
   module_source_dir = target_out_dir + "/toolchains/hapsigntool_pc"
   module_install_name = ""
-  part_name = "hapsigner_pc"
+  part_name = "hapsigner"
   subsystem_name = "developtools"
 }
 
@@ -114,6 +114,6 @@ ohos_executable("hapsigntool_pc_service") {
 
   install_images = [ "system" ]
   install_enable = true
-  part_name = "hapsigner_pc"
+  part_name = "hapsigner"
   subsystem_name = "developtools"
 }

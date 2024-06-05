@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -157,10 +157,13 @@ namespace OHOS {
          * username used in remote sign mode
          */
             static const std::string PARAM_REMOTE_USERNAME;
+            static const std::string PARAM_REMOTE_USERPWD;
             /**
          * password used in remote sign mode
          */
             static const std::string PARAM_REMOTE_CODE;
+            static const std::string PARAM_REMOTE_ONLINEAUTHMODE;
+            static const std::string PARAM_REMOTE_SIGNERPLUGIN;
             /**
          * Local keystore path
          */

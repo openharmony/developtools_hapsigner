@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,6 +61,15 @@ namespace OHOS {
             std::vector<X509*> GetCertsFromFile(std::string& certPath, const std::string& logTitle);
             const std::string GetOutFile();
             const std::string GetInFile();
+
+            /**
+            * Check if it is a remote signature.
+            *
+            * @return result indicating whether the signer is a remote signer.
+            */
+            bool IsRemoteSigner();
+            Options* GetOptions();
+
         private:
             void ResetChars(char* chars);
         public:
