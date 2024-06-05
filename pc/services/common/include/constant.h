@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,8 +34,11 @@ namespace OHOS {
         const std::string DEFAULT_EXTEND_KEYUSAGE = "codeSigning";
         const std::string NID_BASIC_CONST = "basicConstraints";
         const std::string NID_KEYUSAGE_CONST = "keyUsage";
-        const std::string NID_EXT_KEYUSAGE_CONST = "extendedKeyUsage";       
+        const std::string NID_EXT_KEYUSAGE_CONST = "extendedKeyUsage";
         const std::string HELP_FILE_PATH = "./help.txt";
+        const std::string PKCS7_EXT_SIGNATURE_OID="1.2.840.113549.1.1.10";
+        const std::string X509_EXT_OID = "1.3.6.1.4.1.2011.2.376.1.3";
+        const std::string SIGNED_ID = "1.3.6.1.4.1.2011.2.376.1.4.1";
 
 #if  0
         //下面是模板

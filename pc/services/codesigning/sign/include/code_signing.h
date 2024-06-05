@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,11 +37,13 @@ namespace OHOS {
             static const std::vector<std::string> SUPPORT_FILE_FORM;
             static const std::string HAP_SIGNATURE_ENTRY_NAME;
             static const std::string ENABLE_SIGN_CODE_VALUE;
+            static const std::string SUPPORT_BIN_FILE_FORM;
             bool getCodeSignBlock(const std::string input, int64_t offset,
                 std::string inForm, std::string profileContent, Zip& zip, std::vector<int8_t>& ret);
             bool signFile(std::istream& inputStream,
                 int64_t fileSize, bool storeTree, int64_t fsvTreeOffset, std::string ownerID,
                 std::pair<SignInfo, std::vector<int8_t>>& ret);
+            std::vector<int8_t> getElfCodeSignBlock(std::string input, int64_t offset, std::string inForm, std::string profileContent);
         public:
             const std::string NATIVE_LIB_AN_SUFFIX = ".an";
             const std::string NATIVE_LIB_SO_SUFFIX = ".so";

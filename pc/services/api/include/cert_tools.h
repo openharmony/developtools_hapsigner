@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,7 +40,7 @@ namespace OHOS {
         
          * save certificate to file
          */
-            static void SaveCertTofile(const std::string& filename, X509* cer);
+            static void SaveCertTofile(const std::string& filename, X509* cert);
             /**
          * generate csr
          */
@@ -50,9 +50,9 @@ namespace OHOS {
          * sign in order for  subCert
          */
           
-           static X509* SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
-               EVP_PKEY* keyPair, Options* options);
-            static std::string CsrToString(X509_REQ* csr);
+           static X509* SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr, EVP_PKEY* keyPair, Options* options);
+           
+           static std::string CsrToString(X509_REQ* csr);
             /**
          * Generate app or profile certificate
          */

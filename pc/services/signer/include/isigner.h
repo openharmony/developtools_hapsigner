@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,7 @@ namespace OHOS {
         public:
             virtual STACK_OF(X509_CRL)* GetCrls()const = 0;
             virtual STACK_OF(X509)* GetCertificates()const = 0;
-            virtual ~ISigner() = 0;
+            virtual ~ISigner();
             virtual std::string GetSignature(const std::string& data, const std::string& signAlg)const = 0;
         };
     }

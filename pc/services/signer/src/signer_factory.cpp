@@ -1,8 +1,26 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "signer_factory.h"
 namespace OHOS {
     namespace SignatureTools {
         std::shared_ptr<ISigner> SignerFactory::GetSigner(LocalizationAdapter& adapter)const
         {
+            if (adapter.IsRemoteSigner()) {
+                return LoadRemoteSigner(adapter);
+            }
+
             EVP_PKEY* keyPair = adapter.GetAliasKey(false);
             if (keyPair == NULL) {
                 SIGNATURE_TOOLS_LOGE("NULL keyPair");
@@ -15,6 +33,49 @@ namespace OHOS {
                 return NULL;
             }
             return signer;
+        }
+
+        std::shared_ptr<ISigner> SignerFactory::LoadRemoteSigner(LocalizationAdapter& adapter) const
+        {
+            std::string keyAlias = adapter.GetOptions()->GetString(ParamConstants::PARAM_BASIC_PRIVATE_KEY);
+            std::string signServer = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_SERVER);
+            std::string signerPlugin = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_SIGNERPLUGIN);
+            std::string onlineAuthMode = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE);
+            std::string username = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_USERNAME);
+            std::string userPwd = adapter.GetOptions()->GetChars(ParamConstants::PARAM_REMOTE_USERPWD);
+
+            // open so
+            void* handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_GLOBAL);
+            if (!handle) {
+                CMD_ERROR_MSG(FILE_NOT_FOUND, -102, dlerror());
+                return nullptr;
+            }
+
+            // clear previous error
+            dlerror();
+
+            // get "Create" function
+            RemoteSignerCreator remoteSignerCreator = (RemoteSignerCreator)dlsym(handle, "Create");
+            char* error = nullptr;
+            if ((error = dlerror()) != NULL) {
+                SIGNATURE_TOOLS_LOGE("%{public}s", error);
+                return nullptr;
+            }
+
+            RemoteSignerParamType keyAliasType{ keyAlias.c_str(), keyAlias.size() };
+            RemoteSignerParamType signServerType{ signServer.c_str(), signServer.size() };
+            RemoteSignerParamType onlineAuthModeType{ onlineAuthMode.c_str(), onlineAuthMode.size() };
+            RemoteSignerParamType usernameType{ username.c_str(), username.size() };
+            RemoteSignerParamType userPwdType{ userPwd.c_str(), userPwd.size() };
+
+            ISigner* signer =
+                remoteSignerCreator(keyAliasType, signServerType, onlineAuthModeType, usernameType, userPwdType);
+
+            userPwd.clear();
+
+            std::shared_ptr<ISigner> remoteSigner(signer);
+
+            return remoteSigner;
         }
     }
 }

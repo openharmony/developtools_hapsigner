@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -54,23 +54,6 @@ namespace {
 
     void HapByteBufferTest::TearDown()
     {
-    }
-
-    static errno_t memcpy_s(void* dest, size_t destMax, const void* src, size_t count)
-    {
-        if (dest == NULL || src == NULL || destMax == 0) {
-            errno = EINVAL;
-            return errno;
-        }
-
-        if (count > destMax) {
-            errno = ERANGE;
-            return errno;
-        }
-
-        memcpy_s(dest, sizeof(dest), src, count);
-
-        return 0;
     }
 
     /**

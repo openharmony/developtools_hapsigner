@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -213,14 +213,10 @@ SignInfo SignInfo::fromByteArray(std::vector<int8_t> bytes)
     bf->Flip();
     int32_t inSaltSize = 0;
     bf->GetInt32(inSaltSize);
-    if (inSaltSize < 0) {
-        SIGNATURE_TOOLS_LOGE("Invalid saltSize of SignInfo");
-        return SignInfo();
-    }
     int32_t inSigSize = 0;
     bf->GetInt32(inSigSize);
-    if (inSigSize < 0) {
-        SIGNATURE_TOOLS_LOGE("Invalid sigSize of SignInfo");
+    if (inSaltSize < 0 || inSigSize < 0) {
+        SIGNATURE_TOOLS_LOGE("Invalid saltSize or sigSize of SignInfo");
         return SignInfo();
     }
     int32_t inFlags = 0;

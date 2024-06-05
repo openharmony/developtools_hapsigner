@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "localization_adapter.h"
 #include <string>
 #include <cstring>
@@ -14,15 +28,14 @@ int LocalizationAdapter::IsExist(std::string alias)
     if (!this->keyStoreHelper->GetFileStatus(keyStoreFile))
         return RET_FAILED;
 
-    EVP_PKEY* keyPair = EVP_PKEY_new();
+    EVP_PKEY* keyPair = nullptr;
     char* keyStoreRight = this->options->GetChars(Options::KEY_STORE_RIGHTS);
     char* keyPwd = this->options->GetChars(Options::KEY_RIGHTS);
     int status = this->keyStoreHelper->ReadStore(keyStoreFile, keyStoreRight, alias, keyPwd, &keyPair);
     EVP_PKEY_free(keyPair);
     if (status == RET_OK) {
         return RET_OK;
-    }
-    else if (status == RET_PASS_ERROR) {
+    } else if (status == RET_PASS_ERROR) {
         return RET_PASS_ERROR;
     }
     return RET_FAILED;
@@ -88,7 +101,7 @@ EVP_PKEY* LocalizationAdapter::GetKeyPair(bool autoCreate)
             int status = this->keyStoreHelper->ReadStore(keyStorePath, keyStoreRights, keyAlias, keyPwd, &keyPair);
             if (status == RET_OK) {
                 return keyPair;
-            }else if (status == RET_PASS_ERROR) {
+            } else if (status == RET_PASS_ERROR) {
                 autoCreate = false;
             }
             keyPair = nullptr;
@@ -123,10 +136,11 @@ EVP_PKEY* LocalizationAdapter::IssuerKeyStoreFile(EVP_PKEY* keyPair, bool autoCr
 
     bool fileStatus = this->keyStoreHelper->GetFileStatus(keyStorePathIssuer);
     if (fileStatus) {
-        int status = this->keyStoreHelper->ReadStore(keyStorePathIssuer, issuerKeyStoreRights, issuerKeyAlias, issuerKeyPwd, &keyPair);
+        int status = this->keyStoreHelper->ReadStore(keyStorePathIssuer, issuerKeyStoreRights,
+            issuerKeyAlias, issuerKeyPwd, &keyPair);
         if (status == RET_OK) {
             return keyPair;
-        }else if (status == RET_PASS_ERROR) {
+        } else if (status == RET_PASS_ERROR) {
             autoCreate = false;
         }
         keyPair = nullptr;
@@ -134,10 +148,11 @@ EVP_PKEY* LocalizationAdapter::IssuerKeyStoreFile(EVP_PKEY* keyPair, bool autoCr
     
     fileStatus = this->keyStoreHelper->GetFileStatus(keyStorePath);
     if (fileStatus) {
-        int status = this->keyStoreHelper->ReadStore(keyStorePath, keyStoreRights, issuerKeyAlias, issuerKeyPwd, &keyPair);
+        int status = this->keyStoreHelper->ReadStore(keyStorePath, keyStoreRights, issuerKeyAlias,
+            issuerKeyPwd, &keyPair);
         if (status == RET_OK) {
             return keyPair;
-        }else if (status == RET_PASS_ERROR) {
+        } else if (status == RET_PASS_ERROR) {
             autoCreate = false;
         }
         keyPair = nullptr;
@@ -149,7 +164,8 @@ EVP_PKEY* LocalizationAdapter::IssuerKeyStoreFile(EVP_PKEY* keyPair, bool autoCr
         if (keyStorePathIssuer.empty()) {
             keyPair = this->keyStoreHelper->Store(keyPair, keyStorePath, keyStoreRights, issuerKeyAlias, issuerKeyPwd);
         } else {
-            keyPair = this->keyStoreHelper->Store(keyPair, keyStorePathIssuer, issuerKeyStoreRights, issuerKeyAlias, issuerKeyPwd);
+            keyPair = this->keyStoreHelper->Store(keyPair, keyStorePathIssuer, issuerKeyStoreRights,
+                issuerKeyAlias, issuerKeyPwd);
         }
     }
     return keyPair;
@@ -246,9 +262,23 @@ std::vector<X509*> LocalizationAdapter::GetCertsFromFile(std::string& certPath, 
     while ((cert = PEM_read_bio_X509(bio, NULL, NULL, NULL)) != nullptr) {
         certs.emplace_back(cert);
     }
+    BIO_free(bio);
     return certs;
 }
 const std::string LocalizationAdapter::GetInFile()
 {
     return this->options->GetString(Options::IN_FILE);
+}
+
+bool LocalizationAdapter::IsRemoteSigner()
+{
+    std::string defMode = "localSign";
+    std::string destMode = "remoteSign";
+    std::string mode = this->options->GetString(Options::MODE, defMode);
+    return StringUtils::CaseCompare(mode, destMode);
+}
+
+Options* LocalizationAdapter::GetOptions()
+{
+    return options;
 }

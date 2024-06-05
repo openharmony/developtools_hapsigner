@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 #include "verify_code_signature.h"
+#include "elf_sign_block.h"
 using namespace OHOS::SignatureTools;
+
 bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t length,
     std::string fileFormat, std::string profileContent)
 {
@@ -34,6 +36,56 @@ bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t le
     }
     return true;
 }
+
+bool VerifyCodeSignature::VerifyElf(std::string file, int64_t offset, int64_t length,
+    std::string fileFormat, std::string profileContent)
+{
+    std::transform(fileFormat.begin(), fileFormat.end(), fileFormat.begin(), ::tolower);
+    if (CodeSigning::SUPPORT_BIN_FILE_FORM != fileFormat) {
+        SIGNATURE_TOOLS_LOGE("Not elf file, skip code signing verify\n");
+        return false;
+    }
+    // 1) parse sign block to ElfSignBlock object
+    std::ifstream signedElf(file, std::ios::binary);
+    if (!signedElf.is_open()) {
+        SIGNATURE_TOOLS_LOGE("read %{public}s file failed.", file.c_str());
+        return false;
+    }
+    signedElf.seekg(offset, std::ios::beg);
+    std::vector<int8_t> codeSignBlockBytes(length);
+    signedElf.read((char*)codeSignBlockBytes.data(), codeSignBlockBytes.size());
+    signedElf.close();
+    ElfSignBlock elfSignBlock;
+    if (!ElfSignBlock::FromByteArray(codeSignBlockBytes, elfSignBlock)) {
+        SIGNATURE_TOOLS_LOGE("parse sign block to ElfCodeSignBlock object failed\n");
+        return false;
+    }
+    // 2) verify file data
+    int32_t paddingSize = ElfSignBlock::ComputeMerkleTreePaddingLength(offset);
+    std::vector<int8_t> merkleTreeWithPadding = elfSignBlock.GetMerkleTreeWithPadding();
+    std::vector<int8_t> merkleTree;
+    merkleTree.insert(merkleTree.end(), merkleTreeWithPadding.begin() + paddingSize, merkleTreeWithPadding.end());
+    std::ifstream elf(file, std::ios::binary);
+    if (!VerifySingleFile(elf, elfSignBlock.GetDataSize(), elfSignBlock.GetSignature(),
+        elfSignBlock.GetTreeOffset(), merkleTree)) {
+        SIGNATURE_TOOLS_LOGE("verify elf file data failed\n");
+        elf.close();
+        return false;
+    }
+    elf.close();
+    // 3) check ownerID
+    if (!profileContent.empty()) {
+        std::pair<std::string, std::string> pairResult = HapUtils::parseAppIdentifier(profileContent);
+        std::vector<int8_t> signature = elfSignBlock.GetSignature();
+        std::string signatureStr(signature.begin(), signature.end());
+        if (!CmsUtils::CheckOwnerID(signatureStr, pairResult.first, pairResult.second)) {
+            SIGNATURE_TOOLS_LOGE("elf check owner id failed\n");
+            return false;
+        }
+    }
+    return true;
+}
+
 bool VerifyCodeSignature::VerifyNativeLib(CodeSignBlock& csb, std::string &file, unzFile &zFile,
     std::pair<std::string, std::string>& pairResult)
 {
@@ -90,7 +142,10 @@ bool VerifyCodeSignature::VerifyCodeSign(std::string file, std::pair<std::string
         .getExtensionByType(MerkleTreeExtension::MERKLE_TREE_INLINED);
     MerkleTreeExtension* mte = new MerkleTreeExtension(0, 0, std::vector<int8_t>());
     if (ext != nullptr) {
+        delete mte;
         mte = (MerkleTreeExtension*)(ext);
+    } else {
+        std::shared_ptr<MerkleTreeExtension> merkleTreeExt(mte);
     }
     // temporary: merkle tree offset set to zero, change to merkleTreeOffset
     if (!VerifySingleFile(hap, dataSize, signature, mte->getMerkleTreeOffset(),
@@ -221,12 +276,8 @@ bool VerifyCodeSignature::ParseMerkleTree(CodeSignBlock& csb, int32_t readOffset
     }
     MerkleTreeExtension* mte = (MerkleTreeExtension*)(extension);
     if (mte) {
-        if (computedTreeOffset != mte->getMerkleTreeOffset()) {
-            SIGNATURE_TOOLS_LOGE("Invalid merkle tree offset");
-            return false;
-        }
-        if (merkleTreeBytes.size() != mte->getMerkleTreeSize()) {
-            SIGNATURE_TOOLS_LOGE("Invalid merkle tree size");
+        if (computedTreeOffset != mte->getMerkleTreeOffset() || merkleTreeBytes.size() != mte->getMerkleTreeSize()) {
+            SIGNATURE_TOOLS_LOGE("Invalid merkle tree offset or tree size");
             return false;
         }
         csb.addOneMerkleTree(CodeSigning::HAP_SIGNATURE_ENTRY_NAME, merkleTreeBytes);
@@ -235,6 +286,8 @@ bool VerifyCodeSignature::ParseMerkleTree(CodeSignBlock& csb, int32_t readOffset
 }
 int64_t VerifyCodeSignature::GetAlignmentAddr(int64_t alignment, int64_t input)
 {
+    if(alignment == 0)
+        return input;
     int64_t residual = input % alignment;
     if (residual == 0) return input;
     else return input + (alignment - residual);

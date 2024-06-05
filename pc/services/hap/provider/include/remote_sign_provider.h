@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,16 +14,18 @@
  */
 
 
-#ifndef SIGNERTOOLS_LOCAL_SIGN_PROVIDER_H
-#define SIGNERTOOLS_LOCAL_SIGN_PROVIDER_H
+#ifndef SIGNERTOOLS_REMOTE_SIGN_PROVIDER_H
+#define SIGNERTOOLS_REMOTE_SIGN_PROVIDER_H
 
 #include "sign_provider.h"
 namespace OHOS {
     namespace SignatureTools {
         class RemoteSignProvider : public SignProvider {
+        public:
             RemoteSignProvider() = default;
             ~RemoteSignProvider() = default;
-            bool CheckParams(Options* options);
+            bool CheckParams(Options* options) override;
+            bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const override;
         };
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,6 +34,9 @@ namespace OHOS {
             DLL_EXPORT bool CheckFilePath(const std::string& filePath, std::string& standardFilePath);
             static bool HapOutPutPkcs7(PKCS7* p7, const std::string& outPutPath);
             static bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
+            int32_t VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyResult& hapVerifyV1Result,
+                Options* options, Pkcs7Context& pkcs7Context);
+            int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, Options* options);
             int32_t InithapVerify(RandomAccessFile& hapFile, const std::string& filePath,
                                   SignatureInfo& hapSignInfo, HapVerifyResult& hapVerifyV1Result);
             int32_t Verify(RandomAccessFile& hapFile, HapVerifyResult& hapVerifyV1Result, Options* options,

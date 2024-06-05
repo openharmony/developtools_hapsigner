@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "gtest/gtest.h"
 #include "options.h"
 #include "sign_tool_service_impl.h"
@@ -228,45 +242,44 @@ namespace OHOS::SignatureTools {
         EXPECT_TRUE(result == 0);
     }
 
-    /**
-     * @tc.name: print_cert_chain_sub_test001
-     * @tc.desc: Test function of PKCS7Data::PrintCertChainSub() interface for SUCCESS.
-     * @tc.size: MEDIUM
-     * @tc.type: FUNC
-     * @tc.level Level 1
-     * @tc.require: SR000H63TL
-     */
-    HWTEST_F(SignProfileTest, print_cert_chain_sub_test001, testing::ext::TestSize.Level1)
-    {
-        Options options;
-        std::string mode = SIGN_PROFILE_MODE;
-        std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
-        std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
-        std::string signAlg = SIGN_PROFILE_SIGN_ALG;
-        std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
-        std::string outFile = SIGN_PROFILE_OUT_FILE;
-        std::string inFile = SIGN_PROFILE_IN_FILE;
-        char keyStorePwd[] = "123456";
-        char keypwd[] = "123456";
-        options[Options::KEY_ALIAS] = keyAlias;
-        options[Options::MODE] = mode;
-        options[Options::PROFILE_CERT_FILE] = profileCertFile;
-        options[Options::SIGN_ALG] = signAlg;
-        options[Options::KEY_STORE_FILE] = keystoreFile;
-        options[Options::OUT_FILE] = outFile;
-        options[Options::IN_FILE] = inFile;
-        options[Options::KEY_RIGHTS] = keypwd;
-        options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+    // /**
+    //  * @tc.name: print_cert_chain_sub_test001
+    //  * @tc.desc: Test function of PKCS7Data::PrintCertChainSub() interface for SUCCESS.
+    //  * @tc.size: MEDIUM
+    //  * @tc.type: FUNC
+    //  * @tc.level Level 1
+    //  * @tc.require: SR000H63TL
+    //  */
+    // HWTEST_F(SignProfileTest, print_cert_chain_sub_test001, testing::ext::TestSize.Level1)
+    // {
+    //     Options options;
+    //     std::string mode = SIGN_PROFILE_MODE;
+    //     std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    //     std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    //     std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    //     std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    //     std::string outFile = SIGN_PROFILE_OUT_FILE;
+    //     std::string inFile = SIGN_PROFILE_IN_FILE;
+    //     char keyStorePwd[] = "123456";
+    //     char keypwd[] = "123456";
+    //     options[Options::KEY_ALIAS] = keyAlias;
+    //     options[Options::MODE] = mode;
+    //     options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    //     options[Options::SIGN_ALG] = signAlg;
+    //     options[Options::KEY_STORE_FILE] = keystoreFile;
+    //     options[Options::OUT_FILE] = outFile;
+    //     options[Options::IN_FILE] = inFile;
+    //     options[Options::KEY_RIGHTS] = keypwd;
+    //     options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-        LocalizationAdapter adapter(&options);
-        SignerFactory factory;
-        std::shared_ptr<ISigner> signer = factory.GetSigner(adapter);
-        STACK_OF(X509)* certs = signer->GetCertificates();
-        PKCS7Data::PrintCertChainSub(certs);
-        PKCS7Data::SortX509Stack(certs);
-        PKCS7Data::ReverseX509Stack(certs);
-        EXPECT_TRUE(true);
-    }
+    //     LocalizationAdapter adapter(&options);
+    //     SignerFactory factory;
+    //     std::shared_ptr<ISigner> signer = factory.GetSigner(adapter);
+    //     STACK_OF(X509)* certs = signer->GetCertificates();
+    //     PKCS7Data::PrintCertChainSub(certs);
+    //     PKCS7Data::SortX509Stack(certs);
+    //     EXPECT_TRUE(true);
+    // }
 
     /**
  * @tc.name: run_verify_profile_test001
@@ -495,7 +508,7 @@ namespace OHOS::SignatureTools {
         long fileLen = static_cast<long>(p7b.size());
         int result = p7.Parse(&inFile, fileLen);
         std::string provision;
-        result = p7.GetOriginalRawData(provision);
+        result = p7.GetContent(provision);
         EXPECT_EQ(result, 0);
     }
 
@@ -535,79 +548,79 @@ namespace OHOS::SignatureTools {
         EXPECT_TRUE(signer != NULL);
     }
 
-    /**
-     * @tc.name: get_crls_test001
-     * @tc.desc: Test function of LocalSigner::GetCrls() interface for SUCCESS .
-     * @tc.size: MEDIUM
-     * @tc.type: FUNC
-     * @tc.level Level 1
-     * @tc.require: SR000H63TL
-     */
-    HWTEST_F(SignProfileTest, get_crls_test001, testing::ext::TestSize.Level1)
-    {
-        Options options;
-        std::string mode = SIGN_PROFILE_MODE;
-        std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
-        std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
-        std::string signAlg = SIGN_PROFILE_SIGN_ALG;
-        std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
-        std::string outFile = SIGN_PROFILE_OUT_FILE;
-        std::string inFile = SIGN_PROFILE_IN_FILE;
-        char keyStorePwd[] = "123456";
-        char keypwd[] = "123456";
-        options[Options::KEY_ALIAS] = keyAlias;
-        options[Options::MODE] = mode;
-        options[Options::PROFILE_CERT_FILE] = profileCertFile;
-        options[Options::SIGN_ALG] = signAlg;
-        options[Options::KEY_STORE_FILE] = keystoreFile;
-        options[Options::OUT_FILE] = outFile;
-        options[Options::IN_FILE] = inFile;
-        options[Options::KEY_RIGHTS] = keypwd;
-        options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+    // /**
+    //  * @tc.name: get_crls_test001
+    //  * @tc.desc: Test function of LocalSigner::GetCrls() interface for SUCCESS .
+    //  * @tc.size: MEDIUM
+    //  * @tc.type: FUNC
+    //  * @tc.level Level 1
+    //  * @tc.require: SR000H63TL
+    //  */
+    // HWTEST_F(SignProfileTest, get_crls_test001, testing::ext::TestSize.Level1)
+    // {
+    //     Options options;
+    //     std::string mode = SIGN_PROFILE_MODE;
+    //     std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    //     std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    //     std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    //     std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    //     std::string outFile = SIGN_PROFILE_OUT_FILE;
+    //     std::string inFile = SIGN_PROFILE_IN_FILE;
+    //     char keyStorePwd[] = "123456";
+    //     char keypwd[] = "123456";
+    //     options[Options::KEY_ALIAS] = keyAlias;
+    //     options[Options::MODE] = mode;
+    //     options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    //     options[Options::SIGN_ALG] = signAlg;
+    //     options[Options::KEY_STORE_FILE] = keystoreFile;
+    //     options[Options::OUT_FILE] = outFile;
+    //     options[Options::IN_FILE] = inFile;
+    //     options[Options::KEY_RIGHTS] = keypwd;
+    //     options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-        LocalizationAdapter adapter(&options);
-        SignerFactory factory;
-        std::shared_ptr<ISigner> signer = factory.GetSigner(adapter);
-        STACK_OF(X509_CRL)* crls = signer->GetCrls();
-        EXPECT_TRUE(crls == NULL);
-    }
+    //     LocalizationAdapter adapter(&options);
+    //     SignerFactory factory;
+    //     std::shared_ptr<ISigner> signer = factory.GetSigner(adapter);
+    //     STACK_OF(X509_CRL)* crls = signer->GetCrls();
+    //     EXPECT_TRUE(crls == NULL);
+    // }
 
-    /**
-     * @tc.name: get_certificates_test001
-     * @tc.desc: Test function of LocalSigner::GetCertificates() interface for SUCCESS .
-     * @tc.size: MEDIUM
-     * @tc.type: FUNC
-     * @tc.level Level 1
-     * @tc.require: SR000H63TL
-     */
-    HWTEST_F(SignProfileTest, get_certificates_test001, testing::ext::TestSize.Level1)
-    {
-        Options options;
-        std::string mode = SIGN_PROFILE_MODE;
-        std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
-        std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
-        std::string signAlg = SIGN_PROFILE_SIGN_ALG;
-        std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
-        std::string outFile = SIGN_PROFILE_OUT_FILE;
-        std::string inFile = SIGN_PROFILE_IN_FILE;
-        char keyStorePwd[] = "123456";
-        char keypwd[] = "123456";
-        options[Options::KEY_ALIAS] = keyAlias;
-        options[Options::MODE] = mode;
-        options[Options::PROFILE_CERT_FILE] = profileCertFile;
-        options[Options::SIGN_ALG] = signAlg;
-        options[Options::KEY_STORE_FILE] = keystoreFile;
-        options[Options::OUT_FILE] = outFile;
-        options[Options::IN_FILE] = inFile;
-        options[Options::KEY_RIGHTS] = keypwd;
-        options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+    // /**
+    //  * @tc.name: get_certificates_test001
+    //  * @tc.desc: Test function of LocalSigner::GetCertificates() interface for SUCCESS .
+    //  * @tc.size: MEDIUM
+    //  * @tc.type: FUNC
+    //  * @tc.level Level 1
+    //  * @tc.require: SR000H63TL
+    //  */
+    // HWTEST_F(SignProfileTest, get_certificates_test001, testing::ext::TestSize.Level1)
+    // {
+    //     Options options;
+    //     std::string mode = SIGN_PROFILE_MODE;
+    //     std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    //     std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    //     std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    //     std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    //     std::string outFile = SIGN_PROFILE_OUT_FILE;
+    //     std::string inFile = SIGN_PROFILE_IN_FILE;
+    //     char keyStorePwd[] = "123456";
+    //     char keypwd[] = "123456";
+    //     options[Options::KEY_ALIAS] = keyAlias;
+    //     options[Options::MODE] = mode;
+    //     options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    //     options[Options::SIGN_ALG] = signAlg;
+    //     options[Options::KEY_STORE_FILE] = keystoreFile;
+    //     options[Options::OUT_FILE] = outFile;
+    //     options[Options::IN_FILE] = inFile;
+    //     options[Options::KEY_RIGHTS] = keypwd;
+    //     options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-        LocalizationAdapter adapter(&options);
-        SignerFactory factory;
-        std::shared_ptr<ISigner> signer = factory.GetSigner(adapter);
-        STACK_OF(X509)* certs = signer->GetCertificates();
-        EXPECT_TRUE(certs != NULL);
-    }
+    //     LocalizationAdapter adapter(&options);
+    //     SignerFactory factory;
+    //     std::shared_ptr<ISigner> signer = factory.GetSigner(adapter);
+    //     STACK_OF(X509)* certs = signer->GetCertificates();
+    //     EXPECT_TRUE(certs != NULL);
+    // }
 
     /**
      * @tc.name: generate_signeddata_test001

@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "cert_tools.h"
 #include <cassert>
 #include "openssl/ec.h"
@@ -9,9 +23,8 @@
 
 #define BASIC_NUMBER_TWO  2
 using namespace OHOS::SignatureTools;
-static const char* oid = "1.3.6.1.4.1.2011.2.376.1.3";
 
-void CertTools::SaveCertTofile(const std::string& filename, X509* cer)
+void CertTools::SaveCertTofile(const std::string& filename, X509* cert)
 {
     BIO* certBio = BIO_new_file(filename.data(), "w");
     if (!certBio) {
@@ -21,13 +34,14 @@ void CertTools::SaveCertTofile(const std::string& filename, X509* cer)
         return;
     }
 
-    if (PEM_write_bio_X509(certBio, cer) < 0) {
+    if (PEM_write_bio_X509(certBio, cert) < 0) {
         HapVerifyOpensslUtils::GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("PEM_write_bio_X509 failed\n");
         BIO_free(certBio);
+        X509_free(cert);
         return;
     }
-
+    X509_free(cert);
     BIO_free(certBio);
 }
 
@@ -38,36 +52,37 @@ X509* CertTools::SetBisicConstraintsPatchLen(Options* options, X509* cert)
         X509V3_CTX ctx;
         X509V3_set_ctx_nodb(&ctx);
         X509_EXTENSION* ext = X509V3_EXT_conf_nid(NULL, &ctx, NID_basic_constraints, "CA:TRUE, pathlen:0");
-        if (!ext) {          
+        if (!ext) {
             SIGNATURE_TOOLS_LOGE("create the expanding information failed\n");
             X509_EXTENSION_free(ext);
-            goto err;
+            HapVerifyOpensslUtils::GetOpensslErrorMessage();
+            return nullptr;
         }
-
-        if (!X509_add_ext(cert, ext, -1)) {            
-            SIGNATURE_TOOLS_LOGE("X509_add_ext failed\n");  
+        if (!X509_add_ext(cert, ext, -1)) {
+            SIGNATURE_TOOLS_LOGE("X509_add_ext failed\n");
             X509_EXTENSION_free(ext);
             goto err;
-            
         }
+        X509_EXTENSION_free(ext);
     } else {
         std::string setOptions =
             "CA:TRUE, pathlen:" + std::to_string(options->GetInt(Options::BASIC_CONSTRAINTS_PATH_LEN));
         X509V3_CTX ctx;
         X509V3_set_ctx_nodb(&ctx);
-
         X509_EXTENSION* ext = X509V3_EXT_conf_nid(NULL, &ctx, NID_basic_constraints, setOptions.c_str());
         if (!ext) {
-            SIGNATURE_TOOLS_LOGE("create the expanding information failed\n");          
+            SIGNATURE_TOOLS_LOGE("create the expanding information failed\n");
             X509_EXTENSION_free(ext);
-            goto err;
+            HapVerifyOpensslUtils::GetOpensslErrorMessage();
+            return nullptr;
         }
 
-        if (!X509_add_ext(cert, ext, -1)) {        
-            SIGNATURE_TOOLS_LOGE("X509_add_ext failed\n");           
+        if (!X509_add_ext(cert, ext, -1)) {
+            SIGNATURE_TOOLS_LOGE("X509_add_ext failed\n");
             X509_EXTENSION_free(ext);
             goto err;
         }
+        X509_EXTENSION_free(ext);
     }
     return cert;
 err:
@@ -83,13 +98,13 @@ X509* CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr,
         SIGNATURE_TOOLS_LOGE("X509_set_pubkey failed\n");
         goto err;
     }
-    if (!X509_set_issuer_name(cert, X509_REQ_get_subject_name(rootcsr))) {        
+    if (!X509_set_issuer_name(cert, X509_REQ_get_subject_name(rootcsr))) {
         SIGNATURE_TOOLS_LOGE("X509_set_issuer_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(rootcsr));
         goto err;
     }
-    if (!X509_set_subject_name(cert, X509_REQ_get_subject_name(subcsr))) {      
-        SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");      
+    if (!X509_set_subject_name(cert, X509_REQ_get_subject_name(subcsr))) {
+        SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(subcsr));
         goto err;
     }
@@ -105,7 +120,7 @@ err:
 }
 
 X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
-    EVP_PKEY* keyPair, Options* options)
+                                     EVP_PKEY* keyPair, Options* options)
 {
     X509* cert = X509_new();
     if (!SetCertVersion(cert, DEFAULT_CERT_VERSION) || !SetCertSerialNum(cert, DEFAULT_CERT_SERIALNUM)) {
@@ -116,15 +131,14 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
             return nullptr;
         }
-    }
-    else {
+    } else {
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, DEFAULT_VALIDITY)) {
             return nullptr;
         }
     }
-    if(!SetBisicConstraintsPatchLen(options, cert)) {
+    if (!SetBisicConstraintsPatchLen(options, cert)) {
         return nullptr;
-    }  
+    }
     if (!SignForSubCert(cert, subcsr, rootcsr, keyPair, options)) {
         return nullptr;
     }
@@ -134,21 +148,20 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
 X509* CertTools::SetSubjectForCert(X509_REQ* certReq, X509* cert)
 {
     X509_NAME* subject = X509_REQ_get_subject_name(certReq);
-    if (subject == nullptr) {        
+    if (subject == nullptr) {
         SIGNATURE_TOOLS_LOGE("X509_REQ_get_subject_name failed\n");
         X509_REQ_free(certReq);
         goto err;
     }
 
-    if (X509_set_subject_name(cert, subject) != 1) {       
+    if (X509_set_subject_name(cert, subject) != 1) {
         SIGNATURE_TOOLS_LOGE("X509_set_issuer_name failed\n");
         goto err;
     }
-   
-    if (X509_set_issuer_name(cert, subject) != 1) {        
+
+    if (X509_set_issuer_name(cert, subject) != 1) {
         SIGNATURE_TOOLS_LOGE("X509_set_issuer_name failed\n");
         goto err;
-     
     }
     return cert;
 err:
@@ -169,8 +182,7 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
             return nullptr;
         }
-    }
-    else {
+    } else {
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, DEFAULT_VALIDITY)) {
             return nullptr;
         }
@@ -180,20 +192,21 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     }
     if (!SetSubjectForCert(certReq, cert)) {
         return nullptr;
-    }  
+    }
     if (!SetCertPublickKey(cert, certReq)) {
         return nullptr;
     }
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     if (!SignCert(cert, keyPair, signAlg)) {
         return nullptr;
-    } 
+    }
+    X509_REQ_free(certReq);
     return cert;
 }
 
 X509* CertTools::GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* rootcsr, Options* options)
 {
-    std::unique_ptr<LocalizationAdapter> adapter = std::make_unique< LocalizationAdapter>(options);    
+    std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options);
     EVP_PKEY* subKey = adapter->GetAliasKey(false);
     if (subKey == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to get the keypair\n");
@@ -204,13 +217,15 @@ X509* CertTools::GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* rootcsr, Options* 
     if (!subcsr) {
         SIGNATURE_TOOLS_LOGE("failed to generate csr\n");
         return nullptr;
-    }  
+    }
     X509* subCert = SignCsrGenerateCert(rootcsr, subcsr, keyPair, options);
     if (subCert == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to generate the subCert\n");
         return nullptr;
     }
-
+    EVP_PKEY_free(subKey);
+    X509_REQ_free(subcsr);
+    X509_REQ_free(rootcsr);
     return subCert;
 }
 
@@ -265,41 +280,31 @@ X509* CertTools::SetExpandedInfExtThree(X509* cert, Options* options,
         if (basicConstraintsCritical) {
             if (basicConstraintsCa) {
                 ext = X509V3_EXT_conf(NULL, NULL, "basicConstraints", "critical,CA:TRUE");
-            }
-            else {
+            } else {
                 ext = X509V3_EXT_conf(NULL, NULL, "basicConstraints", "critical,CA:FALSE");
             }
-        }
-        else {
+        } else {
             if (basicConstraintsCa) {
                 ext = X509V3_EXT_conf(NULL, NULL, "basicConstraints", "CA:TRUE");
-            }
-            else {
+            } else {
                 ext = X509V3_EXT_conf(NULL, NULL, "basicConstraints", "CA:FALSE");
             }
-
         }
-    }
-    else {
+    } else {
         if (basicConstraintsCritical) {
             if (basicConstraintsCa) {
                 ext = X509V3_EXT_conf(NULL, NULL, "", "critical,CA:TRUE");
-            }
-            else {
+            } else {
                 ext = X509V3_EXT_conf(NULL, NULL, "", "critical,CA:FALSE");
             }
-        }
-        else {
+        } else {
             if (basicConstraintsCa) {
                 ext = X509V3_EXT_conf(NULL, NULL, "", "CA:TRUE");
-            }
-            else {
+            } else {
                 ext = X509V3_EXT_conf(NULL, NULL, "", "CA:FALSE");
             }
-
         }
-
-    }   
+    }
     X509_add_ext(cert, ext, -1);
     X509_EXTENSION_free(ext);
     return cert;
@@ -331,25 +336,22 @@ X509* CertTools::SetPubkeyAndSignCert(X509* cert, X509_REQ* issuercsr,
                                       X509_REQ* certReq, EVP_PKEY* keyPair, Options* options)
 {
     if (!X509_set_issuer_name(cert, X509_REQ_get_subject_name(issuercsr))) {
-        SIGNATURE_TOOLS_LOGE("X509_set_issuer_name failed\n");        
+        SIGNATURE_TOOLS_LOGE("X509_set_issuer_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(issuercsr));
         goto err;
     }
-
     if (!X509_set_subject_name(cert, X509_REQ_get_subject_name(certReq))) {
-        
-        SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");      
+        SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(certReq));
         goto err;
     }
-
     if ((options->GetString(Options::SIGN_ALG)) == "SHA256withECDSA") {
-        if (!X509_sign(cert, keyPair, EVP_sha256())) {          
+        if (!X509_sign(cert, keyPair, EVP_sha256())) {
             SIGNATURE_TOOLS_LOGE("X509_sign failed\n");
             goto err;
         }
     } else {
-        if (!X509_sign(cert, keyPair, EVP_sha384())) {           
+        if (!X509_sign(cert, keyPair, EVP_sha384())) {
             SIGNATURE_TOOLS_LOGE("X509_sign failed\n");
             goto err;
         }
@@ -369,7 +371,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
         SIGNATURE_TOOLS_LOGE("failed to generate the issuercsr\n");
         return nullptr;
     }
-   
+
     X509* cert = X509_new();
     if (!SetCertVersion(cert, DEFAULT_CERT_VERSION) || !SetCertSerialNum(cert, DEFAULT_CERT_SERIALNUM)) {
         return nullptr;
@@ -379,8 +381,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
             return nullptr;
         }
-    }
-    else {
+    } else {
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, DEFAULT_VALIDITY)) {
             return nullptr;
         }
@@ -393,11 +394,11 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
     }
     if (!SetExpandedInformation(cert, options)) {
         return nullptr;
-    } 
+    }
     if (!SetPubkeyAndSignCert(cert, issuercsr, certReq, keyPair, options)) {
         return nullptr;
     }
-    
+
     return cert;
 }
 
@@ -410,33 +411,29 @@ X509_REQ* CertTools::GenerateCsr(EVP_PKEY* evpPkey, std::string signAlgorithm, s
         SIGNATURE_TOOLS_LOGE("X509_REQ_new failed\n");
         return nullptr;
     }
-
-    if (!X509_REQ_set_pubkey(req, evpPkey)) {      
+    if (!X509_REQ_set_pubkey(req, evpPkey)) {
         SIGNATURE_TOOLS_LOGE("X509_REQ_set_pubkey failed\n");
         goto err;
     }
-
     name = BuildDN(subject, req);
     if (!name) {
         SIGNATURE_TOOLS_LOGE("failed to add subject into cert\n");
         return nullptr;
     }
-
     if (signAlgorithm == "SHA256withECDSA") {
-        if (!X509_REQ_sign(req, evpPkey, EVP_sha256())) {           
+        if (!X509_REQ_sign(req, evpPkey, EVP_sha256())) {
             SIGNATURE_TOOLS_LOGE("X509_REQ_sign failed\n");
             goto err;
         }
     } else if (signAlgorithm == "SHA384withECDSA") {
-        if (!X509_REQ_sign(req, evpPkey, EVP_sha384())) {         
+        if (!X509_REQ_sign(req, evpPkey, EVP_sha384())) {
             SIGNATURE_TOOLS_LOGE("X509_REQ_sign failed\n");
             goto err;
         }
     } else {
-        
         SIGNATURE_TOOLS_LOGE("Sign algorithm format error\n");
         CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-            "Sign algorithm format error! Please check again.");
+                      "Sign algorithm format error! Please check again.");
         goto err;
     }
     return req;
@@ -681,7 +678,8 @@ bool CertTools::SetSignCapacityExt(X509* cert, const char signCapacity[], int ca
         ASN1_OCTET_STRING_free(certSignCapacityData);
         return false;
     }
-    X509_EXTENSION* certSignCapacityExt = X509_EXTENSION_create_by_OBJ(NULL, OBJ_txt2obj(oid, 1),
+    ASN1_OBJECT* nid = OBJ_txt2obj(X509_EXT_OID.c_str(), 1);
+    X509_EXTENSION* certSignCapacityExt = X509_EXTENSION_create_by_OBJ(NULL, nid,
                                                                        0, certSignCapacityData);
     if (!X509_add_ext(cert, certSignCapacityExt, -1)) {
         HapVerifyOpensslUtils::GetOpensslErrorMessage();
@@ -691,6 +689,7 @@ bool CertTools::SetSignCapacityExt(X509* cert, const char signCapacity[], int ca
         ASN1_OCTET_STRING_free(certSignCapacityData);
         return false;
     }
+    ASN1_OBJECT_free(nid);
     X509_EXTENSION_free(certSignCapacityExt);
     ASN1_OCTET_STRING_free(certSignCapacityData);
     return true;
@@ -702,12 +701,14 @@ bool CertTools::SignCert(X509* cert, EVP_PKEY* privateKey, std::string signAlg)
         if (!X509_sign(cert, privateKey, EVP_sha256())) {
             HapVerifyOpensslUtils::GetOpensslErrorMessage();
             SIGNATURE_TOOLS_LOGE("sign X509 cert failed\n");
+            X509_free(cert);
             return false;
         }
     } else {
         if (!X509_sign(cert, privateKey, EVP_sha384())) {
             HapVerifyOpensslUtils::GetOpensslErrorMessage();
             SIGNATURE_TOOLS_LOGE("sign X509 cert failed\n");
+            X509_free(cert);
             return false;
         }
     }

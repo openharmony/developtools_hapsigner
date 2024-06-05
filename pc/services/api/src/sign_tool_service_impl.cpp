@@ -1,4 +1,18 @@
-﻿#include "sign_tool_service_impl.h"
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "sign_tool_service_impl.h"
 #include "pkcs7_data.h"
 #include "profile_sign_tool.h"
 #include "nlohmann/json.hpp"
@@ -10,7 +24,10 @@
 #include "param_constants.h"
 #include "hap_verify_v2.h"
 #include "constant.h"
+#include "remote_sign_provider.h"
 #include  <ctime>
+#include "verify_elf.h"
+#include "verify_bin.h"
 
 using namespace OHOS::SignatureTools;
 bool SignToolServiceImpl::GenerateCA(Options* options)
@@ -127,7 +144,7 @@ bool SignToolServiceImpl::GenerateSubCertToFile(Options* options, EVP_PKEY* root
 }
 
 bool SignToolServiceImpl::HandleIssuerKeyAliasEmpty(std::string iksFile,
-   std::unique_ptr<FileUtils>* sutils, Options* options)
+    std::unique_ptr<FileUtils>* sutils, Options* options)
 {
     if (!(*sutils)->IsEmpty(iksFile) && !options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE)) {
         SIGNATURE_TOOLS_LOGE("ksFile and iksFile are inconsistent!");
@@ -198,7 +215,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
     if (myCertRes != 1) {
         CMD_ERROR_MSG("VERIFY_ERROR", VERIFY_ERROR, "generalcert verify failed");
         return false;
-    }  
+    }
     std::string outFile = options->GetString(Options::OUT_FILE);
     if (!outFile.empty()) {
         CertTools::SaveCertTofile(outFile, cert);
@@ -216,7 +233,6 @@ bool SignToolServiceImpl::GenerateKeyStore(Options* options)
         return false;
     }
 
-    EVP_PKEY* keyPair = nullptr;
     int status = adaptePtr->IsExist(keyAlias);
     if (status != RET_FAILED) {
         adaptePtr->ResetPwd();
@@ -225,10 +241,12 @@ bool SignToolServiceImpl::GenerateKeyStore(Options* options)
         return false;
     }
 
+    EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
     adaptePtr->ResetPwd();
     if (keyPair == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to get keypair!");
+        EVP_PKEY_free(keyPair);
         return false;
     }
     EVP_PKEY_free(keyPair);
@@ -468,9 +486,7 @@ bool SignToolServiceImpl::SignHap(Options* options)
     if ("localSign" == mode) {
         signProvider = std::make_shared<LocalJKSSignProvider>();
     } else if ("remoteSign" == mode) {
-        SIGNATURE_TOOLS_LOGE("not support remoteSign");
-        return false;
-        //signProvider = std::make_unique<RemoteSignProvider>();
+        signProvider = std::make_shared<RemoteSignProvider>();
     } else {
         SIGNATURE_TOOLS_LOGE("Resign mode. But not implemented yet");
         return false;
@@ -481,9 +497,9 @@ bool SignToolServiceImpl::SignHap(Options* options)
         return signProvider->Sign(options);
     } else if ("elf" == inForm) {
         SIGNATURE_TOOLS_LOGE("sign form [%s] is not suport yet", inForm.c_str());
-    } else {
-        SIGNATURE_TOOLS_LOGE("sign form [%s] is not suport yet", inForm.c_str());
         return false;
+    } else {
+        return signProvider->SignBin(options);
     }
     return true;
 }
@@ -529,7 +545,7 @@ bool SignToolServiceImpl::OutPutCertChain(std::vector<X509*>& certs, const std::
     for (auto cert : certs) {
         if (PEM_write_bio_X509(bio, cert) < 0) {
             SIGNATURE_TOOLS_LOGE("failed to write certChain to file!");
-            goto err;  
+            goto err;
         }
     }
     BIO_free(bio);
@@ -555,7 +571,7 @@ bool SignToolServiceImpl::OutPutCert(X509* certs, const std::string& outPutPath)
     }
     if (!PEM_write_bio_X509(bio, certs)) {
         SIGNATURE_TOOLS_LOGE("failed to write cert to file!");
-        goto err;     
+        goto err;
     }
     X509_free(certs);
     BIO_free(bio);
@@ -565,7 +581,6 @@ err:
     X509_free(certs);
     BIO_free(bio);
     return false;
-
 }
 int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::string& ret)
 {
@@ -621,6 +636,22 @@ bool SignToolServiceImpl::VerifyHap(Options* option)
         }
         printf("hap verify failed ! \n");
         return false;
+    } else if (inForm == "elf") {
+        VerifyElf verifyElf;
+        if (!verifyElf.Verify(option)) {
+            SIGNATURE_TOOLS_LOGE("elf verify failed!\n");
+            return false;
+        }
+        SIGNATURE_TOOLS_LOGI("elf verify successed!\n");
+        return true;
+    } else if (inForm == "bin") {
+        VerifyBin verifyBin;
+        if (!verifyBin.Verify(option)) {
+            SIGNATURE_TOOLS_LOGE("bin verify failed!\n");
+            return false;
+        }
+        SIGNATURE_TOOLS_LOGI("bin verify successed!\n");
+        return true;
     } else {
         printf("This requirement was not implemented ! \n");
         return false;

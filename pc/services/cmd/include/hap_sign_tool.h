@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,7 +44,7 @@ namespace OHOS {
             static bool CheckProfile(Options& params);
             static void PrintHelp();
             static void Version();
-            static bool StringTruncation(std::string issuer);
+           
 
         public:
             static std::vector<std::string> InformList;

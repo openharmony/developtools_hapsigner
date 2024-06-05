@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -94,7 +94,7 @@ namespace OHOS {
         }
         bool HapVerifyV2::CheckFilePath(const std::string& filePath, std::string& standardFilePath)
         {
-            char path[PATH_MAX + 1] = { 0x00 };
+            char path[PATH_MAX] = { 0x00 };
             if (filePath.size() > PATH_MAX || realpath(filePath.c_str(), path) == nullptr) {
                 SIGNATURE_TOOLS_LOGE("filePath is not a standard path");
                 return false;
@@ -284,12 +284,10 @@ namespace OHOS {
             }
             SIGNATURE_TOOLS_LOGD("App signature subject: %{public}s, issuer: %{public}s",
                 certSubject.c_str(), pkcs7Context.certIssuer.c_str());
-                
             std::string profileArray_(hapProfileBlock.GetBufferPtr(), hapProfileBlock.GetCapacity());
             json obj = json::parse(profileArray_, nullptr, false);
-            if (!obj.is_discarded() && obj.is_structured()) {
+            if (!obj.is_discarded() && obj.is_structured())
                 return true;
-            }
             
             Pkcs7Context profileContext;
             std::string profile;
@@ -324,9 +322,8 @@ namespace OHOS {
                 }
                 isCallParseAndVerify = true;
             }
-            if (!ParseAndVerifyProfileIfNeed(profile, provisionInfo, isCallParseAndVerify)) {
+            if (!ParseAndVerifyProfileIfNeed(profile, provisionInfo, isCallParseAndVerify))
                 return false;
-            }
             if (!GenerateAppId(provisionInfo) || !GenerateFingerprint(provisionInfo)) {
                 SIGNATURE_TOOLS_LOGE("Generate appId or generate fingerprint failed");
                 return false;
@@ -582,6 +579,52 @@ namespace OHOS {
                 return;
             }
             provisionInfo.organization = organization;
+        }
+
+        int32_t HapVerifyV2::VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyResult& hapVerifyV1Result,
+            Options* options, Pkcs7Context& pkcs7Context)
+        {
+            const unsigned char* pkcs7Block = reinterpret_cast<const unsigned char*>(profileData.data());
+            uint32_t pkcs7Len = static_cast<unsigned int>(profileData.size());
+            if (!HapVerifyOpensslUtils::ParsePkcs7Package(pkcs7Block, pkcs7Len, pkcs7Context)) {
+                SIGNATURE_TOOLS_LOGE("parse pkcs7 failed");
+                return false;
+            }
+            if (!HapVerifyOpensslUtils::GetCertChains(pkcs7Context.p7, pkcs7Context)) {
+                SIGNATURE_TOOLS_LOGE("GetCertChains from pkcs7 failed");
+                return false;
+            }
+            if (!HapVerifyOpensslUtils::VerifyPkcs7(pkcs7Context)) {
+                SIGNATURE_TOOLS_LOGE("verify signature failed");
+                return false;
+            }
+            std::vector<std::string> publicKeys;
+            if (!HapVerifyOpensslUtils::GetPublickeys(pkcs7Context.certChains[0], publicKeys)) {
+                SIGNATURE_TOOLS_LOGE("Get publicKeys failed");
+                return GET_PUBLICKEY_FAIL;
+            }
+            hapVerifyV1Result.SetPublicKey(publicKeys);
+            std::vector<std::string> certSignatures;
+            if (!HapVerifyOpensslUtils::GetSignatures(pkcs7Context.certChains[0], certSignatures)) {
+                SIGNATURE_TOOLS_LOGE("Get sianatures failed");
+                return GET_SIGNATURE_FAIL;
+            }
+            hapVerifyV1Result.SetSignature(certSignatures);
+            return VERIFY_SUCCESS;
+        }
+
+        int32_t HapVerifyV2::WriteVerifyOutput(Pkcs7Context& pkcs7Context, Options* options)
+        {
+            if (!HapVerifyV2::HapOutPutCertChain(pkcs7Context.certChains[0],
+                options->GetString(Options::OUT_CERT_CHAIN))) {
+                SIGNATURE_TOOLS_LOGE("out put cert chain failed");
+                return OUT_PUT_FILE_FAIL;
+            }
+            if (!HapVerifyV2::HapOutPutPkcs7(pkcs7Context.p7, options->GetString(Options::OUT_PROFILE))) {
+                SIGNATURE_TOOLS_LOGE("out put p7b failed");
+                return OUT_PUT_FILE_FAIL;
+            }
+            return VERIFY_SUCCESS;
         }
     } // namespace SignatureTools
 } // namespace OHOS

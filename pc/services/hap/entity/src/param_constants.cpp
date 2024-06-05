@@ -1,4 +1,18 @@
-﻿#include "param_constants.h"
+﻿/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "param_constants.h"
 namespace OHOS {
     namespace SignatureTools {
         const std::string ParamConstants::HAP_SIG_SCHEME_V256_DIGEST_ALGORITHM = "SHA-256";
@@ -31,7 +45,10 @@ namespace OHOS {
         const std::string ParamConstants::PARAM_BASIC_COMPATIBLE_VERSION = "compatibleVersion";
         const std::string ParamConstants::PARAM_REMOTE_SERVER = "signServer";
         const std::string ParamConstants::PARAM_REMOTE_USERNAME = "username";
+        const std::string ParamConstants::PARAM_REMOTE_USERPWD = "userPwd";
         const std::string ParamConstants::PARAM_REMOTE_CODE = "password";
+        const std::string ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE = "onlineAuthMode";
+        const std::string ParamConstants::PARAM_REMOTE_SIGNERPLUGIN = "signerPlugin";
         const std::string ParamConstants::PARAM_LOCAL_JKS_KEYSTORE = "keystoreFile";
         const std::string ParamConstants::PARAM_LOCAL_JKS_KEYSTORE_CODE = "keystorePwd";
         const std::string ParamConstants::PARAM_LOCAL_JKS_KEYALIAS_CODE = "keyPwd";

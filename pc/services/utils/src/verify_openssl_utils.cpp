@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@
 #include "openssl/rsa.h"
 #include "openssl/x509.h"
 #include "openssl/pem.h"
+#include "constant.h"
 
 namespace OHOS {
     namespace SignatureTools {
@@ -38,7 +39,7 @@ namespace OHOS {
         const int32_t HapVerifyOpensslUtils::OPENSSL_READ_DATA_MAX_TIME = 2097152;
         const int32_t HapVerifyOpensslUtils::OPENSSL_READ_DATA_LEN_EACH_TIME = 1024;
         /* Signature algorithm OID for extended PKCS7 */
-        const std::string HapVerifyOpensslUtils::PKCS7_EXT_SHAWITHRSA_PSS = "1.2.840.113549.1.1.10";
+        const std::string HapVerifyOpensslUtils::PKCS7_EXT_SHAWITHRSA_PSS = PKCS7_EXT_SIGNATURE_OID;
         const int32_t HapVerifyOpensslUtils::MAX_OID_LENGTH = 128;
 
         bool HapVerifyOpensslUtils::ParsePkcs7Package(const unsigned char packageData[],

@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "generate_keyPair_Test.h"
 
 namespace OHOS {
@@ -43,7 +57,7 @@ namespace OHOS {
         {
             std::shared_ptr<Options> params = std::make_shared<Options>();
 
-            std::string keyAlias = "alias";
+            std::string keyAlias = "oh-app1-key-v1";
             char keyPwd[] = "123456";
             std::string keyAlg = "ECC";
             int keySize = 256;
@@ -59,9 +73,8 @@ namespace OHOS {
 
             std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-            EVP_PKEY* keyPair = nullptr;
-            keyPair = adaptePtr->IsExist(adaptePtr->options->GetString(Options::KEY_ALIAS));
-            EXPECT_NE(keyPair, nullptr);
+            int status = adaptePtr->IsExist(adaptePtr->options->GetString(Options::KEY_ALIAS));
+            EXPECT_EQ(status, 0);
         }
 
 
@@ -74,23 +87,19 @@ namespace OHOS {
         HWTEST_F(GenerateKeyPairTest, generate_keypair_test_003, testing::ext::TestSize.Level1)
         {
             std::shared_ptr<Options> params = std::make_shared<Options>();
-
             std::string keyAlias = "alias";
             char keyPwd[] = "123456";
             std::string keyAlg = "ECC";
             int keySize = 256;
             std::string keystoreFile = "./generateKeyPair/keypair.p12";
             char keystorePwd[] = "123456";
-
             (*params)["keyAlias"] = keyAlias;
             (*params)["keyPwd"] = keyPwd;
             (*params)["keyAlg"] = keyAlg;
             (*params)["keySize"] = keySize;
             (*params)["keystoreFile"] = keystoreFile;
             (*params)["keystorePwd"] = keystorePwd;
-
             std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
             EVP_PKEY* keyPair = nullptr;
             keyPair = adaptePtr->GetAliasKey(true);
             EXPECT_NE(keyPair, nullptr);
@@ -153,7 +162,8 @@ namespace OHOS {
                                                                  adaptePtr->options->GetInt(Options::KEY_SIZE));
             keyPair = adaptePtr->keyStoreHelper->Store(keyPair, keyStorePath,
                                                        adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
-                                                       adaptePtr->options->GetString(Options::KEY_ALIAS));
+                                                       adaptePtr->options->GetString(Options::KEY_ALIAS),
+													   adaptePtr->options->GetChars(Options::KEY_RIGHTS));
             EXPECT_NE(keyPair, nullptr);
         }
 
@@ -167,11 +177,17 @@ namespace OHOS {
         {
             std::shared_ptr<Options> params = std::make_shared<Options>();
 
-            std::string keyAlias = "alias";
+           std::string keyAlias = "alias";
+            char keyPwd[] = "123456";
+            std::string keyAlg = "ECC";
+            int keySize = 256;
             std::string keystoreFile = "./generateKeyPair/keypair.p12";
             char keystorePwd[] = "123456";
 
             (*params)["keyAlias"] = keyAlias;
+            (*params)["keyPwd"] = keyPwd;
+            (*params)["keyAlg"] = keyAlg;
+            (*params)["keySize"] = keySize;
             (*params)["keystoreFile"] = keystoreFile;
             (*params)["keystorePwd"] = keystorePwd;
 
@@ -179,9 +195,9 @@ namespace OHOS {
 
             EVP_PKEY* keyPair = nullptr;
             std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
-            keyPair = adaptePtr->keyStoreHelper->ReadStore(keyStorePath,
-                                                           adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
-                                                           adaptePtr->options->GetString(Options::KEY_ALIAS));
+            adaptePtr->keyStoreHelper->ReadStore(keyStorePath, adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
+                                                 adaptePtr->options->GetString(Options::KEY_ALIAS),
+												 adaptePtr->options->GetChars(Options::KEY_RIGHTS), &keyPair);
             EXPECT_NE(keyPair, nullptr);
         }
 
@@ -1912,19 +1928,7 @@ namespace OHOS {
             EXPECT_EQ(ret, false);
         }
 
-        /*
-         * @tc.name: hap_sign_tool_test_027
-         * @tc.desc: Generate the root certificate entry check.
-         * @tc.type: FUNC
-         * @tc.require:
-         */
-        HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_027, testing::ext::TestSize.Level1)
-        {
-            std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-
-            bool ret = HapSignTool::StringTruncation(issuer);
-            EXPECT_EQ(ret, true);
-        }
+        
 
         /*
          * @tc.name: hap_sign_tool_test_028
@@ -2239,62 +2243,8 @@ namespace OHOS {
             EXPECT_EQ(ret, false);
         }
 
-        /*
-         * @tc.name: hap_sign_tool_test_036
-         * @tc.desc: Generate the root certificate entry check.
-         * @tc.type: FUNC
-         * @tc.require:
-         */
-        HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_036, testing::ext::TestSize.Level1)
-        {
-            std::string issuer = "";
-
-            bool ret = HapSignTool::StringTruncation(issuer);
-            EXPECT_EQ(ret, false);
-        }
-
-        /*
-         * @tc.name: hap_sign_tool_test_037
-         * @tc.desc: Generate the root certificate entry check.
-         * @tc.type: FUNC
-         * @tc.require:
-         */
-        HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_037, testing::ext::TestSize.Level1)
-        {
-            std::string issuer = "123456";
-
-            bool ret = HapSignTool::StringTruncation(issuer);
-            EXPECT_EQ(ret, false);
-        }
-
-        /*
-         * @tc.name: hap_sign_tool_test_038
-         * @tc.desc: Generate the root certificate entry check.
-         * @tc.type: FUNC
-         * @tc.require:
-         */
-        HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_038, testing::ext::TestSize.Level1)
-        {
-            std::string issuer = "CCN,O=OpenHarmony";
-
-            bool ret = HapSignTool::StringTruncation(issuer);
-            EXPECT_EQ(ret, false);
-        }
-
-        /*
-         * @tc.name: hap_sign_tool_test_039
-         * @tc.desc: Generate the root certificate entry check.
-         * @tc.type: FUNC
-         * @tc.require:
-         */
-        HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_039, testing::ext::TestSize.Level1)
-        {
-            std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-
-            bool ret = HapSignTool::StringTruncation(issuer);
-            EXPECT_EQ(ret, false);
-        }
-
+       
+      
         /*
         * @tc.name: hap_sign_tool_test_040
         * @tc.desc: Generate the root certificate entry check.

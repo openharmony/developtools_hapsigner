@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "bc_signeddata_generator.h"
 #include "signature_tools_log.h"
 #include "pkcs7_data.h"
@@ -6,8 +20,9 @@
 #include "signer_config.h"
 #include <vector>
 #include "signature_tools_errno.h"
+#include "constant.h"
 namespace OHOS::SignatureTools {
-    const std::string OWNERID_OID = "1.3.6.1.4.1.2011.2.376.1.4.1";  // SIGNED_ID
+    const std::string OWNERID_OID = SIGNED_ID;  // SIGNED_ID
     const std::string OWNERID_OID_SHORT_NAME = "ownerID";
     const std::string OWNERID_OID_LONG_NAME = "Code Signature Owner ID";
     int BCSignedDataGenerator::GenerateSignedData(const std::string& content,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -67,6 +67,8 @@ namespace OHOS {
             DLL_EXPORT ProvisionInfo GetProvisionInfo() const;
             DLL_EXPORT std::vector<std::string> GetPublicKey() const;
             DLL_EXPORT std::vector<std::string> GetSignature() const;
+            DLL_EXPORT std::vector<int8_t> GetProfile() const;
+            DLL_EXPORT void SetProfile(std::vector<int8_t> profile);
             void SetPublicKey(const std::vector<std::string>& inputPubkeys);
             void SetSignature(const std::vector<std::string>& inputSignatures);
             DLL_EXPORT int32_t GetBlockFromOptionalBlocks(int32_t blockType, std::string& block) const;
@@ -78,6 +80,7 @@ namespace OHOS {
             ByteBuffer pkcs7ProfileBlock;
             std::vector<OptionalBlock> optionalBlocks;
             ProvisionInfo provisionInfo;
+            std::vector<int8_t> profile;
         };
     } // namespace SignatureTools
 } // namespace OHOS

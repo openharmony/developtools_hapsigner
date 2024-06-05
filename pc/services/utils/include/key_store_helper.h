@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -66,7 +66,7 @@ namespace OHOS {
 
             PKCS12* OwnPKCS12_create(const char* pass, const char* keyPass, const char* name, EVP_PKEY* pkey, X509* cert,
                                      STACK_OF(X509)* ca, int nid_key, int nid_cert, int iter,
-                                     int mac_iter, int keytype, STACK_OF(PKCS12_SAFEBAG)* bags, STACK_OF(PKCS7)* safes);
+                                     int mac_iter, int keytype, STACK_OF(PKCS7)* safes);
 
             int CopyBagAttr(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid);
 

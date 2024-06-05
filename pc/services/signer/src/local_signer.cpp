@@ -1,7 +1,21 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "local_signer.h"
 #include "signature_tools_log.h"
 #include "pkcs7_data.h"
-#include "assert.h"
+#include "cassert"
 namespace OHOS {
     namespace SignatureTools {
         /**
@@ -29,15 +43,15 @@ namespace OHOS {
                 this->certificates = NULL;
             }
         }
-        STACK_OF(X509_CRL)* LocalSigner::GetCrls()const
+        STACK_OF(X509_CRL)* LocalSigner::GetCrls() const
         {
             return NULL;
         }
-        STACK_OF(X509)* LocalSigner::GetCertificates()const
+        STACK_OF(X509)* LocalSigner::GetCertificates() const
         {
             return this->certificates;
         }
-        std::string LocalSigner::GetSignature(const std::string& data, const std::string& signAlg)const
+        std::string LocalSigner::GetSignature(const std::string& data, const std::string& signAlg) const
 		{
             EVP_MD_CTX* md_ctx = NULL;
             EVP_PKEY_CTX* pkey_ctx = NULL;
@@ -47,11 +61,9 @@ namespace OHOS {
             std::string ret;
             if (signAlg == "SHA256withECDSA") {
                 md = EVP_sha256();
-            }
-            else if (signAlg == "SHA384withECDSA") {
+            } else if (signAlg == "SHA384withECDSA") {
                 md = EVP_sha384();
-            }
-            else {
+            } else {
                 SIGNATURE_TOOLS_LOGE("unsupport sigAlg\n");
                 return ret;
             }

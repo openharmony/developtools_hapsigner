@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "fs_verity_generator.h"
 using namespace OHOS::SignatureTools;
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
@@ -22,7 +36,8 @@ void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
     int flags = fsvTreeOffset == 0 ? 0 : FsVerityDescriptor::FLAG_STORE_MERKLE_TREE_OFFSET;
     std::shared_ptr<MerkleTree> merkleTree_ptr(merkleTree);
     // sign size is 0, cs version is 0
-    FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(size)
+    std::shared_ptr<FsVerityDescriptor::Builder> builder = std::make_shared<FsVerityDescriptor::Builder>();
+    builder->SetFileSize(size)
         .SetHashAlgorithm(FS_SHA256.GetId())
         .SetLog2BlockSize(LOG_2_OF_FSVERITY_HASH_PAGE_SIZE)
         .SetSaltSize((uint8_t)GetSaltSize())
@@ -30,7 +45,7 @@ void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
         .SetRawRootHash(merkleTree_ptr->rootHash)
         .SetFlags(flags)
         .SetMerkleTreeOffset(fsvTreeOffset);
-    std::vector<int8_t> fsVerityDescriptor = builder.Build().GetByteForGenerateDigest();
+    std::vector<int8_t> fsVerityDescriptor = builder->Build().GetByteForGenerateDigest();
     std::vector<int8_t> digest;
     DigestUtils digestUtils(HASH_SHA256);
     std::stringstream ss;

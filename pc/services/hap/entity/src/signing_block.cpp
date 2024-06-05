@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "signing_block.h"
+
+using namespace OHOS::SignatureTools;
+
+SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value)
+{
+    this->type = type;
+    this->length = value.size();
+    this->value = value;
+}
+
+SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value, int32_t offset)
+{
+    this->type = type;
+    this->length = value.size();
+    this->value = value;
+    this->offset = offset;
+}
+
+int32_t SigningBlock::GetType()
+{
+    return type;
+}
+
+int32_t SigningBlock::GetLength()
+{
+    return length;
+}
+
+std::vector<int8_t> SigningBlock::GetValue()
+{
+    return value;
+}
+
+int32_t SigningBlock::GetOffset()
+{
+    return offset;
+}

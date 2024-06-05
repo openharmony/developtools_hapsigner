@@ -1,4 +1,18 @@
-﻿#include "sign_provider.h"
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "sign_provider.h"
 #include <openssl/pem.h>
 #include <openssl/bio.h>
 #include <openssl/x509.h>
@@ -6,6 +20,8 @@
 #include <filesystem>
 #include "string_utils.h"
 #include "file_utils.h"
+#include "sign_elf.h"
+#include "sign_bin.h"
 #include "nlohmann/json.hpp"
 using namespace nlohmann;
 namespace OHOS {
@@ -131,9 +147,12 @@ namespace OHOS {
         bool SignProvider::Sign(Options* options)
         {
             bool isPathOverlap = false;
-            STACK_OF(X509)* publicCerts = GetX509Certificates(options);
-            if (publicCerts == nullptr)
-                return PrintErrorLog("[signHap] get X509 Certificates failed");
+            STACK_OF(X509)* publicCerts = nullptr;
+            int ret = GetX509Certificates(options, publicCerts);
+            if (ret != RET_OK) {
+                SIGNATURE_TOOLS_LOGE("[signHap] get X509 Certificates failed! errorCode:%{public}d", ret);
+                return false;
+            }
 
             // todo 错误判断
             if (!CheckCompatibleVersion())
@@ -189,6 +208,75 @@ namespace OHOS {
 
             return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
         }
+		bool SignProvider::SignElf(Options* options)
+        {
+            bool isPathOverlap = false;
+            STACK_OF(X509)* publicCerts = nullptr;
+			int ret = GetX509Certificates(options, publicCerts);
+			if(ret != RET_OK) {
+                SIGNATURE_TOOLS_LOGE("[SignElf] get X509 Certificates failed! errorCode:%{public}d", ret);
+                return false;
+            }
+            if (!CheckCompatibleVersion())
+                return PrintErrorLog("[SignElf] check Compatible Version failed!!");
+
+            std::string inputFilePath = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
+            std::string suffix = FileUtils::GetSuffix(inputFilePath);
+            if (suffix == "")
+                return PrintErrorLog("[SignElf] elf format error pleass check!!");
+
+            auto [inputStream, tmpOutput, tmpOutputFilePath] =
+                PrepareIOStreams(inputFilePath,
+                    signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE),
+                    isPathOverlap);
+
+            if (!inputStream || !tmpOutput)
+                return PrintErrorLog("[signElf] Prepare IO Streams failed");
+
+            SignerConfig signerConfig;
+            if (!InitSigerConfig(signerConfig, publicCerts, options))
+                return PrintErrorLog("SignElf] create Signer Configs failed", tmpOutputFilePath);
+
+            if (!profileContent.empty()) {
+                signParams.insert(std::make_pair(ParamConstants::PARAM_PROFILE_JSON_CONTENT, profileContent));
+            }
+
+            if (!SignElf::sign(signerConfig, signParams)) {
+                SIGNATURE_TOOLS_LOGE("[SignElf] sign elf failed");
+                return false;
+            }
+
+            return true;
+        }
+        bool SignProvider::SignBin(Options *options)
+        {
+            STACK_OF(X509)* x509Certificates = nullptr;
+            int ret = GetX509Certificates(options, x509Certificates);
+            if (ret != RET_OK) {
+                SIGNATURE_TOOLS_LOGE("[SignBin] get X509 Certificates failed! errorCode:%{public}d", ret);
+                return false;
+            }
+            if (!CheckCompatibleVersion()) {
+                SIGNATURE_TOOLS_LOGE("check Compatible Version failed!\n");
+                return false;
+            }
+
+            SignerConfig signerConfig;
+            if (!InitSigerConfig(signerConfig, x509Certificates, options)) {
+                SIGNATURE_TOOLS_LOGE("[SignBin] create Signer Configs failed\n");
+                return false;
+            }
+
+            bool signFlag = SignBin::Sign(signerConfig, signParams);
+            if (!signFlag)
+            {
+                SIGNATURE_TOOLS_LOGE("sign bin internal failed\n");
+                return false;
+            }
+
+            SIGNATURE_TOOLS_LOGE("sign bin success\n");
+            return true;
+        }
         bool SignProvider::AppendCodeSignBlock(SignerConfig& signerConfig, std::string outputFilePath,
                                                const std::string& suffix, long long centralDirectoryOffset, Zip& zip)
         {
@@ -243,37 +331,43 @@ namespace OHOS {
             }
             return true;
         }
-        void SignProvider::LoadOptionalBlocks()
+        int SignProvider::LoadOptionalBlocks()
         {
+            int ret = RET_OK;
             if (auto property = signParams.find(ParamConstants::PARAM_BASIC_PROPERTY);
                 property != signParams.end()) {
-                LoadOptionalBlock(property->second, HapUtils::HAP_PROPERTY_BLOCK_ID);
+                if ((ret = LoadOptionalBlock(property->second, HapUtils::HAP_PROPERTY_BLOCK_ID)) != RET_OK)
+                    return ret;
             }
             if (auto profile = signParams.find(ParamConstants::PARAM_BASIC_PROFILE); profile != signParams.end()) {
-                LoadOptionalBlock(profile->second, HapUtils::HAP_PROFILE_BLOCK_ID);
+                if ((ret = LoadOptionalBlock(profile->second, HapUtils::HAP_PROFILE_BLOCK_ID)) != RET_OK)
+                    return ret;
             }
             if (auto proofOfRotation = signParams.find(ParamConstants::PARAM_BASIC_PROOF);
                 proofOfRotation != signParams.end()) {
-                LoadOptionalBlock(proofOfRotation->second, HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID);
+                if ((LoadOptionalBlock(proofOfRotation->second, HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID)) != RET_OK)
+                    return ret;
             }
+            return ret;
         }
-        void SignProvider::LoadOptionalBlock(const std::string& file, int type)
+        int SignProvider::LoadOptionalBlock(const std::string& file, int type)
         {
             if (file.empty())
-                return;
+                return RET_OK;
             if (!CheckFile(file)) {
                 SIGNATURE_TOOLS_LOGE("check file failed. Invalid file: %{public}s, file type: %{public}d",
                                      file.c_str(), type);
-                return;
+                return FILE_NOT_FOUND;
             }
             ByteBuffer optionalBlockBuffer;
             if (!HapUtils::ReadFileToByteBuffer(file, optionalBlockBuffer))
-                return;
+                return IO_ERROR;
             if (optionalBlockBuffer.GetCapacity() == 0) {
                 SIGNATURE_TOOLS_LOGE("Optional block is empty!");
-                return;
+                return IO_ERROR;
             }
             optionalBlocks.push_back({ type, optionalBlockBuffer });
+            return RET_OK;
         }
 
         std::optional<X509_CRL*> SignProvider::GetCrl()
@@ -294,66 +388,72 @@ namespace OHOS {
             return true;
         }
 
-        STACK_OF(X509)* SignProvider::GetX509Certificates(Options* options)
+        int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)* X509Vec)
         {
-            STACK_OF(X509)* X509Vec = nullptr;
+            int ret = RET_OK;
             // 1.check the parameters
             if (!CheckParams(options)) {
                 SIGNATURE_TOOLS_LOGE("[SignProvider] Check Params failed please check");
-                return nullptr;
+                return COMMAND_ERROR;
             }
             // 2.get x509 verify certificate
-            X509Vec = GetPublicCerts(options);
+            ret = GetPublicCerts(options, X509Vec);
+            if (ret != RET_OK) {
+                return ret;
+            }
             // 3. load optionalBlocks
-            LoadOptionalBlocks();
+            ret = LoadOptionalBlocks();
+            if (ret != RET_OK) {
+                return ret;
+            }
             // 4. check Profile Valid;
-            if (CheckProfileValid(X509Vec) < 0) {
+            if ((ret = CheckProfileValid(X509Vec)) < 0) {
                 SIGNATURE_TOOLS_LOGE("invalid profile!\n");
                 sk_X509_pop_free(X509Vec, X509_free);
-                return NULL;
+                return ret;
             }
-            return X509Vec;
+            return ret;
         }
-        STACK_OF(X509)* SignProvider::GetPublicCerts(Options* options)
+        int SignProvider::GetPublicCerts(Options* options, STACK_OF(X509)*ret)
         {
             // 参数 -appCertFile 应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项;就是我们的 ./test1/app-release1.pem
             std::string appCertFileName = options->GetString(Options::APP_CERT_FILE);
             if (appCertFileName.empty()) {
-                return nullptr;
+                SIGNATURE_TOOLS_LOGI("appCertFile param can not find,may be is RemoteSigner");
+                return RET_OK;
             }
             // 从应用签名证书链 ./test1/app-release1.pem 获取证书, 排序,保证：前一个证书的发布者是后一个证书的主题
         // List<>里面从前往后放证书，前一个证书的颁发者是后一个证书的主题，所以根证书在列表的最后，根证书没有颁发者
-            return GetCertificateChainFromFile(appCertFileName);
+            return GetCertificateChainFromFile(appCertFileName, ret);
         }
-        STACK_OF(X509)* SignProvider::GetCertificateChainFromFile(const std::string& certChianFile)
+        int SignProvider::GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)* ret)
         {
-            return GetCertListFromFile(certChianFile);
+            return GetCertListFromFile(certChianFile ,ret);
         }
-        STACK_OF(X509)* SignProvider::GetCertListFromFile(const std::string& certsFile)
+        int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)* ret)
         {
             // lhxtodo 内存释放
-            STACK_OF(X509)* certs = nullptr;
             X509* cert = nullptr;
-            certs = sk_X509_new(nullptr);
-            if (certs == nullptr) {
+            ret = sk_X509_new(nullptr);
+            if (ret == nullptr) {
                 SIGNATURE_TOOLS_LOGE("[SignHap] get CertList FromFile [sk_X509_new] failed");
-                return nullptr;
+                return IO_CERT_ERROR;
             }
             BIO* certBio = BIO_new_file(certsFile.c_str(), "rb");
             if (!certBio) {
                 SIGNATURE_TOOLS_LOGE("[SignHap] get CertList FromFile [BIO_new_file] failed");
-                sk_X509_free(certs);
-                return nullptr;
+                sk_X509_free(ret);
+                return READ_FILE_ERROR;
             }
             // 读取
             while (1) {
                 cert = PEM_read_bio_X509(certBio, NULL, NULL, NULL);
                 if (cert == nullptr)
                     break;
-                sk_X509_push(certs, cert);
+                sk_X509_push(ret, cert);
             }
             BIO_free(certBio);
-            return certs;
+            return RET_OK;
         }
 
         bool SignProvider::DoAfterSign(bool isPathOverlap, std::string tmpOutputFile, std::string inputFilePath)
@@ -423,8 +523,12 @@ namespace OHOS {
                     signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
                 }
             }
-            if (signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED) == signParams.end()) {
-                signParams.insert(std::make_pair(ParamConstants::PARAM_BASIC_PROFILE_SIGNED, "1"));
+            // 参数 -profileSigned 指示profile文件是否已签名，1表示已签名，0表示未签名，默认为1。可选项
+            // 如果外部没有指定 -profileSigned 或传空,指定为1
+            if (signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED) == signParams.end() 
+                || signParams.at(ParamConstants::PARAM_BASIC_PROFILE_SIGNED).empty()) 
+            {
+                signParams[ParamConstants::PARAM_BASIC_PROFILE_SIGNED] = "1";
             }
             if (!CheckSignCode()) {
                 printf("Error: PARAM_SIGN_CODE Parameter check error !");
@@ -481,7 +585,7 @@ namespace OHOS {
         bool SignProvider::CheckStringToint(const std::string& in, int& out)
         {
             std::istringstream iss(in);
-            if (iss >> out && iss.eof()) {
+            if ((iss >> out) && iss.eof()) {
                 return true;
             } else {
                 SIGNATURE_TOOLS_LOGE("Invalid parameter: %s", in.c_str());
