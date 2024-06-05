@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.error;
 
+import java.util.Locale;
+
 /**
  * Runtime exception for programs.
  *
@@ -32,6 +34,8 @@ public class CustomException extends RuntimeException {
      * @param message Error msg to throw
      */
     CustomException(ERROR error, String message) {
+        super(String.format(Locale.ROOT, "%s, code: %d. Details: %s", error.toString(),
+                error.getErrorCode(), message));
         this.error = error;
         this.message = message;
     }
