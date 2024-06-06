@@ -376,7 +376,7 @@ public abstract class SignHap {
         } catch (SignatureException e) {
             throw new SignatureException("generate SignerBlock failed"
                     + "\nSolutions:"
-                    + "\n> Incorrect KeyAlias used, please input the correct KeyAlias for signature"
+                    + "\n> The KeyAlias parameter is incorrect. Enter a correct KeyAlias parameter."
                     + "\n> The certificate is incorrect, please check if your certificate matches the key");
         }
         return signerBlock;
