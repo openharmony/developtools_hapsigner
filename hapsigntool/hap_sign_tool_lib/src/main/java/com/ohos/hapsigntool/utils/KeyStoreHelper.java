@@ -128,7 +128,7 @@ public class KeyStoreHelper {
              CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage()
                     + "\nSolutions:"
                     + "\n> The key store file does not exist, please check the key store file path."
-                    + "\n> Incorrect keystore password, please enter a correct plaintext keystore password"
+                    + "\n> Incorrect keystore password. Enter a correct plaintext password."
                     + "\n> The keystore was created by a newer JDK version,please use the same JDK version");
         } finally {
             FileUtils.close(fis);
