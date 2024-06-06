@@ -38,6 +38,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * HapSignTool.
@@ -97,9 +98,13 @@ public final class HapSignTool {
             if (!isSuccess) {
                 System.exit(1);
             }
-        } catch (CustomException exception) {
-            LOGGER.debug(exception.getMessage(), exception);
-            LOGGER.error(exception.getMessage());
+        } catch (CustomException e) {
+            LOGGER.error(String.format(Locale.ROOT, "%s, code: %d. Details: %s", e.getError(),
+                    e.getError().getErrorCode(), e.getMessage()));
+            System.exit(1);
+        } catch (Exception e) {
+            LOGGER.error(String.format(Locale.ROOT, "UNKNOWN_ERROR, code: %d. Details: %s",
+                    ERROR.UNKNOWN_ERROR.getErrorCode(), e.getMessage()));
             System.exit(1);
         }
     }
