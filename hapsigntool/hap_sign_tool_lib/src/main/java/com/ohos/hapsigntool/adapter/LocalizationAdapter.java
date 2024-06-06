@@ -274,7 +274,7 @@ public class LocalizationAdapter {
             logger.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage()
                 + "\nSolutions:"
-                + "\n> Maybe sign certificate is a incorrect certificate format, please check your appCertFile param");        
+                + "\n> The certificate format is incorrect, please check your -appCertFile parameters.");        
         }
         ValidateUtils.throwIfNotMatches(certificates != null && certificates.size() > 0, ERROR.READ_FILE_ERROR,
                 String.format("Read fail from %s, bot found certificates", certPath));
