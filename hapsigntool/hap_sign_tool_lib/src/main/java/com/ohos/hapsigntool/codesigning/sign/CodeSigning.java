@@ -300,6 +300,10 @@ public class CodeSigning {
             ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
             java.util.zip.ZipEntry libEntry = null;
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                if (jarEntries.isEmpty()) {
+                    hnpInputStream.closeEntry();
+                    break;
+                }
                 if (jarEntries.containsKey(libEntry.getName())) {
                     long fileSize = jarEntries.get(libEntry.getName());
                     // We don't store merkle tree in code signing of native libs
@@ -308,6 +312,7 @@ public class CodeSigning {
                         ownerID);
                     nativeLibInfoList.add(Pair.create(hnpEntry.getName() + "!/" + libEntry.getName(),
                         pairSignInfoAndMerkleTreeBytes.getFirst()));
+                    jarEntries.remove(libEntry.getName());
                 }
                 hnpInputStream.closeEntry();
             }
