@@ -562,19 +562,13 @@ public abstract class SignProvider {
         if (cert == null) {
             return "";
         }
-        String valueOfDN = cert.getSubjectDN().toString();
-        valueOfDN = valueOfDN.replace("\"", "");
-        String[] arrayDN = valueOfDN.split(",");
-        for (String element : arrayDN) {
-            if (element.trim().startsWith("CN=")) {
-                String[] tempArray = element.split("=");
-                if (tempArray.length == 2) {
-                    return tempArray[1];
-                }
-                return "";
-            }
+        String nameStr = cert.getSubjectX500Principal().getName();
+        X500Name name = new X500Name(nameStr);
+        RDN[] commonName = name.getRDNs(BCStyle.CN);
+        if (commonName.length <= 0) {
+            CustomException.throwException(ERROR.CERTIFICATE_ERROR, "subject without common name");
         }
-        return "";
+        return commonName[0].getFirst().getValue().toString();
     }
 
     private byte[] findProfileFromOptionalBlocks() {

@@ -226,7 +226,11 @@ public final class CertUtils {
      * @return Random big integer
      */
     public static BigInteger randomSerial() {
-        return new BigInteger(RANDOM_SERIAL_LENGTH, new SecureRandom());
+        try {
+            return new BigInteger(RANDOM_SERIAL_LENGTH, SecureRandom.getInstanceStrong());
+        } catch (NoSuchAlgorithmException e) {
+            return new BigInteger(RANDOM_SERIAL_LENGTH, new SecureRandom());
+        }
     }
 
     /**
