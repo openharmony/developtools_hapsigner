@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,26 +14,24 @@
  */
 #ifndef SIGNATURETOOLS_MERKLE_TREE_H
 #define SIGNATURETOOLS_MERKLE_TREE_H
+
 #include <vector>
+
 #include "fs_verity_hash_algorithm.h"
- // Merkle tree data
+
 namespace OHOS {
-    namespace SignatureTools {
-        class MerkleTree {
-        public:
-            MerkleTree(const std::vector<int8_t>& rootHash,
-                const std::vector<int8_t>& tree,
-                const SignatureTools::FsVerityHashAlgorithm& fsVerityHashAlgorithm)
-                :rootHash(rootHash), tree(tree), fsVerityHashAlgorithm(fsVerityHashAlgorithm)
-            {
-            }
-            // root hash of merkle tree
-            std::vector<int8_t> rootHash;
-            // content data of merkle tree
-            std::vector<int8_t> tree;
-            // hash algorithm used for merkle tree
-            SignatureTools::FsVerityHashAlgorithm fsVerityHashAlgorithm;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+class MerkleTree {
+public:
+    MerkleTree(const std::vector<int8_t>& rootHash, const std::vector<int8_t>& tree,
+        const SignatureTools::FsVerityHashAlgorithm& fsVerityHashAlgorithm) : rootHash(rootHash),
+        tree(tree), fsVerityHashAlgorithm(fsVerityHashAlgorithm)
+    {
+    }
+    std::vector<int8_t> rootHash;
+    std::vector<int8_t> tree;
+    SignatureTools::FsVerityHashAlgorithm fsVerityHashAlgorithm;
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif
+#endif // SIGNATURETOOLS_MERKLE_TREE_H

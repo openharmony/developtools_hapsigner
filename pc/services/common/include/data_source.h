@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,22 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_DATASOURCE_H
-#define SIGNERTOOLS_DATASOURCE_H
+#ifndef SIGNATRUETOOLS_DATASOURCE_H
+#define SIGNATRUETOOLS_DATASOURCE_H
+
 #include "byte_buffer.h"
-#include "verify_openssl_utils.h"
+#include "verify_hap_openssl_utils.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class DataSource {
-        public:
-            virtual ~DataSource()
-            {
-            }
-            virtual bool HasRemaining() const = 0;
-            virtual long long Remaining() const = 0;
-            virtual void Reset() = 0;
-            virtual bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) = 0;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+
+class DataSource {
+public:
+    virtual ~DataSource()
+    {
+    }
+    virtual bool HasRemaining() const = 0;
+    virtual long long Remaining() const = 0;
+    virtual void Reset() = 0;
+    virtual bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) = 0;
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif // HAP_DATASOURCE_H
+#endif // SIGNATRUETOOLS_DATASOURCE_H

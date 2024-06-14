@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,44 +12,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_RANDOM_ACCESS_FILE_H
-#define SIGNERTOOLS_RANDOM_ACCESS_FILE_H
-#include <iostream>
+
+#ifndef SIGNATRUETOOLS_RANDOM_ACCESS_FILE_H
+#define SIGNATRUETOOLS_RANDOM_ACCESS_FILE_H
+
+#include <cerrno>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string>
+#include <cstring>
 #include <fstream>
-#include <vector>
-#include <streambuf>
+
 #include "export_define.h"
 #include "byte_buffer.h"
 #include "digest_parameter.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        struct MmapInfo {
-            long long mmapPosition;
-            int32_t readMoreLen = 0;
-            int32_t mmapSize = 0;
-            char* mapAddr;
-        };
-        class RandomAccessFile {
-        public:
-            DLL_EXPORT RandomAccessFile();
-            DLL_EXPORT ~RandomAccessFile();
-            DLL_EXPORT bool Init(const std::string& filePath);
-            DLL_EXPORT long long GetLength() const;
-            DLL_EXPORT long long ReadFileFullyFromOffset(ByteBuffer& buffer, long long offset);
-            DLL_EXPORT long long ReadFileFullyFromOffset(char buf[], long long offset, int32_t bufCapacity);
-            bool ReadFileFromOffsetAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize,
-                long long offset);
-            DLL_EXPORT long long WriteToFile(std::vector<char>& buffer,
-                long long index, long long position, long long length);
-            DLL_EXPORT long long WriteToFile(ByteBuffer& buffer, long long position, long long length);
-        private:
-            long long DoMMap(int32_t bufCapacity, long long offset, MmapInfo& mmapInfo);
-            bool CheckLittleEndian();
-            static const int32_t FILE_OPEN_FAIL_ERROR_NUM;
-            static int32_t memoryPageSize;
-            int32_t fd = 0;
-            long long fileLength;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+
+struct MmapInfo {
+    int64_t mmapPosition;
+    int32_t readMoreLen = 0;
+    int32_t mmapSize = 0;
+    char* mapAddr;
+};
+
+class RandomAccessFile {
+public:
+    DLL_EXPORT RandomAccessFile();
+    DLL_EXPORT ~RandomAccessFile();
+    DLL_EXPORT bool Init(const std::string& filePath);
+    DLL_EXPORT int64_t GetLength() const;
+    DLL_EXPORT int32_t ReadFileFullyFromOffset(ByteBuffer& buffer, int64_t offset);
+    DLL_EXPORT int32_t ReadFileFullyFromOffset(char buf[], int64_t offset, int64_t bufCapacity);
+    DLL_EXPORT int32_t WriteToFile(ByteBuffer& buffer, int64_t position, int64_t length);
+    DLL_EXPORT bool ReadFileFromOffsetAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize,
+                                                      int64_t offset);
+
+private:
+    int32_t DoMMap(int32_t bufCapacity, int64_t offset, MmapInfo& mmapInfo);
+    bool CheckLittleEndian();
+    static int32_t memoryPageSize;
+    int32_t fd = 0;
+    int64_t fileLength;
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif // HAP_RANDOM_ACCESS_FILE_H
+#endif // SIGNATRUETOOLS_RANDOM_ACCESS_FILE_H

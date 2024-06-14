@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,8 @@
 
 #include "elf_sign_block.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 const int32_t ElfSignBlock::PAGE_SIZE_4K = 4096;
 const int32_t ElfSignBlock::MERKLE_TREE_INLINED = 0x2;
@@ -26,7 +27,7 @@ ElfSignBlock::ElfSignBlock()
 }
 
 ElfSignBlock::ElfSignBlock(int32_t paddingSize, std::vector<int8_t> merkleTreeData,
-    FsVerityDescriptorWithSign descriptorWithSign)
+                           FsVerityDescriptorWithSign descriptorWithSign)
 {
     std::vector<int8_t> inMerkleTreeData;
     if (!merkleTreeData.empty()) {
@@ -39,7 +40,7 @@ ElfSignBlock::ElfSignBlock(int32_t paddingSize, std::vector<int8_t> merkleTreeDa
 }
 
 ElfSignBlock::ElfSignBlock(int32_t type, int32_t treeLength, std::vector<int8_t> merkleTreeWithPadding,
-    FsVerityDescriptorWithSign descriptorWithSign)
+                           FsVerityDescriptorWithSign descriptorWithSign)
 {
     this->type = type;
     this->treeLength = treeLength;
@@ -49,7 +50,9 @@ ElfSignBlock::ElfSignBlock(int32_t type, int32_t treeLength, std::vector<int8_t>
 
 int32_t ElfSignBlock::Size()
 {
-    return FsVerityDescriptorWithSign::INTEGER_BYTES * 2 + merkleTreeWithPadding.size() + descriptorWithSign.Size();
+    int tmp_variable = 2;
+    return FsVerityDescriptorWithSign::INTEGER_BYTES * tmp_variable
+        + merkleTreeWithPadding.size() + descriptorWithSign.Size();
 }
 
 std::vector<int8_t> ElfSignBlock::GetMerkleTreeWithPadding()
@@ -77,9 +80,9 @@ std::vector<int8_t> ElfSignBlock::ToByteArray()
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(Size());
     bf->PutInt32(type);
     bf->PutInt32(merkleTreeWithPadding.size());
-    bf->PutData((char*)merkleTreeWithPadding.data(), merkleTreeWithPadding.size());
+    bf->PutData(merkleTreeWithPadding.data(), merkleTreeWithPadding.size());
     std::vector<int8_t> descriptorWithSignArr = descriptorWithSign.ToByteArray();
-    bf->PutData((char*)descriptorWithSignArr.data(), descriptorWithSignArr.size());
+    bf->PutData(descriptorWithSignArr.data(), descriptorWithSignArr.size());
     bf->Flip();
     std::vector<int8_t> ret(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetLimit());
     return ret;
@@ -88,40 +91,42 @@ std::vector<int8_t> ElfSignBlock::ToByteArray()
 bool ElfSignBlock::FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(bytes.size());
-    bf->PutData((char*)bytes.data(), bytes.size());
+    bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inTreeType = 0;
     bf->GetInt32(inTreeType);
     if (MERKLE_TREE_INLINED != inTreeType) {
-        SIGNATURE_TOOLS_LOGE("Invalid merkle tree type of ElfSignBlock\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid merkle tree type of ElfSignBlock");
         return false;
     }
     int32_t inTreeLength = 0;
     bf->GetInt32(inTreeLength);
     std::vector<int8_t> treeWithPadding(inTreeLength);
-    bf->GetData((char*)treeWithPadding.data(), treeWithPadding.size());
+    bf->GetByte(treeWithPadding.data(), treeWithPadding.size());
     int32_t inFsdType = 0;
     bf->GetInt32(inFsdType);
     if (FsVerityDescriptor::FS_VERITY_DESCRIPTOR_TYPE != inFsdType) {
-        SIGNATURE_TOOLS_LOGE("Invalid fs-verify descriptor type of ElfSignBlock\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid fs-verify descriptor type of ElfSignBlock");
         return false;
     }
     int32_t inFsdLength = 0;
+    int tmp_variable = 2;
     bf->GetInt32(inFsdLength);
-    if (bytes.size() != FsVerityDescriptorWithSign::INTEGER_BYTES * 2 + inTreeLength +
-        FsVerityDescriptorWithSign::INTEGER_BYTES * 2 + inFsdLength) {
-        SIGNATURE_TOOLS_LOGE("Invalid fs-verify descriptor with signature length of ElfSignBlock\n");
+    if (bytes.size() != FsVerityDescriptorWithSign::INTEGER_BYTES * tmp_variable + inTreeLength +
+        FsVerityDescriptorWithSign::INTEGER_BYTES * tmp_variable + inFsdLength) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+                            "Invalid fs-verify descriptor with signature length of ElfSignBlock");
         return false;
     }
     std::vector<int8_t> fsdArray(FsVerityDescriptor::DESCRIPTOR_SIZE);
-    bf->GetData((char*)fsdArray.data(), fsdArray.size());
+    bf->GetByte(fsdArray.data(), fsdArray.size());
     FsVerityDescriptor fsd = FsVerityDescriptor::FromByteArray(fsdArray);
     if (inFsdLength != fsd.GetSignSize() + FsVerityDescriptor::DESCRIPTOR_SIZE) {
-        SIGNATURE_TOOLS_LOGE("Invalid sign size of ElfSignBlock\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid sign size of ElfSignBlock");
         return false;
     }
     std::vector<int8_t> inSignature(inFsdLength - FsVerityDescriptor::DESCRIPTOR_SIZE);
-    bf->GetData((char*)inSignature.data(), inSignature.size());
+    bf->GetByte(inSignature.data(), inSignature.size());
     FsVerityDescriptorWithSign fsVerityDescriptorWithSign(inFsdType, inFsdLength, fsd, inSignature);
     elfSignBlock.type = inTreeType;
     elfSignBlock.treeLength = inTreeLength;
@@ -132,6 +137,10 @@ bool ElfSignBlock::FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSi
 
 int32_t ElfSignBlock::ComputeMerkleTreePaddingLength(int64_t signBlockOffset)
 {
-    return (int32_t) (PAGE_SIZE_4K - (signBlockOffset + FsVerityDescriptorWithSign::INTEGER_BYTES * 2)
-        % PAGE_SIZE_4K) % PAGE_SIZE_4K;
+    int tmp_variable = 2;
+    return (int32_t)(PAGE_SIZE_4K - (signBlockOffset + FsVerityDescriptorWithSign::INTEGER_BYTES * tmp_variable)
+                     % PAGE_SIZE_4K) % PAGE_SIZE_4K;
+}
+
+}
 }

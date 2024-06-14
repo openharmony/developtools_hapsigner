@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_SIGN_CONTENT_INFO_H
-#define SIGNERTOOLS_SIGN_CONTENT_INFO_H
+
+#ifndef SIGNATRUETOOLS_SIGN_CONTENT_INFO_H
+#define SIGNATRUETOOLS_SIGN_CONTENT_INFO_H
+
 #include <vector>
 #include <cstdint>
 #include <string>
@@ -21,50 +23,21 @@
 
 namespace OHOS {
 namespace SignatureTools {
-class SignContentHash 
-{
+class SignContentHash {
 public:
     SignContentHash(char type, char tag, short algId, int length, std::vector<int8_t> hash);
 
 public:
-    /**
-     * Length of two chars, one short,and one int
-     */
     static const int CONTENT_HEAD_SIZE = 8;
-
-    /**
-     * the signature sub-block type
-     */
     char type;
-
-    /**
-     * the signature sub-block tag
-     */
     char tag;
-
-    /**
-     * the algorithm ID of digest
-     */
     short algId;
-
-    /**
-     * the data length of hash value
-     */
     int length;
-
-    /**
-     * the data of hash value
-     */
     std::vector<int8_t> hash;
-
-    /**
-     * the length of content
-     */
     int contentHashLen;
 };
 
-class SignContentInfo
-{
+class SignContentInfo {
 public:
     SignContentInfo();
 
@@ -72,6 +45,8 @@ public:
     void AddContentHashData(char type, char tag, short algId, int length, std::vector<int8_t> hash);
     void AddHashData(SignContentHash signInfo);
     std::vector<int8_t> GetByteContent();
+    void SetVersion(std::string version);
+    void SetSize(short size);
 
 private:
     std::string version;
@@ -79,8 +54,6 @@ private:
     short numOfBlocks;
     std::list<SignContentHash> hashData;
 };
-
-}
+} // namespace SignatureTools
 } // namespace OHOS
-
 #endif

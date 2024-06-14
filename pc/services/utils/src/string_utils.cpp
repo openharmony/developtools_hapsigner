@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,16 +14,17 @@
  */
 #include "string_utils.h"
 #include <cstring>
+
 #include "securec.h"
-using namespace OHOS::SignatureTools;
-StringUtils::StringUtils()
-{
-}
+
+namespace OHOS {
+namespace SignatureTools {
+
 bool StringUtils::IsEmpty(const std::string& cs)
 {
     return cs.empty();
 }
-bool StringUtils::ContainsIgnoreCase(std::vector<std::string> strs, std::string str)
+/* bool StringUtils::ContainsIgnoreCase(std::vector<std::string> strs, std::string str)
 {
     if (strs.empty()) {
         return false;
@@ -46,6 +47,7 @@ bool StringUtils::ContainsIgnoreCase(std::vector<std::string> strs, std::string 
     }
     return false;
 }
+*/
 
 bool StringUtils::ContainsCase(std::vector<std::string> strs, const std::string& str)
 {
@@ -56,7 +58,7 @@ bool StringUtils::ContainsCase(std::vector<std::string> strs, const std::string&
     return false;
 }
 
-bool StringUtils::IgnoreCaseCompare(std::string str1, std::string str2)
+/* bool StringUtils::IgnoreCaseCompare(std::string str1, std::string str2)
 {
     if (str1.size() != str2.size())
         return false;
@@ -67,7 +69,7 @@ bool StringUtils::IgnoreCaseCompare(std::string str1, std::string str2)
             return false;
     }
     return true;
-}
+} */
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)
 {
@@ -85,11 +87,11 @@ std::vector<std::string> StringUtils::SplitString(const std::string& str, char d
 }
 std::string StringUtils::Trim(const std::string& str)
 {
-    size_t startpos = str.find_first_not_of(" \t\n\r\f\v");
+    size_t startpos = str.find_first_not_of("     \n\r\f\v");
     if (std::string::npos == startpos) {
         return "";
     }
-    size_t endpos = str.find_last_not_of(" \t\n\r\f\v");
+    size_t endpos = str.find_last_not_of("     \n\r\f\v");
     return str.substr(startpos, endpos - startpos + 1);
 }
 std::string StringUtils::FormatLoading(std::string& dealStr)
@@ -126,7 +128,7 @@ std::string StringUtils::Pkcs7ToString(PKCS7* p7)
 }
 std::string StringUtils::x509CertToString(X509* cert)
 {
-    HapVerifyOpensslUtils::GetOpensslErrorMessage();
+    VerifyHapOpensslUtils::GetOpensslErrorMessage();
     BIO* bio = BIO_new(BIO_s_mem());
     PEM_write_bio_X509(bio, cert);
     char* buffer;
@@ -137,13 +139,13 @@ std::string StringUtils::x509CertToString(X509* cert)
 }
 std::string StringUtils::SubjectToString(X509* cert)
 {
-    HapVerifyOpensslUtils::GetOpensslErrorMessage();
+    VerifyHapOpensslUtils::GetOpensslErrorMessage();
     X509_NAME* subjectName = X509_get_subject_name(cert);
     if (!subjectName) {
         SIGNATURE_TOOLS_LOGE("Error getting subject name\n");
         return "";
     }
-    HapVerifyOpensslUtils::GetOpensslErrorMessage();
+    VerifyHapOpensslUtils::GetOpensslErrorMessage();
     char* subjectStr = X509_NAME_oneline(subjectName, NULL, 0);
     if (!subjectStr) {
         SIGNATURE_TOOLS_LOGE("Error create subject string\n");
@@ -153,3 +155,5 @@ std::string StringUtils::SubjectToString(X509* cert)
     std::string result = FormatLoading(subjectString);
     return result;
 }
+} // namespace SignatureTools
+} // namespace OHOS

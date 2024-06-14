@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,27 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_MATCHING_RESULT_H
-#define SIGNERTOOLS_MATCHING_RESULT_H
+#ifndef SIGNATRUETOOLS_MATCHING_RESULT_H
+#define SIGNATRUETOOLS_MATCHING_RESULT_H
 namespace OHOS {
-    namespace SignatureTools {
-        enum TrustedSources {
-            OTHER_TRUSTED_SOURCE = 0,
-            APP_GALLARY,
-            APP_SYSTEM,
-            APP_THIRD_PARTY_PRELOAD,
-        };
-        enum MatchingStates {
-            DO_NOT_MATCH = 0,
-            MATCH_WITH_SIGN,
-            MATCH_WITH_PROFILE,
-            MATCH_WITH_PROFILE_DEBUG,
-            MATCH_WITH_TICKET,
-        };
-        struct MatchingResult {
-            MatchingStates matchState;
-            TrustedSources source;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+enum TrustedSources {
+    OTHER_TRUSTED_SOURCE = 0,
+    APP_GALLARY,
+    APP_SYSTEM,
+    APP_THIRD_PARTY_PRELOAD,
+};
+enum MatchingStates {
+    DO_NOT_MATCH = 0,
+    MATCH_WITH_SIGN,
+    MATCH_WITH_PROFILE,
+    MATCH_WITH_PROFILE_DEBUG,
+    MATCH_WITH_TICKET,
+};
+struct MatchingResult {
+    MatchingStates matchState;
+    TrustedSources source;
+};
+} // namespace SignatureTools
 } // namespace OHOS
 #endif // HAP_MATCHING_RESULT_H

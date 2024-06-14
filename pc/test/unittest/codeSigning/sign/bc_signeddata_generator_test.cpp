@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -79,9 +79,9 @@ HWTEST_F(BCSignedDataGeneratorTest, GenerateSignedData001, testing::ext::TestSiz
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -179,9 +179,9 @@ HWTEST_F(BCSignedDataGeneratorTest, GetSigAlg001, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -237,9 +237,9 @@ HWTEST_F(BCSignedDataGeneratorTest, GetSigAlg002, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
 
     Options options;
@@ -294,9 +294,9 @@ HWTEST_F(BCSignedDataGeneratorTest, GetSigAlg003, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA384, "ECDSA_WITH_SHA384",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA384, "ECDSA_WITH_SHA384",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 

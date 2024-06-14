@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,28 +14,28 @@
  */
 #ifndef SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H
 #define SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H
+
 #include <string>
- /*
-* FsVerity hash algorithm
-*/
+
 namespace OHOS {
-    namespace SignatureTools {
-        class FsVerityHashAlgorithm {
-        public:
-            static const FsVerityHashAlgorithm SHA256;
-            static const FsVerityHashAlgorithm SHA512;
-            FsVerityHashAlgorithm(const uint8_t id, const std::string& hashAlgorithm, const int outputByteSize)
-                : id(id), hashAlgorithm(hashAlgorithm), outputByteSize(outputByteSize)
-            {
-            }
-            char GetId() const;
-            const std::string& GetHashAlgorithm() const;
-            int GetOutputByteSize() const;
-        private:
-            const uint8_t id;
-            const std::string hashAlgorithm;
-            const int outputByteSize;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+class FsVerityHashAlgorithm {
+public:
+    static const FsVerityHashAlgorithm SHA256;
+    static const FsVerityHashAlgorithm SHA512;
+    FsVerityHashAlgorithm(const uint8_t id, const std::string& hashAlgorithm, const int outputByteSize)
+        : id(id), hashAlgorithm(hashAlgorithm), outputByteSize(outputByteSize)
+    {
+    }
+    char GetId() const;
+    const std::string& GetHashAlgorithm() const;
+    int GetOutputByteSize() const;
+
+private:
+    const uint8_t id;
+    const std::string hashAlgorithm;
+    const int outputByteSize;
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif
+#endif // SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H

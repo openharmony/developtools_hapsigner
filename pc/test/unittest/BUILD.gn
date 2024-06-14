@@ -1,35 +1,43 @@
-import("../../signature_tools.gni")
-import("../../services/utils/signature_tools_utils.gni")
-import("../../services/zip/signature_tools_zip.gni")
-import("../../services/cmd/signature_tools_cmd.gni")
-import("../../services/codesigning/signature_tools_codesigning.gni")
-import("../../services/common/signature_tools_common.gni")
-import("../../services/hap/signature_tools_hap.gni")
-import("../../services/profile/signature_tools_profile.gni")
+# Copyright (c) 2024-2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
+import("../../signature_tools.gni")
 import("//build/ohos.gni")
 import("//build/test.gni")
 
 module_out_path = "developtools/hapsigner/hapsigner_pc"
 
-signature_tools_unittest_include = [
-    # "${signature_tools_root_path}/utils",
-    # "//third_party/openssl/include",
-    # "//third_party/bzip2",
-    # "//third_party/zlib",
-    # "${signature_tools_service}/cmd/include",
-    # "${signature_tools_service}/adapter/include",
-    "${signature_tools_service}/api/include",
-    "${signature_tools_service}/signer/include",
-    "//third_party/openssl/include",
-    "//third_party/openssl/crypto/pkcs12"
-]
+ohos_unittest("hapsigntool_pc_unittest") {
+  testonly = true
+  module_out_path = module_out_path
+  resource_config_file = "ohos_test.xml"
 
-signature_tools_unittest_src = [
-    "./hapSign/hap_sign_Test.cpp",
-    "./generateKeyPair/generate_keyPair_Test.cpp",
+  configs = [ "${signature_tools_test}:service_include" ]
 
-    "./hapVerify/hap_verify_test.cpp",
+  sources = [
+    "./utils/byte_array_utils_test.cpp",
+    "./utils/file_utils_test.cpp",
+
+    "./hapSign/hap_sign_test.cpp",
+    "./hapSign/hw_block_data_test.cpp",
+    "./hapSign/hw_block_head_test.cpp",
+    "./hapSign/hw_sign_head_test.cpp",
+    "./hapSign/sign_block_data_test.cpp",
+    "./hapSign/sign_bin_test.cpp",
+    "./hapSign/sign_provider_test.cpp",
+    "./hapSign/sign_elf_test.cpp",
+    "./generateKeyPair/generate_keypair_test.cpp",
+
     "./hapVerify/hap_verify_v2_test.cpp",
     "./hapVerify/hap_cert_verify_openssl_utils_test.cpp",
     "./hapVerify/hap_byte_buffer_test.cpp",
@@ -38,7 +46,14 @@ signature_tools_unittest_src = [
     "./hapVerify/hap_signing_block_utils_test.cpp",
     "./hapVerify/hap_verify_result_test.cpp",
 
-    "./generateCsr/generate_csr_unittest.cpp",
+    "./elfVerify/verify_elf_test.cpp",
+    "./elfVerify/verify_bin_test.cpp",
+    "./elfVerify/sign_block_info_test.cpp",
+    "./elfVerify/signing_block_test.cpp",
+    "./elfVerify/signature_block_types_test.cpp",
+    "./elfVerify/sign_content_info_test.cpp",
+    "./elfVerify/hap_utils_test.cpp",
+    "./generateCsr/generate_csr_test.cpp",
     "./generateCA/generate_ca_test.cpp",
 
     "./codeSigning/datastructure/code_sign_block_header_test.cpp",
@@ -61,82 +76,22 @@ signature_tools_unittest_src = [
     "./codeSigning/fsverity/fs_verity_generator_test.cpp",
     "./codeSigning/fsverity/fs_verity_hash_algorithm_test.cpp",
     "./codeSigning/fsverity/merkle_tree_builder_test.cpp",
+    "./codeSigning/fsverity/fs_verity_descriptor_with_sign_test.cpp",
 
-    "./zip/zip_test.cpp",
-    "./zip/random_access_file_test.cpp",
+    "./zip/zip_signer_test.cpp",
+    "./zip/random_access_file_input_output_test.cpp",
 
-    "./signProfile/sign_profile_unittest.cpp",
+    "./remoteSigner/remote_signer_test.cpp",
 
-    "${signature_tools_service}/api/src/localization_adapter.cpp",
-    "${signature_tools_service}/api/src/sign_tool_service_impl.cpp",
-    "${signature_tools_service}/api/src/cert_tools.cpp",
-    "${signature_tools_service}/signer/src/signer_factory.cpp",
-    "${signature_tools_service}/signer/src/local_signer.cpp",
-    "${signature_tools_service}/signer/src/isigner.cpp",
-]
-
-ohos_unittest("hapsigntool_pc_test") {
-  testonly = true
-  module_out_path = module_out_path
-  resource_config_file = "ohos_test.xml"
-
-  signature_tools_unittest_include += signature_tools_utils_include
-  signature_tools_unittest_include += signature_tools_zip_include
-  signature_tools_unittest_include += signature_tools_codesigning_include
-  signature_tools_unittest_include += signature_tools_common_include
-  signature_tools_unittest_include += signature_tools_hap_include
-  signature_tools_unittest_include += signature_tools_profile_include
-  signature_tools_unittest_include += signature_tools_cmd_include
-
-  # 在 //foundation/signaturetools/services/utils 模块里面定义编译脚本 signature_tools_utils.gni
-  signature_tools_unittest_src += signature_tools_utils_src
-  # 在 //foundation/signaturetools/services/zip 模块里面定义编译脚本 signature_tools_zip.gni 
-  signature_tools_unittest_src += signature_tools_zip_src
-  signature_tools_unittest_src += signature_tools_codesigning_src
-  signature_tools_unittest_src += signature_tools_common_src
-  signature_tools_unittest_src += signature_tools_hap_src
-  signature_tools_unittest_src += signature_tools_profile_src
-  signature_tools_unittest_src += signature_tools_cmd_src
-
-  include_dirs = signature_tools_unittest_include
-  sources = signature_tools_unittest_src
-
-
-
-  defines = [
-    "HI_LOG_ENABLE",
-    "SIGNATURE_LOG_TAG=\"SignatureTools\"",
-    "LOG_DOMAIN=0xD004100",
+    "signProfile/sign_profile_test.cpp",
+    "signProfile/pkcs7_data_test.cpp",
+    "signProfile/provision_test.cpp",
   ]
+
+  remove_configs = [ "//build/config/compiler:no_exceptions" ]
 
   deps = [
-    "//third_party/zlib:shared_libz",
-    "//third_party/bzip2:libbz2",
-    "//third_party/openssl:libcrypto_shared",
-    "//third_party/openssl:libssl_shared",
-  ]
-
-  external_deps = [
-    "c_utils:utils",
-    "hilog:libhilog",
-    "json:nlohmann_json_static",
-  ]
-
-  cflags = [
-     "--coverage"
-    #  "-fno-rtti",
-  ]
-
-  cflags_cc = [
-     "-std=c++17",
-     "--coverage"
-    #  "-fno-rtti",
-  ]
-
-  ldflags = [
-    "--coverage",
-     "-fPIC",
-     "-Wl,-E",
+    "${signature_tools_test}:service_target",
   ]
 
   install_images = [ "system" ]

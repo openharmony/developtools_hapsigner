@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,17 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <fstream>
 #include <map>
 #include <cstdio>
 #include <cstdlib>
-#include "hash_utils.h"
+
 #include "fs_digest_utils.h"
 #include "file_utils.h"
+#include "hash_utils.h"
 
-using namespace OHOS::SignatureTools;
-
-int HashUtils::GetHashAlgsId(const std::string &algMethod) { 
+namespace OHOS {
+namespace SignatureTools {
+    
+int HashUtils::GetHashAlgsId(const std::string& algMethod)
+{
     int result = static_cast<int>(HashAlgs::USE_NONE);
     if (0 == algMethod.compare("SHA-224")) {
         result = static_cast<int>(HashAlgs::USE_SHA224);
@@ -56,31 +60,31 @@ std::string HashUtils::GetHashAlgName(int algId)
     return "";
 }
 
-std::vector<signed char> HashUtils::GetFileDigest(const std::string &inputFile, const std::string &algName) {
+std::vector<signed char> HashUtils::GetFileDigest(const std::string& inputFile, const std::string& algName)
+{
     std::vector<signed char> result;
-    
+
     std::ifstream input(inputFile, std::ios::binary);
     if (0 != input.rdstate()) {
-        SIGNATURE_TOOLS_LOGE("failed to get input stream object!\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "failed to get input stream object!");
         return std::vector<signed char>();
     }
 
-    char buffer[HASH_LEN] = {0};// ÿ������ȡ4k
+    char buffer[HASH_LEN] = { 0 };
     int num = 0;
     std::map<int, std::vector<int8_t>> hashMap;
-    
+
     while (!input.eof()) {
         input.read(buffer, HASH_LEN);
 
         if (input.fail() && !input.eof()) {
-            SIGNATURE_TOOLS_LOGE("error occurred while reading data.\n");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "error occurred while reading data.");
             return std::vector<signed char>();
         }
 
         std::streamsize readLen = input.gcount();
         std::string str;
-        for (int i = 0; i < readLen; ++i)
-        {
+        for (int i = 0; i < readLen; ++i) {
             str.push_back(buffer[i]);
         }
 
@@ -90,11 +94,10 @@ std::vector<signed char> HashUtils::GetFileDigest(const std::string &inputFile, 
     }
 
     if (hashMap.empty()) {
-        SIGNATURE_TOOLS_LOGE("hashMap is empty.\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "hashMap is empty.");
         return std::vector<signed char>();
     }
 
-    // ժҪ�㷨
     DigestUtils digestUtils(HASH_SHA256);
     for (const auto& item : hashMap) {
         std::string str(item.second.begin(), item.second.end());
@@ -108,7 +111,7 @@ std::vector<signed char> HashUtils::GetFileDigest(const std::string &inputFile, 
 }
 
 std::vector<signed char> HashUtils::GetDigestFromBytes(const std::vector<int8_t>& fileBytes, int64_t length,
-    const std::string& algName)
+                                                       const std::string& algName)
 {
     if (fileBytes.empty() || length <= 0) {
         return std::vector<signed char>();
@@ -125,7 +128,7 @@ std::vector<signed char> HashUtils::GetDigestFromBytes(const std::vector<int8_t>
         readLength += readStr.size();
     }
     if (hashMap.empty()) {
-        SIGNATURE_TOOLS_LOGE("hashMap is empty.\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "hashMap is empty.");
         return std::vector<signed char>();
     }
     DigestUtils digestUtils(HASH_SHA256);
@@ -141,17 +144,17 @@ std::vector<signed char> HashUtils::GetDigestFromBytes(const std::vector<int8_t>
     return result;
 }
 
-std::vector<signed char> HashUtils::GetByteDigest(const std::string& str, int count, const std::string& algMethod) {
+std::vector<signed char> HashUtils::GetByteDigest(const std::string& str, int count, const std::string& algMethod)
+{
     std::vector<int8_t> result;
-
-    // ժҪ�㷨
     DigestUtils digestUtils(HASH_SHA256);
-    
     digestUtils.AddData(str);
     std::string digest = digestUtils.Result(DigestUtils::Type::BINARY);
-    
     for (int i = 0; i < digest.size(); i++) {
         result.push_back(digest[i]);
     }
     return result;
 }
+
+} // namespace SignatureTools
+} // namespace OHOS

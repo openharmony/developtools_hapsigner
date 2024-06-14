@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,206 +15,64 @@
 #ifndef SIGNATURETOOLS_PARAM_CONSTANTS_H
 #define SIGNATURETOOLS_PARAM_CONSTANTS_H
 #include <string>
+
 namespace OHOS {
-    namespace SignatureTools {
-        const std::string AAA;
-        // Define const parameters
-        class ParamConstants {
-        public:
-            /**
-             * error code of hap format error.
-             */
-            const static int HAP_FORMAT_ERROR = 20001;
-            /**
-         * error code of hap parse error.
-         */
-            const static int HAP_PARSE_ERROR = 20002;
-            /**
-         * error code of hap signatures error.
-         */
-            const static int HAP_SIGNATURE_ERROR = 20003;
-            /**
-         * error code of hap signature block not found error.
-         */
-            const static int HAP_SIGNATURE_NOT_FOUND_ERROR = 20004;
-            /**
-         * Algorithm name of sha-256.
-         */
-            static const std::string HAP_SIG_SCHEME_V256_DIGEST_ALGORITHM;
-            /**
-         * Algorithm name of sha-384.
-         */
-            static const std::string HAP_SIG_SCHEME_V384_DIGEST_ALGORITHM;
-            /**
-         * Algorithm name of sha-512.
-         */
-            static const std::string HAP_SIG_SCHEME_V512_DIGEST_ALGORITHM;
-            /**
-         * Signature algorithm name of SHA256withECDSA.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA256_ECDSA;
-            /**
-         * Signature algorithm name of SHA384withECDSA.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA384_ECDSA;
-            /**
-         * Signature algorithm name of SHA512withECDSA.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA512_ECDSA;
-            /**
-         * Signature algorithm name of SHA256withRSA.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA256_RSA;
-            /**
-         * Signature algorithm name of SHA384withRSA.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA384_RSA;
-            /**
-         * Signature algorithm name of SHA256withRSA/PSS.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA256_RSA_PSS;
-            /**
-         * Signature algorithm name of SHA384withRSA/PSS.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA384_RSA_PSS;
-            /**
-         * Signature algorithm name of SHA512withRSA/PSS.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA512_RSA_PSS;
-            /**
-         * Signature algorithm name of SHA256withRSAANDMGF1.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA256_RSA_MGF1;
-            /**
-         * Signature algorithm name of SHA384withRSAANDMGF1.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA384_RSA_MGF1;
-            /**
-         * Signature algorithm name of SHA512withRSAANDMGF1.
-         */
-            static const std::string HAP_SIG_ALGORITHM_SHA512_RSA_MGF1;
-            /**
-         * Default value of zip-file align
-         */
-            static const std::string ALIGNMENT;
-            /**
-         * Signature mode
-         */
-            static const std::string PARAM_SIGN_MODE;
-            /**
-         * Certificate revocation list
-         */
-            static const std::string PARAM_BASIC_CRL;
-            /**
-         * Hap-file's property, stored developer info
-         */
-            static const std::string PARAM_BASIC_PROPERTY;
-            /**
-         * Hap-file's capability profile
-         */
-            static const std::string PARAM_BASIC_PROFILE;
-            /**
-         * json type content of Hap-file's capability profile
-         */
-            static const std::string PARAM_PROFILE_JSON_CONTENT;
-            /**
-         * Hap-file's proof-of-rotation
-         */
-            static const std::string PARAM_BASIC_PROOF;
-            /**
-         * Alignment
-         */
-            static const std::string PARAM_BASIC_ALIGNMENT;
-            /**
-         * Private key used in signature
-         */
-            static const std::string PARAM_BASIC_PRIVATE_KEY;
-            /**
-         * Unsigned file
-         */
-            static const std::string PARAM_BASIC_INPUT_FILE;
-            /**
-         * Signed file
-         */
-            static const std::string PARAM_BASIC_OUTPUT_FILE;
-            /**
-         * Algorithm name of signature
-         */
-            static const std::string PARAM_BASIC_SIGANTURE_ALG;
-            /**
-         * Flag indicates whether profile is signed
-         */
-            static const std::string PARAM_BASIC_PROFILE_SIGNED;
-            /**
-         * The minimum SDK version required for running the application
-         */
-            static const std::string PARAM_BASIC_COMPATIBLE_VERSION;
-            /**
-         * Url of signature server
-         */
-            static const std::string PARAM_REMOTE_SERVER;
-            /**
-         * username used in remote sign mode
-         */
-            static const std::string PARAM_REMOTE_USERNAME;
-            static const std::string PARAM_REMOTE_USERPWD;
-            /**
-         * password used in remote sign mode
-         */
-            static const std::string PARAM_REMOTE_CODE;
-            static const std::string PARAM_REMOTE_ONLINEAUTHMODE;
-            static const std::string PARAM_REMOTE_SIGNERPLUGIN;
-            /**
-         * Local keystore path
-         */
-            static const std::string PARAM_LOCAL_JKS_KEYSTORE;
-            /**
-         * The password of keystore
-         */
-            static const std::string PARAM_LOCAL_JKS_KEYSTORE_CODE;
-            /**
-         * The key alias password
-         */
-            static const std::string PARAM_LOCAL_JKS_KEYALIAS_CODE;
-            /**
-         * The certificate file path
-         */
-            static const std::string PARAM_LOCAL_PUBLIC_CERT;
-            /**
-         * The path used to output certificate-chain
-         */
-            static const std::string PARAM_VERIFY_CERTCHAIN_FILE;
-            /**
-         * The path used to output profile
-         */
-            static const std::string PARAM_VERIFY_PROFILE_FILE;
-            /**
-         * The path used to output proof-rotation file
-         */
-            static const std::string PARAM_VERIFY_PROOF_FILE;
-            /**
-         * The path used to output property file
-         */
-            static const std::string PARAM_VERIFY_PROPERTY_FILE;
-            /**
-         * The config params of resign hap
-         */
-            static const std::string PARAM_RESIGN_CONFIG_FILE;
-            /**
-         * sign file type bin or zip or elf
-         */
-            static const std::string PARAM_IN_FORM;
-            /**
-         * The code sign params of resign hap
-         */
-            static const std::string PARAM_SIGN_CODE;
-            /**
-         * file name split . of min length
-         */
-            static constexpr int FILE_NAME_MIN_LENGTH = 2;
-            static const std::string DISABLE_SIGN_CODE;
-            static const std::string ENABLE_SIGN_CODE;
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+class ParamConstants {
+public:
+    const static int HAP_FORMAT_ERROR = 20001;
+    const static int HAP_PARSE_ERROR = 20002;
+    const static int HAP_SIGNATURE_ERROR = 20003;
+    const static int HAP_SIGNATURE_NOT_FOUND_ERROR = 20004;
+    static const std::string HAP_SIG_SCHEME_V256_DIGEST_ALGORITHM;
+    static const std::string HAP_SIG_SCHEME_V384_DIGEST_ALGORITHM;
+    static const std::string HAP_SIG_SCHEME_V512_DIGEST_ALGORITHM;
+    static const std::string HAP_SIG_ALGORITHM_SHA256_ECDSA;
+    static const std::string HAP_SIG_ALGORITHM_SHA384_ECDSA;
+    static const std::string HAP_SIG_ALGORITHM_SHA512_ECDSA;
+    static const std::string HAP_SIG_ALGORITHM_SHA256_RSA;
+    static const std::string HAP_SIG_ALGORITHM_SHA384_RSA;
+    static const std::string HAP_SIG_ALGORITHM_SHA256_RSA_PSS;
+    static const std::string HAP_SIG_ALGORITHM_SHA384_RSA_PSS;
+    static const std::string HAP_SIG_ALGORITHM_SHA512_RSA_PSS;
+    static const std::string HAP_SIG_ALGORITHM_SHA256_RSA_MGF1;
+    static const std::string HAP_SIG_ALGORITHM_SHA384_RSA_MGF1;
+    static const std::string HAP_SIG_ALGORITHM_SHA512_RSA_MGF1;
+    static const std::string ALIGNMENT;
+    static const std::string PARAM_SIGN_MODE;
+    static const std::string PARAM_BASIC_CRL;
+    static const std::string PARAM_BASIC_PROPERTY;
+    static const std::string PARAM_BASIC_PROFILE;
+    static const std::string PARAM_PROFILE_JSON_CONTENT;
+    static const std::string PARAM_BASIC_PROOF;
+    static const std::string PARAM_BASIC_ALIGNMENT;
+    static const std::string PARAM_BASIC_PRIVATE_KEY;
+    static const std::string PARAM_BASIC_INPUT_FILE;
+    static const std::string PARAM_BASIC_OUTPUT_FILE;
+    static const std::string PARAM_BASIC_SIGANTURE_ALG;
+    static const std::string PARAM_BASIC_PROFILE_SIGNED;
+    static const std::string PARAM_BASIC_COMPATIBLE_VERSION;
+    static const std::string PARAM_REMOTE_SERVER;
+    static const std::string PARAM_REMOTE_USERNAME;
+    static const std::string PARAM_REMOTE_USERPWD;
+    static const std::string PARAM_REMOTE_CODE;
+    static const std::string PARAM_REMOTE_ONLINEAUTHMODE;
+    static const std::string PARAM_REMOTE_SIGNERPLUGIN;
+    static const std::string PARAM_LOCAL_JKS_KEYSTORE;
+    static const std::string PARAM_LOCAL_JKS_KEYSTORE_CODE;
+    static const std::string PARAM_LOCAL_JKS_KEYALIAS_CODE;
+    static const std::string PARAM_LOCAL_PUBLIC_CERT;
+    static const std::string PARAM_VERIFY_CERTCHAIN_FILE;
+    static const std::string PARAM_VERIFY_PROFILE_FILE;
+    static const std::string PARAM_VERIFY_PROOF_FILE;
+    static const std::string PARAM_VERIFY_PROPERTY_FILE;
+    static const std::string PARAM_RESIGN_CONFIG_FILE;
+    static const std::string PARAM_IN_FORM;
+    static const std::string PARAM_SIGN_CODE;
+    static constexpr int FILE_NAME_MIN_LENGTH = 2;
+    static const std::string DISABLE_SIGN_CODE;
+    static const std::string ENABLE_SIGN_CODE;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATURETOOLS_PARAM_CONSTANTS_H

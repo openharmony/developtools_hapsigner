@@ -1,136 +1,33 @@
+import("../signature_tools.gni")
+import("../services/utils/signature_tools_utils.gni")
+import("../services/zip/signature_tools_zip.gni")
+import("../services/cmd/signature_tools_cmd.gni")
+import("../services/codesigning/signature_tools_codesigning.gni")
+import("../services/common/signature_tools_common.gni")
+import("../services/hap/signature_tools_hap.gni")
+import("../services/profile/signature_tools_profile.gni")
+
 import("//build/ohos.gni")
 
 config("service_include") {
   visibility = ["*"]
 
   include_dirs = [
-    "../services/cmd/include",
-    "../services/api/include",
-    "../services/utils/include",
-    "../services/error/include",
-    "../services/common/include",
-    "../services/hap/verify/include",
-    "../services/hap/provider/include",
-    "../services/profile/include",
-    "../services/signer/include",
-    "../services/Third_Party/window/json",
-    "../services/hap/utils/include",
-    "../services/hap/entity/include",
-    "../services/zip/include",
-    "../services/hap/sign/include",
-    "../services/hap/config/include",
-    "../services/codesigning/sign/include",
-    "../services/codesigning/datastructure/include",
-    "../services/codesigning/fsverity/include",
-    "../services/codesigning/utils/include",
-    "../services/profile/include",
-    "../services/utils/include",
-    "../services/hap/entity/include",
     "//third_party/openssl/include",
-    "//third_party/openssl/crypto/pkcs12"
+    "//third_party/openssl/crypto/pkcs12",
+    "${signature_tools_service_api}/include",
+    "${signature_tools_service_signer}/include",
   ]
-}
 
-ohos_source_set("service_obj") {
+  include_dirs += signature_tools_utils_include
+  include_dirs += signature_tools_zip_include
+  include_dirs += signature_tools_codesigning_include
+  include_dirs += signature_tools_common_include
+  include_dirs += signature_tools_hap_include
+  include_dirs += signature_tools_profile_include
+  include_dirs += signature_tools_cmd_include
+
   
-  sources = [
-    "../services/codesigning/fsverity/src/fs_verity_hash_algorithm.cpp",
-    "../services/codesigning/fsverity/src/fs_verity_digest.cpp",
-    "../services/codesigning/fsverity/src/fs_verity_descriptor.cpp",
-    "../services/codesigning/fsverity/src/merkle_tree_builder.cpp",
-    "../services/codesigning/fsverity/src/fs_verity_generator.cpp",
-    "../services/codesigning/sign/src/bc_signeddata_generator.cpp",
-    "../services/codesigning/sign/src/signeddata_generator.cpp",
-    "../services/codesigning/sign/src/code_signing.cpp",
-    "../services/codesigning/sign/src/verify_code_signature.cpp",
-    "../services/codesigning/datastructure/src/code_sign_block_header.cpp",
-    "../services/codesigning/datastructure/src/segment_header.cpp",
-    "../services/codesigning/datastructure/src/hap_info_segment.cpp",
-    "../services/codesigning/datastructure/src/merkle_tree_extension.cpp",
-    "../services/codesigning/datastructure/src/code_sign_block.cpp",
-    "../services/codesigning/datastructure/src/fs_verity_info_segment.cpp",
-    "../services/codesigning/datastructure/src/sign_info.cpp",
-    "../services/codesigning/datastructure/src/signed_file_pos.cpp",
-    "../services/codesigning/datastructure/src/native_lib_info_segment.cpp",
-    "../services/codesigning/datastructure/src/extension.cpp",
-    "../services/codesigning/utils/src/fs_digest_utils.cpp",
-    "../services/codesigning/utils/src/cms_utils.cpp",
-    "../services/profile/src/pkcs7_data.cpp",
-    "../services/profile/src/profile_sign_tool.cpp",
-    "../services/profile/src/provision_info.cpp",
-    "../services/profile/src/provision_verify.cpp",
-    "../services/profile/src/profile_verify_utils.cpp",
-    "../services/hap/provider/src/Local_sign_provider.cpp",
-    "../services/hap/provider/src/sign_provider.cpp",
-    "../services/hap/sign/src/pkcs7_generator.cpp",
-    "../services/hap/sign/src/bc_pkcs7_generator.cpp",
-    "../services/hap/sign/src/sign_hap.cpp",
-    "../services/hap/config/src/signer_config.cpp",
-    "../services/hap/entity/src/content_digest_algorithm.cpp",
-    "../services/hap/entity/src/param_constants.cpp",
-    "../services/hap/entity/src/signature_algorithm.cpp",
-    "../services/hap/utils/src/hap_utils.cpp",
-    "../services/hap/verify/src/hap_verify_result.cpp",
-    "../services/hap/verify/src/hap_verify.cpp",
-    "../services/hap/verify/src/hap_verify_v2.cpp",
-    "../services/api/src/sign_tool_service_impl.cpp",
-    "../services/api/src/localization_adapter.cpp",
-    "../services/api/src/cert_tools.cpp",
-    "../services/signer/src/signer_factory.cpp",
-    "../services/signer/src/local_signer.cpp",
-    "../services/signer/src/isigner.cpp",
-    "../services/zip/src/zip_signer.cpp",
-    "../services/zip/src/random_access_file_zip_data_input.cpp",
-    "../services/zip/src/central_directory.cpp",
-    "../services/zip/src/data_descriptor.cpp",
-    "../services/zip/src/zip_entry.cpp",
-    "../services/zip/src/endof_central_directory.cpp",
-    "../services/zip/src/zip_entry_data.cpp",
-    "../services/zip/src/unsigned_decimal_util.cpp",
-    "../services/zip/src/zip_entry_header.cpp",
-    "../services/zip/src/random_access_file_zip_data_output.cpp",
-    "../services/zip/src/zip_utils.cpp",
-    "../services/cmd/src/options.cpp",
-    "../services/cmd/src/params_trust_list.cpp",
-    "../services/cmd/src/param_process_util.cpp",
-    "../services/cmd/src/params.cpp",
-    "../services/cmd/src/hap_sign_tool.cpp",
-    "../services/cmd/src/method.cpp",
-    "../services/cmd/src/cmd_util.cpp",
-    "../services/utils/src/key_store_helper.cpp",
-    "../services/utils/src/signing_block_utils.cpp",
-    "../services/utils/src/cert_dn_utils.cpp",
-    "../services/utils/src/file_utils.cpp",
-    "../services/utils/src/cert_verify_openssl_utils.cpp",
-    "../services/utils/src/verify_openssl_utils.cpp",
-    "../services/utils/src/string_utils.cpp",
-    "../services/common/src/byte_buffer_data_source.cpp",
-    "../services/common/src/hash.cpp",
-    "../services/common/src/random_access_file.cpp",
-    "../services/common/src/file_data_source.cpp",
-    "../services/common/src/digest_parameter.cpp",
-    "../services/common/src/byte_buffer.cpp",
-  ]
-
-  configs = [ ":service_include" ]
-
-  remove_configs = [ "//build/config/compiler:no_exceptions" ]
-  
-  public_deps = [
-    "//third_party/jsoncpp:jsoncpp",
-    "//third_party/zlib:shared_libz",
-    "//third_party/bzip2:libbz2",
-    "//third_party/openssl:libcrypto_shared",
-    "//third_party/openssl:libssl_shared"
-  ]
-
-  public_external_deps = [
-    "c_utils:utils",
-    "hilog:libhilog",
-    "ipc:ipc_core",
-    "samgr:samgr_proxy",
-  ]
-
   defines = [
     "HI_LOG_ENABLE",
     "SIGNATURE_LOG_TAG=\"Signature_Tools\"",
@@ -151,5 +48,61 @@ ohos_source_set("service_obj") {
     "-Wl,-E",
     "--coverage",
   ]
+}
+
+ohos_source_set("service_target") {
+  
+  sources_obj = [
+    "${signature_tools_service_api}/src/sign_tool_service_impl.cpp",
+    "${signature_tools_service_api}/src/localization_adapter.cpp",
+    "${signature_tools_service_api}/src/cert_tools.cpp",
+    "${signature_tools_service_signer}/src/signer_factory.cpp",
+    "${signature_tools_service_signer}/src/local_signer.cpp",
+    "${signature_tools_service_signer}/src/signer.cpp",
+  ]
+
+  sources_obj += signature_tools_utils_src
+  sources_obj += signature_tools_zip_src
+  sources_obj += signature_tools_codesigning_src
+  sources_obj += signature_tools_common_src
+  sources_obj += signature_tools_hap_src
+  sources_obj += signature_tools_profile_src
+  sources_obj += signature_tools_cmd_src
+
+  sources = sources_obj
+
+  configs = [ ":service_include" ]
+
+  remove_configs = [ "//build/config/compiler:no_exceptions" ]
+  
+  public_deps = [
+    "//third_party/jsoncpp:jsoncpp",
+    "//third_party/zlib:shared_libz",
+    "//third_party/bzip2:libbz2",
+    "//third_party/openssl:libcrypto_shared",
+    "//third_party/openssl:libssl_shared"
+  ]
+
+  public_external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
+  ]
+
+  # cflags = [
+  #   "--coverage",
+  # ]
+
+  # cflags_cc = [
+  #   "-std=c++17",
+  #   "--coverage",
+  # ]
+
+  # ldflags = [
+  #   "-fPIC",
+  #   "-Wl,-E",
+  #   "--coverage",
+  # ]
 
 }

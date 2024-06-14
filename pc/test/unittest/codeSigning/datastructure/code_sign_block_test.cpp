@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,7 +48,7 @@ HWTEST_F(CodeSignBlockTest, addOneMerkleTree, testing::ext::TestSize.Level1)
 
     const std::string key;
     std::vector<int8_t> merkleTree;
-    api->addOneMerkleTree(key, merkleTree);  // 返回值void
+    api->AddOneMerkleTree(key, merkleTree);  // 返回值void
 
     EXPECT_EQ(true, true);
 }
@@ -66,7 +66,7 @@ HWTEST_F(CodeSignBlockTest, addToSegmentList, testing::ext::TestSize.Level1)
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
    
     SegmentHeader sh(SegmentHeader::CSB_NATIVE_LIB_INFO_SEG, 0);
-    api->addToSegmentList(sh);
+    api->AddToSegmentList(sh);
 
     EXPECT_EQ(true, true);
 }
@@ -84,7 +84,7 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset, testing::ext::TestSize.Leve
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
     
     long long codeSignBlockOffset = 949572;
-    long long offset = api->computeMerkleTreeOffset(codeSignBlockOffset);
+    long long offset = api->ComputeMerkleTreeOffset(codeSignBlockOffset);
 
     EXPECT_NE(offset, 0);
 }
@@ -102,7 +102,7 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset001, testing::ext::TestSize.L
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
     long long codeSignBlockOffset = -68;
-    long long offset = api->computeMerkleTreeOffset(codeSignBlockOffset);
+    long long offset = api->ComputeMerkleTreeOffset(codeSignBlockOffset);
 
     EXPECT_EQ(offset, 0);
 }
@@ -119,7 +119,7 @@ HWTEST_F(CodeSignBlockTest, computeSegmentOffset, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
     
-    api->computeSegmentOffset();
+    api->ComputeSegmentOffset();
 
     EXPECT_EQ(true, 1);
 }
@@ -136,7 +136,7 @@ HWTEST_F(CodeSignBlockTest, getCodeSignBlockHeader, testing::ext::TestSize.Level
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
     
-    api->getCodeSignBlockHeader();
+    api->GetCodeSignBlockHeader();
 
     EXPECT_EQ(true, 1);
 }
@@ -153,7 +153,7 @@ HWTEST_F(CodeSignBlockTest, getFsVerityInfoSegment, testing::ext::TestSize.Level
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    api->getFsVerityInfoSegment();
+    api->GetFsVerityInfoSegment();
 
     EXPECT_EQ(true, 1);
 }
@@ -170,7 +170,7 @@ HWTEST_F(CodeSignBlockTest, getHapInfoSegment, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    api->getHapInfoSegment();
+    api->GetHapInfoSegment();
 
     EXPECT_EQ(true, 1);
 }
@@ -188,7 +188,7 @@ HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName, testing::ext::TestSize.L
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
     std::string key = "test.so";
-    std::vector<int8_t> name = api->getOneMerkleTreeByFileName(key);
+    std::vector<int8_t> name = api->GetOneMerkleTreeByFileName(key);
 
     EXPECT_EQ(true, 1);
 }
@@ -205,7 +205,7 @@ HWTEST_F(CodeSignBlockTest, getSegmentHeaderList, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
    
-    std::vector<SegmentHeader> segmentHeaderList = api->getSegmentHeaderList();
+    std::vector<SegmentHeader> segmentHeaderList = api->GetSegmentHeaderList();
 
     EXPECT_EQ(segmentHeaderList.size(), 0);
 }
@@ -222,7 +222,7 @@ HWTEST_F(CodeSignBlockTest, getSoInfoSegment, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    api->getSoInfoSegment();
+    api->GetSoInfoSegment();
 
     EXPECT_EQ(true, 1);
 }
@@ -239,7 +239,7 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    api->setCodeSignBlockFlag();
+    api->SetCodeSignBlockFlag();
 
     EXPECT_EQ(true, 1);
 }
@@ -264,8 +264,8 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag001, testing::ext::TestSize.Leve
     std::vector<SignInfo>(),
     std::vector<int8_t>());
 
-    api->setSoInfoSegment(nativeLibInfoSegment);
-    api->setCodeSignBlockFlag();
+    api->SetSoInfoSegment(nativeLibInfoSegment);
+    api->SetCodeSignBlockFlag();
 
     EXPECT_EQ(true, 1);
 }
@@ -283,16 +283,16 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockHeader, testing::ext::TestSize.Level
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
     CodeSignBlockHeader::Builder* build = new CodeSignBlockHeader::Builder();
-    build->setBlockSize(4096);
-    build->setFlags(1);
-    build->setMagic(29);
+    build->SetBlockSize(4096);
+    build->SetFlags(1);
+    build->SetMagic(29);
     std::vector<int8_t> reservedVec(32, 1);
-    build->setReserved(reservedVec);
-    build->setSegmentNum(394);
-    build->setVersion(9);
+    build->SetReserved(reservedVec);
+    build->SetSegmentNum(394);
+    build->SetVersion(9);
     CodeSignBlockHeader codeSignBlockHeader(build);
 
-    api->setCodeSignBlockHeader(codeSignBlockHeader);
+    api->SetCodeSignBlockHeader(codeSignBlockHeader);
 
     EXPECT_EQ(true, 1);
 }
@@ -311,7 +311,7 @@ HWTEST_F(CodeSignBlockTest, setFsVerityInfoSegment, testing::ext::TestSize.Level
     
     FsVerityInfoSegment fsVeritySeg(1, 1, 12);
 
-    api->setFsVerityInfoSegment(fsVeritySeg);
+    api->SetFsVerityInfoSegment(fsVeritySeg);
 
     EXPECT_EQ(true, 1);
 }
@@ -340,7 +340,7 @@ HWTEST_F(CodeSignBlockTest, setHapInfoSegment, testing::ext::TestSize.Level1)
         3, 85, 4, 6, 1 };
     SignInfo signInfo(saltSize, flags, dataSize, salt, sig);
     HapInfoSegment hapInfoSegment(10945, signInfo);
-    api->setHapInfoSegment(hapInfoSegment);
+    api->SetHapInfoSegment(hapInfoSegment);
 
     EXPECT_EQ(true, 1);
 }
@@ -357,7 +357,7 @@ HWTEST_F(CodeSignBlockTest, setSegmentHeaders, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
     
-    api->setSegmentHeaders();
+    api->SetSegmentHeaders();
 
     EXPECT_EQ(true, 1);
 }
@@ -374,7 +374,7 @@ HWTEST_F(CodeSignBlockTest, setSegmentNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    api->setSegmentNum();
+    api->SetSegmentNum();
 
     EXPECT_EQ(true, 1);
 }
@@ -401,7 +401,7 @@ HWTEST_F(CodeSignBlockTest, setSoInfoSegment, testing::ext::TestSize.Level1)
 
     NativeLibInfoSegment soSeg(magic, segmentSize, sectionNum, signedFilePosList,
         fileNameList, signInfoList, zeroPadding);
-    api->setSoInfoSegment(soSeg);
+    api->SetSoInfoSegment(soSeg);
 
     EXPECT_EQ(true, 1);
 }
@@ -418,7 +418,7 @@ HWTEST_F(CodeSignBlockTest, toString, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    std::string str = api->toString();
+    std::string str = api->ToString();
 
     EXPECT_EQ(str.size(), 0);
 }

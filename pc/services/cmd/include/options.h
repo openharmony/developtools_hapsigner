@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,133 +12,113 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_OPTIONS_H
-#define SIGNERTOOLS_OPTIONS_H
+
+#ifndef SIGNATRUETOOLS_OPTIONS_H
+#define SIGNATRUETOOLS_OPTIONS_H
+
 #include <initializer_list>
 #include <unordered_map>
 #include <variant>
 #include <string>
+
 #include "signature_tools_log.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class Options : public std::unordered_map<std::string, std::variant<std::string, int, bool, char*>> {
-        public:
-            Options() = default;
-            ~Options() = default;
-            char* GetChars(const std::string key);
-            std::string GetString(const std::string key);
-            std::string GetString(const std::string key, std::string& checkStr);
-            int GetInt(const std::string key);
-            bool Equals(const std::string key1, const std::string key2);
-            bool Required(std::initializer_list<std::string> keys);
-            bool IsEmpty(std::string cs);
-            bool GetBool(const std::string key);
-        public:
-            /**
-         * Key alias parameter name.
-         */
-            static const std::string KEY_ALIAS;
-            /**
-         * Key right parameter name.
-         */
-            static const std::string KEY_RIGHTS;
-            /**
-         * Key size parameter name.
-         * (NIST-P-256, NIST-P-384)
-         */
-            static const std::string KEY_SIZE;
-            /**
-         * Key alg parameter name(ECC).
-         */
-            static const std::string KEY_ALG;
-            /**
-         * Keystore file parameter name.
-         */
-            static const std::string KEY_STORE_FILE;
-            /**
-         * Keystore right parameter name.
-         */
-            static const std::string KEY_STORE_RIGHTS;
-            /**
-         * Issuer key alias parameter name.
-         */
-            static const std::string ISSUER_KEY_ALIAS;
-            /**
-         * Issuer key right parameter name.
-         */
-            static const std::string ISSUER_KEY_RIGHTS;
-            /**
-         * Issuer Key Store File parameter name.
-         */
-            static const std::string ISSUER_KEY_STORE_FILE;
-            /**
-         * Issuer Key Store Pwd parameter name.
-         */
-            static const std::string ISSUER_KEY_STORE_RIGHTS;
-            /**
-         * issuer subject.
-         */
-            static const  std::string ISSUER;
-            /**
-         * issuer subject.
-         */
-            static const  std::string INFORM;
-            /**
-         * certificate subject.
-         */
-            static const  std::string SUBJECT;
-            /**
-         * the validity period of the certificate.
-         */
-            static const  std::string VALIDITY;
-            /**
-         * signature algorithm.
-         */
-            static const  std::string  SIGN_ALG;
-            /**
-         * length of path.
-         */
-            static const  std::string BASIC_CONSTRAINTS_PATH_LEN;
-            /**
-         * outfile.
-         */
-            static const std::string OUT_FILE;
-            /**
-         * End file type of cert. values in: cert / certChain
-         */
-            static const std::string OUT_FORM;
-            /**
-        * Sub cert for sign
-        */
-            static const std::string SUB_CA_CERT_FILE;
-            /**
-        * Ca cert file parameter name.
-        */
-            static const std::string CA_CERT_FILE;
-            /**
-         * In file parameter name.
-         */
-            static const std::string IN_FILE;
-            static const std::string PROFILE_CERT_FILE;
-            static const std::string APP_CERT_FILE;
-            static const std::string KEY_USAGE;
-            static const std::string EXT_KEY_USAGE;
-            static const std::string KEY_USAGE_CRITICAL;
-            static const std::string  EXT_KEY_USAGE_CRITICAL;
-            static const std::string  BASIC_CONSTRAINTS;
-            static const std::string  BASIC_CONSTRAINTS_CRITICAL;
-            static const std::string BASIC_CONSTRAINTS_CA;
-            /**
-         * Out form includes all forms.
-         */
-            static const std::string OUT_FORM_SCOPE;
-            static const std::string MODE;
-            static const std::string OUT_CERT_CHAIN;
-            static const std::string OUT_PROFILE;
-            static const std::string PROOF_FILE;
-            static const std::string PROFILE_FILE;
-            static const std::string PROFILE_SIGNED;
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+class Options : public std::unordered_map<std::string, std::variant<std::string, int, bool, char*>> {
+public:
+    Options() = default;
+    ~Options() = default;
+    char* GetChars(const std::string key);
+    std::string GetString(const std::string key);
+    std::string GetString(const std::string key, std::string checkStr);
+    int GetInt(const std::string key);
+    bool Equals(const std::string key1, const std::string& key2);
+    bool Required(std::initializer_list<std::string> keys);
+    bool IsEmpty(std::string cs);
+    bool GetBool(const std::string key);
+public:
+    /* Key alias parameter name. */
+    static const std::string KEY_ALIAS;
+
+    /* Key right parameter name. */
+    static const std::string KEY_RIGHTS;
+
+    /* Key size parameter name(NIST-P-256, NIST-P-384). */
+    static const std::string KEY_SIZE;
+
+    /* Key alg parameter name(ECC). */
+    static const std::string KEY_ALG;
+
+    /* Keystore file parameter name. */
+    static const std::string KEY_STORE_FILE;
+
+    /* Keystore right parameter name. */
+    static const std::string KEY_STORE_RIGHTS;
+
+    /* Issuer key alias parameter name. */
+    static const std::string ISSUER_KEY_ALIAS;
+
+    /* Issuer key right parameter name. */
+    static const std::string ISSUER_KEY_RIGHTS;
+
+    /* Issuer Key Store File parameter name. */
+    static const std::string ISSUER_KEY_STORE_FILE;
+
+    /* Issuer Key Store Pwd parameter name. */
+    static const std::string ISSUER_KEY_STORE_RIGHTS;
+
+    /* issuer subject. */
+    static const  std::string ISSUER;
+
+    /* issuer subject. */
+    static const  std::string INFORM;
+
+    /* certificate subject. */
+    static const  std::string SUBJECT;
+
+    /* the validity period of the certificate. */
+    static const  std::string VALIDITY;
+
+    /* signature algorithm. */
+    static const  std::string  SIGN_ALG;
+
+    /* length of path. */
+    static const  std::string BASIC_CONSTRAINTS_PATH_LEN;
+
+    /* outfile. */
+    static const std::string OUT_FILE;
+
+    /* End file type of cert. values in: cert / certChain */
+    static const std::string OUT_FORM;
+
+    /* Sub cert for sig. */
+    static const std::string SUB_CA_CERT_FILE;
+
+    /* Ca cert file parameter name. */
+    static const std::string CA_CERT_FILE;
+
+    /* In file parameter name. */
+    static const std::string IN_FILE;
+    static const std::string PROFILE_CERT_FILE;
+    static const std::string APP_CERT_FILE;
+    static const std::string KEY_USAGE;
+    static const std::string EXT_KEY_USAGE;
+    static const std::string KEY_USAGE_CRITICAL;
+    static const std::string  EXT_KEY_USAGE_CRITICAL;
+    static const std::string  BASIC_CONSTRAINTS;
+    static const std::string  BASIC_CONSTRAINTS_CRITICAL;
+    static const std::string BASIC_CONSTRAINTS_CA;
+
+    /* Out form includes all forms. */
+    static const std::string OUT_FORM_SCOPE;
+    static const std::string MODE;
+    static const std::string OUT_CERT_CHAIN;
+    static const std::string OUT_PROFILE;
+    static const std::string PROOF_FILE;
+    static const std::string PROFILE_FILE;
+    static const std::string PROFILE_SIGNED;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_OPTIONS_H

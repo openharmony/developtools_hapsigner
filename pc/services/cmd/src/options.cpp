@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,11 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "options.h"
-using namespace OHOS::SignatureTools;
-/**
-* Initializes the static member constant.
-*/
+
+namespace OHOS {
+namespace SignatureTools {
+
+/* Initializes the static member constant. */
 const std::string Options::KEY_ALIAS = "keyAlias";
 const std::string Options::KEY_RIGHTS = "keyPwd";
 const std::string Options::KEY_ALG = "keyAlg";
@@ -54,6 +56,7 @@ const std::string Options::OUT_PROFILE = "outProfile";
 const std::string Options::PROOF_FILE = "outproof";
 const std::string Options::PROFILE_FILE = "profileFile";
 const std::string Options::PROFILE_SIGNED = "profileSigned";
+
 char* Options::GetChars(const std::string key)
 {
     auto value = (*this)[key];
@@ -64,17 +67,19 @@ char* Options::GetChars(const std::string key)
     }
     return *charsPtr;
 }
+
 std::string Options::GetString(const std::string key)
 {
     auto value = (*this)[key];
     std::string* stringPtr = std::get_if<std::string>(&value);
     if (stringPtr == nullptr) {
-        CMD_ERROR_MSG("COMMAND_ERROR", COMMAND_ERROR, "param key value must in pairs");
+        SIGNATURE_TOOLS_LOGI("GetString  key = %{public}s value = """, key.c_str());
         return "";
     }
     return *stringPtr;
 }
-std::string Options::GetString(const std::string key, std::string& checkStr)
+
+std::string Options::GetString(const std::string key, std::string checkStr)
 {
     auto value = (*this)[key];
     std::string* stringPtr = std::get_if<std::string>(&value);
@@ -84,6 +89,7 @@ std::string Options::GetString(const std::string key, std::string& checkStr)
     }
     return *stringPtr;
 }
+
 int Options::GetInt(const std::string key)
 {
     auto value = (*this)[key];
@@ -94,7 +100,8 @@ int Options::GetInt(const std::string key)
     }
     return *stringPtr;
 }
-bool Options::Equals(const std::string key1, const std::string key2)
+
+bool Options::Equals(const std::string key1, const std::string& key2)
 {
     std::string ksFile = GetString(key1);
     std::string iksFile = GetString(key2);
@@ -103,16 +110,18 @@ bool Options::Equals(const std::string key1, const std::string key2)
     }
     return  false;
 }
+
 bool Options::Required(std::initializer_list<std::string> keys)
 {
     for (auto& key : keys) {
         if (!this->IsEmpty(key) && !(this->find(key) != this->end())) {
-            CMD_ERROR_MSG("COMMAND_ERROR", COMMAND_ERROR, "Params '" + key + "' is required");
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Params '" + key + "' is required");
             return false;
         }
     }
     return true;
 }
+
 bool Options::IsEmpty(std::string cs)
 {
     if (cs.length() == 0 || cs.empty()) {
@@ -120,9 +129,12 @@ bool Options::IsEmpty(std::string cs)
     }
     return false;
 }
+
 bool Options::GetBool(const std::string key)
 {
     auto value = (*this)[key];
     bool* stringPtr = std::get_if<bool>(&value);
     return *stringPtr;
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -18,10 +18,8 @@ signature_tools_cmd_include = [
 
 signature_tools_cmd_src = [
     "${signature_tools_service_cmd}/src/cmd_util.cpp",
-    "${signature_tools_service_cmd}/src/hap_sign_tool.cpp",
-    "${signature_tools_service_cmd}/src/method.cpp",
+    "${signature_tools_service_cmd}/src/params_run_tool.cpp",
     "${signature_tools_service_cmd}/src/options.cpp",
     "${signature_tools_service_cmd}/src/params_trust_list.cpp",
     "${signature_tools_service_cmd}/src/params.cpp",
-    "${signature_tools_service_cmd}/src/param_process_util.cpp",
 ]

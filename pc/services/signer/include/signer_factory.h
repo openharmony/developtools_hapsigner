@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,35 +15,37 @@
 #ifndef SINATURETOOLS_SIGNER_FACTORY_H
 #define SINATURETOOLS_SIGNER_FACTORY_H
 
+#include <dlfcn.h>
+
 #include "local_signer.h"
 #include "localization_adapter.h"
 #include "param_constants.h"
-#include <dlfcn.h>
+#include "remote_sign_provider.h"
 
 namespace OHOS {
-    namespace SignatureTools {
+namespace SignatureTools {
 
-        typedef struct RemoteSignerParam_type_st {
-            const char* data;
-            int64_t len;
-        } RemoteSignerParamType;
+typedef struct RemoteSignerParam_type_st {
+    const char* data;
+    size_t len;
+} RemoteSignerParamType;
 
-        typedef ISigner* (*RemoteSignerCreator)(RemoteSignerParamType,
-                                                RemoteSignerParamType,
-                                                RemoteSignerParamType,
-                                                RemoteSignerParamType,
-                                                RemoteSignerParamType);
+typedef Signer* (*RemoteSignerCreator)(RemoteSignerParamType,
+                                       RemoteSignerParamType,
+                                       RemoteSignerParamType,
+                                       RemoteSignerParamType,
+                                       RemoteSignerParamType);
 
-        class SignerFactory {
-        public:
-            SignerFactory() = default;
-            ~SignerFactory() = default;
+class SignerFactory {
+public:
+    SignerFactory() = default;
+    ~SignerFactory() = default;
 
-            std::shared_ptr<ISigner> GetSigner(LocalizationAdapter& adapter) const;
+    std::shared_ptr<Signer> GetSigner(LocalizationAdapter& adapter) const;
 
-        private:
-            std::shared_ptr<ISigner> LoadRemoteSigner(LocalizationAdapter& adapter) const;
-        };
-    }
-}
+private:
+    std::shared_ptr<Signer> LoadRemoteSigner(LocalizationAdapter& adapter) const;
+};
+} // namespace SignatureTools
+} // namespace OHOS
 #endif

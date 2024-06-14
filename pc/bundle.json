@@ -56,13 +56,14 @@
         },
         "build": {
             "sub_component": [
-                "//developtools/hapsigner/pc/services:hapsigntool_pc_service"
+                "//developtools/hapsigner/pc/services:hap-sign-tool",
+                "//developtools/hapsigner/pc/remote_signer:remote_signer"
             ],
             "inner_kits": [],
             "test": [
-               "//developtools/hapsigner/pc/test/unittest:hapsigntool_pc_test"
+                "//developtools/hapsigner/pc/test/unittest:hapsigntool_pc_unittest",
+                "//developtools/hapsigner/pc/test/fuzztest:hapsigntool_pc_fuzztest"
             ]
         }
     }
 }
-

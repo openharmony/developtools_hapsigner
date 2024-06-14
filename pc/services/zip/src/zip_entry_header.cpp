@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,17 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zip_entry_header.h"
 
+#include "zip_entry_header.h"
 #include "signature_tools_log.h"
 #include "unsigned_decimal_util.h"
 
-using namespace OHOS::SignatureTools;
-
-ZipEntryHeader* ZipEntryHeader::GetZipEntryHeader(std::vector<char> &bytes)
+namespace OHOS {
+namespace SignatureTools {
+ZipEntryHeader* ZipEntryHeader::GetZipEntryHeader(const std::string& bytes)
 {
     ZipEntryHeader* entryHeader = new ZipEntryHeader();
-    ByteBuffer bf((const char *)bytes.data(), bytes.size());
+    ByteBuffer bf(bytes.c_str(), bytes.size());
 
     int32_t entryHeaderInt32Value;
     bf.GetInt32(entryHeaderInt32Value);
@@ -60,27 +60,27 @@ ZipEntryHeader* ZipEntryHeader::GetZipEntryHeader(std::vector<char> &bytes)
     return entryHeader;
 }
 
-void ZipEntryHeader::ReadFileName(std::vector<char>& bytes)
+void ZipEntryHeader::ReadFileName(const std::string& bytes)
 {
-    this->fileName = std::string(bytes.begin(), bytes.end());
-}
-
-void ZipEntryHeader::ReadExtra(std::vector<char>& bytes)
-{
-    ByteBuffer bf(bytes.data(), bytes.size());
-    if (extraLength > 0) {
-        char* pExtra = new char[extraLength];
-        bf.GetData(pExtra, extraLength);
-
-        for (int i = 0; i < extraLength; ++i) {
-            this->extraData.push_back(pExtra[i]);
-        }
-
-        delete[] pExtra;
+    ByteBuffer bf(bytes.c_str(), bytes.size());
+    if (fileNameLength > 0) {
+        std::string nameBytes(fileNameLength, 0);
+        bf.GetData(&nameBytes[0], fileNameLength);
+        this->fileName = nameBytes;
     }
 }
 
-std::vector<char> ZipEntryHeader::ToBytes()
+void ZipEntryHeader::ReadExtra(const std::string& bytes)
+{
+    ByteBuffer bf(bytes.c_str(), bytes.size());
+    if (extraLength > 0) {
+        std::string extra(extraLength, 0);
+        bf.GetData(&extra[0], extraLength);
+        this->extraData = extra;
+    }
+}
+
+std::string ZipEntryHeader::ToBytes()
 {
     ByteBuffer bf(length);
 
@@ -96,18 +96,13 @@ std::vector<char> ZipEntryHeader::ToBytes()
     UnsignedDecimalUtil::SetUnsignedShort(bf, fileNameLength);
     UnsignedDecimalUtil::SetUnsignedShort(bf, extraLength);
     if (fileNameLength > 0) {
-        bf.PutData((const char*)fileName.c_str(), fileName.size());
+        bf.PutData(fileName.c_str(), fileName.size());
     }
     if (extraLength > 0) {
-        bf.PutData(extraData.data(), extraData.size());
+        bf.PutData(extraData.c_str(), extraData.size());
     }
 
-    bf.Flip();
-    char* retBuf = new char[length];
-    bf.GetData(retBuf, length);
-    std::vector<char> retVec(retBuf, retBuf + length);
-    delete[] retBuf;
-    return retVec;
+    return bf.ToString();
 }
 
 int ZipEntryHeader::GetHeaderLength()
@@ -180,22 +175,22 @@ void ZipEntryHeader::SetCrc32(int crc32)
     this->crc32 = crc32;
 }
 
-long long ZipEntryHeader::GetCompressedSize()
+int64_t ZipEntryHeader::GetCompressedSize()
 {
     return compressedSize;
 }
 
-void ZipEntryHeader::SetCompressedSize(long long compressedSize)
+void ZipEntryHeader::SetCompressedSize(int64_t compressedSize)
 {
     this->compressedSize = compressedSize;
 }
 
-long long ZipEntryHeader::GetUnCompressedSize()
+int64_t ZipEntryHeader::GetUnCompressedSize()
 {
     return unCompressedSize;
 }
 
-void ZipEntryHeader::SetUnCompressedSize(long long unCompressedSize)
+void ZipEntryHeader::SetUnCompressedSize(int64_t unCompressedSize)
 {
     this->unCompressedSize = unCompressedSize;
 }
@@ -220,7 +215,7 @@ void ZipEntryHeader::SetExtraLength(int extraLength)
     this->extraLength = extraLength;
 }
 
-std::string ZipEntryHeader::GetFileName()
+std::string ZipEntryHeader::GetFileName() const
 {
     return fileName;
 }
@@ -230,12 +225,12 @@ void ZipEntryHeader::SetFileName(const std::string& fileName)
     this->fileName = fileName;
 }
 
-std::vector<char> ZipEntryHeader::GetExtraData()
+std::string ZipEntryHeader::GetExtraData() const
 {
     return extraData;
 }
 
-void ZipEntryHeader::SetExtraData(std::vector<char>& extraData)
+void ZipEntryHeader::SetExtraData(const std::string& extraData)
 {
     this->extraData = extraData;
 }
@@ -249,3 +244,5 @@ void ZipEntryHeader::SetLength(int length)
 {
     this->length = length;
 }
+} // namespace SignatureTools
+} // namespace OHOS

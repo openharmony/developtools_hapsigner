@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -46,7 +46,7 @@ HWTEST_F(SignedFilePosTest, fromByteArray, testing::ext::TestSize.Level1)
         -126, 60, 116, 60, 10, 15, -125, 107, 127, -123, 81, 68, 28, -121, -20, -42, -116,
         -81, -6, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -63,7 +63,7 @@ HWTEST_F(SignedFilePosTest, getFileNameOffset, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
-    int32_t offset = api->getFileNameOffset();
+    int32_t offset = api->GetFileNameOffset();
 
     EXPECT_EQ(offset, 108);
 }
@@ -80,7 +80,7 @@ HWTEST_F(SignedFilePosTest, getFileNameSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
-    int32_t fileNameSize = api->getFileNameSize();
+    int32_t fileNameSize = api->GetFileNameSize();
 
     EXPECT_EQ(fileNameSize, 31);
 }
@@ -97,7 +97,7 @@ HWTEST_F(SignedFilePosTest, getSignInfoOffset, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
-    int32_t signInfoOffset = api->getSignInfoOffset();
+    int32_t signInfoOffset = api->GetSignInfoOffset();
 
     EXPECT_EQ(signInfoOffset, 280);
 }
@@ -114,7 +114,7 @@ HWTEST_F(SignedFilePosTest, getSignInfoSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
-    int32_t signInfoSize = api->getSignInfoSize();
+    int32_t signInfoSize = api->GetSignInfoSize();
 
     EXPECT_EQ(signInfoSize, 2068);
 }
@@ -131,7 +131,7 @@ HWTEST_F(SignedFilePosTest, increaseFileNameOffset, testing::ext::TestSize.Level
 {
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
-    api->increaseFileNameOffset(1);
+    api->IncreaseFileNameOffset(1);
 
     EXPECT_EQ(true, 1);
 }
@@ -148,7 +148,7 @@ HWTEST_F(SignedFilePosTest, increaseSignInfoOffset, testing::ext::TestSize.Level
 {
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
-    api->increaseSignInfoOffset(2);
+    api->IncreaseSignInfoOffset(2);
 
     EXPECT_EQ(true, 1);
 }

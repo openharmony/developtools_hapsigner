@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -59,7 +59,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 4);
     std::vector<signed char> bytes(readComment, readComment + 4);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -86,7 +86,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 8);
     std::vector<signed char> bytes(readComment, readComment + 8);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -114,7 +114,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 12);
     std::vector<signed char> bytes(readComment, readComment + 12);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -154,7 +154,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 36);
     std::vector<signed char> bytes(readComment, readComment + 36);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -194,7 +194,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray005, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 36);
     std::vector<signed char> bytes(readComment, readComment + 36);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -211,7 +211,7 @@ HWTEST_F(NativeLibInfoSegmentTest, getFileNameList, testing::ext::TestSize.Level
 {
     std::shared_ptr<NativeLibInfoSegment> api = std::make_shared<NativeLibInfoSegment>();
 
-    std::vector<std::string> fileNameVec = api->getFileNameList();
+    std::vector<std::string> fileNameVec = api->GetFileNameList();
 
     EXPECT_EQ(fileNameVec.size(), 0);
 }
@@ -227,7 +227,7 @@ HWTEST_F(NativeLibInfoSegmentTest, getFileNameList, testing::ext::TestSize.Level
 HWTEST_F(NativeLibInfoSegmentTest, getSectionNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<NativeLibInfoSegment> api = std::make_shared<NativeLibInfoSegment>();
-    api->getSectionNum();
+    api->GetSectionNum();
 
     EXPECT_EQ(true, 1);
 }
@@ -244,7 +244,7 @@ HWTEST_F(NativeLibInfoSegmentTest, getSignInfoList, testing::ext::TestSize.Level
 {
     std::shared_ptr<NativeLibInfoSegment> api = std::make_shared<NativeLibInfoSegment>();
 
-    std::vector<SignInfo> signInfoVec = api->getSignInfoList();
+    std::vector<SignInfo> signInfoVec = api->GetSignInfoList();
 
     EXPECT_EQ(signInfoVec.size(), 0);
 }
@@ -284,7 +284,7 @@ HWTEST_F(NativeLibInfoSegmentTest, setSoInfoList, testing::ext::TestSize.Level1)
     soInfoList.push_back(std::make_pair("info.so", signInfo1));
     soInfoList.push_back(std::make_pair("info.so", signInfo2));
 
-    api->setSoInfoList(soInfoList);
+    api->SetSoInfoList(soInfoList);
 
     EXPECT_EQ(true, 1);
 }
@@ -301,7 +301,7 @@ HWTEST_F(NativeLibInfoSegmentTest, size, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<NativeLibInfoSegment> api = std::make_shared<NativeLibInfoSegment>();
 
-    int32_t nativeLibInfoSegmentSize = api->size();
+    int32_t nativeLibInfoSegmentSize = api->Size();
 
     EXPECT_NE(nativeLibInfoSegmentSize, 0);
 }

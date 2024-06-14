@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,13 +13,17 @@
  * limitations under the License.
  */
 #include "code_sign_block_header.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
+
 CodeSignBlockHeader::CodeSignBlockHeader()
 {
     this->magic = MAGIC_NUM;
     this->version = CODE_SIGNING_VERSION;
     this->reserved = std::vector<int8_t>(RESERVED_BYTE_ARRAY_LENGTH);
 }
+
 CodeSignBlockHeader::CodeSignBlockHeader(Builder* builder)
 {
     this->magic = builder->magic;
@@ -29,32 +33,39 @@ CodeSignBlockHeader::CodeSignBlockHeader(Builder* builder)
     this->flags = builder->flags;
     this->reserved = builder->reserved;
 }
+
 CodeSignBlockHeader::~CodeSignBlockHeader()
 {
 }
-void CodeSignBlockHeader::setSegmentNum(int num)
+
+void CodeSignBlockHeader::SetSegmentNum(int num)
 {
     this->segmentNum = num;
 }
-int CodeSignBlockHeader::getSegmentNum()
+
+int CodeSignBlockHeader::GetSegmentNum()
 {
     return segmentNum;
 }
-void CodeSignBlockHeader::setBlockSize(long long size)
+
+void CodeSignBlockHeader::SetBlockSize(long long size)
 {
     this->blockSize = static_cast<int>(size);
 }
-int CodeSignBlockHeader::getBlockSize()
+
+int CodeSignBlockHeader::GetBlockSize()
 {
     return blockSize;
 }
-void CodeSignBlockHeader::setFlags(int flags)
+
+void CodeSignBlockHeader::SetFlags(int flags)
 {
     this->flags = flags;
 }
-std::vector<int8_t> CodeSignBlockHeader::toByteArray()
+
+std::vector<int8_t> CodeSignBlockHeader::ToByteArray()
 {
-    ByteBuffer bf(size());
+    ByteBuffer bf(Size());
     bf.PutInt64(magic);
     bf.PutInt32(version);
     bf.PutInt32(blockSize);
@@ -64,10 +75,11 @@ std::vector<int8_t> CodeSignBlockHeader::toByteArray()
     std::vector<int8_t> ret(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetPosition());
     return ret;
 }
-CodeSignBlockHeader* CodeSignBlockHeader::fromByteArray(std::vector<signed char>& bytes)
+
+CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(std::vector<signed char>& bytes)
 {
-    if (bytes.size() != size()) {
-        SIGNATURE_TOOLS_LOGE("Invalid size of CodeSignBlockHeader.\n");
+    if (bytes.size() != Size()) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid size of CodeSignBlockHeader.");
         return nullptr;
     }
     ByteBuffer bf(bytes.size());
@@ -76,13 +88,13 @@ CodeSignBlockHeader* CodeSignBlockHeader::fromByteArray(std::vector<signed char>
     long long inMagic;
     bf.GetInt64(inMagic);
     if (inMagic != MAGIC_NUM) {
-        SIGNATURE_TOOLS_LOGE("Invalid magic num of CodeSignBlockHeader.\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid magic num of CodeSignBlockHeader.");
         return nullptr;
     }
     int inVersion;
     bf.GetInt32(inVersion);
     if (inVersion != CODE_SIGNING_VERSION) {
-        SIGNATURE_TOOLS_LOGE("Invalid version of CodeSignBlockHeader.\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid version of CodeSignBlockHeader.");
         return nullptr;
     }
     int inBlockSize;
@@ -90,71 +102,83 @@ CodeSignBlockHeader* CodeSignBlockHeader::fromByteArray(std::vector<signed char>
     int inSegmentNum;
     bf.GetInt32(inSegmentNum);
     if (inSegmentNum != SEGMENT_NUM) {
-        SIGNATURE_TOOLS_LOGE("Invalid segmentNum of CodeSignBlockHeader.\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid segmentNum of CodeSignBlockHeader.");
         return nullptr;
     }
     int inFlags;
     bf.GetInt32(inFlags);
     if (inFlags < 0 || inFlags >(FLAG_MERKLE_TREE_INLINED + FLAG_NATIVE_LIB_INCLUDED)) {
-        SIGNATURE_TOOLS_LOGE("Invalid flags of CodeSignBlockHeader.\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid flags of CodeSignBlockHeader.");
         return nullptr;
     }
     std::vector<signed char> inReserved(RESERVED_BYTE_ARRAY_LENGTH);
     bf.GetByte(inReserved.data(), RESERVED_BYTE_ARRAY_LENGTH);
     CodeSignBlockHeader::Builder* tempVar = new CodeSignBlockHeader::Builder();
-    CodeSignBlockHeader* codeSignBlockHeader = tempVar->setMagic(inMagic)->setVersion(inVersion)->
-        setBlockSize(inBlockSize)->setSegmentNum(inSegmentNum)->
-        setFlags(inFlags)->setReserved(inReserved)->build();
+    CodeSignBlockHeader* codeSignBlockHeader = tempVar->SetMagic(inMagic)->SetVersion(inVersion)->
+        SetBlockSize(inBlockSize)->SetSegmentNum(inSegmentNum)->
+        SetFlags(inFlags)->SetReserved(inReserved)->Build();
     delete tempVar;
     return codeSignBlockHeader;
 }
-int CodeSignBlockHeader::size()
+
+int CodeSignBlockHeader::Size()
 {
     return MAGIC_BYTE_ARRAY_LENGTH + MAGIC_BYTE_LENGTH * MAGIC_BYTE_LENGTH + RESERVED_BYTE_ARRAY_LENGTH;
 }
-std::string CodeSignBlockHeader::toString()
+
+std::string CodeSignBlockHeader::ToString()
 {
     return std::string("CodeSignBlockHeader{magic: " + std::to_string(this->magic)
-        + ", version: " + std::to_string(this->version)
-        + ", blockSize: " + std::to_string(this->blockSize)
-        + ", segmentNum: " + std::to_string(this->segmentNum)
-        + ", flags: " + std::to_string(this->flags) + "}");
+                       + ", version: " + std::to_string(this->version)
+                       + ", blockSize: " + std::to_string(this->blockSize)
+                       + ", segmentNum: " + std::to_string(this->segmentNum)
+                       + ", flags: " + std::to_string(this->flags) + "}");
 }
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::setMagic(long long magic)
+
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetMagic(long long magic)
 {
     this->magic = magic;
     return this;
 }
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::setVersion(int version)
+
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetVersion(int version)
 {
     this->version = version;
     return this;
 }
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::setBlockSize(int blockSize)
+
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetBlockSize(int blockSize)
 {
     this->blockSize = blockSize;
     return this;
 }
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::setSegmentNum(int segmentNum)
+
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetSegmentNum(int segmentNum)
 {
     this->segmentNum = segmentNum;
     return this;
 }
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::setFlags(int flags)
+
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetFlags(int flags)
 {
     this->flags = flags;
     return this;
 }
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::setReserved(std::vector<signed char>& reserved)
+
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetReserved(std::vector<signed char>& reserved)
 {
     this->reserved = reserved;
     return this;
 }
-CodeSignBlockHeader* CodeSignBlockHeader::Builder::build()
+
+CodeSignBlockHeader* CodeSignBlockHeader::Builder::Build()
 {
     return new CodeSignBlockHeader(this);
 }
+
 CodeSignBlockHeader::Builder::~Builder()
 {
+}
 
+}
 }

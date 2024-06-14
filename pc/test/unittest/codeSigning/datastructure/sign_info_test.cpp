@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,7 +47,7 @@ HWTEST_F(SignInfoTest, fromByteArray, testing::ext::TestSize.Level1)
         -71, -126, 60, 116, 60, 10, 15, -125, 107, 127, -123, 81, 68, 28, -121, -20,
         -42, -116, -81, -6, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -64,7 +64,7 @@ HWTEST_F(SignInfoTest, getDataSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignInfo> api = std::make_shared<SignInfo>();
 
-    int64_t dataSize = api->getDataSize();
+    int64_t dataSize = api->GetDataSize();
 
     EXPECT_EQ(dataSize, 0);
 }
@@ -82,7 +82,7 @@ HWTEST_F(SignInfoTest, getExtensionByType, testing::ext::TestSize.Level1)
     std::shared_ptr<SignInfo> api = std::make_shared<SignInfo>();
 
     int32_t type = 1;
-    Extension* pExtension = api->getExtensionByType(type);
+    Extension* pExtension = api->GetExtensionByType(type);
 
     EXPECT_EQ(pExtension, nullptr);
 }
@@ -99,7 +99,7 @@ HWTEST_F(SignInfoTest, getExtensionNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignInfo> api = std::make_shared<SignInfo>();
     
-    int32_t extensionNum = api->getExtensionNum();
+    int32_t extensionNum = api->GetExtensionNum();
 
     EXPECT_EQ(extensionNum, 0);
 }
@@ -116,7 +116,7 @@ HWTEST_F(SignInfoTest, getSignature, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignInfo> api = std::make_shared<SignInfo>();
 
-    std::vector<int8_t> signatureVec = api->getSignature();
+    std::vector<int8_t> signatureVec = api->GetSignature();
 
     EXPECT_EQ(signatureVec.size(), 0);
 }
@@ -133,7 +133,7 @@ HWTEST_F(SignInfoTest, getSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignInfo> api = std::make_shared<SignInfo>();
 
-    int32_t sizeInt = api->getSize();
+    int32_t sizeInt = api->GetSize();
 
     EXPECT_EQ(sizeInt, 60);
 }
@@ -158,7 +158,7 @@ HWTEST_F(SignInfoTest, parseMerkleTreeExtension, testing::ext::TestSize.Level1)
     ByteBuffer bf((int32_t)bytes.size());
     bf.PutData((char*)bytes.data(), bytes.size());
 
-    std::vector<MerkleTreeExtension*> extensionVec = api->parseMerkleTreeExtension(&bf, 1);
+    std::vector<MerkleTreeExtension*> extensionVec = api->ParseMerkleTreeExtension(&bf, 1);
 
     EXPECT_EQ(extensionVec.size(), 0);
 }
@@ -175,7 +175,7 @@ HWTEST_F(SignInfoTest, toByteArray, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignInfo> api = std::make_shared<SignInfo>();
 
-    std::vector<int8_t> bytes = api->toByteArray();
+    std::vector<int8_t> bytes = api->ToByteArray();
 
     EXPECT_EQ(bytes.size(), 60);
 }

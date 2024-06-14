@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,59 +12,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <fstream>
 #include <iostream>
-#include "zip_entry_data.h"
+
 #include "file_utils.h"
 #include "signature_tools_log.h"
+#include "zip_entry_data.h"
 
-using namespace OHOS::SignatureTools;
-
-ZipEntryHeader *ZipEntryData::GetZipEntryHeader()
+namespace OHOS {
+namespace SignatureTools {
+ZipEntryHeader* ZipEntryData::GetZipEntryHeader()
 {
     return zipEntryHeader;
 }
 
-ZipEntryData* ZipEntryData::GetZipEntry(std::ifstream& input, long long entryOffset, long long fileSize)
+ZipEntryData* ZipEntryData::GetZipEntry(std::ifstream& input, int64_t entryOffset, int64_t fileSize)
 {
-    long long offset = entryOffset;
-    // read entry header by file and offset.
+    int64_t offset = entryOffset;
+    /* read entry header by file and offset. */
     std::string retStr;
     if (FileUtils::ReadInputByOffsetAndLength(input, entryOffset, ZipEntryHeader::HEADER_LENGTH, retStr) != 0) {
         SIGNATURE_TOOLS_LOGE("ReadInputByOffsetAndLength error");
         return nullptr;
     }
-    std::vector<char> headBytes(retStr.begin(), retStr.end());
-    ZipEntryHeader* entryHeader = ZipEntryHeader::GetZipEntryHeader(headBytes);
+    ZipEntryHeader* entryHeader = ZipEntryHeader::GetZipEntryHeader(retStr);
     if (!entryHeader) {
         SIGNATURE_TOOLS_LOGE("entry header is nullptr.");
         return nullptr;
     }
     offset += ZipEntryHeader::HEADER_LENGTH;
 
-    // read entry file name and extra by offset.
-    if (!ReadEntryFileNameAndExtraByOffset(input, entryHeader, offset)) return nullptr;
-
-    // skip file data , save file offset and size.
+    /* read entry file name and extra by offset. */
+    if (!ReadEntryFileNameAndExtraByOffset(input, entryHeader, offset)) {
+        return nullptr;
+    }
+    /* skip file data , save file offset and size. */
     ZipEntryData* entry = new ZipEntryData();
     entry->SetFileOffset(offset);
     entry->SetFileSize(fileSize);
     input.seekg(fileSize, std::ios::cur);
-    long long entryLength = entryHeader->GetLength() + fileSize;
-    short flag = entryHeader->GetFlag();
-    // set desc null flag
-    bool hasDesc = (flag & HAS_DATA_DESCRIPTOR_MASK) != NOT_HAS_DATA_DESCRIPTOR_FLAG;
-    if (hasDesc) {
-        // assuming entry has data descriptor, read entry data descriptor.
-        retStr.clear();
+    int64_t entryLength = entryHeader->GetLength() + fileSize;
+
+    /* set desc null flag */
+    if ((entryHeader->GetFlag() & HAS_DATA_DESCRIPTOR_MASK) != NOT_HAS_DATA_DESCRIPTOR_FLAG) {
+        /* if entry has data descriptor, read entry data descriptor. */
+        std::string retStr;
         if (FileUtils::ReadInputByLength(input, DataDescriptor::DES_LENGTH, retStr) != 0) {
-            SIGNATURE_TOOLS_LOGE("ReadInputByLength error");
+            SIGNATURE_TOOLS_LOGE("ReadInputByLength error.");
             return nullptr;
         }
-        std::vector<char> desBytes(retStr.begin(), retStr.end());
-        DataDescriptor* dataDesc = DataDescriptor::GetDataDescriptor(desBytes);
+        DataDescriptor* dataDesc = DataDescriptor::GetDataDescriptor(retStr);
         if (!dataDesc) {
-            SIGNATURE_TOOLS_LOGE("get data descriptor failed.");
+            SIGNATURE_TOOLS_LOGE("GetDataDescriptor error.");
             return nullptr;
         }
         entryLength += DataDescriptor::DES_LENGTH;
@@ -75,74 +75,73 @@ ZipEntryData* ZipEntryData::GetZipEntry(std::ifstream& input, long long entryOff
     return entry;
 }
 
-bool ZipEntryData::ReadEntryFileNameAndExtraByOffset(std::ifstream &input,
-                                                     ZipEntryHeader *entryHeader,
-                                                     long long &offset)
+bool ZipEntryData::ReadEntryFileNameAndExtraByOffset(std::ifstream& input, ZipEntryHeader* entryHeader,
+    int64_t& offset)
 {
     if (entryHeader->GetFileNameLength() > 0) {
         std::string fileNameStr;
         if (FileUtils::ReadInputByLength(input, entryHeader->GetFileNameLength(), fileNameStr) != 0) {
-            SIGNATURE_TOOLS_LOGE("Read Input By Length ERROR");
+            SIGNATURE_TOOLS_LOGE("ReadInputByLength error");
             return false;
         }
-        std::vector<char> fileNameBytes(fileNameStr.begin(), fileNameStr.end());
-        entryHeader->ReadFileName(fileNameBytes);
+        entryHeader->ReadFileName(fileNameStr);
         offset += entryHeader->GetFileNameLength();
     }
     if (entryHeader->GetExtraLength() > 0) {
         std::string extraStr;
         if (FileUtils::ReadInputByLength(input, entryHeader->GetExtraLength(), extraStr) != 0) {
-            SIGNATURE_TOOLS_LOGE("Read Input By Length ERROR");
+            SIGNATURE_TOOLS_LOGE("ReadInputByLength error");
             return false;
         }
-        std::vector<char> extraBytes(extraStr.begin(), extraStr.end());
-        entryHeader->ReadExtra(extraBytes);
+        entryHeader->ReadExtra(extraStr);
         offset += entryHeader->GetExtraLength();
     }
     return true;
 }
 
-void ZipEntryData::SetZipEntryHeader(ZipEntryHeader *zipEntryHeader)
+void ZipEntryData::SetZipEntryHeader(ZipEntryHeader* zipEntryHeader)
 {
     this->zipEntryHeader = zipEntryHeader;
 }
 
-DataDescriptor *ZipEntryData::GetDataDescriptor()
+DataDescriptor* ZipEntryData::GetDataDescriptor()
 {
     return dataDescriptor;
 }
 
-void ZipEntryData::SetDataDescriptor(DataDescriptor *dataDescriptor)
+void ZipEntryData::SetDataDescriptor(DataDescriptor* dataDescriptor)
 {
     this->dataDescriptor = dataDescriptor;
 }
 
-long ZipEntryData::GetFileOffset()
+int64_t ZipEntryData::GetFileOffset()
 {
     return fileOffset;
 }
 
-void ZipEntryData::SetFileOffset(long fileOffset)
+void ZipEntryData::SetFileOffset(int64_t fileOffset)
 {
     this->fileOffset = fileOffset;
 }
 
-long ZipEntryData::GetFileSize()
+int64_t ZipEntryData::GetFileSize()
 {
     return fileSize;
 }
 
-void ZipEntryData::SetFileSize(long fileSize)
+void ZipEntryData::SetFileSize(int64_t fileSize)
 {
     this->fileSize = fileSize;
 }
 
-long ZipEntryData::GetLength()
+int64_t ZipEntryData::GetLength()
 {
     return length;
 }
 
-void ZipEntryData::SetLength(long length)
+void ZipEntryData::SetLength(int64_t length)
 {
     this->length = length;
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,7 @@
 #include "random_access_file.h"
 #include "hap_verify_result.h"
 
-#include "signing_block_utils.h"
+#include "hap_signer_block_utils.h"
 #include "hap_signing_block_utils_test.h"
 #include "test_const.h"
 
@@ -71,7 +71,7 @@ namespace {
          */
         std::string filePath = "./hapVerify/test_hapverify.zip";
         SignatureInfo si0;
-        int32_t sumLen = HapSigningBlockUtils::CreatTestZipFile(filePath, si0);
+        int32_t sumLen = HapSignerBlockUtils::CreatTestZipFile(filePath, si0);
         RandomAccessFile hapTestFile1;
         bool initRet = hapTestFile1.Init(filePath);
         ASSERT_TRUE(initRet);
@@ -100,7 +100,7 @@ namespace {
          */
         std::string testFile = "./hapVerify/test_hapverify.txt";
         SignatureInfo si;
-        sumLen = HapSigningBlockUtils::CreatTestZipFile(testFile, si);
+        sumLen = HapSignerBlockUtils::CreatTestZipFile(testFile, si);
         RandomAccessFile hapTestFile2;
         initRet = hapTestFile2.Init(testFile);
         ASSERT_TRUE(initRet);

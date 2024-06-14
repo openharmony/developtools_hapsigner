@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,35 +12,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATURETOOLS_SIGNED_FILE_POS_H
-#define SIGNATURETOOLS_SIGNED_FILE_POS_H
+#ifndef SIGNATRUETOOLS_SIGNED_FILE_POS_H
+#define SIGNATRUETOOLS_SIGNED_FILE_POS_H
+
 #include <vector>
 #include <string>
 #include <memory>
 #include <cstdint>
+
 #include "byte_buffer.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class SignedFilePos {
-        public:
-            SignedFilePos(int32_t fileNameOffset,
-                int32_t fileNameSize,
-                int32_t signInfoOffset,
-                int32_t signInfoSize);
-        public:
-            int32_t getFileNameOffset();
-            int32_t getFileNameSize();
-            int32_t getSignInfoOffset();
-            int32_t getSignInfoSize();
-            void increaseFileNameOffset(int32_t incOffset);
-            void increaseSignInfoOffset(int32_t incOffset);
-            static SignedFilePos fromByteArray(std::vector<int8_t> bytes);
-        private:
-            int32_t fileNameOffset;
-            int32_t fileNameSize;
-            int32_t signInfoOffset;
-            int32_t signInfoSize;
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+
+class SignedFilePos {
+public:
+    SignedFilePos(int32_t fileNameOffset,
+                  int32_t fileNameSize,
+                  int32_t signInfoOffset,
+                  int32_t signInfoSize);
+    int32_t GetFileNameOffset();
+    int32_t GetFileNameSize();
+    int32_t GetSignInfoOffset();
+    int32_t GetSignInfoSize();
+    void IncreaseFileNameOffset(int32_t incOffset);
+    void IncreaseSignInfoOffset(int32_t incOffset);
+    static SignedFilePos FromByteArray(std::vector<int8_t> bytes);
+
+private:
+    int32_t fileNameOffset;
+    int32_t fileNameSize;
+    int32_t signInfoOffset;
+    int32_t signInfoSize;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_SIGNED_FILE_POS_H

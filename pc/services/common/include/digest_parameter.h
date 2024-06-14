@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,23 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_DIGESTPARAMETER_H
-#define SIGNERTOOLS_DIGESTPARAMETER_H
+#ifndef SIGNATRUETOOLS_DIGESTPARAMETER_H
+#define SIGNATRUETOOLS_DIGESTPARAMETER_H
+
 #include "export_define.h"
 #include "openssl/ossl_typ.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class DigestParameter {
-        public:
-            DLL_EXPORT DigestParameter();
-            DLL_EXPORT ~DigestParameter();
-            DLL_EXPORT DigestParameter(const DigestParameter& other);
-            DLL_EXPORT DigestParameter& operator = (const DigestParameter& other);
-        public:
-            int32_t digestOutputSizeBytes;
-            const EVP_MD* md;
-            EVP_MD_CTX* ptrCtx;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+
+class DigestParameter {
+public:
+    DLL_EXPORT DigestParameter();
+    DLL_EXPORT ~DigestParameter();
+    DLL_EXPORT DigestParameter(const DigestParameter& other);
+    DLL_EXPORT DigestParameter& operator = (const DigestParameter& other);
+
+public:
+    int32_t digestOutputSizeBytes;
+    const EVP_MD* md;
+    EVP_MD_CTX* ptrCtx;
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif // HOSP_DIGESTPARAMETER_H
+#endif // SIGNATRUETOOLS_DIGESTPARAMETER_H

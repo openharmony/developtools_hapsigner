@@ -20,7 +20,6 @@ signature_tools_common_src = [
    "${signature_tools_service_common}/src/byte_buffer_data_source.cpp",
    "${signature_tools_service_common}/src/byte_buffer.cpp",
    "${signature_tools_service_common}/src/file_data_source.cpp",
-   "${signature_tools_service_common}/src/hash.cpp",
    "${signature_tools_service_common}/src/random_access_file.cpp",
    "${signature_tools_service_common}/src/digest_parameter.cpp",
 

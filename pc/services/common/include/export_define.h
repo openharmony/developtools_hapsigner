@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_EXPORT_DEFINE_H
-#define SIGNERTOOLS_EXPORT_DEFINE_H
+#ifndef SIGNATRUETOOLS_EXPORT_DEFINE_H
+#define SIGNATRUETOOLS_EXPORT_DEFINE_H
+
 #if __GNUC__ >= 4
 #define DLL_EXPORT __attribute__ ((visibility ("default")))
 #define DLL_LOCAL  __attribute__ ((visibility ("hidden")))
@@ -21,4 +22,5 @@
 #define DLL_EXPORT
 #define DLL_LOCAL
 #endif
-#endif // HAP_EXPORT_DEFINE_H
+
+#endif // SIGNATRUETOOLS_EXPORT_DEFINE_H

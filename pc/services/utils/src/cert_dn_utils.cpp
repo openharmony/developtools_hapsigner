@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,53 +14,57 @@
  */
 #include "cert_dn_utils.h"
 #include "signature_tools_errno.h"
-/*
-std::string OHOS::SignatureTools::Base64Encode(unsigned char *bytesToEncode, unsigned int inLen)
-{
-    static const std::string base64Chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        std::string ret;
-    int i = 0;
-    int j = 0;
-    unsigned char charArray3[3];
-    unsigned char charArray4[4];
-        while (inLen--)
-    {
-        charArray3[i++] = *(bytesToEncode++);
-        if (i == 3)
-        {
-            charArray4[0] = (charArray3[0] & 0xfc) >> 2;
-            charArray4[1] = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
-            charArray4[2] = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
-            charArray4[3] = charArray3[2] & 0x3f;
-                for (i = 0; (i < 4); i++)
-                ret += base64Chars[charArray4[i]];
-            i = 0;
-        }
-    }
-        if (i)
-    {
-        for (j = i; j < 3; j++)
-        {
-            charArray3[j] = '\0';
-        }
-            charArray4[0] = (charArray3[0] & 0xfc) >> 2;
-        charArray4[1] = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
-        charArray4[2] = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
-        charArray4[3] = charArray3[2] & 0x3f;
-            for (j = 0; (j < i + 1); j++)
-        {
-            ret += base64Chars[charArray4[j]];
-        }
-            while ((i++ < 3))
-        {
-            ret += '=';
-        }
-    }
-        return ret;
-}
-*/
-int OHOS::SignatureTools::CheckDN(std::string nameString, std::vector<pair<std::string, std::string>>& pairs)
+#include "constant.h"
+ /*
+ std::string OHOS::SignatureTools::Base64Encode(unsigned char *bytesToEncode, unsigned int inLen)
+ {
+     static const std::string base64Chars =
+         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+         std::string ret;
+     int i = 0;
+     int j = 0;
+     unsigned char charArray3[3];
+     unsigned char charArray4[4];
+         while (inLen--)
+     {
+         charArray3[i++] = *(bytesToEncode++);
+         if (i == 3)
+         {
+             charArray4[0] = (charArray3[0] & 0xfc) >> 2;
+             charArray4[1] = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
+             charArray4[2] = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
+             charArray4[3] = charArray3[2] & 0x3f;
+                 for (i = 0; (i < 4); i++)
+                 ret += base64Chars[charArray4[i]];
+             i = 0;
+         }
+     }
+         if (i)
+     {
+         for (j = i; j < 3; j++)
+         {
+             charArray3[j] = '\0';
+         }
+             charArray4[0] = (charArray3[0] & 0xfc) >> 2;
+         charArray4[1] = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
+         charArray4[2] = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
+         charArray4[3] = charArray3[2] & 0x3f;
+             for (j = 0; (j < i + 1); j++)
+         {
+             ret += base64Chars[charArray4[j]];
+         }
+             while ((i++ < 3))
+         {
+             ret += '=';
+         }
+     }
+         return ret;
+ }
+ */
+namespace OHOS {
+namespace SignatureTools {
+
+int CheckDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs)
 {
     if (nameString.size() == 0) {
         return FORMAT_ERROR;
@@ -71,7 +75,7 @@ int OHOS::SignatureTools::CheckDN(std::string nameString, std::vector<pair<std::
             return FORMAT_ERROR;
         }
         std::vector<std::string> kvPair = StringUtils::SplitString(pair, '=');
-        if (kvPair.size() != VERSIONS) {
+        if (kvPair.size() != DEFAULT_CERT_VERSION) {
             return FORMAT_ERROR;
         }
         kvPair[0] = StringUtils::Trim(kvPair[0]);
@@ -83,19 +87,19 @@ int OHOS::SignatureTools::CheckDN(std::string nameString, std::vector<pair<std::
     }
     return 0;
 }
-//DAIRAN
+// DAIRAN
 
-X509_NAME* OHOS::SignatureTools::BuildDN(std::string nameString, X509_REQ* req)
+X509_NAME* BuildDN(std::string nameString, X509_REQ* req)
 {
     std::vector<pair<std::string, std::string>> pairs;
     std::ostringstream oss;
     oss << "Format error, must be \"X=xx,XX=xxx,...\", please check: \"" << nameString << "\"";
-    int ret = CheckDN(nameString, pairs);
+    int ret = CheckDn(nameString, pairs);
     if (ret == FORMAT_ERROR) {
         SIGNATURE_TOOLS_LOGE(" Description The topic information verification failed %{public}d: %{public}s",
-                ret, oss.str().c_str());
-        CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-			oss.str().c_str());
+                             ret, oss.str().c_str());
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            oss.str().c_str());
         return nullptr;
     }
     X509_NAME* subject = nullptr;
@@ -106,8 +110,9 @@ X509_NAME* OHOS::SignatureTools::BuildDN(std::string nameString, X509_REQ* req)
     }
     for (auto idx = pairs.cbegin(); idx != pairs.cend(); idx++) {
         if (OBJ_txt2nid(idx->first.c_str()) == NID_undef) {
-            CMD_ERROR_MSG("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-                "Error params near:"+ nameString + " Reason: Unknown object id - " + idx->first + " - passed to distinguished name");
+            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                                "Error params near:" + nameString + " Reason: Unknown object id - " + idx->first +
+                                " - passed to distinguished name");
             return nullptr;
         }
         X509_NAME_add_entry_by_txt(subject, idx->first.c_str(), MBSTRING_ASC,
@@ -115,3 +120,5 @@ X509_NAME* OHOS::SignatureTools::BuildDN(std::string nameString, X509_REQ* req)
     }
     return subject;
 }
+} // namespace SignatureTools
+} // namespace OHOS

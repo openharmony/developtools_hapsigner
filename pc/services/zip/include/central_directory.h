@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,229 +13,173 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_CENTRAL_DIRECTORY_H
-#define SIGNERTOOLS_CENTRAL_DIRECTORY_H
+#ifndef SIGNATRUETOOLS_CENTRAL_DIRECTORY_H
+#define SIGNATRUETOOLS_CENTRAL_DIRECTORY_H
 
 #include <string>
-#include <vector>
+
 #include "byte_buffer.h"
 
 namespace OHOS {
-    namespace SignatureTools {
-        class CentralDirectory {
-            /**
-             * central directory invariable bytes length
-             */
-        public:
-            static constexpr int CD_LENGTH = 46;
-
-            /**
-             * 4 bytes , central directory signature
-             */
-            static constexpr int SIGNATURE = 0x02014b50;
-
-            /**
-             * 2 bytes
-             */
-        private:
-            short version = 0;
-
-            /**
-             * 2 bytes
-             */
-            short versionExtra = 0;
-
-            /**
-             * 2 bytes
-             */
-            short flag = 0;
-
-            /**
-             * 2 bytes
-             */
-            short method = 0;
-
-            /**
-             * 2 bytes
-             */
-            short lastTime = 0;
-
-            /**
-             * 2 bytes
-             */
-            short lastDate = 0;
-
-            /**
-             * 4 bytes
-             */
-            int crc32 = 0;
-
-            /**
-             * 4 bytes
-             */
-            long long compressedSize = 0;
-
-            /**
-             * 4 bytes
-             */
-            long long unCompressedSize = 0;
-
-            /**
-             * 2 bytes
-             */
-            int fileNameLength = 0;
+namespace SignatureTools {
+class CentralDirectory {
+public:
+    // central directory invariable bytes length
+    static constexpr int CD_LENGTH = 46;
 
-            /**
-             * 2 bytes
-             */
-            int extraLength = 0;
+    // 4 bytes, central directory signature
+    static constexpr int SIGNATURE = 0x02014b50;
 
-            /**
-             * 2 bytes
-             */
-            int commentLength = 0;
+    static bool GetCentralDirectory(ByteBuffer& bf, CentralDirectory* cd);
 
-            /**
-             * 2 bytes
-             */
-            int diskNumStart = 0;
+    std::string ToBytes();
 
-            /**
-             * 2 bytes
-             */
-            short internalFile = 0;
+    static int GetCdLength();
 
-            /**
-             * 4 bytes
-             */
-            int externalFile = 0;
+    static int GetSIGNATURE();
 
-            /**
-             * 4 bytes
-             */
-            long long offset = 0;
+    short GetVersion();
 
-            /**
-             * n bytes
-             */
-            std::string fileName;
+    void SetVersion(short version);
 
-            /**
-             * n bytes
-             */
-            std::vector<char> extraData;
+    short GetVersionExtra();
 
-            /**
-             * n bytes
-             */
-            std::vector<char> comment;
+    void SetVersionExtra(short versionExtra);
 
-            int length = 0;
+    short GetFlag();
 
-            /**
-             * get Central Directory
-             *
-             * @param bf ByteBuffer
-             * @return CentralDirectory
-             * @throws ZipException read Central Directory exception
-             */
-        public:
-            static bool GetCentralDirectory(ByteBuffer& bf, CentralDirectory* cd);
+    void SetFlag(short flag);
 
-            /**
-             * change Central Directory to bytes
-             *
-             * @return bytes
-             */
-            std::vector<char> ToBytes();
+    short GetMethod();
 
-            static int GetCdLength();
+    void SetMethod(short method);
 
-            static int GetSIGNATURE();
+    short GetLastTime();
 
-            short GetVersion();
+    void SetLastTime(short lastTime);
 
-            void SetVersion(short version);
+    short GetLastDate();
 
-            short GetVersionExtra();
+    void SetLastDate(short lastDate);
 
-            void SetVersionExtra(short versionExtra);
+    int GetCrc32();
 
-            short GetFlag();
+    void SetCrc32(int crc32);
 
-            void SetFlag(short flag);
+    int64_t GetCompressedSize();
 
-            short GetMethod();
+    void SetCompressedSize(int64_t compressedSize);
 
-            void SetMethod(short method);
+    int64_t GetUnCompressedSize();
 
-            short GetLastTime();
+    void SetUnCompressedSize(int64_t unCompressedSize);
 
-            void SetLastTime(short lastTime);
+    int GetFileNameLength();
 
-            short GetLastDate();
+    void SetFileNameLength(int fileNameLength);
 
-            void SetLastDate(short lastDate);
+    int GetExtraLength();
 
-            int GetCrc32();
+    void SetExtraLength(int extraLength);
 
-            void SetCrc32(int crc32);
+    int GetCommentLength();
 
-            long long GetCompressedSize();
+    void SetCommentLength(int commentLength);
 
-            void SetCompressedSize(long long compressedSize);
+    int GetDiskNumStart();
 
-            long long GetUnCompressedSize();
+    void SetDiskNumStart(int diskNumStart);
 
-            void SetUnCompressedSize(long long unCompressedSize);
+    short GetInternalFile();
 
-            int GetFileNameLength();
+    void SetInternalFile(short internalFile);
 
-            void SetFileNameLength(int fileNameLength);
+    int GetExternalFile();
 
-            int GetExtraLength();
+    void SetExternalFile(int externalFile);
 
-            void SetExtraLength(int extraLength);
+    int64_t GetOffset();
 
-            int GetCommentLength();
+    void SetOffset(int64_t offset);
 
-            void SetCommentLength(int commentLength);
+    std::string GetFileName();
 
-            int GetDiskNumStart();
+    void SetFileName(const std::string& fileName);
 
-            void SetDiskNumStart(int diskNumStart);
+    std::string GetExtraData() const;
 
-            short GetInternalFile();
+    void SetExtraData(const std::string& extraData);
 
-            void SetInternalFile(short internalFile);
+    std::string GetComment();
 
-            int GetExternalFile();
+    void SetComment(const std::string& comment);
 
-            void SetExternalFile(int externalFile);
+    int GetLength();
 
-            long long GetOffset();
+    void SetLength(int length);
 
-            void SetOffset(long long offset);
+private:
+    /* 2 bytes */
+    short version = 0;
 
-            std::string GetFileName();
+    /* 2 bytes */
+    short versionExtra = 0;
 
-            void SetFileName(const std::string& fileName);
+    /* 2 bytes */
+    short flag = 0;
 
-            std::vector<char> GetExtraData();
+    /* 2 bytes */
+    short method = 0;
 
-            void SetExtraData(std::vector<char>& extraData);
+    /* 2 bytes */
+    short lastTime = 0;
 
-            std::vector<char> GetComment();
+    /* 2 bytes */
+    short lastDate = 0;
 
-            void SetComment(std::vector<char>& comment);
+    /* 4 bytes */
+    int crc32 = 0;
 
-            int GetLength();
+    /* 8 bytes */
+    int64_t compressedSize = 0;
 
-            void SetLength(int length);
+    /* 8 bytes */
+    int64_t unCompressedSize = 0;
 
-        private:
-            static void SetCentralDirectoryValues(ByteBuffer& bf, CentralDirectory* cd);
-        };
-    }
-}
-#endif
+    /* 4 bytes */
+    int fileNameLength = 0;
+
+    /* 4 bytes */
+    int extraLength = 0;
+
+    /* 4 bytes */
+    int commentLength = 0;
+
+    /* 4 bytes */
+    int diskNumStart = 0;
+
+    /* 2 bytes */
+    short internalFile = 0;
+
+    /* 4 bytes */
+    int externalFile = 0;
+
+    /* 8 bytes */
+    int64_t offset = 0;
+
+    /* n bytes */
+    std::string fileName;
+
+    /* n bytes */
+    std::string extraData;
+
+    /* n bytes */
+    std::string comment;
+
+    int length = 0;
+
+    static void SetCentralDirectoryValues(ByteBuffer& bf, CentralDirectory* cd);
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_CENTRAL_DIRECTORY_H

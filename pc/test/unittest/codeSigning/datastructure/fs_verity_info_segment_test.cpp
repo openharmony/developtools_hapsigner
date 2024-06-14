@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,7 +44,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level
     std::shared_ptr<FsVerityInfoSegment> api = std::make_shared<FsVerityInfoSegment>();
 
     std::vector<int8_t> bytes;
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -70,7 +70,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
     
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -97,7 +97,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
     
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -125,7 +125,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
     
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -154,7 +154,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray005, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
     
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -183,7 +183,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray006, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
     
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -204,7 +204,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray, testing::ext::TestSize.Level1)
         58, -12, 38, 29, 12, 45, 58, -12, 38, 29, 12, 45, 58, -12, 38, 29, 13, 26, 12, 45,
         58, -12, 38, 29, 12, 45, 58, -12, 38, 29, 12, 45, 58, -12, 38, 29, 12, 45, 58, -12,
         38, 29, 12, 45, 58, -12, 38, 29, 13, 26 };
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -221,7 +221,7 @@ HWTEST_F(FsVerityInfoSegmentTest, size, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<FsVerityInfoSegment> api = std::make_shared<FsVerityInfoSegment>();
     
-    int fsVerityInfoSegmentSize = api->size();
+    int fsVerityInfoSegmentSize = api->Size();
 
     EXPECT_EQ(fsVerityInfoSegmentSize, 64);
 }
@@ -238,7 +238,7 @@ HWTEST_F(FsVerityInfoSegmentTest, toByteArray, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<FsVerityInfoSegment> api = std::make_shared<FsVerityInfoSegment>();
 
-    std::vector<int8_t> byteArray = api->toByteArray();
+    std::vector<int8_t> byteArray = api->ToByteArray();
 
     EXPECT_EQ(byteArray.size(), 64);
 }
@@ -255,7 +255,7 @@ HWTEST_F(FsVerityInfoSegmentTest, toString, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<FsVerityInfoSegment> api = std::make_shared<FsVerityInfoSegment>();
 
-    std::string str = api->toString();
+    std::string str = api->ToString();
 
     EXPECT_EQ(str.size(), 75);
 }

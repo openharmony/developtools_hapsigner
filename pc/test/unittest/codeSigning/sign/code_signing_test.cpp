@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -71,9 +71,9 @@ HWTEST_F(CodeSigningTest, generateSignature, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -90,7 +90,7 @@ HWTEST_F(CodeSigningTest, generateSignature, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
 
     std::vector<int8_t> signedData = { 70, 83, 86, 101, 114, 105, 116, 121, 1,
         0, 32, 0, -82, 98, 15, 102, 95, -26, -90, 88, 83, 8, -42, -65, -121,
@@ -98,7 +98,7 @@ HWTEST_F(CodeSigningTest, generateSignature, testing::ext::TestSize.Level1)
         -15, 11, 123, -80 };
     std::string ownerID;
     std::vector<int8_t> ret;
-    bool flag = codeSigning.generateSignature(signedData, ownerID, ret);
+    bool flag = codeSigning.GenerateSignature(signedData, ownerID, ret);
     EXPECT_EQ(flag, false);
 }
 
@@ -133,9 +133,9 @@ HWTEST_F(CodeSigningTest, GetNativeEntriesFromHap, testing::ext::TestSize.Level1
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -152,7 +152,7 @@ HWTEST_F(CodeSigningTest, GetNativeEntriesFromHap, testing::ext::TestSize.Level1
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
 
     std::string packageName = "libs/arm64-v8a/libc++_shared.so";
     std::vector<std::tuple<std::string, std::stringbuf, uLong>> ret = codeSigning.GetNativeEntriesFromHap(packageName);
@@ -190,9 +190,9 @@ HWTEST_F(CodeSigningTest, getTimestamp, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -209,8 +209,8 @@ HWTEST_F(CodeSigningTest, getTimestamp, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
-    int64_t timeStamp = codeSigning.getTimestamp();
+    CodeSigning codeSigning(&signerConfig);
+    int64_t timeStamp = codeSigning.GetTimestamp();
     EXPECT_NE(timeStamp, 0);
 }
 
@@ -245,9 +245,9 @@ HWTEST_F(CodeSigningTest, isNativeFile, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -264,9 +264,9 @@ HWTEST_F(CodeSigningTest, isNativeFile, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
     std::string input = "libs/arm64-v8a/libc++_shared.so";
-    bool flag = codeSigning.isNativeFile(input);
+    bool flag = codeSigning.IsNativeFile(input);
     EXPECT_EQ(flag, true);
 }
 
@@ -301,9 +301,9 @@ HWTEST_F(CodeSigningTest, signFile, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -320,7 +320,7 @@ HWTEST_F(CodeSigningTest, signFile, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
 
     std::ifstream inputStream;
     inputStream.open("./codeSigning/entry-default-unsigned-so.hap", std::ios::binary);
@@ -329,7 +329,7 @@ HWTEST_F(CodeSigningTest, signFile, testing::ext::TestSize.Level1)
     int64_t fsvTreeOffset = 1024;
     std::string ownerID;
     std::pair<SignInfo, std::vector<int8_t>> ret;
-    bool flag = codeSigning.signFile(inputStream, fileSize, storeTree, fsvTreeOffset, ownerID, ret);
+    bool flag = codeSigning.SignFile(inputStream, fileSize, storeTree, fsvTreeOffset, ownerID, ret);
     EXPECT_EQ(flag, false);
 }
 
@@ -364,9 +364,9 @@ HWTEST_F(CodeSigningTest, SignFilesFromJar, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -383,7 +383,7 @@ HWTEST_F(CodeSigningTest, SignFilesFromJar, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
     std::vector<std::tuple<std::string, std::stringbuf, uLong>> entryNames;
     std::string packageName = "libs/arm64-v8a/libc++_shared.so";
     std::string ownerID;
@@ -423,9 +423,9 @@ HWTEST_F(CodeSigningTest, signNativeLibs, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -442,10 +442,10 @@ HWTEST_F(CodeSigningTest, signNativeLibs, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
     std::string input = "./codeSigning/entry-default-unsigned-so.hap";
     std::string ownerID;
-    bool flag = codeSigning.signNativeLibs(input, ownerID);
+    bool flag = codeSigning.SignNativeLibs(input, ownerID);
     EXPECT_EQ(flag, false);
 }
 
@@ -480,9 +480,9 @@ HWTEST_F(CodeSigningTest, splitFileName, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -499,9 +499,9 @@ HWTEST_F(CodeSigningTest, splitFileName, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
+    CodeSigning codeSigning(&signerConfig);
     std::string path = "libs/arm64-v8a/libc++_shared.so";
-    std::string str = codeSigning.splitFileName(path);
+    std::string str = codeSigning.SplitFileName(path);
     EXPECT_EQ(str.size(), 16);
 }
 
@@ -536,9 +536,9 @@ HWTEST_F(CodeSigningTest, updateCodeSignBlock, testing::ext::TestSize.Level1)
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmClass signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmClass> signatureAlgorithms;
+    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
@@ -555,7 +555,7 @@ HWTEST_F(CodeSigningTest, updateCodeSignBlock, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
-    CodeSigning codeSigning(signerConfig);
-    codeSigning.updateCodeSignBlock();
+    CodeSigning codeSigning(&signerConfig);
+    codeSigning.UpdateCodeSignBlock();
     EXPECT_EQ(true, 1);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,8 +15,8 @@
 
 #include "fs_verity_descriptor_with_sign.h"
 
-using namespace OHOS::SignatureTools;
-
+namespace OHOS {
+namespace SignatureTools {
 const int32_t FsVerityDescriptorWithSign::INTEGER_BYTES = 4;
 
 FsVerityDescriptorWithSign::FsVerityDescriptorWithSign()
@@ -43,7 +43,8 @@ FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(int32_t type, int32_t len
 
 int32_t FsVerityDescriptorWithSign::Size()
 {
-    return INTEGER_BYTES * 2 + FsVerityDescriptor::DESCRIPTOR_SIZE + this->signature.size();
+    int tmp_variable = 2;
+    return INTEGER_BYTES * tmp_variable + FsVerityDescriptor::DESCRIPTOR_SIZE + this->signature.size();
 }
 
 std::vector<int8_t> FsVerityDescriptorWithSign::ToByteArray()
@@ -52,8 +53,8 @@ std::vector<int8_t> FsVerityDescriptorWithSign::ToByteArray()
     buffer->PutInt32(this->type);
     buffer->PutInt32(this->length);
     std::vector<int8_t> fsArr = this->fsVerityDescriptor.ToByteArray();
-    buffer->PutData((char*)fsArr.data(), fsArr.size());
-    buffer->PutData((char*)this->signature.data(), this->signature.size());
+    buffer->PutData(fsArr.data(), fsArr.size());
+    buffer->PutData(this->signature.data(), this->signature.size());
     buffer->Flip();
     std::vector<int8_t> ret(buffer->GetBufferPtr(), buffer->GetBufferPtr() + buffer->GetLimit());
     return ret;
@@ -68,3 +69,5 @@ std::vector<int8_t> FsVerityDescriptorWithSign::GetSignature()
 {
     return signature;
 }
+} // namespace SignatureTools
+} // namespace OHOS

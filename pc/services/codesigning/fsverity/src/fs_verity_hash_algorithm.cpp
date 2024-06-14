@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,18 +13,25 @@
  * limitations under the License.
  */
 #include "fs_verity_hash_algorithm.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
 const FsVerityHashAlgorithm FsVerityHashAlgorithm::SHA256((char)1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FsVerityHashAlgorithm::SHA512((char)2, "SHA-512", 512 / 8);
+
 char FsVerityHashAlgorithm::GetId() const
 {
     return id;
 }
+
 const std::string& FsVerityHashAlgorithm::GetHashAlgorithm() const
 {
     return hashAlgorithm;
 }
+
 int FsVerityHashAlgorithm::GetOutputByteSize() const
 {
     return outputByteSize;
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,7 +51,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level1)
     byteBuffer.GetData(readComment, 32);
     std::vector<signed char> bytes(readComment, readComment + 32);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -88,7 +88,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Level1)
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -125,7 +125,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Level1)
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -162,7 +162,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Level1)
     byteBuffer.GetData(readComment, 64);
     std::vector<signed char> bytes(readComment, readComment + 64);
 
-    api->fromByteArray(bytes);
+    api->FromByteArray(bytes);
 
     EXPECT_EQ(true, 1);
 }
@@ -180,7 +180,7 @@ HWTEST_F(HapInfoSegmentTest, getSignInfo, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<HapInfoSegment> api = std::make_shared<HapInfoSegment>();
 
-    api->getSignInfo();
+    api->GetSignInfo();
 
     EXPECT_EQ(true, 1);
 }
@@ -197,7 +197,7 @@ HWTEST_F(HapInfoSegmentTest, getSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<HapInfoSegment> api = std::make_shared<HapInfoSegment>();
 
-    int32_t hapInfoSegmentSize = api->getSize();
+    int32_t hapInfoSegmentSize = api->GetSize();
 
     EXPECT_EQ(hapInfoSegmentSize, 64);
 }
@@ -225,7 +225,7 @@ HWTEST_F(HapInfoSegmentTest, setSignInfo, testing::ext::TestSize.Level1)
         2, 1, 2, 2, 4, 85, -67, -54, 116, 48, 10, 6, 8, 42, -122, 72, -50, 61, 4, 3,
         3, 48, 85, 49, 11, 48, 9, 6, 3, 85, 4, 6, 1 };
     SignInfo signInfo(saltSize, flags, dataSize, salt, sig);
-    api->setSignInfo(signInfo);
+    api->SetSignInfo(signInfo);
 
     EXPECT_EQ(true, 1);
 }
@@ -242,7 +242,7 @@ HWTEST_F(HapInfoSegmentTest, toByteArray, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<HapInfoSegment> api = std::make_shared<HapInfoSegment>();
     
-    std::vector<int8_t> byteArray = api->toByteArray();
+    std::vector<int8_t> byteArray = api->ToByteArray();
 
     EXPECT_EQ(byteArray.size(), 64);
 }
