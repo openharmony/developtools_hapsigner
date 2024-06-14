@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef DIGESTUTILS_H
-#define DIGESTUTILS_H
+#ifndef SIGNATURETOOLS_FS_DIGEST_UTILS_H
+#define SIGNATURETOOLS_FS_DIGEST_UTILS_H
+
 #include <string>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
@@ -41,17 +42,18 @@ public:
     };
     explicit DigestUtils(HashType type);
     ~DigestUtils();
-    //添加数据
+    // 添加数据
     void AddData(std::string data);
     void AddData(const char* data, int length);
-    //对Base64编码的CRL字符串进行解码得到CRL对象
+    // 对Base64编码的CRL字符串进行解码得到CRL对象
     X509_CRL* ParseBase64DecodedCRL(const std::string& decodedCRL);
-    //通过base64编码的字符串得到X506结构体
+    // 通过base64编码的字符串得到X506结构体
     X509* DecodeBase64ToX509Certifate(const std::string& encodestring);
-    //计算哈希值
+    // 计算哈希值
     std::string Result(Type type = Type::HEX);
+
 private:
     EVP_MD_CTX* m_ctx = NULL;
     HashType m_type;
 };
-#endif //SERVER_DDZ_HASH_H
+#endif // SIGNATURETOOLS_FS_DIGEST_UTILS_H

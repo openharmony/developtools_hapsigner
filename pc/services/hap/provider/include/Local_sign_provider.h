@@ -12,23 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef SIGNERTOOLS_LOCAL_SIGN_PROVIDER_H
-#define SIGNERTOOLS_LOCAL_SIGN_PROVIDER_H
+#ifndef SIGNATRUETOOLS_LOCAL_SIGN_PROVIDER_H
+#define SIGNATRUETOOLS_LOCAL_SIGN_PROVIDER_H
 
 #include "sign_provider.h"
-namespace OHOS {
-    namespace SignatureTools {
-        class LocalJKSSignProvider : public SignProvider {
-            public:
-                LocalJKSSignProvider() = default;
-                ~LocalJKSSignProvider() = default;
 
-                std::optional<X509_CRL*> GetCrl();
-                bool CheckParams(Options* options);
-            private:
-                bool CheckPublicKeyPath();
-        };
-    }
-}
-#endif
+namespace OHOS {
+namespace SignatureTools {
+class LocalSignProvider : public SignProvider {
+public:
+    LocalSignProvider() = default;
+    ~LocalSignProvider() = default;
+    std::optional<X509_CRL*> GetCrl();
+    bool CheckParams(Options* options);
+
+private:
+    bool CheckPublicKeyPath();
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_LOCAL_SIGN_PROVIDER_H

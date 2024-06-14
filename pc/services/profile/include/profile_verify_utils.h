@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,20 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_PROFILE_VERIFY_UTILS_H
-#define SIGNERTOOLS_PROFILE_VERIFY_UTILS_H
+#ifndef SIGNATRUETOOLS_PROFILE_VERIFY_UTILS_H
+#define SIGNATRUETOOLS_PROFILE_VERIFY_UTILS_H
+
 #include <string>
+
 #include "export_define.h"
 #include "byte_buffer.h"
 #include "pkcs7_context.h"
-    namespace OHOS {
-    namespace SignatureTools {
-        class HapProfileVerifyUtils {
-        public:
-            DLL_EXPORT static bool ParseProfile(Pkcs7Context& profilePkcs7Context,
-            const Pkcs7Context& pkcs7Context, const ByteBuffer& pkcs7ProfileBlock, std::string& profile);
-            DLL_EXPORT static bool VerifyProfile(Pkcs7Context& pkcs7Context);
-        };
-    } // namespace SignatureTools
+
+namespace OHOS {
+namespace SignatureTools {
+class ProfileVerifyUtils {
+public:
+    DLL_EXPORT static bool ParseProfile(Pkcs7Context& profilePkcs7Context,
+                                        const Pkcs7Context& pkcs7Context,
+                                        const ByteBuffer& pkcs7ProfileBlock,
+                                        std::string& profile);
+    DLL_EXPORT static bool VerifyProfile(Pkcs7Context& pkcs7Context);
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif
+#endif // SIGNATRUETOOLS_PROFILE_VERIFY_UTILS_H

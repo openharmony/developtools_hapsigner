@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,8 @@
 
 #include "hw_block_data.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 HwBlockData::HwBlockData(int32_t blockNum, int32_t blockStart)
 {
@@ -42,3 +43,6 @@ void HwBlockData::SetBlockStart(int32_t blockStart)
 {
     this->blockStart = blockStart;
 }
+
+} // namespace SignatureTools
+} // namespace OHOS

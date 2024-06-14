@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,8 +20,8 @@
 
 #include "openssl/asn1.h"
 #include "openssl/x509.h"
-#include "hap_verify.h"
-#include "cert_verify_openssl_utils.h"
+#include "verify_hap.h"
+#include "verify_cert_openssl_utils.h"
 
 using namespace testing::ext;
 using namespace OHOS::SignatureTools;
@@ -51,7 +51,7 @@ namespace OHOS {
 } // namespace OHOS
 
 namespace {
-    class HapCertVerifyOpensslUtilsTest : public testing::Test {
+    class VerifyCertOpensslUtilsTest : public testing::Test {
     public:
         static void SetUpTestCase(void);
 
@@ -62,18 +62,18 @@ namespace {
         void TearDown();
     };
 
-    void HapCertVerifyOpensslUtilsTest::SetUpTestCase(void)
+    void VerifyCertOpensslUtilsTest::SetUpTestCase(void)
     {
     }
 
-    void HapCertVerifyOpensslUtilsTest::TearDownTestCase(void)
+    void VerifyCertOpensslUtilsTest::TearDownTestCase(void)
     {
     }
-    void HapCertVerifyOpensslUtilsTest::SetUp()
+    void VerifyCertOpensslUtilsTest::SetUp()
     {
     }
 
-    void HapCertVerifyOpensslUtilsTest::TearDown()
+    void VerifyCertOpensslUtilsTest::TearDown()
     {
     }
 
@@ -82,21 +82,21 @@ namespace {
      * @tc.desc: Check whether the CertVerify function can be used to verify a certificate.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, CertVerify001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, CertVerify001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Input an ECC self signed cert with PEM encoded.
          * @tc.expected: step1. The return is an X509 object.
          */
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
         ASSERT_TRUE(certX509 != nullptr);
         /*
          * @tc.steps: step2. Use all possible input to test CertVerify.
          * @tc.expected: step2. The return is verify result.
          */
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CertVerify(nullptr, certX509));
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CertVerify(certX509, nullptr));
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::CertVerify(certX509, certX509));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CertVerify(nullptr, certX509));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CertVerify(certX509, nullptr));
+        ASSERT_TRUE(VerifyCertOpensslUtils::CertVerify(certX509, certX509));
         X509_free(certX509);
     }
 
@@ -105,23 +105,23 @@ namespace {
      * @tc.desc: Verify whether the GetX509CertFromBase64String function can get an X509 cert from a Base64S string.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, Base64NotUrlSafeCertTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, Base64NotUrlSafeCertTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Input string of ECC cert with base64 decode
          * @tc.expected: step1. The return is an X509 object.
          */
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromBase64String(BASE64_NOT_URL_SAFE_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromBase64String(BASE64_NOT_URL_SAFE_CERT);
         ASSERT_TRUE(certX509 != nullptr);
         std::string subject;
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::GetSubjectFromX509(certX509, subject));
+        ASSERT_TRUE(VerifyCertOpensslUtils::GetSubjectFromX509(certX509, subject));
         X509_free(certX509);
         certX509 = nullptr;
         /*
          * @tc.steps: step2. Use the subject as an error input.
          * @tc.expected: step2. The return is nullptr.
          */
-        certX509 = HapCertVerifyOpensslUtils::GetX509CertFromBase64String(subject);
+        certX509 = VerifyCertOpensslUtils::GetX509CertFromBase64String(subject);
         ASSERT_TRUE(certX509 == nullptr);
     }
 
@@ -130,27 +130,27 @@ namespace {
      * @tc.desc: Verify whether the GetX509CrlFromDerBuffer function can get an X509 Crl from DerData.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, GetX509CrlFromDerBufferTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, GetX509CrlFromDerBufferTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Input invalid data.
          * @tc.expected: step1. The return is nullptr.
          */
         ByteBuffer crlBuffer;
-        X509_CRL* crlX509 = HapCertVerifyOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, 0);
+        X509_CRL* crlX509 = VerifyCertOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, 0);
         ASSERT_TRUE(crlX509 == nullptr);
         crlBuffer.SetCapacity(TEST_HAPBYTEBUFFER_LENGTH);
-        crlX509 = HapCertVerifyOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, 0);
+        crlX509 = VerifyCertOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, 0);
         ASSERT_TRUE(crlX509 == nullptr);
         /*
          * @tc.steps: step2. Input a string of crl encoded by base64.
          * @tc.expected: step2. Ihe return is a crl object.
          */
         ASSERT_TRUE(Base64StringDecode(BASE64_CRL, crlBuffer));
-        crlX509 = HapCertVerifyOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, crlBuffer.GetCapacity());
+        crlX509 = VerifyCertOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, crlBuffer.GetCapacity());
         std::string crlIssuer;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::GetIssuerFromX509Crl(nullptr, crlIssuer));
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::GetIssuerFromX509Crl(crlX509, crlIssuer));
+        ASSERT_FALSE(VerifyCertOpensslUtils::GetIssuerFromX509Crl(nullptr, crlIssuer));
+        ASSERT_TRUE(VerifyCertOpensslUtils::GetIssuerFromX509Crl(crlX509, crlIssuer));
         ASSERT_TRUE(crlX509 != nullptr);
         X509_CRL_free(crlX509);
     }
@@ -160,18 +160,18 @@ namespace {
      * @tc.desc: Verify whether the GetCertsChain function can get a trusted cert chain from certs.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, GetCertsChainTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, GetCertsChainTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Use a certVisitSign included a self signed cert and an empty certsChain as input.
          * @tc.expected: step1. The return is false due to invalid input.
          */
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
         ASSERT_TRUE(certX509 != nullptr);
         CertChain certsChain;
         CertSign certVisitSign;
         certVisitSign[certX509] = false;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::GetCertsChain(certsChain, certVisitSign));
+        ASSERT_FALSE(VerifyCertOpensslUtils::GetCertsChain(certsChain, certVisitSign));
     }
 
     /**
@@ -179,20 +179,20 @@ namespace {
      * @tc.desc: The static function will return false due to invalid input;
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, GetIssuerAndSubjectTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, GetIssuerAndSubjectTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Use nullptr as input to test GetSubjectFromX509.
          * @tc.expected: step1. The return is false.
          */
         std::string subject;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::GetSubjectFromX509(nullptr, subject));
+        ASSERT_FALSE(VerifyCertOpensslUtils::GetSubjectFromX509(nullptr, subject));
         /*
          * @tc.steps: step2. Use nullptr as input to test GetIssuerFromX509.
          * @tc.expected: step2. The return is false.
          */
         std::string issuer;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::GetIssuerFromX509(nullptr, issuer));
+        ASSERT_FALSE(VerifyCertOpensslUtils::GetIssuerFromX509(nullptr, issuer));
     }
 
     /**
@@ -200,21 +200,21 @@ namespace {
      * @tc.desc: Verify whether the GetSerialNumberFromX509 function can get the SerialNumber from an X509 certificate.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, GetSerialNumberFromX509Test001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, GetSerialNumberFromX509Test001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Use nullptr as input to test GetSerialNumberFromX509.
          * @tc.expected: step1. The return is false.
          */
         long long certSerialNumber;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::GetSerialNumberFromX509(nullptr, certSerialNumber));
+        ASSERT_FALSE(VerifyCertOpensslUtils::GetSerialNumberFromX509(nullptr, certSerialNumber));
         /*
          * @tc.steps: step2. Use real cert to test GetX509CertFromPemString.
          * @tc.expected: step2. the return is true.
          */
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
         ASSERT_TRUE(certX509 != nullptr);
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::GetSerialNumberFromX509(certX509, certSerialNumber));
+        ASSERT_TRUE(VerifyCertOpensslUtils::GetSerialNumberFromX509(certX509, certSerialNumber));
         X509_free(certX509);
     }
 
@@ -224,23 +224,23 @@ namespace {
      *           period of a certificate chain.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, VerifyCertChainPeriodOfValidityTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, VerifyCertChainPeriodOfValidityTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Input an empty certChain.
          * @tc.expected: step1. The return is false.
          */
         CertChain certsChain;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, nullptr));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, nullptr));
         /*
          * @tc.steps: step2. Input a nullptr signTime and a certChain with two cert.
          * @tc.expected: step2. The return is false.
          */
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromBase64String(BASE64_NOT_URL_SAFE_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromBase64String(BASE64_NOT_URL_SAFE_CERT);
         ASSERT_TRUE(certX509 != nullptr);
         certsChain.push_back(certX509);
         certsChain.push_back(certX509);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, nullptr));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, nullptr));
         /*
          * @tc.steps: step3. Input a signTime which out of period of validity.
          * @tc.expected: step3. The return is false.
@@ -252,7 +252,7 @@ namespace {
         ASN1_TYPE* time = ASN1_TYPE_new();
         ASSERT_TRUE(time != nullptr);
         ASN1_TYPE_set(time, V_ASN1_UTCTIME, asnString);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, time));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, time));
         /*
          * @tc.steps: step4. Input a certChain with two nullptr.
          * @tc.expected: step4. The return iis false.
@@ -260,7 +260,7 @@ namespace {
         certsChain.clear();
         certsChain.push_back(nullptr);
         certsChain.push_back(nullptr);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, time));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCertChainPeriodOfValidity(certsChain, time));
         X509_free(certX509);
         ASN1_TYPE_free(time);
     }
@@ -270,7 +270,7 @@ namespace {
      * @tc.desc: Verify whether the VerifyCrl function can verify a crl.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, VerifyCrlTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, VerifyCrlTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Input an empty certChain.
@@ -278,7 +278,7 @@ namespace {
          */
         CertChain certsChain;
         Pkcs7Context pkcs7Context;
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCrl(certsChain, nullptr, pkcs7Context));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCrl(certsChain, nullptr, pkcs7Context));
         /*
          * @tc.steps: step2. Input a certChain with two nullptr.
          * @tc.expected: step2. the return is false.
@@ -287,32 +287,32 @@ namespace {
         ASSERT_TRUE(crls != nullptr);
         certsChain.push_back(nullptr);
         certsChain.push_back(nullptr);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
         /*
          * @tc.steps: step3. Input valid certChain and null.
          * @tc.expected: step3. The return is true due to crl is optional.
          */
         certsChain.clear();
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
         ASSERT_TRUE(certX509 != nullptr);
         certsChain.push_back(certX509);
         certsChain.push_back(certX509);
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
+        ASSERT_TRUE(VerifyCertOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
         /*
          * @tc.steps: step4. Input error certChain and crls.
          * @tc.expected: step4. The return is false.
          */
         certsChain.clear();
-        X509* root = HapCertVerifyOpensslUtils::GetX509CertFromPemString(ROOTCERT);
+        X509* root = VerifyCertOpensslUtils::GetX509CertFromPemString(ROOTCERT);
         ASSERT_TRUE(root != nullptr);
         certsChain.push_back(root);
         certsChain.push_back(certX509);
         ByteBuffer crlBuffer;
         ASSERT_TRUE(Base64StringDecode(BASE64_CRL, crlBuffer));
-        X509_CRL* crlX509 = HapCertVerifyOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, crlBuffer.GetCapacity());
+        X509_CRL* crlX509 = VerifyCertOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, 0, crlBuffer.GetCapacity());
         ASSERT_TRUE(crlX509 != nullptr);
         sk_X509_CRL_push(crls, crlX509);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
+        ASSERT_FALSE(VerifyCertOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
         /*
          * @tc.steps: step5. Input right certChain and crls.
          * @tc.expected: step5. The return is true.
@@ -320,7 +320,7 @@ namespace {
         certsChain.clear();
         certsChain.push_back(root);
         certsChain.push_back(root);
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
+        ASSERT_TRUE(VerifyCertOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context));
         X509_free(certX509);
         X509_free(root);
         sk_X509_CRL_pop_free(crls, X509_CRL_free);
@@ -331,25 +331,25 @@ namespace {
      * @tc.desc: Verify whether the CompareX509Cert function can compare two certificates.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, CompareX509CertTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, CompareX509CertTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Use nullptr as input to test CompareX509Cert.
          * @tc.expected: step1. The return is false.
          */
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CompareX509Cert(nullptr, ECC_TEST_KEY));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CompareX509Cert(nullptr, ECC_TEST_KEY));
         /*
          * @tc.steps: step2. The second cert is not a cert string.
          * @tc.expected: step2. the return is false.
          */
-        X509* certX509 = HapCertVerifyOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
+        X509* certX509 = VerifyCertOpensslUtils::GetX509CertFromPemString(ECC_TEST_CERT);
         ASSERT_TRUE(certX509 != nullptr);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CompareX509Cert(certX509, ECC_TEST_KEY));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CompareX509Cert(certX509, ECC_TEST_KEY));
         /*
          * @tc.steps: step3. Input two same cert.
          * @tc.expected: step3. The return is true.
          */
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::CompareX509Cert(certX509, ECC_TEST_CERT));
+        ASSERT_TRUE(VerifyCertOpensslUtils::CompareX509Cert(certX509, ECC_TEST_CERT));
         X509_free(certX509);
     }
 
@@ -358,17 +358,17 @@ namespace {
      * @tc.desc: Verify whether the WriteX509CrlToStream function can write crl to a file.
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, WriteX509CrlToStreamTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, WriteX509CrlToStreamTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Use invalid input.
          * @tc.expected: step1. The file length is zero.
          */
         std::ofstream crlFile;
-        HapCertVerifyOpensslUtils::WriteX509CrlToStream(crlFile, nullptr);
+        VerifyCertOpensslUtils::WriteX509CrlToStream(crlFile, nullptr);
         std::string filePath = "./hapVerify/test_crl";
         crlFile.open(filePath, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
-        HapCertVerifyOpensslUtils::WriteX509CrlToStream(crlFile, nullptr);
+        VerifyCertOpensslUtils::WriteX509CrlToStream(crlFile, nullptr);
         ASSERT_TRUE(crlFile.tellp() == 0);
         if (crlFile.is_open()) {
             crlFile.close();
@@ -380,21 +380,21 @@ namespace {
      * @tc.desc: The static function will return result of invalid input;
      * @tc.type: FUNC
      */
-    HWTEST_F(HapCertVerifyOpensslUtilsTest, PrivateFuncInvalidInputTest001, TestSize.Level1)
+    HWTEST_F(VerifyCertOpensslUtilsTest, PrivateFuncInvalidInputTest001, TestSize.Level1)
     {
         /*
          * @tc.steps: step1. Use invalid input.
          * @tc.expected: step1. The return is false.
          */
         CertSign certVisitSign;
-        HapCertVerifyOpensslUtils::GenerateCertSignFromCertStack(nullptr, certVisitSign);
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::FindCertOfIssuer(nullptr, certVisitSign) == nullptr);
-        std::string str = HapCertVerifyOpensslUtils::GetDnToString(nullptr);
+        VerifyCertOpensslUtils::GenerateCertSignFromCertStack(nullptr, certVisitSign);
+        ASSERT_TRUE(VerifyCertOpensslUtils::FindCertOfIssuer(nullptr, certVisitSign) == nullptr);
+        std::string str = VerifyCertOpensslUtils::GetDnToString(nullptr);
         ASSERT_FALSE(str.size() > 0);
-        ASSERT_TRUE(HapCertVerifyOpensslUtils::GetCrlBySignedCertIssuer(nullptr, nullptr) == nullptr);
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::X509NameCompare(nullptr, nullptr));
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CheckSignTimeInValidPeriod(nullptr, nullptr, nullptr));
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CheckAsn1TimeIsValid(nullptr));
-        ASSERT_FALSE(HapCertVerifyOpensslUtils::CheckAsn1TypeIsValid(nullptr));
+        ASSERT_TRUE(VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(nullptr, nullptr) == nullptr);
+        ASSERT_FALSE(VerifyCertOpensslUtils::X509NameCompare(nullptr, nullptr));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CheckSignTimeInValidPeriod(nullptr, nullptr, nullptr));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CheckAsn1TimeIsValid(nullptr));
+        ASSERT_FALSE(VerifyCertOpensslUtils::CheckAsn1TypeIsValid(nullptr));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,36 +12,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "endof_central_directory.h"
-#include "unsigned_decimal_util.h"
 #include "signature_tools_log.h"
+#include "unsigned_decimal_util.h"
 
-using namespace OHOS::SignatureTools;
-
-std::optional<EndOfCentralDirectory *> EndOfCentralDirectory::GetEOCDByBytes(std::vector<char> &bytes)
+namespace OHOS {
+namespace SignatureTools {
+std::optional<EndOfCentralDirectory*> EndOfCentralDirectory::GetEOCDByBytes(const std::string& bytes)
 {
     return GetEOCDByBytes(bytes, 0);
 }
 
-std::optional<EndOfCentralDirectory *> EndOfCentralDirectory::GetEOCDByBytes(std::vector<char> &bytes, int offset)
+std::optional<EndOfCentralDirectory*> EndOfCentralDirectory::GetEOCDByBytes(const std::string& bytes, int offset)
 {
-    EndOfCentralDirectory *eocd = new EndOfCentralDirectory();
+    EndOfCentralDirectory* eocd = new EndOfCentralDirectory();
     int remainingDataLen = bytes.size() - offset;
     if (remainingDataLen < EOCD_LENGTH) {
         delete eocd;
-        SIGNATURE_TOOLS_LOGE("remainingDataLen is less than EOCD_LENGTH, remainingDataLen: %{public}d, \
-            EOCD_LENGTH: %{public}d", remainingDataLen, EOCD_LENGTH);
+        SIGNATURE_TOOLS_LOGE("remainingDataLen is less than EOCD_LENGTH, remainingDataLen: %{public}d, "
+                             "EOCD_LENGTH: %{public}d",
+            remainingDataLen, EOCD_LENGTH);
         return std::nullopt;
     }
 
-    ByteBuffer bf(bytes.data(), bytes.size());
+    ByteBuffer bf(bytes.c_str(), bytes.size());
 
     int signValue;
     bf.GetInt32(signValue);
     if (signValue != SIGNATURE) {
         delete eocd;
         SIGNATURE_TOOLS_LOGE("signValue is not equal to SIGNATURE, signValue: %{public}d, SIGNATURE: %{public}d",
-            signValue, SIGNATURE);
+                             signValue, SIGNATURE);
         return std::nullopt;
     }
     eocd->SetDiskNum(UnsignedDecimalUtil::GetUnsignedShort(bf));
@@ -54,17 +56,14 @@ std::optional<EndOfCentralDirectory *> EndOfCentralDirectory::GetEOCDByBytes(std
     int commentLength = eocd->GetCommentLength();
     if (bf.Remaining() != commentLength) {
         delete eocd;
-        SIGNATURE_TOOLS_LOGE("bf.Remaining() is not equal to commentLength, bf.Remaining(): %{public}d, "\
+        SIGNATURE_TOOLS_LOGE("bf.Remaining() is not equal to commentLength, bf.Remaining(): %{public}d, "
                              "commentLength: %{public}d", bf.Remaining(), commentLength);
         return std::nullopt;
     }
     if (commentLength > 0) {
-        char *readComment = new char[commentLength];
-        bf.GetData(readComment, commentLength);
-        std::vector<char> readCommentVec(readComment, readComment + commentLength);
-
-        delete[] readComment;
-        eocd->SetComment(readCommentVec);
+        std::string readComment(commentLength, 0);
+        bf.GetData(&readComment[0], commentLength);
+        eocd->SetComment(readComment);
     }
     eocd->SetLength(EOCD_LENGTH + commentLength);
     if (bf.Remaining() != 0) {
@@ -75,7 +74,7 @@ std::optional<EndOfCentralDirectory *> EndOfCentralDirectory::GetEOCDByBytes(std
     return std::make_optional(eocd);
 }
 
-std::vector<char> EndOfCentralDirectory::ToBytes()
+std::string EndOfCentralDirectory::ToBytes()
 {
     ByteBuffer bf(length);
 
@@ -91,8 +90,7 @@ std::vector<char> EndOfCentralDirectory::ToBytes()
         bf.PutData(comment.data(), comment.size());
     }
 
-    std::vector<char> res(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetCapacity());
-    return res;
+    return bf.ToString();
 }
 
 int EndOfCentralDirectory::GetEocdLength()
@@ -145,22 +143,22 @@ void EndOfCentralDirectory::SetcDTotal(int cDTotal)
     this->cDTotal = cDTotal;
 }
 
-uint64_t EndOfCentralDirectory::GetcDSize()
+int64_t EndOfCentralDirectory::GetcDSize()
 {
     return cDSize;
 }
 
-void EndOfCentralDirectory::SetcDSize(uint64_t cDSize)
+void EndOfCentralDirectory::SetcDSize(int64_t cDSize)
 {
     this->cDSize = cDSize;
 }
 
-uint64_t EndOfCentralDirectory::GetOffset()
+int64_t EndOfCentralDirectory::GetOffset()
 {
     return offset;
 }
 
-void EndOfCentralDirectory::SetOffset(uint64_t offset)
+void EndOfCentralDirectory::SetOffset(int64_t offset)
 {
     this->offset = offset;
 }
@@ -175,12 +173,12 @@ void EndOfCentralDirectory::SetCommentLength(int commentLength)
     this->commentLength = commentLength;
 }
 
-std::vector<char> EndOfCentralDirectory::GetComment()
+std::string EndOfCentralDirectory::GetComment()
 {
     return comment;
 }
 
-void EndOfCentralDirectory::SetComment(std::vector<char> &comment)
+void EndOfCentralDirectory::SetComment(const std::string& comment)
 {
     this->comment = comment;
 }
@@ -194,3 +192,5 @@ void EndOfCentralDirectory::SetLength(int length)
 {
     this->length = length;
 }
+} // namespace SignatureTools
+} // namespace OHOS

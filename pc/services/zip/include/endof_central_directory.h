@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,134 +13,113 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_ENDOF_CENTRAL_DIRECTORY_H
-#define SIGNERTOOLS_ENDOF_CENTRAL_DIRECTORY_H
+#ifndef SIGNATRUETOOLS_ENDOF_CENTRAL_DIRECTORY_H
+#define SIGNATRUETOOLS_ENDOF_CENTRAL_DIRECTORY_H
 
-#include <vector>
 #include <optional>
+#include <string>
 
 namespace OHOS {
-    namespace SignatureTools {
-        class EndOfCentralDirectory {
-            /**
-             * EndOfCentralDirectory invariable bytes length
-             */
-        public:
-            static constexpr int EOCD_LENGTH = 22;
+namespace SignatureTools {
+class EndOfCentralDirectory {
+public:
+    /* EndOfCentralDirectory invariable bytes length */
+    static constexpr int EOCD_LENGTH = 22;
 
-            /**
-             * 4 bytes , central directory signature
-             */
-            static constexpr int SIGNATURE = 0x06054b50;
+    /* 4 bytes , central directory signature */
+    static constexpr int SIGNATURE = 0x06054b50;
 
-            /**
-             * 2 bytes
-             */
-        private:
-            int diskNum = 0;
+    /**
+     * init End Of Central Directory, default offset is 0
+     *
+     * @param bytes End Of Central Directory bytes
+     * @return End Of Central Directory
+     */
+    static std::optional<EndOfCentralDirectory*> GetEOCDByBytes(const std::string& bytes);
 
-            /**
-             * 2 bytes
-             */
-            int cDStartDiskNum = 0;
+    /**
+     * init End Of Central Directory
+     *
+     * @param bytes End Of Central Directory bytes
+     * @param offset offset
+     * @return End Of Central Directory
+     */
+    static std::optional<EndOfCentralDirectory*> GetEOCDByBytes(const std::string& bytes, int offset);
 
-            /**
-             * 2 bytes
-             */
-            int thisDiskCDNum = 0;
+    /**
+     * change End Of Central Directory to bytes
+     *
+     * @return bytes
+     */
+    std::string ToBytes();
 
-            /**
-             * 2 bytes
-             */
-            int cDTotal = 0;
+    static int GetEocdLength();
 
-            /**
-             * 4 bytes
-             */
-            uint64_t cDSize = 0;
+    static int GetSIGNATURE();
 
-            /**
-             * 4 bytes
-             */
-            uint64_t offset = 0;
+    int GetDiskNum();
 
-            /**
-             * 2 bytes
-             */
-            int commentLength = 0;
+    void SetDiskNum(int diskNum);
 
-            /**
-             * n bytes
-             */
-            std::vector< char> comment;
+    int GetcDStartDiskNum();
 
-            int length = 0;
+    void SetcDStartDiskNum(int cDStartDiskNum);
 
-            /**
-             * init End Of Central Directory, default offset is 0
-             *
-             * @param bytes End Of Central Directory bytes
-             * @return End Of Central Directory
-             */
-        public:
-            static std::optional<EndOfCentralDirectory*> GetEOCDByBytes(std::vector< char>& bytes);
+    int GetThisDiskCDNum();
 
-            /**
-             * init End Of Central Directory
-             *
-             * @param bytes End Of Central Directory bytes
-             * @param offset offset
-             * @return End Of Central Directory
-             */
-            static std::optional<EndOfCentralDirectory*> GetEOCDByBytes(std::vector< char>& bytes, int offset);
+    void SetThisDiskCDNum(int thisDiskCDNum);
 
-            /**
-             * change End Of Central Directory to bytes
-             *
-             * @return bytes
-             */
-            std::vector< char> ToBytes();
+    int GetcDTotal();
 
-            static int GetEocdLength();
+    void SetcDTotal(int cDTotal);
 
-            static int GetSIGNATURE();
+    int64_t GetcDSize();
 
-            int GetDiskNum();
+    void SetcDSize(int64_t cDSize);
 
-            void SetDiskNum(int diskNum);
+    int64_t GetOffset();
 
-            int GetcDStartDiskNum();
+    void SetOffset(int64_t offset);
 
-            void SetcDStartDiskNum(int cDStartDiskNum);
+    int GetCommentLength();
 
-            int GetThisDiskCDNum();
+    void SetCommentLength(int commentLength);
 
-            void SetThisDiskCDNum(int thisDiskCDNum);
+    std::string GetComment();
 
-            int GetcDTotal();
+    void SetComment(const std::string& comment);
 
-            void SetcDTotal(int cDTotal);
+    int GetLength();
 
-            uint64_t GetcDSize();
+    void SetLength(int length);
 
-            void SetcDSize(uint64_t cDSize);
+private:
+    /* 4 bytes */
+    int diskNum = 0;
 
-            uint64_t GetOffset();
+    /* 4 bytes */
+    int cDStartDiskNum = 0;
 
-            void SetOffset(uint64_t offset);
+    /* 4 bytes */
+    int thisDiskCDNum = 0;
 
-            int GetCommentLength();
+    /* 4 bytes */
+    int cDTotal = 0;
 
-            void SetCommentLength(int commentLength);
+    /* 8 bytes */
+    int64_t cDSize = 0;
 
-            std::vector< char> GetComment();
+    /* 8 bytes */
+    int64_t offset = 0;
 
-            void SetComment(std::vector< char>& comment);
+    /* 4 bytes */
+    int commentLength = 0;
 
-            int GetLength();
+    /* n bytes */
+    std::string comment;
 
-            void SetLength(int length);
-        };
-    }
-}
-#endif
+    int length = 0;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_ENDOF_CENTRAL_DIRECTORY_H

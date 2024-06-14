@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,124 +14,155 @@
  */
 #include "code_sign_block.h"
 #include "merkle_tree_extension.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
+
 const long CodeSignBlock::PAGE_SIZE_4K = 4096;
 const int CodeSignBlock::SEGMENT_HEADER_COUNT = 3;
+
 CodeSignBlock::CodeSignBlock()
 {
 }
+
 CodeSignBlock::~CodeSignBlock()
 {
 }
-void CodeSignBlock::addOneMerkleTree(const std::string& key, std::vector<int8_t>& merkleTree)
+
+void CodeSignBlock::AddOneMerkleTree(const std::string& key, std::vector<int8_t>& merkleTree)
 {
-    if (merkleTree.empty()) {
-        merkleTreeMap.insert(std::make_pair(key, std::vector<int8_t>(0)));
-    } else {
-        merkleTreeMap.insert(std::make_pair(key, merkleTree));
+    if (merkleTreeMap.find(key) == merkleTreeMap.end()) {
+        if (key.empty()) {
+            return;
+        }
+        if (merkleTree.empty()) {
+            merkleTreeMap.insert(std::make_pair(key, std::vector<int8_t>(0)));
+        } else {
+            merkleTreeMap.insert(std::make_pair(key, merkleTree));
+        }
     }
 }
-std::vector<int8_t> CodeSignBlock::getOneMerkleTreeByFileName(const std::string& key)
+
+std::vector<int8_t> CodeSignBlock::GetOneMerkleTreeByFileName(const std::string& key)
 {
+    if (key.empty()) {
+        return std::vector<int8_t>();
+    }
     return this->merkleTreeMap[key];
 }
-void CodeSignBlock::setCodeSignBlockFlag()
+
+void CodeSignBlock::SetCodeSignBlockFlag()
 {
     int flags = CodeSignBlockHeader::FLAG_MERKLE_TREE_INLINED;
-    if (this->nativeLibInfoSegment.getSectionNum() != 0) {
-        flags += CodeSignBlockHeader::FLAG_NATIVE_LIB_INCLUDED;
+    if (this->nativeLibInfoSegment.GetSectionNum() != 0) {
+        flags |= CodeSignBlockHeader::FLAG_NATIVE_LIB_INCLUDED;
     }
-    this->codeSignBlockHeader.setFlags(flags);
+    this->codeSignBlockHeader.SetFlags(flags);
 }
-void CodeSignBlock::setSegmentNum()
+
+void CodeSignBlock::SetSegmentNum()
 {
-    this->codeSignBlockHeader.setSegmentNum(static_cast<int>(segmentHeaderList.size()));
+    this->codeSignBlockHeader.SetSegmentNum(static_cast<int>(segmentHeaderList.size()));
 }
-void CodeSignBlock::addToSegmentList(SegmentHeader sh)
+
+void CodeSignBlock::AddToSegmentList(SegmentHeader sh)
 {
     this->segmentHeaderList.push_back(sh);
 }
-std::vector<SegmentHeader>& CodeSignBlock::getSegmentHeaderList()
+
+std::vector<SegmentHeader>& CodeSignBlock::GetSegmentHeaderList()
 {
     return segmentHeaderList;
 }
-void CodeSignBlock::setSegmentHeaders()
+
+void CodeSignBlock::SetSegmentHeaders()
 {
     // fs-verity info segment
     SegmentHeader tempVar(SegmentHeader::CSB_FSVERITY_INFO_SEG, FsVerityInfoSegment::FS_VERITY_INFO_SEGMENT_SIZE);
     segmentHeaderList.push_back(tempVar);
     // hap info segment
-    SegmentHeader tempVar2(SegmentHeader::CSB_HAP_META_SEG, this->hapInfoSegment.getSize());
+    SegmentHeader tempVar2(SegmentHeader::CSB_HAP_META_SEG, this->hapInfoSegment.GetSize());
     segmentHeaderList.push_back(tempVar2);
     // native lib info segment
-    SegmentHeader tempVar3(SegmentHeader::CSB_NATIVE_LIB_INFO_SEG, this->nativeLibInfoSegment.size());
+    SegmentHeader tempVar3(SegmentHeader::CSB_NATIVE_LIB_INFO_SEG, this->nativeLibInfoSegment.Size());
     segmentHeaderList.push_back(tempVar3);
 }
-CodeSignBlockHeader& CodeSignBlock::getCodeSignBlockHeader()
+
+CodeSignBlockHeader& CodeSignBlock::GetCodeSignBlockHeader()
 {
     return codeSignBlockHeader;
 }
-void CodeSignBlock::setCodeSignBlockHeader(CodeSignBlockHeader& csbHeader)
+
+void CodeSignBlock::SetCodeSignBlockHeader(CodeSignBlockHeader& csbHeader)
 {
     codeSignBlockHeader = csbHeader;
 }
-void CodeSignBlock::setFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg)
+
+void CodeSignBlock::SetFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg)
 {
     this->fsVerityInfoSegment = fsVeritySeg;
 }
-FsVerityInfoSegment& CodeSignBlock::getFsVerityInfoSegment()
+
+FsVerityInfoSegment& CodeSignBlock::GetFsVerityInfoSegment()
 {
     return fsVerityInfoSegment;
 }
-HapInfoSegment& CodeSignBlock::getHapInfoSegment()
+
+HapInfoSegment& CodeSignBlock::GetHapInfoSegment()
 {
     return hapInfoSegment;
 }
-void CodeSignBlock::setHapInfoSegment(HapInfoSegment& hapSeg)
+
+void CodeSignBlock::SetHapInfoSegment(HapInfoSegment& hapSeg)
 {
     this->hapInfoSegment = hapSeg;
 }
-NativeLibInfoSegment& CodeSignBlock::getSoInfoSegment()
+
+NativeLibInfoSegment& CodeSignBlock::GetSoInfoSegment()
 {
     return nativeLibInfoSegment;
 }
-void CodeSignBlock::setSoInfoSegment(NativeLibInfoSegment soSeg)
+
+void CodeSignBlock::SetSoInfoSegment(NativeLibInfoSegment soSeg)
 {
     this->nativeLibInfoSegment = soSeg;
 }
-std::vector<int8_t> CodeSignBlock::toByteArray()
+
+std::vector<int8_t> CodeSignBlock::ToByteArray()
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
-        (ByteBuffer(this->codeSignBlockHeader.getBlockSize()));
-    bf->PutData((const char*)this->codeSignBlockHeader.toByteArray().data(),
-                this->codeSignBlockHeader.toByteArray().size());
+        (ByteBuffer(this->codeSignBlockHeader.GetBlockSize()));
+    bf->PutData(this->codeSignBlockHeader.ToByteArray().data(),
+        this->codeSignBlockHeader.ToByteArray().size());
     for (auto sh : this->segmentHeaderList) {
-        bf->PutData((char*)(sh.toByteArray().data()), sh.toByteArray().size());
+        bf->PutData(sh.ToByteArray().data(), sh.ToByteArray().size());
     }
-    bf->PutData((char*)this->zeroPadding.data(), this->zeroPadding.size());
+    bf->PutData(this->zeroPadding.data(), this->zeroPadding.size());
     // Hap merkle tree
-    bf->PutData((char*)merkleTreeMap["Hap"].data(), merkleTreeMap["Hap"].size());
-    bf->PutData((char*)this->fsVerityInfoSegment.toByteArray().data(), this->fsVerityInfoSegment.toByteArray().size());
-    bf->PutData((char*)this->hapInfoSegment.toByteArray().data(), this->hapInfoSegment.toByteArray().size());
-    bf->PutData((char*)this->nativeLibInfoSegment.toByteArray().data(),
-                this->nativeLibInfoSegment.toByteArray().size());
+    bf->PutData(merkleTreeMap["Hap"].data(), merkleTreeMap["Hap"].size());
+    bf->PutData(this->fsVerityInfoSegment.ToByteArray().data(), this->fsVerityInfoSegment.ToByteArray().size());
+    bf->PutData(this->hapInfoSegment.ToByteArray().data(), this->hapInfoSegment.ToByteArray().size());
+    bf->PutData(this->nativeLibInfoSegment.ToByteArray().data(),
+        this->nativeLibInfoSegment.ToByteArray().size());
     std::vector<int8_t> ret(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
     return ret;
 }
-void CodeSignBlock::computeSegmentOffset()
+
+void CodeSignBlock::ComputeSegmentOffset()
 {
     // 1) the first segment is placed after merkle tree
-    int segmentOffset = CodeSignBlockHeader::size()
+    int segmentOffset = CodeSignBlockHeader::Size()
         + this->segmentHeaderList.size() * SegmentHeader::SEGMENT_HEADER_LENGTH
-        + this->zeroPadding.size() + this->getOneMerkleTreeByFileName("Hap").size();
+        + this->zeroPadding.size() + this->GetOneMerkleTreeByFileName("Hap").size();
     for (int i = 0; i < segmentHeaderList.size(); i++) {
-        segmentHeaderList[i].setSegmentOffset(static_cast<int32_t>(segmentOffset));
-        segmentOffset += segmentHeaderList[i].getSegmentSize();
+        segmentHeaderList[i].SetSegmentOffset(static_cast<int32_t>(segmentOffset));
+        segmentOffset += segmentHeaderList[i].GetSegmentSize();
     }
 }
-long long CodeSignBlock::computeMerkleTreeOffset(long long codeSignBlockOffset)
+
+long long CodeSignBlock::ComputeMerkleTreeOffset(long long codeSignBlockOffset)
 {
-    long long sizeWithoutMerkleTree = CodeSignBlockHeader::size()
+    long long sizeWithoutMerkleTree = CodeSignBlockHeader::Size()
         + SEGMENT_HEADER_COUNT * SegmentHeader::SEGMENT_HEADER_LENGTH;
     // add code sign block offset while computing align position for merkle tree
     long long residual = (codeSignBlockOffset + sizeWithoutMerkleTree) % PAGE_SIZE_4K;
@@ -142,26 +173,31 @@ long long CodeSignBlock::computeMerkleTreeOffset(long long codeSignBlockOffset)
     }
     return codeSignBlockOffset + sizeWithoutMerkleTree + zeroPadding.size();
 }
-std::vector<int8_t> CodeSignBlock::generateCodeSignBlockByte(long long fsvTreeOffset)
+
+std::vector<int8_t> CodeSignBlock::GenerateCodeSignBlockByte(long long fsvTreeOffset)
 {
     // 1) compute overall block size without merkle tree
-    int64_t csbSize = CodeSignBlockHeader::size()
+    int64_t csbSize = CodeSignBlockHeader::Size()
         + static_cast<long long>(this->segmentHeaderList.size()) * SegmentHeader::SEGMENT_HEADER_LENGTH
         + this->zeroPadding.size()
-        + this->getOneMerkleTreeByFileName("Hap").size()
-        + this->fsVerityInfoSegment.size()
-        + this->hapInfoSegment.getSize()
-        + this->nativeLibInfoSegment.size();
-    Extension* ext = this->hapInfoSegment.getSignInfo().getExtensionByType(MerkleTreeExtension::MERKLE_TREE_INLINED);
+        + this->GetOneMerkleTreeByFileName("Hap").size()
+        + this->fsVerityInfoSegment.Size()
+        + this->hapInfoSegment.GetSize()
+        + this->nativeLibInfoSegment.Size();
+    Extension* ext = this->hapInfoSegment.GetSignInfo().GetExtensionByType(MerkleTreeExtension::MERKLE_TREE_INLINED);
     if (ext != nullptr) {
         MerkleTreeExtension* merkleTreeExtension = (MerkleTreeExtension*)(ext);
-        merkleTreeExtension->setMerkleTreeOffset(fsvTreeOffset);
+        merkleTreeExtension->SetMerkleTreeOffset(fsvTreeOffset);
     }
-    this->codeSignBlockHeader.setBlockSize(csbSize);
+    this->codeSignBlockHeader.SetBlockSize(csbSize);
     // 2) generate byte array of complete code sign block
-    return toByteArray();
+    return ToByteArray();
 }
-std::string CodeSignBlock::toString()
+
+std::string CodeSignBlock::ToString()
 {
     return "";
+}
+
+}
 }

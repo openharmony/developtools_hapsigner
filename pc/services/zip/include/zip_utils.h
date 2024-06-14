@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,33 +13,34 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_ZIP_UTILS_H
-#define SIGNERTOOLS_ZIP_UTILS_H
-#include "signature_tools_log.h"
-#include "zip_data_input.h"
+#ifndef SIGNATRUETOOLS_ZIP_UTILS_H
+#define SIGNATRUETOOLS_ZIP_UTILS_H
+
 #include <limits>
 #include <memory>
 
+#include "signature_tools_log.h"
+#include "zip_data_input.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class ZipUtils {
-        private:
-            static constexpr int ZIP_CENTRAL_DIR_OFFSET_IN_EOCD = 16;
+namespace SignatureTools {
+class ZipUtils {
+public:
+    /**
+     * set offset value of Central Directory to End of Central Directory Record.
+     *
+     * @param eocd buffer of End of Central Directory Record.
+     * @param offset offset value of Central Directory.
+     */
+    static bool SetCentralDirectoryOffset(ByteBuffer& eocd, int64_t offset);
 
-            static constexpr unsigned long UINT32_MAX_VALUE = 4294967295UL;
+private:
+    static constexpr int ZIP_CENTRAL_DIR_OFFSET_IN_EOCD = 16;
 
-        public:
-            /**
-             * set offset value of Central Directory to End of Central Directory Record.
-             *
-             * @param eocd buffer of End of Central Directory Record.
-             * @param offset offset value of Central Directory.
-             */
-            static bool SetCentralDirectoryOffset(ByteBuffer& eocd, long  offset);
+    static constexpr int64_t UINT32_MAX_VALUE = 0xffffffffLL;
 
-        private:
-            static bool SetUInt32ToBuffer(ByteBuffer& buffer, int offset, long value);
-        };
-    }
-}
-#endif
+    static bool SetUInt32ToBuffer(ByteBuffer& buffer, int offset, int64_t value);
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_ZIP_UTILS_H

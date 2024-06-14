@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,10 +14,12 @@
  */
 #include "fs_digest_utils.h"
 #include "securec.h"
+
 void DigestUtils::AddData(std::string data)
 {
     AddData(data.data(), (int)data.size());
 }
+
 void DigestUtils::AddData(const char* data, int length)
 {
     int ret = EVP_DigestUpdate(m_ctx, data, length);
@@ -25,6 +27,7 @@ void DigestUtils::AddData(const char* data, int length)
         printf("Update DigestFunc failed!\n");
     }
 }
+
 X509_CRL* DigestUtils::ParseBase64DecodedCRL(const std::string& encodedCRL)
 {
     // 将base64编码的CRL字符串转换为BIO
@@ -42,6 +45,7 @@ X509_CRL* DigestUtils::ParseBase64DecodedCRL(const std::string& encodedCRL)
     BIO_free(bio);
     return crl;
 }
+
 X509* DigestUtils::DecodeBase64ToX509Certifate(const std::string& encodeString)
 {
     // 将base64编码的证书字符串转换为BIO
@@ -59,6 +63,7 @@ X509* DigestUtils::DecodeBase64ToX509Certifate(const std::string& encodeString)
     BIO_free(bio);
     return cert;
 }
+
 std::string DigestUtils::Result(DigestUtils::Type type)
 {
     unsigned int len = 0;
@@ -89,6 +94,7 @@ std::string DigestUtils::Result(DigestUtils::Type type)
     delete[]md;
     return st;
 }
+
 DigestUtils::DigestUtils(HashType type)
 {
     m_type = type;
@@ -105,6 +111,7 @@ DigestUtils::DigestUtils(HashType type)
         printf("Init DigestFunc failed!\n");
     }
 }
+
 DigestUtils::~DigestUtils()
 {
     if (m_ctx != nullptr) {

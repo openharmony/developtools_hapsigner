@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,17 +14,16 @@
  */
 #include <unistd.h>
 #include "signature_tools_log.h"
-#include "hap_sign_tool.h"
+#include "params_run_tool.h"
 using namespace OHOS::SignatureTools;
 int main(int argc, char** argv)
 {
-    std::unique_ptr<HapSignTool> hapSignToolPtr = std::make_unique<HapSignTool>();
-    bool isSuccess = hapSignToolPtr->ProcessCmd(argv, argc);
+    // prepare modes vector by macro DEFINE_MODE which subscribe UPDATER_MAIN_PRE_EVENT event
+    std::unique_ptr<ParamsRunTool> paramsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool isSuccess = paramsRunToolPtr->ProcessCmd(argv, argc);
     if (isSuccess) {
-        CMD_MSG("Execute command: Success");
         return 0;
     } else {
-        CMD_MSG("Execute command: Failed");
         return -1;
     }
     return 0;

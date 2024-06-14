@@ -136,6 +136,11 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -keystorePwd : keystore password, optional fields;
         -outFile : output the signed Provision Profile file, p7b format, required fields;
         -extCfgFile : Extend Profile, optional fields;
+        -signServer : remote signer plugin, required fields on remoteSign mode;
+        -signerPlugin : remote sign service url, required fields on remoteSign mode;
+        -onlineAuthMode : remote sign auth mode, required fields on remoteSign mode, including account;
+        -username : user account for online auth, required fields on remoteSign mode with account auth mode;
+        -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
         EXAMPLE:
         sign-profile -mode localSign -keyAlias "oh-profile-key-v1" -keyPwd ****** -profileCertFile "/home/huangtk/Code/OpenHarmony_master_yjr/developtools/hapsigner_pc/services/file/provision-profile-release.cer" -inFile "/home/huangtk/Code/OpenHarmony_master_yjr/developtools/hapsigner_pc/services/file/app1-profile-release.json" -signAlg SHA256withECDSA  -keystoreFile  "/home/huangtk/Code/OpenHarmony_master_yjr/developtools/hapsigner_pc/services/file/profile-keypair.jks" -keystorePwd ****** -outFile "/home/huangtk/Code/OpenHarmony_master_yjr/developtools/hapsigner_pc/services/file/signed-profile.p7b"
         verify-profile [options]:

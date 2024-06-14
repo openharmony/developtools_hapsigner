@@ -17,8 +17,8 @@ signature_tools_profile_include = [
 ]
 
 signature_tools_profile_src = [
-   "${signature_tools_service_profile}/src/provision_info.cpp",
-   "${signature_tools_service_profile}/src/provision_verify.cpp",
+   "${signature_tools_service_profile}/src/profile_info.cpp",
+   "${signature_tools_service_profile}/src/profile_verify.cpp",
     "${signature_tools_service}/profile/src/pkcs7_data.cpp",
     "${signature_tools_service}/profile/src/profile_sign_tool.cpp",
     "${signature_tools_service}/profile/src/profile_verify_utils.cpp",

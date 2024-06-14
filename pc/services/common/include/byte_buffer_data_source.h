@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,29 +12,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNERTOOLS_BYTEBUFFER_DATASOURCE_H
-#define SIGNERTOOLS_BYTEBUFFER_DATASOURCE_H
+#ifndef SIGNATRUETOOLS_BYTEBUFFER_DATASOURCE_H
+#define SIGNATRUETOOLS_BYTEBUFFER_DATASOURCE_H
+
 #include "data_source.h"
 #include "export_define.h"
 #include "byte_buffer.h"
 #include "digest_parameter.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class ByteBufferDataSource : public DataSource {
-        public:
-            DLL_EXPORT ByteBufferDataSource(ByteBuffer& hapBuffer);
-            DLL_EXPORT ~ByteBufferDataSource();
-            bool HasRemaining() const override;
-            long long Remaining() const override;
-            void Reset() override;
-            bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) override;
-            ByteBuffer& GetByteBuffer()
-            {
-                return bytebuffer;
-            }
-        private:
-            ByteBuffer& bytebuffer;
-        };
-    } // namespace SignatureTools
+namespace SignatureTools {
+
+class ByteBufferDataSource : public DataSource {
+public:
+    DLL_EXPORT ByteBufferDataSource(ByteBuffer& hapBuffer);
+    DLL_EXPORT ~ByteBufferDataSource();
+    bool HasRemaining() const override;
+    long long Remaining() const override;
+    void Reset() override;
+    bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) override;
+    ByteBuffer& GetByteBuffer()
+    {
+        return bytebuffer;
+    }
+
+private:
+    ByteBuffer& bytebuffer;
+};
+} // namespace SignatureTools
 } // namespace OHOS
-#endif // HAP_BYTEBUFFER_DATASOURCE_H
+#endif // SIGNATRUETOOLS_BYTEBUFFER_DATASOURCE_H

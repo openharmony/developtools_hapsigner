@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 #include "provision_verify_test.h"
 
 #include <gtest/gtest.h>
-#include "provision_verify.h"
+#include "profile_verify.h"
 
 using namespace testing::ext;
 using namespace OHOS::SignatureTools;
@@ -223,7 +223,7 @@ namespace {
          *     and run ParseAndVerify function.
          * @tc.expected: step1. return code will be PROVISION_INVALID.
          */
-        ProvisionInfo info;
+        ProfileInfo info;
         int32_t ret = ParseAndVerify(INVALID_PROVISION_1, info);
         ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_INVALID);
         ret = ParseAndVerify(INVALID_PROVISION_2, info);
@@ -244,7 +244,7 @@ namespace {
          *     and run ParseAndVerify function.
          * @tc.expected: step2. return code will be PROVISION_OK.
          */
-        ProvisionInfo info;
+        ProfileInfo info;
         int32_t ret = ParseAndVerify(VALID_PROVISION, info);
         ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_OK);
         ASSERT_EQ(info.versionCode, 2); // version code is 2
@@ -267,7 +267,7 @@ namespace {
          *     and run ParseAndVerify function.
          * @tc.expected: step3. return code will be PROVISION_OK.
          */
-        ProvisionInfo info;
+        ProfileInfo info;
         int32_t ret = ParseAndVerify(VALID_PROVISION_PERMISSION, info);
         ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_OK);
         ASSERT_EQ(info.versionCode, 3); // version code is 3

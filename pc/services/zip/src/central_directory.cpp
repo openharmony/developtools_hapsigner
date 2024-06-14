@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,13 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "central_directory.h"
-#include "unsigned_decimal_util.h"
 #include "signature_tools_log.h"
+#include "unsigned_decimal_util.h"
 
-using namespace OHOS::SignatureTools;
-
-bool CentralDirectory::GetCentralDirectory(ByteBuffer &bf, CentralDirectory *cd)
+namespace OHOS {
+namespace SignatureTools {
+bool CentralDirectory::GetCentralDirectory(ByteBuffer& bf, CentralDirectory* cd)
 {
     int signatureValue;
     bf.GetInt32(signatureValue);
@@ -31,34 +32,28 @@ bool CentralDirectory::GetCentralDirectory(ByteBuffer &bf, CentralDirectory *cd)
 
     int fileNameLength = cd->GetFileNameLength();
     if (fileNameLength > 0) {
-        char *readFileName = new char[fileNameLength];
-        bf.GetData(readFileName, fileNameLength);
-        std::string fileNameStr(readFileName, fileNameLength);
-        cd->SetFileName(fileNameStr);
-        delete[] readFileName;
+        std::string readFileName(fileNameLength, 0);
+        bf.GetData(&readFileName[0], fileNameLength);
+        cd->SetFileName(readFileName);
     }
     int extraLength = cd->GetExtraLength();
     if (extraLength > 0) {
-        char *extra = new char[extraLength];
-        bf.GetData(extra, extraLength);
-        std::vector<char> extraData(extra, extra + extraLength);
-        cd->SetExtraData(extraData);
-        delete[] extra;
+        std::string extra(extraLength, 0);
+        bf.GetData(&extra[0], extraLength);
+        cd->SetExtraData(extra);
     }
     int commentLength = cd->GetCommentLength();
     if (commentLength > 0) {
-        char *readComment = new char[commentLength];
-        bf.GetData(readComment, commentLength);
-        std::vector<char> comment(readComment, readComment + commentLength);
-        cd->SetComment(comment);
-        delete[] readComment;
+        std::string readComment(commentLength, 0);
+        bf.GetData(&readComment[0], commentLength);
+        cd->SetComment(readComment);
     }
     cd->SetLength(CD_LENGTH + fileNameLength + extraLength + commentLength);
 
     return true;
 }
 
-void CentralDirectory::SetCentralDirectoryValues(ByteBuffer &bf, CentralDirectory *cd)
+void CentralDirectory::SetCentralDirectoryValues(ByteBuffer& bf, CentralDirectory* cd)
 {
     int16_t centralDirectoryInt16Value;
     bf.GetInt16(centralDirectoryInt16Value);
@@ -99,7 +94,7 @@ void CentralDirectory::SetCentralDirectoryValues(ByteBuffer &bf, CentralDirector
     cd->SetOffset(UnsignedDecimalUtil::GetUnsignedInt(bf));
 }
 
-std::vector<char> CentralDirectory::ToBytes()
+std::string CentralDirectory::ToBytes()
 {
     ByteBuffer bf(length);
 
@@ -124,14 +119,13 @@ std::vector<char> CentralDirectory::ToBytes()
         bf.PutData(fileName.c_str(), fileName.size());
     }
     if (extraLength > 0) {
-        bf.PutData(extraData.data(), extraData.size());
+        bf.PutData(extraData.c_str(), extraData.size());
     }
     if (commentLength > 0) {
-        bf.PutData(extraData.data(), extraData.size());
+        bf.PutData(extraData.c_str(), extraData.size());
     }
 
-    std::vector<char> retVec(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetCapacity());
-    return retVec;
+    return bf.ToString();
 }
 
 int CentralDirectory::GetCdLength()
@@ -214,22 +208,22 @@ void CentralDirectory::SetCrc32(int crc32)
     this->crc32 = crc32;
 }
 
-long long CentralDirectory::GetCompressedSize()
+int64_t CentralDirectory::GetCompressedSize()
 {
     return compressedSize;
 }
 
-void CentralDirectory::SetCompressedSize(long long compressedSize)
+void CentralDirectory::SetCompressedSize(int64_t compressedSize)
 {
     this->compressedSize = compressedSize;
 }
 
-long long CentralDirectory::GetUnCompressedSize()
+int64_t CentralDirectory::GetUnCompressedSize()
 {
     return unCompressedSize;
 }
 
-void CentralDirectory::SetUnCompressedSize(long long unCompressedSize)
+void CentralDirectory::SetUnCompressedSize(int64_t unCompressedSize)
 {
     this->unCompressedSize = unCompressedSize;
 }
@@ -294,12 +288,12 @@ void CentralDirectory::SetExternalFile(int externalFile)
     this->externalFile = externalFile;
 }
 
-long long CentralDirectory::GetOffset()
+int64_t CentralDirectory::GetOffset()
 {
     return offset;
 }
 
-void CentralDirectory::SetOffset(long long offset)
+void CentralDirectory::SetOffset(int64_t offset)
 {
     this->offset = offset;
 }
@@ -309,27 +303,27 @@ std::string CentralDirectory::GetFileName()
     return fileName;
 }
 
-void CentralDirectory::SetFileName(const std::string &fileName)
+void CentralDirectory::SetFileName(const std::string& fileName)
 {
     this->fileName = fileName;
 }
 
-std::vector<char> CentralDirectory::GetExtraData()
+std::string CentralDirectory::GetExtraData() const
 {
     return extraData;
 }
 
-void CentralDirectory::SetExtraData(std::vector<char> &extraData)
+void CentralDirectory::SetExtraData(const std::string& extraData)
 {
     this->extraData = extraData;
 }
 
-std::vector<char> CentralDirectory::GetComment()
+std::string CentralDirectory::GetComment()
 {
     return comment;
 }
 
-void CentralDirectory::SetComment(std::vector<char> &comment)
+void CentralDirectory::SetComment(const std::string& comment)
 {
     this->comment = comment;
 }
@@ -343,3 +337,5 @@ void CentralDirectory::SetLength(int length)
 {
     this->length = length;
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,110 +13,108 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_ZIP_H
-#define SIGNERTOOLS_ZIP_H
+#ifndef SIGNATRUETOOLS_ZIP_SIGNER_H
+#define SIGNATRUETOOLS_ZIP_SIGNER_H
 
-#include <optional>
 #include <fstream>
+#include <optional>
 #include <string>
 #include <vector>
+
 #include "endof_central_directory.h"
-#include "zip_entry.h"
 #include "signature_tools_log.h"
+#include "zip_entry.h"
 
 namespace OHOS {
-    namespace SignatureTools {
-        class Zip {
-        public:
-            /**
-             * file is uncompress file flag
-             */
-            static constexpr int FILE_UNCOMPRESS_METHOD_FLAG = 0;
+namespace SignatureTools {
+class ZipSigner {
+public:
+    /* file is uncompress file flag */
+    static constexpr int FILE_UNCOMPRESS_METHOD_FLAG = 0;
 
-            /**
-             * max comment length
-             */
-            static constexpr int MAX_COMMENT_LENGTH = 65535;
+    /* max comment length */
+    static constexpr int MAX_COMMENT_LENGTH = 65535;
 
-        private:
-            std::vector<ZipEntry*> zipEntries;
-
-            uint64_t signingOffset = 0;
-
-            std::vector<char> signingBlock;
-
-            uint64_t cDOffset = 0;
-
-            uint64_t eOCDOffset = 0;
-
-            EndOfCentralDirectory* endOfCentralDirectory;
-
-            /**
-             * create Zip by file
-             *
-             * @param inputFile file
-             */
-        public:
-            ~Zip()
-            {
-                delete endOfCentralDirectory;
-                for (ZipEntry* zipEntry : zipEntries) {
-                    delete zipEntry;
-                }
-            }
-            Zip()
-            {
-            }
-            bool Init(std::ifstream& inputFile);
-
-        private:
-            EndOfCentralDirectory* GetZipEndOfCentralDirectory(std::ifstream& input);
-
-            bool GetZipCentralDirectory(std::ifstream& input);
-
-            std::vector<char> GetSigningBlock(std::ifstream& input);
-
-            bool GetZipEntries(std::ifstream& input);
-
-            /**
-             * output zip to zip file
-             *
-             * @param outFile file path
-             */
-        public:
-            bool ToFile(std::ifstream& input, std::ofstream& output);
-
-            /**
-             * alignment uncompress entry
-             *
-             * @param alignment int alignment
-             */
-            void Alignment(int alignment);
-
-            /**
-             * remove sign block
-             */
-            void RemoveSignBlock();
-
-            /**
-             * sort uncompress entry in the front.
-             */
-        private:
-            void Sort();
-
-            void ResetOffset();
-
-        public:
-            std::vector<ZipEntry*>& GetZipEntries();
-
-            uint64_t GetSigningOffset();
-
-            uint64_t GetCDOffset();
-
-            uint64_t GetEOCDOffset();
-
-            EndOfCentralDirectory* GetEndOfCentralDirectory();
-        };
+    ZipSigner()
+    {
     }
-}
-#endif
+
+    ~ZipSigner()
+    {
+        delete endOfCentralDirectory;
+        for (ZipEntry* zipEntry : zipEntries) {
+            delete zipEntry;
+        }
+    }
+
+    bool Init(std::ifstream& inputFile);
+
+    /**
+     * output zip to zip file
+     *
+     * @param outFile file path
+     */
+    bool ToFile(std::ifstream& input, std::ofstream& output);
+
+    /**
+     * alignment uncompress entry
+     *
+     * @param alignment int alignment
+     */
+    void Alignment(int alignment);
+
+    void RemoveSignBlock();
+
+    std::vector<ZipEntry*>& GetZipEntries();
+
+    void SetZipEntries(const std::vector<ZipEntry*>& zipEntries);
+
+    int64_t GetSigningOffset();
+
+    void SetSigningOffset(int64_t signingOffset);
+
+    std::string GetSigningBlock();
+
+    void SetSigningBlock(const std::string& signingBlock);
+
+    int64_t GetCDOffset();
+
+    void SetCDOffset(int64_t cDOffset);
+
+    int64_t GetEOCDOffset();
+
+    void SetEOCDOffset(int64_t eOCDOffset);
+
+    EndOfCentralDirectory* GetEndOfCentralDirectory();
+
+    void SetEndOfCentralDirectory(EndOfCentralDirectory* endOfCentralDirectory);
+
+private:
+    std::vector<ZipEntry*> zipEntries;
+
+    int64_t signingOffset = 0;
+
+    std::string signingBlock;
+
+    int64_t cDOffset = 0;
+
+    int64_t eOCDOffset = 0;
+
+    EndOfCentralDirectory* endOfCentralDirectory;
+
+    EndOfCentralDirectory* GetZipEndOfCentralDirectory(std::ifstream& input);
+
+    bool GetZipCentralDirectory(std::ifstream& input);
+
+    std::string GetSigningBlock(std::ifstream& input);
+
+    bool GetZipEntries(std::ifstream& input);
+
+    /* sort uncompress entry in the front. */
+    void Sort();
+
+    void ResetOffset();
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_ZIP_SIGNER_H

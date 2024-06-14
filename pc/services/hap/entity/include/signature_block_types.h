@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,40 +13,23 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_SIGNATURE_BLOCK_TYPES_H
-#define SIGNERTOOLS_SIGNATURE_BLOCK_TYPES_H
+#ifndef SIGNATRUETOOLS_SIGNATURE_BLOCK_TYPES_H
+#define SIGNATRUETOOLS_SIGNATURE_BLOCK_TYPES_H
+
 #include <string>
 
 namespace OHOS {
 namespace SignatureTools {
-class SignatureBlockTypes
-{
+class SignatureBlockTypes {
 public:
-    /**
-     * type-value of hap signature block
-     */
     static const char SIGNATURE_BLOCK = 0;
-
-    /**
-     * type-value of unsigned profile
-     */
     static const char PROFILE_NOSIGNED_BLOCK = 1;
-
-    /**
-     * type-value of signed profile
-     */
     static const char PROFILE_SIGNED_BLOCK = 2;
-
-    /**
-     * type-value of key rotation block
-     */
     static const char KEY_ROTATION_BLOCK = 3;
 
 public:
     static char GetProfileBlockTypes(const std::string &isSigned);
 };
-
-}
+} // namespace SignatureTools
 } // namespace OHOS
-
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,13 +13,16 @@
  * limitations under the License.
  */
 #include "fs_verity_descriptor.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
 FsVerityDescriptor::FsVerityDescriptor()
 {}
+
 FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
 {
     std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
-    bf->PutData((char*)bytes.data(), bytes.size());
+    bf->PutData(bytes.data(), bytes.size());
     // after put, rewind is mandatory before get
     bf->Flip();
     std::unique_ptr<FsVerityDescriptor::Builder> builder =
@@ -27,7 +30,8 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     int8_t inFsVersion;
     bf->GetInt8(inFsVersion);
     if (FsVerityDescriptor::VERSION != inFsVersion) {
-        SIGNATURE_TOOLS_LOGE("Invalid fs-verify descriptor version of ElfSignBlock\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+            "Invalid fs-verify descriptor version of ElfSignBlock");
         return builder->Build();
     }
     int8_t inFsHashAlgorithm;
@@ -54,16 +58,18 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     long long inTreeOffset;
     bf->GetInt64(inTreeOffset);
     if (inTreeOffset % PAGE_SIZE_4K != 0) {
-        SIGNATURE_TOOLS_LOGE("Invalid merkle tree offset of ElfSignBlock\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+            "Invalid merkle tree offset of ElfSignBlock");
         return builder->Build();
     }
-    bf->GetData((char*)(new int8_t[FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET]),
+    bf->GetByte((new int8_t[FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET]),
         FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET);
     int8_t inCsVersion;
     bf->GetInt8(inCsVersion);
     builder->SetSalt(inSalt).SetFlags(inFlags).SetMerkleTreeOffset(inTreeOffset).SetCsVersion(inCsVersion);
     return builder->Build();
 }
+
 std::vector<int8_t> FsVerityDescriptor::ToByteArray()
 {
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
@@ -71,7 +77,7 @@ std::vector<int8_t> FsVerityDescriptor::ToByteArray()
     buffer->PutByte(hashAlgorithm);
     buffer->PutByte(log2BlockSize);
     if (this->saltSize > SALT_SIZE) {
-        SIGNATURE_TOOLS_LOGE("Salt is too long\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Salt is too long");
         return std::vector<int8_t>();
     }
     buffer->PutByte(this->saltSize);
@@ -91,6 +97,7 @@ std::vector<int8_t> FsVerityDescriptor::ToByteArray()
     std::vector<int8_t> ret(dataArr, dataArr + DESCRIPTOR_SIZE);
     return ret;
 }
+
 std::vector<int8_t> FsVerityDescriptor::GetByteForGenerateDigest()
 {
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
@@ -98,7 +105,7 @@ std::vector<int8_t> FsVerityDescriptor::GetByteForGenerateDigest()
     buffer->PutByte(hashAlgorithm);
     buffer->PutByte(log2BlockSize);
     if (this->saltSize > SALT_SIZE) {
-        SIGNATURE_TOOLS_LOGE("Salt is too long\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Salt is too long");
         return std::vector<int8_t>();
     }
     buffer->PutByte(this->saltSize);
@@ -116,15 +123,18 @@ std::vector<int8_t> FsVerityDescriptor::GetByteForGenerateDigest()
     std::vector<int8_t> ret(dataArr, dataArr + DESCRIPTOR_SIZE);
     return ret;
 }
+
 void FsVerityDescriptor::WriteBytesWithSize(ByteBuffer* buffer, std::vector<int8_t>& src, int size)
 {
     int pos = buffer->GetPosition();
     if (!src.empty()) {
         if (src.size() > size) {
-            buffer->PutData(0, (char*)src.data(), src.size());
+            buffer->PutData(0, src.data(), src.size());
         } else {
-            buffer->PutData((char*)src.data(), src.size());
+            buffer->PutData(src.data(), src.size());
         }
     }
     buffer->SetPosition(pos + size);
 }
+} // namespace SignatureTools
+} // namespace OHOS

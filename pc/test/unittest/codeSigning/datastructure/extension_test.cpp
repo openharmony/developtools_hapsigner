@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,7 @@ HWTEST_F(ExtensionTest, getSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
 
-    int32_t sizeInt = api->getSize();
+    int32_t sizeInt = api->GetSize();
 
     EXPECT_NE(sizeInt, 0);
 }
@@ -60,7 +60,7 @@ HWTEST_F(ExtensionTest, isType, testing::ext::TestSize.Level1)
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
 
     int32_t type = 1;
-    bool bIsType = api->isType(type);
+    bool bIsType = api->IsType(type);
 
     EXPECT_EQ(bIsType, false);
 }
@@ -77,7 +77,7 @@ HWTEST_F(ExtensionTest, toByteArray, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
    
-    std::vector<int8_t> byteArray = api->toByteArray();
+    std::vector<int8_t> byteArray = api->ToByteArray();
 
     EXPECT_EQ(byteArray.size(), 8);
 }
@@ -94,7 +94,7 @@ HWTEST_F(ExtensionTest, toString, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
 
-    std::string str = api->toString();
+    std::string str = api->ToString();
 
     EXPECT_EQ(str.size(), 27);
 }

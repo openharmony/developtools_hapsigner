@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,33 +12,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "params.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
+
+const std::string Params::GENERATE_APP_CERT = "generate-app-cert";
+const std::string Params::GENERATE_CA = "generate-ca";
+const std::string Params::GENERATE_CERT = "generate-cert";
+const std::string Params::GENERATE_CSR = "generate-csr";
+const std::string Params::GENERATE_KEYPAIR = "generate-keypair";
+const std::string Params::GENERATE_PROFILE_CERT = "generate-profile-cert";
+const std::string Params::SIGN_APP = "sign-app";
+const std::string Params::SIGN_PROFILE = "sign-profile";
+const std::string Params::VERIFY_APP = "verify-app";
+const std::string Params::VERIFY_PROFILE = "verify-profile";
+
 std::string Params::GetMethod()
 {
     return method;
 }
+
 void Params::SetMethod(const std::string& method)
 {
     this->method = method;
 }
+
 Options* Params::GetOptions()
 {
     return options.get();
 }
-std::string Params::ToString()
+
+std::unordered_set<std::string> Params::InitParamField(const std::vector<std::string>& paramFields)
 {
-    std::string destStr;
-    destStr.append("Params{ method: ");
-    destStr.append(method);
-    destStr.append(", params: ");
-    for (const auto& item : *GetOptions()) {
-        destStr.append("-");
-        destStr.append(item.first);
-        destStr.append("=");
-        destStr.append(std::visit(VariantToString{}, item.second));
-        destStr.append(";");
-    }
-    destStr.append("}");
-    return destStr;
+    return std::unordered_set<std::string>(paramFields.begin(), paramFields.end());
 }
+
+bool Params::GetSignatureAlgorithm(const std::string& signatureAlgorithm,
+                                   SignatureAlgorithmHelper& out)
+{
+    if (signatureAlgorithm == ParamConstants::HAP_SIG_ALGORITHM_SHA256_ECDSA) {
+        out = SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE;
+        return true;
+    } else if (signatureAlgorithm == ParamConstants::HAP_SIG_ALGORITHM_SHA384_ECDSA) {
+        out = SignatureAlgorithmHelper::ECDSA_WITH_SHA384_INSTANCE;
+        return true;
+    } else {
+        SIGNATURE_TOOLS_LOGE("get Signature Algorithm failed not support %s", signatureAlgorithm.c_str());
+        return false;
+    }
+    return true;
+}
+
+} // namespace SignatureTools
+} // namespace OHOS

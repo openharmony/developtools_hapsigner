@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,36 +12,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATURETOOLS_SEGMENT_HEADER_H
-#define SIGNATURETOOLS_SEGMENT_HEADER_H
+#ifndef SIGNATRUETOOLS_SEGMENT_HEADER_H
+#define SIGNATRUETOOLS_SEGMENT_HEADER_H
+
 #include <vector>
 #include <string>
+
 #include "byte_buffer.h"
 #include "signature_tools_log.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class SegmentHeader {
-        public:
-            SegmentHeader();
-            SegmentHeader(int32_t type, int32_t segmentSize);
-            SegmentHeader(int32_t type, int32_t segmentOffset,
-                int32_t segmentSize);
-        public:
-            static const int32_t SEGMENT_HEADER_LENGTH = 12;
-            static const int32_t CSB_FSVERITY_INFO_SEG = 0x1;
-            static const int32_t CSB_HAP_META_SEG = 0x2;
-            static const int32_t CSB_NATIVE_LIB_INFO_SEG = 0x3;
-            int32_t getType();
-            void setSegmentOffset(int32_t offset);
-            int32_t getSegmentOffset();
-            int32_t getSegmentSize();
-            std::vector<int8_t> toByteArray();
-            static std::unique_ptr<SegmentHeader> fromByteArray(std::vector<int8_t> bytes);
-        private:
-            int32_t type;
-            int32_t segmentOffset;
-            int32_t segmentSize;
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+
+class SegmentHeader {
+public:
+    SegmentHeader();
+    SegmentHeader(int32_t type, int32_t segmentSize);
+    SegmentHeader(int32_t type, int32_t segmentOffset,
+                  int32_t segmentSize);
+    static const int32_t SEGMENT_HEADER_LENGTH = 12;
+    static const int32_t CSB_FSVERITY_INFO_SEG = 0x1;
+    static const int32_t CSB_HAP_META_SEG = 0x2;
+    static const int32_t CSB_NATIVE_LIB_INFO_SEG = 0x3;
+    int32_t GetType();
+    void SetSegmentOffset(int32_t offset);
+    int32_t GetSegmentOffset();
+    int32_t GetSegmentSize();
+    std::vector<int8_t> ToByteArray();
+    static std::unique_ptr<SegmentHeader> FromByteArray(std::vector<int8_t> bytes);
+
+private:
+    int32_t type;
+    int32_t segmentOffset;
+    int32_t segmentSize;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_SEGMENT_HEADER_H

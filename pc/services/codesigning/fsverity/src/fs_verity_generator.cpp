@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,17 +13,21 @@
  * limitations under the License.
  */
 #include "fs_verity_generator.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
 const int8_t FsVerityGenerator::LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
 const FsVerityHashAlgorithm FsVerityGenerator::FS_VERITY_HASH_ALGORITHM = FS_SHA256;
+
 MerkleTree* FsVerityGenerator::GenerateMerkleTree(std::istream& inputStream, long size,
     const FsVerityHashAlgorithm& fsVerityHashAlgorithm)
 {
     std::unique_ptr<MerkleTreeBuilder>builder = std::make_unique<MerkleTreeBuilder>(MerkleTreeBuilder());
     return builder->GenerateMerkleTree(inputStream, size, fsVerityHashAlgorithm);
 }
+
 void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset)
 {
     std::vector<int8_t> emptyVector;
@@ -61,3 +65,5 @@ void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
     treeBytes = merkleTree_ptr->tree;
     rootHash = merkleTree_ptr->rootHash;
 }
+} // namespace SignatureTools
+} // namespace OHOS

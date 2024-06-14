@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,20 +13,23 @@
  * limitations under the License.
  */
 #include "native_lib_info_segment.h"
-using namespace OHOS::SignatureTools;
-/*********** NativeLibInfoSegment类 **************/
+
+namespace OHOS {
+namespace SignatureTools {
+
 NativeLibInfoSegment::NativeLibInfoSegment()
 {
     this->magic = MAGIC_NUM;
     this->zeroPadding = std::vector<int8_t>(0);
 }
+
 NativeLibInfoSegment::NativeLibInfoSegment(int32_t magic,
-    int32_t segmentSize,
-    int32_t sectionNum,
-    std::vector<SignedFilePos> signedFilePosList,
-    std::vector<std::string> fileNameList,
-    std::vector<SignInfo> signInfoList,
-    std::vector<int8_t> zeroPadding
+                                           int32_t segmentSize,
+                                           int32_t sectionNum,
+                                           std::vector<SignedFilePos> signedFilePosList,
+                                           std::vector<std::string> fileNameList,
+                                           std::vector<SignInfo> signInfoList,
+                                           std::vector<int8_t> zeroPadding
 )
 {
     this->magic = magic;
@@ -37,116 +40,124 @@ NativeLibInfoSegment::NativeLibInfoSegment(int32_t magic,
     this->signInfoList = signInfoList;
     this->zeroPadding = zeroPadding;
 }
-void NativeLibInfoSegment::setSoInfoList(std::vector<std::pair<std::string, SignInfo>> soInfoList)
+
+void NativeLibInfoSegment::SetSoInfoList(std::vector<std::pair<std::string, SignInfo>> soInfoList)
 {
     this->soInfoList = soInfoList;
     // Once map is set, update length, sectionNum as well
     this->sectionNum = soInfoList.size();
     // generate file name list and sign info list
-    generateList();
+    GenerateList();
 }
-int32_t NativeLibInfoSegment::getSectionNum()
+
+int32_t NativeLibInfoSegment::GetSectionNum()
 {
     return sectionNum;
 }
-std::vector<std::string> NativeLibInfoSegment::getFileNameList()
+
+std::vector<std::string> NativeLibInfoSegment::GetFileNameList()
 {
     return fileNameList;
 }
-std::vector<OHOS::SignatureTools::SignInfo> NativeLibInfoSegment::getSignInfoList()
+
+std::vector<OHOS::SignatureTools::SignInfo> NativeLibInfoSegment::GetSignInfoList()
 {
     return signInfoList;
 }
-int32_t NativeLibInfoSegment::size()
+
+int32_t NativeLibInfoSegment::Size()
 {
     int blockSize = MAGIC_LENGTH_SECNUM_BYTES;
     blockSize += signedFilePosList.size() * SIGNED_FILE_POS_SIZE;
     blockSize += this->fileNameListBlockSize + this->zeroPadding.size() + this->signInfoListBlockSize;
     return blockSize;
 }
-std::vector<int8_t> NativeLibInfoSegment::toByteArray()
+
+std::vector<int8_t> NativeLibInfoSegment::ToByteArray()
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(this->size()));
-    std::vector<int8_t> empt(this->size());
-    bf->PutData((char*)empt.data(), empt.size());
+    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(this->Size()));
+    std::vector<int8_t> empt(this->Size());
+    bf->PutData(empt.data(), empt.size());
     bf->Clear();
     bf->PutInt32(magic);
     bf->PutInt32(segmentSize);
     bf->PutInt32(sectionNum);
     for (SignedFilePos offsetAndSize : this->signedFilePosList) {
-        bf->PutInt32(offsetAndSize.getFileNameOffset());
-        bf->PutInt32(offsetAndSize.getFileNameSize());
-        bf->PutInt32(offsetAndSize.getSignInfoOffset());
-        bf->PutInt32(offsetAndSize.getSignInfoSize());
+        bf->PutInt32(offsetAndSize.GetFileNameOffset());
+        bf->PutInt32(offsetAndSize.GetFileNameSize());
+        bf->PutInt32(offsetAndSize.GetSignInfoOffset());
+        bf->PutInt32(offsetAndSize.GetSignInfoSize());
     }
     for (std::string fileName : fileNameList) {
         bf->PutData(fileName.c_str(), fileName.size() * sizeof(char));
     }
-    bf->PutData((char*)this->zeroPadding.data(), this->zeroPadding.size());
+    bf->PutData(this->zeroPadding.data(), this->zeroPadding.size());
     for (SignInfo signInfo : signInfoList) {
-        std::vector<int8_t> signInfoArr = signInfo.toByteArray();
-        bf->PutData((char*)signInfoArr.data(), signInfoArr.size());
+        std::vector<int8_t> signInfoArr = signInfo.ToByteArray();
+        bf->PutData(signInfoArr.data(), signInfoArr.size());
     }
     std::vector<int8_t> ret(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
     return ret;
 }
-NativeLibInfoSegment NativeLibInfoSegment::fromByteArray(std::vector<int8_t> bytes)
+
+NativeLibInfoSegment NativeLibInfoSegment::FromByteArray(std::vector<int8_t> bytes)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
-    bf->PutData((char*)bytes.data(), bytes.size());
+    bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inMagic = 0;
     bf->GetInt32(inMagic);
     if (inMagic != MAGIC_NUM) {
-        SIGNATURE_TOOLS_LOGE("Invalid magic number of NativeLibInfoSegment");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid magic number of NativeLibInfoSegment");
         return NativeLibInfoSegment();
     }
     int32_t inSegmentSize = 0;
     bf->GetInt32(inSegmentSize);
     if (inSegmentSize < 0) {
-        SIGNATURE_TOOLS_LOGE("Invalid segmentSize of NativeLibInfoSegment");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid segmentSize of NativeLibInfoSegment");
         return NativeLibInfoSegment();
     }
     int32_t inSectionNum = 0;
     bf->GetInt32(inSectionNum);
     if (inSectionNum < 0) {
-        SIGNATURE_TOOLS_LOGE("Invalid sectionNum of NativeLibInfoSegment");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid sectionNum of NativeLibInfoSegment");
         return NativeLibInfoSegment();
     }
     std::vector<SignedFilePos> inSignedFilePosList;
     for (int i = 0; i < inSectionNum; i++) {
         std::vector<int8_t> entry(SIGNED_FILE_POS_SIZE, 0);
-        bf->GetData((char*)entry.data(), entry.size());
-        inSignedFilePosList.push_back(SignedFilePos::fromByteArray(entry));
+        bf->GetByte(entry.data(), entry.size());
+        inSignedFilePosList.push_back(SignedFilePos::FromByteArray(entry));
     }
     // parse file name list
     std::vector<std::string> inFileNameList;
     int fileNameListSize = 0;
     for (SignedFilePos pos : inSignedFilePosList) {
-        std::vector<char> fileNameBuffer(pos.getFileNameSize(), 0);
-        fileNameListSize += pos.getFileNameSize();
-        bf->GetData((char*)fileNameBuffer.data(), fileNameBuffer.size());
+        std::vector<char> fileNameBuffer(pos.GetFileNameSize(), 0);
+        fileNameListSize += pos.GetFileNameSize();
+        bf->GetData(fileNameBuffer.data(), fileNameBuffer.size());
         inFileNameList.push_back(std::string(fileNameBuffer.data(), fileNameBuffer.size()));
     }
     // parse zeroPadding
     std::vector<int8_t> inZeroPadding((ALIGNMENT_FOR_SIGNINFO - fileNameListSize
-        % ALIGNMENT_FOR_SIGNINFO) % ALIGNMENT_FOR_SIGNINFO);
-    bf->GetData((char*)inZeroPadding.data(), inZeroPadding.size());
+                                      % ALIGNMENT_FOR_SIGNINFO) % ALIGNMENT_FOR_SIGNINFO);
+    bf->GetByte(inZeroPadding.data(), inZeroPadding.size());
     // parse sign info list
     std::vector<OHOS::SignatureTools::SignInfo> inSignInfoList;
     for (SignedFilePos pos : inSignedFilePosList) {
-        if (pos.getSignInfoOffset() % ALIGNMENT_FOR_SIGNINFO != 0) {
-            SIGNATURE_TOOLS_LOGE("SignInfo not aligned in NativeLibInfoSegment");
+        if (pos.GetSignInfoOffset() % ALIGNMENT_FOR_SIGNINFO != 0) {
+            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "SignInfo not aligned in NativeLibInfoSegment");
             return NativeLibInfoSegment();
         }
-        std::vector<int8_t> signInfoBuffer(pos.getSignInfoSize());
-        bf->GetData((char*)signInfoBuffer.data(), signInfoBuffer.size());
-        inSignInfoList.push_back(OHOS::SignatureTools::SignInfo::fromByteArray(signInfoBuffer));
+        std::vector<int8_t> signInfoBuffer(pos.GetSignInfoSize());
+        bf->GetByte(signInfoBuffer.data(), signInfoBuffer.size());
+        inSignInfoList.push_back(OHOS::SignatureTools::SignInfo::FromByteArray(signInfoBuffer));
     }
     return NativeLibInfoSegment(inMagic, inSegmentSize, inSectionNum, inSignedFilePosList,
-        inFileNameList, inSignInfoList, inZeroPadding);
+                                inFileNameList, inSignInfoList, inZeroPadding);
 }
-void NativeLibInfoSegment::generateList()
+
+void NativeLibInfoSegment::GenerateList()
 {
     // empty all before generate list
     this->fileNameList.clear();
@@ -154,11 +165,11 @@ void NativeLibInfoSegment::generateList()
     this->signedFilePosList.clear();
     int fileNameOffset = 0;
     int signInfoOffset = 0;
-    for (std::pair<std::string, SignInfo> soInfo : soInfoList) {
+    for (std::pair<std::string, SignInfo> soInfo :soInfoList) {
         std::string fileName = soInfo.first;
         SignInfo& signInfo = soInfo.second;
         int fileNameSizeInBytes = fileName.size() * sizeof(char);
-        int signInfoSizeInBytes = signInfo.getSize() * sizeof(char);
+        int signInfoSizeInBytes = signInfo.GetSize() * sizeof(char);
         this->fileNameList.push_back(fileName);
         this->signInfoList.push_back(signInfo);
         std::unique_ptr<SignedFilePos> posPtr = std::make_unique<SignedFilePos>(fileNameOffset,
@@ -172,14 +183,17 @@ void NativeLibInfoSegment::generateList()
     this->signInfoListBlockSize = signInfoOffset;
     // alignment for signInfo
     this->zeroPadding = std::vector<int8_t>((ALIGNMENT_FOR_SIGNINFO - this->fileNameListBlockSize
-        % ALIGNMENT_FOR_SIGNINFO) % ALIGNMENT_FOR_SIGNINFO);
+                                            % ALIGNMENT_FOR_SIGNINFO) % ALIGNMENT_FOR_SIGNINFO);
     // after fileNameList and signInfoList is generated, update segment size
-    this->segmentSize = this->size();
+    this->segmentSize = this->Size();
     // adjust file name and sign info offset base on segment start
     int fileNameOffsetBase = MAGIC_LENGTH_SECNUM_BYTES + signedFilePosList.size() * SIGNED_FILE_POS_SIZE;
     int signInfoOffsetBase = fileNameOffsetBase + this->fileNameListBlockSize;
     for (SignedFilePos pos : this->signedFilePosList) {
-        pos.increaseFileNameOffset(fileNameOffsetBase);
-        pos.increaseSignInfoOffset(signInfoOffsetBase + this->zeroPadding.size());
+        pos.IncreaseFileNameOffset(fileNameOffsetBase);
+        pos.IncreaseSignInfoOffset(signInfoOffsetBase + this->zeroPadding.size());
     }
+}
+
+}
 }

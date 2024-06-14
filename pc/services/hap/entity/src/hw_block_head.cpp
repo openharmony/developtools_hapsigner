@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,17 +16,22 @@
 #include "hw_block_head.h"
 #include "byte_buffer.h"
 #include "hw_sign_head.h"
-using namespace OHOS::SignatureTools;
 
-int HwBlockHead::GetBlockLen() { 
-    return BLOCK_LEN; 
+namespace OHOS {
+namespace SignatureTools {
+
+int HwBlockHead::GetBlockLen()
+{
+    return BLOCK_LEN;
 }
 
-int HwBlockHead::GetElfBlockLen() { 
-    return ELF_BLOCK_LEN; 
+int HwBlockHead::GetElfBlockLen()
+{
+    return ELF_BLOCK_LEN;
 }
 
-std::string HwBlockHead::GetBlockHead(char type, char tag, short length, int offset) {
+std::string HwBlockHead::GetBlockHead(char type, char tag, short length, int offset)
+{
     std::vector<int8_t> tmpVec;
     tmpVec.push_back(type);
     tmpVec.push_back(tag);
@@ -39,7 +44,8 @@ std::string HwBlockHead::GetBlockHead(char type, char tag, short length, int off
 
     return std::string(tmpVec.begin(), tmpVec.end());
 }
-std::vector<int8_t> HwBlockHead::getBlockHeadLittleEndian(char type, char tag, int length, int offset)
+
+std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(char type, char tag, int length, int offset)
 {
     ByteBuffer bf = ByteBuffer(HwBlockHead::ELF_BLOCK_LEN);
     bf.PutByte(type);
@@ -49,18 +55,10 @@ std::vector<int8_t> HwBlockHead::getBlockHeadLittleEndian(char type, char tag, i
     bf.PutInt32(length);
     bf.PutInt32(offset);
     int8_t ret[HwBlockHead::ELF_BLOCK_LEN];
-    bf.GetData(0, (char *)ret, HwBlockHead::ELF_BLOCK_LEN);
+    bf.GetData(0, ret, HwBlockHead::ELF_BLOCK_LEN);
     std::vector<int8_t> byte(ret, ret + HwBlockHead::ELF_BLOCK_LEN);
     return byte;
 }
-std::string HwBlockHead::GetBlockHeadLittleEndian(char type, char tag, int length, int offset) {
-    ByteBuffer bf(ELF_BLOCK_LEN);
 
-    bf.PutUInt8(type);
-    bf.PutUInt8(tag);
-    bf.PutInt32(length);
-    bf.PutInt32(offset);
-    bf.Flip();
-
-    return bf.GetData(bf.Remaining());
-}
+} // namespace SignatureTools
+} // namespace OHOS

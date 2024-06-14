@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,7 +52,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray001, testing::ext::TestSize.Level
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
     std::vector<signed char> bytes;
-    CodeSignBlockHeader* codeSignBlockHeader = api->fromByteArray(bytes);
+    CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
 
     EXPECT_EQ(codeSignBlockHeader, nullptr);
 }
@@ -72,7 +72,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray002, testing::ext::TestSize.Level
 
     std::vector<signed char> bytes{ -1, -91, 34, -16, 97, -32, -121, 1, 5, 3, 8, 8, 15,
         12, 12, 13, 58, 19, 50, 10, 54, 29, 59, 17, 102, 105, 15, 19, 29, 30, 32, 59 };
-    CodeSignBlockHeader* codeSignBlockHeader = api->fromByteArray(bytes);
+    CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
 
     EXPECT_EQ(codeSignBlockHeader, nullptr);
 }
@@ -99,7 +99,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray003, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 32);
     std::vector<signed char> bytes(readComment, readComment + 32);
 
-    CodeSignBlockHeader* codeSignBlockHeader = api->fromByteArray(bytes);
+    CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
     EXPECT_EQ(codeSignBlockHeader, nullptr);
 }
 
@@ -127,7 +127,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray004, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 32);
     std::vector<signed char> bytes(readComment, readComment + 32);
 
-    CodeSignBlockHeader* codeSignBlockHeader = api->fromByteArray(bytes);
+    CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
     EXPECT_EQ(codeSignBlockHeader, nullptr);
 }
 
@@ -156,7 +156,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray005, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 32);
     std::vector<signed char> bytes(readComment, readComment + 32);
 
-    CodeSignBlockHeader* codeSignBlockHeader = api->fromByteArray(bytes);
+    CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
     EXPECT_EQ(codeSignBlockHeader, nullptr);
 }
 
@@ -185,7 +185,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray006, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 32);
     std::vector<signed char> bytes(readComment, readComment + 32);
 
-    CodeSignBlockHeader* codeSignBlockHeader = api->fromByteArray(bytes);
+    CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
     EXPECT_NE(codeSignBlockHeader, nullptr);
 }
 
@@ -201,7 +201,7 @@ HWTEST_F(CodeSignBlockHeaderTest, getBlockSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    int blockSize = api->getBlockSize();
+    int blockSize = api->GetBlockSize();
 
     EXPECT_EQ(blockSize, 0);
 }
@@ -218,7 +218,7 @@ HWTEST_F(CodeSignBlockHeaderTest, getSegmentNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    int segmentNum = api->getSegmentNum();
+    int segmentNum = api->GetSegmentNum();
 
     EXPECT_EQ(segmentNum, 0);
 }
@@ -235,7 +235,7 @@ HWTEST_F(CodeSignBlockHeaderTest, setBlockSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    api->setBlockSize(1024);
+    api->SetBlockSize(1024);
 
     EXPECT_EQ(true, 1);
 }
@@ -252,7 +252,7 @@ HWTEST_F(CodeSignBlockHeaderTest, setFlags, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    api->setFlags(1);
+    api->SetFlags(1);
 
     EXPECT_EQ(true, 1);
 }
@@ -269,7 +269,7 @@ HWTEST_F(CodeSignBlockHeaderTest, setSegmentNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    api->setSegmentNum(4);
+    api->SetSegmentNum(4);
 
     EXPECT_EQ(true, 1);
 }
@@ -286,7 +286,7 @@ HWTEST_F(CodeSignBlockHeaderTest, size, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    int headerSize = api->size();
+    int headerSize = api->Size();
 
     EXPECT_EQ(headerSize, 32);
 }
@@ -303,7 +303,7 @@ HWTEST_F(CodeSignBlockHeaderTest, toByteArray, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    std::vector<int8_t> byteArray = api->toByteArray();
+    std::vector<int8_t> byteArray = api->ToByteArray();
 
     EXPECT_EQ(byteArray.size(), 32);
 }
@@ -320,7 +320,7 @@ HWTEST_F(CodeSignBlockHeaderTest, toString, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
 
-    std::string str = api->toString();
+    std::string str = api->ToString();
 
     EXPECT_EQ(str.size(), 99);
 }

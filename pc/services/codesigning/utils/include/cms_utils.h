@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,24 +14,27 @@
  */
 #ifndef SIGNATURETOOLS_CMS_UTILS_H
 #define SIGNATURETOOLS_CMS_UTILS_H
+
 #include <vector>
 #include <string>
 #include <sstream>
+
 #include "signature_tools_log.h"
 #include "pkcs7_data.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class CmsUtils {
-        private:
-            CmsUtils();
-        public:
-            static bool VerifySignDataWithUnsignedDataDigest(const std::vector<int8_t>& unsignedDataDigest,
-                const std::vector<int8_t>& signedData);
-            static bool CheckOwnerID(const std::string& signature, const std::string& profileOwnerID,
-                const std::string& profileType);
-            static int CreateNIDFromOID(const std::string& oid, const std::string& shortName,
-                const std::string& longName);
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+class CmsUtils {
+public:
+    static bool VerifySignDataWithUnsignedDataDigest(const std::vector<int8_t>& unsignedDataDigest,
+        const std::vector<int8_t>& signedData);
+    static bool CheckOwnerID(const std::string& signature, const std::string& profileOwnerID,
+        const std::string& profileType);
+    static int CreateNIDFromOID(const std::string& oid, const std::string& shortName,
+        const std::string& longName);
+private:
+    CmsUtils();
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATURETOOLS_CMS_UTILS_H

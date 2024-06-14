@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,196 +13,150 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_ZIPENTRYHEADER_H
-#define SIGNERTOOLS_ZIPENTRYHEADER_H
+#ifndef SIGNATRUETOOLS_ZIP_ENTRY_HEADER_H
+#define SIGNATRUETOOLS_ZIP_ENTRY_HEADER_H
 
 #include <string>
-#include <vector>
+
 #include "byte_buffer.h"
 
 namespace OHOS {
-    namespace SignatureTools {
-        /**
-         * resolve zip ZipEntryHeader data
-         * end of central dir signature    4 bytes  (0x06054b50)
-         * number of this disk             2 bytes
-         * number of the disk with the
-         * start of the central directory  2 bytes
-         * total number of entries in the
-         * central directory on this disk  2 bytes
-         * total number of entries in
-         * the central directory           2 bytes
-         * size of the central directory   4 bytes
-         * offset of start of central
-         * directory with respect to
-         * the starting disk number        4 bytes
-         * .ZIP file comment length        2 bytes
-         * .ZIP file comment       (variable size)
-         *
-         * @since 2023/12/02
-         */
-        class ZipEntryHeader {
-            /**
-             * ZipEntryHeader invariable bytes length
-             */
-        public:
-            static constexpr int HEADER_LENGTH = 30;
+namespace SignatureTools {
+/**
+ * resolve zip ZipEntryHeader data
+ * end of central dir signature    4 bytes  (0x06054b50)
+ * number of this disk             2 bytes
+ * number of the disk with the
+ * start of the central directory  2 bytes
+ * total number of entries in the
+ * central directory on this disk  2 bytes
+ * total number of entries in
+ * the central directory           2 bytes
+ * size of the central directory   4 bytes
+ * offset of start of central
+ * directory with respect to
+ * the starting disk number        4 bytes
+ * .ZIP file comment length        2 bytes
+ * .ZIP file comment       (variable size)
+ */
+class ZipEntryHeader {
+public:
+    /* ZipEntryHeader invariable bytes length */
+    static constexpr int HEADER_LENGTH = 30;
 
-            /**
-             * 4 bytes , entry header signature
-             */
-            static constexpr int SIGNATURE = 0x04034b50;
+    /* 4 bytes , entry header signature */
+    static constexpr int SIGNATURE = 0x04034b50;
 
-            /**
-             * 2 bytes
-             */
-        private:
-            short version = 0;
+    /**
+     * get Zip Entry Header
+     *
+     * @param bytes ZipEntryHeader bytes
+     * @return ZipEntryHeader
+     * @throws ZipException read entry header exception
+     */
+    static ZipEntryHeader* GetZipEntryHeader(const std::string& bytes);
 
-            /**
-             * 2 bytes
-             */
-            short flag = 0;
+    void ReadFileName(const std::string& bytes);
 
-            /**
-             * 2 bytes
-             */
-            short method = 0;
+    void ReadExtra(const std::string& bytes);
 
-            /**
-             * 2 bytes
-             */
-            short lastTime = 0;
+    std::string ToBytes();
 
-            /**
-             * 2 bytes
-             */
-            short lastDate = 0;
+    static int GetHeaderLength();
 
-            /**
-             * 4 bytes
-             */
-            int crc32 = 0;
+    static int GetSIGNATURE();
 
-            /**
-             * 4 bytes
-             */
-            long long compressedSize = 0;
+    short GetVersion();
 
-            /**
-             * 4 bytes
-             */
-            long long unCompressedSize = 0;
+    void SetVersion(short version);
 
-            /**
-             * 2 bytes
-             */
-            int fileNameLength = 0;
+    short GetFlag();
 
-            /**
-             * 2 bytes
-             */
-            int extraLength = 0;
+    void SetFlag(short flag);
 
-            /**
-             * n bytes
-             */
-            std::string fileName;
+    short GetMethod();
 
-            /**
-             * n bytes
-             */
-            std::vector< char> extraData;
+    void SetMethod(short method);
 
-            int length = 0;
+    short GetLastTime();
 
-            /**
-             * get Zip Entry Header
-             *
-             * @param bytes ZipEntryHeader bytes
-             * @return ZipEntryHeader
-             * @throws ZipException read entry header exception
-             */
-        public:
-            static ZipEntryHeader* GetZipEntryHeader(std::vector<char>& bytes);
+    void SetLastTime(short lastTime);
 
-            /**
-             * set entry header name
-             *
-             * @param bytes name bytes
-             */
-            void ReadFileName(std::vector<char>& bytes);
+    short GetLastDate();
 
-            /**
-             * set entry header  extra
-             *
-             * @param bytes extra bytes
-             */
-            void ReadExtra(std::vector<char>& bytes);
+    void SetLastDate(short lastDate);
 
-            /**
-             * change Zip Entry Header to bytes
-             *
-             * @return bytes
-             */
-            std::vector< char> ToBytes();
+    int GetCrc32();
 
-            static int GetHeaderLength();
+    void SetCrc32(int crc32);
 
-            static int GetSIGNATURE();
+    int64_t GetCompressedSize();
 
-            short GetVersion();
+    void SetCompressedSize(int64_t compressedSize);
 
-            void SetVersion(short version);
+    int64_t GetUnCompressedSize();
 
-            short GetFlag();
+    void SetUnCompressedSize(int64_t unCompressedSize);
 
-            void SetFlag(short flag);
+    int GetFileNameLength();
 
-            short GetMethod();
+    void SetFileNameLength(int fileNameLength);
 
-            void SetMethod(short method);
+    int GetExtraLength();
 
-            short GetLastTime();
+    void SetExtraLength(int extraLength);
 
-            void SetLastTime(short lastTime);
+    std::string GetFileName() const;
 
-            short GetLastDate();
+    void SetFileName(const std::string& fileName);
 
-            void SetLastDate(short lastDate);
+    std::string GetExtraData() const;
 
-            int GetCrc32();
+    void SetExtraData(const std::string& extraData);
 
-            void SetCrc32(int crc32);
+    int GetLength();
 
-            long long GetCompressedSize();
+    void SetLength(int length);
 
-            void SetCompressedSize(long long compressedSize);
+private:
+    /* 2 bytes */
+    short version = 0;
 
-            long long GetUnCompressedSize();
+    /* 2 bytes */
+    short flag = 0;
 
-            void SetUnCompressedSize(long long unCompressedSize);
+    /* 2 bytes */
+    short method = 0;
 
-            int GetFileNameLength();
+    /* 2 bytes */
+    short lastTime = 0;
 
-            void SetFileNameLength(int fileNameLength);
+    /* 2 bytes */
+    short lastDate = 0;
 
-            int GetExtraLength();
+    /* 4 bytes */
+    int crc32 = 0;
 
-            void SetExtraLength(int extraLength);
+    /* 8 bytes */
+    int64_t compressedSize = 0;
 
-            std::string GetFileName();
+    /* 8 bytes */
+    int64_t unCompressedSize = 0;
 
-            void SetFileName(const std::string& fileName);
+    /* 4 bytes */
+    int fileNameLength = 0;
 
-            std::vector<char> GetExtraData();
+    /* 4 bytes */
+    int extraLength = 0;
 
-            void SetExtraData(std::vector<char>& extraData);
+    /* n bytes */
+    std::string fileName;
 
-            int GetLength();
+    /* n bytes */
+    std::string extraData;
 
-            void SetLength(int length);
-        };
-    }
-}
-#endif
+    int length = 0;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_ZIP_ENTRY_HEADER_H

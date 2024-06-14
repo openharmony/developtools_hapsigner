@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,8 @@
 
 using namespace OHOS::SignatureTools;
 
-char SignatureBlockTypes::GetProfileBlockTypes(const std::string& isSigned) {
+char SignatureBlockTypes::GetProfileBlockTypes(const std::string& isSigned)
+{
     if (!isSigned.empty() && 0 == isSigned.compare("0")) {
         return PROFILE_NOSIGNED_BLOCK;
     }

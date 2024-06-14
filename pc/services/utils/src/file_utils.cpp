@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,18 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "file_utils.h"
-#include "string_utils.h"
-#include <fstream>
-#include <climits>
-#include "signature_tools_errno.h"
 #include <iostream>
 #include <filesystem>
-#define NUM_TWO 2
-#define NUM_THREE 3
-#define NUM_FOUR 4
-using namespace OHOS::SignatureTools;
+#include <fstream>
+#include <climits>
+
+#include "string_utils.h"
+#include "signature_tools_errno.h"
+#include "file_utils.h"
+
+namespace OHOS {
+namespace SignatureTools {
 namespace fs = std::filesystem;
+
+const int FileUtils::NUM_TWO = 2;
+const int FileUtils::NUM_THREE = 3;
+const int FileUtils::NUM_FOUR = 4;
 
 const std::unordered_map<std::string, std::regex> FileUtils::SUFFIX_REGEX_MAP = {
 {std::string("so"), std::regex("\\.so(\\.[0-9]*){0,3}$")} };
@@ -52,7 +56,7 @@ bool FileUtils::ValidFileType(const std::string& filePath, std::initializer_list
 {
     std::string suffix = GetSuffix(filePath);
     if (suffix.empty() || StringUtils::ContainsCase(types, suffix) == false) {
-        CMD_ERROR_MSG("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "Not support file: " + filePath);
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "Not support file: " + filePath);
         return false;
     }
     return true;
@@ -164,7 +168,10 @@ int FileUtils::ReadInputByLength(std::ifstream& input, size_t length, std::strin
     return 0;
 }
 
-bool FileUtils::AppendWriteFileByOffsetToFile(const std::string& inFile, std::ofstream& out, long  offset, long size)
+bool FileUtils::AppendWriteFileByOffsetToFile(const std::string& inFile,
+                                              std::ofstream& out,
+                                              size_t offset,
+                                              size_t size)
 {
     if (out.rdstate() != 0) {
         printf("Failed get out stream\n");
@@ -187,7 +194,7 @@ bool FileUtils::AppendWriteFileByOffsetToFile(const std::string& inFile, std::of
     return true;
 }
 
-bool FileUtils::AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstream& out, long offset, long size)
+bool FileUtils::AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstream& out, size_t offset, size_t size)
 {
     if (input.rdstate() != 0) {
         printf("input failed.\n");
@@ -209,10 +216,10 @@ bool FileUtils::AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstrea
     return true;
 }
 
-bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::string& outputFile) {
+bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::string& outputFile)
+{
     std::ifstream input(inputFile, std::ios::binary);
     std::ofstream output(outputFile, std::ios::binary | std::ios::app);
-
     if (0 != input.rdstate()) {
         printf("Failed to get input stream object!\n");
         return false;
@@ -221,8 +228,7 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
         printf("Failed to get output stream object!\n");
         return false;
     }
-
-    char* buffer = new char[FILE_BUFFER_BLOCK]; // ÿ������1M
+    char* buffer = new char[FILE_BUFFER_BLOCK];
     while (!input.eof()) {
         input.read(buffer, FILE_BUFFER_BLOCK);
 
@@ -231,12 +237,10 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
             delete[]buffer;
             return false;
         }
-
-        std::streamsize readLen = input.gcount();// ���ش��������һ�ζ�ȡ���ֽ���
+        std::streamsize readLen = input.gcount();
         if (readLen > 0) {
             output.write(buffer, readLen);
         }
-
         if (!output) {
             printf("error occurred while writing data\n");
             delete[]buffer;
@@ -247,7 +251,8 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
     return true;
 }
 
-bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::string& outputFile) {
+bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::string& outputFile)
+{
     std::ofstream output(outputFile, std::ios::binary | std::ios::app);
 
     if (WriteByteToOutFile(bytes, output) == false) {
@@ -257,36 +262,41 @@ bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::strin
     return true;
 }
 
-int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, long length)
+int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, size_t length)
 {
-    char* buffer = new char[FILE_BUFFER_BLOCK];
-    long hasReadLen = 0L;
-    while (hasReadLen < length && !input.eof()) {
-        int readLen = std::min(static_cast<long>(FILE_BUFFER_BLOCK), length - hasReadLen);
-        input.read(buffer, readLen);
-        if (input.fail() && !input.eof()) {
-            printf("error occurred while reading data\n");
-            delete[] buffer;
-            return -1;
+    static Uscript::ThreadPool readPool(1);
+    static Uscript::ThreadPool writePool(1);
+    std::future<void> readTask;
+    std::vector<std::future<void>> writeTasks;
+    auto writeFunc = [](std::ofstream& outStream, char* data, int dataSize) {
+        outStream.write(data, dataSize);
+        delete[] data;
+        };
+    auto readFunc = [&output, &writeFunc, &writeTasks](std::ifstream& in, int dataSize) {
+        while (in) {
+            char* buf = new char[FILE_BUFFER_BLOCK];
+            int min = std::min(dataSize, FILE_BUFFER_BLOCK);
+            in.read(buf, min);
+            dataSize -= in.gcount();
+            writeTasks.push_back(writePool.Enqueue(writeFunc, std::ref(output), buf, min));
+            if (dataSize <= 0) {
+                break;
+            }
         }
-        if (input.gcount() > 0) {
-            output.write(buffer, input.gcount());
-        }
-        if (!output) {
-            printf("error occurred while writing data\n");
-            delete[] buffer;
-            return -1;
-        }
-        hasReadLen += input.gcount();
+        assert(dataSize == 0);
+        };
+    readTask = readPool.Enqueue(readFunc, std::ref(input), length);
+    readTask.wait();
+    for (std::future<void>& task : writeTasks) {
+        task.wait();
     }
-    delete[] buffer;
     return 0;
 }
 
-bool FileUtils::WriteInputToOutPut(const std::string &input, const std::string &output) {
+bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& output)
+{
     std::ifstream in(input, std::ios::binary);
     std::ofstream out(output, std::ios::binary);
-
     if (in.rdstate() != 0) {
         printf("Failed to get input stream object!\n");
         return false;
@@ -296,8 +306,7 @@ bool FileUtils::WriteInputToOutPut(const std::string &input, const std::string &
         printf("Failed to get output stream object!\n");
         return false;
     }
-   
-    char *buffer = new char[FILE_BUFFER_BLOCK]; // ÿ������1M
+    char* buffer = new char[FILE_BUFFER_BLOCK];
     while (!in.eof()) {
         in.read(buffer, FILE_BUFFER_BLOCK);
 
@@ -350,13 +359,14 @@ bool FileUtils::WriteByteToOutFile(const std::string& bytes, std::ofstream& outF
     }
     return true;
 }
-bool FileUtils::WriteByteToOutFile(const std::vector<int8_t> &bytes, std::ofstream& outFile)
+
+bool FileUtils::WriteByteToOutFile(const std::vector<int8_t>& bytes, std::ofstream& outFile)
 {
     if (outFile.rdstate() != 0) {
         printf("Failed to get output stream object, outfile\n");
         return false;
     }
-    outFile.write((char *)&bytes[0], bytes.size());
+    outFile.write((char*)&bytes[0], bytes.size());
     if (outFile.rdstate() != 0) {
         printf("Failed to write data to ops, outfile \n");
         return false;
@@ -368,6 +378,7 @@ bool FileUtils::WriteByteToOutFile(const std::vector<int8_t> &bytes, std::ofstre
     }
     return true;
 }
+
 bool FileUtils::IsRunnableFile(const std::string& name)
 {
     if (name.empty()) {
@@ -404,7 +415,8 @@ bool FileUtils::IsValidFile(std::string file)
     return true;
 }
 
-int64_t FileUtils::GetFileLen(const std::string &file) {
+int64_t FileUtils::GetFileLen(const std::string& file)
+{
     std::filesystem::path filePath = file;
     if (std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath)) {
         return std::filesystem::file_size(filePath);
@@ -412,16 +424,16 @@ int64_t FileUtils::GetFileLen(const std::string &file) {
     return -1;
 }
 
-void FileUtils::DelDir(const std::string& file) {
+void FileUtils::DelDir(const std::string& file)
+{
     std::filesystem::path filePath = file;
-    
-    // ��������Ŀ¼
     if (std::filesystem::is_directory(filePath)) {
-        for (auto &p : std::filesystem::recursive_directory_iterator(filePath)) {
+        for (auto& p : std::filesystem::recursive_directory_iterator(filePath)) {
             DelDir(p.path());
         }
     }
-
     std::filesystem::remove(file);
     return;
 }
+} // namespace SignatureTools
+} // namespace OHOS

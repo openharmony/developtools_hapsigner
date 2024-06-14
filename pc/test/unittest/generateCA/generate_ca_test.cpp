@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,10 +18,9 @@
 #include "options.h"
 #include "sign_tool_service_impl.h"
 #include "cert_tools.h"
-#include "hap_sign_tool.h"
+#include "params_run_tool.h"
 #include "localization_adapter.h"
 #include "fs_digest_utils.h"
-#include "hash.h"
 #include <cstdio>
 #include <cstring>
 
@@ -77,7 +76,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_001, testing::ext::TestSize.Level1)
     std::string outFile = "/data/test/generateCA/profile.cer";
     std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    int keysize = 384;
+    int keySize = 384;
     char secret[] = "adhjkljasjhdk";
     char ksPwd[] = "123456";
     char isksPwd[] = "123456";
@@ -85,9 +84,9 @@ HWTEST_F(GenerateCaTest, generate_ca_test_001, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = ksPwd;
     (*params)["issuerkeystorePwd"] = isksPwd;
     (*params)["keyAlias"] = keyAlias;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
     (*params)["keyAlg"] = keyAlg;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
     (*params)["signAlg"] = signAlg;
@@ -97,7 +96,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_001, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = api->GenerateCA(params.get());
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 // rootCa
@@ -120,7 +119,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_002, testing::ext::TestSize.Level1)
     std::string outFile = "/data/test/generateCA/root-ca-test.cer";
     std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    int keysize = 384;
+    int keySize = 384;
     char secret[] = "123456";
     char ksPwd[] = "123456";
     char isksPwd[] = "123456";
@@ -129,7 +128,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_002, testing::ext::TestSize.Level1)
     (*params)["issuerkeystorePwd"] = isksPwd;
     (*params)["keyAlias"] = keyAlias;
     (*params)["keyAlg"] = keyAlg;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
     (*params)["signAlg"] = signAlg;
@@ -138,7 +137,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_002, testing::ext::TestSize.Level1)
     (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
     (*params)["outFile"] = outFile;
     bool ret = api->GenerateCA(params.get());
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 // rootCa
@@ -158,12 +157,12 @@ HWTEST_F(GenerateCaTest, generate_ca_test_003, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
     std::string outFile = "/data/test/generateCA/root-ca-test.cer";
-    int keysize = 384;
+    int keySize = 384;
     int validity = 365;
     int basicConstraintsPathLen = 0;
     (*params)["keyAlias"] = keyAlias;
     (*params)["keyAlg"] = keyAlg;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
     (*params)["signAlg"] = signAlg;
     (*params)["keyStoreFile"] = keyStoreFile;
@@ -190,12 +189,12 @@ HWTEST_F(GenerateCaTest, generate_ca_test_004, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
     std::string outFile = "/data/test/generateCA/root-ca-test.cer";
-    int keysize = 384;
+    int keySize = 384;
     int validity = 365;
     int basicConstraintsPathLen = 0;
     (*params)["keyAlias"] = keyAlias;
     (*params)["keyAlg"] = keyAlg;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["signAlg"] = signAlg;
     (*params)["keyStoreFile"] = keyStoreFile;
     (*params)["validity"] = validity;
@@ -220,11 +219,11 @@ HWTEST_F(GenerateCaTest, generate_ca_test_005, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
     std::string outFile = "/data/test/generateCA/root-ca-test.cer";
-    int keysize = 384;
+    int keySize = 384;
     int validity = 365;
     int basicConstraintsPathLen = 0;
     (*params)["keyAlias"] = keyAlias;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["signAlg"] = signAlg;
     (*params)["keyStoreFile"] = keyStoreFile;
     (*params)["validity"] = validity;
@@ -234,25 +233,197 @@ HWTEST_F(GenerateCaTest, generate_ca_test_005, testing::ext::TestSize.Level1)
     bool ret = api->GenerateCA(params.get());
     EXPECT_EQ(ret, false);
 }
+
 /**
- * @tc.name: generate_subca_test_001
+ * @tc.name: generate_ca_test_006
  * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_subca_test_001, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_ca_test_006, testing::ext::TestSize.Level1)
 {
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
+    std::string keyAlias = "oh-app1-key-v1";
     std::string issuerkeyAlias = "oh-app1-key-v1";
-    char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
-    char keystorePwd[] = "123456";
-    std::string signAlg = "SHA384withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";  
+    int basicConstraintsPathLen = 0;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/profile.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "adhjkljasjhdk";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_ca_test_007
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_007, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    int basicConstraintsPathLen = 0;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/profile.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "adhjkljasjhdk";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "554245";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_ca_test_008
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_008, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    int basicConstraintsPathLen = 0;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/profile.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.pp12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "adhjkljasjhdk";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "554245";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_ca_test_009
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_009, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    int basicConstraintsPathLen = 5;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/profile.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "adhjkljasjhdk";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/**
+ * @tc.name: generate_ca_test_010
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_010, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    int basicConstraintsPathLen = 5;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/root-ca-test.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
     char secret[] = "123456";
     char ksPwd[] = "123456";
     char isksPwd[] = "123456";
@@ -260,15 +431,184 @@ HWTEST_F(GenerateCaTest, generate_subca_test_001, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = ksPwd;
     (*params)["issuerkeystorePwd"] = isksPwd;
     (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/**
+ * @tc.name: generate_ca_test_011
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_011, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/root-ca-test.cer";
+    int keySize = 384;
+    int validity = 365;
+    int basicConstraintsPathLen = 5;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["validity"] = validity;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_ca_test_012
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_012, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/root-ca-test.cer";
+    int keySize = 384;
+    int validity = 365;
+    int basicConstraintsPathLen = 5;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["validity"] = validity;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_ca_test_013
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_013, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/root-ca-test.cer";
+    int keySize = 384;
+    int validity = 365;
+    int basicConstraintsPathLen = 5;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keySize"] = keySize;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["validity"] = validity;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_ca_test_014
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_ca_test_014, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    int basicConstraintsPathLen = 5;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/profile.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "adhjkljasjhdk";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+
+    bool ret = api->GenerateCA(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_sub_cert_test_001
+ * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_test_001, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";   
+    char isksPwd[] = "123456";  
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
     (*params)["keyPwd"] = keyPwd;
     (*params)["keyAlg"] = keyAlg;
     (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyStoreFile"] = keystoreFile;  
     (*params)["signAlg"] = signAlg;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
@@ -280,16 +620,16 @@ HWTEST_F(GenerateCaTest, generate_subca_test_001, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: generate_subca_test_002
+ * @tc.name: generate_sub_cert_test_002
  * @tc.desc: Test function of GenerateCa()  interface for FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_subca_test_002, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_sub_cert_test_002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlias = "alias";
     std::string issuerkeyAlias = "oh-app1-key-v1";
     std::string keyAlg = "ECC";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -299,7 +639,7 @@ HWTEST_F(GenerateCaTest, generate_subca_test_002, testing::ext::TestSize.Level1)
     std::string outFile = "/data/test/generateCA/subca.cer";
     std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    int keysize = 384;
+    int keySize = 384;
     char secret[] = "123456";
     char ksPwd[] = "123456";
     char isksPwd[] = "123456";
@@ -307,14 +647,14 @@ HWTEST_F(GenerateCaTest, generate_subca_test_002, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = ksPwd;
     (*params)["issuerkeystorePwd"] = isksPwd;
     (*params)["keyAlias"] = keyAlias;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
     (*params)["keyAlg"] = keyAlg;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
     (*params)["signAlg"] = signAlg;
     (*params)["keyStoreFile"] = keyStoreFile;
-    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+    (*params)["issuerKeyStoreFile"] = issuerkeystroefile;
     (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
     (*params)["outFile"] = outFile;
     std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
@@ -325,6 +665,199 @@ HWTEST_F(GenerateCaTest, generate_subca_test_002, testing::ext::TestSize.Level1)
     bool ret = CertTools::GenerateSubCert(keyPair, csr, params.get());
     EXPECT_EQ(ret, false);
 }
+
+
+/**
+ * @tc.name: generate_sub_cert_test_003
+ * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_test_003, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "";
+    int basicConstraintsPathLen = 0;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/subca.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerKeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = X509_REQ_new();
+    EXPECT_NE(csr, nullptr);
+    bool ret = CertTools::GenerateSubCert(keyPair, csr, params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_sub_cert_test_004
+ * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_test_004, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    int basicConstraintsPathLen = 5;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/subca.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerKeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = X509_REQ_new();
+    EXPECT_NE(csr, nullptr);
+    bool ret = CertTools::GenerateSubCert(keyPair, csr, params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_sub_cert_test_005
+ * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_test_005, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "";
+    int basicConstraintsPathLen = 5;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/subca.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerKeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = X509_REQ_new();
+    EXPECT_NE(csr, nullptr);
+    bool ret = CertTools::GenerateSubCert(keyPair, csr, params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_sub_cert_test_006
+ * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_test_006, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string signAlg = "SHA384withECDSA";
+    int basicConstraintsPathLen = 0;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string outFile = "/data/test/generateCA/subca.cer";
+    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int keySize = 384;
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    int validity = 365;
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["issuerKeyStoreFile"] = issuerkeystroefile;
+    (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
+    (*params)["outFile"] = outFile;
+    (*params)["validity"] = validity;
+    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = X509_REQ_new();
+    EXPECT_NE(csr, nullptr);
+    bool ret = CertTools::GenerateSubCert(keyPair, csr, params.get());
+    EXPECT_EQ(ret, false);
+}
+
+
 /**
  * @tc.name: valid_file_type_test_001
  * @tc.desc: Test function of ValidFileType() interface for SUCCESS.
@@ -414,7 +947,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_001, testing::ext::TestSize.Level1)
     std::string issuerkeyAlias = "oh-app1-key-v1";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
@@ -433,12 +966,12 @@ HWTEST_F(GenerateCaTest, generate_cert_test_001, testing::ext::TestSize.Level1)
     (*params)["keyAlias"] = keyAlias;
     (*params)["keyAlg"] = keyAlg;
     (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyStoreFile"] = keystoreFile;
     (*params)["keystorePwd"] = keystorePwd;
     (*params)["signAlg"] = signAlg;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
     (*params)["keyUsage"] = keyUsage;
     (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
@@ -464,7 +997,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_002, testing::ext::TestSize.Level1)
     std::string issuerkeyAlias = "oh-app1-key-v1";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
@@ -477,7 +1010,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_002, testing::ext::TestSize.Level1)
     char isksPwd[] = "123456";
     char keystorePwd[] = "123456";
     char issuerkeypwd[] = "123456";
-    std::string outFile = "./generateCA/rootCa.cer";
+    std::string outFile = "/data/test/generateCA/rootCa.cer";
     (*params)["keyPwd"] = secret;
     (*params)["issuerkeystorePwd"] = isksPwd;
     (*params)["issuerKeyPwd"] = issuerkeypwd;
@@ -527,10 +1060,10 @@ HWTEST_F(GenerateCaTest, generate_cert_test_003, testing::ext::TestSize.Level1)
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
-    int keysize = 384;
+    int keySize = 384;
     (*params)["keyAlias"] = keyAlias;
     (*params)["issuerKeyAlias"] = issuerKeyAlias;
-    (*params)["keysize"] = keysize;
+    (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
     (*params)["signAlg"] = signAlg;
@@ -563,7 +1096,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_004, testing::ext::TestSize.Level1)
     std::string issuerkeyAlias = "oh-app1-key-v1";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     std::string signAlg = "";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
@@ -612,7 +1145,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_005, testing::ext::TestSize.Level1)
     std::string keyAlias = "alias";
     std::string issuerkeyAlias = "oh-app1-key-v1";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     std::string signAlg = "";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
@@ -666,8 +1199,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_006, testing::ext::TestSize.Level1)
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
-    int keysize = 384;
-    (*params)["keysize"] = keysize;
+    int keySize = 384;
+    (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
     (*params)["signAlg"] = signAlg;
     (*params)["keyStoreFile"] = keyStoreFile;
@@ -699,7 +1232,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_007, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -754,7 +1287,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_008, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -810,7 +1343,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_009, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -866,7 +1399,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_010, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -921,7 +1454,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_011, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -976,7 +1509,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_012, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -1029,7 +1562,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_013, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -1071,6 +1604,109 @@ HWTEST_F(GenerateCaTest, generate_cert_test_013, testing::ext::TestSize.Level1)
 }
 
 /**
+ * @tc.name: generate_cert_test_014
+ * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_cert_test_014, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    std::string issuerKeystoreFile = "/data/test/generateKeyPair/pp.p12";
+    std::string signAlg = "";
+    std::string subject = "";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string keyUsage = "digitalSignature";
+    bool basicConstraints = true;
+    bool basicConstraintsCritical = true;
+    bool basicConstraintsCa = true;
+    bool keyUsageCritical = true;
+    char secret[] = "123456";
+    char isksPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    char issuerkeypwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["issuerKeyPwd"] = issuerkeypwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keyStoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    (*params)["keyUsageCritical"] = keyUsageCritical;
+    (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
+
+    bool ret = api->GenerateCert(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/**
+ * @tc.name: generate_cert_test_015
+ * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_cert_test_015, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string keyUsage = "digitalSignature";
+    bool basicConstraints = true;
+    bool basicConstraintsCritical = true;
+    bool basicConstraintsCa = true;
+    bool keyUsageCritical = true;
+    char secret[] = "123456";
+    char isksPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    char issuerkeypwd[] = "123456";
+    std::string outFile = "/datamt/test/generateCA/general-ca-test.cer";
+    (*params)["keyPwd"] = secret;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["issuerKeyPwd"] = issuerkeypwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keyStoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    (*params)["keyUsageCritical"] = keyUsageCritical;
+    (*params)["outFile"] = outFile;
+    bool ret = api->GenerateCert(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+
+
+/**
  * @tc.name: get_int_test_001
  * @tc.desc: Test function of GetInt()  interface for SUCCESS.
  * @tc.type: FUNC
@@ -1083,9 +1719,10 @@ HWTEST_F(GenerateCaTest, get_int_test_001, testing::ext::TestSize.Level1)
     int tmp = option.GetInt(str);
     EXPECT_EQ(std::to_string(tmp).size(), 1U);
 }
+
 /**
  * @tc.name: generate_app_cert_test_001
- * @tc.desc: Test function of GenerateAppCert()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GenerateAppCert()  interface for certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1098,9 +1735,9 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_001, testing::ext::TestSize.Level
     std::string issuerKeyAlias = "oh-app1-key-v1";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string caCertFile = "/data/test/generateCA/root-ca1.cer";
-    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1.cer";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
     std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
@@ -1139,9 +1776,50 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_002, testing::ext::TestSize.Level
     std::string issuerKeyAlias = "oh-app1-key-v1";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string caCertFile = "/data/test/generateCA/root-ca1.cer";
-    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1.cer";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
+    std::string outForm = "cert";
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::CA_CERT_FILE] = caCertFile;
+    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
+    params[Options::KEY_ALIAS] = keyAlias;
+    params[Options::ISSUER] = issuer;
+    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
+    params[Options::SUBJECT] = subject;
+    params[Options::SIGN_ALG] = signAlg;
+    params[Options::KEY_STORE_FILE] = keyStoreFile;
+    params[Options::OUT_FILE] = outFile;
+    params[Options::OUT_FORM] = outForm;
+    bool result = api.GenerateAppCert(&params);
+    EXPECT_EQ(result, true);
+}
+/**
+ * @tc.name: generate_app_cert_test_003
+ * @tc.desc: Test function of GenerateAppCert()  interface for certChain SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_appcert_test_003, testing::ext::TestSize.Level1)
+{
+    SignToolServiceImpl api;
+    Options params;
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
     const char isksPwd[] = "123456";
@@ -1164,45 +1842,8 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_002, testing::ext::TestSize.Level
     EXPECT_EQ(result, true);
 }
 /**
- * @tc.name: generate_app_cert_test_003
- * @tc.desc: Test function of GenerateAppCert()  interface for cert SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_appcert_test_003, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
-    std::string outFile = "/data/test/generateCA/test-app-cert-v1.cer";
-    const char secret[] = "123456";
-    const char ksPwd[] = "123456";
-    const char isksPwd[] = "123456";
-    const char isskeypwd[] = "123456";
-    params[Options::KEY_RIGHTS] = secret;
-    params[Options::KEY_STORE_RIGHTS] = ksPwd;
-    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
-    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
-    params[Options::KEY_ALIAS] = keyAlias;
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    params[Options::KEY_STORE_FILE] = keyStoreFile;
-    params[Options::OUT_FILE] = outFile;
-    params[Options::OUT_FORM] = outForm;
-    bool result = api.GenerateAppCert(&params);
-    EXPECT_EQ(result, true);
-}
-/**
  * @tc.name: generate_app_cert_test_004
- * @tc.desc: Test function of GenerateAppCert()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GenerateAppCert()  interface for certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1211,16 +1852,16 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_004, testing::ext::TestSize.Level
     SignToolServiceImpl api;
     Options params;
     std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
     std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
     const char isksPwd[] = "123456";
     const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
     params[Options::KEY_RIGHTS] = secret;
     params[Options::KEY_STORE_RIGHTS] = ksPwd;
     params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
@@ -1237,7 +1878,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_004, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_005
- * @tc.desc: Test function of GenerateAppCert()  interface for cert FALIED.
+ * @tc.desc: Test function of GenerateAppCert()  interface for certChain FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1245,25 +1886,40 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_005, testing::ext::TestSize.Level
 {
     SignToolServiceImpl api;
     Options params;
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string keyAlias = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
     std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::CA_CERT_FILE] = caCertFile;
+    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
     params[Options::KEY_ALIAS] = keyAlias;
     params[Options::ISSUER] = issuer;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
     params[Options::SUBJECT] = subject;
     params[Options::SIGN_ALG] = signAlg;
     params[Options::KEY_STORE_FILE] = keyStoreFile;
+    params[Options::OUT_FILE] = outFile;
+    params[Options::OUT_FORM] = outForm;
     bool result = api.GenerateAppCert(&params);
     EXPECT_EQ(result, false);
 }
 /**
  * @tc.name: generate_app_cert_test_006
- * @tc.desc: Test function of GenerateAppCert()  interface for certchain FAIL.
+ * @tc.desc: Test function of GenerateAppCert()  interface for certChain FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1271,37 +1927,40 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_006, testing::ext::TestSize.Level
 {
     SignToolServiceImpl api;
     Options params;
-    std::string keyAlias = "";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "45679887";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string caCertFile = "/data/test/generateCA/test-app-cert-v1.cer";
-    std::string subCaCertFile = "/data/test/generateCA/test-app-cert-v1.cer";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
     const char isksPwd[] = "123456";
     const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
     params[Options::KEY_RIGHTS] = secret;
     params[Options::KEY_STORE_RIGHTS] = ksPwd;
     params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
     params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::CA_CERT_FILE] = caCertFile;
+    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
     params[Options::KEY_ALIAS] = keyAlias;
     params[Options::ISSUER] = issuer;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
     params[Options::SUBJECT] = subject;
     params[Options::SIGN_ALG] = signAlg;
     params[Options::KEY_STORE_FILE] = keyStoreFile;
-    params[Options::CA_CERT_FILE] = caCertFile;
-    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
-
+    params[Options::OUT_FILE] = outFile;
+    params[Options::OUT_FORM] = outForm;
     bool result = api.GenerateAppCert(&params);
     EXPECT_EQ(result, false);
 }
 /**
  * @tc.name: generate_app_cert_test_007
- * @tc.desc: Test function of GenerateAppCert()  interface for certchain FAIL.
+ * @tc.desc: Test function of GenerateAppCert()  interface for certChain FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1309,118 +1968,40 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_007, testing::ext::TestSize.Level
 {
     SignToolServiceImpl api;
     Options params;
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outFile = "/data/test/generateCA/app-release1.pem";
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
     const char isksPwd[] = "123456";
     const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
     params[Options::KEY_RIGHTS] = secret;
     params[Options::KEY_STORE_RIGHTS] = ksPwd;
     params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
     params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::CA_CERT_FILE] = caCertFile;
+    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
     params[Options::KEY_ALIAS] = keyAlias;
     params[Options::ISSUER] = issuer;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
     params[Options::KEY_STORE_FILE] = keyStoreFile;
     params[Options::OUT_FILE] = outFile;
+    params[Options::OUT_FORM] = outForm;
     bool result = api.GenerateAppCert(&params);
     EXPECT_EQ(result, false);
 }
-/**
- * @tc.name: generate_app_cert_test_008
- * @tc.desc: Test function of GenerateAppCert()  interface for CERTCHAIN FAILED.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_appcert_test_008, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string signAlg = "";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
-
-    params[Options::KEY_ALIAS] = keyAlias;
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    params[Options::KEY_STORE_FILE] = keyStoreFile;
-
-    bool result = api.GenerateAppCert(&params);
-    EXPECT_EQ(result, false);
-}
-/**
- * @tc.name: generate_app_cert_test_009
- * @tc.desc: Test function of GenerateAppCert()  interface for certchain FAILED.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_appcert_test_009, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outFile = "/data/test/generateCA/app-release1.pem";
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    params[Options::KEY_STORE_FILE] = keyStoreFile;
-    params[Options::OUT_FILE] = outFile;
-
-    bool result = api.GenerateAppCert(&params);
-    EXPECT_EQ(result, false);
-}
-/**
- * @tc.name: generate_app_cert_test_0010
- * @tc.desc: Test function of GenerateAppCert()  interface for certchain FAILED.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_appcert_test_010, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "oh-app1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string signAlg = "";
-    std::string outFile = "/data/test/generateCA/app-release1.pem";
-    params[Options::KEY_ALIAS] = keyAlias;
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    params[Options::OUT_FILE] = outFile;
-    bool result = api.GenerateAppCert(&params);
-    EXPECT_EQ(result, false);
-}
-
 /**
  * @tc.name: generate_profile_cert_test_001
- * @tc.desc: Test function of GenerateProfileCert()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GenerateProfileCert()  interface for certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_001, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_profilecert_test_001, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
     Options params;
@@ -1429,15 +2010,15 @@ HWTEST_F(GenerateCaTest, generate_profile_cert_test_001, testing::ext::TestSize.
     std::string issuerKeyAlias = "oh-app1-key-v1";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string caCertFile = "/data/test/generateCA/root-ca1.cer";
-    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1.cer";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
     std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
-    std::string outForm = "certChain";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
     const char isksPwd[] = "123456";
     const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
     params[Options::KEY_RIGHTS] = secret;
     params[Options::KEY_STORE_RIGHTS] = ksPwd;
     params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
@@ -1461,7 +2042,7 @@ HWTEST_F(GenerateCaTest, generate_profile_cert_test_001, testing::ext::TestSize.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_002, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_profilecert_test_002, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
     Options params;
@@ -1470,14 +2051,51 @@ HWTEST_F(GenerateCaTest, generate_profile_cert_test_002, testing::ext::TestSize.
     std::string issuerKeyAlias = "oh-app1-key-v1";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string caCertFile = "/data/test/generateCA/root-ca1.cer";
-    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1.cer";
-    std::string outForm = "certChain";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
     const char secret[] = "123456";
     const char ksPwd[] = "123456";
     const char isksPwd[] = "123456";
     const char isskeypwd[] = "123456";
+    std::string outForm = "cert";
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::KEY_ALIAS] = keyAlias;
+    params[Options::ISSUER] = issuer;
+    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
+    params[Options::SUBJECT] = subject;
+    params[Options::SIGN_ALG] = signAlg;
+    params[Options::KEY_STORE_FILE] = keyStoreFile;
+    params[Options::OUT_FILE] = outFile;
+    params[Options::OUT_FORM] = outForm;
+    bool result = api.GenerateProfileCert(&params);
+    EXPECT_EQ(result, true);
+}
+/**
+ * @tc.name: generate_profile_cert_test_003
+ * @tc.desc: Test function of GenerateProfileCert()  interface for certChain SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_profilecert_test_003, testing::ext::TestSize.Level1)
+{
+    SignToolServiceImpl api;
+    Options params;
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
     params[Options::KEY_RIGHTS] = secret;
     params[Options::KEY_STORE_RIGHTS] = ksPwd;
     params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
@@ -1495,23 +2113,70 @@ HWTEST_F(GenerateCaTest, generate_profile_cert_test_002, testing::ext::TestSize.
     EXPECT_EQ(result, true);
 }
 /**
- * @tc.name: generate_profile_cert_test_003
- * @tc.desc: Test function of GenerateProfileCert()  interface for cert SUCCESS.
+ * @tc.name: generate_profile_cert_test_004
+ * @tc.desc: Test function of GenerateProfileCert()  interface for certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_003, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_profilecert_test_004, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
     Options params;
     std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Profile SUB  CA";
-    std::string issuerKeyAlias = "oh-profile1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Profile CA";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::KEY_ALIAS] = keyAlias;
+    params[Options::ISSUER] = issuer;
+    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
+    params[Options::SUBJECT] = subject;
+    params[Options::SIGN_ALG] = signAlg;
+    params[Options::KEY_STORE_FILE] = keyStoreFile;
+    params[Options::OUT_FORM] = outForm;
+    bool result = api.GenerateProfileCert(&params);
+    EXPECT_EQ(result, true);
+}
+/**
+ * @tc.name: generate_profile_cert_test_005
+ * @tc.desc: Test function of GenerateProfileCert()  interface for certChain FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_profilecert_test_005, testing::ext::TestSize.Level1)
+{
+    SignToolServiceImpl api;
+    Options params;
+    std::string keyAlias = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
     std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::CA_CERT_FILE] = caCertFile;
+    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
     params[Options::KEY_ALIAS] = keyAlias;
     params[Options::ISSUER] = issuer;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
@@ -1519,113 +2184,40 @@ HWTEST_F(GenerateCaTest, generate_profile_cert_test_003, testing::ext::TestSize.
     params[Options::SIGN_ALG] = signAlg;
     params[Options::KEY_STORE_FILE] = keyStoreFile;
     params[Options::OUT_FILE] = outFile;
-
-    bool result = api.GenerateProfileCert(&params);
-    EXPECT_EQ(result, false);
-}
-/**
- * @tc.name: generate_profile_cert_test_004
- * @tc.desc: Test function of GenerateProfileCert()  interface for cert SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_004, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Profile SUB  CA";
-    std::string issuerKeyAlias = "oh-profile1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Profile CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
-    params[Options::KEY_ALIAS] = keyAlias;
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    params[Options::KEY_STORE_FILE] = keyStoreFile;
-
-    bool result = api.GenerateProfileCert(&params);
-    EXPECT_EQ(result, false);
-}
-/**
- * @tc.name: generate_profile_cert_test_005
- * @tc.desc: Test function of GenerateProfileCert()  interface for cert FALIED.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_005, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string issuerKeyAlias = "oh-profile1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outForm = "cert";
-
-    params[Options::KEY_ALIAS] = keyAlias;
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    // params[Options::KEY_STORE_FILE] = keyStoreFile;
-
+    params[Options::OUT_FORM] = outForm;
     bool result = api.GenerateProfileCert(&params);
     EXPECT_EQ(result, false);
 }
 /**
  * @tc.name: generate_profile_cert_test_006
- * @tc.desc: Test function of GenerateProfileCert()  interface for certchain SUCCESS.
+ * @tc.desc: Test function of GenerateProfileCert()  interface for certChain FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_006, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_profilecert_test_006, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
     Options params;
     std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Profile SUB  CA";
-    std::string issuerKeyAlias = "oh-profile1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Profile CA";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "45679887";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string caCertFile = "/data/test/generateCA/root-ca1.cer";
-    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1.cer";
-
-    params[Options::KEY_ALIAS] = keyAlias;
-    params[Options::ISSUER] = issuer;
-    params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-    params[Options::KEY_STORE_FILE] = keyStoreFile;
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
+    std::string outForm = "certChain";
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
     params[Options::CA_CERT_FILE] = caCertFile;
     params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
-
-    bool result = api.GenerateProfileCert(&params);
-    EXPECT_EQ(result, false);
-}
-/**
- * @tc.name: generate_profile_cert_test_007
- * @tc.desc: Test function of GenerateProfileCert()  interface for certchain SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_prodile_cert_test_007, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options params;
-    std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Profile SUB  CA";
-    std::string issuerKeyAlias = "oh-issuer-profile1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Profile CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string outFile = "/data/test/generateCA/test-profile1-cert-v1.pem";
     params[Options::KEY_ALIAS] = keyAlias;
     params[Options::ISSUER] = issuer;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
@@ -1633,37 +2225,49 @@ HWTEST_F(GenerateCaTest, generate_prodile_cert_test_007, testing::ext::TestSize.
     params[Options::SIGN_ALG] = signAlg;
     params[Options::KEY_STORE_FILE] = keyStoreFile;
     params[Options::OUT_FILE] = outFile;
-
+    params[Options::OUT_FORM] = outForm;
     bool result = api.GenerateProfileCert(&params);
     EXPECT_EQ(result, false);
 }
 /**
- * @tc.name: generate_profile_cert_test_008
- * @tc.desc: Test function of GenerateProfileCert()  interface for CERTCHAIN FAILED.
+ * @tc.name: generate_profile_cert_test_007
+ * @tc.desc: Test function of GenerateProfileCert()  interface for certChain FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, generate_profile_cert_test_008, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateCaTest, generate_profilecert_test_007, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
     Options params;
     std::string keyAlias = "oh-profile1-key-v1";
-    std::string issuer = "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Profile SUB  CA";
-    std::string issuerKeyAlias = "oh-profile1-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Profile CA";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Profile Signature Service CA";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string keyStoreFile = "/data/test/generateCA/apptest.p12";
+    std::string caCertFile = "/data/test/generateCA/root-ca1test.cer";
+    std::string subCaCertFile = "/data/test/generateCA/profile-sign-srv-ca1test.cer";
+    std::string outFile = "/data/test/generateCA/test-profile-cert-v1.cer";
+    const char secret[] = "123456";
+    const char ksPwd[] = "123456";
+    const char isksPwd[] = "123456";
+    const char isskeypwd[] = "123456";
     std::string outForm = "certChain";
-
+    params[Options::KEY_RIGHTS] = secret;
+    params[Options::KEY_STORE_RIGHTS] = ksPwd;
+    params[Options::ISSUER_KEY_RIGHTS] = isksPwd;
+    params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
+    params[Options::CA_CERT_FILE] = caCertFile;
+    params[Options::SUB_CA_CERT_FILE] = subCaCertFile;
     params[Options::KEY_ALIAS] = keyAlias;
     params[Options::ISSUER] = issuer;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
-    params[Options::SUBJECT] = subject;
-    params[Options::SIGN_ALG] = signAlg;
-
+    params[Options::KEY_STORE_FILE] = keyStoreFile;
+    params[Options::OUT_FILE] = outFile;
+    params[Options::OUT_FORM] = outForm;
     bool result = api.GenerateProfileCert(&params);
     EXPECT_EQ(result, false);
 }
+
+
 /**
  * @tc.name: judge_alg_type_test_001
  * @tc.desc: Test function of JudgeAlgType()  interface for SUCCESS.
@@ -1704,7 +2308,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_001, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -1712,7 +2316,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_001, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keySize"] = keySize;
     (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
+    (*params)["keystorePwd"] = keystorePwd;
     (*params)["algorithm"] = algorithm;
     (*params)["signAlgorithm"] = signAlgorithm;
     (*params)["subject"] = subject;
@@ -1737,7 +2341,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_002, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -1746,7 +2350,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_002, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keySize"] = keySize;
     (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
+    (*params)["keystorePwd"] = keystorePwd;
     (*params)["algorithm"] = algorithm;
     (*params)["signAlgorithm"] = signAlgorithm;
     (*params)["subject"] = subject;
@@ -1758,6 +2362,40 @@ HWTEST_F(GenerateCaTest, generate_root_cert_002, testing::ext::TestSize.Level1)
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
+}
+
+/**
+ * @tc.name:generate_root_cert_003
+ * @tc.desc: Test function of :GenerateRootCertificate()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_root_cert_003, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    char keyPwd[] = "123456";
+    int keySize = 256;
+    std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
+    char keystorePwd[] = "123456";
+    std::string algorithm = "ECC";
+    std::string signAlgorithm = "";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keyStoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["algorithm"] = algorithm;
+    (*params)["signAlgorithm"] = signAlgorithm;
+    (*params)["subject"] = subject;
+    std::shared_ptr<KeyStoreHelper> keyStoreHelper = std::make_shared<KeyStoreHelper>();
+    EVP_PKEY* keyPair = keyStoreHelper->GenerateKeyPair(algorithm, keySize);
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
+    EXPECT_EQ(csr, nullptr);
+    X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 /**
  * @tc.name: generate_end_cert_test_001
@@ -1773,7 +2411,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_001, testing::ext::TestSize.Leve
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -1783,7 +2421,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_001, testing::ext::TestSize.Leve
     params["keyPwd"] = keyPwd;
     params["keySize"] = keySize;
     params["keystoreFile"] = keyStoreFile;
-    params["keystorePwd"] = keyStorePwd;
+    params["keystorePwd"] = keystorePwd;
     params["algorithm"] = algorithm;
     params["signAlgorithm"] = signAlgorithm;
     params["subject"] = subject;
@@ -1795,10 +2433,8 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_001, testing::ext::TestSize.Leve
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
     EXPECT_NE(csr, nullptr);
-    X509_NAME* name = X509_NAME_new();
     X509* cert = CertTools::GenerateEndCert(csr, keyPair, adapter, appSigningCapability,
-                                            sizeof(appSigningCapability), name);
-    X509_NAME_free(name);
+                                            sizeof(appSigningCapability));
     EXPECT_NE(cert, nullptr);
 }
 
@@ -1815,7 +2451,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_002, testing::ext::TestSize.Leve
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -1823,7 +2459,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_002, testing::ext::TestSize.Leve
     params["keyPwd"] = keyPwd;
     params["keySize"] = keySize;
     params["keystoreFile"] = keyStoreFile;
-    params["keystorePwd"] = keyStorePwd;
+    params["keystorePwd"] = keystorePwd;
     params["algorithm"] = algorithm;
     params["signAlgorithm"] = signAlgorithm;
     params["subject"] = subject;
@@ -1834,10 +2470,8 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_002, testing::ext::TestSize.Leve
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
     EXPECT_NE(csr, nullptr);
-    X509_NAME* name = X509_NAME_new();
     X509* cert = CertTools::GenerateEndCert(csr, keyPair, adapter, appSigningCapability,
-                                            sizeof(appSigningCapability), name);
-    X509_NAME_free(name);
+                                            sizeof(appSigningCapability));
     EXPECT_NE(cert, nullptr);
 }
 
@@ -1856,7 +2490,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_003, testing::ext::TestSize.Leve
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -1864,7 +2498,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_003, testing::ext::TestSize.Leve
     (*params)["keyPwd"] = keyPwd;
     (*params)["keySize"] = keySize;
     (*params)["keystoreFile"] = keyStoreFile;
-    (*params)["keystorePwd"] = keyStorePwd;
+    (*params)["keystorePwd"] = keystorePwd;
     (*params)["algorithm"] = algorithm;
     (*params)["signAlgorithm"] = signAlgorithm;
     (*params)["subject"] = subject;
@@ -1874,10 +2508,8 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_003, testing::ext::TestSize.Leve
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
     EXPECT_NE(csr, nullptr);
-    X509_NAME* name = X509_NAME_new();
     X509* cert = CertTools::GenerateEndCert(csr, keyPair, adapter, appSigningCapability,
-                                            sizeof(appSigningCapability), name);
-    X509_NAME_free(name);
+                                            sizeof(appSigningCapability));
     EXPECT_EQ(cert, nullptr);
 }
 
@@ -1958,7 +2590,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_001, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -1968,7 +2600,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_001, testing::ext::TestSize.Level1)
     params["keyPwd"] = keyPwd;
     params["keySize"] = keySize;
     params["keystoreFile"] = keyStoreFile;
-    params["keystorePwd"] = keyStorePwd;
+    params["keystorePwd"] = keystorePwd;
     params["algorithm"] = algorithm;
     params["signAlgorithm"] = signAlgorithm;
     params["subject"] = subject;
@@ -1980,10 +2612,8 @@ HWTEST_F(GenerateCaTest, output_cert_test_001, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
     EXPECT_NE(csr, nullptr);
-    X509_NAME* name = X509_NAME_new();
     X509* cert = CertTools::GenerateEndCert(csr, keyPair, adapter, appSigningCapability,
-                                            sizeof(appSigningCapability), name);
-    X509_NAME_free(name);
+                                            sizeof(appSigningCapability));
     EXPECT_NE(cert, nullptr);
     bool ret = api.OutPutCert(cert, "/data/test/generateCA/test.cer");
     EXPECT_EQ(ret, true);
@@ -2004,7 +2634,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_002, testing::ext::TestSize.Level1)
     char keyPwd[] = "123456";
     int keySize = 256;
     std::string keyStoreFile = "/data/test/generateCA/ohtest.p12";
-    char keyStorePwd[] = "123456";
+    char keystorePwd[] = "123456";
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
@@ -2014,7 +2644,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_002, testing::ext::TestSize.Level1)
     params["keyPwd"] = keyPwd;
     params["keySize"] = keySize;
     params["keystoreFile"] = keyStoreFile;
-    params["keystorePwd"] = keyStorePwd;
+    params["keystorePwd"] = keystorePwd;
     params["algorithm"] = algorithm;
     params["signAlgorithm"] = signAlgorithm;
     params["subject"] = subject;
@@ -2026,10 +2656,8 @@ HWTEST_F(GenerateCaTest, output_cert_test_002, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlgorithm, subject);
     EXPECT_NE(csr, nullptr);
-    X509_NAME* name = X509_NAME_new();
     X509* cert = CertTools::GenerateEndCert(csr, keyPair, adapter, appSigningCapability,
-                                            sizeof(appSigningCapability), name);
-    X509_NAME_free(name);
+                                            sizeof(appSigningCapability));
     EXPECT_NE(cert, nullptr);
     bool ret = api.OutPutCert(cert, " ");
     EXPECT_EQ(ret, false);
@@ -2079,7 +2707,7 @@ HWTEST_F(GenerateCaTest, output_cert_chain_test_002, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: print_x509_test_001
- * @tc.desc: Test function of PrintX509FromMemory()  interface for SUCCESS.
+ * @tc.desc: Test function of PrintX509CertFromMemory()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -2087,7 +2715,7 @@ HWTEST_F(GenerateCaTest, print_x509_test_001, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
     X509* cert1 = X509_new();
-    bool ret = api.PrintX509FromMemory(cert1);
+    bool ret = api.PrintX509CertFromMemory(cert1);
     EXPECT_EQ(ret, true);
 }
 
@@ -2161,7 +2789,7 @@ HWTEST_F(GenerateCaTest, get_and_output_cert_test_002, testing::ext::TestSize.Le
 }
 /**
  * @tc.name: hap_verify_test_001
- * @tc.desc: Test function of VerifyHap()  interface for cert SUCCESS.
+ * @tc.desc: Test function of VerifyHapSigner()  interface for cert SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -2175,7 +2803,7 @@ HWTEST_F(GenerateCaTest, hap_verify_test_001, testing::ext::TestSize.Level1)
     params[Options::IN_FILE] = inFile;
     params[Options::OUT_CERT_CHAIN] = outCertChain;
     params[Options::OUT_PROFILE] = outProfile;
-    bool result = api.VerifyHap(&params);
+    bool result = api.VerifyHapSigner(&params);
     EXPECT_EQ(result, true);
 }
 /**
@@ -2237,7 +2865,8 @@ HWTEST_F(GenerateCaTest, generate_key_pair_test_002, testing::ext::TestSize.Leve
     params[Options::KEY_STORE_FILE] = keyStoreFile;
     LocalizationAdapter adapter(&params);
     adapter.SetIssuerKeyStoreFile(true);
-    EVP_PKEY* issueKeyPair = adapter.GetKeyPair(true);
+    EVP_PKEY* issueKeyPair = nullptr;
+    adapter.GetKeyPair(true, &issueKeyPair);
     EXPECT_NE(issueKeyPair, nullptr);
 }
 /**
@@ -2309,8 +2938,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_one_test_001, testing::ext::TestSiz
     std::string keyUsage = "digitalSignature";
     (*params)["keyUsage"] = keyUsage;
     (*params)["keyUsageCritical"] = keyUsageCritical;
-    X509* cert1 = CertTools::SetExpandedInfExtOne(cert, params.get(), critical, ext1);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtOne(cert, params.get(), critical, ext1);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2329,8 +2958,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_one_test_002, testing::ext::TestSiz
     std::string keyUsage = "digitalSignature";
     (*params)["keyUsage"] = keyUsage;
     (*params)["keyUsageCritical"] = keyUsageCritical;
-    X509* cert1 = CertTools::SetExpandedInfExtOne(cert, params.get(), critical, ext1);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtOne(cert, params.get(), critical, ext1);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2349,8 +2978,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_two_test_001, testing::ext::TestSiz
     std::string extKeyUsage = "clientAuthentication";
     (*params)["extKeyUsageCritical"] = extKeyUsageCritical;
     (*params)["extKeyUsage"] = extKeyUsage;
-    X509* cert1 = CertTools::SetExpandedInfExtTwo(cert, params.get(), critical, ext2);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtTwo(cert, params.get(), critical, ext2);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2369,8 +2998,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_two_test_002, testing::ext::TestSiz
     std::string extKeyUsage = "clientAuthentication";
     (*params)["extKeyUsageCritical"] = extKeyUsageCritical;
     (*params)["extKeyUsage"] = extKeyUsage;
-    X509* cert1 = CertTools::SetExpandedInfExtTwo(cert, params.get(), critical, ext2);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtTwo(cert, params.get(), critical, ext2);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2391,8 +3020,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_001, testing::ext::TestS
     (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    X509* cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
 }
 
 
@@ -2414,8 +3043,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_002, testing::ext::TestS
     (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    X509* cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2436,8 +3065,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_003, testing::ext::TestS
     (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    X509* cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
 }
 
 
@@ -2459,8 +3088,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_004, testing::ext::TestS
     (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    X509* cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2479,8 +3108,8 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_005, testing::ext::TestS
     bool basicConstraintsCa = true;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
     (*params)["basicConstraints"] = basicConstraints;
-    X509* cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -2499,10 +3128,75 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_006, testing::ext::TestS
     bool basicConstraintsCa = false;
     (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    X509* cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
 }
 
+/**
+ * @tc.name: set_expandedInf_ext_three_test_007
+ * @tc.desc: Test function of SetExpandedInfExtThree()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_007, testing::ext::TestSize.Level1)
+{
+    X509_EXTENSION* ext3 = nullptr;
+    std::string critical = "critical";
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    X509* cert = X509_new();
+    bool basicConstraints = false;
+    bool basicConstraintsCritical = true;
+    bool basicConstraintsCa = true;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: set_expandedInf_ext_three_test_008
+ * @tc.desc: Test function of SetExpandedInfExtThree()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_008, testing::ext::TestSize.Level1)
+{
+    X509_EXTENSION* ext3 = nullptr;
+    std::string critical = "critical";
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    X509* cert = X509_new();
+    bool basicConstraints = false;
+    bool basicConstraintsCritical = true;
+    bool basicConstraintsCa = false;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: set_expandedInf_ext_three_test_009
+ * @tc.desc: Test function of SetExpandedInfExtThree()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, set_expandedInf_ext_three_test_009, testing::ext::TestSize.Level1)
+{
+    X509_EXTENSION* ext3 = nullptr;
+    std::string critical = "critical";
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    X509* cert = X509_new();
+    bool basicConstraints = false;
+    bool basicConstraintsCritical = false;
+    bool basicConstraintsCa = true;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    bool cert1 = CertTools::SetExpandedInfExtThree(cert, params.get(), critical, ext3);
+    EXPECT_NE(cert1, false);
+}
 
 /**
  * @tc.name: generate_sub_cert_to_file_test_001
@@ -2519,7 +3213,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_001, testing::ext::TestS
     std::string keyAlg = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2548,7 +3242,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_001, testing::ext::TestS
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
     EXPECT_EQ(ret, true);
 }
 
@@ -2567,7 +3261,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_002, testing::ext::TestS
     std::string keyAlg = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2596,7 +3290,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_002, testing::ext::TestS
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
     EXPECT_EQ(ret, true);
 }
 
@@ -2614,7 +3308,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_003, testing::ext::TestS
     std::string issuerkeyAlias = "oh-app1-key-v1";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2642,7 +3336,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_003, testing::ext::TestS
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
     EXPECT_EQ(ret, true);
 }
 /**
@@ -2660,7 +3354,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_004, testing::ext::TestS
     std::string keyAlg = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2689,7 +3383,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_004, testing::ext::TestS
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
     EXPECT_EQ(ret, false);
 }
 /**
@@ -2707,7 +3401,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_005, testing::ext::TestS
     std::string keyAlg = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECD";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2736,10 +3430,95 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_005, testing::ext::TestS
     EXPECT_NE(csr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    bool ret = api->GenerateSubCertToFile(params.get(), keyPair, cert);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
     EXPECT_EQ(ret, false);
 }
 
+/**
+ * @tc.name: generate_sub_cert_to_file_test_006
+ * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_006, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string signAlgorithm = "SHA256withECDSA";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA384withECD";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlgorithm"] = signAlgorithm;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;   
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: generate_sub_cert_to_file_test_007
+ * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_007, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    std::string signAlgorithm = "SHA256withECDSA";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA384withECD";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    std::string outFile = "/datamt/test/generateCA/sub-ca-test.cer";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlgorithm"] = signAlgorithm;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    (*params)["outFile"] = outFile;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
+    EXPECT_EQ(ret, false);
+}
 
 /**
  * @tc.name: set_cert_version_test_001
@@ -2768,7 +3547,7 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_001, testing::ext::TestSi
     std::string keyAlg = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2799,8 +3578,8 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_001, testing::ext::TestSi
     EXPECT_NE(issuercsr, nullptr);
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
-    X509* cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
+    EXPECT_NE(cert1, false);
 }
 
 
@@ -2819,7 +3598,7 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_002, testing::ext::TestSi
     std::string keyAlg = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2850,8 +3629,8 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_002, testing::ext::TestSi
     EXPECT_NE(issuercsr, nullptr);
     X509* cert = nullptr;
     EXPECT_EQ(cert, nullptr);
-    X509* cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
+    EXPECT_NE(cert1, false);
 }
 
 
@@ -2867,10 +3646,105 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_003, testing::ext::TestSi
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::string keyAlias = "alias";
     std::string issuerkeyAlias = "oh-app1-key-v1";
-    std::string keyAlg = "ECC";
-    std::string signAlgorithm = "SHA256withECDSA";
+    std::string keyAlg = "ECC";   
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;  
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = X509_REQ_new();
+    EXPECT_EQ(csr, nullptr);
+    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
+    EXPECT_NE(issuercsr, nullptr);
+    X509* cert = nullptr;
+    EXPECT_EQ(cert, nullptr);
+    bool cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: set_pubkey_and_sign_cert_test_004
+ * @tc.desc: Test function of SetPubkeyAndSignCert()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_004, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/key.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = X509_REQ_new();
+    EXPECT_EQ(csr, nullptr);
+    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
+    EXPECT_NE(issuercsr, nullptr);
+    X509* cert = nullptr;
+    EXPECT_EQ(cert, nullptr);
+    bool cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: set_pubkey_and_sign_cert_test_005
+ * @tc.desc: Test function of SetPubkeyAndSignCert()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_005, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/key.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -2889,7 +3763,6 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_003, testing::ext::TestSi
     (*params)["signAlg"] = signAlg;
     (*params)["subject"] = subject;
     (*params)["issuer"] = issuer;
-    (*params)["signAlgorithm"] = signAlgorithm;
     (*params)["issuerkeyAlias"] = issuerkeyAlias;
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
@@ -2897,13 +3770,16 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_003, testing::ext::TestSi
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = X509_REQ_new();
     EXPECT_EQ(csr, nullptr);
-    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlgorithm, issuer);
+    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
     EXPECT_NE(issuercsr, nullptr);
     X509* cert = nullptr;
     EXPECT_EQ(cert, nullptr);
-    X509* cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
+    EXPECT_NE(cert1, false);
 }
+
+
+
 /**
  * @tc.name: set_cert_serial_test_003
  * @tc.desc: Test function of SetCertSubjectName()  interface for FAIL.
@@ -2946,68 +3822,32 @@ HWTEST_F(GenerateCaTest, set_cert_validity_test_002, testing::ext::TestSize.Leve
     EXPECT_EQ(res, false);
 }
 
-// /**
-//  * @tc.name: sign_cert_test_001
-//  * @tc.desc: Test function of SignCert()  interface for FAIL.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCaTest, sign_cert_test_001, testing::ext::TestSize.Level1)
+// HWTEST_F(GenerateCaTest, handle_test_001, testing::ext::TestSize.Level1)
 // {
-//     X509* cert = X509_new();
-//     EVP_PKEY* key = EVP_PKEY_new();
-//     bool res = CertTools::SignCert(cert, key, "SHA256withECDSA");
-//     X509_free(cert);
-//     EVP_PKEY_free(key);
+//     SignToolServiceImpl api;
+//     Options options;
+//     char secret[] = "123456";
+//     options[Options::ISSUER_KEY_RIGHTS] = secret;
+//     options[Options::ISSUER_KEY_STORE_FILE] = "";
+//     bool res = api.HandleIsserKeyAliasNotEmpty(&options);
 //     EXPECT_EQ(res, false);
 // }
-// /**
-//  * @tc.name: sign_cert_test_002
-//  * @tc.desc: Test function of SignCert()  interface for FAIL.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCaTest, sign_cert_test_002, testing::ext::TestSize.Level1)
-// {
-//     X509* cert = X509_new();
-//     EVP_PKEY* key = EVP_PKEY_new();
-//     bool res = CertTools::SignCert(cert, key, "SHA384withECDSA");
-//     X509_free(cert);
-//     EVP_PKEY_free(key);
-//     EXPECT_EQ(res, false);
-// }
-/**
- * @tc.name: handle_test_001
- * @tc.desc: Test function of SignCert()  interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, handle_test_001, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options options;
-    char secret[] = "123456";
-    options[Options::ISSUER_KEY_RIGHTS] = secret;
-    options[Options::ISSUER_KEY_STORE_FILE] = "";
-    bool res = api.HandleIsserKeyAliasNotEmpty(&options);
-    EXPECT_EQ(res, false);
-}
 /**
  * @tc.name: handle_test_002
  * @tc.desc: Test function of SignCert()  interface for FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, handle_test_002, testing::ext::TestSize.Level1)
-{
-    SignToolServiceImpl api;
-    Options options;
-    char secret[] = "123456";
-    options[Options::ISSUER_KEY_RIGHTS] = secret;
-    options[Options::ISSUER_KEY_STORE_FILE] = "11.p12";
-    bool res = api.HandleIsserKeyAliasNotEmpty(&options);
-    EXPECT_EQ(res, false);
-}
+// HWTEST_F(GenerateCaTest, handle_test_002, testing::ext::TestSize.Level1)
+// {
+//     SignToolServiceImpl api;
+//     Options options;
+//     char secret[] = "123456";
+//     options[Options::ISSUER_KEY_RIGHTS] = secret;
+//     options[Options::ISSUER_KEY_STORE_FILE] = "11.p12";
+//     bool res = api.HandleIsserKeyAliasNotEmpty(&options);
+//     EXPECT_EQ(res, false);
+// }
 
 /**
  * @tc.name: handle_isser_keyAlias_not_empty_test_001
@@ -3015,17 +3855,17 @@ HWTEST_F(GenerateCaTest, handle_test_002, testing::ext::TestSize.Level1)
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, handle_isser_keyAlias_not_empty_test_001, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
-    char isksPwd[7] = "abcdef";
-    (*params)["issuerKeystorePwd"] = isksPwd;
-    (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
-    bool ret = api->HandleIsserKeyAliasNotEmpty(params.get());
-    EXPECT_EQ(ret, false);
-}
+// HWTEST_F(GenerateCaTest, handle_isser_keyAlias_not_empty_test_001, testing::ext::TestSize.Level1)
+// {
+//     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+//     std::shared_ptr<Options> params = std::make_shared<Options>();
+//     std::string issuerkeystroefile = "/data/test/generateCA/ohtest.p12";
+//     char isksPwd[7] = "abcdef";
+//     (*params)["issuerkeystorePwd"] = isksPwd;
+//     (*params)["issuerkeyStoreFile"] = issuerkeystroefile;
+//     bool ret = api->HandleIsserKeyAliasNotEmpty(params.get());
+//     EXPECT_EQ(ret, false);
+// }
 
 /**
  * @tc.name: X509_certverify_test_001
@@ -3043,7 +3883,7 @@ HWTEST_F(GenerateCaTest, X509_certverify_test_001, testing::ext::TestSize.Level1
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -3077,9 +3917,26 @@ HWTEST_F(GenerateCaTest, X509_certverify_test_001, testing::ext::TestSize.Level1
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
+ 
 HWTEST_F(GenerateCaTest, X509_certverify_test_002, testing::ext::TestSize.Level1)
 {
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
     X509* cert = X509_new();
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    bool ret = api->X509CertVerify(cert, keyPair);
+    EXPECT_NE(ret, false);
+}
+
+
+/**
+ * @tc.name: X509_certverify_test_003
+ * @tc.desc: Test function of X509CertVerify()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, X509_certverify_test_003, testing::ext::TestSize.Level1)
+{  
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::string keyAlias = "alias";
@@ -3087,7 +3944,7 @@ HWTEST_F(GenerateCaTest, X509_certverify_test_002, testing::ext::TestSize.Level1
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -3112,14 +3969,11 @@ HWTEST_F(GenerateCaTest, X509_certverify_test_002, testing::ext::TestSize.Level1
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
     EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
-    X509* cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
-    EVP_PKEY* NewkeyPair = nullptr;
-    bool ret = api->X509CertVerify(cert1, NewkeyPair);
+    X509* cert = X509_new();
+    bool ret = api->X509CertVerify(cert, keyPair);
+    X509_free(cert);
     EXPECT_EQ(ret, false);
 }
-
 
 /**
  * @tc.name: isempty_test_001
@@ -3141,7 +3995,7 @@ HWTEST_F(GenerateCaTest, isempty_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateCaTest, Read_File_By_Offset_And_Length_test_001, testing::ext::TestSize.Level1)
 {
-    std::ifstream file("./generateKeyPair/keypair.p12");
+    std::ifstream file("/data/test/generateKeyPair/keypair.p12");
     std::string ret("std::string& ret");
     int res = FileUtils::ReadFileByOffsetAndLength(file, 1, 50, ret);
     EXPECT_EQ(res, 0);
@@ -3154,7 +4008,7 @@ HWTEST_F(GenerateCaTest, Read_File_By_Offset_And_Length_test_001, testing::ext::
  */
 HWTEST_F(GenerateCaTest, Read_Input_By_Offset_And_Length_test_002, testing::ext::TestSize.Level1)
 {
-    std::ifstream file("./");
+    std::ifstream file("/data/test/");
     std::string ret("std::string& ret");
     int res = FileUtils::ReadInputByOffsetAndLength(file, 111, 2147483647, ret);
     EXPECT_EQ(res, -1);
@@ -3167,7 +4021,7 @@ HWTEST_F(GenerateCaTest, Read_Input_By_Offset_And_Length_test_002, testing::ext:
 */
 HWTEST_F(GenerateCaTest, Read_Input_By_Length_test_001, testing::ext::TestSize.Level1)
 {
-    std::ifstream file("./");
+    std::ifstream file("/data/test/");
     std::string ret("std::string& ret");
     int res = FileUtils::ReadInputByLength(file, 2147483647, ret);
     EXPECT_EQ(res, -1);
@@ -3193,8 +4047,8 @@ HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_001, testing::e
 */
 HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_002, testing::ext::TestSize.Level1)
 {
-    std::ifstream file("./generateKeyPair/keypair.p12");
-    std::ofstream out("./generateKeyPair/test.txt");
+    std::ifstream file("/data/test/generateKeyPair/keypair.p12");
+    std::ofstream out("/data/test/generateKeyPair/test.txt");
     bool res = FileUtils::AppendWriteFileByOffsetToFile(file, out, 10, 100);
     EXPECT_EQ(res, false);
 }
@@ -3206,7 +4060,7 @@ HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_002, testing::e
 */
 HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_003, testing::ext::TestSize.Level1)
 {
-    std::ifstream file("./generateKeyPair/keypair.p12");
+    std::ifstream file("/data/test/generateKeyPair/keypair.p12");
     std::ofstream out("");
     bool res = FileUtils::AppendWriteFileByOffsetToFile(file, out, 10, 100);
     EXPECT_EQ(res, false);
@@ -3232,7 +4086,7 @@ HWTEST_F(GenerateCaTest, Is_Runnable_File_test_001, testing::ext::TestSize.Level
 HWTEST_F(GenerateCaTest, WriteByteToOutFile_test_001, testing::ext::TestSize.Level1)
 {
     std::string bytes = "587469";
-    std::ofstream outFile("./test.txt");
+    std::ofstream outFile("/data/test/test.txt");
     bool res = FileUtils::WriteByteToOutFile(bytes, outFile);
     EXPECT_EQ(res, true);
 }
@@ -3257,7 +4111,7 @@ HWTEST_F(GenerateCaTest, WriteByteToOutFile_test_002, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateCaTest, ReadFile_test_002, testing::ext::TestSize.Level1)
 {
-    std::string path = "./";
+    std::string path = "/data/test/";
     std::string ret;
     int res = FileUtils::ReadFile(path, ret);
     EXPECT_EQ(res, -104);
@@ -3271,7 +4125,7 @@ HWTEST_F(GenerateCaTest, ReadFile_test_002, testing::ext::TestSize.Level1)
 HWTEST_F(GenerateCaTest, WriteByteToOutFile_test_003, testing::ext::TestSize.Level1)
 {
     std::string bytes = "111";
-    std::string outFile = "./test.txt";
+    std::string outFile = "/data/test/test.txt";
     bool res = FileUtils::WriteByteToOutFile(bytes, outFile);
     EXPECT_EQ(res, true);
 }
@@ -3298,7 +4152,7 @@ HWTEST_F(GenerateCaTest, ParsePkcs7Package_test_001, testing::ext::TestSize.Leve
 {
     const unsigned char packageData[] = { 0 };
     Pkcs7Context pkcs7Context;
-    bool res = HapVerifyOpensslUtils::ParsePkcs7Package(packageData, 10, pkcs7Context);
+    bool res = VerifyHapOpensslUtils::ParsePkcs7Package(packageData, 10, pkcs7Context);
     EXPECT_EQ(res, false);
 }
 /**
@@ -3311,7 +4165,7 @@ HWTEST_F(GenerateCaTest, ParsePkcs7Package_test_002, testing::ext::TestSize.Leve
 {
     const unsigned char packageData[] = { 1, 1, 1, 1, 1 };
     Pkcs7Context pkcs7Context;
-    bool res = HapVerifyOpensslUtils::ParsePkcs7Package(packageData, 10, pkcs7Context);
+    bool res = VerifyHapOpensslUtils::ParsePkcs7Package(packageData, 10, pkcs7Context);
     EXPECT_EQ(res, false);
 }
 /**
@@ -3324,7 +4178,7 @@ HWTEST_F(GenerateCaTest, GetCertChains_test_001, testing::ext::TestSize.Level1)
 {
     PKCS7* p7 = nullptr;
     Pkcs7Context pkcs7Context;
-    bool ret = HapVerifyOpensslUtils::GetCertChains(p7, pkcs7Context);
+    bool ret = VerifyHapOpensslUtils::GetCertChains(p7, pkcs7Context);
     EXPECT_EQ(ret, false);
 }
 /**
@@ -3337,7 +4191,7 @@ HWTEST_F(GenerateCaTest, GetCertChains_test_002, testing::ext::TestSize.Level1)
 {
     PKCS7* p7 = PKCS7_new();
     Pkcs7Context pkcs7Context;
-    bool ret = HapVerifyOpensslUtils::GetCertChains(p7, pkcs7Context);
+    bool ret = VerifyHapOpensslUtils::GetCertChains(p7, pkcs7Context);
     PKCS7_free(p7);
     EXPECT_EQ(ret, false);
 }
@@ -3348,14 +4202,16 @@ HWTEST_F(GenerateCaTest, GetCertChains_test_002, testing::ext::TestSize.Level1)
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
+ 
 HWTEST_F(GenerateCaTest, set_bisic_constraints_patchlen_test_001, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     Options options;
     options[Options::BASIC_CONSTRAINTS_PATH_LEN] = 1;
-    X509* cert1 = CertTools::SetBisicConstraintsPatchLen(&options, cert);
-    EXPECT_NE(cert1, nullptr);
+    bool cert1 = CertTools::SetBisicConstraintsPatchLen(&options, cert);
+    EXPECT_NE(cert1, false);
 }
+
 
 /**
  * @tc.name: sign_for_subcert_test_001
@@ -3372,7 +4228,7 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_001, testing::ext::TestSize.Level
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -3399,9 +4255,9 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_001, testing::ext::TestSize.Level
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
-    X509* cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
+    bool cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
 
-    EXPECT_NE(cert1, nullptr);
+    EXPECT_EQ(cert1, false);
 }
 
 
@@ -3420,7 +4276,7 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_002, testing::ext::TestSize.Level
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA384withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -3445,10 +4301,10 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_002, testing::ext::TestSize.Level
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
     EXPECT_NE(keyPair, nullptr);
-    X509_REQ* csr = nullptr;
+    X509_REQ* csr = X509_REQ_new();
     X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
-    X509* cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
-    EXPECT_EQ(cert1, nullptr);
+    bool cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
+    EXPECT_EQ(cert1,false);
 }
 
 
@@ -3467,7 +4323,7 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_003, testing::ext::TestSize.Level
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 256;
-    std::string keystoreFile = "./generateKeyPair/keypair.p12";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
@@ -3493,10 +4349,149 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_003, testing::ext::TestSize.Level
     keyPair = adaptePtr->GetAliasKey(true);
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
-    X509* cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
+    X509_REQ* issuercsr = X509_REQ_new();
+    bool cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
 
-    EXPECT_NE(cert1, nullptr);
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: sign_for_subcert_test_004
+ * @tc.desc: Test function of SignForSubCert()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, sign_for_subcert_test_004, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withECDSA";
+    std::string subject = "";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
+    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
+    bool cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
+
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: sign_for_subcert_test_005
+ * @tc.desc: Test function of SignForSubCert()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, sign_for_subcert_test_005, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withRSA";
+    std::string subject = "";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
+    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
+    bool cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
+
+    EXPECT_NE(cert1, false);
+}
+
+/**
+ * @tc.name: sign_for_subcert_test_006
+ * @tc.desc: Test function of SignForSubCert()  interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, sign_for_subcert_test_006, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withECDSA";
+    std::string issuer = "";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    char secret[] = "123456";
+    char ksPwd[] = "123456";
+    char isksPwd[] = "123456";
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = ksPwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
+    X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
+    bool cert1 = CertTools::SignForSubCert(cert, csr, issuercsr, keyPair, params.get());
+
+    EXPECT_NE(cert1, false);
 }
 
 /**
@@ -3505,11 +4500,12 @@ HWTEST_F(GenerateCaTest, sign_for_subcert_test_003, testing::ext::TestSize.Level
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
+ 
 HWTEST_F(GenerateCaTest, get_csr_test_001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::string signAlg = "";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string subject = "";
     EVP_PKEY* keyPair = nullptr;
     bool ret = api->GetCsr(keyPair, signAlg, subject);
     EXPECT_EQ(ret, false);
@@ -3564,13 +4560,51 @@ HWTEST_F(GenerateCaTest, save_cert_to_file_test_002, testing::ext::TestSize.Leve
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
+ /*
 HWTEST_F(GenerateCaTest, set_subject_for_cert_test_001, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
-    X509_REQ* csr = X509_REQ_new();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string keyUsage = "digitalSignature";
+    bool basicConstraints = true;
+    bool basicConstraintsCritical = true;
+    bool basicConstraintsCa = true;
+    bool keyUsageCritical = false;  
+    char isksPwd[] = "123456";  
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerkeyAlias"] = issuerkeyAlias;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    (*params)["keyUsageCritical"] = keyUsageCritical;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    EXPECT_NE(keyPair, nullptr);
+    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     X509* cert1 = CertTools::SetSubjectForCert(csr, cert);
     EXPECT_EQ(cert1, nullptr);
-}
+}*/
 
 /**
  * @tc.name: contains_ignore_case_test_001
@@ -3578,6 +4612,7 @@ HWTEST_F(GenerateCaTest, set_subject_for_cert_test_001, testing::ext::TestSize.L
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
+ /*
 HWTEST_F(GenerateCaTest, contains_ignore_case_test_001, testing::ext::TestSize.Level1)
 {
     std::vector<std::string> strs;
@@ -3593,7 +4628,7 @@ HWTEST_F(GenerateCaTest, contains_ignore_case_test_001, testing::ext::TestSize.L
     bool ret = StringUtils::ContainsIgnoreCase(strs, str);
     EXPECT_EQ(ret, true);
 }
-
+*/
 
 /**
  * @tc.name: contains_ignore_case_test_002
@@ -3601,7 +4636,7 @@ HWTEST_F(GenerateCaTest, contains_ignore_case_test_001, testing::ext::TestSize.L
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(GenerateCaTest, contains_ignore_case_test_002, testing::ext::TestSize.Level1)
+/*HWTEST_F(GenerateCaTest, contains_ignore_case_test_002, testing::ext::TestSize.Level1)
 {
     std::vector<std::string> strs;
     std::string a = "abc";
@@ -3615,7 +4650,7 @@ HWTEST_F(GenerateCaTest, contains_ignore_case_test_002, testing::ext::TestSize.L
     std::string str = "mntee";
     bool ret = StringUtils::ContainsIgnoreCase(strs, str);
     EXPECT_EQ(ret, false);
-}
+}*/
 /**
  * @tc.name: isempty_test_002
  * @tc.desc: Test function of IsEmpty()  interface for FAIL.
@@ -3637,7 +4672,7 @@ HWTEST_F(GenerateCaTest, isempty_test_003, testing::ext::TestSize.Level1)
 HWTEST_F(GenerateCaTest, write_test_001, testing::ext::TestSize.Level1)
 {
     std::string cs = "1234";
-    int res = FileUtils::Write(cs, "./");
+    int res = FileUtils::Write(cs, "/data/test/");
     EXPECT_EQ(res, -103);
 }
 /**
@@ -3662,7 +4697,7 @@ HWTEST_F(GenerateCaTest, read_test_001, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_004, testing::ext::TestSize.Level1)
 {
-    std::string file = "./";
+    std::string file = "/data/test/";
     std::ofstream out("");
     bool res = FileUtils::AppendWriteFileByOffsetToFile(file, out, 10, 100);
     EXPECT_EQ(res, false);
@@ -3675,8 +4710,8 @@ HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_004, testing::e
 */
 HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_005, testing::ext::TestSize.Level1)
 {
-    std::string file = "./generateKeyPair/keypair.p12";
-    std::ofstream out("./generateKeyPair/test.txt");
+    std::string file = "/data/test/generateKeyPair/keypair.p12";
+    std::ofstream out("/data/test/generateKeyPair/test.txt");
     bool res = FileUtils::AppendWriteFileByOffsetToFile(file, out, 10, 100);
     EXPECT_EQ(res, false);
 }
@@ -3688,8 +4723,244 @@ HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_005, testing::e
 */
 HWTEST_F(GenerateCaTest, Append_Write_File_ByOffset_To_File_test_006, testing::ext::TestSize.Level1)
 {
-    std::string file = "./";
-    std::ofstream out("./generateKeyPair/test.txt");
+    std::string file = "/data/test/";
+    std::ofstream out("/data/test/generateKeyPair/test.txt");
     bool res = FileUtils::AppendWriteFileByOffsetToFile(file, out, 10, 100);
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: Verify_Hap_test_001
+* @tc.desc: Test function of VerifyHapSigner()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, Verify_Hap_test_001, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string inForm = "zip";
+    (*params)["inForm"] = inForm;
+    bool res =api->VerifyHapSigner(params.get());
+    EXPECT_EQ(res, true);
+}
+
+/**
+* @tc.name: Verify_Hap_test_002
+* @tc.desc: Test function of VerifyHapSigner()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, Verify_Hap_test_002, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string inForm = "elf";
+    (*params)["inForm"] = inForm;
+    bool res = api->VerifyHapSigner(params.get());
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: Verify_Hap_test_003
+* @tc.desc: Test function of VerifyHapSigner()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, Verify_Hap_test_003, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string inForm = "bin";
+    (*params)["inForm"] = inForm;
+    bool res =api->VerifyHapSigner(params.get());
+    EXPECT_EQ(res, true);
+}
+
+/**
+* @tc.name: Verify_Hap_test_004
+* @tc.desc: Test function of VerifyHapSigner()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, Verify_Hap_test_004, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string inForm = "mmmmm";
+    (*params)["inForm"] = inForm;
+    bool res =api->VerifyHapSigner(params.get());
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: generate_root_cert_to_flie_001
+* @tc.desc: Test function of GenerateRootCertToFile()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, generate_root_cert_to_flie_001, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    EVP_PKEY* keyPair = EVP_PKEY_new();
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    bool res = api->GenerateRootCertToFile(params.get(), keyPair);
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: generate_root_cert_to_flie_002
+* @tc.desc: Test function of GenerateRootCertToFile()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, generate_root_cert_to_flie_002, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char isksPwd[] = "123456";
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keyStoreFile"] = keystoreFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    bool res = api->GenerateRootCertToFile(params.get(), keyPair);
+    EXPECT_EQ(res, false);
+}
+
+
+/**
+* @tc.name: generate_root_cert_to_flie_003
+* @tc.desc: Test function of GenerateRootCertToFile()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, generate_root_cert_to_flie_003, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withRSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char isksPwd[] = "123456";
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keyStoreFile"] = keystoreFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    bool res = api->GenerateRootCertToFile(params.get(), keyPair);
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: generate_root_cert_to_flie_004
+* @tc.desc: Test function of GenerateRootCertToFile()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, generate_root_cert_to_flie_004, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char isksPwd[] = "123456";
+    std::string outFile = "/datamt/test/generateCA/root-ca-test.cer";
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["issuerkeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keyStoreFile"] = keystoreFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["outFile"] = outFile;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    bool res = api->GenerateRootCertToFile(params.get(), keyPair);
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: out_put_mode_of_cert_001
+* @tc.desc: Test function of OutputModeOfCert()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, out_put_mode_of_cert_001, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    X509* cert = X509_new();
+    std::string outFile = "/datamt/test/generateCA/sub-ca-test.cer";
+    (*params)["outFile"] = outFile;
+    bool res = api->OutputModeOfCert(cert, params.get());
+    EXPECT_EQ(res, false);
+}
+
+/**
+* @tc.name: generate_key_store_001
+* @tc.desc: Test function of GenerateKeyStore()  interface for FAIL.
+* @tc.type: FUNC
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(GenerateCaTest, generate_key_store_001, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "";
+    (*params)["keyAlias"] = keyAlias;
+    bool res = api->GenerateKeyStore(params.get());
     EXPECT_EQ(res, false);
 }

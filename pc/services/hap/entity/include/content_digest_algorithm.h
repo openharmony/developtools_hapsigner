@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,24 +15,26 @@
 #ifndef SIGNATURETOOLS_CONTENT_DIGEST_ALGORITHM_H
 #define SIGNATURETOOLS_CONTENT_DIGEST_ALGORITHM_H
 #include <string>
+
 namespace OHOS {
-    namespace SignatureTools {
-        // content digest algorithm
-        class ContentDigestAlgorithm {
-        public:
-            static const ContentDigestAlgorithm SHA256;
-            static const ContentDigestAlgorithm SHA384;
-            static const ContentDigestAlgorithm SHA512;
-            ContentDigestAlgorithm(const std::string& digestAlgorithm, const int digestOutputByteSize);
-            ContentDigestAlgorithm& operator=(const ContentDigestAlgorithm& other);
-            ContentDigestAlgorithm(const ContentDigestAlgorithm& other);
-            ContentDigestAlgorithm();
-            std::string GetDigestAlgorithm();
-            int GetDigestOutputByteSize();
-        private:
-            std::string digestAlgorithm;
-            int digestOutputByteSize;
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+// content digest algorithm
+class ContentDigestAlgorithm {
+public:
+    static const ContentDigestAlgorithm SHA256;
+    static const ContentDigestAlgorithm SHA384;
+    static const ContentDigestAlgorithm SHA512;
+    ContentDigestAlgorithm(const std::string& digestAlgorithm, const int digestOutputByteSize);
+    ContentDigestAlgorithm& operator=(const ContentDigestAlgorithm& other);
+    ContentDigestAlgorithm(const ContentDigestAlgorithm& other);
+    ContentDigestAlgorithm();
+    std::string GetDigestAlgorithm();
+    int GetDigestOutputByteSize();
+    
+private:
+    std::string digestAlgorithm;
+    int digestOutputByteSize;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATURETOOLS_CONTENT_DIGEST_ALGORITHM_H

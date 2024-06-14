@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,73 +13,58 @@
  * limitations under the License.
  */
 
-#ifndef SIGNERTOOLS_DATA_DESCRIPTOR_H
-#define SIGNERTOOLS_DATA_DESCRIPTOR_H
+#ifndef SIGNATRUETOOLS_DATA_DESCRIPTOR_H
+#define SIGNATRUETOOLS_DATA_DESCRIPTOR_H
+
 #include "byte_buffer.h"
-#include <vector>
+
 namespace OHOS {
-    namespace SignatureTools {
-        class DataDescriptor {
-            /**
-             * DataDescriptor invariable bytes length
-             */
-        public:
-            static constexpr int DES_LENGTH = 16;
+namespace SignatureTools {
+class DataDescriptor {
+public:
+    /* DataDescriptor invariable bytes length */
+    static constexpr int DES_LENGTH = 16;
 
-            /**
-             * 4 bytes , DataDescriptor signature
-             */
-            static constexpr int SIGNATURE = 0x08074b50;
+    /* 4 bytes , DataDescriptor signature */
+    static constexpr int SIGNATURE = 0x08074b50;
 
-            /**
-             * 4 bytes
-             */
-        private:
-            int crc32 = 0;
+    /**
+     * get Data Descriptor
+     *
+     * @param bytes DataDescriptor bytes
+     * @return DataDescriptor
+     * @throws ZipException read data descriptor exception
+     */
+    static DataDescriptor* GetDataDescriptor(const std::string& bytes);
 
-            /**
-             * 4 bytes
-             */
-            uint64_t compressedSize = 0;
+    std::string ToBytes();
 
-            /**
-             * 4 bytes
-             */
-            uint64_t unCompressedSize = 0;
+    static int GetDesLength();
 
-            /**
-             * get Data Descriptor
-             *
-             * @param bytes DataDescriptor bytes
-             * @return DataDescriptor
-             * @throws ZipException read data descriptor exception
-             */
-        public:
-            static DataDescriptor* GetDataDescriptor(std::vector<char>& bytes);
+    static int GetSIGNATURE();
 
-            /**
-             * change DataDescriptor to bytes
-             *
-             * @return bytes
-             */
-            std::vector<char> ToBytes();
+    int GetCrc32();
 
-            static int GetDesLength();
+    void SetCrc32(int crc32);
 
-            static int GetSIGNATURE();
+    int64_t GetCompressedSize();
 
-            int GetCrc32();
+    void SetCompressedSize(int64_t compressedSize);
 
-            void SetCrc32(int crc32);
+    int64_t GetUnCompressedSize();
 
-            uint64_t GetCompressedSize();
+    void SetUnCompressedSize(int64_t unCompressedSize);
 
-            void SetCompressedSize(uint64_t compressedSize);
+private:
+    /* 4 bytes */
+    int crc32 = 0;
 
-            uint64_t GetUnCompressedSize();
+    /* 8 bytes */
+    int64_t compressedSize = 0;
 
-            void SetUnCompressedSize(uint64_t unCompressedSize);
-        };
-    }
-}
-#endif
+    /* 8 bytes */
+    int64_t unCompressedSize = 0;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_DATA_DESCRIPTOR_H

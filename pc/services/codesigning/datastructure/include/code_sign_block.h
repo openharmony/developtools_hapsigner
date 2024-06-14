@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,55 +12,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef CODE_SIGN_BLOCK_H
-#define CODE_SIGN_BLOCK_H
-#include <string>
-#include <unordered_map>
-#include <vector>
+#ifndef SIGNATRUETOOLS_CODE_SIGN_BLOCK_H
+#define SIGNATRUETOOLS_CODE_SIGN_BLOCK_H
+
 #include <map>
-#include "code_sign_block_header.h"
+#include <string>
+#include <vector>
+#include <unordered_map>
+
 #include "segment_header.h"
-#include "fs_verity_info_segment.h"
 #include "hap_info_segment.h"
+#include "code_sign_block_header.h"
+#include "fs_verity_info_segment.h"
 #include "native_lib_info_segment.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class CodeSignBlock {
-        public:
-            CodeSignBlock();
-            virtual ~CodeSignBlock();
-            void addOneMerkleTree(const std::string& key, std::vector<int8_t>& merkleTree);
-            std::vector<int8_t> getOneMerkleTreeByFileName(const std::string& key);
-            void setCodeSignBlockFlag();
-            void setSegmentNum();
-            void addToSegmentList(SegmentHeader sh);
-            std::vector<SegmentHeader>& getSegmentHeaderList();
-            void setSegmentHeaders();
-            CodeSignBlockHeader& getCodeSignBlockHeader();
-            void setCodeSignBlockHeader(CodeSignBlockHeader& csbHeader);
-            void setFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg);
-            FsVerityInfoSegment& getFsVerityInfoSegment();
-            HapInfoSegment& getHapInfoSegment();
-            void setHapInfoSegment(HapInfoSegment& hapSeg);
-            NativeLibInfoSegment& getSoInfoSegment();
-            void setSoInfoSegment(NativeLibInfoSegment soSeg);
-            std::vector<int8_t> toByteArray();
-            void computeSegmentOffset();
-            long long computeMerkleTreeOffset(long long codeSignBlockOffset);
-            std::vector<int8_t> generateCodeSignBlockByte(long long fsvTreeOffset);
-            std::string toString();
-        public:
-            static const long PAGE_SIZE_4K;
-            static const int SEGMENT_HEADER_COUNT;
-        private:
-            CodeSignBlockHeader codeSignBlockHeader;
-            std::vector<SegmentHeader> segmentHeaderList;
-            FsVerityInfoSegment fsVerityInfoSegment;
-            HapInfoSegment hapInfoSegment;
-            NativeLibInfoSegment nativeLibInfoSegment;
-            std::vector<int8_t> zeroPadding;
-            std::map<std::string, std::vector<int8_t>> merkleTreeMap;
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+
+class CodeSignBlock {
+public:
+    CodeSignBlock();
+    virtual ~CodeSignBlock();
+    void AddOneMerkleTree(const std::string& key, std::vector<int8_t>& merkleTree);
+    std::vector<int8_t> GetOneMerkleTreeByFileName(const std::string& key);
+    void SetCodeSignBlockFlag();
+    void SetSegmentNum();
+    void AddToSegmentList(SegmentHeader sh);
+    std::vector<SegmentHeader>& GetSegmentHeaderList();
+    void SetSegmentHeaders();
+    CodeSignBlockHeader& GetCodeSignBlockHeader();
+    void SetCodeSignBlockHeader(CodeSignBlockHeader& csbHeader);
+    void SetFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg);
+    FsVerityInfoSegment& GetFsVerityInfoSegment();
+    HapInfoSegment& GetHapInfoSegment();
+    void SetHapInfoSegment(HapInfoSegment& hapSeg);
+    NativeLibInfoSegment& GetSoInfoSegment();
+    void SetSoInfoSegment(NativeLibInfoSegment soSeg);
+    std::vector<int8_t> ToByteArray();
+    void ComputeSegmentOffset();
+    long long ComputeMerkleTreeOffset(long long codeSignBlockOffset);
+    std::vector<int8_t> GenerateCodeSignBlockByte(long long fsvTreeOffset);
+    std::string ToString();
+
+public:
+    static const long PAGE_SIZE_4K;
+    static const int SEGMENT_HEADER_COUNT;
+
+private:
+    CodeSignBlockHeader codeSignBlockHeader;
+    std::vector<SegmentHeader> segmentHeaderList;
+    FsVerityInfoSegment fsVerityInfoSegment;
+    HapInfoSegment hapInfoSegment;
+    NativeLibInfoSegment nativeLibInfoSegment;
+    std::vector<int8_t> zeroPadding;
+    std::map<std::string, std::vector<int8_t>> merkleTreeMap;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_CODE_SIGN_BLOCK_H

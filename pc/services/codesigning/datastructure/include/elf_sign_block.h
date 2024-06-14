@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,41 +12,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATURETOOLS_ELF_SIGN_BLOCK_H
-#define SIGNATURETOOLS_ELF_SIGN_BLOCK_H
+#ifndef SIGNATRUETOOLS_ELF_SIGN_BLOCK_H
+#define SIGNATRUETOOLS_ELF_SIGN_BLOCK_H
 
 #include <vector>
 #include <string>
+
 #include "fs_verity_descriptor_with_sign.h"
 
 namespace OHOS {
-    namespace SignatureTools {
-        class ElfSignBlock {
-        public:
-            static const int32_t PAGE_SIZE_4K;
-            static const int32_t MERKLE_TREE_INLINED;
-        public:
-            ElfSignBlock();
-            ElfSignBlock(int32_t paddingSize, std::vector<int8_t> merkleTreeData,
-                FsVerityDescriptorWithSign descriptorWithSign);
-            int32_t Size();
-            std::vector<int8_t> GetMerkleTreeWithPadding();
-            int64_t GetDataSize();
-            int64_t GetTreeOffset();
-            std::vector<int8_t> GetSignature();
-            std::vector<int8_t> ToByteArray();
-            static bool FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock);
-            static int32_t ComputeMerkleTreePaddingLength(int64_t signBlockOffset);
-        private:
-            ElfSignBlock(int32_t type, int32_t treeLength, std::vector<int8_t> merkleTreeWithPadding,
-                FsVerityDescriptorWithSign descriptorWithSign);
-        private:
-            int32_t type = MERKLE_TREE_INLINED;
-            int32_t treeLength;
-            std::vector<int8_t> merkleTreeWithPadding;
-            FsVerityDescriptorWithSign descriptorWithSign;
-        };
-    }
-}
+namespace SignatureTools {
 
-#endif
+class ElfSignBlock {
+public:
+    static const int32_t PAGE_SIZE_4K;
+    static const int32_t MERKLE_TREE_INLINED;
+
+public:
+    ElfSignBlock();
+    ElfSignBlock(int32_t paddingSize, std::vector<int8_t> merkleTreeData,
+                 FsVerityDescriptorWithSign descriptorWithSign);
+    int32_t Size();
+    std::vector<int8_t> GetMerkleTreeWithPadding();
+    int64_t GetDataSize();
+    int64_t GetTreeOffset();
+    std::vector<int8_t> GetSignature();
+    std::vector<int8_t> ToByteArray();
+    static bool FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock);
+    static int32_t ComputeMerkleTreePaddingLength(int64_t signBlockOffset);
+
+private:
+    ElfSignBlock(int32_t type, int32_t treeLength, std::vector<int8_t> merkleTreeWithPadding,
+                 FsVerityDescriptorWithSign descriptorWithSign);
+
+private:
+    int32_t type = MERKLE_TREE_INLINED;
+    int32_t treeLength;
+    std::vector<int8_t> merkleTreeWithPadding;
+    FsVerityDescriptorWithSign descriptorWithSign;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_ELF_SIGN_BLOCK_H

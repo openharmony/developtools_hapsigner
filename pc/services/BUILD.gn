@@ -24,7 +24,7 @@ import("//build/ohos.gni")
 
 
 ohos_copy("copy_signature_tools_resource"){
-  sources = [ 
+  sources = [
       "config/help.txt",
       "../../dist/OpenHarmony.p12",
       "../../dist/OpenHarmonyApplication.pem",
@@ -55,10 +55,10 @@ signature_tools_main_src = [
     "${signature_tools_service}/api/src/cert_tools.cpp",
     "${signature_tools_service}/signer/src/signer_factory.cpp",
     "${signature_tools_service}/signer/src/local_signer.cpp",
-    "${signature_tools_service}/signer/src/isigner.cpp",
+    "${signature_tools_service}/signer/src/signer.cpp",
 ]
 
-ohos_executable("hapsigntool_pc_service") {
+ohos_executable("hap-sign-tool") {
 
   signature_tools_main_include += signature_tools_utils_include
   signature_tools_main_include += signature_tools_zip_include
@@ -71,7 +71,7 @@ ohos_executable("hapsigntool_pc_service") {
 
   # 在 //developtools/signaturetools/services/utils 模块里面定义编译脚本 signature_tools_utils.gni
   signature_tools_main_src += signature_tools_utils_src
-  # 在 //developtools/signaturetools/services/zip 模块里面定义编译脚本 signature_tools_zip.gni 
+  # 在 //developtools/signaturetools/services/zip 模块里面定义编译脚本 signature_tools_zip.gni
   signature_tools_main_src += signature_tools_zip_src
   # signature_tools_main_src += signature_tools_entity_src
   signature_tools_main_src += signature_tools_codesigning_src

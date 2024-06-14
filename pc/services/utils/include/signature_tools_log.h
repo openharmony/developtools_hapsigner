@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,16 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef OHOS_INDUSTRIAL_BUS_LOG_H
-#define OHOS_INDUSTRIAL_BUS_LOG_H
+#ifndef SIGNATURETOOLS_SIGNATRUE_TOOLS_LOG_H
+#define SIGNATURETOOLS_SIGNATRUE_TOOLS_LOG_H
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
+
 #include "hilog/log.h"
 #include "signature_tools_errno.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        static constexpr OHOS::HiviewDFX::HiLogLabel SIGNATURE_MGR_LABEL = { LOG_CORE, LOG_DOMAIN, "SignatureTools" };
+namespace SignatureTools {
+static constexpr OHOS::HiviewDFX::HiLogLabel SIGNATURE_MGR_LABEL = { LOG_CORE, LOG_DOMAIN, "SignatureTools" };
 
 #define SIGNATURE_LOG(level, fmt, ...) \
     OHOS::HiviewDFX::HiLog::level(SIGNATURE_MGR_LABEL, \
@@ -34,24 +36,28 @@ namespace OHOS {
 #define SIGNATURE_TOOLS_LOGI(fmt, ...) SIGNATURE_LOG(Info, fmt, ##__VA_ARGS__)
 #define SIGNATURE_TOOLS_LOGD(fmt, ...) SIGNATURE_LOG(Debug, fmt, ##__VA_ARGS__)
 
-#define CMD_ERROR_MSG(command, code, details) \
-    do { \
-        time_t now = time(0);\
-        char timebuffer[100];\
-        strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", localtime(&now));\
-        std::cerr << timebuffer <<" ERROR - " << (command) << ", code: " \
-                    << (code) << ". Details: " << (details) << std::endl; \
-    } while(0)
-#define CMD_MSG(content) \
-    do { \
-        time_t now = time(0);\
-        char timebuffer[100];\
-        strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", localtime(&now));\
-        std::cout << timebuffer << " INFO  - " << (content) << std::endl; \
-    } while(0)
+inline void PrintErrorNumberMsg(const std::string& command, const int code, const std::string& details)
+{
+    time_t now = time(0);
+    char timebuffer[100] = { 0 };
+    if (!now &&
+        !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", localtime(&now))) {
+        return;
+    }
+    std::cerr << timebuffer << " ERROR - " << command << ", code: "
+        << code << ". Details: " << details << std::endl;
+}
+inline void PrintMsg(const std::string& message)
+{
+    time_t now = time(0);
+    char timebuffer[100] = { 0 };
+    if (!now &&
+        !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", localtime(&now))) {
+        return;
+    }
+    std::cout << timebuffer << " INFO  - " << message << std::endl;
+}
 
-    } // namespace SignatureTools
+} // namespace SignatureTools
 } // namespace OHOS
-
-
-#endif // OHOS_INDUSTRIAL_BUS_LHOS_INDUSTRIAL_BUS_LBUS_L
+#endif // SIGNATURETOOLS_SIGNATRUE_TOOLS_LOG_H

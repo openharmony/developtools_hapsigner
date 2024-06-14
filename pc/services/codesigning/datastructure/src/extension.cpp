@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,30 +14,39 @@
  */
 #include "extension.h"
 #include "byte_buffer.h"
-using namespace OHOS::SignatureTools;
+
+namespace OHOS {
+namespace SignatureTools {
+
 const int32_t Extension::EXTENSION_HEADER_SIZE = 8;
+
 Extension::Extension()
 {
     this->type = 0;
     this->size = 0;
 }
+
 Extension::Extension(int32_t type, int32_t size)
 {
     this->type = type;
     this->size = size;
 }
+
 Extension::~Extension()
 {
 }
-int32_t Extension::getSize()
+
+int32_t Extension::GetSize()
 {
     return Extension::EXTENSION_HEADER_SIZE;
 }
-bool Extension::isType(int32_t type)
+
+bool Extension::IsType(int32_t type)
 {
     return this->type == type;
 }
-std::vector<int8_t> Extension::toByteArray()
+
+std::vector<int8_t> Extension::ToByteArray()
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
         (ByteBuffer(Extension::EXTENSION_HEADER_SIZE));
@@ -49,8 +58,12 @@ std::vector<int8_t> Extension::toByteArray()
     std::vector<int8_t> ret(dataArr, dataArr + Extension::EXTENSION_HEADER_SIZE);
     return ret;
 }
-std::string Extension::toString()
+
+std::string Extension::ToString()
 {
     std::string str = "Extension: type[" + std::to_string(this->type) + "], size[" + std::to_string(this->size) + "]";
     return str;
+}
+
+}
 }

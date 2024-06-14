@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,32 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATURETOOLS_HAP_INFO_SEGMENT_H
-#define SIGNATURETOOLS_HAP_INFO_SEGMENT_H
+#ifndef SIGNATRUETOOLS_HAP_INFO_SEGMENT_H
+#define SIGNATRUETOOLS_HAP_INFO_SEGMENT_H
+
 #include <vector>
 #include <string>
 #include <cstdint>
+
 #include "sign_info.h"
 #include "byte_buffer.h"
 #include "signature_tools_log.h"
+
 namespace OHOS {
-    namespace SignatureTools {
-        class HapInfoSegment {
-        private:
-            static const int32_t MAGIC_NUM_BYTES;
-            static const int32_t MAGIC_NUM;
-            static const int32_t CHUNK_SIZE;
-            int32_t magic;
-            SignInfo signInfo;
-        public:
-            HapInfoSegment();
-            HapInfoSegment(int32_t magic, SignInfo signInfo);
-            void setSignInfo(SignInfo signInfo);
-            SignInfo& getSignInfo();
-            int32_t getSize();
-            std::vector<int8_t> toByteArray();
-            static HapInfoSegment fromByteArray(std::vector<int8_t> bytes);
-        };
-    }
-}
-#endif
+namespace SignatureTools {
+
+class HapInfoSegment {
+public:
+    HapInfoSegment();
+    HapInfoSegment(int32_t magic, SignInfo signInfo);
+    void SetSignInfo(SignInfo signInfo);
+    SignInfo& GetSignInfo();
+    int32_t GetSize();
+    std::vector<int8_t> ToByteArray();
+    static HapInfoSegment FromByteArray(std::vector<int8_t> bytes);
+
+private:
+    static const int32_t MAGIC_NUM_BYTES;
+    static const int32_t MAGIC_NUM;
+    static const int32_t CHUNK_SIZE;
+    int32_t magic;
+    SignInfo signInfo;
+};
+} // namespace SignatureTools
+} // namespace OHOS
+#endif // SIGNATRUETOOLS_HAP_INFO_SEGMENT_H

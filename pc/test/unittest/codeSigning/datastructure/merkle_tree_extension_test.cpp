@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,7 +51,7 @@ HWTEST_F(MerkleTreeExtensionTest, fromByteArray001, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 8);
     std::vector<signed char> bytes(readComment, readComment + 8);
 
-    Extension* pExtension = api->fromByteArray(bytes);
+    Extension* pExtension = api->FromByteArray(bytes);
 
     EXPECT_EQ(pExtension, nullptr);
 }
@@ -78,7 +78,7 @@ HWTEST_F(MerkleTreeExtensionTest, fromByteArray002, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 16);
     std::vector<signed char> bytes(readComment, readComment + 16);
 
-    Extension* pExtension = api->fromByteArray(bytes);
+    Extension* pExtension = api->FromByteArray(bytes);
 
     EXPECT_EQ(pExtension, nullptr);
 }
@@ -105,7 +105,7 @@ HWTEST_F(MerkleTreeExtensionTest, fromByteArray003, testing::ext::TestSize.Level
     byteBuffer.GetData(readComment, 16);
     std::vector<signed char> bytes(readComment, readComment + 16);
 
-    Extension* pExtension = api->fromByteArray(bytes);
+    Extension* pExtension = api->FromByteArray(bytes);
 
     EXPECT_NE(pExtension, nullptr);
 }
@@ -122,7 +122,7 @@ HWTEST_F(MerkleTreeExtensionTest, getMerkleTreeOffset, testing::ext::TestSize.Le
 {
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
-    int64_t merkleTreeOffset = api->getMerkleTreeOffset();
+    int64_t merkleTreeOffset = api->GetMerkleTreeOffset();
 
     EXPECT_EQ(merkleTreeOffset, 0);
 }
@@ -139,7 +139,7 @@ HWTEST_F(MerkleTreeExtensionTest, getMerkleTreeSize, testing::ext::TestSize.Leve
 {
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
-    int64_t merkleTreeSize = api->getMerkleTreeSize();
+    int64_t merkleTreeSize = api->GetMerkleTreeSize();
 
     EXPECT_EQ(merkleTreeSize, 0);
 }
@@ -156,7 +156,7 @@ HWTEST_F(MerkleTreeExtensionTest, getSize, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
-    int32_t merkleTreeExtensionSize = api->getSize();
+    int32_t merkleTreeExtensionSize = api->GetSize();
 
     EXPECT_EQ(merkleTreeExtensionSize, 88);
 }
@@ -174,7 +174,7 @@ HWTEST_F(MerkleTreeExtensionTest, isType, testing::ext::TestSize.Level1)
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
     int32_t type = 1;
-    bool bIsType = api->isType(type);
+    bool bIsType = api->IsType(type);
 
     EXPECT_EQ(bIsType, true);
 }
@@ -192,7 +192,7 @@ HWTEST_F(MerkleTreeExtensionTest, setMerkleTreeOffset, testing::ext::TestSize.Le
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
     int64_t offset = 927046;
-    api->setMerkleTreeOffset(offset);
+    api->SetMerkleTreeOffset(offset);
 
     EXPECT_EQ(true, 1);
 }
@@ -209,7 +209,7 @@ HWTEST_F(MerkleTreeExtensionTest, toByteArray, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
-    std::vector<int8_t> byteArray = api->toByteArray();
+    std::vector<int8_t> byteArray = api->ToByteArray();
 
     EXPECT_EQ(byteArray.size(), 88);
 }
@@ -226,7 +226,7 @@ HWTEST_F(MerkleTreeExtensionTest, toString, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
 
-    std::string str = api->toString();
+    std::string str = api->ToString();
 
     EXPECT_EQ(str.size(), 0);
 }
