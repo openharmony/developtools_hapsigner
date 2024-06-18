@@ -38,7 +38,6 @@ private:
     static std::unordered_map<std::string, std::vector<std::string>> trustMap;
     void ReadHelpParam(std::ifstream& fd);
     void PutTrustMap(const std::string& cmd_stand_by, const std::string& param);
-    std::string Trim(const std::string& str);
 };
 } // namespace SignatureTools
 } // namespace OHOS

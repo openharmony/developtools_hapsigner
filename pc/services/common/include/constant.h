@@ -61,6 +61,7 @@ const std::string DEFAULT_PROFILE_SIGNED_1 = "1";
 const std::string DEFAULT_PROFILE_SIGNED_0 = "0";
 const std::string ZIP = "zip";
 const std::string ELF = "elf";
+const std::string BIN = "bin";
 const std::string REMOTE_SIGN = "remoteSign";
 const std::string SIGN_APP = "sign-app";
 const std::string SIGN_PROFILE = "sign-profile";
@@ -71,6 +72,8 @@ const std::string GENERATE_CERT = "generate-cert";
 const std::string VERIFY_APP = "verify-app";
 const std::string OUT_FORM_CERT = "cert";
 const std::string OUT_FORM_CERT_CHAIN = "certChain";
+const std::string DEBUG_STR = "DEBUG";
+const std::string DEBUG_LIB_ID = "DEBUG_LIB_ID";
 
 const int32_t ONE_DAY_HOUR = 24;
 const int32_t ONE_DAY_MINUTE = 60;

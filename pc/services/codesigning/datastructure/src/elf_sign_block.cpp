@@ -39,15 +39,6 @@ ElfSignBlock::ElfSignBlock(int32_t paddingSize, std::vector<int8_t> merkleTreeDa
     this->descriptorWithSign = descriptorWithSign;
 }
 
-ElfSignBlock::ElfSignBlock(int32_t type, int32_t treeLength, std::vector<int8_t> merkleTreeWithPadding,
-                           FsVerityDescriptorWithSign descriptorWithSign)
-{
-    this->type = type;
-    this->treeLength = treeLength;
-    this->merkleTreeWithPadding = merkleTreeWithPadding;
-    this->descriptorWithSign = descriptorWithSign;
-}
-
 int32_t ElfSignBlock::Size()
 {
     int tmp_variable = 2;

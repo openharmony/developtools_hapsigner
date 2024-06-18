@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include <inttypes.h>
+#include <cinttypes>
 #include <mutex>
 #include <stdexcept>
 #include <string>

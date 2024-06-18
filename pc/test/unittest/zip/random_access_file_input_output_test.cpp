@@ -113,6 +113,21 @@ HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest003, testing::ext::Test
 }
 
 /**
+ * @tc.name: Test ReadFileFullyFromOffset Function
+ * @tc.desc: Test function of RandomAccessFile::ReadFileFullyFromOffset() interface for success
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(RandomAccessFileInputOutputTest, ReadFileFullyFromOffsetTest002, testing::ext::TestSize.Level1)
+{
+    std::string inputFileName("/data/test/zip/unsigned-zip.hap");
+    std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
+    ASSERT_TRUE(outputHap->Init(inputFileName));
+    std::string buf(1, 0);
+    EXPECT_GT(outputHap->ReadFileFullyFromOffset(buf.data(), 0, 1), 0);
+}
+
+/**
  * @tc.name: Test RandomAccessFileInput Function
  * @tc.desc: Test function of RandomAccessFileInput::RandomAccessFileInput() interface for SUCCESS.
  * @tc.type: FUNC

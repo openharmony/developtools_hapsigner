@@ -53,8 +53,8 @@ private:
                                         std::string inputFile, int blockNum,
                                         long binFileLen, SignBlockData** codeSign);
     static bool WriteSignHeadDataToOutputFile(std::string inputFile, std::string outputFile, int blockNum);
-    static bool IsLongOverflowInteger(long num);
-    static bool IsLongOverflowShort(long num);
+    static bool IsLongOverflowInteger(int64_t num);
+    static bool IsLongOverflowShort(int64_t num);
 };
 } // namespace SignatureTools
 } // namespace OHOS

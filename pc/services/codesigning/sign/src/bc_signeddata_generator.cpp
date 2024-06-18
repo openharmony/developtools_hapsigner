@@ -51,12 +51,12 @@ int BCSignedDataGenerator::GenerateSignedData(const std::string& content,
                             "get sigAlg failed");
         return INVALIDPARAM_ERROR;
     }
-    if (PackageSignedData(content, signer, NULL, sigAlg, ret) < 0) {
+    if (PackageSignedData(content, signer, sigAlg, ret) < 0) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             "PackageSignedData error!");
         return GENERATEPKCS7_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 void BCSignedDataGenerator::SetOwnerId(const std::string& ownerID)
@@ -65,7 +65,7 @@ void BCSignedDataGenerator::SetOwnerId(const std::string& ownerID)
 }
 
 int BCSignedDataGenerator::PackageSignedData(const std::string& content,
-                                             std::shared_ptr<Signer> signer, STACK_OF(X509_CRL)* crls,
+                                             std::shared_ptr<Signer> signer,
                                              const std::string& sigAlg, std::string& ret)
 {
     PKCS7Data p7Data(PKCS7_DETACHED_FLAGS);
@@ -94,7 +94,7 @@ int BCSignedDataGenerator::PackageSignedData(const std::string& content,
                             "verify pkcs7 signed datablock failed");
         return VERIFY_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int BCSignedDataGenerator::GetSigAlg(SignerConfig* signerConfig, std::string& sigAlg)
@@ -113,7 +113,7 @@ int BCSignedDataGenerator::GetSigAlg(SignerConfig* signerConfig, std::string& si
         PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "unsupport sigAlg");
         return NOT_SUPPORT_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int BCSignedDataGenerator::CreateNIDFromOID(const std::string& oid, const std::string& shortName,
@@ -135,7 +135,7 @@ int BCSignedDataGenerator::AddOwnerID(std::vector<PKCS7Attr>& attrs, const std::
     }
     ASN1_STRING* ownerIDAsn1 = ASN1_STRING_new();
     if (ownerIDAsn1 == NULL) {
-        printf("asn1 string create error!\n");
+        SIGNATURE_TOOLS_LOGE("asn1 string create error!\n");
         return MEMORY_ALLOC_ERROR;
     }
     ASN1_STRING_set(ownerIDAsn1, ownerID.c_str(), ownerID.length());
@@ -143,7 +143,7 @@ int BCSignedDataGenerator::AddOwnerID(std::vector<PKCS7Attr>& attrs, const std::
     attr.atrtype = V_ASN1_UTF8STRING;
     attr.value = ownerIDAsn1;
     attrs.push_back(attr);
-    return 0;
+    return RET_OK;
 }
 } // namespace SignatureTools
 } // namespace OHOS

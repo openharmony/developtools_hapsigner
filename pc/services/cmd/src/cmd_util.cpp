@@ -30,9 +30,9 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
     // general
     if (options->count(Options::KEY_SIZE)) { // int 类型
         std::string key_size = options->GetString(Options::KEY_SIZE);
-        if (options->GetString(Options::KEY_SIZE) == "NIST-P-256") {
+        if (key_size == "NIST-P-256") {
             (*options)[Options::KEY_SIZE] = NIST_P_256;
-        } else if (options->GetString(Options::KEY_SIZE) == "NIST-P-384") {
+        } else if (key_size == "NIST-P-384") {
             (*options)[Options::KEY_SIZE] = NIST_P_384;
         } else {
             PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "KeySize '" + key_size + "' is incorrect");
@@ -407,8 +407,6 @@ bool CmdUtil::ValidAndPutParam(ParamsSharedPtr params, const std::string& key, c
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "duplicate param '" + key + "'. stop processing!");
         result = false;
     } else if (key.length() >= str.length() && key.substr(key.length() - INVALIDCHAR) == str) {
-        // 如果是密码走这
-        // params->GetOptions()->at(key) = value;
         params->GetOptions()->emplace(key, value);
         result = true;
     } else {

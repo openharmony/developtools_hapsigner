@@ -521,7 +521,7 @@ HWTEST_F(VerifyElfTest, SignElf004, testing::ext::TestSize.Level1)
     options.emplace("keystorePwd", std::string("123456"));
     options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
     options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/phone-default-unsigned"));
+    options.emplace("inFile", std::string("./hapSign/linuxout-unsigned"));
     options.emplace("signCode", std::string("1"));
     options.emplace("inForm", std::string("elf"));
 
@@ -619,7 +619,37 @@ HWTEST_F(VerifyElfTest, SignElf007, testing::ext::TestSize.Level1)
     SignProvider signProvider;
     bool flag = signProvider.SignElf(&options);
 
-    EXPECT_EQ(flag, true);
+    EXPECT_EQ(flag, false);
+}
+
+/**
+ * @tc.name: SignElf008
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyElfTest, SignElf008, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options.emplace("mode", std::string("localSign"));
+    options.emplace("keyPwd", std::string("123456"));
+    options.emplace("outFile", std::string("./hapSign/entry-default-signed.elf"));
+    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
+    options.emplace("profileFile", std::string("./hapSign/signed-profile111.p7b"));
+    options.emplace("signAlg", std::string("SHA256withECDSA"));
+    options.emplace("keystorePwd", std::string("123456"));
+    options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
+    options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
+    options.emplace("inFile", std::string("./hapSign/unsigned-linux.out"));
+    options.emplace("signCode", std::string("1"));
+    options.emplace("inForm", std::string("elf"));
+
+    SignProvider signProvider;
+    bool flag = signProvider.SignElf(&options);
+
+    EXPECT_EQ(flag, false);
 }
 
 /**

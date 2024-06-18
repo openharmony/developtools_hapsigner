@@ -24,7 +24,7 @@
 #include "hap_verify_result.h"
 
 #include "hap_signer_block_utils.h"
-#include "hap_signing_block_utils_test.h"
+#include "hap_signer_block_utils_test.h"
 #include "test_const.h"
 
 using namespace testing::ext;

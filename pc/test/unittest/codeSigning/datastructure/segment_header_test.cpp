@@ -46,3 +46,54 @@ HWTEST_F(SegmentHeaderTest, getSegmentOffset, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(segmentOffset, 0);
 }
+
+/**
+ * @tc.name: FromByteArray001
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SegmentHeaderTest, FromByteArray001, testing::ext::TestSize.Level1)
+{
+    SegmentHeader segmentHeader(1, 1, 8);
+    std::vector<int8_t> arr = { 1, 1, 1, 1 };
+    std::unique_ptr<SegmentHeader> ptr = segmentHeader.FromByteArray(arr);
+
+    EXPECT_EQ(arr.size(), 4);
+}
+
+/**
+ * @tc.name: FromByteArray002
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SegmentHeaderTest, FromByteArray002, testing::ext::TestSize.Level1)
+{
+    SegmentHeader segmentHeader(0, 1, 8);
+    std::vector<int8_t> arr = segmentHeader.ToByteArray();
+    std::unique_ptr<SegmentHeader> ptr = segmentHeader.FromByteArray(arr);
+
+    EXPECT_NE(arr.size(), 0);
+}
+
+/**
+ * @tc.name: FromByteArray003
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SegmentHeaderTest, FromByteArray003, testing::ext::TestSize.Level1)
+{
+    SegmentHeader segmentHeader(1, 1, -1);
+    std::vector<int8_t> arr = segmentHeader.ToByteArray();
+    std::unique_ptr<SegmentHeader> ptr = segmentHeader.FromByteArray(arr);
+
+    EXPECT_NE(arr.size(), 0);
+}

@@ -39,10 +39,6 @@ const int READ_FILE_ERROR = -104;
  */
 const int NOT_SUPPORT_ERROR = -105;
 /**
- * Enum constant NETWORK_ERROR.
- */
-const int NETWORK_ERROR = -106;
-/**
  * Enum constant SIGN_ERROR.
  */
 const int SIGN_ERROR = -107;
@@ -51,29 +47,13 @@ const int SIGN_ERROR = -107;
  */
 const int VERIFY_ERROR = -108;
 /**
- * Enum constant ACCESS_ERROR.
- */
-const int ACCESS_ERROR = -109;
-/**
  * Enum constant COMMAND_PARAM_ERROR.
  */
 const int COMMAND_PARAM_ERROR = -110;
 /**
- * Enum constant OPERATOR_CREATION_ERROR.
- */
-const int OPERATOR_CREATION_ERROR = -111;
-/**
  * Enum constant PARAM_NOT_EXIST_ERROR.
  */
 const int PARAM_NOT_EXIST_ERROR = -113;
-/**
- * Enum constant KEYSTORE_OPERATION_ERROR.
- */
-const int KEYSTORE_OPERATION_ERROR = -114;
-/**
- * Enum constant CERTIFICATE_ERROR.
- */
-const int CERTIFICATE_ERROR = -115;
 /**
  * Enum constant KEY_ERROR.
  */
@@ -82,10 +62,6 @@ const int KEY_ERROR = -116;
  * Enum constant IO_CERT_ERROR.
  */
 const int IO_CERT_ERROR = -117;
-/**
- * Enum constant IO_CSR_ERROR.
- */
-const int IO_CSR_ERROR = -118;
 /**
  * Enum constant ZIP_ERROR.
  */
@@ -106,10 +82,6 @@ const int INVALIDPARAM_ERROR = -122;
  * Enum constant INVALIDSIGNTIME_ERROR.
  */
 const int INVALIDSIGNTIME_ERROR = -123;
-/**
- * Enum constant PKCS7_FINAL_ERROR
- */
-const int PKCS7_FINAL_ERROR = -124;
 /**
  * Enum constant PARSE_ERROR
  */
@@ -158,11 +130,15 @@ const int PARSE_PROVISION_ERROR = -135;
 * Enum constant MATCH_ERROR
 */
 const int MATCH_ERROR = -136;
-
 /**
 * Enum constant IO_ERROR
 */
 const int IO_ERROR = -137;
+/**
+ * Enum constant CERTIFICATE_ERROR
+*/
+const int CERTIFICATE_ERROR = -138;
+
 } // namespace SignatureTools
 } // namespace OHOS
 #endif // SIGNATURETOOLS_INDUSTRIAL_BUS_ERRNO_H

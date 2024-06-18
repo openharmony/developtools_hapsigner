@@ -378,25 +378,6 @@ static const std::string VERIFY_APP_IN_FILE = "./signProfile/phone-default-signe
 
     /**
      * @tc.name: parse_test001
-     * @tc.desc: Test function of PKCS7Data::Parse() interface for SUCCESS .
-     * @tc.size: MEDIUM
-     * @tc.type: FUNC
-     * @tc.level Level 1
-     * @tc.require: SR000H63TL
-     */
-    HWTEST_F(SignProfileTest, parse_test003, testing::ext::TestSize.Level1)
-    {
-        std::string p7b;
-        FileUtils::ReadFile(VERIFY_PROFILE_IN_FILE, p7b);
-        PKCS7Data p7;
-        const unsigned char* inFile = reinterpret_cast<const unsigned char*>(&p7b[0]);
-        long fileLen = static_cast<long>(p7b.size());
-        int result = p7.Parse(&inFile, fileLen);
-        EXPECT_EQ(result, 0);
-    }
-
-    /**
-     * @tc.name: parse_test001
      * @tc.desc: Test function of PKCS7Data::Sign() interface for SUCCESS .
      * @tc.size: MEDIUM
      * @tc.type: FUNC
@@ -488,9 +469,7 @@ static const std::string VERIFY_APP_IN_FILE = "./signProfile/phone-default-signe
         std::string p7b;
         FileUtils::ReadFile(VERIFY_PROFILE_IN_FILE, p7b);
         PKCS7Data p7;
-        const unsigned char* inFile = reinterpret_cast<const unsigned char*>(&p7b[0]);
-        long fileLen = static_cast<long>(p7b.size());
-        int result = p7.Parse(&inFile, fileLen);
+        int result = p7.Parse(p7b);
         // 验证
         result = p7.Verify();
         EXPECT_EQ(result, 0);
@@ -508,9 +487,7 @@ static const std::string VERIFY_APP_IN_FILE = "./signProfile/phone-default-signe
         std::string p7b;
         FileUtils::ReadFile(VERIFY_PROFILE_IN_FILE, p7b);
         PKCS7Data p7;
-        const unsigned char* inFile = reinterpret_cast<const unsigned char*>(&p7b[0]);
-        long fileLen = static_cast<long>(p7b.size());
-        int result = p7.Parse(&inFile, fileLen);
+        int result = p7.Parse(p7b);
         std::string provision;
         result = p7.GetContent(provision);
         EXPECT_EQ(result, 0);

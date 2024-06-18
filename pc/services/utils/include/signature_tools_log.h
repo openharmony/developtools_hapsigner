@@ -40,9 +40,12 @@ inline void PrintErrorNumberMsg(const std::string& command, const int code, cons
 {
     time_t now = time(0);
     char timebuffer[100] = { 0 };
-    if (!now &&
-        !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", localtime(&now))) {
-        return;
+    struct tm* time = localtime(&now);
+    if (!now && !time) {
+	    return;
+    }
+    if (!strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", time)) {
+	    return;
     }
     std::cerr << timebuffer << " ERROR - " << command << ", code: "
         << code << ". Details: " << details << std::endl;
@@ -51,9 +54,12 @@ inline void PrintMsg(const std::string& message)
 {
     time_t now = time(0);
     char timebuffer[100] = { 0 };
-    if (!now &&
-        !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", localtime(&now))) {
-        return;
+    struct tm* time = localtime(&now);
+    if (!now && !time) {
+	    return;
+    }
+    if (!strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", time)) {
+	    return;
     }
     std::cout << timebuffer << " INFO  - " << message << std::endl;
 }

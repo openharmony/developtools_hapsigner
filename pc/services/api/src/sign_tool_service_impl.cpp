@@ -37,9 +37,8 @@ namespace SignatureTools {
 bool SignToolServiceImpl::GenerateCA(Options* options)
 {
     bool flag = true;
-    std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options);
-    std::unique_ptr<FileUtils> sutils = std::make_unique<FileUtils>();
-    bool isEmpty = sutils->IsEmpty(options->GetString(Options::ISSUER_KEY_ALIAS));
+    std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options); 
+    bool isEmpty = FileUtils::IsEmpty(options->GetString(Options::ISSUER_KEY_ALIAS));
     EVP_PKEY* subKey = adapter->GetAliasKey(true);
     if (!subKey) {
         SIGNATURE_TOOLS_LOGE("failed to get subKey!");
@@ -51,143 +50,129 @@ bool SignToolServiceImpl::GenerateCA(Options* options)
         SIGNATURE_TOOLS_LOGE("failed to get key store file!");
         return false;
     }
-    std::string iksFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
-    if (iksFile.empty()) {
-        SIGNATURE_TOOLS_LOGE("failed to get issuer key store file!");
-    }
     if (isEmpty) {
-        HandleIssuerKeyAliasEmpty(iksFile, &sutils, options);
+        HandleIssuerKeyAliasEmpty(options);
         rootKey = subKey;
+        flag = GenerateRootCertToFile(options, rootKey);
+        EVP_PKEY_free(rootKey);
     } else {
         HandleIsserKeyAliasNotEmpty(options);
         adapter->SetIssuerKeyStoreFile(true);
         rootKey = adapter->GetAliasKey(false);
-    }
-    if (isEmpty) {
-        flag = GenerateRootCertToFile(options, rootKey);
-        EVP_PKEY_free(rootKey);
-        EVP_PKEY_free(subKey);
-    } else {
         flag = GenerateSubCertToFile(options, rootKey);
         EVP_PKEY_free(rootKey);
         EVP_PKEY_free(subKey);
     }
+    adapter->ResetPwd();
     return flag;
 }
 
 bool SignToolServiceImpl::GenerateRootCertToFile(Options* options, EVP_PKEY* rootKey)
 {
-    int caRes = 0;
-    std::string outFile = "";
-    X509* cert = nullptr;
-    if (rootKey == nullptr) {
-        SIGNATURE_TOOLS_LOGE("Failed to generate rootcert !");
-        return false;
-    }
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     std::string subject = options->GetString(Options::SUBJECT);
-    if (signAlg.empty() || subject.empty()) {
-        SIGNATURE_TOOLS_LOGE("failed to get signalg or subject!");
-        return false;
+    int caRes = 0;
+    std::string outFile;
+    X509* cert = nullptr;
+    X509_REQ* csr = nullptr;
+    bool result = false;
+    if (rootKey == nullptr) {
+        goto err;
     }
-    X509_REQ* csr = CertTools::GenerateCsr(rootKey, signAlg, subject);
+    csr = CertTools::GenerateCsr(rootKey, signAlg, subject);
     if (!csr) {
-        SIGNATURE_TOOLS_LOGE("failed to generate csr request!");
-        return false;
+        goto err;
     }
     cert = CertTools::GenerateRootCertificate(rootKey, csr, options);
     if (!cert) {
-        SIGNATURE_TOOLS_LOGE("failed to generate root cert!");
-        X509_REQ_free(csr);
-        return false;
+        goto err;
     }
     caRes = X509_verify(cert, rootKey);
     if (caRes != 1) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "rootcert verify failed");
-        X509_free(cert);
-        X509_REQ_free(csr);
-        return false;
+        goto err;
     }
     if (!OutputModeOfCert(cert, options)) {
-        X509_free(cert);
-        X509_REQ_free(csr);
-        return false;
+        goto err;
     }
+    result = true;
+err:
+    if (result == false)
+        SIGNATURE_TOOLS_LOGE("generate root cert failed!\n");
     X509_free(cert);
     X509_REQ_free(csr);
-    return true;
+    return result;
 }
 
 bool SignToolServiceImpl::GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey)
 {
-    X509* cert = nullptr;
-    if (rootKey == nullptr) {
-        SIGNATURE_TOOLS_LOGE("do not generate subcert directly,please generate rootcert first!");
-        return false;
-    }
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     std::string issuer = options->GetString(Options::ISSUER);
-    if (signAlg.empty() || issuer.empty()) {
-        SIGNATURE_TOOLS_LOGE("failed to get signalg or issuer!");
-        return false;
+    int res = 0;
+    X509* cert = nullptr;
+    X509_REQ* csr = nullptr;
+    bool result = false;
+    if (rootKey == nullptr) {
+        goto err;
     }
-    X509_REQ* csr = CertTools::GenerateCsr(rootKey, signAlg, issuer);
+    csr = CertTools::GenerateCsr(rootKey, signAlg, issuer);
     if (!csr) {
-        SIGNATURE_TOOLS_LOGE("failed to generate csr request !");
-        return false;
+        goto err;
     }
     cert = CertTools::GenerateSubCert(rootKey, csr, options);
     if (!cert) {
-        SIGNATURE_TOOLS_LOGE("failed to generate sub ca cert!");
-        X509_REQ_free(csr);
-        return false;
+        goto err;
     }
-    int res = X509_verify(cert, rootKey);
+    res = X509_verify(cert, rootKey);
     if (res != 1) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "subcert verify failed");
-        X509_free(cert);
-        X509_REQ_free(csr);
-        return false;
+        goto err;
     }
     if (!OutputModeOfCert(cert, options)) {
-        X509_free(cert);
-        X509_REQ_free(csr);
-        return false;
+        goto err;
     }
+    result = true;
+err:
+    if (result == false)
+        SIGNATURE_TOOLS_LOGE("generate sub cert failed!\n");
     X509_free(cert);
     X509_REQ_free(csr);
-    return true;
+    return result;
 }
 
-void SignToolServiceImpl::HandleIssuerKeyAliasEmpty(std::string iksFile,
-                                                    std::unique_ptr<FileUtils>* sutils, Options* options)
+void SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
 {
-    if (!(*sutils)->IsEmpty(iksFile) && !options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE)) {
-        SIGNATURE_TOOLS_LOGE("ksFile and iksFile are inconsistent!");
+    std::string iksFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
+    if (!FileUtils::IsEmpty(iksFile) && !options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE)) {
+        PrintErrorNumberMsg("WRITE_FILE_ERROR", WRITE_FILE_ERROR,
+                            "ksFile and iksFile are  inconsistent!");
         return;
     }
-    if (options->find(Options::ISSUER_KEY_STORE_RIGHTS) != options->end()) {
-        bool isEqual = options->Equals(Options::KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_RIGHTS);
-        if (!isEqual) {
-            SIGNATURE_TOOLS_LOGE("KEY_STORE_RIGHTS and ISSUER_KEY_STORE_RIGHTS are  inconsistent!");
+    char* keyStoreRights = options->GetChars(Options::KEY_STORE_RIGHTS);
+    char* issuerKeyStoreRights = options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS);
+    if (keyStoreRights == nullptr || issuerKeyStoreRights == nullptr) {
+        return;
+    } else {
+        if (std::strcmp(keyStoreRights, issuerKeyStoreRights) != 0) {
+            PrintErrorNumberMsg("WRITE_FILE_ERROR", WRITE_FILE_ERROR,
+                                "KEY_STORE_RIGHTS and ISSUER_KEY_STORE_RIGHTS are  inconsistent!");
             return;
         }
-    }
+    }   
 }
 
 void SignToolServiceImpl::HandleIsserKeyAliasNotEmpty(Options* options)
-{
-    if (options->find(Options::ISSUER_KEY_STORE_RIGHTS) != options->end()) {
-        std::string fileType = options->GetString(Options::ISSUER_KEY_STORE_FILE);
-        if (fileType.empty()) {
-            SIGNATURE_TOOLS_LOGE("failed to get issuer keystore file !");
-            return;
-        }
-        if (FileUtils::ValidFileType(fileType, { "p12", "jks" })) {
-            SIGNATURE_TOOLS_LOGE("issuer keystore file type is inconsistent!");
-            return;
-        }
+{    
+    std::string issuerFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
+    if (issuerFile.empty()) {
+          SIGNATURE_TOOLS_LOGE("failed to get issuer keystore file !");
+          return;
     }
+    if (FileUtils::ValidFileType(issuerFile, { "p12", "jks" })) {
+          SIGNATURE_TOOLS_LOGE("issuer keystore file type is inconsistent!");
+          return;
+    }
+    
 }
 
 bool SignToolServiceImpl::OutputModeOfCert(X509* cert, Options* options)
@@ -209,58 +194,49 @@ bool SignToolServiceImpl::OutputModeOfCert(X509* cert, Options* options)
 bool SignToolServiceImpl::GenerateCert(Options* options)
 {
     std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options);
-    EVP_PKEY* subjectkeyPair = adapter->GetAliasKey(false);
+    std::string signAlg = options->GetString(Options::SIGN_ALG);
+    std::string subject = options->GetString(Options::SUBJECT);
+    EVP_PKEY* subjectkeyPair = nullptr;
+    EVP_PKEY* rootKeyPair = nullptr;
+    X509_REQ* csr = nullptr;
+    X509* cert = nullptr;
+    bool result = false;
+    subjectkeyPair = adapter->GetAliasKey(false);
     if (!subjectkeyPair) {
-        SIGNATURE_TOOLS_LOGE("failed to get subject key pair!");
-        return false;
+        goto err;
     }
     if (options->find(Options::ISSUER_KEY_STORE_RIGHTS) != options->end()) {
         adapter->SetIssuerKeyStoreFile(true);
     }
-    EVP_PKEY* rootKeyPair = adapter->GetIssureKeyByAlias();
+    rootKeyPair = adapter->GetIssureKeyByAlias();
     if (!rootKeyPair) {
-        SIGNATURE_TOOLS_LOGE("failed to get root key pair!");
-        return false;
+        goto err;
     }
     adapter->ResetPwd();
-    std::string signAlg = options->GetString(Options::SIGN_ALG);
-    std::string subject = options->GetString(Options::SUBJECT);
-    if (signAlg.empty() || subject.empty()) {
-        SIGNATURE_TOOLS_LOGE("failed to get signalg or subject!");
-        EVP_PKEY_free(rootKeyPair);
-        return false;
-    }
-    X509_REQ* csr = CertTools::GenerateCsr(subjectkeyPair, signAlg, subject);
+    csr = CertTools::GenerateCsr(subjectkeyPair, signAlg, subject);
     if (!csr) {
-        SIGNATURE_TOOLS_LOGE("failed to generate csr request!");
-        EVP_PKEY_free(rootKeyPair);
-        return false;
+        goto err;
     }
-    X509* cert = CertTools::GenerateCert(rootKeyPair, csr, options);
+    cert = CertTools::GenerateCert(rootKeyPair, csr, options);
     if (!cert) {
-        SIGNATURE_TOOLS_LOGE("failed to general cert!");
-        X509_REQ_free(csr);
-        EVP_PKEY_free(rootKeyPair);
-        return false;
+        goto err;
     }
-    int ret = X509_verify(cert, rootKeyPair);
-    if (ret != 1) {
+    if (X509_verify(cert, rootKeyPair) != 1) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "generalcert verify failed");
-        X509_free(cert);
-        X509_REQ_free(csr);
-        EVP_PKEY_free(rootKeyPair);
-        return false;
+        goto err;
     }
     if (!OutputModeOfCert(cert, options)) {
-        X509_free(cert);
-        X509_REQ_free(csr);
-        EVP_PKEY_free(rootKeyPair);
-        return false;
+        goto err;
     }
+    result = true;
+err:
+    if (result == false)
+        SIGNATURE_TOOLS_LOGE("generate cert failed!\n");
     X509_free(cert);
     X509_REQ_free(csr);
     EVP_PKEY_free(rootKeyPair);
-    return true;
+    EVP_PKEY_free(subjectkeyPair);
+    return result;
 }
 
 bool SignToolServiceImpl::GenerateKeyStore(Options* options)
@@ -268,7 +244,7 @@ bool SignToolServiceImpl::GenerateKeyStore(Options* options)
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(options);
     std::string keyAlias = adaptePtr->options->GetString(Options::KEY_ALIAS);
     if (keyAlias.empty()) {
-        SIGNATURE_TOOLS_LOGE("The key alias cannot be empty!");
+        PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "The key alias cannot be empty");
         return false;
     }
 
@@ -383,18 +359,22 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
     std::string signAlg = adapter->options->GetString(Options::SIGN_ALG);
     std::string subject = adapter->options->GetString(Options::SUBJECT);
     do {
-        if (!(keyPair = adapter->GetAliasKey(false))) { //
-            SIGNATURE_TOOLS_LOGE("failed to get keypair!");
+        if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
+
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+                                adapter->options->GetString(Options::KEY_ALIAS) + "' not exit");
             break;
         }
         adapter->SetIssuerKeyStoreFile(true);
-        if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) {
-            SIGNATURE_TOOLS_LOGE("failed to get issuer keypair!");
+        if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
+
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+                                adapter->options->GetString(Options::ISSUER_KEY_ALIAS) + "' not exit");
             break;
         }
-        adapter->ResetPwd();
+        adapter->ResetPwd(); // clean pwd for safety
 
-        if (!(csr = GetCsr(keyPair, signAlg, subject))) {
+        if (!(csr = GetCsr(keyPair, signAlg, subject))) { // get CSR request 
             break;
         }
 
@@ -402,7 +382,7 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
                                                      APP_SIGNING_CAPABILITY,
                                                      sizeof(PROFILE_SIGNING_CAPABILITY)); // get app x509 cert
         if (!x509Certificate) {
-            SIGNATURE_TOOLS_LOGE("failed generate x509 cert");
+            PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate app cert failed");
             break;
         }
 
@@ -429,18 +409,22 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
     std::string subject = adapter->options->GetString(Options::SUBJECT);
 
     do {
-        if (!(keyPair = adapter->GetAliasKey(false))) {
-            SIGNATURE_TOOLS_LOGE("failed to get keypair!");
+        if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair 
+
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+                                adapter->options->GetString(Options::KEY_ALIAS) + "' not exit");
             break;
         }
         adapter->SetIssuerKeyStoreFile(true);
-        if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) {
-            SIGNATURE_TOOLS_LOGE("failed to get issuer keypair!");
+        if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
+
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+                                adapter->options->GetString(Options::ISSUER_KEY_ALIAS) + "' not exit");
             break;
         }
-        adapter->ResetPwd();
+        adapter->ResetPwd(); // clean pwd for safety
 
-        if (!(csr = GetCsr(keyPair, signAlg, subject))) {
+        if (!(csr = GetCsr(keyPair, signAlg, subject))) { // get CSR request
             break;
         }
 
@@ -474,7 +458,8 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
     if (adapter.IsOutFormChain()) {
         certificates.emplace_back(cert); // add root cert
         // add sub and ca cert
-        if (!(subCaCert = adapter.GetSubCaCertFile()) || !(rootCaCert = adapter.GetCaCertFile())) {
+        if (!(subCaCert = adapter.GetSubCaCertFile()) || 
+            !(rootCaCert = adapter.GetCaCertFile()) ) {
             return false;
         }
         certificates.emplace_back(subCaCert);
@@ -568,7 +553,7 @@ bool SignToolServiceImpl::VerifyProfile(Options* options)
         return false;
     }
     if (outFile.empty()) {
-        printf("%s\n", originalData.c_str());
+        PrintMsg(originalData);
     } else {
         std::ofstream out(outFile, std::ios::binary);
         out.write(originalData.data(), originalData.size());
@@ -658,10 +643,10 @@ bool SignToolServiceImpl::PrintX509CertFromMemory(X509* cert)
     if (PEM_write_bio_X509(bio, cert) == 1) {
         BUF_MEM* bptr;
         BIO_get_mem_ptr(bio, &bptr);
-        printf("%.*s", (int)bptr->length, bptr->data);
+        PrintMsg(std::string(bptr->data, bptr->length));
     } else {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        printf("Error printing certificate.\n");
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "print x509 cert falied");
         BIO_free(bio);
         return false;
     }
@@ -680,10 +665,10 @@ bool SignToolServiceImpl::PrintX509CertChainFromMemory(std::vector<X509*> certs)
         }
         if (PEM_write_bio_X509(bio, cert) == 1) {
             BIO_get_mem_ptr(bio, &bptr);
-            printf("%.*s", (int)bptr->length, bptr->data);
+            PrintMsg(std::string(bptr->data, bptr->length));
         } else {
             VerifyHapOpensslUtils::GetOpensslErrorMessage();
-            printf("Error printing certificate.\n");
+            PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "print x509 cert falied");
             BIO_free(bio);
             return false;
         }
@@ -713,7 +698,7 @@ bool SignToolServiceImpl::VerifyHapSigner(Options* option)
         }
         PrintMsg("elf verify successed!");
         return true;
-    } else if (inForm == "bin") {
+    } else if (inForm == BIN) {
         VerifyBin verifyBin;
         if (!verifyBin.Verify(option)) {
             PrintMsg("bin verify failed!");

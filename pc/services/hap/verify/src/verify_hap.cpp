@@ -253,17 +253,19 @@ int VerifyHap::GetProfileContent(const std::string profile, std::string& ret)
     }
     PKCS7Data p7Data;
     if (p7Data.Parse(profile) < 0) {
-        printf("Parse profile failed\n");
+        PrintErrorNumberMsg("PKCS7_PARSE_ERROR", PKCS7_PARSE_ERROR, "Parse profile failed");
         ret = profile;
         return -1;
     }
     if (p7Data.Verify() < 0) {
-        printf("Verify profile pkcs7 failed! Profile is invalid\n");
+        PrintErrorNumberMsg("PKCS7_VERIFY_ERROR", PKCS7_VERIFY_ERROR, 
+                            "Verify profile pkcs7 failed! Profile is invalid");
         ret = profile;
         return -1;
     }
     if (p7Data.GetContent(ret) < 0) {
-        printf("Check profile failed, signed profile content is not byte array!");
+        PrintErrorNumberMsg("PKCS7_VERIFY_ERROR", PKCS7_VERIFY_ERROR, 
+                            "Check profile failed, signed profile content is not byte array");
         ret = profile;
         return -1;
     }

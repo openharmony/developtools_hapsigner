@@ -153,8 +153,8 @@ bool ParamsRunTool::CheckProfile(Options& params)
 
     std::string profileSigned = params.GetString(Options::PROFILE_SIGNED);
     if (StringUtils::CaseCompare(inForm, ELF) && FileUtils::IsEmpty(profileFile)) {
-        SIGNATURE_TOOLS_LOGW("INFORM with PROFILE_FILE Check error ! \n");
-        return true;
+        SIGNATURE_TOOLS_LOGE("INFORM with PROFILE_FILE Check error ! \n");
+        return false;
     }
 
     if (profileSigned == "1") {
@@ -393,7 +393,8 @@ void ParamsRunTool::PrintHelp()
     std::ifstream readHelp(HELP_FILE_PATH.c_str(), std::ios::in | std::ios::binary);
     if (readHelp.is_open()) {
         std::string line;
-        while (std::getline(readHelp, line)) {
+        PrintMsg("");
+        while (std::getline(readHelp, line)) { 
             printf("%s\n", line.c_str());
         }
         readHelp.close();
@@ -404,7 +405,7 @@ void ParamsRunTool::PrintHelp()
 
 void  ParamsRunTool::Version()
 {
-    printf("%s\n", ParamsRunTool::VERSION.c_str());
+    PrintMsg(ParamsRunTool::VERSION);
 }
 
 bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)

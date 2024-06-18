@@ -42,6 +42,5 @@ signature_tools_codesigning_src = [
     "${signature_tools_service_codesigning}/utils/src/cms_utils.cpp",
     "${signature_tools_service_codesigning}/sign/src/bc_signeddata_generator.cpp",
     "${signature_tools_service_codesigning}/sign/src/code_signing.cpp",
-    "${signature_tools_service_codesigning}/sign/src/signeddata_generator.cpp",
     "${signature_tools_service_codesigning}/sign/src/verify_code_signature.cpp",
 ]

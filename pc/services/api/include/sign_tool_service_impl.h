@@ -32,9 +32,7 @@ public:
 
     bool GenerateCA(Options* options)override;
     bool GenerateRootCertToFile(Options* options, EVP_PKEY* rootKey);
-    bool GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey);
-    void HandleIssuerKeyAliasEmpty(std::string iksFile, std::unique_ptr<FileUtils>* sutils, Options* options);
-    void HandleIsserKeyAliasNotEmpty(Options* options);
+    bool GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey);   
     bool OutputModeOfCert(X509* cert, Options* options);
     bool GenerateCert(Options* options)override;
     bool GenerateKeyStore(Options* options)override;
@@ -54,6 +52,9 @@ public:
     bool VerifyHapSigner(Options* option)override;
     bool X509CertVerify(X509* cert, EVP_PKEY* privateKey);
     X509_REQ* GetCsr(EVP_PKEY* keyPair, std::string signAlg, std::string subject);
+
+    void HandleIssuerKeyAliasEmpty(Options* options);
+    void HandleIsserKeyAliasNotEmpty(Options* options);
 };
 } // namespace SignatureTools
 } // namespace OHOS

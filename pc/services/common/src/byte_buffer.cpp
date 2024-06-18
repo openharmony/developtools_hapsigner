@@ -27,6 +27,8 @@ const int32_t ByteBuffer::HEX_PRINT_LENGTH = 3;
 template<typename T>
 std::shared_ptr<T> make_shared_array(size_t size)
 {
+    if (size <= 0)
+        return NULL;
     T* buffer = new (std::nothrow)T[size];
     if (!buffer) {
         SIGNATURE_TOOLS_LOGE("new size failed");
@@ -502,7 +504,10 @@ ByteBuffer& ByteBuffer::Slice()
     }
     int32_t newCapacity = limit - position;
     auto newBuffer = make_shared_array<char>(newCapacity);
-    memcpy_s(newBuffer.get(), newCapacity, buffer.get() + position, newCapacity);
+    if (memcpy_s(newBuffer.get(), newCapacity, buffer.get() + position, newCapacity) != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("memcpy_s failed");
+        return *this;
+    }
     buffer = std::move(newBuffer);
     position = 0;
     capacity = newCapacity;
@@ -629,16 +634,6 @@ bool ByteBuffer::IsEqual(const std::string& other)
         }
     }
     return true;
-}
-
-void ByteBuffer::Rewind()
-{
-}
-
-ByteBuffer& ByteBuffer::RewindHap()
-{
-    position = 0;
-    return *this;
 }
 
 void ByteBuffer::SetCapacity(int32_t cap)

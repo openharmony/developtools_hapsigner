@@ -24,30 +24,6 @@ bool StringUtils::IsEmpty(const std::string& cs)
 {
     return cs.empty();
 }
-/* bool StringUtils::ContainsIgnoreCase(std::vector<std::string> strs, std::string str)
-{
-    if (strs.empty()) {
-        return false;
-    }
-    for (std::string& s : strs) {
-        if (s.length() != str.length())continue;
-        bool matched = true;
-        for (int i = 0; i < s.length(); i++) {
-            if (s[i] >= 'A' && s[i] <= 'Z')
-                s[i] = tolower(s[i]);
-            if (str[i] >= 'A' && str[i] <= 'Z')
-                str[i] = tolower(str[i]);
-            if (s[i] != str[i]) {
-                matched = false;
-                break;
-            }
-        }
-        if (matched)
-            return true;
-    }
-    return false;
-}
-*/
 
 bool StringUtils::ContainsCase(std::vector<std::string> strs, const std::string& str)
 {
@@ -57,19 +33,6 @@ bool StringUtils::ContainsCase(std::vector<std::string> strs, const std::string&
     }
     return false;
 }
-
-/* bool StringUtils::IgnoreCaseCompare(std::string str1, std::string str2)
-{
-    if (str1.size() != str2.size())
-        return false;
-    for (int i = 0; i < str1.size(); i++) {
-        if (str1[i] >= 'a' && str1[i] <= 'z')str1[i] -= 'a' - 'A';
-        if (str2[i] >= 'a' && str2[i] <= 'z')str2[i] -= 'a' - 'A';
-        if (str1[i] != str2[i])
-            return false;
-    }
-    return true;
-} */
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)
 {
@@ -153,6 +116,7 @@ std::string StringUtils::SubjectToString(X509* cert)
     }
     std::string subjectString(subjectStr);
     std::string result = FormatLoading(subjectString);
+    OPENSSL_free(subjectStr);
     return result;
 }
 } // namespace SignatureTools

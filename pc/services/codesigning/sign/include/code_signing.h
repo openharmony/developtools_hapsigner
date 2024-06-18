@@ -46,8 +46,8 @@ public:
     bool SignFile(std::istream& inputStream,
         int64_t fileSize, bool storeTree, int64_t fsvTreeOffset, std::string ownerID,
         std::pair<SignInfo, std::vector<int8_t>>& ret);
-    std::vector<int8_t> GetElfCodeSignBlock(std::string input, int64_t offset,
-        std::string inForm, std::string profileContent);
+    bool GetElfCodeSignBlock(std::string input, int64_t offset,
+        std::string inForm, std::string profileContent, std::vector<int8_t> &codesignData);
 
 public:
     const std::string NATIVE_LIB_AN_SUFFIX = ".an";

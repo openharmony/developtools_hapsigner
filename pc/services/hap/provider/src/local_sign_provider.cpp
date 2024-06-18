@@ -60,6 +60,7 @@ bool LocalSignProvider::CheckPublicKeyPath()
 {
     std::string publicCertsFile = signParams[ParamConstants::PARAM_LOCAL_PUBLIC_CERT];
     if (!FileUtils::IsValidFile(publicCertsFile)) {
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, publicCertsFile + "not support");
         return false;
     }
     std::ifstream publicKeyFile(publicCertsFile);

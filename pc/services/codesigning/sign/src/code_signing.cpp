@@ -146,18 +146,21 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
     return true;
 }
 
-std::vector<int8_t> CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
-                                                     std::string inForm, std::string profileContent)
+bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
+                                                     std::string inForm, std::string profileContent,
+                                                     std::vector<int8_t> &codesignData)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign elf code.\n");
     if (CodeSigning::SUPPORT_BIN_FILE_FORM != inForm) {
         SIGNATURE_TOOLS_LOGI("[SignElf] file's format is unsupported\n");
+        return false;
     }
     int paddingSize = ElfSignBlock::ComputeMerkleTreePaddingLength(offset);
     int64_t fsvTreeOffset = offset + FsVerityDescriptorWithSign::INTEGER_BYTES * 2 + paddingSize;
     std::ifstream inputstream(input, std::ios::binary | std::ios::ate);
     if (!inputstream.is_open()) {
         SIGNATURE_TOOLS_LOGI("[SignElf] input file open is fail\n");
+        return false;
     }
     std::streamsize fileSize = inputstream.tellg();
     inputstream.seekg(0, std::ios::beg);
@@ -168,6 +171,7 @@ std::vector<int8_t> CodeSigning::GetElfCodeSignBlock(std::string input, int64_t 
     std::vector<int8_t> signature;
     if (!GenerateSignature(fsVerityDigest, ownerID, signature)) {
         SIGNATURE_TOOLS_LOGI("[SignElf] generateSignature fail\n");
+        return false;
     }
 
     FsVerityDescriptor::Builder fsdbuilder = (new FsVerityDescriptor::Builder())->SetFileSize(fileSize)
@@ -186,7 +190,8 @@ std::vector<int8_t> CodeSigning::GetElfCodeSignBlock(std::string input, int64_t 
         FsVerityDescriptorWithSign(FsVerityDescriptor(fsdbuilder), signature);
     std::vector<int8_t> treeBytes = fsVerityGenerator->GetTreeBytes();
     ElfSignBlock signBlock = ElfSignBlock(paddingSize, treeBytes, fsVerityDescriptorWithSign);
-    return signBlock.ToByteArray();
+    codesignData = signBlock.ToByteArray();
+    return true;
 }
 
 bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
@@ -387,7 +392,7 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
                                     std::vector<int8_t>& ret)
 {
     if (signConfig->GetSigner() != nullptr) {
-        if (signConfig->GetCertificates() == nullptr) {
+        if (signConfig->GetSigner()->GetCertificates() == nullptr) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                 "No certificates configured for sign.");
             return false;

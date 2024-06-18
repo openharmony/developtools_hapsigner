@@ -48,14 +48,14 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
         SIGNATURE_TOOLS_LOGE("get sigAlg failed\n");
         return INVALIDPARAM_ERROR;
     }
-    if (PackagePKCS7(content, signer, NULL, sigAlg, ret) < 0) {
+    if (PackagePKCS7(content, signer, sigAlg, ret) < 0) {
         SIGNATURE_TOOLS_LOGE("PackageSignedData error!\n");
         return GENERATEPKCS7_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 int BCPkcs7Generator::PackagePKCS7(const std::string& content, std::shared_ptr<Signer> signer,
-                                   STACK_OF(X509_CRL)* crls, const std::string& sigAlg, std::string& ret)
+                                   const std::string& sigAlg, std::string& ret)
 {
     PKCS7Data p7Data;
     if (p7Data.Sign(content, signer, sigAlg, ret) < 0) {
@@ -70,7 +70,7 @@ int BCPkcs7Generator::PackagePKCS7(const std::string& content, std::shared_ptr<S
         SIGNATURE_TOOLS_LOGE("verify pkcs7 block failed\n");
         return VERIFY_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 } // namespace SignatureTools
 } // namespace OHOS

@@ -114,7 +114,7 @@ public:
                                                   int& chunkCount, int& sumOfChunkDigestLen);
     static bool ParseSignBlockHead(HapSignBlockHead& hapSignBlockHead, ByteBuffer& hapBlockHead);
     static bool ParseSubSignBlockHead(HapSubSignBlockHead& subSignBlockHead, ByteBuffer& hapBlockHead);
-    static inline bool CheckSignBlockHead(const HapSignBlockHead& hapSignBlockHead);
+    static bool CheckSignBlockHead(const HapSignBlockHead& hapSignBlockHead);
     static void CreateHapSubSignBlockHead(HapSubSignBlockHead& signBlob, HapSubSignBlockHead& profileBlob,
                                           HapSubSignBlockHead& propertyBlob);
 };

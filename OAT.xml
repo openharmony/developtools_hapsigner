@@ -65,6 +65,10 @@
                 <filteritem type="filename" name="*.jar" desc="OpenHarmony app sign tool"/>
                 <filteritem type="filename" name="*.png" desc="readme picture"/>
                 <filteritem type="filename" name="*.elf" desc="OpenHarmony elf test file"/>
+				<filteritem type="filename" name="*.hap" desc="test case unsigned file"/>
+				<filteritem type="filename" name="*.bin" desc="test case unsigned file"/>
+				<filteritem type="filename" name="codeSigning.7z" desc="test case unsigned file"/>
+				<filteritem type="filename" name="*.p12" desc="test case unsigned file"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>

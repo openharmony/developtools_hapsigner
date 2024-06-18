@@ -55,7 +55,6 @@ signature_tools_main_src = [
     "${signature_tools_service}/api/src/cert_tools.cpp",
     "${signature_tools_service}/signer/src/signer_factory.cpp",
     "${signature_tools_service}/signer/src/local_signer.cpp",
-    "${signature_tools_service}/signer/src/signer.cpp",
 ]
 
 ohos_executable("hap-sign-tool") {

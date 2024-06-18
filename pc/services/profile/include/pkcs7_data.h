@@ -64,7 +64,6 @@ public:
     /* d2i 反序列化 */
     int Parse(const std::string& p7bBytes);
     int Parse(const std::vector<signed char>& p7bBytes);
-    int Parse(const unsigned char** in, long len);
     /* 验证签名时使用，默认不用输入content，如果数据分离（content不在pkcs7之中 需要传入原始数据进行验证） */
     int Verify(const std::string& content = "")const;
     /* 获取pkcs7进行保护的原始数据 */
@@ -75,13 +74,7 @@ public:
     /* 用于打印证书链的主题信息 */
     static void PrintCertChainSub(const STACK_OF(X509)* certs);
     static void ReverseX509Stack(STACK_OF(X509)* certs);
-    static int CertVerify(X509* cert, X509* issuerCert);
     static std::string GetASN1Time(const ASN1_TIME* asn1_tm);
-    static void GetTextFromX509Name(X509_NAME* name, int32_t nId, std::string& text);
-    /* 将给定的X.509结构中的Distinguished Name（DN，即证书的主题）转换为字符串形式 */
-    static std::string GetDnToString(X509_NAME* name);
-    /* 从一个给定的 X509 证书中提取主题（subject）信息，并将其转换为字符串格式存储 */
-    static int GetSubjectFromX509(const X509* cert, std::string& subject);
     /* 比较两个第一个证书颁发者与第二个证书主题一致 */
     static bool X509NameCompare(const X509* cert, const X509* issuerCert);
     /* 检查签名时间在有效期内 */
@@ -89,6 +82,7 @@ public:
                                           const ASN1_TIME* notBefore, const ASN1_TIME* notAfter);
 
 private:
+    int Parse(const unsigned char** in, long len);
     int InitPkcs7(const std::string& content, std::shared_ptr<Signer> signer,
                   const std::string& sigAlg, std::vector<PKCS7Attr> attrs);
     /* 验签签名值 这里不验证证书链 */

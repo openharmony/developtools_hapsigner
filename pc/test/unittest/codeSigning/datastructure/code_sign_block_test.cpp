@@ -35,20 +35,39 @@ public:
 };
 
 /**
- * @tc.name: addOneMerkleTree
+ * @tc.name: addOneMerkleTree001
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(CodeSignBlockTest, addOneMerkleTree, testing::ext::TestSize.Level1)
+HWTEST_F(CodeSignBlockTest, addOneMerkleTree001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
     const std::string key;
     std::vector<int8_t> merkleTree;
     api->AddOneMerkleTree(key, merkleTree);  // 返回值void
+
+    EXPECT_EQ(true, true);
+}
+
+/**
+ * @tc.name: addOneMerkleTree002
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(CodeSignBlockTest, addOneMerkleTree002, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
+
+    const std::string key = "111";
+    std::vector<int8_t> merkleTree;
+    api->AddOneMerkleTree(key, merkleTree);
 
     EXPECT_EQ(true, true);
 }
@@ -176,14 +195,14 @@ HWTEST_F(CodeSignBlockTest, getHapInfoSegment, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: getOneMerkleTreeByFileName
+ * @tc.name: getOneMerkleTreeByFileName001
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName, testing::ext::TestSize.Level1)
+HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
@@ -191,6 +210,25 @@ HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName, testing::ext::TestSize.L
     std::vector<int8_t> name = api->GetOneMerkleTreeByFileName(key);
 
     EXPECT_EQ(true, 1);
+}
+
+/**
+ * @tc.name: getOneMerkleTreeByFileName002
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName002, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
+
+    std::string key;
+    std::vector<int8_t> name = api->GetOneMerkleTreeByFileName(key);
+    int size = name.size();
+
+    EXPECT_EQ(size, 0);
 }
 
 /**

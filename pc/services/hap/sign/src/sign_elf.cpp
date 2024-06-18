@@ -36,18 +36,22 @@ bool SignElf::Sign(SignerConfig signerConfig, std::map<std::string, std::string>
     std::string tmpFile;
     if (!AlignFileBy4kBytes(inputFile, tmpFile)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] alignFileBy4kBytes error.");
+        remove(tmpFile.c_str());
         return false;
     }
     std::string outputFile = signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
     std::string profileSigned = signParams.at(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
     if (!WriteBlockDataToFile(signerConfig, tmpFile, outputFile, profileSigned, signParams)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] writeBlockDataToFile error.");
+        remove(tmpFile.c_str());
         return false;
     }
     if (!WriteSignHeadDataToOutputFile(tmpFile, outputFile, blockNum)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] The sign head data made failed.");
+        remove(tmpFile.c_str());
         return false;
     }
+    remove(tmpFile.c_str());
     return true;
 }
 
@@ -73,11 +77,7 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
         output.write(buffer, bytesRead);
         output_length += bytesRead;
     }
-    long addLength = PAGE_SIZE - (output_length % PAGE_SIZE);
-    if (IsLongOverflowInteger(addLength)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] File alignment error.");
-        return false;
-    }
+    int64_t addLength = PAGE_SIZE - (output_length % PAGE_SIZE);
     std::vector<char> bytes(addLength, 0);
     output.write(bytes.data(), addLength);
     ret = tmp;
@@ -167,7 +167,7 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
 
 bool SignElf::GenerateSignBlockHead(std::list<SignBlockData>& signDataList)
 {
-    long offset = HwBlockHead::GetElfBlockLen() * signDataList.size();
+    int64_t offset = HwBlockHead::GetElfBlockLen() * signDataList.size();
     for (std::list<SignBlockData>::iterator it = signDataList.begin(); it != signDataList.end(); ++it) {
         std::vector<int8_t> tmp = HwBlockHead::GetBlockHeadLittleEndian(it->GetType(),
                                                                         SignatureBlockTags::DEFAULT,
@@ -202,16 +202,19 @@ bool SignElf::GenerateCodeSignByte(SignerConfig signerConfig, std::map<std::stri
     CodeSigning codeSigning(&signerConfig);
     long offset = binFileLen + (long)HwBlockHead::GetElfBlockLen() * blockNum;
     std::string profileContent = signParams.at(ParamConstants::PARAM_PROFILE_JSON_CONTENT);
-    std::vector<int8_t> codesignData = codeSigning.GetElfCodeSignBlock(inputFile, offset,
-                                                                       signParams.at(ParamConstants::PARAM_IN_FORM),
-                                                                       profileContent);
+    std::vector<int8_t> codesignData;
+    if (!codeSigning.GetElfCodeSignBlock(inputFile, offset, signParams.at(ParamConstants::PARAM_IN_FORM),
+                                         profileContent, codesignData)) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] GetElfCodeSignBlock error.");
+        return false;
+    }
     *codeSign = new SignBlockData(codesignData, CODESIGN_BLOCK_TYPE);
     return true;
 }
 
 bool SignElf::WriteSignHeadDataToOutputFile(std::string inputFile, std::string outputFile, int blockNum)
 {
-    long size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile);
+    int64_t size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile);
     if (IsLongOverflowInteger(size)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                             "[SignElf] writeSignHeadDataToOutputFile isLongOverflowInteger error.");
@@ -223,12 +226,12 @@ bool SignElf::WriteSignHeadDataToOutputFile(std::string inputFile, std::string o
     return FileUtils::WriteByteToOutFile(signHeadByte, fileOutputStream);
 }
 
-bool SignElf::IsLongOverflowInteger(long num)
+bool SignElf::IsLongOverflowInteger(int64_t num)
 {
     return (num - (num & 0xffffffffL)) != 0;
 }
 
-bool SignElf::IsLongOverflowShort(long num)
+bool SignElf::IsLongOverflowShort(int64_t num)
 {
     return (num - (num & 0xffffL)) != 0;
 }

@@ -219,6 +219,7 @@ AppProvisionVerifyResult ReturnIfStringIsEmpty(const std::string& str, const std
 {
     if (str.empty()) {
         SIGNATURE_TOOLS_LOGE("%{public}s", msg.c_str());
+        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, msg);
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
@@ -228,6 +229,7 @@ AppProvisionVerifyResult ReturnIfIntIsNonPositive(int num, const std::string& ms
 {
     if (num <= 0) {
         SIGNATURE_TOOLS_LOGE("%{public}s", msg.c_str());
+        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, msg);
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
@@ -257,7 +259,7 @@ AppProvisionVerifyResult ParseProvision(const string& appProvision, ProfileInfo&
             "Tag distribution-certificate is empty.") != PROVISION_OK)
             return PROVISION_INVALID;
     } else {
-        printf("Require build type must be debug or release");
+       PrintErrorNumberMsg("PROVISION_INVALID" , PROVISION_INVALID,"Require build type must be debug or release");
         return PROVISION_INVALID;
     }
 

@@ -36,7 +36,7 @@ class Signer {
 public:
     virtual STACK_OF(X509_CRL)* GetCrls()const = 0;
     virtual STACK_OF(X509)* GetCertificates()const = 0;
-    virtual ~Signer();
+    virtual ~Signer() = default;
     virtual std::string GetSignature(const std::string& data, const std::string& signAlg)const = 0;
 };
 } // namespace SignatureTools

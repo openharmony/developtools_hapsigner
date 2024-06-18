@@ -104,8 +104,6 @@ public:
  * @param size file read size
  * @return true, if write successfully.
  */
-    static bool AppendWriteFileByOffsetToFile(const std::string& inFile,
-                                              std::ofstream& out, size_t offset, size_t size);
     static bool AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstream& out, size_t offset, size_t size);
     static bool AppendWriteFileToFile(const std::string& inputFile, const std::string& outputFile);
     static bool AppendWriteByteToFile(const std::string& bytes, const std::string& outputFile);

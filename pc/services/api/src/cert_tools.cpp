@@ -90,11 +90,17 @@ err:
 bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, EVP_PKEY* ca_prikey, Options* options)
 {
     std::string signAlg = "";
+    EVP_PKEY* pubKey = NULL;
     if (ca_prikey == nullptr || rootcsr == nullptr || subcsr == nullptr) {
         SIGNATURE_TOOLS_LOGE("Sign failed because of ca_prikey, roocsr or subcsr is nullptr\n");
         goto err;
     }
-    if (!X509_set_pubkey(cert, X509_REQ_get_pubkey(subcsr))) {
+    pubKey = X509_REQ_get_pubkey(subcsr);
+    if (pubKey == NULL) {
+        SIGNATURE_TOOLS_LOGE("X509_REQ_get_pubkey failed\n");
+        goto err;
+    }
+    if (!X509_set_pubkey(cert, pubKey)) {
         SIGNATURE_TOOLS_LOGE("X509_set_pubkey failed\n");
         goto err;
     }
@@ -112,8 +118,10 @@ bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, 
     if (!SignCert(cert, ca_prikey, signAlg)) {
         goto err;
     }
+    EVP_PKEY_free(pubKey);
     return true;
 err:
+    EVP_PKEY_free(pubKey);
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
     return false;
 }
@@ -224,8 +232,8 @@ X509* CertTools::GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* rootcsr, Options* 
     }
     X509* subCert = SignCsrGenerateCert(rootcsr, subcsr, keyPair, options);
     if (subCert == nullptr) {
-        X509_REQ_free(subcsr);
         EVP_PKEY_free(subKey);
+        X509_REQ_free(subcsr);
         SIGNATURE_TOOLS_LOGE("failed to generate the subCert\n");
         return nullptr;
     }
@@ -553,9 +561,11 @@ bool CertTools::SetCertPublickKey(X509* cert, X509_REQ* subjectCsr)
     }
     if (!X509_set_pubkey(cert, publicKey)) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
+        EVP_PKEY_free(publicKey);
         SIGNATURE_TOOLS_LOGE("set public key to cert failed\n");
         return false;
     }
+    EVP_PKEY_free(publicKey);
     return true;
 }
 
@@ -701,7 +711,10 @@ bool CertTools::SerialNumberBuilder(long* serialNum)
         SIGNATURE_TOOLS_LOGE("serial number build failed\n");
         return false;
     }
-    memcpy_s(serialNum, sizeof(long), serialNumber, sizeof(long));
+    if (memcpy_s(serialNum, sizeof(long), serialNumber, sizeof(long)) != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("serial number build failed\n");
+        return false;
+    }
     return true;
 }
 

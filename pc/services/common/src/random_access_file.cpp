@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include <inttypes.h>
+#include <cinttypes>
 
 #include "securec.h"
 #include "signature_info.h"
@@ -56,10 +56,6 @@ bool RandomAccessFile::Init(const std::string& filePath)
         return false;
     }
     fileLength = file_stat.st_size;
-    if (fileLength < 0) {
-        SIGNATURE_TOOLS_LOGE("getting fileLength failed. fileLength: %{public}" PRId64, fileLength);
-        return false;
-    }
 
     return true;
 }
@@ -101,28 +97,8 @@ int32_t RandomAccessFile::DoMMap(int32_t bufCapacity, int64_t offset, MmapInfo& 
     // How many more bytes can be read from the current mapped memory page to find
     mmapInfo.readMoreLen = static_cast<int>(offset - mmapInfo.mmapPosition);
     mmapInfo.mmapSize = bufCapacity + mmapInfo.readMoreLen;
-    mmapInfo.mapAddr = reinterpret_cast<char*>(mmap(nullptr,
-                                               mmapInfo.mmapSize,
-                                               // Specify protection requirements for the mapping area.
-                                               // PROT_EXEC: The mapping area can be executed.
-                                               // PROT_READ: The mapping area can be read.
-                                               // PROT_WRITE: The mapping area can be written.
-                                               // PROT_NONE: The mapping area is inaccessible.
-                                               PROT_READ | PROT_WRITE,
-                                               // Flag bit parameters.
-                                               // MAP_SHARED: Modified memory data will be synchronized to a disk.
-                                               // MAP_POPULATE: Prepare page tables in pre-read mode for file mapping.
-                                               // Subsequent access to
-                                               // the mapping area is not blocked by page violations.
-                                               MAP_SHARED | MAP_POPULATE,
-                                               // The file descriptor, the fd corresponding to the file to be mapped,
-                                               // is obtained using open()
-                                               fd,
-                                               // The offset of the file map,
-                                               // usually set to 0 to indicate
-                                               // that the map starts at the head of the file,
-                                               // must be an integer multiple of 4k or 0
-                                               mmapInfo.mmapPosition));
+    mmapInfo.mapAddr = reinterpret_cast<char*>(mmap(nullptr, mmapInfo.mmapSize, PROT_READ | PROT_WRITE,
+                                               MAP_SHARED | MAP_POPULATE, fd, mmapInfo.mmapPosition));
     if (mmapInfo.mapAddr == MAP_FAILED) {
         SIGNATURE_TOOLS_LOGE("MAP_FAILED");
         return MMAP_FAILED;
@@ -180,7 +156,6 @@ int32_t RandomAccessFile::WriteToFile(ByteBuffer& buffer, int64_t position, int6
     fileLength = (length <= remainLength) ? fileLength : (fileLength + (length - remainLength));
     // update file length
     if (ftruncate(fd, fileLength) == -1) {
-        perror("ftruncate");   // ftruncate: Invalid argument
         PrintErrorNumberMsg("ftruncate failed", RET_FAILED, strerror(errno));
         return -1;
     }
@@ -198,9 +173,12 @@ int32_t RandomAccessFile::WriteToFile(ByteBuffer& buffer, int64_t position, int6
         return ret;
     }
 
-    memcpy_s(mmapInfo.mapAddr + mmapInfo.readMoreLen,
-             mmapInfo.mmapSize - mmapInfo.readMoreLen,
-             buffer.GetBufferPtr(), bufCapacity);
+    if (memcpy_s(mmapInfo.mapAddr + mmapInfo.readMoreLen,
+        mmapInfo.mmapSize - mmapInfo.readMoreLen,
+        buffer.GetBufferPtr(), bufCapacity) != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("memcpy_s error\n");
+        return MMAP_COPY_FAILED;
+    }
     munmap(mmapInfo.mapAddr, mmapInfo.mmapSize);
     return bufCapacity;
 }

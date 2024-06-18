@@ -124,7 +124,7 @@ bool Options::Required(std::initializer_list<std::string> keys)
 
 bool Options::IsEmpty(std::string cs)
 {
-    if (cs.length() == 0 || cs.empty()) {
+    if (cs.empty()) {
         return true;
     }
     return false;

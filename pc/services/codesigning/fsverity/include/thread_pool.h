@@ -40,7 +40,7 @@ public:
                 [this] {
                     std::function<void()> task;
                     std::unique_lock<std::mutex> lock(this->queue_mutex);
-                    for (;;) {
+                    while(true) {
                         this->condition.wait(lock,
                             [this] { return this->stop || !this->tasks.empty(); });
                         if (this->stop && this->tasks.empty())
