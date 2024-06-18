@@ -43,10 +43,9 @@ static const std::string SIGN_PROFILE_KEY_STORE_FILE = "./signProfile/ohtest.p12
 static const std::string SIGN_PROFILE_OUT_FILE = "./signProfile/signed-profile.p7b";
 static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 
-// static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
-// static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
-// static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
-//                                                         "profile-release1-invalid_cert_chain.pem";
+// verify profile 使用的全局参数
+static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/signed-profile.p7b";
+static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
 
 class Pkcs7DataTest : public testing::Test {
 public:
@@ -76,10 +75,10 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test001, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     X509* issuerCert = X509_new();
-    int result=PKCS7Data::CertVerify(NULL, issuerCert);
+    bool result=VerifyCertOpensslUtils::CertVerify(NULL, issuerCert);
     X509_free(cert);
     X509_free(issuerCert);
-    EXPECT_FALSE(result == 0);
+    EXPECT_FALSE(result);
 }
 
 // cert verify issuerCert NULL
@@ -87,10 +86,10 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test002, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     X509* issuerCert = X509_new();
-    int result = PKCS7Data::CertVerify(cert, NULL);
+    bool result = VerifyCertOpensslUtils::CertVerify(cert, NULL);
     X509_free(cert);
     X509_free(issuerCert);
-    EXPECT_FALSE(result == 0);
+    EXPECT_FALSE(result);
 }
 
 // cert verify pubkey NULL
@@ -98,10 +97,10 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test003, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     X509* issuerCert = X509_new();
-    int result = PKCS7Data::CertVerify(cert, issuerCert);
+    bool result = VerifyCertOpensslUtils::CertVerify(cert, issuerCert);
     X509_free(cert);
     X509_free(issuerCert);
-    EXPECT_FALSE(result == 0);
+    EXPECT_FALSE(result);
 }
 
 // cert verify pubkey NULL
@@ -109,10 +108,10 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test004, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     X509* issuerCert = X509_new();
-    int result = PKCS7Data::CertVerify(cert, issuerCert);
+    bool result = VerifyCertOpensslUtils::CertVerify(cert, issuerCert);
     X509_free(cert);
     X509_free(issuerCert);
-    EXPECT_FALSE(result == 0);
+    EXPECT_FALSE(result);
 }
 
 // cert verify failed
@@ -136,9 +135,9 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test005, testing::ext::TestSize.Level1)
     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
     STACK_OF(X509)*certs= signer->GetCertificates();
     PKCS7Data::ReverseX509Stack(certs);
-    int result=PKCS7Data::CertVerify(sk_X509_value(certs, 0), sk_X509_value(certs, 1));
+    bool result=VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, 0), sk_X509_value(certs, 1));
     PKCS7Data::PrintCertChainSub(certs);
-    EXPECT_FALSE(result == 0);
+    EXPECT_FALSE(result);
 }
 
 // X509 stack sort certsNum 0
@@ -164,14 +163,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test007, testing::ext::TestSize.Level1)
 HWTEST_F(Pkcs7DataTest, pkcs7_test008, testing::ext::TestSize.Level1)
 {
     std::string text;
-    PKCS7Data::GetTextFromX509Name(NULL, 45, text);
+    VerifyCertOpensslUtils::GetTextFromX509Name(NULL, 45, text);
     EXPECT_TRUE(text.empty());
 }
 
 // GetDnToString
 HWTEST_F(Pkcs7DataTest, pkcs7_test009, testing::ext::TestSize.Level1)
 {
-    std::string result=PKCS7Data::GetDnToString(NULL);
+    std::string result=VerifyCertOpensslUtils::GetDnToString(NULL);
     EXPECT_TRUE(result.empty());
 }
 
@@ -179,8 +178,8 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test009, testing::ext::TestSize.Level1)
 HWTEST_F(Pkcs7DataTest, pkcs7_test010, testing::ext::TestSize.Level1)
 {
     std::string subject;
-    int result = PKCS7Data::GetSubjectFromX509(NULL, subject);
-    EXPECT_TRUE(result < 0);
+    bool result = VerifyCertOpensslUtils::GetSubjectFromX509(NULL, subject);
+    EXPECT_FALSE(result);
 }
 
 // X509NameCompare
@@ -236,6 +235,172 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test013, testing::ext::TestSize.Level1)
     STACK_OF(X509)* certs = signer->GetCertificates();
     int result = PKCS7Data::X509NameCompare(sk_X509_value(certs, 0), sk_X509_value(certs, 1));
     EXPECT_EQ(result, true);
+}
+
+// pkcs7Data parse
+HWTEST_F(Pkcs7DataTest, pkcs7_test014, testing::ext::TestSize.Level1)
+{
+    PKCS7Data p7Data;
+    unsigned char buf[15] = "hello";
+    const unsigned char* p=buf;
+    int len = 5;
+    std::string p7b(p, p + len);
+    int result = p7Data.Parse(p7b);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data parse check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test015, testing::ext::TestSize.Level1)
+{
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME* notBefore = NULL;
+    ASN1_TIME* notAfter = NULL;
+    PKCS7Data p7Data;
+    PKCS7Data::CheckSignTimeInValidPeriod(signTime, notBefore, notAfter);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test016, testing::ext::TestSize.Level1)
+{
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME notBefore{ 0 };
+    notBefore.data = NULL;
+    ASN1_TIME* notAfter = NULL;
+    PKCS7Data p7Data;
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, &notBefore, notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test017, testing::ext::TestSize.Level1)
+{
+    unsigned char data[5] = "hell";
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME notBefore{ 0 };
+    notBefore.data = data;
+    ASN1_TIME* notAfter = NULL;
+    PKCS7Data p7Data;
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, &notBefore, notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test018, testing::ext::TestSize.Level1)
+{
+    unsigned char data[5] = "hell";
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME notBefore{ 0 };
+    notBefore.data = data;
+    ASN1_TIME notAfter;
+    notAfter.data = NULL;
+    PKCS7Data p7Data;
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, &notBefore, &notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test019, testing::ext::TestSize.Level1)
+{
+    unsigned char data[5] = "hell";
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME notBefore{ 0 };
+    notBefore.data = data;
+    ASN1_TIME notAfter;
+    notAfter.data = data;
+    PKCS7Data p7Data;
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, &notBefore, &notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test020, testing::ext::TestSize.Level1)
+{
+    unsigned char data[5] = "hell";
+    ASN1_TYPE signTime;
+    signTime.value.asn1_string = NULL;
+    ASN1_TIME notBefore{ 0 };
+    notBefore.data = data;
+    ASN1_TIME notAfter;
+    notAfter.data = data;
+    PKCS7Data p7Data;
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(&signTime, &notBefore, &notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test021, testing::ext::TestSize.Level1)
+{
+    ASN1_STRING* tmp = ASN1_STRING_new();
+    unsigned char data[5] = "hell";
+    ASN1_TYPE signTime;
+    signTime.value.asn1_string = tmp;
+    signTime.value.asn1_string->data = NULL;
+    ASN1_TIME notBefore{ 0 };
+    notBefore.data = data;
+    ASN1_TIME notAfter;
+    notAfter.data = data;
+    PKCS7Data p7Data;
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(&signTime, &notBefore, &notAfter);
+    ASN1_STRING_free(tmp);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test022, testing::ext::TestSize.Level1)
+{
+    ASN1_TIME* tmp = NULL;
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME* notBefore = NULL;
+    ASN1_TIME* notAfter = NULL;
+    time_t t1 = 365 * 24 * 3600;
+
+    signTime = ASN1_TYPE_new();
+    tmp = ASN1_TIME_new();
+    notBefore = ASN1_TIME_new();
+    notAfter = ASN1_TIME_new();
+    time_t timeNow = time(NULL);
+    ASN1_TIME_set(tmp, timeNow-t1);
+    ASN1_TYPE_set(signTime, V_ASN1_UTCTIME, tmp);
+    ASN1_TIME_set(notBefore, timeNow);
+    ASN1_TIME_set(notAfter, timeNow+t1);
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, notBefore, notAfter);
+    ASN1_TYPE_free(signTime);
+    ASN1_TIME_free(notBefore);
+    ASN1_TIME_free(notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// pkcs7Data check sign time
+HWTEST_F(Pkcs7DataTest, pkcs7_test023, testing::ext::TestSize.Level1)
+{
+    ASN1_TIME* tmp = NULL;
+    ASN1_TYPE* signTime = NULL;
+    ASN1_TIME* notBefore = NULL;
+    ASN1_TIME* notAfter = NULL;
+    time_t t1 = 365 * 24 * 3600;
+
+    signTime = ASN1_TYPE_new();
+    tmp = ASN1_TIME_new();
+    notBefore = ASN1_TIME_new();
+    notAfter = ASN1_TIME_new();
+    time_t timeNow = time(NULL);
+    ASN1_TIME_set(tmp, timeNow+t1);
+    ASN1_TYPE_set(signTime, V_ASN1_UTCTIME, tmp);
+    ASN1_TIME_set(notBefore, timeNow-t1);
+    ASN1_TIME_set(notAfter, timeNow);
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, notBefore, notAfter);
+    ASN1_TYPE_free(signTime);
+    ASN1_TIME_free(notBefore);
+    ASN1_TIME_free(notAfter);
+    EXPECT_TRUE(result < 0);
+}
+
+// reverse x509
+HWTEST_F(Pkcs7DataTest, pkcs7_test024, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)*certs=sk_X509_new(NULL);
+    PKCS7Data::ReverseX509Stack(certs);
+    sk_X509_free(certs);
 }
 }
 }

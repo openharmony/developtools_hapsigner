@@ -60,7 +60,7 @@ public:
     PKCS12* Pkcs12Create(const char* pass, const char* keyPass,
                          const char* name, EVP_PKEY* pkey, X509* cert,
                          STACK_OF(X509)* ca, int nid_key, int nid_cert, int iter,
-                         int mac_iter, int keytype, STACK_OF(PKCS7)* safes);
+                         int mac_iter, int keytype, STACK_OF(PKCS7)** safes);
 
     int CopyBagAttr(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid);
 
@@ -86,7 +86,7 @@ private:
                      ASN1_INTEGER* ai, const std::string& Message);
     void KeyPairFree(X509* cert, PKCS12* p12, BIO* bioOut, const std::string& Message);
     void KeyPairFree(EVP_PKEY* keyPiar, STACK_OF(X509)* ocerts,
-                     STACK_OF(PKCS12_SAFEBAG)* bags, char* name, const std::string& Message);
+                     STACK_OF(PKCS12_SAFEBAG)* bags, char* name);
     void KeyPairFree(STACK_OF(PKCS7)* safes, EVP_PKEY* publickey);
     void KeyPairFree(STACK_OF(PKCS12_SAFEBAG)* bags, PKCS8_PRIV_KEY_INFO* p8, char* name, const std::string& Message);
     void ResetKeyStatusvariable();

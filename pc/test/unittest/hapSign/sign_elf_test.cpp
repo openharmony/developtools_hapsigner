@@ -22,27 +22,22 @@ namespace OHOS {
 namespace SignatureTools {
 class SignElfTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void)
+    {
+    };
+    static void TearDownTestCase()
+    {
+    };
+    void SetUp()
+    {
+    };
+    void TearDown()
+    {
+    };
 };
 
-/**
- * @tc.name: sign001
- * @tc.desc: Test function of SignElf::sign() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
+void SetParamsMap(std::map<std::string, std::string>& params)
 {
-    //success
-    SignerConfig signerConfig;
-    signerConfig.SetCompatibleVersion(9);
-
-    std::map<std::string, std::string> params;
     params["keyPwd"] = "123456";
     params["mode"] = "localSign";
     params["keyAlias"] = "oh-app1-key-v1";
@@ -71,29 +66,68 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
             "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
             4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
             "1.0.0"})";
+}
+
+void SetOptions(Options *options)
+{
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    static char keyPwd[] = "123456";
+    static char keystorePwd[] = "123456";
+
+    (*options)["mode"] = "localSign";
+    (*options)["keyAlias"] = keyAlias;
+    (*options)["signAlg"] = signAlg;
+    (*options)["signCode"] = signCode;
+    (*options)["appCertFile"] = appCertFile;
+    (*options)["profileFile"] = profileFile;
+    (*options)["inFile"] = inFile;
+    (*options)["keystoreFile"] = keystoreFile;
+    (*options)["outFile"] = outFile;
+    (*options)["inForm"] = inForm;
+    (*options)["keyPwd"] = keyPwd;
+    (*options)["keystorePwd"] = keystorePwd;
+}
+
+/**
+ * @tc.name: sign001
+ * @tc.desc: Test function of SignElf::sign() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
+{
+    //success
+    SignerConfig signerConfig;
+    signerConfig.SetCompatibleVersion(9);
+
+    std::map<std::string, std::string> params;
+    SetParamsMap(params);
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-        contentDigestAlgorithm, signatureAlgAndParams);
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
-    Options options;
-    options.emplace("mode", std::string("localSign"));
-    options.emplace("keyPwd", std::string("123456"));
-    options.emplace("outFile", std::string("./hapSign/entry-default-signed.elf"));
-    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
-    options.emplace("profileFile", std::string("./hapSign/signed-profile.p7b"));
-    options.emplace("signAlg", std::string("SHA256withECDSA"));
-    options.emplace("keystorePwd", std::string("123456"));
-    options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
-    options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/unsigned-linux.out"));
-    signerConfig.SetOptions(&options);
+    std::shared_ptr<Options> options = std::make_shared<Options>();
+    SetOptions(options.get());
+    signerConfig.SetOptions(options.get());
 
+    signerConfig.GetSigner();
     bool ret = SignElf::Sign(signerConfig, params);
     EXPECT_EQ(ret, true);
 }
@@ -113,58 +147,26 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "1";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/linux-no.out";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
+    SetParamsMap(params);
+    params["inFile"] = "./hapSign/unsigned-linux-no.out";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-        contentDigestAlgorithm, signatureAlgAndParams);
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
-    Options options;
-    options.emplace("mode", std::string("localSign"));
-    options.emplace("keyPwd", std::string("123456"));
-    options.emplace("outFile", std::string("./hapSign/entry-default-signed.elf"));
-    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
-    options.emplace("profileFile", std::string("./hapSign/signed-profile.p7b"));
-    options.emplace("signAlg", std::string("SHA256withECDSA"));
-    options.emplace("keystorePwd", std::string("123456"));
-    options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
-    options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/linux-no.out"));
-    signerConfig.SetOptions(&options);
+    std::shared_ptr<Options> options = std::make_shared<Options>();
+    SetOptions(options.get());
+    (*options)["inFile"] = "./hapSign/unsigned-linux-no.out";
+    signerConfig.SetOptions(options.get());
 
+    signerConfig.GetSigner();
     bool ret = SignElf::Sign(signerConfig, params);
+
     EXPECT_EQ(ret, false);
 }
 
@@ -183,57 +185,24 @@ HWTEST_F(SignElfTest, Sign003, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "1";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/entry-default-signed.elf";
+    SetParamsMap(params);
     params["profileFile"] = "./hapSign/signed-profile-no.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/unsigned-linux.out";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-        contentDigestAlgorithm, signatureAlgAndParams);
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
-    Options options;
-    options.emplace("mode", std::string("localSign"));
-    options.emplace("keyPwd", std::string("123456"));
-    options.emplace("outFile", std::string("./hapSign/entry-default-signed.elf"));
-    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
-    options.emplace("profileFile", std::string("./hapSign/signed-profile-no.p7b"));
-    options.emplace("signAlg", std::string("SHA256withECDSA"));
-    options.emplace("keystorePwd", std::string("123456"));
-    options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
-    options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/unsigned-linux.out"));
-    signerConfig.SetOptions(&options);
+    std::shared_ptr<Options> options = std::make_shared<Options>();
+    SetOptions(options.get());
+    (*options)["profileFile"] = "./hapSign/signed-profile-no.p7b";
+    signerConfig.SetOptions(options.get());
 
+    signerConfig.GetSigner();
     bool ret = SignElf::Sign(signerConfig, params);
     EXPECT_EQ(ret, false);
 }
@@ -253,57 +222,24 @@ HWTEST_F(SignElfTest, Sign004, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "1";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/test/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/unsigned-linux.out";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
+    SetParamsMap(params);
+    params["outFile"] = "./hapSign_test/entry-default-signed.elf";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-        contentDigestAlgorithm, signatureAlgAndParams);
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
-    Options options;
-    options.emplace("mode", std::string("localSign"));
-    options.emplace("keyPwd", std::string("123456"));
-    options.emplace("outFile", std::string("./hapSign/test/entry-default-signed.elf"));
-    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
-    options.emplace("profileFile", std::string("./hapSign/signed-profile.p7b"));
-    options.emplace("signAlg", std::string("SHA256withECDSA"));
-    options.emplace("keystorePwd", std::string("123456"));
-    options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
-    options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/unsigned-linux.out"));
-    signerConfig.SetOptions(&options);
+    std::shared_ptr<Options> options = std::make_shared<Options>();
+    SetOptions(options.get());
+    (*options)["outFile"] = "./hapSign_test/entry-default-signed.elf";
+    signerConfig.SetOptions(options.get());
 
+    signerConfig.GetSigner();
     bool ret = SignElf::Sign(signerConfig, params);
     EXPECT_EQ(ret, false);
 }
@@ -323,57 +259,24 @@ HWTEST_F(SignElfTest, Sign005, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
+    SetParamsMap(params);
     params["signCode"] = "0";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/test/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/unsigned-linux.out";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-        contentDigestAlgorithm, signatureAlgAndParams);
+    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
-    Options options;
-    options.emplace("mode", std::string("localSign"));
-    options.emplace("keyPwd", std::string("123456"));
-    options.emplace("outFile", std::string("./hapSign/test/entry-default-signed.elf"));
-    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
-    options.emplace("profileFile", std::string("./hapSign/signed-profile.p7b"));
-    options.emplace("signAlg", std::string("SHA256withECDSA"));
-    options.emplace("keystorePwd", std::string("123456"));
-    options.emplace("keystoreFile", std::string("./hapSign/ohtest.jks"));
-    options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/unsigned-linux.out"));
-    signerConfig.SetOptions(&options);
+    std::shared_ptr<Options> options = std::make_shared<Options>();
+    SetOptions(options.get());
+    (*options)["signCode"] = "0";
+    signerConfig.SetOptions(options.get());
 
+    signerConfig.GetSigner();
     bool ret = SignElf::Sign(signerConfig, params);
     EXPECT_EQ(ret, false);
 }

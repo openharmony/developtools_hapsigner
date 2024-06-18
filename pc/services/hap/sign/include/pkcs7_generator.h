@@ -24,7 +24,7 @@ namespace SignatureTools {
 
 class Pkcs7Generator {
 public:
-    virtual ~Pkcs7Generator() = 0;
+    virtual ~Pkcs7Generator() = default;
     /**
      * Generate PKCS#7 signed data with the specific content and signer config.
      *

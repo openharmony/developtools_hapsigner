@@ -15,7 +15,10 @@
 #include <memory>
 #include <gtest/gtest.h>
 #include "sign_bin.h"
-
+#include "sign_provider.h"
+#include "local_sign_provider.h"
+#define VERSION 9
+#define BYTE_NUMBER 32
 namespace OHOS {
 namespace SignatureTools {
 /*
@@ -39,7 +42,7 @@ public:
 
 void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
 {
-    signerConfig.SetCompatibleVersion(9);
+    signerConfig.SetCompatibleVersion(VERSION);
 
     std::map<std::string, std::string> params;
     params["keyPwd"] = "123456";
@@ -57,14 +60,14 @@ void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
     params["profileSigned"] = "1";
     signerConfig.FillParameters(params);
 
-    ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
+    ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", BYTE_NUMBER);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                 contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
-    
+
     options.emplace("mode", std::string("localSign"));
     char keyPwd[] = "123456";
     options.emplace("keyPwd", keyPwd);
@@ -189,6 +192,51 @@ HWTEST_F(SignBinTest, Sign002, testing::ext::TestSize.Level1)
 
     api->Sign(signerConfig, signParams);
     EXPECT_EQ(true, 1);
+}
+
+/**
+ * @tc.name: SignBinTest
+ * @tc.desc: Test interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SignBinTest, SignBin, testing::ext::TestSize.Level1)
+{
+    // 走进sign_provider中SignBin分支 check Compatible Version failed!
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "bin";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    std::string compatibleVersion = "";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["compatibleVersion"] = compatibleVersion;
+    bool ret = signProvider->SignBin(params.get());
+    EXPECT_EQ(ret, true);
 }
 
 } // namespace SignatureTools

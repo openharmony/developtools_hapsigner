@@ -16,6 +16,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <cassert>
 
 #include "signature_tools_log.h"
 #include "signature_tools_errno.h"
@@ -24,6 +25,7 @@
 #include "securec.h"
 #include "constant.h"
 #include "pkcs7_data.h"
+#include "verify_cert_openssl_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -44,7 +46,7 @@ static int PKCS7AddAttribute(PKCS7* p7, const std::vector<PKCS7Attr>& attrs)
             return PKCS7_ADD_ATTRIBUTE_ERROR;
         }
     }
-    return 0;
+    return RET_OK;
 }
 
 static int I2dPkcs7Str(PKCS7* p7, std::string& ret)
@@ -60,7 +62,7 @@ static int I2dPkcs7Str(PKCS7* p7, std::string& ret)
     ret.resize(outSize);
     std::copy(out, out + outSize, &ret[0]);
     OPENSSL_free(out);
-    return 0;
+    return RET_OK;
 }
 
 static int EcPkeyCtrl(PKCS7_SIGNER_INFO* arg2)
@@ -94,27 +96,7 @@ static int VerifySignature(PKCS7* p7, BIO* p7bio)
             return PKCS7_VERIFY_ERROR;
         }
     }
-    return 0;
-}
-
-static int PKCS7_type_is_other2(PKCS7* p7)
-{
-    int isOther = 1;
-    int nid = OBJ_obj2nid(p7->type);
-    switch (nid) {
-        case NID_pkcs7_data:
-        case NID_pkcs7_signed:
-        case NID_pkcs7_enveloped:
-        case NID_pkcs7_signedAndEnveloped:
-        case NID_pkcs7_digest:
-        case NID_pkcs7_encrypted:
-            isOther = 0;
-            break;
-        default:
-            isOther = 1;
-    }
-
-    return isOther;
+    return RET_OK;
 }
 
 PKCS7Data::PKCS7Data(int flags) : p7(nullptr), flags(flags)
@@ -130,7 +112,7 @@ PKCS7Data::~PKCS7Data()
 int PKCS7Data::Sign(const std::string& content, std::shared_ptr<Signer> signer,
                     const std::string& sigAlg, std::string& ret, std::vector<PKCS7Attr> attrs)
 {
-    int result = 0;
+    int result = RET_OK;
     if ((result = InitPkcs7(content, signer, sigAlg, attrs)) < 0) {
         goto err;
     }
@@ -143,7 +125,7 @@ int PKCS7Data::Sign(const std::string& content, std::shared_ptr<Signer> signer,
 err:
     if (result < 0) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        printf("sign content failed\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "sign content failed\n");
     }
     return result;
 }
@@ -172,21 +154,23 @@ int PKCS7Data::Parse(const unsigned char** in, long len)
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
         return INVALIDPARAM_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int PKCS7Data::Verify(const std::string& content) const
 {
     if (VerifySign(content) < 0) {
-        printf("signature verify failed\n");
+        SIGNATURE_TOOLS_LOGE("signature verify failed\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "signature verify failed");
         return VERIFY_ERROR;
     }
     if (VerifyCertChain() < 0) {
-        printf("cert Chain verify failed:\n");
+        SIGNATURE_TOOLS_LOGE("cert Chain verify failed:\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "cert Chain verify failed");
         PrintCertChainSub(p7->d.sign->cert);
         return VERIFY_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int PKCS7Data::GetContent(std::string& originalRawData) const
@@ -203,7 +187,7 @@ int PKCS7Data::GetContent(std::string& originalRawData) const
         originalRawData.append(buf, readBytes);
     }
     BIO_free_all(oriBio);
-    return 0;
+    return RET_OK;
 }
 static void PKCS7AddCrls(PKCS7* p7, STACK_OF(X509_CRL)* crls)
 {
@@ -281,28 +265,11 @@ void PKCS7Data::PrintCertChainSub(const STACK_OF(X509)* certs)
     for (int i = 0; i < certNum; i++) {
         SIGNATURE_TOOLS_LOGI("certificate %{public}s", std::to_string(i).c_str());
         std::string sub;
-        GetSubjectFromX509(sk_X509_value(certs, i), sub);
+        VerifyCertOpensslUtils::GetSubjectFromX509(sk_X509_value(certs, i), sub);
         SIGNATURE_TOOLS_LOGI("%{public}s\n", sub.c_str());
     }
 }
 
-int PKCS7Data::CertVerify(X509* cert, X509* issuerCert)
-{
-    if (cert == nullptr || issuerCert == nullptr) {
-        SIGNATURE_TOOLS_LOGE("input is invalid");
-        return VERIFY_ERROR;
-    }
-    EVP_PKEY* caPublicKey = X509_get0_pubkey(issuerCert);
-    if (caPublicKey == nullptr) {
-        SIGNATURE_TOOLS_LOGE("get pubkey from caCert failed");
-        return INVALIDPARAM_ERROR;
-    }
-    if (X509_verify(cert, caPublicKey) <= 0) {
-        SIGNATURE_TOOLS_LOGE("x509 verify failed");
-        return VERIFY_ERROR;
-    }
-    return  0;
-}
 std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
 {
     // 将ASN1_TIME结构转换为标准的tm结构
@@ -313,8 +280,7 @@ std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
     if (t < 0)
         return "";
     struct tm* local_time = localtime(&t);
-    if (local_time == nullptr)
-        return "";
+    assert(local_time != NULL);
     // 打印本地时间
     char buf[128] = { 0 };
     if (sprintf_s(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
@@ -323,47 +289,6 @@ std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
         return "";
     }
     return std::string(buf, strlen(buf));
-}
-void PKCS7Data::GetTextFromX509Name(X509_NAME* name, int32_t nId, std::string& text)
-{
-    int32_t textLen = X509_NAME_get_text_by_NID(name, nId, nullptr, 0);
-    if (textLen <= 0) {
-        return;
-    }
-    std::unique_ptr<char[]> buffer = std::make_unique<char[]>(textLen + 1);
-    if (X509_NAME_get_text_by_NID(name, nId, buffer.get(), textLen + 1) != textLen) {
-        return;
-    }
-    text = std::string(buffer.get());
-}
-// 将给定的X.509结构中的Distinguished Name（DN，即证书的主题）转换为字符串形式
-std::string PKCS7Data::GetDnToString(X509_NAME* name)
-{
-    if (name == nullptr) {
-        return "";
-    }
-    std::string countryName;
-    GetTextFromX509Name(name, NID_countryName, countryName);
-    std::string organizationName;
-    GetTextFromX509Name(name, NID_organizationName, organizationName);
-    std::string organizationalUnitName;
-    GetTextFromX509Name(name, NID_organizationalUnitName, organizationalUnitName);
-    std::string commonName;
-    GetTextFromX509Name(name, NID_commonName, commonName);
-    return "C=" + countryName + ", O=" + organizationName + ", OU=" + organizationalUnitName +
-        ", CN=" + commonName;
-}
-
-// 从一个给定的 X509 证书中提取主题（subject）信息，并将其转换为字符串格式存储
-int PKCS7Data::GetSubjectFromX509(const X509* cert, std::string& subject)
-{
-    if (cert == nullptr) {
-        SIGNATURE_TOOLS_LOGE("cert is nullptr");
-        return INVALIDPARAM_ERROR;
-    }
-    X509_NAME* name = X509_get_subject_name(cert);
-    subject = GetDnToString(name);
-    return 0;
 }
 
 bool PKCS7Data::X509NameCompare(const X509* cert, const X509* issuerCert)
@@ -374,10 +299,8 @@ bool PKCS7Data::X509NameCompare(const X509* cert, const X509* issuerCert)
     }
     X509_NAME* aName = X509_get_issuer_name(cert);
     X509_NAME* bName = X509_get_subject_name(issuerCert);
-    if (aName == NULL || bName == NULL) {
-        SIGNATURE_TOOLS_LOGE("NULL X509_NAME\n");
-        return false;
-    }
+	assert(aName);
+	assert(bName);
     if (X509_NAME_cmp(aName, bName) != 0) {
         return false;
     }
@@ -407,7 +330,7 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
         return INVALIDSIGNTIME_ERROR;
     }
     ASN1_TIME_free(asn1_tm);
-    return 0;
+    return RET_OK;
 }
 
 void PKCS7Data::SortX509Stack(STACK_OF(X509)* certs)
@@ -436,7 +359,7 @@ int PKCS7Data::VerifySign(const std::string& content)const
         return VERIFY_ERROR;
     }
     BIO_free(inBio);
-    return 0;
+    return RET_OK;
 }
 
 int PKCS7Data::VerifyCertChain()const
@@ -445,7 +368,7 @@ int PKCS7Data::VerifyCertChain()const
     STACK_OF(PKCS7_SIGNER_INFO)* skSignerInfo = PKCS7_get_signer_info(p7);
     int signerCount = sk_PKCS7_SIGNER_INFO_num(skSignerInfo);
     int c = signerCount;
-    int result = 0;
+    int result = RET_OK;
     // 原始证书链
     STACK_OF(X509)* certChain = p7->d.sign->cert;
     // 证书链拷贝 后面会去除实体证书
@@ -462,7 +385,7 @@ int PKCS7Data::VerifyCertChain()const
         }
         sk_X509_free(certs);
     }
-    return 0;
+    return RET_OK;
 }
 
 int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* signerInfo,
@@ -482,7 +405,7 @@ int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* 
             return INVALIDPARAM_ERROR;
         }
     }
-    return 0;
+    return RET_OK;
 }
 
 int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInfo,
@@ -495,7 +418,7 @@ int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInf
         SIGNATURE_TOOLS_LOGE("sigCert subject not matched\n");
         return VERIFY_ERROR;
     }
-    if (CertVerify(sigCert, sk_X509_value(certs, 0)) < 0) { // 验证实体证书签名值
+    if (VerifyCertOpensslUtils::CertVerify(sigCert, sk_X509_value(certs, 0)) == false) { // 验证实体证书签名值
         SIGNATURE_TOOLS_LOGE("sigCert signature verifitication failed\n");
         return VERIFY_ERROR;
     }
@@ -505,7 +428,7 @@ int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInf
             return VERIFY_ERROR;
         }
         // 验证中间证书签名值
-        if (CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j + 1)) < 0) {
+        if (VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j + 1)) == false) {
             SIGNATURE_TOOLS_LOGE("middle cert signature verifitication failed\n");
             return VERIFY_ERROR;
         }
@@ -515,7 +438,7 @@ int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInf
         return VERIFY_ERROR;
     }
     // 验证根证书签名值
-    if (CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j)) < 0) { // 验证根证书签名值
+    if (VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j)) == false) { // 验证根证书签名值
         SIGNATURE_TOOLS_LOGE("root cert signature verifitication failed\n");
         return VERIFY_ERROR;
     }
@@ -524,7 +447,7 @@ int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInf
         SIGNATURE_TOOLS_LOGE("sign time not invalid\n");
         return VERIFY_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int PKCS7Data::Pkcs7SignerInfoSign(PKCS7_SIGNER_INFO* si)
@@ -562,12 +485,8 @@ err:
 
 static ASN1_OCTET_STRING* PKCS7_get_octet_string2(PKCS7* p7)
 {
-    if (PKCS7_type_is_data(p7))
-        return p7->d.data;
-    if (PKCS7_type_is_other2(p7) && p7->d.other
-        && (p7->d.other->type == V_ASN1_OCTET_STRING))
-        return p7->d.other->value.octet_string;
-    return NULL;
+    assert(PKCS7_type_is_data(p7));
+    return p7->d.data;
 }
 
 int PKCS7Data::DoPkcs7SignedAttrib(PKCS7_SIGNER_INFO* si, EVP_MD_CTX* mctx)
@@ -602,7 +521,7 @@ int PKCS7Data::DoPkcs7SignedAttrib(PKCS7_SIGNER_INFO* si, EVP_MD_CTX* mctx)
 
 static BIO* PKCS7_find_digest(EVP_MD_CTX** pmd, BIO* bio, int nid)
 {
-    for (;;) {
+    while(true) {
         bio = BIO_find_type(bio, BIO_TYPE_MD);
         if (bio == NULL) {
             PKCS7err(PKCS7_F_PKCS7_FIND_DIGEST,
@@ -622,7 +541,7 @@ static BIO* PKCS7_find_digest(EVP_MD_CTX** pmd, BIO* bio, int nid)
 }
 
 static int PKCS7_dataFinal2_check(PKCS7* p7, BIO* bio,
-                                  STACK_OF(PKCS7_SIGNER_INFO)** psi_sk, ASN1_OCTET_STRING** pos)
+                                  STACK_OF(PKCS7_SIGNER_INFO)** psk, ASN1_OCTET_STRING** pos)
 {
     int i = 0;
 
@@ -641,7 +560,7 @@ static int PKCS7_dataFinal2_check(PKCS7* p7, BIO* bio,
 
     switch (i) {
         case NID_pkcs7_signed:
-            *psi_sk = p7->d.sign->signer_info;
+            *psk = p7->d.sign->signer_info;
             *pos = PKCS7_get_octet_string2(p7->d.sign->contents);
             /* If detached data then the content is excluded */
             if (PKCS7_type_is_data(p7->d.sign->contents) && p7->detached) {
@@ -841,32 +760,6 @@ err:
     return NULL;
 }
 
-static int Pkcs7CopyExistingDigest(PKCS7* p7, PKCS7_SIGNER_INFO* si)
-{
-    int i;
-    STACK_OF(PKCS7_SIGNER_INFO)* sinfos;
-    PKCS7_SIGNER_INFO* sitmp;
-    ASN1_OCTET_STRING* osdig = NULL;
-    sinfos = PKCS7_get_signer_info(p7);
-    for (i = 0; i < sk_PKCS7_SIGNER_INFO_num(sinfos); i++) {
-        sitmp = sk_PKCS7_SIGNER_INFO_value(sinfos, i);
-        if (si == sitmp)
-            break;
-        if (sk_X509_ATTRIBUTE_num(sitmp->auth_attr) <= 0)
-            continue;
-        if (!OBJ_cmp(si->digest_alg->algorithm, sitmp->digest_alg->algorithm)) {
-            osdig = PKCS7_digest_from_attributes(sitmp->auth_attr);
-            break;
-        }
-    }
-
-    if (osdig)
-        return PKCS7_add1_attrib_digest(si, osdig->data, osdig->length);
-
-    PKCS7err(PKCS7_F_PKCS7_COPY_EXISTING_DIGEST,
-             PKCS7_R_NO_MATCHING_DIGEST_TYPE_FOUND);
-    return 0;
-}
 
 static PKCS7_SIGNER_INFO* Pkcs7SignAddSigner(PKCS7* p7, X509* signcert, const EVP_MD* md, int flags)
 {
@@ -882,12 +775,6 @@ static PKCS7_SIGNER_INFO* Pkcs7SignAddSigner(PKCS7* p7, X509* signcert, const EV
     if (!(flags & PKCS7_NOATTR)) {
         if (!PKCS7_add_attrib_content_type(si, NULL))
             goto err;
-        if (flags & PKCS7_REUSE_DIGEST) {
-            if (!Pkcs7CopyExistingDigest(p7, si))
-                goto err;
-            if (!(flags & PKCS7_PARTIAL) && !PKCS7_SIGNER_INFO_sign(si))
-                goto err;
-        }
     }
     return si;
 err:

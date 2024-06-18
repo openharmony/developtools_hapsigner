@@ -26,6 +26,7 @@
 #include "byte_buffer.h"
 #include "merkle_tree.h"
 #include "fs_digest_utils.h"
+#include "signature_tools_log.h"
 
 namespace OHOS {
 namespace SignatureTools {

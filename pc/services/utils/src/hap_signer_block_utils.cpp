@@ -504,7 +504,10 @@ bool HapSignerBlockUtils::GetSumOfChunkDigestLen(DataSource* contents[], int32_t
         SIGNATURE_TOOLS_LOGE("no content for digest");
         return false;
     }
-
+    if(chunkCount == 0) {
+	    SIGNATURE_TOOLS_LOGE("no content for digest");
+        return false;
+	}
     if (chunkDigestLen < 0 || ((INT_MAX - ZIP_CHUNK_DIGEST_PRIFIX_LEN) / chunkCount) < chunkDigestLen) {
         SIGNATURE_TOOLS_LOGE("overflow chunkCount: %{public}d, chunkDigestLen: %{public}d",
                              chunkCount, chunkDigestLen);
@@ -576,7 +579,8 @@ int32_t HapSignerBlockUtils::GetChunkCount(long long inputSize, long long chunkS
     if (chunkSize <= 0 || inputSize > LLONG_MAX - chunkSize) {
         return 0;
     }
-
+    if(chunkSize == 0)
+	    return 0;
     long long res = (inputSize + chunkSize - 1) / chunkSize;
     if (res > INT_MAX || res < 0) {
         return 0;

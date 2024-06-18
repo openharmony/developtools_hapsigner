@@ -24,7 +24,7 @@ namespace SignatureTools {
 
 class SignedDataGenerator {
 public:
-    virtual ~SignedDataGenerator() = 0;
+    virtual ~SignedDataGenerator() = default;
     /**
      * Generate signature data with specific content and sign configuration.
      *

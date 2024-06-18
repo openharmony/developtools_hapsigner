@@ -43,6 +43,7 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
     // ret 为生成的p7b数据
     if (SignProfile(content, signer, sigAlg, ret) < 0) {
         SIGNATURE_TOOLS_LOGE("profile sign failed\n");
+        PrintErrorNumberMsg("SIGN_ERROR" , SIGN_ERROR, "profile sign failed");
         return SIGN_ERROR;
     }
     PKCS7Data p7Data;
@@ -54,7 +55,7 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
         SIGNATURE_TOOLS_LOGE("verify profile failed\n");
         return VERIFY_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 /**
 * @param content content to sign
@@ -71,7 +72,7 @@ int ProfileSignTool::SignProfile(const std::string& content, std::shared_ptr<Sig
         SIGNATURE_TOOLS_LOGE("SignProfile faild!\n");
         return PKCS7_SIGN_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 } // namespace SignatureTools
 } // namespace OHOS

@@ -12,11 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "cms_utils.h"
 #include "bc_signeddata_generator.h"
 #include "constant.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
+
 bool CmsUtils::VerifySignDataWithUnsignedDataDigest(const std::vector<int8_t>& unsignedDataDigest,
     const std::vector<int8_t>& signedData)
 {
@@ -34,11 +37,12 @@ bool CmsUtils::VerifySignDataWithUnsignedDataDigest(const std::vector<int8_t>& u
     }
     return true;
 }
+
 bool CmsUtils::CheckOwnerID(const std::string& signature, const std::string& profileOwnerID,
     const std::string& profileType)
 {
     std::string ownerID = profileOwnerID;
-    if ("debug" == profileType) ownerID = "DEBUG_LIB_ID";
+    if (DEBUG_STR == profileType) ownerID = DEBUG_LIB_ID;
     int nid = CreateNIDFromOID(OWNERID_OID, OWNERID_OID_SHORT_NAME, OWNERID_OID_LONG_NAME);
     const unsigned char* data = reinterpret_cast<const unsigned char*>(signature.c_str());
     PKCS7* p7 = d2i_PKCS7(NULL, &data, static_cast<long>(signature.size()));
@@ -88,6 +92,7 @@ bool CmsUtils::CheckOwnerID(const std::string& signature, const std::string& pro
     PKCS7_free(p7);
     return true;
 }
+
 int CmsUtils::CreateNIDFromOID(const std::string& oid, const std::string& shortName,
     const std::string& longName)
 {
@@ -97,3 +102,6 @@ int CmsUtils::CreateNIDFromOID(const std::string& oid, const std::string& shortN
     }
     return nid;
 }
+
+} // namespace SignatureTools
+} // namespace OHOS

@@ -74,7 +74,7 @@ int FileUtils::Write(const std::string& content, const std::string& output)
         SIGNATURE_TOOLS_LOGE("Failed to write data to output stream.");
         return WRITE_FILE_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int FileUtils::Read(std::ifstream& input, std::string& ret)
@@ -90,7 +90,7 @@ int FileUtils::Read(std::ifstream& input, std::string& ret)
         input.read(&buffer[0], buffer.size());
         ret.append(&buffer[0], input.gcount());
     }
-    return 0;
+    return RET_OK;
 }
 
 int FileUtils::ReadFile(const std::string& path, std::string& ret)
@@ -104,48 +104,48 @@ int FileUtils::ReadFile(const std::string& path, std::string& ret)
         SIGNATURE_TOOLS_LOGE("read error!");
         return READ_FILE_ERROR;
     }
-    return 0;
+    return RET_OK;
 }
 
 int FileUtils::ReadFileByOffsetAndLength(std::ifstream& file, size_t offset, size_t length, std::string& ret)
 {
     if (length > INT_MAX) {
-        printf("Size cannot be greater than Integer max value: %zu\n", length);
+        SIGNATURE_TOOLS_LOGE("Size cannot be greater than Integer max value: %zu\n", length);
         return -1;
     }
     if (ReadInputByOffsetAndLength(file, offset, length, ret) < 0) {
-        printf("Error readInputByOffsetAndLength\n");
+        SIGNATURE_TOOLS_LOGE("Error readInputByOffsetAndLength\n");
         return -1;
     }
-    return 0;
+    return RET_OK;
 }
 
 int FileUtils::ReadInputByOffsetAndLength(std::ifstream& input, size_t offset, size_t length, std::string& ret)
 {
     if (length > INT_MAX) {
-        printf("Size cannot be greater than Integer max value: %zu\n", length);
+        SIGNATURE_TOOLS_LOGE("Size cannot be greater than Integer max value: %zu\n", length);
         return -1;
     }
     input.seekg(offset);
-    if (input.rdstate() != 0) {
-        printf("Error seek\n");
+    /* if (input.rdstate() != 0) {
+        SIGNATURE_TOOLS_LOGE("Error seek\n");
         return -1;
-    }
+    } */
     if (ReadInputByLength(input, length, ret) < 0) {
-        printf("Error readInputByLength\n");
+        SIGNATURE_TOOLS_LOGE("Error readInputByLength\n");
         return -1;
     }
-    return 0;
+    return RET_OK;
 }
 
 int FileUtils::ReadInputByLength(std::ifstream& input, size_t length, std::string& ret)
 {
     if (length > INT_MAX) {
-        printf("Size cannot be greater than Integer max value: %zu\n", length);
+        SIGNATURE_TOOLS_LOGE("Size cannot be greater than Integer max value: %zu\n", length);
         return -1;
     }
     if (input.rdstate() != 0) {
-        printf("Error input\n");
+        SIGNATURE_TOOLS_LOGE("Error input\n");
         return -1;
     }
     ret.clear();
@@ -155,62 +155,36 @@ int FileUtils::ReadInputByLength(std::ifstream& input, size_t length, std::strin
         int readLen = static_cast<int>(std::min(length - hasReadLen, (size_t)FILE_BUFFER_BLOCK));
         input.read(&buffer[0], readLen);
         if (input.gcount() != readLen) {
-            printf("read %zu bytes data less than %zu\n", hasReadLen, length);
+            SIGNATURE_TOOLS_LOGE("read %zu bytes data less than %zu\n", hasReadLen, length);
             return -1;
         }
         ret.append(&buffer[0], readLen);
         hasReadLen += input.gcount();
     }
     if (hasReadLen != length) {
-        printf("read %zu bytes data less than %zu\n", hasReadLen, length);
+        SIGNATURE_TOOLS_LOGE("read %zu bytes data less than %zu\n", hasReadLen, length);
         return -1;
     }
-    return 0;
-}
-
-bool FileUtils::AppendWriteFileByOffsetToFile(const std::string& inFile,
-                                              std::ofstream& out,
-                                              size_t offset,
-                                              size_t size)
-{
-    if (out.rdstate() != 0) {
-        printf("Failed get out stream\n");
-        return false;
-    }
-    std::ifstream input(inFile, std::ios::binary);
-    if (input.rdstate() != 0) {
-        printf("Failed open %s\n", inFile.c_str());
-        return false;
-    }
-    input.seekg(offset);
-    if (input.rdstate() != 0) {
-        printf("Failed seekg\n");
-        return false;
-    }
-    if (WriteInputToOutPut(input, out, size) < 0) {
-        printf("Error: writeInputToOutPut\n");
-        return false;
-    }
-    return true;
+    return RET_OK;
 }
 
 bool FileUtils::AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstream& out, size_t offset, size_t size)
 {
     if (input.rdstate() != 0) {
-        printf("input failed.\n");
+        SIGNATURE_TOOLS_LOGE("input failed.\n");
         return false;
     }
     if (out.rdstate() != 0) {
-        printf("Failed get out stream\n");
+        SIGNATURE_TOOLS_LOGE("Failed get out stream\n");
         return false;
     }
     input.seekg(offset);
-    if (input.rdstate() != 0) {
-        printf("Failed seekg\n");
+    /* if (input.rdstate() != 0) {
+        SIGNATURE_TOOLS_LOGE("Failed seekg\n");
         return false;
-    }
+    } */
     if (WriteInputToOutPut(input, out, size) < 0) {
-        printf("Error: writeInputToOutPut\n");
+        SIGNATURE_TOOLS_LOGE("Error: writeInputToOutPut\n");
         return false;
     }
     return true;
@@ -221,11 +195,11 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
     std::ifstream input(inputFile, std::ios::binary);
     std::ofstream output(outputFile, std::ios::binary | std::ios::app);
     if (0 != input.rdstate()) {
-        printf("Failed to get input stream object!\n");
+        SIGNATURE_TOOLS_LOGE("Failed to get input stream object!\n");
         return false;
     }
     if (0 != output.rdstate()) {
-        printf("Failed to get output stream object!\n");
+        SIGNATURE_TOOLS_LOGE("Failed to get output stream object!\n");
         return false;
     }
     char* buffer = new char[FILE_BUFFER_BLOCK];
@@ -233,7 +207,7 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
         input.read(buffer, FILE_BUFFER_BLOCK);
 
         if (input.fail() && !input.eof()) {
-            printf("error occurred while reading data\n");
+            SIGNATURE_TOOLS_LOGE("error occurred while reading data\n");
             delete[]buffer;
             return false;
         }
@@ -242,7 +216,7 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
             output.write(buffer, readLen);
         }
         if (!output) {
-            printf("error occurred while writing data\n");
+            SIGNATURE_TOOLS_LOGE("error occurred while writing data\n");
             delete[]buffer;
             return false;
         }
@@ -256,7 +230,7 @@ bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::strin
     std::ofstream output(outputFile, std::ios::binary | std::ios::app);
 
     if (WriteByteToOutFile(bytes, output) == false) {
-        printf("Failed to write data to output stream, outfile: %s\n", outputFile.c_str());
+        SIGNATURE_TOOLS_LOGE("Failed to write data to output stream, outfile: %s\n", outputFile.c_str());
         return false;
     }
     return true;
@@ -283,14 +257,16 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
                 break;
             }
         }
-        assert(dataSize == 0);
+        if(dataSize != 0) {
+		    SIGNATURE_TOOLS_LOGE("write error!\n");
+		}
         };
     readTask = readPool.Enqueue(readFunc, std::ref(input), length);
     readTask.wait();
     for (std::future<void>& task : writeTasks) {
         task.wait();
     }
-    return 0;
+    return RET_OK;
 }
 
 bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& output)
@@ -298,12 +274,12 @@ bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& 
     std::ifstream in(input, std::ios::binary);
     std::ofstream out(output, std::ios::binary);
     if (in.rdstate() != 0) {
-        printf("Failed to get input stream object!\n");
+        SIGNATURE_TOOLS_LOGE("Failed to get input stream object!\n");
         return false;
     }
 
     if (out.rdstate() != 0) {
-        printf("Failed to get output stream object!\n");
+        SIGNATURE_TOOLS_LOGE("Failed to get output stream object!\n");
         return false;
     }
     char* buffer = new char[FILE_BUFFER_BLOCK];
@@ -311,7 +287,7 @@ bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& 
         in.read(buffer, FILE_BUFFER_BLOCK);
 
         if (in.fail() && !in.eof()) {
-            printf("error occurred while reading data\n");
+            SIGNATURE_TOOLS_LOGE("error occurred while reading data\n");
             delete[]buffer;
             return false;
         }
@@ -322,7 +298,7 @@ bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& 
         }
 
         if (!out) {
-            printf("error occurred while writing data\n");
+            SIGNATURE_TOOLS_LOGE("error occurred while writing data\n");
             delete[]buffer;
             return false;
         }
@@ -335,7 +311,7 @@ bool FileUtils::WriteByteToOutFile(const std::string& bytes, const std::string& 
 {
     std::ofstream ops(outFile, std::ios::binary);
     if (WriteByteToOutFile(bytes, ops) == false) {
-        printf("Failed to write data to ops, outfile: %s\n", outFile.c_str());
+        SIGNATURE_TOOLS_LOGE("Failed to write data to ops, outfile: %s\n", outFile.c_str());
         return false;
     }
     return true;
@@ -344,17 +320,17 @@ bool FileUtils::WriteByteToOutFile(const std::string& bytes, const std::string& 
 bool FileUtils::WriteByteToOutFile(const std::string& bytes, std::ofstream& outFile)
 {
     if (outFile.rdstate() != 0) {
-        printf("Failed to get output stream object, outfile\n");
+        SIGNATURE_TOOLS_LOGE("Failed to get output stream object, outfile\n");
         return false;
     }
     outFile.write(&bytes[0], bytes.size());
     if (outFile.rdstate() != 0) {
-        printf("Failed to write data to ops, outfile \n");
+        SIGNATURE_TOOLS_LOGE("Failed to write data to ops, outfile \n");
         return false;
     }
     outFile.flush();
     if (outFile.rdstate() != 0) {
-        printf("Flush error\n");
+        SIGNATURE_TOOLS_LOGE("Flush error\n");
         return false;
     }
     return true;
@@ -363,17 +339,17 @@ bool FileUtils::WriteByteToOutFile(const std::string& bytes, std::ofstream& outF
 bool FileUtils::WriteByteToOutFile(const std::vector<int8_t>& bytes, std::ofstream& outFile)
 {
     if (outFile.rdstate() != 0) {
-        printf("Failed to get output stream object, outfile\n");
+        SIGNATURE_TOOLS_LOGE("Failed to get output stream object, outfile\n");
         return false;
     }
     outFile.write((char*)&bytes[0], bytes.size());
     if (outFile.rdstate() != 0) {
-        printf("Failed to write data to ops, outfile \n");
+        SIGNATURE_TOOLS_LOGE("Failed to write data to ops, outfile \n");
         return false;
     }
     outFile.flush();
     if (outFile.rdstate() != 0) {
-        printf("Flush error\n");
+        SIGNATURE_TOOLS_LOGE("Flush error\n");
         return false;
     }
     return true;
@@ -405,11 +381,9 @@ bool FileUtils::IsValidFile(std::string file)
 {
     std::filesystem::path filePath = file;
     if (!std::filesystem::exists(filePath)) {
-        printf("File does not exist !\n");
         return false;
     }
     if (std::filesystem::is_directory(filePath)) {
-        printf("It is a directory  %s\n", file.c_str());
         return false;
     }
     return true;

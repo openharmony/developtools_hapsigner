@@ -36,14 +36,14 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./hapSign/sign_bin_test.cpp",
     "./hapSign/sign_provider_test.cpp",
     "./hapSign/sign_elf_test.cpp",
+    "./hapSign/hap_openssl_utils_test.cpp",
     "./generateKeyPair/generate_keypair_test.cpp",
 
     "./hapVerify/hap_verify_v2_test.cpp",
     "./hapVerify/hap_cert_verify_openssl_utils_test.cpp",
-    "./hapVerify/hap_byte_buffer_test.cpp",
     "./hapVerify/random_access_file_test.cpp",
     "./hapVerify/provision_verify_test.cpp",
-    "./hapVerify/hap_signing_block_utils_test.cpp",
+    "./hapVerify/hap_signer_block_utils_test.cpp",
     "./hapVerify/hap_verify_result_test.cpp",
 
     "./elfVerify/verify_elf_test.cpp",
@@ -66,6 +66,7 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./codeSigning/datastructure/segment_header_test.cpp",
     "./codeSigning/datastructure/sign_info_test.cpp",
     "./codeSigning/datastructure/signed_file_pos_test.cpp",
+    "./codeSigning/datastructure/elf_sign_block_test.cpp",
     "./codeSigning/utils/cms_utils_test.cpp",
     "./codeSigning/utils/fs_digest_utils_test.cpp",
     "./codeSigning/sign/bc_signeddata_generator_test.cpp",
@@ -86,6 +87,8 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "signProfile/sign_profile_test.cpp",
     "signProfile/pkcs7_data_test.cpp",
     "signProfile/provision_test.cpp",
+
+    "./byteBuffer/byte_buffer_test.cpp",
   ]
 
   remove_configs = [ "//build/config/compiler:no_exceptions" ]

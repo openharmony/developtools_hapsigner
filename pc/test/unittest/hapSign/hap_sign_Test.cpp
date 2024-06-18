@@ -217,6 +217,7 @@ HWTEST_F(HapSignTest, hap_sign_test_005, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
 
+    signProvider->CheckInputCertMatchWithProfile(nullptr, nullptr);
     bool retParam = signProvider->CheckParams(params.get());
     EXPECT_EQ(retParam, true);
 
@@ -1122,7 +1123,7 @@ HWTEST_F(HapSignTest, hap_sign_test_026, testing::ext::TestSize.Level1)
     ret1 = SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
     EXPECT_EQ(ret1, false);
 
-    std::vector<SignatureAlgorithmHelper> sig { SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE };
+    std::vector<SignatureAlgorithmHelper> sig{ SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE };
     config.SetSignatureAlgorithms(sig);
     ret1 = SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
     EXPECT_EQ(ret1, false);
@@ -1326,7 +1327,7 @@ HWTEST_F(HapSignTest, get_X509_CRLs_test_001, testing::ext::TestSize.Level1)
 HWTEST_F(HapSignTest, get_X509_CRLs_test_002, testing::ext::TestSize.Level1)
 {
     STACK_OF(X509_CRL)* x509CRLs = nullptr;
-        std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1354,7 +1355,7 @@ HWTEST_F(HapSignTest, get_X509_CRLs_test_002, testing::ext::TestSize.Level1)
 
     SignerConfig signerConfig;
     signerConfig.SetOptions(params.get());
-    
+
     signerConfig.GetX509CRLs();
     STACK_OF(X509_CRL)* crls = sk_X509_CRL_new_null();
     signerConfig.SetX509CRLs(crls);
@@ -1374,7 +1375,7 @@ HWTEST_F(HapSignTest, get_X509_CRLs_test_002, testing::ext::TestSize.Level1)
     signerConfig.SetCertificates(nullptr);
     signerConfig.GetCertificates();
     EXPECT_EQ(true, (signerConfig.GetX509CRLs() != nullptr));
-    sk_X509_CRL_pop_free(crls,X509_CRL_free);
+    sk_X509_CRL_pop_free(crls, X509_CRL_free);
 }
 
 /**
@@ -1461,7 +1462,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_001, testing::ext::TestSize.Level1)
     (*params)["signServer"] = signServer;
     (*params)["username"] = username;
     (*params)["userPwd"] = userPwd;
-    
+
     bool retParam = signProvider->CheckParams(params.get());
     EXPECT_EQ(retParam, true);
 
@@ -1487,7 +1488,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_002, testing::ext::TestSize.Level1)
     X509* cert = nullptr;
     STACK_OF(X509)* sk_cert = sk_X509_new(nullptr);
     BIO* certBio = BIO_new_file("./hapSign/app-release1.pem", "rb");
-    if(certBio ==nullptr) {
+    if (certBio == nullptr) {
         sk_X509_pop_free(sk_cert, X509_free);
         EXPECT_NE(certBio, nullptr);
     }
@@ -1526,7 +1527,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_003, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert, BuildDN(issuername, issuerReq));
 
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_set_subject_name(cert, BuildDN(subjectname,issuerReq));
+    X509_set_subject_name(cert, BuildDN(subjectname, issuerReq));
 
     X509* cert1 = X509_new();
     X509_REQ* issuerReq1 = X509_REQ_new();
@@ -1534,7 +1535,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_003, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert1, BuildDN(issuername1, issuerReq1));
 
     std::string subjectname1 = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_set_subject_name(cert1, BuildDN(subjectname1,issuerReq1));
+    X509_set_subject_name(cert1, BuildDN(subjectname1, issuerReq1));
 
     bool ret = signProvider->CheckInputCertMatchWithProfile(cert1, cert);
     X509_free(cert);
@@ -1559,17 +1560,17 @@ HWTEST_F(HapSignTest, remote_sign_provider_004, testing::ext::TestSize.Level1)
     X509_REQ* issuerReq = X509_REQ_new();
     std::string issuername = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
     CertTools::SetCertIssuerName(cert, BuildDN(issuername, issuerReq));
-    CertTools::SetCertSerialNum(cert,123);
+    CertTools::SetCertSerialNum(cert, 123);
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_set_subject_name(cert, BuildDN(subjectname,issuerReq));
+    X509_set_subject_name(cert, BuildDN(subjectname, issuerReq));
 
     X509* cert1 = X509_new();
     X509_REQ* issuerReq1 = X509_REQ_new();
     std::string issuername1 = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
     CertTools::SetCertIssuerName(cert1, BuildDN(issuername1, issuerReq1));
-    CertTools::SetCertSerialNum(cert1,234);
+    CertTools::SetCertSerialNum(cert1, 234);
     std::string subjectname1 = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_set_subject_name(cert1, BuildDN(subjectname1,issuerReq1));
+    X509_set_subject_name(cert1, BuildDN(subjectname1, issuerReq1));
 
     bool ret = signProvider->CheckInputCertMatchWithProfile(cert1, cert);
     X509_free(cert);
@@ -1679,12 +1680,12 @@ HWTEST_F(HapSignTest, remote_sign_provider_007, testing::ext::TestSize.Level1)
     X509_REQ* issuerReq = X509_REQ_new();
     std::string issuername = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
     CertTools::SetCertIssuerName(cert, BuildDN(issuername, issuerReq));
-    
+
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_NAME* subName =  BuildDN(subjectname, issuerReq);
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
-    
+
     X509_REQ* issuerReq1 = X509_REQ_new();
     std::string issuername1 = "C=wc,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
     CertTools::SetCertIssuerName(cert1, BuildDN(issuername1, issuerReq1));
@@ -1719,7 +1720,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_008, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert1, issName);
 
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_NAME* subName =  BuildDN(subjectname, issuerReq);
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
     KeyStoreHelper stroe;
@@ -1757,7 +1758,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_009, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert1, issName);
 
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_NAME* subName =  BuildDN(subjectname, issuerReq);
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
     KeyStoreHelper stroe;
@@ -1796,7 +1797,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_010, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert1, issName);
 
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_NAME* subName =  BuildDN(subjectname, issuerReq);
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
     KeyStoreHelper stroe;
@@ -1832,7 +1833,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_011, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert1, issName);
 
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_NAME* subName =  BuildDN(subjectname, issuerReq);
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
     KeyStoreHelper stroe;
@@ -1868,7 +1869,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_012, testing::ext::TestSize.Level1)
     CertTools::SetCertIssuerName(cert1, issName);
 
     std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    X509_NAME* subName =  BuildDN(subjectname, issuerReq);
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
     KeyStoreHelper stroe;

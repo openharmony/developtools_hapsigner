@@ -28,6 +28,8 @@
 #include <memory>
 #include <map>
 
+#include "signature_tools_log.h"
+
 using hashFunc = const EVP_MD* (*)(void);
 
 enum HashType {

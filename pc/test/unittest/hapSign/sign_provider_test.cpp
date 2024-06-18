@@ -198,48 +198,6 @@ HWTEST_F(SignProviderTest, sign_provider_test_004, testing::ext::TestSize.Level1
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_005, testing::ext::TestSize.Level1)
-{
-    SIGNATURE_TOOLS_LOGI("hello world !!!");
-    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "1";
-    std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/phone-default-unsigned.hap";
-    std::string keystoreFile = "./hapSign/ohtest.p12";
-    std::string outFile = "./hapSign/phone-default-signed.hap";
-    char keyPwd[] = "123456";
-    char keystorePwd[] = "123456";
-    std::string a = "a";
-
-    (*params)["mode"] = mode;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["signAlg"] = signAlg;
-    (*params)["signCode"] = signCode;
-    (*params)["appCertFile"] = appCertFile;
-    (*params)["profileFile"] = profileFile;
-    (*params)["inFile"] = inFile;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["outFile"] = outFile;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["a"] = a;
-
-    bool ret = signProvider->Sign(params.get());
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: sign_provider_test_004
- * @tc.desc: Generate a key pair and load it into the keystore.
- * @tc.type: FUNC
- * @tc.require:
- */
 HWTEST_F(SignProviderTest, sign_provider_test_006, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
@@ -690,6 +648,541 @@ HWTEST_F(SignProviderTest, sign_provider_test_016, testing::ext::TestSize.Level1
 
     bool ret = signProvider->Sign(params.get());
     EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: sign_provider_test_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, sign_provider_test_017, testing::ext::TestSize.Level1)
+{
+    SIGNATURE_TOOLS_LOGI("hello world !!!");
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "0";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile-nohave.p7b";
+    std::string profileSigned = "1";
+    std::string inFile = "./hapSign/phone-default-unsigned-test.hap";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/phone-default-signed-test.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["profileSigned"] = profileSigned;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->Sign(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: sign_provider_test_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, sign_provider_test_018, testing::ext::TestSize.Level1)
+{
+    SIGNATURE_TOOLS_LOGI("hello world !!!");
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA-nohave";
+    std::string signCode = "0";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string profileSigned = "1";
+    std::string inFile = "./hapSign/phone-default-unsigned-test.hap";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/phone-default-signed-test.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["profileSigned"] = profileSigned;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->Sign(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_test_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, sign_provider_test_019, testing::ext::TestSize.Level1)
+{
+    SIGNATURE_TOOLS_LOGI("hello world !!!");
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "3";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/phone-default-unsigned.hap";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/phone-default-signed.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->Sign(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_test_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, sign_provider_test_020, testing::ext::TestSize.Level1)
+{
+    SIGNATURE_TOOLS_LOGI("hello world !!!");
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/phone-default-unsigned.hap";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/phone-default-signed.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->Sign(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_test_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, sign_provider_test_021, testing::ext::TestSize.Level1)
+{
+    SIGNATURE_TOOLS_LOGI("hello world !!!");
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "";
+    std::string inFile = "./hapSign/phone-default-unsigned.hap";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/phone-default-signed.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->Sign(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: sign_provider_test_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, sign_provider_test_022, testing::ext::TestSize.Level1)
+{
+    SIGNATURE_TOOLS_LOGI("hello world !!!");
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "0";
+    std::string appCertFile = "";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string profileSigned = "1";
+    std::string inFile = "./hapSign/phone-default-unsigned-test.hap";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/phone-default-signed-test.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["profileSigned"] = profileSigned;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->Sign(params.get());
+    EXPECT_EQ(ret, true);
+}
+// /*
+//  * @tc.name: sign_provider_test_001
+//  * @tc.desc: Generate a key pair and load it into the keystore.
+//  * @tc.type: FUNC
+//  * @tc.require:
+//  */
+// HWTEST_F(SignProviderTest, sign_provider_test_023, testing::ext::TestSize.Level1)
+// {
+//     SIGNATURE_TOOLS_LOGI("hello world !!!");
+//     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+//     std::shared_ptr<Options> params = std::make_shared<Options>();
+
+//     std::string mode = "localSign";
+//     std::string keyAlias = "oh-app1-key-v1";
+//     std::string signAlg = "SHA256withECDSA";
+//     std::string signCode = "0";
+//     std::string appCertFile = "./hapSign/app-release1.pem";
+//     std::string profileFile = "./hapSign/signed-profile.p7b";
+//     std::string profileSigned = "1";
+//     std::string inFile = "./hapSign/phone-default-unsigned-test.hap";
+//     std::string keystoreFile = "./hapSign/ohtest.p12";
+//     std::string outFile = "./hapSign/phone-default-signed-test.hap";
+//     char keyPwd[] = "123456";
+//     char keystorePwd[] = "123456";
+//     std::string a = "ads";
+
+//     (*params)["mode"] = mode;
+//     (*params)["keyAlias"] = keyAlias;
+//     (*params)["signAlg"] = signAlg;
+//     (*params)["signCode"] = signCode;
+//     (*params)["appCertFile"] = appCertFile;
+//     (*params)["profileFile"] = profileFile;
+//     (*params)["profileSigned"] = profileSigned;
+//     (*params)["inFile"] = inFile;
+//     (*params)["keystoreFile"] = keystoreFile;
+//     (*params)["outFile"] = outFile;
+//     (*params)["keyPwd"] = keyPwd;
+//     (*params)["keystorePwd"] = keystorePwd;
+//     (*params)["a"] = a;
+
+//     bool ret = signProvider->Sign(params.get());
+//     EXPECT_EQ(ret, false);
+// }
+/*
+ * @tc.name: SignElf_001
+ * @tc.desc: sign elf file.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, SignElf_001, testing::ext::TestSize.Level1)
+{
+    //success
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    bool ret = signProvider->SignElf(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: SignElf_002
+ * @tc.desc: sign elf file.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
+{
+    //profileFile:p7b is null
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    bool ret = signProvider->SignElf(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: SignElf_003
+ * @tc.desc: sign elf file.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, SignElf_003, testing::ext::TestSize.Level1)
+{
+    //compatibleVersion is null
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    std::string compatibleVersion = "";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["compatibleVersion"] = compatibleVersion;
+    bool ret = signProvider->SignElf(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: SignElf_004
+ * @tc.desc: sign elf file.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, SignElf_004, testing::ext::TestSize.Level1)
+{
+    //inFile is null
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = signProvider->SignElf(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: SignElf_005
+ * @tc.desc: sign elf file.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, SignElf_005, testing::ext::TestSize.Level1)
+{
+    //inFile path is false
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign_test/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    bool ret = signProvider->SignElf(params.get());
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: SignElf_006
+ * @tc.desc: sign elf file.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(SignProviderTest, SignElf_006, testing::ext::TestSize.Level1)
+{
+    //signAlg format is false
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA512withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    bool ret = signProvider->SignElf(params.get());
+    EXPECT_EQ(ret, true);
 }
 } // namespace SignatureTools
 } // namespace OHOS

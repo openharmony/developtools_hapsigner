@@ -16,6 +16,7 @@
 #include "params_trust_list.h"
 #include "constant.h"
 #include "params.h"
+#include "string_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -37,25 +38,12 @@ ParamsTrustlist::ParamsTrustlist()
     commands.push_back(Params::VERIFY_APP + options);
 }
 
-std::string ParamsTrustlist::Trim(const std::string& str)
-{
-    size_t start = str.find_first_not_of("    \n\r ");
-    if (start == std::string::npos) {
-        return "";
-    }
-    size_t end = str.find_last_not_of("     \n\r");
-    if (end == std::string::npos) {
-        return "";
-    }
-    return str.substr(start, end - start + 1);
-}
-
 void ParamsTrustlist::PutTrustMap(const std::string& cmdStandBy, const std::string& param)
 {
     if (param.at(0) == '-') {
         size_t pos = param.find(':');
         std::string subParam = param.substr(0, pos);
-        subParam = Trim(subParam);
+        subParam = StringUtils::Trim(subParam);
         bool isExists = false;
         if (trustMap.find(cmdStandBy) != trustMap.end()) {
             isExists = true;
@@ -72,7 +60,7 @@ void ParamsTrustlist::ReadHelpParam(std::ifstream& fd)
     std::string cmdStandBy;
     while (!fd.eof() && std::getline(fd, str)) {
         bool isExists = false;
-        std::string params = Trim(str);
+        std::string params = StringUtils::Trim(str);
         if (params.empty()) {
             continue;
         }

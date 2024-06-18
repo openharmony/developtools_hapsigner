@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include <inttypes.h>
+#include <cinttypes>
 #include <algorithm>
 #include <stdexcept>
 #include <string>
@@ -34,7 +34,7 @@ bool ZipUtils::SetCentralDirectoryOffset(ByteBuffer& eocd, int64_t offset)
 bool ZipUtils::SetUInt32ToBuffer(ByteBuffer& buffer, int offset, int64_t value)
 {
     SIGNATURE_TOOLS_LOGI("offset: %{public}d, value: %{public}" PRId64 ", UINT32_MAX_VALUE: %{public}" PRId64,
-        offset, value, UINT32_MAX_VALUE);
+                         offset, value, UINT32_MAX_VALUE);
     if ((value < 0) || (value > UINT32_MAX_VALUE)) {
         SIGNATURE_TOOLS_LOGE("invalid_argument. value of out range: %{public}" PRId64, value);
         return false;

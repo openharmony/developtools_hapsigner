@@ -1,3 +1,16 @@
+# Copyright (c) 2024-2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import("../signature_tools.gni")
 import("../services/utils/signature_tools_utils.gni")
 import("../services/zip/signature_tools_zip.gni")
@@ -17,6 +30,7 @@ config("service_include") {
     "//third_party/openssl/crypto/pkcs12",
     "${signature_tools_service_api}/include",
     "${signature_tools_service_signer}/include",
+    "${signature_tools_service_thirdparty}/window/json",
   ]
 
   include_dirs += signature_tools_utils_include
@@ -58,7 +72,6 @@ ohos_source_set("service_target") {
     "${signature_tools_service_api}/src/cert_tools.cpp",
     "${signature_tools_service_signer}/src/signer_factory.cpp",
     "${signature_tools_service_signer}/src/local_signer.cpp",
-    "${signature_tools_service_signer}/src/signer.cpp",
   ]
 
   sources_obj += signature_tools_utils_src

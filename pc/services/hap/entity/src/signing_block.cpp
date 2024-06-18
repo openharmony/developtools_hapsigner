@@ -15,7 +15,8 @@
 
 #include "signing_block.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value)
 {
@@ -51,3 +52,6 @@ int32_t SigningBlock::GetOffset()
 {
     return offset;
 }
+
+} // namespace SignatureTools
+} // namespace OHOS

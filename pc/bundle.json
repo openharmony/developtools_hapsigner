@@ -1,10 +1,10 @@
 {
-    "name": "@ohos/signature",
+    "name": "@ohos/hapsigner",
     "version": "4.0",
     "description": "hap包签名工具，支持.hsp、.hqf、.hap和.app等文件签名",
     "homePage": "https://gitee.com/openharmony",
     "license": "Apache License 2.0",
-    "repository": "https://gitee.com/openharmony/signaturetools",
+    "repository": "https://gitee.com/openharmony/developtools_hapsigner",
     "domain": "os",
     "language": "",
     "publishAs": "code-segment",
@@ -14,7 +14,7 @@
         "developtools"
     ],
     "keywords": [
-        "signature"
+        "hapsigner"
     ],
     "envs": {},
     "dirs": {},

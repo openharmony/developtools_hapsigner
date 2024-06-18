@@ -49,6 +49,7 @@ namespace OHOS {
         constexpr int32_t TEST_ZIP_EOCD_SIZE = 22;
         constexpr int32_t TEST_ZIP_ECD_OFFSET_FIELD_OFFSET = 16;
         constexpr int32_t TEST_ZIP_ECD_SIZE_FIELD_OFFSET = 12;
+        constexpr int32_t TEST_ZIP_EOCD_COMMENT_OFFSET = 20;
 
         constexpr int32_t TEST_NULL_NID = 118;
         constexpr int32_t TEST_SHA256_NID = 672;

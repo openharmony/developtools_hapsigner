@@ -35,7 +35,7 @@ std::vector<std::string> SignProvider::PARAMETERS_NEED_ESCAPE = std::vector<std:
 
 bool SignProvider::PrintErrorLog(const std::string& log, const int& errorCode, std::string path)
 {
-    PrintErrorNumberMsg("SIGN_HAP", errorCode, "rootcert verify failed");
+    PrintErrorNumberMsg("SIGN_HAP", errorCode, log);
     if (path != "") {
         remove(path.c_str());
     }
@@ -154,7 +154,7 @@ bool SignProvider::Sign(Options* options)
 {
     bool isPathOverlap = false;
     STACK_OF(X509)* publicCerts = nullptr;
-    int ret = GetX509Certificates(options, publicCerts);
+    int ret = GetX509Certificates(options, &publicCerts);
     if (ret != RET_OK) {
         if (publicCerts) {
             sk_X509_pop_free(publicCerts, X509_free);
@@ -223,8 +223,11 @@ bool SignProvider::SignElf(Options* options)
 {
     bool isPathOverlap = false;
     STACK_OF(X509)* publicCerts = nullptr;
-    int ret = GetX509Certificates(options, publicCerts);
+    int ret = GetX509Certificates(options, &publicCerts);
     if (ret != RET_OK) {
+        if (publicCerts) {
+            sk_X509_pop_free(publicCerts, X509_free);
+        }
         SIGNATURE_TOOLS_LOGE("[SignElf] get X509 Certificates failed! errorCode:%{public}d", ret);
         return false;
     }
@@ -271,8 +274,11 @@ bool SignProvider::SignElf(Options* options)
 bool SignProvider::SignBin(Options* options)
 {
     STACK_OF(X509)* x509Certificates = nullptr;
-    int ret = GetX509Certificates(options, x509Certificates);
+    int ret = GetX509Certificates(options, &x509Certificates);
     if (ret != RET_OK) {
+        if (x509Certificates) {
+            sk_X509_pop_free(x509Certificates, X509_free);
+        }
         SIGNATURE_TOOLS_LOGE("[SignBin] get X509 Certificates failed! errorCode:%{public}d", ret);
         return false;
     }
@@ -401,7 +407,7 @@ std::optional<X509_CRL*> SignProvider::GetCrl()
 bool SignProvider::CheckFile(const std::string& filePath)
 {
     if (filePath.empty()) {
-        printf("fileName is null.\n");
+        SIGNATURE_TOOLS_LOGE("fileName is null.\n");
         return false;
     }
     if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
@@ -411,7 +417,7 @@ bool SignProvider::CheckFile(const std::string& filePath)
     return true;
 }
 
-int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)* X509Vec)
+int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)** X509Vec)
 {
     int ret = RET_OK;
     // 1.check the parameters
@@ -430,15 +436,19 @@ int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)* X509Vec)
         return ret;
     }
     // 4. check Profile Valid;
-    if ((ret = CheckProfileValid(X509Vec)) < 0) {
+    if ((ret = CheckProfileValid(*X509Vec)) < 0) {
         SIGNATURE_TOOLS_LOGE("invalid profile!\n");
-        sk_X509_pop_free(X509Vec, X509_free);
+        sk_X509_pop_free(*X509Vec, X509_free);
+        *X509Vec = nullptr;
         return ret;
     }
+
+    sk_X509_pop_free(*X509Vec, X509_free);
+    *X509Vec = nullptr;
     return ret;
 }
 
-int SignProvider::GetPublicCerts(Options* options, STACK_OF(X509)* ret)
+int SignProvider::GetPublicCerts(Options* options, STACK_OF(X509)** ret)
 {
     // 参数 -appCertFile 应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项;就是我们的 ./test1/app-release1.pem
     std::string appCertFileName = options->GetString(Options::APP_CERT_FILE);
@@ -449,24 +459,24 @@ int SignProvider::GetPublicCerts(Options* options, STACK_OF(X509)* ret)
     return GetCertificateChainFromFile(appCertFileName, ret);
 }
 
-int SignProvider::GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)* ret)
+int SignProvider::GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)** ret)
 {
     return GetCertListFromFile(certChianFile, ret);
 }
 
-int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)* ret)
+int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)** ret)
 {
     // lhxtodo 内存释放
     X509* cert = nullptr;
-    ret = sk_X509_new(nullptr);
-    if (ret == nullptr) {
+    *ret = sk_X509_new(nullptr);
+    if (*ret == nullptr) {
         SIGNATURE_TOOLS_LOGE("[SignHap] get CertList FromFile [sk_X509_new] failed");
         return IO_CERT_ERROR;
     }
     BIO* certBio = BIO_new_file(certsFile.c_str(), "rb");
     if (!certBio) {
         SIGNATURE_TOOLS_LOGE("[SignHap] get CertList FromFile [BIO_new_file] failed");
-        sk_X509_free(ret);
+        sk_X509_free(*ret);
         return READ_FILE_ERROR;
     }
     // 读取
@@ -474,7 +484,7 @@ int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X50
         cert = PEM_read_bio_X509(certBio, NULL, NULL, NULL);
         if (cert == nullptr)
             break;
-        sk_X509_push(ret, cert);
+        sk_X509_push(*ret, cert);
     }
     BIO_free(certBio);
     return RET_OK;
@@ -553,11 +563,12 @@ bool SignProvider::CheckParams(Options* options)
         signParams[ParamConstants::PARAM_BASIC_PROFILE_SIGNED] = "1";
     }
     if (!CheckSignCode()) {
-        printf("Error: PARAM_SIGN_CODE Parameter check error !");
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "PARAM_SIGN_CODE Parameter check error");
         return false;
     }
     if (!CheckSignatureAlg()) {
-        printf("Error: PARAM_BASIC_SIGANTURE_ALG Parameter check error !");
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, 
+                            "PARAM_BASIC_SIGANTURE_ALG Parameter check error");
         return false;
     }
     CheckSignAlignment();
@@ -758,10 +769,12 @@ int SignProvider::CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inpu
     }
     if (!sk_X509_num(inputCerts) && !CheckInputCertMatchWithProfile(sk_X509_value(inputCerts, 0),
         certInProfile)) {
+        X509_free(certInProfile);
         SIGNATURE_TOOLS_LOGE("input certificates do not match with profile!");
         return MATCH_ERROR;
     }
     std::string cn = GetCertificateCN(certInProfile);  
+    X509_free(certInProfile);
     SIGNATURE_TOOLS_LOGI("certificate in profile: %s", cn.c_str());
     if (cn.empty()) {
         SIGNATURE_TOOLS_LOGE("Common name of certificate is empty!");

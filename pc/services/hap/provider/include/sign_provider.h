@@ -122,10 +122,10 @@ private:
     int LoadOptionalBlock(const std::string& file, int type);
     bool CheckFile(const std::string& filePath);
 
-    int GetX509Certificates(Options* options, STACK_OF(X509)* ret);
-    int GetPublicCerts(Options* options, STACK_OF(X509)* ret);
-    int GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)* ret);
-    int GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)* ret);
+    int GetX509Certificates(Options* options, STACK_OF(X509)** ret);
+    int GetPublicCerts(Options* options, STACK_OF(X509)** ret);
+    int GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)** ret);
+    int GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)** ret);
 
     bool AppendCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
                              const std::string& suffix, long long centralDirectoryOffset, ZipSigner& zip);

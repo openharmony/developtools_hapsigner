@@ -26,6 +26,8 @@
 #include "hash_utils.h"
 #include "constant.h"
 #include "securec.h"
+#include "file_data_source.h"
+#include "byte_buffer_data_source.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -68,7 +70,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_001, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v1.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-1.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, true);
@@ -106,7 +108,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_002, testing::ext::TestSize.Level1) 
         char keystorePwd[] = "keystorePwdChars";
         (*params)["subject"] = std::string("C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App2 Release");
         (*params)["signAlg"] = std::string(SIGN_ALG_SHA384);
-        (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v2.csr");
+        (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-2.csr");
         (*params)["keyPwd"] = keyPwd;
         (*params)["keystorePwd"] = keystorePwd;
         bool ret = api->GenerateCsr(params.get());
@@ -135,7 +137,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_003, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v3.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-3.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -163,7 +165,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_004, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v4.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-4.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -191,7 +193,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_005, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v5.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-5.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -219,7 +221,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_006, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v6.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-6.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -247,7 +249,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_007, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v7.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-7.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -275,7 +277,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_008, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string("SHA256");
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v8.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-8.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -330,7 +332,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_010, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/d/test/resource/oh-app1-key-v10.csr");
+    (*params)["outFile"] = std::string("/d/test/resource/oh-app1-key-10.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -356,7 +358,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_011, testing::ext::TestSize.Level1) 
     (*params)["keyPwd"] = keyPwd;
     (*params)["subject"] = std::string("C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release");
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v1.csr");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-11.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, false);
@@ -384,7 +386,7 @@ HWTEST_F(GenerateCsrTest, generate_csr_test_012, testing::ext::TestSize.Level1) 
     (*params)["signAlg"] = std::string(SIGN_ALG_SHA256);
     (*params)["keystoreFile"] = std::string("/data/test/generateCsr/ohtest.p12");
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-v1.cs");
+    (*params)["outFile"] = std::string("/data/test/generateCsr/oh-app1-key-12.csr");
 
     bool ret = api->GenerateCsr(params.get());
     EXPECT_EQ(ret, true);
@@ -682,12 +684,12 @@ HWTEST_F(GenerateCsrTest, process_cmd_test_001, testing::ext::TestSize.Level1)
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
     EXPECT_EQ(ParamsRunTool::ProcessCmd(args, sizeof(args) / sizeof((char*)arg0)), true);
-    delete [] arg7;
+    delete[] arg7;
 }
 
 /**
@@ -782,7 +784,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_001, testing::ext::TestSize.Level1
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
@@ -790,7 +792,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_001, testing::ext::TestSize.Level1
     ParamsSharedPtr param = std::make_shared<Params>();
     CmdUtil cmdUtil;
     EXPECT_EQ(cmdUtil.Convert2Params(args, sizeof(args) / sizeof((char*)arg0), param), true);
-    delete [] arg7;
+    delete[] arg7;
 }
 
 /**
@@ -814,7 +816,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_002, testing::ext::TestSize.Level1
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
@@ -828,7 +830,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_002, testing::ext::TestSize.Level1
     ifs.open(HELP_FILE_PATH);
     EXPECT_EQ(ifs.good(), true);
     ifs.close();
-    delete [] arg7;
+    delete[] arg7;
 }
 
 /**
@@ -844,7 +846,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_003, testing::ext::TestSize.Level1
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
@@ -852,7 +854,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_003, testing::ext::TestSize.Level1
     ParamsSharedPtr param = std::make_shared<Params>();
     CmdUtil cmdUtil;
     EXPECT_EQ(cmdUtil.Convert2Params(args, sizeof(args) / sizeof((char*)arg0), param), false);
-    delete [] arg7;
+    delete[] arg7;
 }
 
 /**
@@ -868,7 +870,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_004, testing::ext::TestSize.Level1
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456", arg14[] = "-signcode";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
@@ -876,7 +878,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_004, testing::ext::TestSize.Level1
     ParamsSharedPtr param = std::make_shared<Params>();
     CmdUtil cmdUtil;
     EXPECT_EQ(cmdUtil.Convert2Params(args, sizeof(args) / sizeof((char*)arg0), param), false);
-    delete [] arg7;
+    delete[] arg7;
 }
 
 /**
@@ -892,7 +894,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_005, testing::ext::TestSize.Level1
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456", arg14[] = "";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
@@ -900,7 +902,7 @@ HWTEST_F(GenerateCsrTest, convert2params_test_005, testing::ext::TestSize.Level1
     ParamsSharedPtr param = std::make_shared<Params>();
     CmdUtil cmdUtil;
     EXPECT_EQ(cmdUtil.Convert2Params(args, sizeof(args) / sizeof((char*)arg0), param), false);
-    delete [] arg7;
+    delete[] arg7;
 }
 
 /**
@@ -966,7 +968,7 @@ HWTEST_F(GenerateCsrTest, dispatch_params_test_001, testing::ext::TestSize.Level
         arg6[] = "-signAlg", arg8[] = "-keystoreFile",
         arg9[] = "/data/test/generateCsr/ohtest.p12", arg10[] = "-keystorePwd", arg11[] = "123456",
         arg12[] = "-keyPwd", arg13[] = "123456";
-    char *arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
+    char* arg7 = new char[SIGN_ALG_SHA256.size() + 1]();
     arg7[SIGN_ALG_SHA256.size()] = '\0';
     EXPECT_EQ(memcpy_s(arg7, SIGN_ALG_SHA256.size(), SIGN_ALG_SHA256.c_str(), SIGN_ALG_SHA256.size()), 0);
     char* args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
@@ -976,63 +978,76 @@ HWTEST_F(GenerateCsrTest, dispatch_params_test_001, testing::ext::TestSize.Level
     EXPECT_EQ(cmdUtil.Convert2Params(args, sizeof(args) / sizeof((char*)arg0), param), true);
     std::shared_ptr<SignToolServiceImpl> service_api = std::make_shared<SignToolServiceImpl>();
     EXPECT_EQ(ParamsRunTool::DispatchParams(param, *service_api), true);
-    delete [] arg7;
+    delete[] arg7;
 }
 
-// /**
-//  * @tc.name: get_hash_algs_id_test_001
-//  * @tc.desc: Test function of HashUtils::GetHashAlgsId() interface for SUCCESS.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCsrTest, get_hash_algs_id_test_001, testing::ext::TestSize.Level1)
-// {
-//     HashUtils::GetHashAlgsId("SHA-224");
-//     HashUtils::GetHashAlgsId("SHA-384");
-//     HashUtils::GetHashAlgsId("SHA-512");
-//     HashUtils::GetHashAlgsId("SHA-1024");
-// }
+/**
+ * @tc.name: get_hash_algs_id_test_001
+ * @tc.desc: Test function of HashUtils::GetHashAlgsId() interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCsrTest, get_hash_algs_id_test_001, testing::ext::TestSize.Level1)
+{
+    HashUtils::GetHashAlgsId("SHA-224");
+    HashUtils::GetHashAlgsId("SHA-384");
+    HashUtils::GetHashAlgsId("SHA-512");
+    HashUtils::GetHashAlgsId("SHA-1024");
+}
 
-// /**
-//  * @tc.name: get_hash_algs_name_test_001
-//  * @tc.desc: Test function of HashUtils::GetHashAlgName() interface for SUCCESS.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCsrTest, get_hash_algs_name_test_001, testing::ext::TestSize.Level1)
-// {
-//     HashUtils::GetHashAlgName(5);
-//     HashUtils::GetHashAlgName(7);
-//     HashUtils::GetHashAlgName(8);
-//     HashUtils::GetHashAlgName(9);
-// }
+/**
+ * @tc.name: get_hash_algs_name_test_001
+ * @tc.desc: Test function of HashUtils::GetHashAlgName() interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCsrTest, get_hash_algs_name_test_001, testing::ext::TestSize.Level1)
+{
+    HashUtils::GetHashAlgName(5);
+    HashUtils::GetHashAlgName(7);
+    HashUtils::GetHashAlgName(8);
+    HashUtils::GetHashAlgName(9);
+}
 
-// /**
-//  * @tc.name: get_digest_from_bytes_test_001
-//  * @tc.desc: Test function of HashUtils::GetDigestFromBytes() interface for SUCCESS.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCsrTest, get_digest_from_bytes_test_001, testing::ext::TestSize.Level1)
-// {
-//     HashUtils::GetDigestFromBytes({}, 1, "");
-//     HashUtils::GetDigestFromBytes({'a'}, 0, "");
-// }
+/**
+ * @tc.name: get_digest_from_bytes_test_001
+ * @tc.desc: Test function of HashUtils::GetDigestFromBytes() interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCsrTest, get_digest_from_bytes_test_001, testing::ext::TestSize.Level1)
+{
+    HashUtils::GetDigestFromBytes({}, 1, "");
+    HashUtils::GetDigestFromBytes({ 'a' }, 0, "");
+}
 
+/**
+ * @tc.name: read_data_and_digest_update_test_001
+ * @tc.desc: Test function of FileDataSource::ReadDataAndDigestUpdate() interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCsrTest, read_data_and_digest_update_test_001, testing::ext::TestSize.Level1)
+{
+    RandomAccessFile file;
+    FileDataSource src(file, 0, 0, 0);
+    DigestParameter param;
+    src.ReadDataAndDigestUpdate(param, -1);
+}
 
-// /**
-//  * @tc.name: append_write_file_by_offset_to_file_test_001
-//  * @tc.desc: Test function of FileUtils::AppendWriteFileByOffsetToFile() interface for SUCCESS.
-//  * @tc.type: FUNC
-//  * @tc.require: SR000H63TL
-//  */
-// HWTEST_F(GenerateCsrTest, append_write_file_by_offset_to_file_test_001, testing::ext::TestSize.Level1)
-// {
-//     std::ofstream ofs("/data/test/tmp.txt");
-//     FileUtils::AppendWriteFileByOffsetToFile("/data/test/notexisted.txt", ofs, 0, 0);
-//     FileUtils::AppendWriteFileByOffsetToFile("/data/test/help.txt", ofs, -1, 0);
-//     FileUtils::AppendWriteFileByOffsetToFile("/data/test/help.txt", ofs, 0, -1);
-// }
+/**
+ * @tc.name: read_data_and_digest_update_test_002
+ * @tc.desc: Test function of ByteBufferDataSource::ReadDataAndDigestUpdate() interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCsrTest, read_data_and_digest_update_test_002, testing::ext::TestSize.Level1)
+{
+    ByteBuffer buffer;
+    ByteBufferDataSource src(buffer);
+    DigestParameter param;
+    src.ReadDataAndDigestUpdate(param, -1);
+}
 
 } // namespace SignatureTools
 } // namespace OHOS

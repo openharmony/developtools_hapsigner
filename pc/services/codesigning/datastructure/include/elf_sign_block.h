@@ -42,10 +42,6 @@ public:
     static int32_t ComputeMerkleTreePaddingLength(int64_t signBlockOffset);
 
 private:
-    ElfSignBlock(int32_t type, int32_t treeLength, std::vector<int8_t> merkleTreeWithPadding,
-                 FsVerityDescriptorWithSign descriptorWithSign);
-
-private:
     int32_t type = MERKLE_TREE_INLINED;
     int32_t treeLength;
     std::vector<int8_t> merkleTreeWithPadding;

@@ -12,10 +12,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "generate_keyPair_Test.h"
+
+#include <gtest/gtest.h>
+#include "signature_tools_log.h"
+#include "options.h"
+#include "sign_tool_service_impl.h"
+#include "localization_adapter.h"
+#include "openssl/ssl.h"
+#include "openssl/pem.h"
+#include "openssl/err.h"
+#include "cmd_util.h"
+#include "file_utils.h"
+#include "params_run_tool.h"
+#include "constant.h"
+#include "params.h"
+#include "params_trust_list.h"
+#include "param_constants.h"
 
 namespace OHOS {
 namespace SignatureTools {
+
+class GenerateKeyPairTest : public testing::Test {
+public:
+    static void SetUpTestCase()
+    {
+    };
+    static void TearDownTestCase()
+    {
+    };
+    void SetUp()
+    {
+    };
+    void TearDown()
+    {
+    };
+};
+
 /*
  * @tc.name: generate_keypair_test_001
  * @tc.desc: Generate a key pair and load it into the keystore.
@@ -24,25 +56,25 @@ namespace SignatureTools {
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_001, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = api->GenerateKeyStore(params.get());
-	EXPECT_EQ(ret, true);
+    bool ret = api->GenerateKeyStore(params.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -54,28 +86,27 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_001, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_002, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	int status = adaptePtr->IsAliasExist(adaptePtr->options->GetString(Options::KEY_ALIAS));
-	EXPECT_EQ(status, 0);
+    int status = adaptePtr->IsAliasExist(adaptePtr->options->GetString(Options::KEY_ALIAS));
+    EXPECT_EQ(status, 0);
 }
-
 
 /*
  * @tc.name: generate_keypair_test_003
@@ -85,23 +116,23 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_002, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_003, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-	EVP_PKEY* keyPair = nullptr;
-	keyPair = adaptePtr->GetAliasKey(true);
-	EXPECT_NE(keyPair, nullptr);
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    EXPECT_NE(keyPair, nullptr);
 }
 
 /*
@@ -112,21 +143,21 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_003, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_004, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlg = "ECC";
-	int keySize = 256;
+    std::string keyAlg = "ECC";
+    int keySize = 256;
 
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	EVP_PKEY* keyPair = nullptr;
-	std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
-	keyPair = adaptePtr->keyStoreHelper->GenerateKeyPair(adaptePtr->options->GetString(Options::KEY_ALG),
-														 adaptePtr->options->GetInt(Options::KEY_SIZE));
-	EXPECT_NE(keyPair, nullptr);
+    EVP_PKEY* keyPair = nullptr;
+    std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
+    keyPair = adaptePtr->keyStoreHelper->GenerateKeyPair(adaptePtr->options->GetString(Options::KEY_ALG),
+                                                         adaptePtr->options->GetInt(Options::KEY_SIZE));
+    EXPECT_NE(keyPair, nullptr);
 }
 
 /*
@@ -137,33 +168,33 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_004, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_005, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	EVP_PKEY* keyPair = nullptr;
-	std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
-	keyPair = adaptePtr->keyStoreHelper->GenerateKeyPair(adaptePtr->options->GetString(Options::KEY_ALG),
-														 adaptePtr->options->GetInt(Options::KEY_SIZE));
-	int ret = adaptePtr->keyStoreHelper->Store(keyPair, keyStorePath,
-											   adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
-											   adaptePtr->options->GetString(Options::KEY_ALIAS),
-											   adaptePtr->options->GetChars(Options::KEY_RIGHTS));
-	EXPECT_NE(ret, RET_FAILED);
+    EVP_PKEY* keyPair = nullptr;
+    std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
+    keyPair = adaptePtr->keyStoreHelper->GenerateKeyPair(adaptePtr->options->GetString(Options::KEY_ALG),
+                                                         adaptePtr->options->GetInt(Options::KEY_SIZE));
+    int ret = adaptePtr->keyStoreHelper->Store(keyPair, keyStorePath,
+                                               adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
+                                               adaptePtr->options->GetString(Options::KEY_ALIAS),
+                                               adaptePtr->options->GetChars(Options::KEY_RIGHTS));
+    EXPECT_NE(ret, RET_FAILED);
 }
 
 /*
@@ -174,30 +205,30 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_005, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_006, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	EVP_PKEY* keyPair = nullptr;
-	std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
-	adaptePtr->keyStoreHelper->ReadStore(keyStorePath, adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
-										 adaptePtr->options->GetString(Options::KEY_ALIAS),
-										 adaptePtr->options->GetChars(Options::KEY_RIGHTS), &keyPair);
-	EXPECT_NE(keyPair, nullptr);
+    EVP_PKEY* keyPair = nullptr;
+    std::string keyStorePath = adaptePtr->options->GetString(Options::KEY_STORE_FILE);
+    adaptePtr->keyStoreHelper->ReadStore(keyStorePath, adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS),
+                                         adaptePtr->options->GetString(Options::KEY_ALIAS),
+                                         adaptePtr->options->GetChars(Options::KEY_RIGHTS), &keyPair);
+    EXPECT_NE(keyPair, nullptr);
 }
 
 /*
@@ -208,25 +239,25 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_006, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_007, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char keyPwd[] = "123456";
-	char keystorePwd[] = "123456";
-	char issuerKeyPwd[] = "123456";
-	char issuerkeystorePwd[] = "123456";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    char issuerKeyPwd[] = "123456";
+    char issuerkeystorePwd[] = "123456";
 
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["issuerKeyPwd"] = issuerKeyPwd;
-	(*params)["issuerkeystorePwd"] = issuerkeystorePwd;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["issuerKeyPwd"] = issuerKeyPwd;
+    (*params)["issuerkeystorePwd"] = issuerkeystorePwd;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	adaptePtr->ResetPwd();
-	EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_RIGHTS), nullptr);
-	EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS), nullptr);
-	EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_RIGHTS), nullptr);
-	EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), nullptr);
+    adaptePtr->ResetPwd();
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_RIGHTS), nullptr);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS), nullptr);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_RIGHTS), nullptr);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), nullptr);
 }
 
 /*
@@ -237,39 +268,26 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_007, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_008, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "aaa";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 385;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "aaa";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 385;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = api->GenerateKeyStore(params.get());
-	EXPECT_EQ(ret, true);
+    bool ret = api->GenerateKeyStore(params.get());
+    EXPECT_EQ(ret, true);
 }
-
-/*
- * @tc.name: generate_keypair_test_009
- * @tc.desc: Find the key pair based on the alias.
- * @tc.type: FUNC
- * @tc.require:
- */
-/*HWTEST_F(GenerateKeyPairTest, generate_keypair_test_009, testing::ext::TestSize.Level1)
-{
-	KeyStoreHelper keystorehelper;
-	int ret = keystorehelper.FindFriendlyName(nullptr, nullptr, nullptr, nullptr, nullptr);
-	EXPECT_EQ(ret, RET_FAILED);
-}*/
 
 /*
 * @tc.name: generate_keypair_test_010
@@ -279,52 +297,26 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_008, testing::ext::TestSize.
 */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456909";
-	std::string keyAlg = "ECC";
-	int keySize = 385;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456909";
+    std::string keyAlg = "ECC";
+    int keySize = 385;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = api->GenerateKeyStore(params.get());
-	EXPECT_EQ(ret, true);
+    bool ret = api->GenerateKeyStore(params.get());
+    EXPECT_EQ(ret, true);
 }
-
-/*
- * @tc.name: generate_keypair_test_011
- * @tc.desc: get Public Key.
- * @tc.type: FUNC
- * @tc.require:
- */
-/*HWTEST_F(GenerateKeyPairTest, generate_keypair_test_011, testing::ext::TestSize.Level1)
-{
-	KeyStoreHelper keystorehelper;
-	int ret = keystorehelper.GetPublicKey(nullptr, nullptr, nullptr, 0, nullptr);
-	EXPECT_EQ(ret, RET_FAILED);
-}*/
-
-/*
- * @tc.name: generate_keypair_test_012
- * @tc.desc: Check Alias.
- * @tc.type: FUNC
- * @tc.require:
- */
-/*HWTEST_F(GenerateKeyPairTest, generate_keypair_test_012, testing::ext::TestSize.Level1)
-{
-	KeyStoreHelper keystorehelper;
-	EVP_PKEY* ret = keystorehelper.CheckAlias(nullptr, nullptr, nullptr, nullptr);
-	EXPECT_EQ(ret, nullptr);
-}*/
 
 /*
  * @tc.name: generate_keypair_test_013
@@ -334,28 +326,28 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_013, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
-	KeyStoreHelper keystorehelper;
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    KeyStoreHelper keystorehelper;
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "1234563333";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "1234563333";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	EVP_PKEY* keyPair = keystorehelper.GenerateKeyPair(keyAlg, keySize);
+    EVP_PKEY* keyPair = keystorehelper.GenerateKeyPair(keyAlg, keySize);
 
-	int ret = keystorehelper.Store(keyPair, keystoreFile, keystorePwd, keyAlias, keyPwd);
-	EXPECT_EQ(ret, RET_FAILED);
+    int ret = keystorehelper.Store(keyPair, keystoreFile, keystorePwd, keyAlias, keyPwd);
+    EXPECT_EQ(ret, RET_FAILED);
 }
 
 /*
@@ -366,42 +358,29 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_013, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_014, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
-	KeyStoreHelper keystorehelper;
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    KeyStoreHelper keystorehelper;
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony99999.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony99999.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	EVP_PKEY* keyPair = nullptr;
+    EVP_PKEY* keyPair = nullptr;
 
-	int ret = keystorehelper.ReadStore(keystoreFile, keystorePwd, keyAlias, keyPwd, &keyPair);
-	EXPECT_EQ(ret, RET_FAILED);
+    int ret = keystorehelper.ReadStore(keystoreFile, keystorePwd, keyAlias, keyPwd, &keyPair);
+    EXPECT_EQ(ret, RET_FAILED);
 }
-
-/*
- * @tc.name: generate_keypair_test_015
- * @tc.desc: Pkcs12Parse.
- * @tc.type: FUNC
- * @tc.require:
- */
-/*HWTEST_F(GenerateKeyPairTest, generate_keypair_test_015, testing::ext::TestSize.Level1)
-{
-	KeyStoreHelper keystorehelper;
-	int ret = keystorehelper.Pkcs12Parse(nullptr, nullptr);
-	EXPECT_EQ(ret, RET_FAILED);
-}*/
 
 /*
 * @tc.name: generate_keypair_test_016
@@ -411,21 +390,21 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_014, testing::ext::TestSize.
 */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_016, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
 
-	bool ret = api->GenerateKeyStore(params.get());
-	EXPECT_EQ(ret, true);
+    bool ret = api->GenerateKeyStore(params.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -436,25 +415,25 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_016, testing::ext::TestSize.
 */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_017, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = api->GenerateKeyStore(params.get());
-	EXPECT_EQ(ret, true);
+    bool ret = api->GenerateKeyStore(params.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -465,23 +444,320 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_017, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_018, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	std::string keyAlg = "ECC";
-	int keySize = 256;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony1.p12";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony1.p12";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
 
-	bool ret = api->GenerateKeyStore(params.get());
-	EXPECT_EQ(ret, true);
+    bool ret = api->GenerateKeyStore(params.get());
+    EXPECT_EQ(ret, true);
 }
 
+/*
+ * @tc.name: generate_keypair_test_019
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_019, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmony.p12";
+    char storePwd[] = "123456";
+    std::string alias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    keyhelper.InitX509(*cert, *keypair);
+
+    keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
+    int ret = keyhelper.FindFriendlyName(p12, nullptr, nullptr, nullptr, nullptr);
+    EXPECT_EQ(ret, RET_OK);
+}
+
+/*
+ * @tc.name: generate_keypair_test_020
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_020, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmony11.p12";
+    char storePwd[] = "123456";
+    std::string alias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    int ret = keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
+    EXPECT_EQ(ret, RET_OK);
+}
+
+/*
+ * @tc.name: generate_keypair_test_021
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_021, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    int ret = keyhelper.Pkcs12Parse(nullptr, nullptr);
+    EXPECT_EQ(ret, RET_FAILED);
+}
+
+/*
+ * @tc.name: generate_keypair_test_022
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_022, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmonyDamage.p12";
+    char storePwd[] = "123456";
+    std::string alias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    keyhelper.InitX509(*cert, *keypair);
+    int ret = keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
+    EXPECT_EQ(ret, RET_FAILED);
+}
+
+/*
+ * @tc.name: generate_keypair_test_023
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_023, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmonyNullpwd.p12";
+    std::string alias = "oh-app1-key-v1";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    keyhelper.InitX509(*cert, *keypair);
+    keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), nullptr, nullptr, alias.c_str(), keypair, cert);
+    int ret = keyhelper.Pkcs12Parse(p12, nullptr);
+    EXPECT_EQ(ret, RET_OK);
+}
+
+/*
+ * @tc.name: generate_keypair_test_024
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_024, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmonyNullpwd.p12";
+    char storePwd[] = "";
+    std::string alias = "oh-app1-key-v1";
+    char keyPwd[] = "";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    keyhelper.InitX509(*cert, *keypair);
+    keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
+    int ret = keyhelper.Pkcs12Parse(p12, nullptr);
+    EXPECT_EQ(ret, RET_OK);
+}
+
+/*
+ * @tc.name: generate_keypair_test_025
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_025, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    EVP_PKEY* keypair = keyhelper.GenerateKeyPair("", 256);
+    EXPECT_EQ(keypair, nullptr);
+}
+
+/*
+ * @tc.name: generate_keypair_test_026
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_026, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    PKCS12* p12 = nullptr;
+    p12 = keyhelper.Pkcs12Create(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0, 0, 0, 0, nullptr);
+    EXPECT_EQ(p12, nullptr);
+}
+
+/*
+ * @tc.name: generate_keypair_test_027
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_027, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    EVP_PKEY* keypair = keyhelper.GenerateKeyPair("ECC", 0);
+    EXPECT_EQ(keypair, nullptr);
+}
+
+/*
+ * @tc.name: generate_keypair_test_028
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_028, testing::ext::TestSize.Level1)
+{
+    int nid_key = 1;
+    int iter = 1;
+    int mac_iter = 1;
+    bool ret = true;
+    KeyStoreHelper keyhelper;
+    keyhelper.SetNidMac(nid_key, iter, mac_iter);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: generate_keypair_test_029
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.Level1)
+{
+    int nid_key = 0;
+    int iter = 0;
+    int mac_iter = 0;
+    bool ret = true;
+    KeyStoreHelper keyhelper;
+    keyhelper.SetNidMac(nid_key, iter, mac_iter);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: generate_keypair_test_030
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_030, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    int ret = keyhelper.SetCertPkcs12(nullptr, nullptr, nullptr, nullptr, 0, nullptr, nullptr, nullptr, 0, 0, nullptr);
+    EXPECT_EQ(ret, RET_OK);
+}
+
+/*
+ * @tc.name: generate_keypair_test_031
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_031, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    X509* cert = X509_new();
+    int ret = keyhelper.SetCertPkcs12(cert, nullptr, nullptr, nullptr, -2, nullptr, nullptr, nullptr, 0, 0, nullptr);
+    EXPECT_EQ(ret, RET_FAILED);
+}
+
+/*
+ * @tc.name: generate_keypair_test_033
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_033, testing::ext::TestSize.Level1)
+{
+    KeyStoreHelper keyhelper;
+    int ret = keyhelper.SetPkeyPkcs12(nullptr, nullptr, nullptr, nullptr, nullptr, 0, nullptr, 0, 0, nullptr, 0);
+    EXPECT_EQ(ret, RET_OK);
+}
+
+/*
+ * @tc.name: generate_keypair_test_034
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_034, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+    STACK_OF(PKCS7)* safes = nullptr;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmony.p12";
+    char storePwd1[] = "99999";
+    std::string alias = "oh-app1-key-v1";
+    char keyPwd[] = "";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    keyhelper.InitX509(*cert, *keypair);
+    p12 = keyhelper.Pkcs12Create(storePwd1, keyPwd, nullptr, keypair, cert, nullptr, 0, -2, -2, -1, 0, &safes);
+    EXPECT_EQ(p12, nullptr);
+}
+
+/*
+ * @tc.name: generate_keypair_test_035
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_035, testing::ext::TestSize.Level1)
+{
+    X509* cert = X509_new();
+    PKCS12* p12 = nullptr;
+    EVP_PKEY* keypair = nullptr;
+    KeyStoreHelper keyhelper;
+    STACK_OF(PKCS7)* safes = nullptr;
+
+    std::string keyStorePath = "./generateKeyPair/OpenHarmony.p12";
+    char storePwd1[] = "99999";
+    std::string alias = "oh-app1-key-v1";
+    char keyPwd[] = "";
+
+    keypair = keyhelper.GenerateKeyPair("ECC", 256);
+    keyhelper.InitX509(*cert, *keypair);
+    p12 = keyhelper.Pkcs12Create(storePwd1, keyPwd, nullptr, keypair, cert, nullptr, -2, 0, 0, -1, 0, &safes);
+    EXPECT_EQ(p12, nullptr);
+}
 
 /*
  * @tc.name: Options_test_001
@@ -491,18 +767,15 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_018, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_001, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    char keyPwd[] = "123456";
+    (*params)["keyPwd"] = keyPwd;
 
-	char keyPwd[] = "123456";
-	(*params)["keyPwd"] = keyPwd;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    char* strPrt = adaptePtr->options->GetChars(Options::KEY_RIGHTS);
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
-	char* strPrt = adaptePtr->options->GetChars(Options::KEY_RIGHTS);
-
-	EXPECT_NE(strPrt, nullptr);
+    EXPECT_NE(strPrt, nullptr);
 }
-
 
 /*
  * @tc.name: Options_test_002
@@ -512,18 +785,14 @@ HWTEST_F(GenerateKeyPairTest, Options_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_002, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    (*params)["keyAlias"] = keyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::string strPrt = adaptePtr->options->GetString(Options::KEY_ALIAS);
 
-	std::string keyAlias = "oh-app1-key-v1";
-	(*params)["keyAlias"] = keyAlias;
-
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
-	std::string strPrt = adaptePtr->options->GetString(Options::KEY_ALIAS);
-
-	EXPECT_NE(strPrt, "");
+    EXPECT_NE(strPrt, "");
 }
-
 
 /*
  * @tc.name: Options_test_003
@@ -533,26 +802,21 @@ HWTEST_F(GenerateKeyPairTest, Options_test_002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_003, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string str = "test";
+    (*params)["keyAlias"] = keyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::string strPrt = adaptePtr->options->GetString(Options::KEY_ALIAS, str);
 
-	std::string keyAlias = "oh-app1-key-v1";
-	std::string str = "test";
-
-	(*params)["keyAlias"] = keyAlias;
-
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
-	std::string strPrt = adaptePtr->options->GetString(Options::KEY_ALIAS, str);
-
-	if (strPrt == keyAlias) {
-		EXPECT_EQ(strPrt, keyAlias);
-	} else if (strPrt == str) {
-		EXPECT_EQ(strPrt, str);
-	} else {
-		EXPECT_EQ(strPrt, keyAlias);
-	}
+    if (strPrt == keyAlias) {
+        EXPECT_EQ(strPrt, keyAlias);
+    } else if (strPrt == str) {
+        EXPECT_EQ(strPrt, str);
+    } else {
+        EXPECT_EQ(strPrt, keyAlias);
+    }
 }
-
 
 /*
  * @tc.name: Options_test_004
@@ -562,18 +826,14 @@ HWTEST_F(GenerateKeyPairTest, Options_test_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_004, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    int keySize = 256;
+    (*params)["keySize"] = keySize;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    int size = adaptePtr->options->GetInt(Options::KEY_SIZE);
 
-	int keySize = 256;
-	(*params)["keySize"] = keySize;
-
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
-	int size = adaptePtr->options->GetInt(Options::KEY_SIZE);
-
-	EXPECT_NE(size, 0);
+    EXPECT_NE(size, 0);
 }
-
 
 /*
  * @tc.name: Options_test_005
@@ -583,17 +843,16 @@ HWTEST_F(GenerateKeyPairTest, Options_test_004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_005, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string issuerkeystoreFile = "./generateKeyPair/OpenHarmony.p12";
 
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	std::string issuerkeystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["issuerkeystoreFile"] = issuerkeystoreFile;
 
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["issuerkeystoreFile"] = issuerkeystoreFile;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-
-	EXPECT_EQ(adaptePtr->options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE), true);
+    EXPECT_EQ(adaptePtr->options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE), true);
 }
 
 /*
@@ -604,17 +863,17 @@ HWTEST_F(GenerateKeyPairTest, Options_test_005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_006, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	std::string issuerkeystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string issuerkeystoreFile = "./generateKeyPair/OpenHarmony.p12";
 
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["issuerkeystoreFile"] = issuerkeystoreFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["issuerkeystoreFile"] = issuerkeystoreFile;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	EXPECT_EQ(adaptePtr->options->Required({ Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE }), true);
+    EXPECT_EQ(adaptePtr->options->Required({ Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE }), true);
 }
 /*
  * @tc.name: Options_test_007
@@ -624,13 +883,13 @@ HWTEST_F(GenerateKeyPairTest, Options_test_006, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, Options_test_007, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string str = "";
+    std::string str = "";
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	EXPECT_EQ(adaptePtr->options->IsEmpty(str), true);
+    EXPECT_EQ(adaptePtr->options->IsEmpty(str), true);
 }
 
 /*
@@ -641,18 +900,158 @@ HWTEST_F(GenerateKeyPairTest, Options_test_007, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, Options_test_008, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	(*params)["keyAlias"];
+    std::string keyAlias = "oh-app1-key-v1";
+    (*params)["keyAlias"];
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	std::string strPrt = adaptePtr->options->GetString(Options::KEY_ALIAS);
+    std::string strPrt = adaptePtr->options->GetString(Options::KEY_ALIAS);
 
-	EXPECT_EQ(strPrt, "");
+    EXPECT_EQ(strPrt, "");
 }
 
+/*
+ * @tc.name: Options_test_009
+ * @tc.desc: get two-parameter string type value, and do type checking.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_009, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    (*params)["keyAlias"] = keyAlias;
+
+    std::string strPrt = params->GetString(Options::KEY_STORE_FILE);
+    EXPECT_EQ(strPrt, "");
+}
+
+/*
+ * @tc.name: Options_test_010
+ * @tc.desc: get two-parameter string type value, and do type checking.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_010, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    std::string strPrt = params->GetString(Options::KEY_RIGHTS);
+    EXPECT_EQ(strPrt, "");
+}
+
+/*
+ * @tc.name: Options_test_011
+ * @tc.desc: get two-parameter string type value, and do type checking.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_011, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string str = "abcd";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    std::string strPrt = params->GetString(Options::KEY_RIGHTS, str);
+    EXPECT_EQ(strPrt, str);
+}
+
+/*
+ * @tc.name: Options_test_012
+ * @tc.desc: get two-parameter string type value, and do type checking.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_012, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "";
+    char keyPwd[] = "123456";
+    std::string str = "abcd";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    std::string strPrt = params->GetString(Options::KEY_ALIAS, str);
+    EXPECT_EQ(strPrt, str);
+}
+
+/*
+ * @tc.name: Options_test_013
+ * @tc.desc: Required.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_013, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string outForm = "cert";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["outForm"] = outForm;
+    (*params)["keystoreFile"] = keystoreFile;
+    params->Required({ Options::KEY_ALIAS, Options::SIGN_ALG, Options::OUT_FORM, Options::KEY_STORE_FILE });
+}
+
+/*
+ * @tc.name: Options_test_014
+ * @tc.desc: Required.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_014, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    params->Required({ "" });
+}
+
+/*
+ * @tc.name: Options_test_015
+ * @tc.desc: Required.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_015, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+
+    (*params)["inFile"] = keyAlias;
+    params->Required({ Options::KEY_ALIAS });
+}
+
+/*
+ * @tc.name: Options_test_016
+ * @tc.desc: Required.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, Options_test_016, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+
+    (*params)["keyAlias"] = keyAlias;
+    params->Required({ Options::KEY_ALIAS });
+}
 
 /*
  * @tc.name: cmd_util_test_001
@@ -662,8 +1061,8 @@ HWTEST_F(GenerateKeyPairTest, Options_test_008, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, cmd_util_test_001, testing::ext::TestSize.Level1)
 {
-	std::string keyAlg = "ECC";
-	EXPECT_EQ(CmdUtil::JudgeAlgType(keyAlg), true);
+    std::string keyAlg = "ECC";
+    EXPECT_EQ(CmdUtil::JudgeAlgType(keyAlg), true);
 }
 
 /*
@@ -674,8 +1073,8 @@ HWTEST_F(GenerateKeyPairTest, cmd_util_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, cmd_util_test_002, testing::ext::TestSize.Level1)
 {
-	int size = 256;
-	EXPECT_EQ(CmdUtil::JudgeSize(size), true);
+    int size = 256;
+    EXPECT_EQ(CmdUtil::JudgeSize(size), true);
 }
 
 /*
@@ -686,18 +1085,18 @@ HWTEST_F(GenerateKeyPairTest, cmd_util_test_002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, cmd_util_test_003, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-	int argc = 14;
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    int argc = 14;
 
-	CmdUtil cmdUtil;
-	ParamsSharedPtr param = std::make_shared<Params>();
-	bool ret = cmdUtil.Convert2Params(argv, argc, param);
+    CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    bool ret = cmdUtil.Convert2Params(argv, argc, param);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -708,24 +1107,24 @@ HWTEST_F(GenerateKeyPairTest, cmd_util_test_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, cmd_util_test_004, testing::ext::TestSize.Level1)
 {
-	char argv[][100] = { "generate-keypair",
-					 "-keyAlias", "oh-app1-key-v1",
-					 "-keyPwd", "123456",
-					 "-keyAlg", "ECC",
-					 "-keySize", "NIST-P-384",
-					 "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
-					 "-keystorePwd", "123456"
-	};
+    char argv[][100] = { "generate-keypair",
+                     "-keyAlias", "oh-app1-key-v1",
+                     "-keyPwd", "123456",
+                     "-keyAlg", "ECC",
+                     "-keySize", "NIST-P-384",
+                     "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
+                     "-keystorePwd", "123456"
+    };
 
-	ParamsTrustlist params_trust_list;
-	std::vector<std::string> trustList = params_trust_list.GetTrustList(argv[1]);
-	if (trustList.empty()) {
-		bool ret = false;
-		EXPECT_EQ(ret, false);
-	} else {
-		bool ret = true;
-		EXPECT_EQ(ret, true);
-	}
+    ParamsTrustlist params_trust_list;
+    std::vector<std::string> trustList = params_trust_list.GetTrustList(argv[1]);
+    if (trustList.empty()) {
+        bool ret = false;
+        EXPECT_EQ(ret, false);
+    } else {
+        bool ret = true;
+        EXPECT_EQ(ret, true);
+    }
 }
 
 /*
@@ -736,11 +1135,10 @@ HWTEST_F(GenerateKeyPairTest, cmd_util_test_004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, cmd_util_test_005, testing::ext::TestSize.Level1)
 {
-	ParamsTrustlist params_trust_list;
-	bool ret = params_trust_list.GenerateTrustlist();
-	EXPECT_EQ(ret, true);
+    ParamsTrustlist params_trust_list;
+    bool ret = params_trust_list.GenerateTrustlist();
+    EXPECT_EQ(ret, true);
 }
-
 
 /*
  * @tc.name: cmd_util_test_006
@@ -750,18 +1148,18 @@ HWTEST_F(GenerateKeyPairTest, cmd_util_test_005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, cmd_util_test_006, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-	int argc = 14;
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    int argc = 14;
 
-	CmdUtil cmdUtil;
-	ParamsSharedPtr param = std::make_shared<Params>();
-	bool ret = cmdUtil.Convert2Params(argv, argc, param);
+    CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    bool ret = cmdUtil.Convert2Params(argv, argc, param);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 /*
  * @tc.name: file_util_test_001
@@ -771,16 +1169,16 @@ HWTEST_F(GenerateKeyPairTest, cmd_util_test_006, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, file_util_test_001, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
 
-	(*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystoreFile"] = keystoreFile;
 
-	std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
-	EXPECT_EQ(FileUtils::ValidFileType(adaptePtr->options->GetString(Options::KEY_STORE_FILE),
-			  { "p12", "jks" }), true);
+    EXPECT_EQ(FileUtils::ValidFileType(adaptePtr->options->GetString(Options::KEY_STORE_FILE),
+              { "p12", "jks" }), true);
 }
 
 /*
@@ -791,17 +1189,17 @@ HWTEST_F(GenerateKeyPairTest, file_util_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_001, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
-	int argc = 14;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 14;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -812,14 +1210,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_002, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "";
-	char* argv[] = { arg0, arg1 };
+    char arg0[] = "", arg1[] = "";
+    char* argv[] = { arg0, arg1 };
 
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -830,14 +1228,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_003, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "-h";
-	char* argv[] = { arg0, arg1 };
+    char arg0[] = "", arg1[] = "-h";
+    char* argv[] = { arg0, arg1 };
 
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -848,14 +1246,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_004, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "-v";
-	char* argv[] = { arg0, arg1 };
+    char arg0[] = "", arg1[] = "-v";
+    char* argv[] = { arg0, arg1 };
 
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -866,14 +1264,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_005, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
 
-	int argc = 4;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 4;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -884,14 +1282,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_006, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "", arg3[] = "";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "", arg3[] = "";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
 
-	int argc = 4;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 4;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -902,15 +1300,15 @@ HWTEST_F(GenerateKeyPairTest, main_test_006, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_007, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "", arg3[] = "";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "", arg3[] = "";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
 
-	int argc = 4;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	ParamsRunToolPtr->ProcessCmd(argv, argc);
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 4;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    ParamsRunToolPtr->ProcessCmd(argv, argc);
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -921,19 +1319,19 @@ HWTEST_F(GenerateKeyPairTest, main_test_007, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_008, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-385", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-385", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
-	int argc = 14;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	ParamsRunToolPtr->ProcessCmd(argv, argc);
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 14;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    ParamsRunToolPtr->ProcessCmd(argv, argc);
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -944,19 +1342,19 @@ HWTEST_F(GenerateKeyPairTest, main_test_008, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_009, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	ParamsRunToolPtr->ProcessCmd(argv, argc);
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    ParamsRunToolPtr->ProcessCmd(argv, argc);
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -967,19 +1365,19 @@ HWTEST_F(GenerateKeyPairTest, main_test_009, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_010, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	ParamsRunToolPtr->ProcessCmd(argv, argc);
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    ParamsRunToolPtr->ProcessCmd(argv, argc);
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -990,19 +1388,19 @@ HWTEST_F(GenerateKeyPairTest, main_test_010, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_011, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-outForm", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-outForm", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	ParamsRunToolPtr->ProcessCmd(argv, argc);
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    ParamsRunToolPtr->ProcessCmd(argv, argc);
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1013,18 +1411,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_011, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_012, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5,
-					 arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5,
+                     arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
-	int argc = 14;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 14;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1035,18 +1433,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_012, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_013, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
-	int argc = 14;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 14;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1057,18 +1455,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_013, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_014, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsPathLen", arg15[] = "0";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsPathLen", arg15[] = "0";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1079,18 +1477,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_014, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_015, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-validity", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-validity", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1101,18 +1499,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_015, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_016, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1123,18 +1521,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_016, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_017, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1145,18 +1543,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_017, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_018, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-keyUsageCritical", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1167,18 +1565,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_018, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_019, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1189,18 +1587,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_019, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_020, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1211,18 +1609,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_020, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_021, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1233,18 +1631,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_021, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_022, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraints", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraints", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1255,18 +1653,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_022, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_023, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraints", arg15[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraints", arg15[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1277,18 +1675,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_023, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_024, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraints", arg15[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraints", arg15[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1299,18 +1697,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_024, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_025, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-					 arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+                     arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1321,18 +1719,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_025, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_026, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8,
-					 arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8,
+                     arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1343,18 +1741,18 @@ HWTEST_F(GenerateKeyPairTest, main_test_026, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_027, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-					 arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-basicConstraintsCritical", arg15[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
+                     arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
-	int argc = 16;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    int argc = 16;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1365,27 +1763,26 @@ HWTEST_F(GenerateKeyPairTest, main_test_027, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_001, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
-
 
 /*
  * @tc.name: hap_sign_tool_test_002
@@ -1395,27 +1792,27 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_001, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_002, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	std::string signAlg = "SHA256withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/oh-app1-key-v1.csr";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA256withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/oh-app1-key-v1.csr";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunCsr(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunCsr(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1426,33 +1823,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_002, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_003, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1463,39 +1860,39 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_003, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_004, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/profile-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/profile-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/profile-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/profile-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1506,39 +1903,39 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_004, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_005, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1549,33 +1946,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_005, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_006, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/general.cer";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/general.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1586,31 +1983,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_006, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_007, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.p7b";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.p7b";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1621,17 +2018,17 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_007, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_008, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/signed-profile.p7b";
-	std::string outFile = "./generateKeyPair/VerifyResult.json";
+    std::string inFile = "./generateKeyPair/signed-profile.p7b";
+    std::string outFile = "./generateKeyPair/VerifyResult.json";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outFile"] = outFile;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1642,35 +2039,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_008, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_009, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1681,43 +2078,43 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_009, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_010, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outProfile = "./generateKeyPair/app-profile.p7b";
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/app-profile.p7b";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outCertChain"] = outCertChain;
-	(*params)["outProfile"] = outProfile;
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
 
-	bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
-		 * @tc.name: hap_sign_tool_test_011
-		 * @tc.desc: Invoke the generate key pair interface.
-		 * @tc.type: FUNC
-		 * @tc.require:
-		 */
+         * @tc.name: hap_sign_tool_test_011
+         * @tc.desc: Invoke the generate key pair interface.
+         * @tc.type: FUNC
+         * @tc.require:
+         */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_011, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-	int argc = 14;
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    int argc = 14;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	std::shared_ptr<SignToolServiceImpl> service_api = std::make_shared<SignToolServiceImpl>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    std::shared_ptr<SignToolServiceImpl> service_api = std::make_shared<SignToolServiceImpl>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
-	bool ret = ParamsRunTool::DispatchParams(param, *service_api.get());
-	EXPECT_EQ(ret, true);
+    cmdUtil.Convert2Params(argv, argc, param);
+    bool ret = ParamsRunTool::DispatchParams(param, *service_api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1728,29 +2125,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_011, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_012, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign", arg8[] = "-signCode",
-		arg9[] = "1", arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-appCertFile", arg13[] = "./generateKeyPair/app-release1.pem",
-		arg14[] = "-profileFile", arg15[] = "./generateKeyPair/signed-profile.p7b",
-		arg16[] = "-inFile", arg17[] = "entry-default-unsigned-so.hap", arg18[] = "-keystoreFile",
-		arg19[] = "./generateKeyPair/OpenHarmony.p12",
-		arg20[] = "-keystorePwd", arg21[] = "123456", arg22[] = "-outFile",
-		arg23[] = "./generateKeyPair/entry-default-signed-so.hap";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign", arg8[] = "-signCode",
+        arg9[] = "1", arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-appCertFile", arg13[] = "./generateKeyPair/app-release1.pem",
+        arg14[] = "-profileFile", arg15[] = "./generateKeyPair/signed-profile.p7b",
+        arg16[] = "-inFile", arg17[] = "entry-default-unsigned-so.hap", arg18[] = "-keystoreFile",
+        arg19[] = "./generateKeyPair/OpenHarmony.p12",
+        arg20[] = "-keystorePwd", arg21[] = "123456", arg22[] = "-outFile",
+        arg23[] = "./generateKeyPair/entry-default-signed-so.hap";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1761,28 +2158,28 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_012, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_013, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
-		arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
-		arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
-		arg19[] = "./generateKeyPair/signed-profile.p7b";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
-	int argc = 20;
+    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
+        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
+        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
+        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
+    int argc = 20;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1793,23 +2190,23 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_013, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_014, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
-		arg3[] = "./generateKeyPair/entry-default-signed-so.hap",
-		arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-		arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
-	int argc = 8;
+    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
+        arg3[] = "./generateKeyPair/entry-default-signed-so.hap",
+        arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
+    int argc = 8;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1820,30 +2217,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_014, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_015, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/signed-profile.p7b";
-	std::string outFile = "./generateKeyPair/VerifyResult.json";
+    std::string inFile = "./generateKeyPair/signed-profile.p7b";
+    std::string outFile = "./generateKeyPair/VerifyResult.json";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outFile"] = outFile;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
 
-	char arg0[] = "", arg1[] = "verify-profile", arg2[] = "-inFile",
-		arg3[] = "./generateKeyPair/signed-profile.p7b",
-		arg4[] = "-outFile", arg5[] = "./generateKeyPair/VerifyResult.json";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
-	int argc = 6;
+    char arg0[] = "", arg1[] = "verify-profile", arg2[] = "-inFile",
+        arg3[] = "./generateKeyPair/signed-profile.p7b",
+        arg4[] = "-outFile", arg5[] = "./generateKeyPair/VerifyResult.json";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
+    int argc = 6;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
-
 
 /*
  * @tc.name: hap_sign_tool_test_016
@@ -1853,29 +2249,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_015, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_016, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
-	int argc = 20;
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
+    int argc = 20;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1886,33 +2282,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_016, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_017, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
-		arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-		arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
-		arg27[] = "./generateKeyPair/root-ca1.cer";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
-					 arg22, arg23, arg24, arg25, arg26, arg27 };
-	int argc = 28;
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1923,34 +2319,34 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_017, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_018, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/profile-release1.pem",
-		arg22[] = "-subCaCertFile",
-		arg23[] = "./generateKeyPair/profile-sign-srv-ca1.cer",
-		arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
-		arg27[] = "./generateKeyPair/root-ca1.cer";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20,
-					 arg21, arg22, arg23, arg24, arg25, arg26, arg27 };
-	int argc = 28;
+    char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/profile-release1.pem",
+        arg22[] = "-subCaCertFile",
+        arg23[] = "./generateKeyPair/profile-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20,
+                     arg21, arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1961,29 +2357,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_018, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_019, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
-	int argc = 22;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
+    int argc = 22;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1994,29 +2390,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_019, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_020, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-parameter", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
-	int argc = 22;
+    char arg0[] = "", arg1[] = "generate-parameter", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
+    int argc = 22;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -2027,15 +2423,15 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_020, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_021, testing::ext::TestSize.Level1)
 {
-	if (HELP_FILE_PATH.empty()) {
-		ParamsRunTool::PrintHelp();
-		bool ret = false;
-		EXPECT_EQ(ret, false);
-	} else {
-		ParamsRunTool::PrintHelp();
-		bool ret = true;
-		EXPECT_EQ(ret, true);
-	}
+    if (HELP_FILE_PATH.empty()) {
+        ParamsRunTool::PrintHelp();
+        bool ret = false;
+        EXPECT_EQ(ret, false);
+    } else {
+        ParamsRunTool::PrintHelp();
+        bool ret = true;
+        EXPECT_EQ(ret, true);
+    }
 }
 
 /*
@@ -2046,7 +2442,7 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_021, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_022, testing::ext::TestSize.Level1)
 {
-	ParamsRunTool::Version();
+    ParamsRunTool::Version();
 }
 
 /*
@@ -2057,14 +2453,14 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_022, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_023, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	(*params)["keyAlias"] = keyAlias;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    (*params)["keyAlias"] = keyAlias;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2075,33 +2471,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_023, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_024, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "RSA";
-	int keySize = 384;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "RSA";
+    int keySize = 384;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2112,33 +2508,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_024, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_025, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	int validity = 365;
-	std::string signAlg = "SHA385withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "ECC";
-	int keySize = 999;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    int validity = 365;
+    std::string signAlg = "SHA385withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 999;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2149,38 +2545,36 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_025, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_026, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	int validity = 365;
-	std::string signAlg = "SHA385withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "ECC";
-	int keySize = 999;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    int validity = 365;
+    std::string signAlg = "SHA385withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 999;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
-	(*params)["issuer"] = issuer;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
+    (*params)["issuer"] = issuer;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
-
-
 
 /*
  * @tc.name: hap_sign_tool_test_028
@@ -2190,40 +2584,40 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_026, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_028, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
-	std::string keyAlias = "oh-app1-key-v1";
-	std::string issuerKeyAlias = "oh-app1-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-	std::string issuer =
-		"C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-	std::string signAlg = "SHA384withECDSA";
-	std::string keyStoreFile = "./generateKeyPair/OpenHarmony.p12";
-	std::string keyUsage = "digitalSignature";
-	std::string outFile = "./generateKeyPair/general.cer";
-	bool basicConstraints = true;
-	bool basicConstraintsCritical = true;
-	bool basicConstraintsCa = true;
-	bool keyUsageCritical = true;
-	char secret[] = "123456";
-	int keysize = 384;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["keysize"] = keysize;
-	(*params)["subject"] = subject;
-	(*params)["issuer"] = issuer;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keyStoreFile"] = keyStoreFile;
-	(*params)["keyUsage"] = keyUsage;
-	(*params)["basicConstraints"] = basicConstraints;
-	(*params)["basicConstraintsCritical"] = basicConstraintsCritical;
-	(*params)["basicConstraintsCa"] = basicConstraintsCa;
-	(*params)["keyUsageCritical"] = keyUsageCritical;
-	(*params)["keyPwd"] = secret;
-	(*params)["keystorePwd"] = secret;
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerKeyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer =
+        "C=CNA,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keyStoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keyUsage = "digitalSignature";
+    std::string outFile = "./generateKeyPair/general.cer";
+    bool basicConstraints = true;
+    bool basicConstraintsCritical = true;
+    bool basicConstraintsCa = true;
+    bool keyUsageCritical = true;
+    char secret[] = "123456";
+    int keysize = 384;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["keysize"] = keysize;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keyStoreFile"] = keyStoreFile;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    (*params)["keyUsageCritical"] = keyUsageCritical;
+    (*params)["keyPwd"] = secret;
+    (*params)["keystorePwd"] = secret;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -2234,31 +2628,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_028, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_029, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2269,35 +2663,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_029, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_030, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2308,35 +2702,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_030, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_031, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.txt";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.txt";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -2347,35 +2741,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_031, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_032, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA385withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA385withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2386,33 +2780,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_032, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_033, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2423,35 +2817,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_033, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_034, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.txt";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.txt";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2462,40 +2856,38 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_034, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_035, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.txt";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string profileSigned = "0";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.txt";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string profileSigned = "0";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["profileSigned"] = profileSigned;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["profileSigned"] = profileSigned;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
-
-
 
 /*
 * @tc.name: hap_sign_tool_test_040
@@ -2505,33 +2897,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_035, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_040, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	int validity = 365;
-	std::string signAlg = "SHA385withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    int validity = 365;
+    std::string signAlg = "SHA385withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2542,33 +2934,33 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_040, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_041, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2579,35 +2971,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_041, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_042, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-root-ca-key-v1";
-	char keyPwd[] = "123456";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-	std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/root-ca1.cer";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = subject;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["validity"] = validity;
-	(*params)["issuer"] = issuer;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
+    (*params)["issuer"] = issuer;
 
-	bool ret = ParamsRunTool::RunCa(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2618,35 +3010,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_042, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_043, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/general.cer";
-	std::string keyUsage = "digitalSignature";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/general.cer";
+    std::string keyUsage = "digitalSignature";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyUsage"] = keyUsage;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -2657,35 +3049,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_043, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_044, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/general.cer";
-	std::string keyUsage = "abcd";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/general.cer";
+    std::string keyUsage = "abcd";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyUsage"] = keyUsage;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2696,37 +3088,37 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_044, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_045, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/general.cer";
-	std::string keyUsage = "digitalSignature";
-	std::string extKeyUsage = "abcd";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/general.cer";
+    std::string keyUsage = "digitalSignature";
+    std::string extKeyUsage = "abcd";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyUsage"] = keyUsage;
-	(*params)["extKeyUsage"] = extKeyUsage;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["extKeyUsage"] = extKeyUsage;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -2737,35 +3129,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_045, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_046, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA385withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/general.cer";
-	std::string keyUsage = "digitalSignature";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA385withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/general.cer";
+    std::string keyUsage = "digitalSignature";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyUsage"] = keyUsage;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2776,35 +3168,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_046, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_047, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/general.cer";
-	std::string keyUsage = "digitalSignature";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/general.cer";
+    std::string keyUsage = "digitalSignature";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["keyUsage"] = keyUsage;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
 
-	bool ret = ParamsRunTool::RunCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2815,35 +3207,35 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_047, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_048, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -2854,39 +3246,39 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_048, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_049, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA385withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA385withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2897,37 +3289,37 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_049, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_050, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2938,39 +3330,39 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_050, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_051, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "123456";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "123456";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -2981,37 +3373,37 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_051, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_052, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3022,39 +3414,39 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_052, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.txt";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.txt";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3065,39 +3457,39 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_053, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_054, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3108,42 +3500,41 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_054, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_055, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/app-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
-	std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmony.txt";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
-	(*params)["issuerKeystoreFile"] = issuerKeystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
 
-
-	bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3154,37 +3545,37 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_055, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_056, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char keyPwd[] = "123456";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-	std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
-	std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-	int validity = 365;
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/profile-release1.pem";
-	std::string subCaCertFile = "./generateKeyPair/profile-sign-srv-ca1.cer";
-	std::string outForm = "certChain";
-	std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/profile-release1.pem";
+    std::string subCaCertFile = "./generateKeyPair/profile-sign-srv-ca1.cer";
+    std::string outForm = "certChain";
+    std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["subject"] = subject;
-	(*params)["validity"] = validity;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["subCaCertFile"] = subCaCertFile;
-	(*params)["outForm"] = outForm;
-	(*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["validity"] = validity;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["outForm"] = outForm;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
 
-	bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3195,23 +3586,23 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_056, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_057, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3222,25 +3613,25 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_057, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_058, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "RSA";
-	int keySize = 384;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "RSA";
+    int keySize = 384;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3251,25 +3642,25 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_058, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_059, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 999;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 999;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3280,25 +3671,25 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_059, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_060, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string keyAlg = "ECC";
-	int keySize = 384;
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["keyAlg"] = keyAlg;
-	(*params)["keySize"] = keySize;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -3309,22 +3700,21 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_060, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, run_csr_test_061, testing::ext::TestSize.Level1)
 {
-	std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char keyPwd[] = "123456";
-	char keystorePwd[] = "123456";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
 
-	(*params)["keyAlias"] = std::string("oh-app1-key-v1");
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["subject"] = std::string("C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release");
-	(*params)["keystoreFile"] = std::string("./generateKeyPair/OpenHarmony.p12");
-	(*params)["keystorePwd"] = keystorePwd;
+    (*params)["keyAlias"] = std::string("oh-app1-key-v1");
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = std::string("C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release");
+    (*params)["keystoreFile"] = std::string("./generateKeyPair/OpenHarmony.p12");
+    (*params)["keystorePwd"] = keystorePwd;
 
-	bool ret = ParamsRunTool::RunCsr(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunCsr(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
-
 
 /*
  * @tc.name: hap_sign_tool_test_062
@@ -3334,14 +3724,14 @@ HWTEST_F(GenerateKeyPairTest, run_csr_test_061, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_062, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string outFile = "./generateKeyPair/VerifyResult.json";
-	(*params)["outFile"] = outFile;
+    std::string outFile = "./generateKeyPair/VerifyResult.json";
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3352,17 +3742,17 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_062, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_063, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/signed-profile.txt";
-	std::string outFile = "./generateKeyPair/VerifyResult.json";
+    std::string inFile = "./generateKeyPair/signed-profile.txt";
+    std::string outFile = "./generateKeyPair/VerifyResult.json";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outFile"] = outFile;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3373,17 +3763,17 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_063, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_064, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/signed-profile.p7b";
-	std::string outFile = "./generateKeyPair/VerifyResult.txt";
+    std::string inFile = "./generateKeyPair/signed-profile.p7b";
+    std::string outFile = "./generateKeyPair/VerifyResult.txt";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outFile"] = outFile;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3394,17 +3784,17 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_064, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_065, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outProfile = "./generateKeyPair/app-profile.p7b";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/app-profile.p7b";
 
-	(*params)["outCertChain"] = outCertChain;
-	(*params)["outProfile"] = outProfile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
 
-	bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3415,53 +3805,53 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_065, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_066, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outProfile = "./generateKeyPair/app-profile.txt";
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/app-profile.txt";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outCertChain"] = outCertChain;
-	(*params)["outProfile"] = outProfile;
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
 
-	bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
 }
 
 /*
-		 * @tc.name: hap_sign_tool_test_067
-		 * @tc.desc: Invoke the Generate generic certificate interface.
-		 * @tc.type: FUNC
-		 * @tc.require:
-		 */
+* @tc.name: hap_sign_tool_test_067
+* @tc.desc: Invoke the Generate generic certificate interface.
+* @tc.type: FUNC
+* @tc.require:
+*/
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_067, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
-		arg12[] = " - validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
-		arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile",
-		arg21[] = "./generateKeyPair/general.cer", arg22[] = "-basicConstraintsPathLen", arg23[] = "0";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
+        arg12[] = " - validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
+        arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile",
+        arg21[] = "./generateKeyPair/general.cer", arg22[] = "-basicConstraintsPathLen", arg23[] = "0";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -3472,32 +3862,32 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_067, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_068, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
-		arg12[] = " - validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
-		arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12",
-		arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsPathLen",
-		arg23[] = "1000000000000000000000000000000000000000000000000000000";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
+        arg12[] = " - validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
+        arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12",
+        arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsPathLen",
+        arg23[] = "1000000000000000000000000000000000000000000000000000000";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3508,31 +3898,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_068, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_069, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
-		arg12[] = " - validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
-		arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile",
-		arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-validity", arg23[] = "558g22";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
+        arg12[] = " - validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
+        arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile",
+        arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-validity", arg23[] = "558g22";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3543,30 +3933,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_069, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_070, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-validity", arg23[] = "558g2hhhsss1111111111111111111111111111111111112";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-validity", arg23[] = "558g2hhhsss1111111111111111111111111111111111112";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3577,30 +3967,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_070, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_071, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-keyUsageCritical", arg23[] = "TRUE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -3611,30 +4001,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_071, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_072, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-keyUsageCritical", arg23[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -3645,31 +4035,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_072, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_073, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile",
-		arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-keyUsageCritical", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile",
+        arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3680,30 +4070,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_073, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_074, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-extKeyUsageCritical", arg23[] = "TRUE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3714,30 +4104,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_074, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_075, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
-		arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-extKeyUsageCritical", arg23[] = "FALSE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
+        arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "FALSE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3748,30 +4138,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_075, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_076, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-extKeyUsageCritical", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3782,30 +4172,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_076, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_077, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraints", arg23[] = "TRUE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraints", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3816,30 +4206,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_077, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_078, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraints", arg23[] = "FALSE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraints", arg23[] = "FALSE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3850,30 +4240,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_078, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_079, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraints", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraints", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3884,30 +4274,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_079, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_080, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsCritical", arg23[] = "TRUE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3918,30 +4308,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_080, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_081, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsCritical", arg23[] = "FALSE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "FALSE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3952,30 +4342,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_081, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_082, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsCritical", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -3986,30 +4376,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_082, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_083, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsCa", arg23[] = "TRUE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCa", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4020,30 +4410,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_083, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_084, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsCa", arg23[] = "FALSE";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCa", arg23[] = "FALSE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4054,30 +4444,30 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_084, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_085, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-		arg22[] = "-basicConstraintsCa", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCa", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	CmdUtil cmdUtil;
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
 
-	cmdUtil.Convert2Params(argv, argc, param);
+    cmdUtil.Convert2Params(argv, argc, param);
 
-	bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-	EXPECT_EQ(ret, false);
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4088,29 +4478,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_085, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_086, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.p7b";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.p7b";
 
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4121,31 +4511,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_086, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_087, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "abcd";
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.p7b";
+    std::string mode = "abcd";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.p7b";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4156,29 +4546,29 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_087, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_088, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384withECDSA";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.p7b";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.p7b";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4189,31 +4579,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_088, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_089, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.p7b";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.p7b";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4224,31 +4614,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_089, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_090, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384acd";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.p7b";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384acd";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.p7b";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4259,31 +4649,31 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_090, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_091, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-profile1-key-v1";
-	char keyPwd[] = "123456";
-	std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-	std::string inFile = "./generateKeyPair/profile.json";
-	std::string signAlg = "SHA384withECDSA";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/signed-profile.txt";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-profile1-key-v1";
+    char keyPwd[] = "123456";
+    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/signed-profile.txt";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["profileCertFile"] = profileCertFile;
-	(*params)["inFile"] = inFile;
-	(*params)["signAlg"] = signAlg;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["profileCertFile"] = profileCertFile;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4294,21 +4684,21 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_091, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_092, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-	std::string outProfile = "./generateKeyPair/app-profile.p7b";
-	std::string inform = "abcd";
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/app-profile.p7b";
+    std::string inform = "abcd";
 
-	(*params)["inFile"] = inFile;
-	(*params)["outCertChain"] = outCertChain;
-	(*params)["outProfile"] = outProfile;
-	(*params)["inForm"] = inform;
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    (*params)["inForm"] = inform;
 
-	bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4319,19 +4709,18 @@ HWTEST_F(GenerateKeyPairTest, hap_sign_tool_test_092, testing::ext::TestSize.Lev
  */
 HWTEST_F(GenerateKeyPairTest, params_test_001, testing::ext::TestSize.Level1)
 {
-	char argv[][100] = { "generate-keypair",
-					 "-keyAlias", "oh-app1-key-v1",
-					 "-keyPwd", "123456",
-					 "-keyAlg", "ECC",
-					 "-keySize", "NIST-P-384",
-					 "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
-					 "-keystorePwd", "123456"
-	};
+    char argv[][100] = { "generate-keypair",
+                     "-keyAlias", "oh-app1-key-v1",
+                     "-keyPwd", "123456",
+                     "-keyAlg", "ECC",
+                     "-keySize", "NIST-P-384",
+                     "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
+                     "-keystorePwd", "123456"
+    };
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	param->SetMethod(argv[1]);
+    ParamsSharedPtr param = std::make_shared<Params>();
+    param->SetMethod(argv[1]);
 }
-
 
 /*
  * @tc.name: params_test_002
@@ -4341,15 +4730,15 @@ HWTEST_F(GenerateKeyPairTest, params_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, params_test_002, testing::ext::TestSize.Level1)
 {
-	std::string str = "  123456  ";
-	std::string params = StringUtils::Trim(str);
-	if (params == "123456") {
-		bool ret = true;
-		EXPECT_EQ(ret, true);
-	} else {
-		bool ret = false;
-		EXPECT_EQ(ret, false);
-	}
+    std::string str = "  123456  ";
+    std::string params = StringUtils::Trim(str);
+    if (params == "123456") {
+        bool ret = true;
+        EXPECT_EQ(ret, true);
+    } else {
+        bool ret = false;
+        EXPECT_EQ(ret, false);
+    }
 }
 
 /*
@@ -4360,25 +4749,25 @@ HWTEST_F(GenerateKeyPairTest, params_test_002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, params_test_003, testing::ext::TestSize.Level1)
 {
-	char argv[][100] = { "generate-keypair",
-					 "-keyAlias", "oh-app1-key-v1",
-					 "-keyPwd", "123456",
-					 "-keyAlg", "ECC",
-					 "-keySize", "NIST-P-384",
-					 "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
-					 "-keystorePwd", "123456"
-	};
+    char argv[][100] = { "generate-keypair",
+                     "-keyAlias", "oh-app1-key-v1",
+                     "-keyPwd", "123456",
+                     "-keyAlg", "ECC",
+                     "-keySize", "NIST-P-384",
+                     "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
+                     "-keystorePwd", "123456"
+    };
 
-	ParamsSharedPtr param = std::make_shared<Params>();
-	param->SetMethod(argv[1]);
+    ParamsSharedPtr param = std::make_shared<Params>();
+    param->SetMethod(argv[1]);
 
-	if (param->GetMethod().empty()) {
-		bool ret = false;
-		EXPECT_EQ(ret, false);
-	} else {
-		bool ret = true;
-		EXPECT_EQ(ret, true);
-	}
+    if (param->GetMethod().empty()) {
+        bool ret = false;
+        EXPECT_EQ(ret, false);
+    } else {
+        bool ret = true;
+        EXPECT_EQ(ret, true);
+    }
 }
 
 /*
@@ -4389,10 +4778,10 @@ HWTEST_F(GenerateKeyPairTest, params_test_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, params_test_004, testing::ext::TestSize.Level1)
 {
-	std::string signatureAlgorithm = ParamConstants::HAP_SIG_ALGORITHM_SHA384_ECDSA;
-	SignatureAlgorithmHelper out;
-	bool ret = Params::GetSignatureAlgorithm(signatureAlgorithm, out);
-	EXPECT_EQ(ret, true);
+    std::string signatureAlgorithm = ParamConstants::HAP_SIG_ALGORITHM_SHA384_ECDSA;
+    SignatureAlgorithmHelper out;
+    bool ret = Params::GetSignatureAlgorithm(signatureAlgorithm, out);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4403,10 +4792,10 @@ HWTEST_F(GenerateKeyPairTest, params_test_004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, params_test_005, testing::ext::TestSize.Level1)
 {
-	std::string signatureAlgorithm = "123456";
-	SignatureAlgorithmHelper out;
-	bool ret = Params::GetSignatureAlgorithm(signatureAlgorithm, out);
-	EXPECT_EQ(ret, false);
+    std::string signatureAlgorithm = "123456";
+    SignatureAlgorithmHelper out;
+    bool ret = Params::GetSignatureAlgorithm(signatureAlgorithm, out);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4417,24 +4806,24 @@ HWTEST_F(GenerateKeyPairTest, params_test_005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_028, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias",
-		arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-keyUsageCritical", arg23[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias",
+        arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-keyUsageCritical", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4445,23 +4834,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_028, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_029, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-keyUsageCritical", arg23[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-keyUsageCritical", arg23[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4472,23 +4861,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_029, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_030, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-keyUsageCritical", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-keyUsageCritical", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4499,23 +4888,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_030, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_031, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-extKeyUsageCritical", arg23[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4526,22 +4915,22 @@ HWTEST_F(GenerateKeyPairTest, main_test_031, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_032, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365", arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-extKeyUsageCritical", arg23[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365", arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4552,23 +4941,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_032, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_033, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-extKeyUsageCritical", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4579,23 +4968,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_033, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_034, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraints", arg23[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraints", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4606,23 +4995,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_034, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_035, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraints", arg23[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraints", arg23[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4633,23 +5022,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_035, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_036, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraints", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraints", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4660,23 +5049,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_036, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_037, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraintsCritical", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4687,23 +5076,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_037, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_038, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraintsCritical", arg23[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4714,23 +5103,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_038, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_039, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-		arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraintsCritical", arg23[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4741,23 +5130,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_039, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_040, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-		arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraintsCa", arg23[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraintsCa", arg23[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4768,23 +5157,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_040, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_041, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456",
-		arg16[] = "-outFile", arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize",
-		arg21[] = "NIST-P-384", arg22[] = "-basicConstraintsCa", arg23[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456",
+        arg16[] = "-outFile", arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize",
+        arg21[] = "NIST-P-384", arg22[] = "-basicConstraintsCa", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -4795,23 +5184,23 @@ HWTEST_F(GenerateKeyPairTest, main_test_041, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_042, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-		arg8[] = "-validity", arg9[] = "365",
-		arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-		arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-		arg14[] = "-keystorePwd", arg15[] = "123456",
-		arg16[] = "-outFile", arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-		arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-		arg22[] = "-basicConstraintsCa", arg23[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
+        arg8[] = "-validity", arg9[] = "365",
+        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
+        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456",
+        arg16[] = "-outFile", arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
+        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
+        arg22[] = "-basicConstraintsCa", arg23[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4822,22 +5211,22 @@ HWTEST_F(GenerateKeyPairTest, main_test_042, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_043, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer", arg22[] = "-keyPwd";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22 };
-	int argc = 23;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer", arg22[] = "-keyPwd";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22 };
+    int argc = 23;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4848,17 +5237,17 @@ HWTEST_F(GenerateKeyPairTest, main_test_043, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_044, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-	int argc = 14;
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    int argc = 14;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4869,24 +5258,24 @@ HWTEST_F(GenerateKeyPairTest, main_test_044, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_045, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-		arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-		arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-		arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-		arg12[] = "-validity", arg13[] = "365",
-		arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-		arg17[] = "/mnt/d/file/0613test/OpenHarmony.p12", arg18[] = "-keystorePwd",
-		arg19[] = "123456", arg20[] = "-outFile", arg21[] = "/mnt/d/file/0613test/general.cer",
-		arg22[] = "-basicConstraintsPathLen", arg23[] = "0";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-					 arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-	int argc = 24;
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "/mnt/d/file/0613test/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "/mnt/d/file/0613test/general.cer",
+        arg22[] = "-basicConstraintsPathLen", arg23[] = "0";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4897,14 +5286,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_045, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_046, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "1";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4915,14 +5304,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_046, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_047, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "true";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4933,14 +5322,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_047, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_048, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "TRUE";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4951,14 +5340,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_048, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_049, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "0";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "0";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4969,14 +5358,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_049, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_050, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "false";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "false";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -4987,14 +5376,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_050, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_051, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "FALSE";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "FALSE";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5005,14 +5394,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_051, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_052, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "abcd";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "abcd";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5023,17 +5412,17 @@ HWTEST_F(GenerateKeyPairTest, main_test_052, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_053, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./aabc123/OpenHarmony.p12",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-	int argc = 14;
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./aabc123/OpenHarmony.p12",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    int argc = 14;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5044,17 +5433,17 @@ HWTEST_F(GenerateKeyPairTest, main_test_053, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_054, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-		arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-		arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair",
-		arg12[] = "-keystorePwd", arg13[] = "123456";
-	char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-	int argc = 14;
+    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
+        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair",
+        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+    int argc = 14;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5065,14 +5454,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_054, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_055, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "abcd";
-	char* argv[] = { arg0, arg1, arg2, arg3};
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "abcd";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5083,14 +5472,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_055, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_056, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "SHA384withECDSA";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "SHA384withECDSA";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5101,14 +5490,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_056, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_057, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inForm", arg3[] = "abcd";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inForm", arg3[] = "abcd";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5119,14 +5508,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_057, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_058, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-outForm", arg3[] = "abcd";
-	char* argv[] = { arg0, arg1, arg2, arg3 };
-	int argc = 4;
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-outForm", arg3[] = "abcd";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5137,14 +5526,14 @@ HWTEST_F(GenerateKeyPairTest, main_test_058, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_059, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "generate-app-cert";
-	char* argv[] = { arg0, arg1 };
-	int argc = 2;
+    char arg0[] = "", arg1[] = "generate-app-cert";
+    char* argv[] = { arg0, arg1 };
+    int argc = 2;
 
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5155,10 +5544,10 @@ HWTEST_F(GenerateKeyPairTest, main_test_059, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_060, testing::ext::TestSize.Level1)
 {
-	std::string str = "abcd";
-	bool ret = CmdUtil::JudgeEndSignAlgType(str);
+    std::string str = "abcd";
+    bool ret = CmdUtil::JudgeEndSignAlgType(str);
 
-	EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5169,27 +5558,10 @@ HWTEST_F(GenerateKeyPairTest, main_test_060, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateKeyPairTest, main_test_061, testing::ext::TestSize.Level1)
 {
-	std::string str = "";
-	bool ret = CmdUtil::VerifyTypes(str);
+    std::string str = "";
+    bool ret = CmdUtil::VerifyTypes(str);
 
-	EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: main_test_062
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(GenerateKeyPairTest, main_test_062, testing::ext::TestSize.Level1)
-{
-	char arg0[] = "";
-	char* argv[] = { arg0 };
-	int argc = 1;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -5200,13 +5572,13 @@ HWTEST_F(GenerateKeyPairTest, main_test_062, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_063, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "-h";
-	char* argv[] = { arg0, arg1 };
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "-h";
+    char* argv[] = { arg0, arg1 };
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -5217,13 +5589,13 @@ HWTEST_F(GenerateKeyPairTest, main_test_063, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_064, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "-help";
-	char* argv[] = { arg0, arg1 };
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "-help";
+    char* argv[] = { arg0, arg1 };
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -5234,13 +5606,13 @@ HWTEST_F(GenerateKeyPairTest, main_test_064, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_065, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "-v";
-	char* argv[] = { arg0, arg1 };
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "-v";
+    char* argv[] = { arg0, arg1 };
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -5251,13 +5623,13 @@ HWTEST_F(GenerateKeyPairTest, main_test_065, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_066, testing::ext::TestSize.Level1)
 {
-	char arg0[] = "", arg1[] = "-version";
-	char* argv[] = { arg0, arg1 };
-	int argc = 2;
-	std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-	bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+    char arg0[] = "", arg1[] = "-version";
+    char* argv[] = { arg0, arg1 };
+    int argc = 2;
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-	EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -5268,212 +5640,1846 @@ HWTEST_F(GenerateKeyPairTest, main_test_066, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateKeyPairTest, main_test_067, testing::ext::TestSize.Level1)
 {
-	bool ret = ParamsRunTool::ProcessCmd(nullptr, 5);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::ProcessCmd(nullptr, 5);
+    EXPECT_EQ(ret, true);
 }
 
 /*
- * @tc.name: hap_sign_tool_test_068
+ * @tc.name: main_test_068
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(GenerateKeyPairTest, main_test_068, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "abcd";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string mode = "abcd";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
- * @tc.name: hap_sign_tool_test_069
+ * @tc.name: main_test_069
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(GenerateKeyPairTest, main_test_069, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384withECDSA";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string inform = "abcd";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inform = "abcd";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["inForm"] = inform;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inform;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
- * @tc.name: hap_sign_tool_test_070
+ * @tc.name: main_test_070
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(GenerateKeyPairTest, main_test_070, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384w";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string inform = "elf";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384w";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inform = "elf";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["inForm"] = inform;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inform;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
- * @tc.name: hap_sign_tool_test_071
+ * @tc.name: main_test_071
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(GenerateKeyPairTest, main_test_071, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384w";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.txt";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string profileSigned = "1";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384w";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.txt";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string profileSigned = "1";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["profileSigned"] = profileSigned;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["profileSigned"] = profileSigned;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
 /*
- * @tc.name: hap_sign_tool_test_072
+ * @tc.name: main_test_072
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(GenerateKeyPairTest, main_test_072, testing::ext::TestSize.Level1)
 {
-	std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-	std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
 
-	std::string mode = "localSign";
-	std::string keyAlias = "oh-app1-key-v1";
-	char keyPwd[] = "123456";
-	std::string signCode = "1";
-	std::string signAlg = "SHA384w";
-	std::string appCertFile = "./generateKeyPair/app-release1.pem";
-	std::string profileFile = "./generateKeyPair/signed-profile.txt";
-	std::string inFile = "entry-default-unsigned-so.hap";
-	std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-	char keystorePwd[] = "123456";
-	std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
-	std::string profileSigned = "0";
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384w";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.txt";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string profileSigned = "0";
 
-	(*params)["mode"] = mode;
-	(*params)["keyAlias"] = keyAlias;
-	(*params)["keyPwd"] = keyPwd;
-	(*params)["signCode"] = signCode;
-	(*params)["signAlg"] = signAlg;
-	(*params)["appCertFile"] = appCertFile;
-	(*params)["profileFile"] = profileFile;
-	(*params)["inFile"] = inFile;
-	(*params)["keystoreFile"] = keystoreFile;
-	(*params)["keystorePwd"] = keystorePwd;
-	(*params)["outFile"] = outFile;
-	(*params)["profileSigned"] = profileSigned;
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["profileSigned"] = profileSigned;
 
-	bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-	EXPECT_EQ(ret, true);
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
 
+/*
+ * @tc.name: main_test_073
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_073, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384w";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
+
+/*
+ * @tc.name: main_test_074
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_074, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
 }
+
+/*
+ * @tc.name: main_test_075
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_075, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_076
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_076, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_077
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_077, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_078
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_078, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_079
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_079, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_080
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_080, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_081
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_081, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_082
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_082, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_083
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_083, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-extKeyUsageCritical", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_084
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_084, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraints", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_085
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_085, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraints", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_086
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_086, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraints", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_087
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_087, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_088
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_088, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_089
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_089, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_090
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_090, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCa", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_091
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_091, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCa", arg23[] = "true";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_092
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_092, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-basicConstraintsCa", arg23[] = "TRUE";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_093
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_093, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
+        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
+        arg10[] = "-inFile", arg11[] = "./abcd/profile11.json", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
+        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
+    int argc = 20;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_094
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_094, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA256withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_095
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_095, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_096
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_096, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "abc", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_097
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_097, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
+        arg3[] = "./generateKeyPair/entry-default-signed-so.hap",
+        arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b",
+        arg8[] = "-inForm", arg9[] = "abc";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 };
+    int argc = 10;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_098
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_098, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "abcd", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_099
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_099, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "abcd", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_100
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_100, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "cert", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_101
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_101, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+* @tc.name: main_test_102
+* @tc.desc: main function entry function.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(GenerateKeyPairTest, main_test_102, testing::ext::TestSize.Level1)
+{
+    std::string str = "SHA256withECDSA";
+    bool ret = CmdUtil::JudgeEndSignAlgType(str);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+* @tc.name: main_test_103
+* @tc.desc: main function entry function.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(GenerateKeyPairTest, main_test_103, testing::ext::TestSize.Level1)
+{
+    std::string str = "SHA384withECDSA";
+    bool ret = CmdUtil::JudgeEndSignAlgType(str);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+* @tc.name: main_test_104
+* @tc.desc: main function entry function.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(GenerateKeyPairTest, main_test_104, testing::ext::TestSize.Level1)
+{
+    std::string str = "clientAuthentication";
+    bool ret = CmdUtil::VerifyType(str);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+* @tc.name: main_test_105
+* @tc.desc: main function entry function.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(GenerateKeyPairTest, main_test_105, testing::ext::TestSize.Level1)
+{
+    std::string supportTypes = "abc,cba";
+    std::string inputtype = "abc";
+    bool ret = CmdUtil::VerifyType(inputtype, supportTypes);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+* @tc.name: main_test_106
+* @tc.desc: main function entry function.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(GenerateKeyPairTest, main_test_106, testing::ext::TestSize.Level1)
+{
+    std::string supportTypes = "abc,cba";
+    std::string inputtype = "cba";
+    bool ret = CmdUtil::VerifyType(inputtype, supportTypes);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_107
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_107, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "remoteSign",
+        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
+        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
+        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
+    int argc = 20;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_108
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_108, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_109
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_109, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_110
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_110, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_111
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_111, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_112
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_112, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_113
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_113, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_114
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_114, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inForm = "abcd";
+    std::string profileSigned = "1";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["profileSigned"] = profileSigned;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_115
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_115, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/profile.json";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inForm = "abcd";
+    std::string profileSigned = "0";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["profileSigned"] = profileSigned;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_116
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_116, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "abcd";
+    std::string subject = "abcd";
+    std::string signAlg = "SHA256withECDSA";
+    std::string outForm = "cert";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/app1.txt";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["outForm"] = outForm;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::CheckEndCertArguments(*params);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_117
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_117, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_118
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_118, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12",
+        arg18[] = "-keystorePwd", arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 22;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_119
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_119, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA256withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_120
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_120, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_121
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_121, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "abcd", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
+        arg22[] = "-keyUsageCritical", arg23[] = "1";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 24;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_122
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_122, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "SHA384withECDSA";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_123
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_123, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-signAlg", arg3[] = "SHA384withECDSA";
+    char* argv[] = { arg0, arg1, arg2, arg3 };
+    int argc = 4;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_124
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_124, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "abcd", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_125
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_125, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
+        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
+        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
+        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
+        arg12[] = "-validity", arg13[] = "365",
+        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
+        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
+        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
+        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
+        arg24[] = "-outForm", arg25[] = "abcd", arg26[] = "-rootCaCertFile",
+        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                     arg22, arg23, arg24, arg25, arg26, arg27 };
+    int argc = 28;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_126
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_126, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "remoteSign",
+        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
+        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
+        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
+    int argc = 20;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: main_test_127
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_127, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456",
+        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
+        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
+        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
+    int argc = 18;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: main_test_128
+ * @tc.desc: main function entry function.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(GenerateKeyPairTest, main_test_128, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
+        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
+        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
+        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
+        arg13[] = "./generateKeyPair/OpenHarmony.p12",
+        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
+        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
+        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
+    int argc = 20;
+
+    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
+    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+} // namespace SignatureTools
+} // namespace OHOS

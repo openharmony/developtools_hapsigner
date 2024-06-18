@@ -44,7 +44,7 @@ public:
 
 private:
     int PackageSignedData(const std::string& content, std::shared_ptr<Signer> signer,
-                          STACK_OF(X509_CRL)* crls, const std::string& sigAlg, std::string& ret);
+                          const std::string& sigAlg, std::string& ret);
     // @return 0(NID_undef) >0: success(new NID)
     static int CreateNIDFromOID(const std::string& oid, const std::string& shortName,
                                 const std::string& longName);

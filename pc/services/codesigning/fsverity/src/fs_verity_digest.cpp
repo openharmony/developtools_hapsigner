@@ -14,6 +14,7 @@
  */
 #include "securec.h"
 #include "fs_verity_digest.h"
+#include "signature_tools_log.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -30,7 +31,10 @@ std::vector<int8_t> FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector
     buffer->PutData(digest.data(), digest.size());
     buffer->Flip();
     char dataArr[size];
-    memset_s(dataArr, size, 0, size);
+    if (memset_s(dataArr, size, 0, size) != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("memcpy_s failed");
+        return std::vector<int8_t>();
+    }
     buffer->GetData(dataArr, size);
     std::vector<int8_t> ret(dataArr, dataArr + size);
     return ret;

@@ -64,6 +64,24 @@ HWTEST_F(FsVerityDescriptorWithSignTest, Size002, testing::ext::TestSize.Level1)
 }
 
 /**
+ * @tc.name: Size003
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(FsVerityDescriptorWithSignTest, Size003, testing::ext::TestSize.Level1)
+{
+    FsVerityDescriptor fsVerityDescriptor;
+    std::vector<int8_t> signature;
+    FsVerityDescriptorWithSign descriptor(fsVerityDescriptor, signature);
+    int32_t size = descriptor.Size();
+
+    EXPECT_NE(size, 0);
+}
+
+/**
  * @tc.name: ToByteArray
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM

@@ -20,5 +20,33 @@
       <cleaner>
       </cleaner>
   </target>
+  <target name="generateCsr002" timeout="3000">
+      <preparer>
+        <option name="push" value="resource/ohtest.p12 -> /data/test/generateCsr/" src="res"/>
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
+  <target name="generateCsr004" timeout="3000">
+      <preparer>
+        <option name="push" value="resource/ohtest.p12 -> /data/test/generateCsr/" src="res"/>
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
+  <target name="generateCsr005" timeout="3000">
+      <preparer>
+        <option name="push" value="resource/ohtest.p12 -> /data/test/generateCsr/" src="res"/>
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
+  <target name="generateCsr006" timeout="3000">
+      <preparer>
+        <option name="push" value="resource/ohtest.p12 -> /data/test/generateCsr/" src="res"/>
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
 </configuration>
 

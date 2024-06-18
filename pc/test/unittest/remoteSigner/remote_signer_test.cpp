@@ -47,7 +47,7 @@ HWTEST_F(RemoteSignerTest, RemoteSignerTest001, testing::ext::TestSize.Level1)
     std::string inFile = "./remoteSigner/entry-default-unsigned-so.hap";
     std::string outFile = "./remoteSigner/entry-default-signed-so.hap";
     std::string signServer = "./remoteSigner/app-release1.pem";
-    std::string signerPlugin = "./libremote_signer.z.so";
+    std::string signerPlugin = "./remoteSigner/libremote_signer.z.so";
     std::string onlineAuthMode = "./remoteSigner/OpenHarmony.p12";
     std::string username = "123456";
     char userPwd[] = "123456";
@@ -90,7 +90,7 @@ HWTEST_F(RemoteSignerTest, RemoteSignerTest002, testing::ext::TestSize.Level1)
     std::string inFile = "./remoteSigner/entry-default-unsigned-so.hap";
     std::string outFile = "./remoteSigner/entry-default-signed-so.hap";
     std::string signServer = "./remoteSigner/app-release1.pem";
-    std::string signerPlugin = "./dummy.z.so";
+    std::string signerPlugin = "./remoteSigner/dummy.z.so";
     std::string onlineAuthMode = "./remoteSigner/OpenHarmony.p12";
     std::string username = "123456";
     char userPwd[] = "123456";
@@ -133,7 +133,7 @@ HWTEST_F(RemoteSignerTest, RemoteSignerTest003, testing::ext::TestSize.Level1)
     std::string inFile = "./remoteSigner/entry-default-unsigned-so.hap";
     std::string outFile = "./remoteSigner/entry-default-signed-so.hap";
     std::string signServer = "./remoteSigner/app-release1.pem";
-    std::string signerPlugin = "./libremote_signer_without_create.z.so";
+    std::string signerPlugin = "./remoteSigner/libremote_signer_without_create.z.so";
     std::string onlineAuthMode = "./remoteSigner/OpenHarmony.p12";
     std::string username = "123456";
     char userPwd[] = "123456";
