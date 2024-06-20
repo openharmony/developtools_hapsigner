@@ -103,7 +103,6 @@ public:
     DLL_EXPORT void SetLimit(int32_t lim);
     DLL_EXPORT void SetCapacity(int32_t cap);
     DLL_EXPORT ByteBuffer& Slice();
-    DLL_EXPORT bool ReverseSliceBuffer(int startPos, int endPos, ByteBuffer& ret);
     DLL_EXPORT ByteBuffer& slice_for_codesigning();
     DLL_EXPORT ByteBuffer* Duplicate();
     DLL_EXPORT int32_t Remaining() const;

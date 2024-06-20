@@ -34,7 +34,7 @@ const std::unordered_map<std::string, std::regex> FileUtils::SUFFIX_REGEX_MAP = 
 
 bool FileUtils::IsEmpty(std::string cs)
 {
-    if (cs.length() == 0 || cs.empty()) {
+    if (cs.length() == 0) {
         return true;
     }
     return false;
@@ -127,10 +127,6 @@ int FileUtils::ReadInputByOffsetAndLength(std::ifstream& input, size_t offset, s
         return -1;
     }
     input.seekg(offset);
-    /* if (input.rdstate() != 0) {
-        SIGNATURE_TOOLS_LOGE("Error seek\n");
-        return -1;
-    } */
     if (ReadInputByLength(input, length, ret) < 0) {
         SIGNATURE_TOOLS_LOGE("Error readInputByLength\n");
         return -1;
@@ -179,10 +175,6 @@ bool FileUtils::AppendWriteFileByOffsetToFile(std::ifstream& input, std::ofstrea
         return false;
     }
     input.seekg(offset);
-    /* if (input.rdstate() != 0) {
-        SIGNATURE_TOOLS_LOGE("Failed seekg\n");
-        return false;
-    } */
     if (WriteInputToOutPut(input, out, size) < 0) {
         SIGNATURE_TOOLS_LOGE("Error: writeInputToOutPut\n");
         return false;
@@ -257,9 +249,9 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
                 break;
             }
         }
-        if(dataSize != 0) {
-		    SIGNATURE_TOOLS_LOGE("write error!\n");
-		}
+        if (dataSize != 0) {
+            SIGNATURE_TOOLS_LOGE("write error!\n");
+        }
         };
     readTask = readPool.Enqueue(readFunc, std::ref(input), length);
     readTask.wait();

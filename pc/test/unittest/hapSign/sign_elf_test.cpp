@@ -17,10 +17,27 @@
 #include <gtest/gtest.h>
 
 #include "sign_elf.h"
+#include "code_signing.h"
 
 namespace OHOS {
 namespace SignatureTools {
 class SignElfTest : public testing::Test {
+public:
+    static void SetUpTestCase(void)
+    {
+    };
+    static void TearDownTestCase()
+    {
+    };
+    void SetUp()
+    {
+    };
+    void TearDown()
+    {
+    };
+};
+
+class CodeSigningTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
@@ -52,23 +69,34 @@ void SetParamsMap(std::map<std::string, std::string>& params)
     params["inFile"] = "./hapSign/unsigned-linux.out";
     params["profileSigned"] = "1";
     params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
+    params["profileContent"] = "({\"bundle-info\":{\"app-feature\":\"hos_system_app\","
+        "\"bundle-name\":\"com.OpenHarmony.app.test\","
+        "\"developer-id\":\"OpenHarmony\",\"development-certificate\":"
+        "\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"}, \"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":["
+        "\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\","
+        "\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},"
+        "\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},"
+        "\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824 - a938 - 961b140a7c98\","
+        "\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},"
+        "\"version-code\":1,\"version-name\":"
+        "\"1.0.0\"})";
 }
 
-void SetOptions(Options *options)
+void SetOptions(Options* options)
 {
     std::string mode = "localSign";
     std::string keyAlias = "oh-app1-key-v1";
@@ -280,5 +308,27 @@ HWTEST_F(SignElfTest, Sign005, testing::ext::TestSize.Level1)
     bool ret = SignElf::Sign(signerConfig, params);
     EXPECT_EQ(ret, false);
 }
+
+/**
+ * @tc.name: GetCodeSignBlock001
+ * @tc.desc: Test function of CodeSigning::GetCodeSignBlock() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(CodeSigningTest, GetCodeSignBlock001, testing::ext::TestSize.Level1)
+{
+    CodeSigning object;
+    std::string input = "./hapSign_test/entry-default-signed.elf";
+    int64_t offset = 0;
+    std::string inForm = "elf";
+    std::string profileContent = "";
+    ZipSigner zip;
+    std::vector<int8_t> ret;
+    bool result = object.GetCodeSignBlock(input, offset, inForm, profileContent, zip, ret);
+    EXPECT_EQ(result, false);
+}
+
 }
 }

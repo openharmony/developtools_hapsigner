@@ -30,6 +30,7 @@ BCPkcs7Generator::~BCPkcs7Generator()
 int BCPkcs7Generator::GenerateSignedData(const std::string& content,
                                          SignerConfig* signerConfig, std::string& ret)
 {
+    int result = RET_OK;
     std::string sigAlg;
     if (content.empty()) {
         SIGNATURE_TOOLS_LOGE("Verify digest is empty\n");
@@ -44,33 +45,39 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
         SIGNATURE_TOOLS_LOGE("NULL signer\n");
         return INVALIDPARAM_ERROR;
     }
-    if (BCSignedDataGenerator::GetSigAlg(signerConfig, sigAlg) < 0) {
+    result = BCSignedDataGenerator::GetSigAlg(signerConfig, sigAlg);
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("get sigAlg failed\n");
         return INVALIDPARAM_ERROR;
     }
-    if (PackagePKCS7(content, signer, sigAlg, ret) < 0) {
+    result = PackagePKCS7(content, signer, sigAlg, ret);
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("PackageSignedData error!\n");
         return GENERATEPKCS7_ERROR;
     }
-    return RET_OK;
+    return result;
 }
 int BCPkcs7Generator::PackagePKCS7(const std::string& content, std::shared_ptr<Signer> signer,
                                    const std::string& sigAlg, std::string& ret)
 {
     PKCS7Data p7Data;
-    if (p7Data.Sign(content, signer, sigAlg, ret) < 0) {
+    int result = RET_OK;
+    result = p7Data.Sign(content, signer, sigAlg, ret);
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("generate pkcs7 block failed\n");
         return PKCS7_SIGN_ERROR;
     }
-    if (p7Data.Parse(ret) < 0) {
+    result = p7Data.Parse(ret);
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("parse pkcs7 bytes failed\n");
         return PARSE_ERROR;
     }
-    if (p7Data.Verify() < 0) {
+    result = p7Data.Verify();
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("verify pkcs7 block failed\n");
         return VERIFY_ERROR;
     }
-    return RET_OK;
+    return result;
 }
 } // namespace SignatureTools
 } // namespace OHOS

@@ -30,6 +30,16 @@ public:
     void SetUp() {};
     void TearDown() {};
 };
+  
+static const 
+std::map<std::string, std::string> PARAMS = {
+                                            {"keyPwd", "123456"}, {"mode", "localSign"}, {"keyAlias", "oh-app1-key-v1"}, 
+                                            {"signAlg", "SHA256withECDSA"}, {"appCertFile", "./hapSign/app-release1.pem"},
+                                            {"signCode", "1"}, {"compatibleVersion", "9"}, {"keystorePwd", "123456"}, 
+                                            {"outFile", "./elfVerify/linuxout-signed.bin"}, {"profileSigned", "1"}, 
+                                            {"profileFile", "./hapSign/signed-profile.p7b"}, 
+                                            {"keystoreFile", "./hapSign/ohtest.jks"}, 
+                                            {"inFile", "./elfVerify/linuxout-unsigned.bin"}};
 
 /**
  * @tc.name: Verify001
@@ -303,22 +313,7 @@ HWTEST_F(VerifyBinTest, SignBin001, testing::ext::TestSize.Level1)
 
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
-
-    std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "1";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./elfVerify/linuxout-signed.bin";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./elfVerify/linuxout-unsigned.bin";
-    params["profileSigned"] = "1";
-    signerConfig.FillParameters(params);
+    signerConfig.FillParameters(PARAMS);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);

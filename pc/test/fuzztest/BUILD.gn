@@ -15,17 +15,6 @@ import("../../signature_tools.gni")
 group("hapsigntool_pc_fuzztest") {
   testonly = true
   deps = [
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr001_fuzzer:generateCsr001",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr002_fuzzer:generateCsr002",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr003_fuzzer:generateCsr003",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr004_fuzzer:generateCsr004",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr005_fuzzer:generateCsr005",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr006_fuzzer:generateCsr006",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr007_fuzzer:generateCsr007",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr008_fuzzer:generateCsr008",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr009_fuzzer:generateCsr009",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr010_fuzzer:generateCsr010",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr011_fuzzer:generateCsr011",
-    "${signature_tools_test}/fuzztest/signature_tools_fuzzer/generatecsr012_fuzzer:generateCsr012",
+    "${signature_tools_test}/fuzztest/generate_csr:generate_csr_fuzztest",
   ]
 }

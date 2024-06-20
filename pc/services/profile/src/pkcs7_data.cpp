@@ -247,6 +247,8 @@ err:
 
 void PKCS7Data::ReverseX509Stack(STACK_OF(X509)* certs)
 {
+    if (certs == NULL)
+        return;
     std::vector<X509*> certChain;
     for (int i = 0; i < sk_X509_num(certs); i++) {
         certChain.push_back(sk_X509_value(certs, i));
@@ -259,6 +261,8 @@ void PKCS7Data::ReverseX509Stack(STACK_OF(X509)* certs)
 
 void PKCS7Data::PrintCertChainSub(const STACK_OF(X509)* certs)
 {
+    if (certs == NULL)
+        return;
     SIGNATURE_TOOLS_LOGI("certChainSubject:\n");
     int certNum = sk_X509_num(certs);
     SIGNATURE_TOOLS_LOGI("certNum%{public}s\n", std::to_string(certNum).c_str());
@@ -272,6 +276,9 @@ void PKCS7Data::PrintCertChainSub(const STACK_OF(X509)* certs)
 
 std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
 {
+    if (asn1_tm == NULL) {
+        return "";
+    }
     // 将ASN1_TIME结构转换为标准的tm结构
     struct tm tm_time;
     ASN1_TIME_to_tm(asn1_tm, &tm_time);
@@ -280,7 +287,8 @@ std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
     if (t < 0)
         return "";
     struct tm* local_time = localtime(&t);
-    assert(local_time != NULL);
+    if (local_time == nullptr)
+        return "";
     // 打印本地时间
     char buf[128] = { 0 };
     if (sprintf_s(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
@@ -299,8 +307,6 @@ bool PKCS7Data::X509NameCompare(const X509* cert, const X509* issuerCert)
     }
     X509_NAME* aName = X509_get_issuer_name(cert);
     X509_NAME* bName = X509_get_subject_name(issuerCert);
-	assert(aName);
-	assert(bName);
     if (X509_NAME_cmp(aName, bName) != 0) {
         return false;
     }
@@ -335,7 +341,7 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
 
 void PKCS7Data::SortX509Stack(STACK_OF(X509)* certs)
 {
-    if (sk_X509_num(certs) == 0)
+    if (certs == NULL || sk_X509_num(certs) == 0)
         return;
     if (X509NameCompare(sk_X509_value(certs, 0), sk_X509_value(certs, 0)) == true) {
         ReverseX509Stack(certs);
@@ -485,8 +491,9 @@ err:
 
 static ASN1_OCTET_STRING* PKCS7_get_octet_string2(PKCS7* p7)
 {
-    assert(PKCS7_type_is_data(p7));
-    return p7->d.data;
+    if (PKCS7_type_is_data(p7))
+        return p7->d.data;
+    return NULL;
 }
 
 int PKCS7Data::DoPkcs7SignedAttrib(PKCS7_SIGNER_INFO* si, EVP_MD_CTX* mctx)
@@ -521,7 +528,7 @@ int PKCS7Data::DoPkcs7SignedAttrib(PKCS7_SIGNER_INFO* si, EVP_MD_CTX* mctx)
 
 static BIO* PKCS7_find_digest(EVP_MD_CTX** pmd, BIO* bio, int nid)
 {
-    while(true) {
+    while (true) {
         bio = BIO_find_type(bio, BIO_TYPE_MD);
         if (bio == NULL) {
             PKCS7err(PKCS7_F_PKCS7_FIND_DIGEST,

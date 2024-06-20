@@ -84,6 +84,7 @@
         <option name="push" value="./resource/signProfile/profile-release1-reverse.pem -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/profile-release1-cert.pem -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/profile-release1-invalid_cert_chain.pem -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/phone-default-unsigned.hap -> /data/test/signProfile/" src="res"/>
 
         <option name="push" value="./resource/codeSigning/app-release1.pem -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res"/>
@@ -109,6 +110,8 @@
         <option name="push" value="./resource/codeSigning/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/hap -> /data/test/codeSigning/" src="res"/>
 
         <option name="push" value="./resource/zip/unsigned.hap -> /data/test/zip" src="res"/>
         <option name="push" value="./resource/zip/unsigned_empty.hap -> /data/test/zip" src="res"/>
@@ -119,6 +122,8 @@
         <option name="push" value="./resource/zip/unsigned_only_cd.hap -> /data/test/zip" src="res"/>
         <option name="push" value="./resource/zip/unsigned_only_cd_v2.hap -> /data/test/zip" src="res"/>
         <option name="push" value="./resource/zip/mini.hap -> /data/test/zip" src="res"/>
+        <option name="push" value="./resource/zip/test.hap -> /data/test/zip" src="res"/>
+        <option name="push" value="./resource/zip/test2.hap -> /data/test/zip" src="res"/>
         
         <option name="push" value="./resource/remoteSigner/libremote_signer.z.so -> /data/test/remoteSigner" src="res"/>
         <option name="push" value="./resource/remoteSigner/libremote_signer_without_create.z.so -> /data/test/remoteSigner" src="res"/>

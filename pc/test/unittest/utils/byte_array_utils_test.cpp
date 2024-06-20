@@ -47,7 +47,7 @@ public:
  */
 HWTEST_F(ByteArrayUtilsTest, InsertIntToByteArray, testing::ext::TestSize.Level1)
 {
-    std::vector<int8_t> ret = { 49,48,48,48,0,48,0,1,0,-120,0,6,0,0,0,0 };
+    std::vector<int8_t> ret = { 49, 48, 48, 48, 0, 48, 0, 1, 0, -120, 0, 6, 0, 0, 0, 0 };
     int result = ByteArrayUtils::InsertIntToByteArray(ret, 16, 32);
     EXPECT_EQ(result, -1);
 }
@@ -62,7 +62,7 @@ HWTEST_F(ByteArrayUtilsTest, InsertIntToByteArray, testing::ext::TestSize.Level1
  */
 HWTEST_F(ByteArrayUtilsTest, InsertShortToByteArray, testing::ext::TestSize.Level1)
 {
-    std::vector<int8_t> ret = { 49,48,48,48,0,48,0,1,0,-120,0,0,0,0,0,0 };
+    std::vector<int8_t> ret = { 49, 48, 48, 48, 0, 48, 0, 1, 0, -120, 0, 0, 0, 0, 0, 0 };
     int result = ByteArrayUtils::InsertShortToByteArray(ret, 16, 16, 6);
     EXPECT_EQ(result, -1);
 }
@@ -77,9 +77,10 @@ HWTEST_F(ByteArrayUtilsTest, InsertShortToByteArray, testing::ext::TestSize.Leve
  */
 HWTEST_F(ByteArrayUtilsTest, InsertByteToByteArray, testing::ext::TestSize.Level1)
 {
-    std::vector<int8_t> ret = { 49,48,48,48,0,48,0,1,0,-120,0,6,0,0,0,32 };
-    std::vector<int8_t> hashValue = { -114,-19,-78,49,26,23,116,-70,72,35,-41,-43,43,-115,-2,-93,-91,-67,-76,77,
-    100,-83,-69,-36,-18,59,-12,-64,-118,123,48,-99 };
+    std::vector<int8_t> ret = { 49, 48, 48, 48, 0, 48, 0, 1, 0, -120, 0, 6, 0, 0, 0, 32 };
+    std::vector<int8_t> hashValue = { -114, -19, -78, 49, 26, 23, 116, -70, 72, 35,
+-41, -43, 43, -115, -2, -93, -91, -67, -76, 77,
+100, -83, -69, -36, -18, 59, -12, -64, -118, 123, 48, -99 };
     int result = ByteArrayUtils::InsertByteToByteArray(ret, 16, hashValue, 33);
     EXPECT_EQ(result, -1);
 }

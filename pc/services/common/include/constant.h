@@ -72,7 +72,7 @@ const std::string GENERATE_CERT = "generate-cert";
 const std::string VERIFY_APP = "verify-app";
 const std::string OUT_FORM_CERT = "cert";
 const std::string OUT_FORM_CERT_CHAIN = "certChain";
-const std::string DEBUG_STR = "DEBUG";
+const std::string DEBUG_STR = "debug";
 const std::string DEBUG_LIB_ID = "DEBUG_LIB_ID";
 
 const int32_t ONE_DAY_HOUR = 24;

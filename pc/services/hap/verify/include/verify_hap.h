@@ -30,9 +30,7 @@ namespace SignatureTools {
 class VerifyHap {
 public:
     int32_t Verify(const std::string& filePath, HapVerifyResult& hapVerifyV1Result, Options* options);
-    int32_t ParseHapProfile(const std::string& filePath, HapVerifyResult& hapVerifyV1Result,
-                            const std::string& outPath);
-    int32_t ParseHapSignatureInfo(const std::string& filePath, SignatureInfo& hapSignInfo);
+
     DLL_EXPORT bool CheckFilePath(const std::string& filePath, std::string& standardFilePath);
     static bool HapOutPutPkcs7(PKCS7* p7, const std::string& outPutPath);
     static bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
@@ -45,19 +43,15 @@ public:
                    const std::string& filePath);
     bool CheckCodeSign(const std::string& hapFilePath, const std::vector<OptionalBlock>& optionalBlocks)const;
     static int GetProfileContent(const std::string profile, std::string& ret);
-    bool VerifyAppPkc7AndParseProfile(Pkcs7Context& pkcs7Context, ByteBuffer& hapProfileBlock,
-                                      HapVerifyResult& hapVerifyV1Result);
     bool VerifyAppSourceAndParseProfile(Pkcs7Context& pkcs7Context, const ByteBuffer& hapProfileBlock,
                                         HapVerifyResult& hapVerifyV1Result, bool& profileNeadWriteCrl);
     bool VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const ByteBuffer& hapSignatureBlock);
-    bool VerifyAppSource(Pkcs7Context& pkcs7Context, Pkcs7Context& profileContext);
     DLL_EXPORT bool GetDigestAndAlgorithm(Pkcs7Context& digest);
     DLL_EXPORT bool ParseAndVerifyProfileIfNeed(const std::string& profile, ProfileInfo& provisionInfo,
                                                 bool isCallParseAndVerify);
     bool IsAppDistributedTypeAllowInstall(const AppDistType& type, const ProfileInfo& provisionInfo) const;
     DLL_EXPORT bool VerifyProfileInfo(const Pkcs7Context& pkcs7Context, const Pkcs7Context& profileContext,
                                       ProfileInfo& provisionInfo);
-    bool CheckProfileSignatureIsRight(const MatchingStates& matchState, const ProvisionType& type);
     DLL_EXPORT bool GenerateAppId(ProfileInfo& provisionInfo);
     DLL_EXPORT bool GenerateFingerprint(ProfileInfo& provisionInfo);
     bool VerifyProfileSignature(const Pkcs7Context& pkcs7Context, Pkcs7Context& profileContext);

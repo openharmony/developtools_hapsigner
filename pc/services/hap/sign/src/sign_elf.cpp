@@ -34,25 +34,29 @@ bool SignElf::Sign(SignerConfig signerConfig, std::map<std::string, std::string>
 {
     std::string inputFile = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
     std::string tmpFile;
-    if (!AlignFileBy4kBytes(inputFile, tmpFile)) {
+    bool checkAlignFileBy4kBytesFlag = AlignFileBy4kBytes(inputFile, tmpFile);
+    if (!checkAlignFileBy4kBytesFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] alignFileBy4kBytes error.");
         remove(tmpFile.c_str());
         return false;
     }
     std::string outputFile = signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
     std::string profileSigned = signParams.at(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
-    if (!WriteBlockDataToFile(signerConfig, tmpFile, outputFile, profileSigned, signParams)) {
+    bool checkWriteBlockDataToFileFlag = WriteBlockDataToFile(signerConfig, tmpFile,
+                                                              outputFile, profileSigned, signParams);
+    if (!checkWriteBlockDataToFileFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] writeBlockDataToFile error.");
         remove(tmpFile.c_str());
         return false;
     }
-    if (!WriteSignHeadDataToOutputFile(tmpFile, outputFile, blockNum)) {
+    bool checkWriteSignHeadDataToOutputFileFlag = WriteSignHeadDataToOutputFile(tmpFile, outputFile, blockNum);
+    if (!checkWriteSignHeadDataToOutputFileFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] The sign head data made failed.");
         remove(tmpFile.c_str());
         return false;
     }
-    remove(tmpFile.c_str());
-    return true;
+    return (remove(tmpFile.c_str()) == 0);
+    ;
 }
 
 bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
@@ -61,12 +65,14 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
     auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
     std::string tmp = "tmpFile" + std::to_string(timestamp);
     std::ofstream output(tmp);
-    if (!output.is_open()) {
+    bool checkoutputFlag = output.is_open();
+    if (!checkoutputFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] unable to open " + tmp + "s.");
         return false;
     }
     std::ifstream input(inputFile);
-    if (!input.is_open()) {
+    bool checkinputFlag = input.is_open();
+    if (!checkinputFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] unable to open " + inputFile + "s.");
         return false;
     }
@@ -91,16 +97,20 @@ bool SignElf::WriteBlockDataToFile(SignerConfig signerConfig,
     std::string profiliFile = signParams.at(ParamConstants::PARAM_BASIC_PROFILE);
     std::list<SignBlockData> signDataList;
     int64_t binFileLen = FileUtils::GetFileLen(inputFile);
-    if (binFileLen < 0 || IsLongOverflowInteger(binFileLen)) {
+    bool checkFlag = binFileLen < 0 || IsLongOverflowInteger(binFileLen);
+    if (checkFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] getFileLen or isLongOverflowInteger error.");
         return false;
     }
-    if (!StringUtils::IsEmpty(signParams.at(ParamConstants::PARAM_BASIC_PROFILE))) {
+    bool checkIsEmptyFlag = StringUtils::IsEmpty(signParams.at(ParamConstants::PARAM_BASIC_PROFILE));
+    if (!checkIsEmptyFlag) {
         signDataList.push_front(GenerateProfileSignByte(profiliFile, profileSigned));
     }
     blockNum = signDataList.size() + 1;
     SignBlockData* codeSign = nullptr;
-    if (!GenerateCodeSignByte(signerConfig, signParams, inputFile, blockNum, binFileLen, &codeSign) || !codeSign) {
+    bool checkGenerateCodeSignByteFlag = !GenerateCodeSignByte(signerConfig, signParams, inputFile, blockNum,
+                                                               binFileLen, &codeSign) || !codeSign;
+    if (checkGenerateCodeSignByteFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] generateCodeSignByte error.");
         if (codeSign) {
             delete codeSign;
@@ -109,7 +119,8 @@ bool SignElf::WriteBlockDataToFile(SignerConfig signerConfig,
     }
     signDataList.push_front(*codeSign);
     blockNum = signDataList.size();
-    if (!GenerateSignBlockHead(signDataList)) {
+    bool checkGenerateSignBlockHeadFlag = GenerateSignBlockHead(signDataList);
+    if (!checkGenerateSignBlockHeadFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] generateSignBlockHead error.");
         delete codeSign;
         return false;
@@ -122,7 +133,8 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
 {
     std::ifstream fileInputStream(inputFile, std::ios::binary);
     std::ofstream fileOutputStream(outputFile, std::ios::binary);
-    if (!fileInputStream.is_open() || !fileOutputStream.is_open()) {
+    bool checkFlag = !fileInputStream.is_open() || !fileOutputStream.is_open();
+    if (checkFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] inputFile or outputFile open error.");
         return false;
     }
@@ -132,7 +144,9 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
         fileOutputStream.write(buffer, fileInputStream.gcount());
     }
     for (auto signBlockData : signBlockList) {
-        if (!FileUtils::WriteByteToOutFile(signBlockData.GetBlockHead(), fileOutputStream)) {
+        bool checkWriteByteToOutFileFlag = FileUtils::WriteByteToOutFile(signBlockData.GetBlockHead(),
+                                                                         fileOutputStream);
+        if (!checkWriteByteToOutFileFlag) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to write Block Head to output file.");
             fileInputStream.close();
             fileOutputStream.close();
@@ -141,11 +155,13 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
     }
     for (auto signBlockData : signBlockList) {
         bool isSuccess;
-        if (signBlockData.GetByte()) {
+        checkFlag = signBlockData.GetByte();
+        if (checkFlag) {
             isSuccess = FileUtils::WriteByteToOutFile(signBlockData.GetSignData(), fileOutputStream);
         } else {
             std::ifstream InputSignFileStream(signBlockData.GetSignFile(), std::ios::binary);
-            if (!InputSignFileStream.is_open()) {
+            bool checkFileFlag = !InputSignFileStream.is_open();
+            if (checkFileFlag) {
                 PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] InputSignFileStream open error.");
                 return false;
             }
@@ -174,7 +190,8 @@ bool SignElf::GenerateSignBlockHead(std::list<SignBlockData>& signDataList)
                                                                         it->GetLen(), offset);
         it->SetBlockHead(tmp);
         offset += it->GetLen();
-        if (IsLongOverflowInteger(offset)) {
+        bool checkIsLongOverflowIntegerFlag = IsLongOverflowInteger(offset);
+        if (checkIsLongOverflowIntegerFlag) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] The sign block offset is overflow integer.");
             return false;
         }
@@ -203,8 +220,10 @@ bool SignElf::GenerateCodeSignByte(SignerConfig signerConfig, std::map<std::stri
     long offset = binFileLen + (long)HwBlockHead::GetElfBlockLen() * blockNum;
     std::string profileContent = signParams.at(ParamConstants::PARAM_PROFILE_JSON_CONTENT);
     std::vector<int8_t> codesignData;
-    if (!codeSigning.GetElfCodeSignBlock(inputFile, offset, signParams.at(ParamConstants::PARAM_IN_FORM),
-                                         profileContent, codesignData)) {
+    bool checkGetElfCodeSignBlockFlag = codeSigning.GetElfCodeSignBlock(inputFile, offset,
+                                                                        signParams.at(ParamConstants::PARAM_IN_FORM),
+                                                                        profileContent, codesignData);
+    if (!checkGetElfCodeSignBlockFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] GetElfCodeSignBlock error.");
         return false;
     }

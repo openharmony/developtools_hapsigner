@@ -103,19 +103,6 @@ ohos_source_set("service_target") {
     "samgr:samgr_proxy",
   ]
 
-  # cflags = [
-  #   "--coverage",
-  # ]
-
-  # cflags_cc = [
-  #   "-std=c++17",
-  #   "--coverage",
-  # ]
-
-  # ldflags = [
-  #   "-fPIC",
-  #   "-Wl,-E",
-  #   "--coverage",
-  # ]
-
+  part_name = "hapsigner"
+  subsystem_name = "developtools"
 }

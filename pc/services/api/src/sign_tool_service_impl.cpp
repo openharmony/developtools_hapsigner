@@ -37,7 +37,7 @@ namespace SignatureTools {
 bool SignToolServiceImpl::GenerateCA(Options* options)
 {
     bool flag = true;
-    std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options); 
+    std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options);
     bool isEmpty = FileUtils::IsEmpty(options->GetString(Options::ISSUER_KEY_ALIAS));
     EVP_PKEY* subKey = adapter->GetAliasKey(true);
     if (!subKey) {
@@ -158,21 +158,20 @@ void SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
                                 "KEY_STORE_RIGHTS and ISSUER_KEY_STORE_RIGHTS are  inconsistent!");
             return;
         }
-    }   
+    }
 }
 
 void SignToolServiceImpl::HandleIsserKeyAliasNotEmpty(Options* options)
-{    
+{
     std::string issuerFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
     if (issuerFile.empty()) {
-          SIGNATURE_TOOLS_LOGE("failed to get issuer keystore file !");
-          return;
+        SIGNATURE_TOOLS_LOGE("failed to get issuer keystore file !");
+        return;
     }
     if (FileUtils::ValidFileType(issuerFile, { "p12", "jks" })) {
-          SIGNATURE_TOOLS_LOGE("issuer keystore file type is inconsistent!");
-          return;
+        SIGNATURE_TOOLS_LOGE("issuer keystore file type is inconsistent!");
+        return;
     }
-    
 }
 
 bool SignToolServiceImpl::OutputModeOfCert(X509* cert, Options* options)
@@ -205,9 +204,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
     if (!subjectkeyPair) {
         goto err;
     }
-    if (options->find(Options::ISSUER_KEY_STORE_RIGHTS) != options->end()) {
-        adapter->SetIssuerKeyStoreFile(true);
-    }
+    adapter->SetIssuerKeyStoreFile(true);   
     rootKeyPair = adapter->GetIssureKeyByAlias();
     if (!rootKeyPair) {
         goto err;
@@ -328,8 +325,8 @@ bool SignToolServiceImpl::OutputString(std::string content, std::string file)
 
 bool SignToolServiceImpl::X509CertVerify(X509* cert, EVP_PKEY* privateKey)
 {
-    if (!X509_verify(cert, privateKey)) {
-        SIGNATURE_TOOLS_LOGE("private key verify profile cert failed!");
+    if (!X509_verify(cert, privateKey)) {      
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "private key verify  cert failed!");
         return false;
     }
     return true;
@@ -360,24 +357,21 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
     std::string subject = adapter->options->GetString(Options::SUBJECT);
     do {
         if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
-
-            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" +
                                 adapter->options->GetString(Options::KEY_ALIAS) + "' not exit");
             break;
         }
         adapter->SetIssuerKeyStoreFile(true);
         if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
-
-            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" +
                                 adapter->options->GetString(Options::ISSUER_KEY_ALIAS) + "' not exit");
             break;
         }
         adapter->ResetPwd(); // clean pwd for safety
-
-        if (!(csr = GetCsr(keyPair, signAlg, subject))) { // get CSR request 
+        csr = GetCsr(keyPair, signAlg, subject);
+        if (!csr) { // get CSR request 
             break;
         }
-
         x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
                                                      APP_SIGNING_CAPABILITY,
                                                      sizeof(PROFILE_SIGNING_CAPABILITY)); // get app x509 cert
@@ -409,25 +403,21 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
     std::string subject = adapter->options->GetString(Options::SUBJECT);
 
     do {
-        if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair 
-
-            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+        if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" +
                                 adapter->options->GetString(Options::KEY_ALIAS) + "' not exit");
             break;
         }
         adapter->SetIssuerKeyStoreFile(true);
         if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
-
-            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" + 
+            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair: '" +
                                 adapter->options->GetString(Options::ISSUER_KEY_ALIAS) + "' not exit");
             break;
         }
         adapter->ResetPwd(); // clean pwd for safety
-
         if (!(csr = GetCsr(keyPair, signAlg, subject))) { // get CSR request
             break;
         }
-
         x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
                                                      PROFILE_SIGNING_CAPABILITY,
                                                      sizeof(PROFILE_SIGNING_CAPABILITY)); // get profile x509 cert
@@ -435,11 +425,9 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
             SIGNATURE_TOOLS_LOGE("failed generate x509 cert");
             break;
         }
-
         if (!X509CertVerify(x509Certificate, issueKeyPair)) {
             break;
         }
-
         adapter->AppAndProfileAssetsRealse({ issueKeyPair, keyPair }, { csr }, {}); // realse assets
         return GetAndOutPutCert(*adapter, x509Certificate); // output cert to file
     } while (0);
@@ -458,8 +446,9 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
     if (adapter.IsOutFormChain()) {
         certificates.emplace_back(cert); // add root cert
         // add sub and ca cert
-        if (!(subCaCert = adapter.GetSubCaCertFile()) || 
-            !(rootCaCert = adapter.GetCaCertFile()) ) {
+        successflag = (!(subCaCert = adapter.GetSubCaCertFile()) ||
+                       !(rootCaCert = adapter.GetCaCertFile()));
+        if(successflag){
             return false;
         }
         certificates.emplace_back(subCaCert);

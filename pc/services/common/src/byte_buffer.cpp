@@ -516,24 +516,6 @@ ByteBuffer& ByteBuffer::Slice()
     return *this;
 }
 
-bool ByteBuffer::ReverseSliceBuffer(int startPos, int endPos, ByteBuffer& ret)
-{
-    char* blockPtr = this->buffer.get();
-    int blockCapacity = this->capacity;
-    int length = endPos - startPos;
-    if ((startPos + blockPtr > blockPtr + blockCapacity || startPos + blockPtr < blockPtr) ||
-        (endPos + blockPtr > blockPtr + blockCapacity || endPos + blockPtr < blockPtr)) {
-        SIGNATURE_TOOLS_LOGE("invalid parameter\n");
-        return false;
-    }
-    ret.Clear();
-    ret.SetCapacity(length);
-    ret.PutData(blockPtr + startPos, length);
-    ret.SetPosition(0);
-    std::reverse(ret.buffer.get(), ret.buffer.get() + ret.capacity);
-    return true;
-}
-
 ByteBuffer* ByteBuffer::Duplicate()
 {
     ByteBuffer* newBuffer = new ByteBuffer();

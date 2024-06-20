@@ -25,7 +25,7 @@ SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value)
     this->value = value;
 }
 
-SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value, int32_t offset)
+SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value, int64_t offset)
 {
     this->type = type;
     this->length = value.size();
@@ -48,7 +48,7 @@ std::vector<int8_t> SigningBlock::GetValue()
     return value;
 }
 
-int32_t SigningBlock::GetOffset()
+int64_t SigningBlock::GetOffset()
 {
     return offset;
 }

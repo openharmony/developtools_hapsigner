@@ -32,7 +32,7 @@ const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
 const int8_t LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
 
-CodeSigning::CodeSigning(SignerConfig *signConfig)
+CodeSigning::CodeSigning(SignerConfig* signConfig)
 {
     this->signConfig = signConfig;
 }
@@ -42,11 +42,12 @@ CodeSigning::CodeSigning()
 }
 
 bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
-    std::string inForm, std::string profileContent, ZipSigner& zip, std::vector<int8_t>& ret)
+                                   std::string inForm, std::string profileContent, ZipSigner& zip, std::vector<int8_t>& ret)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign code.\n");
-    if (std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm)
-            == SUPPORT_FILE_FORM.end()) {
+    bool formatFlag = std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm)
+        == SUPPORT_FILE_FORM.end();
+    if (formatFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "file's format is unsupported");
         return false;
     }
@@ -68,8 +69,9 @@ bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
         return false;
     }
     std::pair<SignInfo, std::vector<int8_t>> hapSignInfoAndMerkleTreeBytesPair;
-    if (!SignFile(inputStream, dataSize, true, fsvTreeOffset, ownerID,
-                  hapSignInfoAndMerkleTreeBytesPair)) {
+    bool signFileFlag = SignFile(inputStream, dataSize, true, fsvTreeOffset, ownerID,
+                                 hapSignInfoAndMerkleTreeBytesPair);
+    if (!signFileFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "signFile Failed");
         inputStream.close();
         return false;
@@ -90,8 +92,9 @@ int64_t CodeSigning::ComputeDataSize(ZipSigner& zip)
     int64_t dataSize = 0L;
     for (ZipEntry* entry : zip.GetZipEntries()) {
         ZipEntryHeader* zipEntryHeader = entry->GetZipEntryData()->GetZipEntryHeader();
-        if (FileUtils::IsRunnableFile(zipEntryHeader->GetFileName())
-            && zipEntryHeader->GetMethod() == ZipSigner::FILE_UNCOMPRESS_METHOD_FLAG) {
+        bool runnableFileFlag = FileUtils::IsRunnableFile(zipEntryHeader->GetFileName())
+            && zipEntryHeader->GetMethod() == ZipSigner::FILE_UNCOMPRESS_METHOD_FLAG;
+        if (runnableFileFlag) {
             continue;
         }
         // if the first file is not uncompressed abc or so, set dataSize to zero
@@ -123,7 +126,8 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
     fsVerityGenerator->GenerateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
     std::vector<int8_t> fsVerityDigest = fsVerityGenerator->GetFsVerityDigest();
     std::vector<int8_t> signature;
-    if (!GenerateSignature(fsVerityDigest, ownerID, signature)) {
+    bool generateSignatureFlag = GenerateSignature(fsVerityDigest, ownerID, signature);
+    if (!generateSignatureFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "generateSignature Fail");
         return false;
     }
@@ -147,8 +151,8 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
 }
 
 bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
-                                                     std::string inForm, std::string profileContent,
-                                                     std::vector<int8_t> &codesignData)
+                                      std::string inForm, std::string profileContent,
+                                      std::vector<int8_t>& codesignData)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign elf code.\n");
     if (CodeSigning::SUPPORT_BIN_FILE_FORM != inForm) {
@@ -169,7 +173,8 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
     std::vector<int8_t> fsVerityDigest = fsVerityGenerator->GetFsVerityDigest();
     std::string ownerID = profileContent.empty() ? "DEBUF_LIB_ID" : HapUtils::GetAppIdentifier(profileContent);
     std::vector<int8_t> signature;
-    if (!GenerateSignature(fsVerityDigest, ownerID, signature)) {
+    bool generateSignatureFlag = GenerateSignature(fsVerityDigest, ownerID, signature);
+    if (!generateSignatureFlag) {
         SIGNATURE_TOOLS_LOGI("[SignElf] generateSignature fail\n");
         return false;
     }
@@ -208,7 +213,8 @@ bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
         return true;
     }
     std::vector<std::pair<std::string, SignInfo>> nativeLibInfoList;
-    if (!SignFilesFromJar(entryNames, input, ownerID, nativeLibInfoList)) {
+    bool signFilesFromJarFlag = SignFilesFromJar(entryNames, input, ownerID, nativeLibInfoList);
+    if (!signFilesFromJarFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "SignFilesFromJar Fail in signNativeLibs");
         return false;
     }
@@ -240,14 +246,15 @@ std::vector<std::tuple<std::string, std::stringbuf, uLong>> CodeSigning::GetNati
     }
     // get zipFile all paramets
     unz_global_info zGlobalInfo;
-    if (unzGetGlobalInfo(zFile, &zGlobalInfo) != UNZ_OK) {
+    int getRet = unzGetGlobalInfo(zFile, &zGlobalInfo);
+    if (getRet != UNZ_OK) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "unzGetGlobalInfo failed");
         unzClose(zFile);
         return std::vector<std::tuple<std::string, std::stringbuf, uLong>>();
     }
     // search each file
-    
-    if (!HandleZipGlobalInfo(zFile, zGlobalInfo, result)) {
+    bool handleFlag = HandleZipGlobalInfo(zFile, zGlobalInfo, result);
+    if (!handleFlag) {
         unzClose(zFile);
         return std::vector<std::tuple<std::string, std::stringbuf, uLong>>();
     }
@@ -303,10 +310,10 @@ bool CodeSigning::HandleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalIn
 }
 
 bool CodeSigning::CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo,
-    char fileName[], size_t* nameLen)
+                                char fileName[], size_t* nameLen)
 {
     if (UNZ_OK != unzGetCurrentFileInfo(zFile, &zFileInfo, fileName,
-            FILE_NAME_SIZE, NULL, 0, NULL, 0)) {
+        FILE_NAME_SIZE, NULL, 0, NULL, 0)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "unzGetCurrentFileInfo failed!");
         return false;
     }
@@ -317,7 +324,7 @@ bool CodeSigning::CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo,
     }
     if (UNZ_OK != unzOpenCurrentFile(zFile)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-            "Open zipFile filename is : %{public}s failed.");
+                            "Open zipFile filename is : %{public}s failed.");
         return false;
     }
     return true;
@@ -332,7 +339,8 @@ bool CodeSigning::CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen
         return false;
     }
     std::string str(fileName);
-    if (!IsNativeFile(str)) {
+    bool nativeFileFlag = IsNativeFile(str);
+    if (!nativeFileFlag) {
         SIGNATURE_TOOLS_LOGI("Suffix mismatched.\n");
         unzCloseCurrentFile(zFile);
         unzGoToNextFile(zFile);
@@ -359,23 +367,20 @@ bool CodeSigning::IsNativeFile(std::string& input)
         return false;
     }
     std::string suffix = input.substr(dotPos + 1);
-    if (suffix == "an" || suffix == "so") {
-        return true;
-    } else {
-        return false;
-    }
+    return suffix == "an" || suffix == "so";
 }
 
 bool CodeSigning::SignFilesFromJar(std::vector<std::tuple<std::string,
-                                   std::stringbuf, uLong>>&entryNames,
+    std::stringbuf, uLong>>&entryNames,
                                    std::string& packageName, const std::string& ownerID,
                                    std::vector<std::pair<std::string, SignInfo>>& ret)
 {
     for (int i = 0; i < static_cast<int>(entryNames.size()); i++) {
         std::istream input(&(std::get<TUPLE_BUF_INDEX>(entryNames[i])));
         std::pair<SignInfo, std::vector<int8_t>> pairSignInfoAndMerkleTreeBytes;
-        if (!SignFile(input, std::get<TUPLE_SIZE_INDEX>(entryNames[i]), false, 0, ownerID,
-            pairSignInfoAndMerkleTreeBytes)) {
+        bool signFileFlag = SignFile(input, std::get<TUPLE_SIZE_INDEX>(entryNames[i]), false, 0, ownerID,
+                                     pairSignInfoAndMerkleTreeBytes);
+        if (!signFileFlag) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "signFile Failed in SignFilesFromJar");
             std::ifstream* inputFile = (std::ifstream*)(&input);
             inputFile->close();
@@ -394,7 +399,7 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
     if (signConfig->GetSigner() != nullptr) {
         if (signConfig->GetSigner()->GetCertificates() == nullptr) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                "No certificates configured for sign.");
+                                "No certificates configured for sign.");
             return false;
         }
     }
@@ -410,7 +415,8 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "generateSignature Verity digest is null");
         return false;
     }
-    if (bcSignedDataGenerator->GenerateSignedData(signed_data, signConfig, ret_str)) {
+    bool generateSignedDataFlag = bcSignedDataGenerator->GenerateSignedData(signed_data, signConfig, ret_str);
+    if (generateSignedDataFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "failed to GenerateSignedData unsigned data!");
         return false;
     }

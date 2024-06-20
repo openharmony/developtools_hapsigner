@@ -106,21 +106,10 @@ NativeLibInfoSegment NativeLibInfoSegment::FromByteArray(std::vector<int8_t> byt
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inMagic = 0;
-    bf->GetInt32(inMagic);
-    if (inMagic != MAGIC_NUM) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid magic number of NativeLibInfoSegment");
-        return NativeLibInfoSegment();
-    }
     int32_t inSegmentSize = 0;
-    bf->GetInt32(inSegmentSize);
-    if (inSegmentSize < 0) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid segmentSize of NativeLibInfoSegment");
-        return NativeLibInfoSegment();
-    }
     int32_t inSectionNum = 0;
-    bf->GetInt32(inSectionNum);
-    if (inSectionNum < 0) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid sectionNum of NativeLibInfoSegment");
+    bool checkFlag = CheckBuffer(bf.get(), inMagic, inSegmentSize, inSectionNum);
+    if (!checkFlag) {
         return NativeLibInfoSegment();
     }
     std::vector<SignedFilePos> inSignedFilePosList;
@@ -155,6 +144,27 @@ NativeLibInfoSegment NativeLibInfoSegment::FromByteArray(std::vector<int8_t> byt
     }
     return NativeLibInfoSegment(inMagic, inSegmentSize, inSectionNum, inSignedFilePosList,
                                 inFileNameList, inSignInfoList, inZeroPadding);
+}
+
+bool NativeLibInfoSegment::CheckBuffer(ByteBuffer* bf, int32_t& inMagic, int32_t& inSegmentSize,
+    int32_t& inSectionNum)
+{
+    bf->GetInt32(inMagic);
+    if (inMagic != MAGIC_NUM) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid magic number of NativeLibInfoSegment");
+        return false;
+    }
+    bf->GetInt32(inSegmentSize);
+    if (inSegmentSize < 0) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid segmentSize of NativeLibInfoSegment");
+        return false;
+    }
+    bf->GetInt32(inSectionNum);
+    if (inSectionNum < 0) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid sectionNum of NativeLibInfoSegment");
+        return false;
+    }
+    return true;
 }
 
 void NativeLibInfoSegment::GenerateList()

@@ -140,19 +140,6 @@ static bool UpdateParamForVariantBoolConstraints(ParamsSharedPtr param)
     } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS_CRITICAL] = DEFAULT_BASIC_CONSTRAINTS_CRITICAL;
     }
-    if (options->count(Options::BASIC_CONSTRAINTS_CA)) { // bool 类型 仅generate-cert模块使用
-        std::string val = options->GetString(Options::BASIC_CONSTRAINTS_CA);
-        if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::BASIC_CONSTRAINTS_CA] = true;
-        } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::BASIC_CONSTRAINTS_CA] = false;
-        } else {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basic constraints ca");
-            return false;
-        }
-    } else if (param->GetMethod() == GENERATE_CERT) {
-        (*options)[Options::BASIC_CONSTRAINTS_CA] = DEFAULT_BASIC_CONSTRAINTS_CA;
-    }
     return true;
 }
 
@@ -172,6 +159,19 @@ static bool UpdateParamForVariantBoolProfileSigned(ParamsSharedPtr param)
         }
     } else if (param->GetMethod() == SIGN_APP) {
         (*options)[Options::PROFILE_SIGNED] = DEFAULT_PROFILE_SIGNED_1;
+    }
+    if (options->count(Options::BASIC_CONSTRAINTS_CA)) { // bool 类型 仅generate-cert模块使用
+        std::string val = options->GetString(Options::BASIC_CONSTRAINTS_CA);
+        if (val == "1" || val == "true" || val == "TRUE") {
+            (*options)[Options::BASIC_CONSTRAINTS_CA] = true;
+        } else if (val == "0" || val == "false" || val == "FALSE") {
+            (*options)[Options::BASIC_CONSTRAINTS_CA] = false;
+        } else {
+            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basic constraints ca");
+            return false;
+        }
+    } else if (param->GetMethod() == GENERATE_CERT) {
+        (*options)[Options::BASIC_CONSTRAINTS_CA] = DEFAULT_BASIC_CONSTRAINTS_CA;
     }
     return true;
 }
@@ -286,8 +286,9 @@ static bool UpdateParamForCheckRemoteSignProfile(ParamsSharedPtr param)
                                                    ParamConstants::PARAM_REMOTE_USERPWD,
                                                    ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE,
                                                    ParamConstants::PARAM_REMOTE_SIGNERPLUGIN };
-    
-    if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) && options->GetString(Options::MODE) == REMOTE_SIGN) {
+
+    if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) &&
+        options->GetString(Options::MODE) == REMOTE_SIGN) {
         for (const std::string& key : signProfileRemoteParams) {
             if (options->count(key) == 0) {
                 PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "sign profile RemoteSign absence param");
@@ -343,7 +344,7 @@ bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
         return false;
     }
     size_t i = 2;
-    auto parseArgs = [&, this]()->bool {
+    for (; i < size; i++) {
         if (readKey) {
             // prepare key
             if (args[i][0] == '-') {
@@ -368,11 +369,6 @@ bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
                 return false;
             }
         }
-        return true;
-        };
-    for (; i < size; i++) {
-        if (parseArgs() == false)
-            return false;
     }
     if (!readKey) {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "No matched value found");
@@ -479,7 +475,8 @@ bool CmdUtil::VerifyType(std::string inputType)
     sets.insert("timestamp");
     sets.insert("ocspSignature");
     if (sets.count(inputType) == 0) {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, inputType + " in  params list is not support");
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, inputType +
+                            " in  params list is not support");
         return false;
     }
     return true;

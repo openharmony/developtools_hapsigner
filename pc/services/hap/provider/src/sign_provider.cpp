@@ -567,7 +567,7 @@ bool SignProvider::CheckParams(Options* options)
         return false;
     }
     if (!CheckSignatureAlg()) {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, 
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "PARAM_BASIC_SIGANTURE_ALG Parameter check error");
         return false;
     }
@@ -773,7 +773,7 @@ int SignProvider::CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inpu
         SIGNATURE_TOOLS_LOGE("input certificates do not match with profile!");
         return MATCH_ERROR;
     }
-    std::string cn = GetCertificateCN(certInProfile);  
+    std::string cn = GetCertificateCN(certInProfile);
     X509_free(certInProfile);
     SIGNATURE_TOOLS_LOGI("certificate in profile: %s", cn.c_str());
     if (cn.empty()) {

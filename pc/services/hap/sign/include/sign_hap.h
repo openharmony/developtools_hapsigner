@@ -33,9 +33,6 @@ public:
                      std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result);
     static bool ComputeDigests(const DigestParameter& digestParam, DataSource* contents[], int32_t len,
                                const std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result);
-    static bool EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
-                                             const std::vector<std::pair<int32_t, ByteBuffer>>& contentDigests,
-                                             ByteBuffer& result);
 
 private:
     static constexpr int INT_SIZE = 4;
@@ -56,6 +53,9 @@ private:
     static bool GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock,
                                         std::vector<OptionalBlock>& optionalBlocks,
                                         int compatibleVersion, ByteBuffer& result);
+    static void EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
+                                             const std::vector<std::pair<int32_t, ByteBuffer>>& contentDigests,
+                                             ByteBuffer& result);
 };
 } // namespace SignatureTools
 } // namespace OHOS

@@ -17,6 +17,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "verify_code_signature.h"
+#include "verify_hap.h"
 
 using namespace OHOS::SignatureTools;
 
@@ -469,4 +470,48 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyNativeLib002, testing::ext::TestSize.Lev
     bool flag = VerifyCodeSignature::VerifyHap(file, offset, length, fileFormat, profileContent);
 
     EXPECT_EQ(flag, false);
+}
+
+/**
+ * @tc.name: CheckCodeSign001
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyCodeSignatureTest, CheckCodeSign001, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options.emplace(Options::IN_FILE, std::string("./codeSigning/hap"));
+    options.emplace(Options::OUT_CERT_CHAIN, std::string("./codeSigning/xx.cer"));
+    options.emplace(Options::OUT_PROFILE, std::string("./codeSigning/xx.p7b"));
+
+    HapVerifyResult hapVerifyResult;
+    VerifyHap hapVerifyV2;
+    int32_t ret = hapVerifyV2.Verify(options.GetString(Options::IN_FILE), hapVerifyResult, &options);
+
+    EXPECT_NE(ret, 0);
+}
+
+/**
+ * @tc.name: CheckCodeSign002
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyCodeSignatureTest, CheckCodeSign002, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options.emplace(Options::IN_FILE, std::string("./codeSigning/entry-default-signed-so-err6.hap"));
+    options.emplace(Options::OUT_CERT_CHAIN, std::string("./codeSigning/xx.cer"));
+    options.emplace(Options::OUT_PROFILE, std::string("./codeSigning/xx.p7b"));
+
+    HapVerifyResult hapVerifyResult;
+    VerifyHap hapVerifyV2;
+    int32_t ret = hapVerifyV2.Verify(options.GetString(Options::IN_FILE), hapVerifyResult, &options);
+
+    EXPECT_NE(ret, 0);
 }
