@@ -49,20 +49,23 @@ bool VerifyElf::Verify(Options* options)
         return false;
     }
     std::string filePath = options->GetString(Options::IN_FILE);
-    if (!CheckSignFile(filePath)) {
+    bool checkSignFileFlag = CheckSignFile(filePath);
+    if (!checkSignFileFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Check input signature elf false!");
         return false;
     }
     // verify elf
     HapVerifyResult verifyResult;
     Pkcs7Context pkcs7Context;
-    if (!VerifyElfFile(filePath, verifyResult, options, pkcs7Context)) {
+    bool verifyElfFileFlag = VerifyElfFile(filePath, verifyResult, options, pkcs7Context);
+    if (!verifyElfFileFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify elf file failed!");
         return false;
     }
     // write certificate and p7b file
     VerifyHap hapVerifyV2;
-    if (hapVerifyV2.WriteVerifyOutput(pkcs7Context, options) != VERIFY_SUCCESS) {
+    int32_t writeVerifyOutputFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, options);
+    if (writeVerifyOutputFlag != VERIFY_SUCCESS) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify elf WriteElfOutput failed!");
         return false;
     }
@@ -73,21 +76,26 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
                               Options* options, Pkcs7Context& pkcs7Context)
 {
     SignBlockInfo signBlockInfo(false);
-    if (!GetSignBlockInfo(elfFile, signBlockInfo, ELF_FILE_TYPE)) {
+    bool getSignBlockInfoFlag = GetSignBlockInfo(elfFile, signBlockInfo, ELF_FILE_TYPE);
+    if (!getSignBlockInfoFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyElfFile GetSignBlockInfo failed!");
         return false;
     }
     // verify profile
     std::string profileJson;
-    if (!VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context, verifyResult, profileJson)) {
+    bool verifyP7b = VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context, verifyResult, profileJson);
+    if (!verifyP7b) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyElfFile VerifyProfile failed!");
         return false;
     }
     // verify code sign
-    if (signBlockInfo.GetSignBlockMap().find(CODESIGNING_BLOCK_TYPE) != signBlockInfo.GetSignBlockMap().end()) {
+    bool findFlag =
+        signBlockInfo.GetSignBlockMap().find(CODESIGNING_BLOCK_TYPE) != signBlockInfo.GetSignBlockMap().end();
+    if (findFlag) {
         SigningBlock codesign = signBlockInfo.GetSignBlockMap().find(CODESIGNING_BLOCK_TYPE)->second;
-        if (!VerifyCodeSignature::VerifyElf(elfFile, codesign.GetOffset(), codesign.GetLength(),
-            ELF_FILE_TYPE, profileJson)) {
+        bool verifyElfFlag = VerifyCodeSignature::VerifyElf(elfFile, codesign.GetOffset(), codesign.GetLength(),
+            ELF_FILE_TYPE, profileJson);
+        if (!verifyElfFlag) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "ElfFile verify codesign failed!");
             return false;
         }
@@ -109,7 +117,8 @@ bool VerifyElf::VerifyP7b(std::unordered_map<signed char, SigningBlock>& signBlo
         // verify signed profile
         SigningBlock profileSign = signBlockMap.find(PROFILE_SIGNED_BLOCK)->second;
         std::vector<int8_t> profileByte = profileSign.GetValue();
-        if (!GetRawContent(profileByte, profileJson)) {
+        bool getRawContentFlag = GetRawContent(profileByte, profileJson);
+        if (!getRawContentFlag) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyElfFile GetProfileContent failed!");
             return false;
         }
@@ -142,7 +151,8 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
     fileStream.close();
     // get HwBlockData
     HwBlockData hwBlockData(0, 0);
-    if (!GetSignBlockData(*((std::vector<int8_t>*)fileBytes), hwBlockData, fileType)) {
+    bool getSignBlockData = GetSignBlockData(*((std::vector<int8_t>*)fileBytes), hwBlockData, fileType);
+    if (!getSignBlockData) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify elf/bin file GetSignBlockData failed!");
         delete fileBytes;
         return false;
@@ -154,9 +164,11 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
         GetBinSignBlock(*((std::vector<int8_t>*)fileBytes), hwBlockData, signBlockInfo.GetSignBlockMap());
     }
     // get bin file digest
-    if (signBlockInfo.GetNeedGenerateDigest()) {
+    bool needGenerateDigest = signBlockInfo.GetNeedGenerateDigest();
+    if (needGenerateDigest) {
         std::vector<int8_t> signatrue = signBlockInfo.GetSignBlockMap().find(0)->second.GetValue();
-        if (!GetFileDigest(*((std::vector<int8_t>*)fileBytes), signatrue, signBlockInfo)) {
+        bool getFileDigest = GetFileDigest(*((std::vector<int8_t>*)fileBytes), signatrue, signBlockInfo);
+        if (!getFileDigest) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify bin file GetFileDigest failed!");
             delete fileBytes;
             return false;
@@ -170,7 +182,8 @@ bool VerifyElf::GetFileDigest(std::vector<int8_t>& fileBytes, std::vector<int8_t
                               SignBlockInfo& signBlockInfo)
 {
     std::string binDigest;
-    if (!GetRawContent(signatrue, binDigest)) {
+    bool getRawContentFlag = GetRawContent(signatrue, binDigest);
+    if (!getRawContentFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyBinDigest GetBinDigest failed!");
         return false;
     }
@@ -213,8 +226,9 @@ bool VerifyElf::GenerateFileDigest(std::vector<int8_t>& fileBytes, SignBlockInfo
 bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
                                  const std::string fileType)
 {
-    int32_t offset = 0;
-    if (!CheckMagicAndVersion(bytes, offset, fileType)) {
+    int64_t offset = 0;
+    bool checkMagicAndVersionFlag = CheckMagicAndVersion(bytes, offset, fileType);
+    if (!checkMagicAndVersionFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "GetSignBlockData chech magic and version failed!");
         return false;
     }
@@ -236,7 +250,7 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
     blockSizeBf->Flip();
     int32_t blockSize = 0;
     blockSizeBf->GetInt32(blockSize);
-    int32_t blockStart = 0;
+    int64_t blockStart = 0;
     if (fileType == BIN_FILE_TYPE) {
         blockStart = bytes.size() - blockSize;
     } else {
@@ -247,7 +261,7 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
     return true;
 }
 
-bool VerifyElf::CheckMagicAndVersion(std::vector<int8_t>& bytes, int32_t& offset, const std::string fileType)
+bool VerifyElf::CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset, const std::string fileType)
 {
     std::string magicStr = (fileType == ELF_FILE_TYPE ? HwSignHead::ELF_MAGIC : HwSignHead::MAGIC);
     offset = bytes.size() - HwSignHead::SIGN_HEAD_LEN;
@@ -276,7 +290,7 @@ void VerifyElf::GetElfSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlock
                                 std::unordered_map<signed char, SigningBlock>& signBlockMap)
 {
     int32_t headBlockLen = HwSignHead::ELF_BLOCK_LEN;
-    int32_t offset = hwBlockData.GetBlockStart();
+    int64_t offset = hwBlockData.GetBlockStart();
     for (int i = 0; i < hwBlockData.GetBlockNum(); i++) {
         std::vector<int8_t> blockByte(bytes.begin() + offset, bytes.begin() + offset + headBlockLen);
         std::shared_ptr<ByteBuffer> blockBuffer = std::make_shared<ByteBuffer>(blockByte.size());
@@ -333,15 +347,18 @@ void VerifyElf::GetBinSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlock
 
 bool VerifyElf::CheckParams(Options* options)
 {
-    if (options->GetString(Options::OUT_CERT_CHAIN).empty()) {
+    bool certEmpty = options->GetString(Options::OUT_CERT_CHAIN).empty();
+    if (certEmpty) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Missing parameter: " + Options::OUT_CERT_CHAIN + "s.");
         return false;
     }
-    if (options->GetString(Options::OUT_PROFILE).empty()) {
+    bool profileEmpty = options->GetString(Options::OUT_PROFILE).empty();
+    if (profileEmpty) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Missing parameter: " + Options::OUT_PROFILE + "s.");
         return false;
     }
-    if (options->GetString(Options::PROOF_FILE).empty()) {
+    bool proofEmpty = options->GetString(Options::PROOF_FILE).empty();
+    if (proofEmpty) {
         SIGNATURE_TOOLS_LOGW("Missing parameter: %{public}s.\n",
                              Options::PROOF_FILE.c_str());
     }
@@ -354,7 +371,8 @@ bool VerifyElf::CheckSignFile(const std::string& signedFile)
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Not found verify file path!");
         return false;
     }
-    if (!FileUtils::IsValidFile(signedFile)) {
+    bool validFlag = FileUtils::IsValidFile(signedFile);
+    if (!validFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "signedFile is invalid.");
         return false;
     }
@@ -364,15 +382,18 @@ bool VerifyElf::CheckSignFile(const std::string& signedFile)
 bool VerifyElf::GetRawContent(std::vector<int8_t>& contentVec, std::string& rawContent)
 {
     PKCS7Data p7Data;
-    if (p7Data.Parse(contentVec) < 0) {
+    int parseFlag = p7Data.Parse(contentVec);
+    if (parseFlag < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "GetRawContent parse content failed!");
         return false;
     }
-    if (p7Data.Verify() < 0) {
+    int verifyFlag = p7Data.Verify();
+    if (verifyFlag < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "GetRawContent verify content failed!");
         return false;
     }
-    if (p7Data.GetContent(rawContent) < 0) {
+    int getContentFlag = p7Data.GetContent(rawContent);
+    if (getContentFlag < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "GetRawContent GetOriginalRawData failed!");
         return false;
     }

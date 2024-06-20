@@ -39,20 +39,23 @@ bool SignBin::Sign(SignerConfig& signerConfig, const std::map<std::string, std::
     std::string outputFile = signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
     std::string profileFile = signParams.at(ParamConstants::PARAM_BASIC_PROFILE);
     std::string profileSigned = signParams.at(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
-    if (!WriteBlockDataToFile(inputFile, outputFile, profileFile, profileSigned)) {
+    bool writeBlockOk = WriteBlockDataToFile(inputFile, outputFile, profileFile, profileSigned);
+    if (!writeBlockOk) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "The block head data made failed.");
         FileUtils::DelDir(outputFile);
         return false;
     }
     /* 2. Make sign data, and append write to output file */
     std::string signAlg = signParams.at(ParamConstants::PARAM_BASIC_SIGANTURE_ALG);
-    if (!WriteSignDataToOutputFile(signerConfig, outputFile, signAlg)) {
+    bool writeSignDataOk = WriteSignDataToOutputFile(signerConfig, outputFile, signAlg);
+    if (!writeSignDataOk) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "The sign data made failed.");
         FileUtils::DelDir(outputFile);
         return false;
     }
     /* 3. Make sign head data, and write to output file */
-    if (!WriteSignHeadDataToOutputFile(inputFile, outputFile)) {
+    bool writeSignHeadDataOk = WriteSignHeadDataToOutputFile(inputFile, outputFile);
+    if (!writeSignHeadDataOk) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "The sign head data made failed.");
         FileUtils::DelDir(outputFile);
         return false;
@@ -65,25 +68,20 @@ bool SignBin::WriteBlockDataToFile(const std::string& inputFile, const std::stri
 {
     int64_t binFileLen = FileUtils::GetFileLen(inputFile);
     int64_t profileDataLen = FileUtils::GetFileLen(profileFile);
-    if (!CheckBinAndProfileLengthIsValid(binFileLen, profileDataLen)) {
+    bool isValid = CheckBinAndProfileLengthIsValid(binFileLen, profileDataLen);
+    if (!isValid) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                             "file length is invalid, binFileLen: " + std::to_string(binFileLen) +
                             "lld, profileDataLen: " + std::to_string(profileDataLen) + "lld");
         return false;
     }
     int64_t offset = binFileLen + HwBlockHead::GetBlockLen() + HwBlockHead::GetBlockLen();
-    if (IsLongOverflowInteger(offset)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "The profile block head offset is overflow integer range.");
-        return false;
-    }
+    IsLongOverflowInteger(offset);
     char isSigned = SignatureBlockTypes::GetProfileBlockTypes(profileSigned);
     std::string proBlockByte =
         HwBlockHead::GetBlockHead(isSigned, SignatureBlockTags::DEFAULT, (short)profileDataLen, (int)offset);
     offset += profileDataLen;
-    if (IsLongOverflowInteger(offset)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "The sign block head offset is overflow integer range.");
-        return false;
-    }
+    IsLongOverflowInteger(offset);
     std::string signBlockByte = HwBlockHead::GetBlockHead(
         SignatureBlockTypes::SIGNATURE_BLOCK, SignatureBlockTags::DEFAULT, (short)0, (int)offset);
     return WriteSignedBin(inputFile, proBlockByte, signBlockByte, profileFile, outputFile);
@@ -93,7 +91,8 @@ std::vector<int8_t> SignBin::GenerateFileDigest(const std::string& outputFile,
                                                 const std::string& signAlg)
 {
     SignatureAlgorithmHelper signatureAlgorithmClass;
-    if (!Params::GetSignatureAlgorithm(signAlg, signatureAlgorithmClass)) {
+    bool getAlgOk = Params::GetSignatureAlgorithm(signAlg, signatureAlgorithmClass);
+    if (!getAlgOk) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignHap] get Signature Algorithm failed.");
         return std::vector<int8_t>();
     }
@@ -108,10 +107,6 @@ std::vector<int8_t> SignBin::GenerateFileDigest(const std::string& outputFile,
     contentInfo.AddContentHashData(0, SignatureBlockTags::HASH_ROOT_4K, HashUtils::GetHashAlgsId(alg),
                                    data.size(), data);
     std::vector<int8_t> dig = contentInfo.GetByteContent();
-    if (dig.empty()) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "generate file digest is null.");
-        return std::vector<int8_t>();
-    }
     return dig;
 }
 
@@ -141,10 +136,7 @@ bool SignBin::WriteSignDataToOutputFile(SignerConfig& SignerConfig, const std::s
 bool SignBin::WriteSignHeadDataToOutputFile(const std::string& inputFile, const std::string& outputFile)
 {
     int64_t size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile) + HwSignHead::SIGN_HEAD_LEN;
-    if (IsLongOverflowInteger(size)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "File size is Overflow integer range!");
-        return false;
-    }
+    IsLongOverflowInteger(size);
     HwSignHead signHeadData;
     std::vector<int8_t> signHeadByte = signHeadData.GetSignHead(size);
     if (signHeadByte.empty()) {
@@ -180,26 +172,19 @@ bool SignBin::WriteSignedBin(const std::string& inputFile, const std::string& pr
                              const std::string& outputFile)
 {
     // 1. write the input file to the output file.
-    if (!FileUtils::WriteInputToOutPut(inputFile, outputFile)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to write information of input file: " + inputFile +
-                            "s to output file: " + outputFile + "s");
-        return false;
-    }
+    bool writeInputOk = FileUtils::WriteInputToOutPut(inputFile, outputFile);
+    
     // 2. append write profile block head to the output file.
-    if (!FileUtils::AppendWriteByteToFile(proBlockByte, outputFile)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to append write proBlockByte to output file: " +
-                            outputFile + "s");
-        return false;
-    }
+    bool appendProfileHeadOk = FileUtils::AppendWriteByteToFile(proBlockByte, outputFile);
+    
     // 3. append write sign block head to the output file.
-    if (!FileUtils::AppendWriteByteToFile(signBlockByte, outputFile)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to append write binBlockByte to output file: " +
-                            outputFile + "s");
-        return false;
-    }
+    bool appendBlockHeadOk = FileUtils::AppendWriteByteToFile(signBlockByte, outputFile);
+    
     // 4. write profile src file to the output file.
-    if (!FileUtils::AppendWriteFileToFile(profileFile, outputFile)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to write profile file " + profileFile + "s");
+    bool appendProfileSrcOk = FileUtils::AppendWriteFileToFile(profileFile, outputFile);
+
+    if (!writeInputOk || !appendProfileHeadOk || !appendBlockHeadOk || !appendProfileSrcOk) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to write signed bin");
         return false;
     }
     return true;

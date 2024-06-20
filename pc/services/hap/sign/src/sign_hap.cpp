@@ -48,10 +48,8 @@ bool SignHap::Sign(DataSource* contents[], int32_t len, SignerConfig& config,
     ByteBuffer dig_message;
     std::pair<int32_t, ByteBuffer> nidAndcontentDigests = std::make_pair(algo, dig_context);
     nidAndcontentDigestsVec.push_back(nidAndcontentDigests);
-    if (!EncodeListOfPairsToByteArray(digestParam, nidAndcontentDigestsVec, dig_message)) {
-        SIGNATURE_TOOLS_LOGE("[SignHap] encode ListOfPairs To ByteArray failed");
-        return false;
-    }
+    EncodeListOfPairsToByteArray(digestParam, nidAndcontentDigestsVec, dig_message);
+
     SIGNATURE_TOOLS_LOGI("[SignHap] EncodeListOfPairsToByteArray %{public}d", dig_message.GetCapacity());
     // 3:对编码后的摘要信息进行加密。康兵
     std::shared_ptr<Pkcs7Generator> pkcs7Generator = std::make_shared<BCPkcs7Generator>();
@@ -62,7 +60,9 @@ bool SignHap::Sign(DataSource* contents[], int32_t len, SignerConfig& config,
         return false;
     }
     SIGNATURE_TOOLS_LOGI("[SignHap] GenerateSignedData %{public}lu", static_cast<unsigned long>(ret.size()));
-    if (!GenerateHapSigningBlock(ret, optionalBlocks, config.GetCompatibleVersion(), result)) {
+    bool checkGenerateHapSigningBlockFlag = GenerateHapSigningBlock(ret, optionalBlocks,
+                                                                    config.GetCompatibleVersion(), result);
+    if (!checkGenerateHapSigningBlockFlag) {
         SIGNATURE_TOOLS_LOGE("[SignHap] Generate HapSigning Block failed");
         return false;
     }
@@ -74,28 +74,27 @@ bool SignHap::ComputeDigests(const DigestParameter& digestParam, DataSource* con
                              const std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result)
 {
     ByteBuffer chunkDigest;
-    if (!HapSignerBlockUtils::ComputeDigestsForEachChunk(digestParam, contents, len, chunkDigest)) {
+    bool ret = HapSignerBlockUtils::ComputeDigestsForEachChunk(digestParam, contents, len, chunkDigest);
+    if (!ret) {
         SIGNATURE_TOOLS_LOGE("Compute Content Digests failed");
         return false;
     }
-    if (!HapSignerBlockUtils::ComputeDigestsWithOptionalBlock(digestParam, optionalBlocks, chunkDigest, result)) {
+    bool checkComputeDigestsWithOptionalBlockFlag =
+        HapSignerBlockUtils::ComputeDigestsWithOptionalBlock(digestParam, optionalBlocks, chunkDigest, result);
+    if (!checkComputeDigestsWithOptionalBlockFlag) {
         SIGNATURE_TOOLS_LOGE("Compute Final Digests failed");
         return false;
     }
     return true;
 }
 
-bool SignHap::EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
+void SignHap::EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
                                            const std::vector<std::pair<int32_t,
                                            ByteBuffer>>&nidAndcontentDigests, ByteBuffer& result)
 {
     int encodeSize = 0;
     encodeSize += INT_SIZE + INT_SIZE;
     for (const auto& pair : nidAndcontentDigests) {
-        if (pair.second.GetCapacity() != digestParam.digestOutputSizeBytes) {
-            SIGNATURE_TOOLS_LOGE(" encode ListOfPairs To ByteArray dig or Summary Algorithm is mismatch");
-            return false;
-        }
         encodeSize += INT_SIZE + INT_SIZE + INT_SIZE + pair.second.GetCapacity();
     }
     result.SetCapacity(encodeSize);
@@ -108,7 +107,7 @@ bool SignHap::EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
         result.PutInt32(second.GetCapacity());
         result.Put(second);
     }
-    return true;
+    return;
 }
 
 bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock,
@@ -143,12 +142,8 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     long optionalBlockSize = 0L;
     for (const auto& elem : optionalBlocks) optionalBlockSize += elem.optionalBlockValue.GetCapacity();
     long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1))
-        + optionalBlockSize // optional pair
-        + hapSignatureSchemeBlock.size() // App signing pairs
-        + BLOCK_COUNT // block count
-        + HapUtils::BLOCK_SIZE // size
-        + BLOCK_MAGIC // magic
-        + BLOCK_VERSION; // version
+        + optionalBlockSize + hapSignatureSchemeBlock.size() + BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC
+        + BLOCK_VERSION; 
     if (resultSize > INT_MAX) {
         SIGNATURE_TOOLS_LOGE("Illegal Argument. HapSigningBlock out of range: %{public}ld", resultSize);
         return false;

@@ -32,7 +32,7 @@ public:
 
     bool GenerateCA(Options* options)override;
     bool GenerateRootCertToFile(Options* options, EVP_PKEY* rootKey);
-    bool GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey);   
+    bool GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey);
     bool OutputModeOfCert(X509* cert, Options* options);
     bool GenerateCert(Options* options)override;
     bool GenerateKeyStore(Options* options)override;

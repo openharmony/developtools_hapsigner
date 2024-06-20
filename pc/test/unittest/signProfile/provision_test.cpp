@@ -31,6 +31,7 @@
 #include "profile_verify.h"
 #include "constant.h"
 #include "profile_verify_utils.h"
+#include "cms_utils.h"
 
 using  nlohmann::json;
 
@@ -49,7 +50,7 @@ static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
 static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
 static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
-                                                        "profile-release1-invalid_cert_chain.pem";
+"profile-release1-invalid_cert_chain.pem";
 
 //verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
@@ -141,11 +142,56 @@ HWTEST_F(ProvisionTest, provision_test002, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test003, testing::ext::TestSize.Level1)
 {
     SetRdDevice(false);
-    std::string provision = R"({"acls":{"allowed-acls":["ac1","ac2"]},"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"invalid debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0","baseapp-info":{"package-name":"package_name","package-cert":"package_cert"}})";
+    std::string provision = "{\"acls\":{\"allowed-acls\":[\"ac1\",\"ac2\"]},\"bundle-info\":{\"app-feature\":"
+        "\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\","
+        "\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD53029605"
+        "4159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},"
+        "\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"invalid de"
+        "bug\",\"uuid\""
+        ":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532}"
+        ",\"version-code\":1,\"version-name\":\"1.0.0\",\"baseapp-info\":{\"package-name\":\"package_name\",\"packag"
+        "e-cert\":\"package_cert\"}}";
     ProfileInfo info;
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
-    provision = R"({"acls":{"allowed-acls":["ac1","ac2"]},"bundle-info":{"app-feature":"hos_system_app","bundle-name":".*","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0","baseapp-info":{"package-name":"package_name","package-cert":"package_cert"}})";
+    provision = "{\"acls\":{\"allowed-acls\":[\"ac1\",\"ac2\"]},\"bundle-info\":{\"app-feature\":\"hos_system_"
+        "app\",\"bundle-name\":\".*\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":"
+        "\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296"
+        "054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\""
+        "issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"debug\",\"uuid"
+        "\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":161051"
+        "9532},\"version-code\":1,\"version-name\":\"1.0.0\",\"baseapp-info\":{\"package-name\":\"package_name\","
+        "\"package-cert\":\"package_cert\"}}";
     ProfileInfo info2;
     result = ParseProvision(provision, info2);
     EXPECT_TRUE(result == PROVISION_OK);
@@ -160,7 +206,7 @@ HWTEST_F(ProvisionTest, provision_test004, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test005, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"(55.2)";
+    std::string provision = "55.2";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -169,7 +215,7 @@ HWTEST_F(ProvisionTest, provision_test005, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test006, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"name": "feixing","age": 18}+)";
+    std::string provision = "{\"name\": \"feixing\",\"age\": 18}+";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -178,7 +224,7 @@ HWTEST_F(ProvisionTest, provision_test006, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test007, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"(55.2)";
+    std::string provision = "55.2";
     AppProvisionVerifyResult result = ParseProfile(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -187,7 +233,7 @@ HWTEST_F(ProvisionTest, provision_test007, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test008, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"name": "feixing","age": 18}+)";
+    std::string provision = "{\"name\": \"feixing\",\"age\": 18}+";
     AppProvisionVerifyResult result = ParseProfile(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -196,7 +242,7 @@ HWTEST_F(ProvisionTest, provision_test008, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test009, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"([88,99,42,11,22])";
+    std::string provision = "[88,99,42,11,22]";
     AppProvisionVerifyResult result = ParseProfile(provision, info);
     EXPECT_TRUE(result == PROVISION_OK);
 }
@@ -205,7 +251,28 @@ HWTEST_F(ProvisionTest, provision_test009, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test010, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-feature\""
+        ":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer-id\":\"OpenHarm"
+        "ony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD"
+        "530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F95873"
+        "2865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":"
+        "\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532"
+        ",\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_TRUE(result == PROVISION_OK);
 }
@@ -214,7 +281,28 @@ HWTEST_F(ProvisionTest, provision_test010, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test011, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":0,"version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.e"
+        "xample.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BE"
+        "GIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44AB"
+        "CD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F"
+        "958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},"
+        "\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after"
+        "\":1705127532,\"not-before\":1610519532},\"version-code\":0,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -223,7 +311,28 @@ HWTEST_F(ProvisionTest, provision_test011, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test012, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code_no":0,"version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"c"
+        "om.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-"
+        "----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB4"
+        "4ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C767"
+        "9A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":["
+        "\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\""
+        "not-after\":1705127532,\"not-before\":1610519532},\"version-code_no\":0,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -232,7 +341,28 @@ HWTEST_F(ProvisionTest, provision_test012, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test013, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":"0","version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"c"
+        "om.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\""
+        "-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB4"
+        "4ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C76"
+        "79A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":"
+        "[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{"
+        "\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":\"0\",\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -241,7 +371,28 @@ HWTEST_F(ProvisionTest, provision_test013, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test014, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-privilege-capabilities": [99,"88"],"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-privilege-capabilities\": [99,\"88\"],\"bundle-info\":{\"app"
+        "-feature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer"
+        "-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB"
+        "44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7"
+        "679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\""
+        ":[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":"
+        "{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_TRUE(result == PROVISION_OK);
 }
@@ -250,7 +401,27 @@ HWTEST_F(ProvisionTest, provision_test014, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test015, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"\","
+        "\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44AB"
+        "CD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F9"
+        "58732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\""
+        "type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1"
+        "705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -259,7 +430,28 @@ HWTEST_F(ProvisionTest, provision_test015, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test016, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":""})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.exa"
+        "mple.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CE"
+        "RTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD5302"
+        "96054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]}"
+        ",\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"debug\",\""
+        "uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":"
+        "1610519532},\"version-code\":1,\"version-name\":\"\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -268,7 +460,28 @@ HWTEST_F(ProvisionTest, provision_test016, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test017, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":""})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.examp"
+        "le.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTI"
+        "FICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296"
+        "054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\""
+        "issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"debug\",\"uu"
+        "id\":\"\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"vers"
+        "ion-name\":\"\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -277,7 +490,27 @@ HWTEST_F(ProvisionTest, provision_test017, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test018, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.examp"
+        "le.nativetemplatedemo\",\"developer-id\":\"\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD5"
+        "30296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732"
+        "865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\""
+        "debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\""
+        "not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -286,7 +519,13 @@ HWTEST_F(ProvisionTest, provision_test018, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test019, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":""},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com"
+        ".example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"\"},\""
+        "d""ebug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD53029"
+        "6054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F95873286"
+        "5\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"de"
+        "bug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"no"
+        "t-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -295,7 +534,27 @@ HWTEST_F(ProvisionTest, provision_test019, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test020, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"bundle-info":{"app-feature":"","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"bundle-info\":{\"app-feature\":\"\",\"bundle-name\":\"com.example.nativetem"
+        "platedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD53"
+        "0296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F9587328"
+        "65\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\""
+        "debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\""
+        "not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -637,40 +896,60 @@ HWTEST_F(ProvisionTest, provision_test035, testing::ext::TestSize.Level1)
 // provision verify parse app dist type
 HWTEST_F(ProvisionTest, provision_test036, testing::ext::TestSize.Level1)
 {
-    ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery",
-"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app",
-"bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony",
-"development-certificate":"-----BEGIN CERTIFICATE-----\n
-MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\n
-A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\n
-eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\n
-MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\n
-A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\n
-eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\n
-odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\n
-UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\n
-o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\n
-BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\n
-AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\n
-QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n
-4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n
------END CERTIFICATE-----\n"},
-"debug-info":{"device-id-type":"udid",
-"device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42",
-"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},
-"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98",
-"validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+     ProfileInfo info;
+     std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"app-distribution-type"
+         "\": \"app_gallery\",\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"co"
+         "m.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certifica"
+         "te\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530"
+        "296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"
+        "\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"re"
+        "lease\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"n"
+        "ot-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+     AppProvisionVerifyResult result = ParseProvision(provision, info);
+     EXPECT_FALSE(result == PROVISION_OK);
 }
 
 // provision verify parse version code not positive
 HWTEST_F(ProvisionTest, provision_test037, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":0,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-featur"
+        "e\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer-id\":\"Ope"
+        "nHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44A"
+        "BCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73"
+        "F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]"
+        "},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-a"
+        "fter\":1705127532,\"not-before\":1610519532},\"version-code\":0,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -679,7 +958,29 @@ HWTEST_F(ProvisionTest, provision_test037, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test038, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code_no":0,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-fea"
+        "ture\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer-id\":\""
+        "OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0C"
+        "B44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718"
+        "C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permission"
+        "s\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"valid"
+        "ity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code_no\":0,\"ver"
+        "sion-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -688,7 +989,29 @@ HWTEST_F(ProvisionTest, provision_test038, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test039, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":"0","version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-f"
+        "eature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer-"
+        "id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69"
+        "C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7E"
+        "ED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"is"
+        "suer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"t"
+        "ype\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"no"
+        "t-after\":1705127532,\"not-before\":1610519532},\"version-code\":\"0\",\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -697,7 +1020,30 @@ HWTEST_F(ProvisionTest, provision_test039, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test040, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","app-privilege-capabilities": [99,"88"],"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"app-privilege-cap"
+        "abilities\": [99,\"88\"],\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-"
+        "name\":\"com.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"develop"
+        "ment-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341B"
+        "DA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2F"
+        "AA019458B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"perm"
+        "issions\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe6"
+        "86e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-bef"
+        "ore\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -706,7 +1052,29 @@ HWTEST_F(ProvisionTest, provision_test040, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test041, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-in"
+        "fo\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"\",\"developer-id\":\"Op"
+        "enHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA"
+        "5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA0194"
+        "58B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions"
+        "\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-37"
+        "70-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610"
+        "519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -714,7 +1082,29 @@ HWTEST_F(ProvisionTest, provision_test041, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test042, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":""})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"ap"
+        "p-feature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"devel"
+        "oper-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C"
+        "0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493"
+        "A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-pe"
+        "rmissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c9"
+        "8\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":"
+        "1,\"version-name\":\"\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -723,7 +1113,28 @@ HWTEST_F(ProvisionTest, provision_test042, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test043, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":""})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"a"
+        "pp-feature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"d"
+        "eveloper-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA59"
+        "48C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B"
+        "856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"r"
+        "estricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"no"
+        "t-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -732,7 +1143,29 @@ HWTEST_F(ProvisionTest, provision_test043, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test044, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app"
+        "-feature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"develo"
+        "per-id\":\"\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5"
+        "948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B"
+        "856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"re"
+        "stricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938"
+        "-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"ver"
+        "sion-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -741,7 +1174,14 @@ HWTEST_F(ProvisionTest, provision_test044, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test045, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":""},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"a"
+    "pp-feature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"dev"
+    "eloper-id\":\"OpenHarmony\",\"development-certificate\":\"\"},\"debug-info\":{\"device-i"
+    "d-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16"
+    "A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"i"
+    "ssuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"de"
+    "bug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":17051275"
+    "32,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -750,7 +1190,29 @@ HWTEST_F(ProvisionTest, provision_test045, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test046, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"app-feature":"","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"release","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-in"
+        "fo\":{\"app-feature\":\"\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"de"
+        "veloper-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA59"
+        "48C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B8"
+        "56AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"re"
+        "stricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-"
+        "961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"ver"
+        "sion-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_FALSE(result == PROVISION_OK);
 }
@@ -758,7 +1220,29 @@ HWTEST_F(ProvisionTest, provision_test046, testing::ext::TestSize.Level1)
 HWTEST_F(ProvisionTest, provision_test047, testing::ext::TestSize.Level1)
 {
     ProfileInfo info;
-    std::string provision = R"({"app-distribution-type": "app_gallery","bundle-info":{"apl":"apl_","app-feature":"hos_system_app","bundle-name":"com.example.nativetemplatedemo","developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\nMjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\nA1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\neTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\nodSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\nUYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\no2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\nBQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\nAwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\nQT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\n4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\n-----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},"issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-4824-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":3,"version-name":"1.0.0"})";
+    std::string provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"a"
+        "pl\":\"apl_\",\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.example.nativetemp"
+        "latedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
+        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
+        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
+        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
+        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
+        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
+        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
+        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
+        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
+        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
+        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA594"
+        "8C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856A"
+        "B10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restr"
+        "icted-permissions\":[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b"
+        "140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"versio"
+        "n-code\":3,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_TRUE(result == PROVISION_OK);
 }
@@ -1033,134 +1517,328 @@ HWTEST_F(ProvisionTest, provision_test060, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// // verify cert chain failed
-// HWTEST_F(ProvisionTest, test061, testing::ext::TestSize.Level1)
-// {
-//     std::string content = "signed content data";
-//     Options options;
-//     char keyStorePwd[] = "123456";
-//     char keypwd[] = "123456";
-//     options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
-//     options[Options::MODE] = SIGN_PROFILE_MODE;
-//     options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
-//     options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
-//     options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
-//     options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
-//     options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
-//     options[Options::KEY_RIGHTS] = keypwd;
-//     options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+// verify cert chain failed
+HWTEST_F(ProvisionTest, test061, testing::ext::TestSize.Level1)
+{
+    std::string content = "signed content data";
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-//     LocalizationAdapter adapter(&options);
-//     SignerFactory factory;
-//     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
-//     PKCS7Data p7;
-//     std::string p7b;
-//     PKCS7* pkcs7 = NULL;
-//     int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
-//     EXPECT_EQ(result, 0);
-//     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
-//     pkcs7=d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
-//     STACK_OF(X509)*certs=pkcs7->d.sign->cert;
-//     int num = 1;
-//     while (sk_X509_num(certs) > num) {
-//         X509*cert=sk_X509_delete(certs, sk_X509_num(certs) - 1);
-//         X509_free(cert);
-//     }
-//     sk_X509_push(certs, sk_X509_value(certs,0));
-//     X509_up_ref(sk_X509_value(certs, 0));
-//     unsigned char* out = NULL;
-//     int len = 0;
-//     len=i2d_PKCS7(pkcs7, &out);
-//     p7b.assign(out, out+len);
-//     result=p7.Parse(p7b);
-//     EXPECT_EQ(result, 0);
-//     result=p7.Verify();
-//     PKCS7_free(pkcs7);
-//     EXPECT_TRUE(result < 0);
-// }
+    LocalizationAdapter adapter(&options);
+    SignerFactory factory;
+    std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
+    PKCS7Data p7;
+    std::string p7b;
+    PKCS7* pkcs7 = NULL;
+    int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
+    EXPECT_EQ(result, 0);
+    const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
+    pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
+    STACK_OF(X509)* certs = pkcs7->d.sign->cert;
+    int num = 1;
+    while (sk_X509_num(certs) > num) {
+        X509* cert = sk_X509_delete(certs, sk_X509_num(certs) - 1);
+        X509_free(cert);
+    }
+    sk_X509_push(certs, sk_X509_value(certs, 0));
+    X509_up_ref(sk_X509_value(certs, 0));
+    unsigned char* out = NULL;
+    int len = 0;
+    len = i2d_PKCS7(pkcs7, &out);
+    p7b.assign(out, out + len);
+    result = p7.Parse(p7b);
+    EXPECT_EQ(result, 0);
+    result = p7.Verify();
+    PKCS7_free(pkcs7);
+    EXPECT_TRUE(result < 0);
+}
 
-// // verify cert chain failed
-// HWTEST_F(ProvisionTest, test062, testing::ext::TestSize.Level1)
-// {
-//     std::string content = "signed content data";
-//     Options options;
-//     char keyStorePwd[] = "123456";
-//     char keypwd[] = "123456";
-//     options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
-//     options[Options::MODE] = SIGN_PROFILE_MODE;
-//     options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
-//     options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
-//     options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
-//     options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
-//     options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
-//     options[Options::KEY_RIGHTS] = keypwd;
-//     options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+// verify cert chain failed
+HWTEST_F(ProvisionTest, test062, testing::ext::TestSize.Level1)
+{
+    std::string content = "signed content data";
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-//     LocalizationAdapter adapter(&options);
-//     SignerFactory factory;
-//     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
-//     PKCS7Data p7;
-//     std::string p7b;
-//     PKCS7* pkcs7 = NULL;
-//     int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
-//     EXPECT_EQ(result, 0);
-//     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
-//     pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
-//     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
-//     sk_X509_delete(certs, 2);
-//     unsigned char* out = NULL;
-//     int len = 0;
-//     len = i2d_PKCS7(pkcs7, &out);
-//     p7b.assign(out, out + len);
-//     result = p7.Parse(p7b);
-//     EXPECT_EQ(result, 0);
-//     result = p7.Verify();
-//     PKCS7_free(pkcs7);
-//     EXPECT_TRUE(result < 0);
-// }
+    LocalizationAdapter adapter(&options);
+    SignerFactory factory;
+    std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
+    PKCS7Data p7;
+    std::string p7b;
+    PKCS7* pkcs7 = NULL;
+    int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
+    EXPECT_EQ(result, 0);
+    const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
+    pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
+    STACK_OF(X509)* certs = pkcs7->d.sign->cert;
+    sk_X509_delete(certs, 2);
+    unsigned char* out = NULL;
+    int len = 0;
+    len = i2d_PKCS7(pkcs7, &out);
+    p7b.assign(out, out + len);
+    result = p7.Parse(p7b);
+    EXPECT_EQ(result, 0);
+    result = p7.Verify();
+    PKCS7_free(pkcs7);
+    EXPECT_TRUE(result < 0);
+}
 
-// // verify cert chain failed
-// HWTEST_F(ProvisionTest, test063, testing::ext::TestSize.Level1)
-// {
-//     std::string content = "signed content data";
-//     Options options;
-//     char keyStorePwd[] = "123456";
-//     char keypwd[] = "123456";
-//     options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
-//     options[Options::MODE] = SIGN_PROFILE_MODE;
-//     options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
-//     options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
-//     options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
-//     options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
-//     options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
-//     options[Options::KEY_RIGHTS] = keypwd;
-//     options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+// verify cert chain failed
+HWTEST_F(ProvisionTest, test063, testing::ext::TestSize.Level1)
+{
+    std::string content = "signed content data";
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-//     LocalizationAdapter adapter(&options);
-//     SignerFactory factory;
-//     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
-//     PKCS7Data p7;
-//     std::string p7b;
-//     PKCS7* pkcs7 = NULL;
-//     int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
-//     EXPECT_EQ(result, 0);
-//     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
-//     pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
-//     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
-//     sk_X509_delete(certs, 2);
-//     sk_X509_push(certs, sk_X509_value(certs, 1));
-//     X509_up_ref(sk_X509_value(certs, 1));
-//     PKCS7Data::PrintCertChainSub(certs);
-//     unsigned char* out = NULL;
-//     int len = 0;
-//     len = i2d_PKCS7(pkcs7, &out);
-//     p7b.assign(out, out + len);
-//     result = p7.Parse(p7b);
-//     PKCS7Data::PrintCertChainSub(certs);
-//     EXPECT_EQ(result, 0);
-//     result = p7.Verify();
-//     PKCS7_free(pkcs7);
-//     EXPECT_TRUE(result < 0);
-// }
+    LocalizationAdapter adapter(&options);
+    SignerFactory factory;
+    std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
+    PKCS7Data p7;
+    std::string p7b;
+    PKCS7* pkcs7 = NULL;
+    int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
+    EXPECT_EQ(result, 0);
+    const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
+    pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
+    STACK_OF(X509)* certs = pkcs7->d.sign->cert;
+    sk_X509_delete(certs, 2);
+    sk_X509_push(certs, sk_X509_value(certs, 1));
+    X509_up_ref(sk_X509_value(certs, 1));
+    PKCS7Data::PrintCertChainSub(certs);
+    unsigned char* out = NULL;
+    int len = 0;
+    len = i2d_PKCS7(pkcs7, &out);
+    p7b.assign(out, out + len);
+    result = p7.Parse(p7b);
+    PKCS7Data::PrintCertChainSub(certs);
+    EXPECT_EQ(result, 0);
+    result = p7.Verify();
+    PKCS7_free(pkcs7);
+    EXPECT_TRUE(result < 0);
+}
+
+// ProfileInfo equal
+HWTEST_F(ProvisionTest, test067, testing::ext::TestSize.Level1)
+{
+    ProfileInfo* info = NULL;
+    ProfileInfo info2;
+    info = &info2;
+    info2 = *info;
+}
+
+// verify failed
+HWTEST_F(ProvisionTest, test068, testing::ext::TestSize.Level1)
+{
+    Options options;
+    std::string mode = SIGN_PROFILE_MODE;
+    std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    std::string outFile = SIGN_PROFILE_OUT_FILE;
+    std::string inFile = SIGN_PROFILE_IN_FILE;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = keyAlias;
+    options[Options::MODE] = mode;
+    options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    options[Options::SIGN_ALG] = signAlg;
+    options[Options::KEY_STORE_FILE] = keystoreFile;
+    options[Options::OUT_FILE] = outFile;
+    options[Options::IN_FILE] = inFile;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    std::string content = "json content";
+    std::string ret;
+    int result = ProfileSignTool::GenerateP7b(adapter, content, ret);
+    EXPECT_EQ(result, 0);
+    std::vector<int8_t> signedData(ret.begin(), ret.end());
+    std::string data = "hello,world";
+    std::vector<int8_t> unsignedData(data.begin(), data.end());
+    EXPECT_EQ(CmsUtils::VerifySignDataWithUnsignedDataDigest(unsignedData, signedData), false);
+}
+
+// sort x509
+HWTEST_F(ProvisionTest, test069, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs = sk_X509_new(NULL);
+    PKCS7Data::SortX509Stack(certs);
+    sk_X509_free(certs);
+}
+
+// sort x509
+HWTEST_F(ProvisionTest, test070, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs_ = NULL;
+    STACK_OF(X509)* certs = sk_X509_new(NULL);
+    PKCS7Data::SortX509Stack(certs_);
+    sk_X509_free(certs);
+}
+
+// reverse x509
+HWTEST_F(ProvisionTest, test071, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs = NULL;
+    PKCS7Data::ReverseX509Stack(certs);
+}
+
+// print x509
+HWTEST_F(ProvisionTest, test072, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs = NULL;
+    PKCS7Data::PrintCertChainSub(certs);
+}
+
+// get Asn1 time
+HWTEST_F(ProvisionTest, test073, testing::ext::TestSize.Level1)
+{
+    ASN1_TIME* time = NULL;
+    std::string result = PKCS7Data::GetASN1Time(time);
+    EXPECT_TRUE(result.empty());
+}
+
+// sort x509
+HWTEST_F(ProvisionTest, test074, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs = NULL;
+    PKCS7Data::SortX509Stack(certs);
+}
+
+// provisionInfo validity str
+HWTEST_F(ProvisionTest, test075, testing::ext::TestSize.Level1)
+{
+    std::string  provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-n"
+        "ame\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"development-certi"
+        "ficate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA594"
+        "8C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856"
+        "AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"rest"
+        "ricted-permissions\":[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961"
+        "b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":\"1610519532\"},\"ve"
+        "rsion-code\":1,\"version-name\":\"1.0.0\"}";
+    ProfileInfo info;
+    AppProvisionVerifyResult result = ParseProfile(provision, info);
+    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_OK);
+}
+
+// provisionInfo no validity
+HWTEST_F(ProvisionTest, test076, testing::ext::TestSize.Level1)
+{
+    std::string  provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-nam"
+        "e\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"development-certi"
+        "ficate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C"
+        "3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB1"
+        "0493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restric"
+        "ted-permissions\":[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b14"
+        "0a7c98\",\"validity\":{\"name\":\"weixing\"},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+    ProfileInfo info;
+    AppProvisionVerifyResult result = ParseProfile(provision, info);
+    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_OK);
+}
+
+// provisionInfo release
+HWTEST_F(ProvisionTest, test077, testing::ext::TestSize.Level1)
+{
+    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-"
+        "feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"O"
+        "penHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB"
+        "44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C76"
+        "79A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":"
+        "[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":"
+        "{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+    ProfileInfo info;
+    AppProvisionVerifyResult result = ParseProvision(provision, info);
+    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_OK);
+}
+
+// reverse x509
+HWTEST_F(ProvisionTest, test078, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs_ = NULL;
+    STACK_OF(X509)* certs = sk_X509_new(NULL);
+    PKCS7Data::ReverseX509Stack(certs_);
+    sk_X509_free(certs);
+}
+
+// reverse x509
+HWTEST_F(ProvisionTest, pkcs7_test079, testing::ext::TestSize.Level1)
+{
+    STACK_OF(X509)* certs = sk_X509_new(NULL);
+    PKCS7Data::ReverseX509Stack(certs);
+    sk_X509_free(certs);
+}
 }
 }

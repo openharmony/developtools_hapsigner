@@ -62,6 +62,8 @@ private:
     int32_t fileNameListBlockSize;
     int32_t signInfoListBlockSize;
     void GenerateList();
+    static bool CheckBuffer(ByteBuffer* bf, int32_t& inMagic,
+        int32_t& inSegmentSize, int32_t& inSectionNum);
 };
 } // namespace SignatureTools
 } // namespace OHOS

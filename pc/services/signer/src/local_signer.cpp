@@ -30,7 +30,8 @@ namespace SignatureTools {
 LocalSigner::LocalSigner(EVP_PKEY* keyPair, STACK_OF(X509)* certificates) :keyPair(keyPair),
 certificates(certificates)
 {
-    if (this->keyPair && this->certificates && sk_X509_num(this->certificates)) {
+    bool result = this->keyPair && this->certificates && sk_X509_num(this->certificates);
+    if (result) {
         PKCS7Data::SortX509Stack(this->certificates);
         assert(X509_check_private_key(sk_X509_value(this->certificates, 0), this->keyPair) == 1);
     }
@@ -73,12 +74,13 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
     }
 
     // 计算签名值
-    if (!(md_ctx = EVP_MD_CTX_new()) ||
-        (EVP_DigestSignInit(md_ctx, &pkey_ctx, md, NULL, this->keyPair) <= 0) ||
-        (EVP_DigestSignUpdate(md_ctx, data.data(), data.size()) <= 0) ||
-        (EVP_DigestSignFinal(md_ctx, NULL, &siglen) <= 0) ||
-        !(sigret = reinterpret_cast<unsigned char*>(OPENSSL_malloc(siglen))) ||
-        (EVP_DigestSignFinal(md_ctx, sigret, &siglen) <= 0)) {
+    bool result = !(md_ctx = EVP_MD_CTX_new())                                          ||
+                  (EVP_DigestSignInit(md_ctx, &pkey_ctx, md, NULL, this->keyPair) <= 0) ||
+                  (EVP_DigestSignUpdate(md_ctx, data.data(), data.size()) <= 0)         ||
+                  (EVP_DigestSignFinal(md_ctx, NULL, &siglen) <= 0)                     ||
+                  !(sigret = reinterpret_cast<unsigned char*>(OPENSSL_malloc(siglen)))  ||
+                  (EVP_DigestSignFinal(md_ctx, sigret, &siglen) <= 0);
+    if (result) {
         SIGNATURE_TOOLS_LOGE("digest sign failed\n");
         goto err;
     }

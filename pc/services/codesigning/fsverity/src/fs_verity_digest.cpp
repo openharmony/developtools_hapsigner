@@ -30,6 +30,8 @@ std::vector<int8_t> FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector
     buffer->PutInt16((int16_t)digest.size());
     buffer->PutData(digest.data(), digest.size());
     buffer->Flip();
+    if (size <= 0)
+        return std::vector<int8_t>();
     char dataArr[size];
     if (memset_s(dataArr, size, 0, size) != RET_OK) {
         SIGNATURE_TOOLS_LOGE("memcpy_s failed");

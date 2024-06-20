@@ -270,7 +270,7 @@ bool ParamsRunTool::CheckEndCertArguments(Options& params)
         if (!params.Required({ params.SUB_CA_CERT_FILE, params.CA_CERT_FILE })) {
             return false;
         }
-        if (!FileUtils::ValidFileType(params.GetString(params.SUB_CA_CERT_FILE), { "cer" }) || 
+        if (!FileUtils::ValidFileType(params.GetString(params.SUB_CA_CERT_FILE), { "cer" }) ||
             !FileUtils::ValidFileType(params.GetString(params.CA_CERT_FILE), { "cer" })) {
             return false;
         }
@@ -394,7 +394,7 @@ void ParamsRunTool::PrintHelp()
     if (readHelp.is_open()) {
         std::string line;
         PrintMsg("");
-        while (std::getline(readHelp, line)) { 
+        while (std::getline(readHelp, line)) {
             printf("%s\n", line.c_str());
         }
         readHelp.close();

@@ -30,6 +30,7 @@ int BCSignedDataGenerator::GenerateSignedData(const std::string& content,
                                               SignerConfig* signerConfig, std::string& ret)
 {
     std::string sigAlg;
+    int result = RET_OK;
     if (content.empty()) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             "Verify digest is empty");
@@ -46,17 +47,19 @@ int BCSignedDataGenerator::GenerateSignedData(const std::string& content,
                             "NULL signer");
         return INVALIDPARAM_ERROR;
     }
-    if (GetSigAlg(signerConfig, sigAlg) < 0) {
+    result = GetSigAlg(signerConfig, sigAlg);
+    if (result < 0) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             "get sigAlg failed");
         return INVALIDPARAM_ERROR;
     }
-    if (PackageSignedData(content, signer, sigAlg, ret) < 0) {
+    result = PackageSignedData(content, signer, sigAlg, ret);
+    if (result < 0) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             "PackageSignedData error!");
         return GENERATEPKCS7_ERROR;
     }
-    return RET_OK;
+    return result;
 }
 
 void BCSignedDataGenerator::SetOwnerId(const std::string& ownerID)
@@ -68,6 +71,7 @@ int BCSignedDataGenerator::PackageSignedData(const std::string& content,
                                              std::shared_ptr<Signer> signer,
                                              const std::string& sigAlg, std::string& ret)
 {
+    int result = RET_OK;
     PKCS7Data p7Data(PKCS7_DETACHED_FLAGS);
     std::vector<PKCS7Attr> attrs;
     if (ownerID.empty() == false) {
@@ -78,23 +82,26 @@ int BCSignedDataGenerator::PackageSignedData(const std::string& content,
         }
     }
     // 生成pkcs7
-    if (p7Data.Sign(content, signer, sigAlg, ret, attrs) < 0) {
+    result = p7Data.Sign(content, signer, sigAlg, ret, attrs);
+    if (result < 0) {
         PrintErrorNumberMsg("PKCS7_SIGN_ERROR", PKCS7_SIGN_ERROR,
                             "generate pkcs7 signed data block failed");
         return PKCS7_SIGN_ERROR;
     }
     // 解析后验证
-    if (p7Data.Parse(ret) < 0) {
+    result = p7Data.Parse(ret);
+    if (result < 0) {
         PrintErrorNumberMsg("PARSE_ERROR", PARSE_ERROR,
                             "verify pkcs7 signed data block bytes failed");
         return PARSE_ERROR;
     }
-    if (p7Data.Verify(content) < 0) {
+    result = p7Data.Verify(content);
+    if (result < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
                             "verify pkcs7 signed datablock failed");
         return VERIFY_ERROR;
     }
-    return RET_OK;
+    return result;
 }
 
 int BCSignedDataGenerator::GetSigAlg(SignerConfig* signerConfig, std::string& sigAlg)

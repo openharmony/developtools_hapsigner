@@ -516,14 +516,6 @@ HWTEST_F(HapSignTest, hap_sign_test_012, testing::ext::TestSize.Level1)
 
     bool ret = SignHap::ComputeDigests(digestParam, contents, len, optionalBlocks, dig_context);
     EXPECT_EQ(ret, true);
-    std::vector<std::pair<int32_t, ByteBuffer>> contentDigests;
-
-    ByteBuffer dig_message;
-    std::pair<int32_t, ByteBuffer> nidAndcontentDigests = std::make_pair(algo, dig_context);
-    contentDigests.push_back(nidAndcontentDigests);
-
-    bool ret1 = SignHap::EncodeListOfPairsToByteArray(digestParam, contentDigests, dig_message);
-    EXPECT_EQ(ret1, true);
 }
 /*
  * @tc.name: hap_sign_test_001
@@ -1127,22 +1119,9 @@ HWTEST_F(HapSignTest, hap_sign_test_026, testing::ext::TestSize.Level1)
     config.SetSignatureAlgorithms(sig);
     ret1 = SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
     EXPECT_EQ(ret1, false);
-
-    bool ret = SignHap::ComputeDigests(digestParam, contents_t, len, optionalBlocks, dig_context);
+    bool ret = SignHap::ComputeDigests(digestParam, contents, len, optionalBlockSTest, dig_context);
+    ret = SignHap::ComputeDigests(digestParam, contents_t, len, optionalBlocks, dig_context);
     EXPECT_EQ(ret, false);
-
-    ret = SignHap::ComputeDigests(digestParam, contents, len, optionalBlockSTest, dig_context);
-
-    std::vector<std::pair<int32_t, ByteBuffer>> contentDigests;
-
-    SignatureAlgorithm algo1 = SignatureAlgorithm::ALGORITHM_SHA384_WITH_ECDSA;
-    ByteBuffer dig_message;
-    ByteBuffer dig_message_temp;
-    std::pair<int32_t, ByteBuffer> nidAndcontentDigests = std::make_pair(algo1, dig_message_temp);
-    contentDigests.push_back(nidAndcontentDigests);
-
-    ret1 = SignHap::EncodeListOfPairsToByteArray(digestParam, contentDigests, dig_message);
-    EXPECT_EQ(ret1, false);
 }
 
 /*
@@ -1879,6 +1858,56 @@ HWTEST_F(HapSignTest, remote_sign_provider_012, testing::ext::TestSize.Level1)
     X509_free(cert1);
     X509_REQ_free(issuerReq);
     EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: remote_sign_provider_001
+ * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignTest, hap_sign_error_001, testing::ext::TestSize.Level1)
+{
+    ByteBuffer bf1("123456789", 9);
+    ByteBuffer bf2("123456789", 9);
+    ByteBuffer bf3("123456789", 9);
+    ByteBuffer bf4(0x7FFFFFFF);
+    ByteBufferDataSource ds1(bf1);
+    ByteBufferDataSource ds2(bf2);
+    ByteBufferDataSource ds3(bf3);
+    DataSource* contents[] = { &ds1, &ds2, &ds3 };
+    std::vector<OptionalBlock> optionalBlocks;
+    optionalBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf4 });
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "/mnt/d/testcpuls/app-release1.pem";
+    std::string profileFile = "/mnt/d/testcpuls/signed-profile.p7b";
+    std::string inFile = "/mnt/d/testcpuls/entry-default-unsigned-so.hap";
+    std::string keystoreFile = "/mnt/d/testcpuls/OpenHarmony.p12";
+    std::string outFile = "/mnt/d/testcpuls/entry-default-signed-so.hap";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    SignerConfig config;
+    std::vector<SignatureAlgorithmHelper> sig{ SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE };
+    config.SetSignatureAlgorithms(sig);
+    config.SetOptions(params.get());
+    ByteBuffer result;
+    bool ret1 = SignHap::Sign(contents, 3, config, optionalBlocks, result);
+    EXPECT_EQ(ret1, false);
 }
 } // namespace SignatureTools
 } // namespace OHOS

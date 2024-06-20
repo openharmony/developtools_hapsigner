@@ -207,6 +207,21 @@ HWTEST_F(ZipSignerTest, AlignmentTest004, testing::ext::TestSize.Level1)
 }
 
 /**
+ * @tc.name: Test Alignment Function
+ * @tc.desc: Test function of ZipSigner::Alignment() interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ZipSignerTest, AlignmentTest005, testing::ext::TestSize.Level1)
+{
+    std::string inputFileName("./zip/test2.hap");
+    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip->Init(inputFile));
+    zip->Alignment(4);
+}
+
+/**
  * @tc.name: Test RemoveSignBlock Function
  * @tc.desc: Test function of ZipSigner::RemoveSignBlock() interface for SUCCESS.
  * @tc.type: FUNC
@@ -341,6 +356,23 @@ HWTEST_F(ZipSignerTest, ToFileTest003, testing::ext::TestSize.Level1)
 
     bool toFileRes = zip->ToFile(bad, outputFile);
     EXPECT_EQ(initRes && !toFileRes, true);
+}
+
+/**
+ * @tc.name: Test ToFile Function
+ * @tc.desc: Test function of ZipSigner::ToFile() interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ZipSignerTest, ToFileTest004, testing::ext::TestSize.Level1)
+{
+    std::string inputFileName("./zip/signed.hap");
+    std::string outputFileName("./signed_again.hap");
+    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::trunc);
+    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip->Init(inputFile));
+    ASSERT_TRUE(zip->ToFile(inputFile, outputFile));
 }
 
 /*
@@ -731,6 +763,46 @@ HWTEST_F(ZipSignerTest, GetZipEntryTest001, testing::ext::TestSize.Level1)
     std::ifstream inputFile(inputFileName, std::ios::binary);
     ZipEntryData* zipEntryData = ZipEntryData::GetZipEntry(inputFile, 0, 1024);
     EXPECT_EQ(zipEntryData == nullptr, true);
+}
+
+/**
+ * @tc.name: Test ZipEntryData Class
+ * @tc.desc: Test function of GetZipEntry for success.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ZipSignerTest, GetZipEntryTest002, testing::ext::TestSize.Level1)
+{
+    /*
+     * @tc.steps: step1. test ZipEntryData::ReadEntryFileNameAndExtraByOffset function
+     * @tc.expected: step1. FileNameLength and ExtraLength is zero
+     */
+    std::string inputFileName("./zip/test.hap");
+    std::ifstream inputFile(inputFileName, std::ios::binary);
+    ZipEntryData* zipEntryData = ZipEntryData::GetZipEntry(inputFile, 0, 1024);
+    ASSERT_EQ(zipEntryData != nullptr, true);
+}
+
+/**
+ * @tc.name: Test ZipSigner Class
+ * @tc.desc: Test ZipSigner interfaces for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ZipSignerTest, ZipSignerTest001, testing::ext::TestSize.Level1)
+{
+    ZipSigner zip;
+    std::ifstream ifs("./zip/test2.hap", std::ios::binary);
+    ASSERT_TRUE(zip.Init(ifs));
+    std::vector<ZipEntry*> zipEntries{ nullptr };
+    zip.SetZipEntries(zipEntries);
+    zip.SetSigningOffset(1);
+    std::string signingBlock{ 0x1, 0x1, 0x1, 0x1, 0x1 };
+    zip.SetSigningBlock(signingBlock);
+    signingBlock = zip.GetSigningBlock();
+    zip.SetCDOffset(1);
+    zip.SetEOCDOffset(1);
+    zip.SetEndOfCentralDirectory(nullptr);
 }
 } // namespace SignatureTools
 } // namespace OHOS

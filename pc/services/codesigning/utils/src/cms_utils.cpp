@@ -23,14 +23,17 @@ namespace SignatureTools {
 bool CmsUtils::VerifySignDataWithUnsignedDataDigest(const std::vector<int8_t>& unsignedDataDigest,
     const std::vector<int8_t>& signedData)
 {
+    int ret = 0;
     std::string unsignedDataDigest_(unsignedDataDigest.begin(), unsignedDataDigest.end());
     PKCS7Data p7Data(PKCS7_DETACHED_FLAGS);
-    if (p7Data.Parse(signedData) < 0) {
+    ret = p7Data.Parse(signedData);
+    if (ret < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
             "verify pkcs7 signed data block bytes failed");
         return false;
     }
-    if (p7Data.Verify(unsignedDataDigest_) < 0) {
+    ret = p7Data.Verify(unsignedDataDigest_);
+    if (ret < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
             "verify pkcs7 signed datablock failed");
         return false;
@@ -65,15 +68,13 @@ bool CmsUtils::CheckOwnerID(const std::string& signature, const std::string& pro
             if (ownerID.empty()) {
                 continue;
             } else {
-                PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                    "app-identifier is not in the signature");
+                PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "app-identifier is not in the signature");
                 PKCS7_free(p7);
                 return false;
             }
         }
         if (ownerID.empty()) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                "app-identifier in profile is null, but is not null in signature");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "app-identifier in profile is null,in signature exist");
             PKCS7_free(p7);
             return false;
         }

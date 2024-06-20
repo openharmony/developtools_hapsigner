@@ -30,6 +30,7 @@ ProfileSignTool::ProfileSignTool()
 int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string& content, std::string& ret)
 {
     std::unique_ptr<SignerFactory> signerFactory = std::make_unique<SignerFactory>();
+    int result = RET_OK;
     if (signerFactory == NULL) {
         SIGNATURE_TOOLS_LOGE("create signerFactor failed\n");
         return INVALIDPARAM_ERROR;
@@ -41,21 +42,24 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
     }
     const std::string sigAlg = adapter.GetSignAlg();
     // ret 为生成的p7b数据
-    if (SignProfile(content, signer, sigAlg, ret) < 0) {
+    result = SignProfile(content, signer, sigAlg, ret) < 0;
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("profile sign failed\n");
-        PrintErrorNumberMsg("SIGN_ERROR" , SIGN_ERROR, "profile sign failed");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "profile sign failed");
         return SIGN_ERROR;
     }
     PKCS7Data p7Data;
-    if (p7Data.Parse(ret) < 0) {
+    result = p7Data.Parse(ret);
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("verify profile failed\n");
         return INIT_ERROR;
     }
-    if (p7Data.Verify() < 0) {
+    result = p7Data.Verify();
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("verify profile failed\n");
         return VERIFY_ERROR;
     }
-    return RET_OK;
+    return result;
 }
 /**
 * @param content content to sign
@@ -68,11 +72,13 @@ int ProfileSignTool::SignProfile(const std::string& content, std::shared_ptr<Sig
                                  const std::string& sigAlg, std::string& ret)
 {
     PKCS7Data p7Data;
-    if (p7Data.Sign(content, signer, sigAlg, ret) < 0) {
+    int result = RET_OK;
+    result = p7Data.Sign(content, signer, sigAlg, ret);
+    if (result < 0) {
         SIGNATURE_TOOLS_LOGE("SignProfile faild!\n");
         return PKCS7_SIGN_ERROR;
     }
-    return RET_OK;
+    return result;
 }
 } // namespace SignatureTools
 } // namespace OHOS

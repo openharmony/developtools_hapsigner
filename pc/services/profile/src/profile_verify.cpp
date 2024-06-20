@@ -128,7 +128,8 @@ void ParseAppDistType(const json& obj, ProfileInfo& out)
 {
     string distType;
     GetStringIfExist(obj, KEY_APP_DIST_TYPE, distType);
-    if (distTypeMap.find(distType) != distTypeMap.end()) {
+    auto ite = distTypeMap.find(distType);
+    if (ite != distTypeMap.end()) {
         out.distributionType = static_cast<AppDistType>(distTypeMap.at(distType));
         return;
     }
@@ -238,15 +239,23 @@ AppProvisionVerifyResult ReturnIfIntIsNonPositive(int num, const std::string& ms
 AppProvisionVerifyResult ParseProvision(const string& appProvision, ProfileInfo& info)
 {
     json obj = json::parse(appProvision, nullptr, false);
+    AppProvisionVerifyResult result = PROVISION_OK;
     if (obj.is_discarded() || (!obj.is_structured())) {
         SIGNATURE_TOOLS_LOGE("Parsing appProvision failed. json: %{public}s", appProvision.c_str());
         return PROVISION_INVALID;
     }
     obj.get_to(info);
-    if (ReturnIfIntIsNonPositive(info.versionCode, "Tag version code is empty.") != PROVISION_OK ||
-        ReturnIfStringIsEmpty(info.versionName, "Tag version name is empty.") != PROVISION_OK ||
-        ReturnIfStringIsEmpty(info.uuid, "Tag uuid is empty.") != PROVISION_OK ||
-        ReturnIfStringIsEmpty(info.bundleInfo.developerId, "Tag developer-id is empty.") != PROVISION_OK)
+    result = ReturnIfIntIsNonPositive(info.versionCode, "Tag version code is empty.");
+    if (result != PROVISION_OK)
+        return PROVISION_INVALID;
+    result = ReturnIfStringIsEmpty(info.versionName, "Tag version name is empty.");
+    if (result != PROVISION_OK)
+        return PROVISION_INVALID;
+    result = ReturnIfStringIsEmpty(info.uuid, "Tag uuid is empty.");
+    if (result != PROVISION_OK)
+        return PROVISION_INVALID;
+    result = ReturnIfStringIsEmpty(info.bundleInfo.developerId, "Tag developer-id is empty.");
+    if (result != PROVISION_OK)
         return PROVISION_INVALID;
     if (info.type == ProvisionType::DEBUG) {
         if (ReturnIfStringIsEmpty(info.bundleInfo.developmentCertificate,
@@ -254,12 +263,13 @@ AppProvisionVerifyResult ParseProvision(const string& appProvision, ProfileInfo&
             return PROVISION_INVALID;
     } else if (info.type == ProvisionType::RELEASE) {
         if (ReturnIfIntIsNonPositive(info.distributionType,
-            "Tag app-distribution-type is empty.") != PROVISION_OK ||
-            ReturnIfStringIsEmpty(info.bundleInfo.distributionCertificate,
+            "Tag app-distribution-type is empty.") != PROVISION_OK)
+            return PROVISION_INVALID;
+        if (ReturnIfStringIsEmpty(info.bundleInfo.distributionCertificate,
             "Tag distribution-certificate is empty.") != PROVISION_OK)
             return PROVISION_INVALID;
     } else {
-       PrintErrorNumberMsg("PROVISION_INVALID" , PROVISION_INVALID,"Require build type must be debug or release");
+        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, "Require build type must be debug or release");
         return PROVISION_INVALID;
     }
 

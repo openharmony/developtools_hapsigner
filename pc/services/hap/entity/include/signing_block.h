@@ -26,18 +26,18 @@ namespace SignatureTools {
 class SigningBlock {
 public:
     SigningBlock(int32_t type, std::vector<int8_t> value);
-    SigningBlock(int32_t type, std::vector<int8_t> value, int32_t offset);
+    SigningBlock(int32_t type, std::vector<int8_t> value, int64_t offset);
 
     int32_t GetType();
     int32_t GetLength();
     std::vector<int8_t> GetValue();
-    int32_t GetOffset();
+    int64_t GetOffset();
 
 private:
     int32_t type = 0;
     int32_t length = 0;
     std::vector<int8_t> value;
-    int32_t offset = 0;
+    int64_t offset = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

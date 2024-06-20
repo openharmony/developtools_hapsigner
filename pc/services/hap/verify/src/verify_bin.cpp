@@ -31,20 +31,23 @@ bool VerifyBin::Verify(Options* options)
         return false;
     }
     std::string filePath = options->GetString(Options::IN_FILE);
-    if (!VerifyElf::CheckSignFile(filePath)) {
+    bool checkSignFileFlag = VerifyElf::CheckSignFile(filePath);
+    if (!checkSignFileFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Check input signature elf false!");
         return false;
     }
     // verify bin
     HapVerifyResult verifyResult;
     Pkcs7Context pkcs7Context;
-    if (!VerifyBinFile(filePath, verifyResult, options, pkcs7Context)) {
+    bool verifyBinFileFLag = VerifyBinFile(filePath, verifyResult, options, pkcs7Context);
+    if (!verifyBinFileFLag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify bin file failed!");
         return false;
     }
     // write certificate and p7b file
     VerifyHap hapVerifyV2;
-    if (hapVerifyV2.WriteVerifyOutput(pkcs7Context, options) != VERIFY_SUCCESS) {
+    int32_t writeVerifyOutputFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, options);
+    if (writeVerifyOutputFlag != VERIFY_SUCCESS) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify bin WriteVerifyOutput failed!");
         return false;
     }
@@ -55,19 +58,22 @@ bool VerifyBin::VerifyBinFile(const std::string& binFile, HapVerifyResult& verif
                               Options* options, Pkcs7Context& pkcs7Context)
 {
     SignBlockInfo signBlockInfo(true);
-    if (!VerifyElf::GetSignBlockInfo(binFile, signBlockInfo, VerifyElf::BIN_FILE_TYPE)) {
+    bool getSignBlockInfoFlag = VerifyElf::GetSignBlockInfo(binFile, signBlockInfo, VerifyElf::BIN_FILE_TYPE);
+    if (!getSignBlockInfoFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyBinFile GetSignBlockInfo failed!");
         return false;
     }
     // verify profile
     std::string profileJson;
-    if (!VerifyElf::VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context,
-        verifyResult, profileJson)) {
+    bool verifyP7bFlag = VerifyElf::VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context,
+        verifyResult, profileJson);
+    if (!verifyP7bFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyBinFile VerifyProfile failed!");
         return false;
     }
     // verify signed data
-    if (!VerifyBinDigest(signBlockInfo)) {
+    bool verifyBinDigestFlag = VerifyBinDigest(signBlockInfo);
+    if (!verifyBinDigestFlag) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyBinFile VerifyBinDigest failed!");
         return false;
     }
@@ -78,8 +84,9 @@ bool VerifyBin::VerifyBinDigest(SignBlockInfo& signBlockInfo)
 {
     std::vector<int8_t> rawDigest = signBlockInfo.GetRawDigest();
     std::vector<int8_t> generatedDig = signBlockInfo.GetFileDigest();
-    if (rawDigest.empty() || generatedDig.empty() ||
-        !std::equal(rawDigest.begin(), rawDigest.end(), generatedDig.begin())) {
+    bool isEqual = rawDigest.empty() || generatedDig.empty() ||
+        !std::equal(rawDigest.begin(), rawDigest.end(), generatedDig.begin());
+    if (isEqual) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyBinDigest verify digest failed!");
         return false;
     }

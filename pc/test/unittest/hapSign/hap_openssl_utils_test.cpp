@@ -30,7 +30,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_001, testing::ext::TestSize
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     VerifyHapOpensslUtils VerifyHapOpenss;
     DigestParameter parameter;
-    
+
     bool ret = VerifyHapOpenss.DigestInit(parameter);
     EXPECT_EQ(ret, false);
 }
@@ -167,8 +167,6 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_009, testing::ext::TestSize
     bool ret = VerifyHapOpensslUtils::GetSignatures(signCertChain, SignatureVec);
     EXPECT_EQ(ret, false);
 }
-
-
 
 /*
  * @tc.name: hap_openssl_utils_test_002

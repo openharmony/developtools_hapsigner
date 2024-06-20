@@ -42,13 +42,21 @@
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-				<filteritem type="filename" name="ohnull.p12"/>
+				<filteritem type="filename" name="*.p12"/>
+				<filteritem type="filename" name="*.jks"/>
+				<filteritem type="filename" name="*.hsp"/>
+				<filteritem type="filename" name="*.hqf"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
+				
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="">
                 <filteritem type="filename" name="pom.xml"/>
                 <filteritem type="filename" name="settings.xml"/>
+				<filteritem type="filename" name="*.p12"/>
+				<filteritem type="filename" name="*.jks"/>
+				<filteritem type="filename" name="*.hsp"/>
+				<filteritem type="filename" name="*.hqf"/>
             </filefilter>
             <filefilter name="readmeFileNamePolicyFilter" desc="">
             </filefilter>

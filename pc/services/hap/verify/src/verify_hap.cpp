@@ -109,10 +109,11 @@ bool VerifyHap::CheckFilePath(const std::string& filePath, std::string& standard
         return false;
     }
     standardFilePath = std::string(path);
-    if (!std::regex_match(standardFilePath, std::regex(HAP_APP_PATTERN)) &&
-        !std::regex_match(standardFilePath, std::regex(HSP_APP_PATTERN)) &&
-        !std::regex_match(standardFilePath, std::regex(APP_APP_PATTERN)) &&
-        !std::regex_match(standardFilePath, std::regex(HQF_APP_PATTERN))) {
+    bool ret = (!std::regex_match(standardFilePath, std::regex(HAP_APP_PATTERN)) &&
+                !std::regex_match(standardFilePath, std::regex(HSP_APP_PATTERN)) &&
+                !std::regex_match(standardFilePath, std::regex(APP_APP_PATTERN)) &&
+                !std::regex_match(standardFilePath, std::regex(HQF_APP_PATTERN)));
+    if (ret) {
         SIGNATURE_TOOLS_LOGE("file is not hap, hsp or hqf package");
         return false;
     }
@@ -195,27 +196,25 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
     for (const OptionalBlock& block : optionalBlocks) {
         map.emplace(block.optionalType, block.optionalBlockValue);
     }
-    if (map.find(HapUtils::HAP_PROPERTY_BLOCK_ID) != map.end() &&
-        map[HapUtils::HAP_PROPERTY_BLOCK_ID].GetCapacity() > 0) {
+    bool codeSignFlag = map.find(HapUtils::HAP_PROPERTY_BLOCK_ID) != map.end() &&
+        map[HapUtils::HAP_PROPERTY_BLOCK_ID].GetCapacity() > 0;
+    if (codeSignFlag) {
         ByteBuffer propertyBlockArray = map[HapUtils::HAP_PROPERTY_BLOCK_ID];
         std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
         if (fileNameArray.size() < ParamConstants::FILE_NAME_MIN_LENGTH) {
             SIGNATURE_TOOLS_LOGE("ZIP64 format not supported\n");
             return false;
         }
-        ByteBuffer header;
-        if (propertyBlockArray.ReverseSliceBuffer(0, ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH, header) == false) {
-            SIGNATURE_TOOLS_LOGE("reverse slice buffer error\n");
+        
+        if (propertyBlockArray.GetCapacity() < ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH)
             return false;
-        }
+        uint32_t blockType;
+        propertyBlockArray.GetUInt32(0,blockType);
+        uint32_t blockLength;
+        propertyBlockArray.GetUInt32(4, blockLength);
+        uint32_t blockOffset;
+        propertyBlockArray.GetUInt32(8, blockOffset);
 
-        int64_t blockOffset = 0;
-        int64_t blockLength = 0;
-        int64_t blockType = 0;
-        const char* ptr = header.GetBufferPtr();
-        blockOffset = static_cast<int64_t>(be32toh(*reinterpret_cast<const uint32_t*>(ptr)));
-        blockLength = static_cast<int64_t>(be32toh(*reinterpret_cast<const uint32_t*>(ptr + 4)));
-        blockType = static_cast<int64_t>(be32toh(*reinterpret_cast<const uint32_t*>(ptr + 8)));
         if (blockType != HapUtils::HAP_CODE_SIGN_BLOCK_ID) {
             SIGNATURE_TOOLS_LOGE("Verify Hap has no code sign data error!\n");
             return false;
@@ -258,13 +257,13 @@ int VerifyHap::GetProfileContent(const std::string profile, std::string& ret)
         return -1;
     }
     if (p7Data.Verify() < 0) {
-        PrintErrorNumberMsg("PKCS7_VERIFY_ERROR", PKCS7_VERIFY_ERROR, 
+        PrintErrorNumberMsg("PKCS7_VERIFY_ERROR", PKCS7_VERIFY_ERROR,
                             "Verify profile pkcs7 failed! Profile is invalid");
         ret = profile;
         return -1;
     }
     if (p7Data.GetContent(ret) < 0) {
-        PrintErrorNumberMsg("PKCS7_VERIFY_ERROR", PKCS7_VERIFY_ERROR, 
+        PrintErrorNumberMsg("PKCS7_VERIFY_ERROR", PKCS7_VERIFY_ERROR,
                             "Check profile failed, signed profile content is not byte array");
         ret = profile;
         return -1;
@@ -465,18 +464,6 @@ bool VerifyHap::IsAppDistributedTypeAllowInstall(const AppDistType& type,
     }
 }
 
-bool VerifyHap::CheckProfileSignatureIsRight(const MatchingStates& matchState, const ProvisionType& type)
-{
-    if (matchState == MATCH_WITH_PROFILE && type == ProvisionType::RELEASE) {
-        return true;
-    } else if (matchState == MATCH_WITH_PROFILE_DEBUG && type == ProvisionType::DEBUG) {
-        return true;
-    }
-    SIGNATURE_TOOLS_LOGE("isTrustedSource: %{public}d is not match with profile type: %{public}d",
-                         static_cast<int>(matchState), static_cast<int>(type));
-    return false;
-}
-
 bool VerifyHap::ParseAndVerifyProfileIfNeed(const std::string& profile,
                                             ProfileInfo& provisionInfo, bool isCallParseAndVerify)
 {
@@ -535,70 +522,6 @@ bool VerifyHap::GetDigestAndAlgorithm(Pkcs7Context& digest)
     return true;
 }
 
-int32_t VerifyHap::ParseHapProfile(const std::string& filePath, HapVerifyResult& hapVerifyV1Result,
-                                   const std::string& outPath)
-{
-    SIGNATURE_TOOLS_LOGI("start to ParseHapProfile");
-    std::string standardFilePath;
-    if (!CheckFilePath(filePath, standardFilePath)) {
-        return FILE_PATH_INVALID;
-    }
-    RandomAccessFile hapFile;
-    if (!hapFile.Init(standardFilePath)) {
-        SIGNATURE_TOOLS_LOGE("open standard file failed");
-        return OPEN_FILE_ERROR;
-    }
-    SignatureInfo hapSignInfo;
-    if (!HapSignerBlockUtils::FindHapSignature(hapFile, hapSignInfo)) {
-        return SIGNATURE_NOT_FOUND;
-    }
-    int32_t profileIndex = 0;
-    if (!HapSignerBlockUtils::GetOptionalBlockIndex(hapSignInfo.optionBlocks, PROFILE_BLOB, profileIndex)) {
-        return NO_PROFILE_BLOCK_FAIL;
-    }
-    auto pkcs7ProfileBlock = hapSignInfo.optionBlocks[profileIndex].optionalBlockValue;
-    const unsigned char* pkcs7Block = reinterpret_cast<const unsigned char*>(pkcs7ProfileBlock.GetBufferPtr());
-    uint32_t pkcs7Len = static_cast<unsigned int>(pkcs7ProfileBlock.GetCapacity());
-    Pkcs7Context profileContext;
-    if (!VerifyHapOpensslUtils::ParsePkcs7Package(pkcs7Block, pkcs7Len, profileContext)) {
-        SIGNATURE_TOOLS_LOGE("parse pkcs7 failed");
-        return false;
-    }
-    std::string profile = std::string(profileContext.content.GetBufferPtr(),
-                                      profileContext.content.GetCapacity());
-    FileUtils::Write(profile, outPath);
-    SIGNATURE_TOOLS_LOGD("profile is %{public}s", profile.c_str());
-    ProfileInfo info;
-    auto ret = ParseProfile(profile, info);
-    if (ret != PROVISION_OK) {
-        return PROFILE_PARSE_FAIL;
-    }
-    if (!GenerateFingerprint(info)) {
-        SIGNATURE_TOOLS_LOGE("Generate appId or generate fingerprint failed");
-        return PROFILE_PARSE_FAIL;
-    }
-    SetOrganization(info);
-    hapVerifyV1Result.SetProvisionInfo(info);
-    return VERIFY_SUCCESS;
-}
-
-int32_t VerifyHap::ParseHapSignatureInfo(const std::string& filePath, SignatureInfo& hapSignInfo)
-{
-    std::string standardFilePath;
-    if (!CheckFilePath(filePath, standardFilePath)) {
-        return FILE_PATH_INVALID;
-    }
-    RandomAccessFile hapFile;
-    if (!hapFile.Init(standardFilePath)) {
-        SIGNATURE_TOOLS_LOGE("open standard file failed");
-        return OPEN_FILE_ERROR;
-    }
-    if (!HapSignerBlockUtils::FindHapSignature(hapFile, hapSignInfo)) {
-        return SIGNATURE_NOT_FOUND;
-    }
-    return VERIFY_SUCCESS;
-}
-
 void VerifyHap::SetOrganization(ProfileInfo& provisionInfo)
 {
     std::string& certInProfile = provisionInfo.bundleInfo.distributionCertificate;
@@ -648,12 +571,14 @@ int32_t VerifyHap::VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyR
 
 int32_t VerifyHap::WriteVerifyOutput(Pkcs7Context& pkcs7Context, Options* options)
 {
-    if (!VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
-        options->GetString(Options::OUT_CERT_CHAIN))) {
+    bool flag = VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
+        options->GetString(Options::OUT_CERT_CHAIN));
+    if (!flag) {
         SIGNATURE_TOOLS_LOGE("out put cert chain failed");
         return OUT_PUT_FILE_FAIL;
     }
-    if (!VerifyHap::HapOutPutPkcs7(pkcs7Context.p7, options->GetString(Options::OUT_PROFILE))) {
+    flag = VerifyHap::HapOutPutPkcs7(pkcs7Context.p7, options->GetString(Options::OUT_PROFILE));
+    if (!flag) {
         SIGNATURE_TOOLS_LOGE("out put p7b failed");
         return OUT_PUT_FILE_FAIL;
     }

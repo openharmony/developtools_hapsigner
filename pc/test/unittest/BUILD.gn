@@ -38,8 +38,13 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./hapSign/sign_elf_test.cpp",
     "./hapSign/hap_openssl_utils_test.cpp",
     "./generateKeyPair/generate_keypair_test.cpp",
+    "./generateKeyPair/hap_sign_cmd_test.cpp",
+    "./generateKeyPair/hap_sign_tool_test.cpp",
+    "./generateKeyPair/options_test.cpp",
+    "./generateKeyPair/process_cmd_expansion_test.cpp",
+    "./generateKeyPair/process_cmd_test.cpp",
 
-    "./hapVerify/hap_verify_v2_test.cpp",
+    "./hapVerify/hap_verify_test.cpp",
     "./hapVerify/hap_cert_verify_openssl_utils_test.cpp",
     "./hapVerify/random_access_file_test.cpp",
     "./hapVerify/provision_verify_test.cpp",
@@ -55,6 +60,8 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./elfVerify/hap_utils_test.cpp",
     "./generateCsr/generate_csr_test.cpp",
     "./generateCA/generate_ca_test.cpp",
+    "./generateCA/generate_ca_test_two.cpp",
+    "./generateCA/generate_ca_test_three.cpp",
 
     "./codeSigning/datastructure/code_sign_block_header_test.cpp",
     "./codeSigning/datastructure/code_sign_block_test.cpp",

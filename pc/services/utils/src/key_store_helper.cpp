@@ -267,51 +267,35 @@ int KeyStoreHelper::GetPublicKey(PKCS7* safe, const char* alias, char* pass, int
         SetPassWordStatus(false);
         return RET_FAILED;
     }
-    for (int m = 0; m < sk_PKCS12_SAFEBAG_num(bags); m++) {
-        bag = sk_PKCS12_SAFEBAG_value(bags, m);
-        name = PKCS12_get_friendlyname(bag);
-        if (strcmp(name, alias) != 0) {
-            continue;
-        }
 
-        if (this->ParseBags(bags, pass, passlen, &keyPiar, ocerts) == RET_FAILED) {
-            PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair password error");
+    if (this->ParseBags(bags, pass, passlen, &keyPiar, ocerts) == RET_FAILED) {
+        PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair password error");
+        KeyPairFree(keyPiar, ocerts, bags, name);
+        SetPassWordStatus(false);
+        return RET_FAILED;
+    }
+
+    for (int i = 0; i < sk_X509_num(ocerts); i++) {
+        bag = sk_PKCS12_SAFEBAG_value(bags, i);
+        name = PKCS12_get_friendlyname(bag);
+
+        if (strcmp(name, alias) != 0)
+            continue;
+
+        X509* cert = sk_X509_value(ocerts, i);
+        if (cert == nullptr) {
             KeyPairFree(keyPiar, ocerts, bags, name);
-            SetPassWordStatus(false);
             return RET_FAILED;
         }
-
-        *publickey = this->CheckAlias(ocerts, bags, bag, alias);
+        *publickey = X509_get_pubkey(cert);
         if (*publickey != nullptr) {
             KeyPairFree(keyPiar, ocerts, bags, name);
             return RET_OK;
         }
     }
+
     KeyPairFree(keyPiar, ocerts, bags, name);
     return RET_FAILED;
-}
-
-EVP_PKEY* KeyStoreHelper::CheckAlias(STACK_OF(X509)* ocerts, STACK_OF(PKCS12_SAFEBAG)* bags,
-                                     PKCS12_SAFEBAG* bag, const char* alias)
-{
-    char* name = NULL;
-    EVP_PKEY* publickey = nullptr;
-    for (int i = 0; i < sk_X509_num(ocerts); i++) {
-        bag = sk_PKCS12_SAFEBAG_value(bags, i);
-        name = PKCS12_get_friendlyname(bag);
-        if (strcmp(name, alias) == 0) {
-            X509* cert = sk_X509_value(ocerts, i);
-            if (cert == nullptr) {
-                free(name);
-                return nullptr;
-            }
-            publickey = X509_get_pubkey(cert);
-            free(name);
-            return publickey;
-        }
-    }
-    free(name);
-    return publickey;
 }
 
 int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const char* alias, char* pass, int passlen, EVP_PKEY** keyPiar)
@@ -358,6 +342,11 @@ int KeyStoreHelper::Store(EVP_PKEY* evpPkey, std::string& keyStorePath,
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
     BIO* bioOut = nullptr;
+
+    if (evpPkey == nullptr) {
+        KeyPairFree(cert, p12, bioOut, "The key pair pointer is null");
+        return RET_FAILED;
+    }
 
     if (!this->InitX509(*cert, *evpPkey)) {
         KeyPairFree(cert, p12, bioOut, "initialize x509 structure failed");

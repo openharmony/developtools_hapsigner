@@ -73,7 +73,7 @@ HWTEST_F(CodeSigningTest, generateSignature001, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -135,7 +135,7 @@ HWTEST_F(CodeSigningTest, generateSignature002, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -194,7 +194,7 @@ HWTEST_F(CodeSigningTest, GetNativeEntriesFromHap, testing::ext::TestSize.Level1
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -215,7 +215,8 @@ HWTEST_F(CodeSigningTest, GetNativeEntriesFromHap, testing::ext::TestSize.Level1
     CodeSigning codeSigning(&signerConfig);
 
     std::string packageName = "libs/arm64-v8a/libc++_shared.so";
-    std::vector<std::tuple<std::string, std::stringbuf, uLong>> ret = codeSigning.GetNativeEntriesFromHap(packageName);
+    std::vector<std::tuple<std::string, std::stringbuf, uLong>> ret =
+        codeSigning.GetNativeEntriesFromHap(packageName);
     EXPECT_EQ(ret.size(), false);
 }
 
@@ -251,7 +252,7 @@ HWTEST_F(CodeSigningTest, getTimestamp, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -306,7 +307,7 @@ HWTEST_F(CodeSigningTest, isNativeFile, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -362,7 +363,7 @@ HWTEST_F(CodeSigningTest, signFile, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -425,7 +426,7 @@ HWTEST_F(CodeSigningTest, SignFilesFromJar, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -484,7 +485,7 @@ HWTEST_F(CodeSigningTest, signNativeLibs, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -541,7 +542,7 @@ HWTEST_F(CodeSigningTest, splitFileName001, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -597,7 +598,7 @@ HWTEST_F(CodeSigningTest, splitFileName002, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -653,7 +654,7 @@ HWTEST_F(CodeSigningTest, updateCodeSignBlock, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                               contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -719,6 +720,54 @@ HWTEST_F(CodeSigningTest, AppendCodeSignBlock, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, true);
 }
 
+void SetParamsMap(std::map<std::string, std::string>& params)
+{
+    params["keyPwd"] = "123456";
+    params["mode"] = "localSign";
+    params["keyAlias"] = "oh-app1-key-v1";
+    params["signAlg"] = "SHA256withECDSA";
+    params["appCertFile"] = "./hapSign/app-release1.pem";
+    params["signCode"] = "1";
+    params["compatibleVersion"] = "9";
+    params["outFile"] = "./hapSign/entry-default-signed.elf";
+    params["profileFile"] = "./hapSign/signed-profile.p7b";
+    params["keystorePwd"] = "123456";
+    params["keystoreFile"] = "./hapSign/ohtest.jks";
+    params["inFile"] = "./hapSign/unsigned-linux.out";
+    params["profileSigned"] = "1";
+    params["inForm"] = "elf";
+    params["profileContent"] = "hello";
+}
+
+void SetOptions(Options *options)
+{
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string inForm = "elf";
+    static char keyPwd[] = "123456";
+    static char keystorePwd[] = "123456";
+
+    (*options)["mode"] = "localSign";
+    (*options)["keyAlias"] = keyAlias;
+    (*options)["signAlg"] = signAlg;
+    (*options)["signCode"] = signCode;
+    (*options)["appCertFile"] = appCertFile;
+    (*options)["profileFile"] = profileFile;
+    (*options)["inFile"] = inFile;
+    (*options)["keystoreFile"] = keystoreFile;
+    (*options)["outFile"] = outFile;
+    (*options)["inForm"] = inForm;
+    (*options)["keyPwd"] = keyPwd;
+    (*options)["keystorePwd"] = keystorePwd;
+}
+
 /**
  * @tc.name: GetElfCodeSignBlock
  * @tc.desc: Test function of CodeSigning::GetElfCodeSignBlock interface for SUCCESS.
@@ -734,34 +783,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "0";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/test/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/tmpFile1718344274";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
+    SetParamsMap(params);
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
@@ -773,31 +795,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "0";
-    std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/tmpFile1718344274";
-    std::string keystoreFile = "./hapSign/ohtest.p12";
-    std::string outFile = "./hapSign/entry-default-signed.elf";
-    std::string inForm = "elf";
-    char keyPwd[] = "123456";
-    char keystorePwd[] = "123456";
-
-    (*options)["mode"] = mode;
-    (*options)["keyAlias"] = keyAlias;
-    (*options)["signAlg"] = signAlg;
-    (*options)["signCode"] = signCode;
-    (*options)["appCertFile"] = appCertFile;
-    (*options)["profileFile"] = profileFile;
-    (*options)["inFile"] = inFile;
-    (*options)["keystoreFile"] = keystoreFile;
-    (*options)["outFile"] = outFile;
-    (*options)["inForm"] = inForm;
-    (*options)["keyPwd"] = keyPwd;
-    (*options)["keystorePwd"] = keystorePwd;
+    SetOptions(options.get());
     signerConfig.SetOptions(options.get());
     signerConfig.GetSigner();
 
@@ -805,6 +803,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
     std::string inputFile = "./hapSign/tmpFile1718344274";
     int64_t offset = 29184024;
     std::vector<int8_t> codesignData;
+    std::string inForm = "elf";
     bool ret = codeSigning.GetElfCodeSignBlock(inputFile, offset, inForm, params.at("profileContent"), codesignData);
     EXPECT_EQ(ret, true);
 }
@@ -824,34 +823,8 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock002, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "0";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/test/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/tmpFile1718344274";
-    params["profileSigned"] = "1";
+    SetParamsMap(params);
     params["inForm"] = "bin";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
@@ -863,31 +836,8 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock002, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "0";
-    std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/tmpFile1718344274";
-    std::string keystoreFile = "./hapSign/ohtest.p12";
-    std::string outFile = "./hapSign/entry-default-signed.elf";
-    std::string inForm = "bin";
-    char keyPwd[] = "123456";
-    char keystorePwd[] = "123456";
-
-    (*options)["mode"] = mode;
-    (*options)["keyAlias"] = keyAlias;
-    (*options)["signAlg"] = signAlg;
-    (*options)["signCode"] = signCode;
-    (*options)["appCertFile"] = appCertFile;
-    (*options)["profileFile"] = profileFile;
-    (*options)["inFile"] = inFile;
-    (*options)["keystoreFile"] = keystoreFile;
-    (*options)["outFile"] = outFile;
-    (*options)["inForm"] = inForm;
-    (*options)["keyPwd"] = keyPwd;
-    (*options)["keystorePwd"] = keystorePwd;
+    SetOptions(options.get());
+    (*options)["inForm"] = "bin";
     signerConfig.SetOptions(options.get());
     signerConfig.GetSigner();
 
@@ -895,6 +845,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock002, testing::ext::TestSize.Level1)
     std::string inputFile = "./hapSign/tmpFile1718344274";
     int64_t offset = 29184024;
     std::vector<int8_t> codesignData;
+    std::string inForm = "bin";
     bool ret = codeSigning.GetElfCodeSignBlock(inputFile, offset, inForm, params.at("profileContent"), codesignData);
     EXPECT_EQ(ret, false);
 }
@@ -914,34 +865,8 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock003, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "0";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/test/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
+    SetParamsMap(params);
     params["inFile"] = "./hapSign_test/tmpFile1718344274";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
@@ -953,31 +878,8 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock003, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "0";
-    std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign_test/tmpFile1718344274";
-    std::string keystoreFile = "./hapSign/ohtest.p12";
-    std::string outFile = "./hapSign/entry-default-signed.elf";
-    std::string inForm = "elf";
-    char keyPwd[] = "123456";
-    char keystorePwd[] = "123456";
-
-    (*options)["mode"] = mode;
-    (*options)["keyAlias"] = keyAlias;
-    (*options)["signAlg"] = signAlg;
-    (*options)["signCode"] = signCode;
-    (*options)["appCertFile"] = appCertFile;
-    (*options)["profileFile"] = profileFile;
-    (*options)["inFile"] = inFile;
-    (*options)["keystoreFile"] = keystoreFile;
-    (*options)["outFile"] = outFile;
-    (*options)["inForm"] = inForm;
-    (*options)["keyPwd"] = keyPwd;
-    (*options)["keystorePwd"] = keystorePwd;
+    SetOptions(options.get());
+    (*options)["inFile"] = "./hapSign_test/tmpFile1718344274";
     signerConfig.SetOptions(options.get());
     signerConfig.GetSigner();
 
@@ -985,6 +887,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock003, testing::ext::TestSize.Level1)
     std::string inputFile = params.at("inFile");
     int64_t offset = 29184024;
     std::vector<int8_t> codesignData;
+    std::string inForm = "elf";
     bool ret = codeSigning.GetElfCodeSignBlock(inputFile, offset, inForm, params.at("profileContent"), codesignData);
     EXPECT_EQ(ret, false);
 }
@@ -1004,34 +907,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock004, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./hapSign/app-release1.pem";
-    params["signCode"] = "0";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./hapSign/test/entry-default-signed.elf";
-    params["profileFile"] = "./hapSign/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign_test/tmpFile1718344274";
-    params["profileSigned"] = "1";
-    params["inForm"] = "elf";
-    params["profileContent"] = R"({"bundle-info":{"app-feature":"hos_system_app","bundle-name":"com.OpenHarmony.app.test",
-            "developer-id":"OpenHarmony","development-certificate":"-----BEGIN CERTIFICATE-----\nMIICMzCCAbegAwIBAgIEaOC/
-            zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\nMRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\n
-            bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\nMTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQ
-            QGEwJDTjEUMBIGA1UEChML\nT3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\nH09wZW5IYXJtb255IEF
-            wcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\nhkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOY
-            zSG\nJwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\nFtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EB
-            AMCB4AwHQYDVR0OBBYEFPtxruhl\ncRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\nLMdLCDgQ5UH1l0
-            B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\nzAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n
-            -----END CERTIFICATE-----\n"},"debug-info":{"device-id-type":"udid","device-ids":["69C7505BE341BDA5948C3C0CB
-            44ABCD530296054159EFE0BD16A16CD0129CC42","7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865"]},
-            "issuer":"pki_internal","permissions":{"restricted-permissions":[""]},"type":"debug","uuid":"fe686e1b-3770-482
-            4-a938-961b140a7c98","validity":{"not-after":1705127532,"not-before":1610519532},"version-code":1,"version-name":
-            "1.0.0"})";
+    SetParamsMap(params);
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
@@ -1043,31 +919,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock004, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "0";
-    std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign_test/tmpFile1718344274";
-    std::string keystoreFile = "./hapSign/ohtest.p12";
-    std::string outFile = "./hapSign/entry-default-signed.elf";
-    std::string inForm = "elf";
-    char keyPwd[] = "123456";
-    char keystorePwd[] = "123456";
-
-    (*options)["mode"] = mode;
-    (*options)["keyAlias"] = keyAlias;
-    (*options)["signAlg"] = signAlg;
-    (*options)["signCode"] = signCode;
-    (*options)["appCertFile"] = appCertFile;
-    (*options)["profileFile"] = profileFile;
-    (*options)["inFile"] = inFile;
-    (*options)["keystoreFile"] = keystoreFile;
-    (*options)["outFile"] = outFile;
-    (*options)["inForm"] = inForm;
-    (*options)["keyPwd"] = keyPwd;
-    (*options)["keystorePwd"] = keystorePwd;
+    SetOptions(options.get());
     signerConfig.SetOptions(options.get());
     signerConfig.GetSigner();
 
@@ -1075,6 +927,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock004, testing::ext::TestSize.Level1)
     std::string inputFile = params.at("inFile");
     int64_t offset = 29184024;
     std::vector<int8_t> codesignData;
+    std::string inForm = "elf";
     bool ret = codeSigning.GetElfCodeSignBlock(inputFile, offset, inForm, params.at("profileContent"), codesignData);
     EXPECT_EQ(ret, false);
 }

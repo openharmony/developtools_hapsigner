@@ -55,7 +55,7 @@ public:
 private:
     bool VerifyElfFile(const std::string& elfFile, HapVerifyResult& verifyResult,
         Options* options, Pkcs7Context& pkcs7Context);
-    static bool CheckMagicAndVersion(std::vector<int8_t>& bytes, int32_t& offset,
+    static bool CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset,
         const std::string fileType);
     static void GetElfSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
         std::unordered_map<signed char, SigningBlock>& signBlockMap);

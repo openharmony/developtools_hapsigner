@@ -50,9 +50,6 @@ public:
 
     bool InitX509(X509& cert, EVP_PKEY& evpPkey);
 
-    EVP_PKEY* CheckAlias(STACK_OF(X509)* ocerts, STACK_OF(PKCS12_SAFEBAG)* bags,
-                         PKCS12_SAFEBAG* bag, const char* alias);
-
     void SetNidMac(int& nid_key, int& iter, int& mac_iter);
 
     EVP_PKEY* GenerateKeyPair(const std::string& algorithm, int keySize);
