@@ -63,14 +63,14 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
             return false;
         }
         PrintMsg("Start " + param->GetMethod());
-        SIGNATURE_TOOLS_LOGI("%{public}s run start time \n ", param->GetMethod().c_str());
+        SIGNATURE_TOOLS_LOGI("%{public}s run start time  ", param->GetMethod().c_str());
         if (!DispatchParams(param, *service_api.get())) {
-            SIGNATURE_TOOLS_LOGI("%{public}s run end time \n ", param->GetMethod().c_str());
+            SIGNATURE_TOOLS_LOGI("%{public}s run end time  ", param->GetMethod().c_str());
             PrintMsg(param->GetMethod() + " failed");
             return false;
         }
         PrintMsg(param->GetMethod() + " success");
-        SIGNATURE_TOOLS_LOGI("%{public}s run end time \n ", param->GetMethod().c_str());
+        SIGNATURE_TOOLS_LOGI("%{public}s run end time  ", param->GetMethod().c_str());
     }
     return true;
 }

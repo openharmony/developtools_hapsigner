@@ -302,11 +302,11 @@ bool VerifyCertOpensslUtils::GetCertsChain(CertChain& certsChain, CertSign& cert
         X509_NAME* aName = X509_get_issuer_name(cert);
         X509_NAME* bName = X509_get_subject_name(cert);
         if (aName == NULL || bName == NULL) {
-            SIGNATURE_TOOLS_LOGE("NULL X509_NAME\n");
+            SIGNATURE_TOOLS_LOGE("NULL X509_NAME");
             return false;
         }
         if (X509_NAME_cmp(aName, bName) != 0) {
-            SIGNATURE_TOOLS_LOGE("compare error!\n");
+            SIGNATURE_TOOLS_LOGE("compare error!");
             return false;
         }
         return true;

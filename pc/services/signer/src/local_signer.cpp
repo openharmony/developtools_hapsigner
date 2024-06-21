@@ -69,7 +69,7 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
     } else if (signAlg == SIGN_ALG_SHA384) {
         md = EVP_sha384();
     } else {
-        SIGNATURE_TOOLS_LOGE("unsupport sigAlg\n");
+        SIGNATURE_TOOLS_LOGE("unsupport sigAlg");
         return ret;
     }
 
@@ -81,7 +81,7 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
                   !(sigret = reinterpret_cast<unsigned char*>(OPENSSL_malloc(siglen)))  ||
                   (EVP_DigestSignFinal(md_ctx, sigret, &siglen) <= 0);
     if (result) {
-        SIGNATURE_TOOLS_LOGE("digest sign failed\n");
+        SIGNATURE_TOOLS_LOGE("digest sign failed");
         goto err;
     }
     ret.assign(reinterpret_cast<const char*>(sigret), siglen);

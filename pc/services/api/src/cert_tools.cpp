@@ -106,13 +106,13 @@ bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, 
         goto err;
     }
     result = (!X509_set_issuer_name(cert, X509_REQ_get_subject_name(rootcsr)));
-    if(result){
+    if (result) {
         SIGNATURE_TOOLS_LOGE("X509_set_issuer_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(rootcsr));
         goto err;
     }
     result = (!X509_set_subject_name(cert, X509_REQ_get_subject_name(subcsr)));
-    if(result){
+    if (result) {
         SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(subcsr));
         goto err;
@@ -139,7 +139,7 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert, serialNumber));
-    if(result){
+    if (result) {
         goto err;
     }
     validity = options->GetInt(Options::VALIDITY);
@@ -149,7 +149,7 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
     }
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
               !SignForSubCert(cert, subcsr, rootcsr, keyPair, options));
-    if(result){
+    if (result) {
         goto err;
     }
     return  cert;
@@ -190,7 +190,7 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert, serialNumber));
-    if(result){   
+    if (result) {
         goto err;
     }
     validity = options->GetInt(Options::VALIDITY);
@@ -206,12 +206,12 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
               !SetSubjectForCert(certReq, cert) ||
               !SetCertPublickKey(cert, certReq));
-    if(result){
+    if (result) {
         goto err;
     }
     signAlg = options->GetString(Options::SIGN_ALG);
     result = (!SignCert(cert, keyPair, signAlg));
-    if(result){
+    if (result) {
         goto err;
     }
     return cert;
@@ -317,7 +317,7 @@ bool CertTools::SetExpandedInformation(X509* cert, Options* options)
     result = (!SetExpandedInfExtOne(cert, options, critical, ext1) ||
               !SetExpandedInfExtTwo(cert, options, critical, ext2) ||
               !SetExpandedInfExtThree(cert, options, critical, ext3));
-    if(result){
+    if (result) {
         SIGNATURE_TOOLS_LOGE("Failed to set expanded information \n");
         return false;
     }
@@ -369,7 +369,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert, serialNumber));
-    if(result){
+    if (result) {
         goto err;
     }
     validity = options->GetInt(Options::VALIDITY);
@@ -386,7 +386,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
               !SetCertPublickKey(cert, certReq) ||
               !SetExpandedInformation(cert, options) ||
               !SetPubkeyAndSignCert(cert, issuercsr, certReq, keyPair, options));
-    if(result){
+    if (result) {
         goto err;
     }
     X509_REQ_free(issuercsr);
@@ -733,26 +733,26 @@ X509* CertTools::GenerateEndCert(X509_REQ* csr, EVP_PKEY* issuerKeyPair,
             break;
         }
         result = (!SetCertVersion(cert, DEFAULT_CERT_VERSION) || !SetCertSerialNum(cert, serialNumber));
-        if(result){
+        if (result) {
             break;
         }
         issuerReq = X509_REQ_new();
         std::string issuerStr = adapter.options->GetString(adapter.options->ISSUER);
         result = (!SetCertIssuerName(cert, BuildDN(issuerStr, issuerReq)) || !SetCertSubjectName(cert, csr));
-        if(result){
+        if (result) {
             break;
         }
         int validity = adapter.options->GetInt(adapter.options->VALIDITY);
         result = (!SetCertValidity(cert, validity) || !SetCertPublickKey(cert, csr));
-        if(result){
+        if (result) {
             break;
         }
         result = (!SetBasicExt(cert) || !SetkeyUsageExt(cert) || !SetKeyUsageEndExt(cert));
-        if(result){
+        if (result) {
             break;
         }
         result = (!SetKeyIdentifierExt(cert) || !SetSignCapacityExt(cert, signCapacity, capacityLen));
-        if(result){
+        if (result) {
             break;
         }
         std::string signAlg = adapter.options->GetString(adapter.options->SIGN_ALG);

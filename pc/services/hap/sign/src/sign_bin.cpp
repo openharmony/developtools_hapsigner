@@ -173,16 +173,12 @@ bool SignBin::WriteSignedBin(const std::string& inputFile, const std::string& pr
 {
     // 1. write the input file to the output file.
     bool writeInputOk = FileUtils::WriteInputToOutPut(inputFile, outputFile);
-    
     // 2. append write profile block head to the output file.
     bool appendProfileHeadOk = FileUtils::AppendWriteByteToFile(proBlockByte, outputFile);
-    
     // 3. append write sign block head to the output file.
     bool appendBlockHeadOk = FileUtils::AppendWriteByteToFile(signBlockByte, outputFile);
-    
     // 4. write profile src file to the output file.
     bool appendProfileSrcOk = FileUtils::AppendWriteFileToFile(profileFile, outputFile);
-
     if (!writeInputOk || !appendProfileHeadOk || !appendBlockHeadOk || !appendProfileSrcOk) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to write signed bin");
         return false;

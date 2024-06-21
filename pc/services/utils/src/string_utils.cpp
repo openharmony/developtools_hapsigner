@@ -79,7 +79,7 @@ std::string StringUtils::Pkcs7ToString(PKCS7* p7)
     unsigned char* out = NULL;
     int outSize = i2d_PKCS7(p7, &out);
     if (out == NULL || outSize <= 0) {
-        SIGNATURE_TOOLS_LOGE("pkcs7 to string failed\n");
+        SIGNATURE_TOOLS_LOGE("pkcs7 to string failed");
         return "";
     }
     std::string ret;
@@ -105,13 +105,13 @@ std::string StringUtils::SubjectToString(X509* cert)
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
     X509_NAME* subjectName = X509_get_subject_name(cert);
     if (!subjectName) {
-        SIGNATURE_TOOLS_LOGE("Error getting subject name\n");
+        SIGNATURE_TOOLS_LOGE("Error getting subject name");
         return "";
     }
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
     char* subjectStr = X509_NAME_oneline(subjectName, NULL, 0);
     if (!subjectStr) {
-        SIGNATURE_TOOLS_LOGE("Error create subject string\n");
+        SIGNATURE_TOOLS_LOGE("Error create subject string");
         return "";
     }
     std::string subjectString(subjectStr);

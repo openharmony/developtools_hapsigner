@@ -68,6 +68,10 @@ public:
     static const std::string HQF_APP_PATTERN;
     static const std::string HSP_APP_PATTERN;
     static const std::string APP_APP_PATTERN;
+    static const int OFFSET_ZERO = 0;
+    static const int OFFSET_FOUR = 4;
+    static const int OFFSET_EIGHT = 8;
+
 };
 } // namespace SignatureTools
 } // namespace OHOS

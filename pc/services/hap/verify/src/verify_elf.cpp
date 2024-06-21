@@ -112,7 +112,7 @@ bool VerifyElf::VerifyP7b(std::unordered_map<signed char, SigningBlock>& signBlo
         std::string fromByteStr(profileByte.begin(), profileByte.end());
         profileJson = fromByteStr;
         verifyResult.SetProfile(profileByte);
-        SIGNATURE_TOOLS_LOGW("profile is not signed.\n");
+        SIGNATURE_TOOLS_LOGW("profile is not signed.");
     } else if (signBlockMap.find(PROFILE_SIGNED_BLOCK) != signBlockMap.end()) {
         // verify signed profile
         SigningBlock profileSign = signBlockMap.find(PROFILE_SIGNED_BLOCK)->second;
@@ -129,9 +129,9 @@ bool VerifyElf::VerifyP7b(std::unordered_map<signed char, SigningBlock>& signBlo
             return false;
         }
         verifyResult.SetProfile(profileByte);
-        SIGNATURE_TOOLS_LOGI("verify profile success.\n");
+        SIGNATURE_TOOLS_LOGI("verify profile success.");
     } else {
-        SIGNATURE_TOOLS_LOGW("can not found profile sign block.\n");
+        SIGNATURE_TOOLS_LOGW("can not found profile sign block.");
     }
     return true;
 }
@@ -359,7 +359,7 @@ bool VerifyElf::CheckParams(Options* options)
     }
     bool proofEmpty = options->GetString(Options::PROOF_FILE).empty();
     if (proofEmpty) {
-        SIGNATURE_TOOLS_LOGW("Missing parameter: %{public}s.\n",
+        SIGNATURE_TOOLS_LOGW("Missing parameter: %{public}s.",
                              Options::PROOF_FILE.c_str());
     }
     return true;

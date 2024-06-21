@@ -42,9 +42,10 @@ CodeSigning::CodeSigning()
 }
 
 bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
-                                   std::string inForm, std::string profileContent, ZipSigner& zip, std::vector<int8_t>& ret)
+                                   std::string inForm, std::string profileContent,
+                                   ZipSigner& zip, std::vector<int8_t>& ret)
 {
-    SIGNATURE_TOOLS_LOGI("Start to sign code.\n");
+    SIGNATURE_TOOLS_LOGI("Start to sign code.");
     bool formatFlag = std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm)
         == SUPPORT_FILE_FORM.end();
     if (formatFlag) {
@@ -59,7 +60,7 @@ bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
                                               (signed char)FsVerityGenerator::GetFsVerityHashAlgorithm(),
                                               (signed char)FsVerityGenerator::GetLog2BlockSize());
     this->codeSignBlock.SetFsVerityInfoSegment(*(fsVerityInfoSegment.get()));
-    SIGNATURE_TOOLS_LOGI("Sign hap.\n");
+    SIGNATURE_TOOLS_LOGI("Sign hap.");
     std::string ownerID = HapUtils::GetAppIdentifier(profileContent);
     std::ifstream inputStream;
     inputStream.open(input, std::ios::binary);
@@ -83,7 +84,7 @@ bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
     SignNativeLibs(input, ownerID);
     UpdateCodeSignBlock();
     ret = this->codeSignBlock.GenerateCodeSignBlockByte(fsvTreeOffset);
-    SIGNATURE_TOOLS_LOGI("Sign successfully.\n");
+    SIGNATURE_TOOLS_LOGI("Sign successfully.");
     return true;
 }
 
@@ -154,16 +155,16 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
                                       std::string inForm, std::string profileContent,
                                       std::vector<int8_t>& codesignData)
 {
-    SIGNATURE_TOOLS_LOGI("Start to sign elf code.\n");
+    SIGNATURE_TOOLS_LOGI("Start to sign elf code.");
     if (CodeSigning::SUPPORT_BIN_FILE_FORM != inForm) {
-        SIGNATURE_TOOLS_LOGI("[SignElf] file's format is unsupported\n");
+        SIGNATURE_TOOLS_LOGI("[SignElf] file's format is unsupported");
         return false;
     }
     int paddingSize = ElfSignBlock::ComputeMerkleTreePaddingLength(offset);
     int64_t fsvTreeOffset = offset + FsVerityDescriptorWithSign::INTEGER_BYTES * 2 + paddingSize;
     std::ifstream inputstream(input, std::ios::binary | std::ios::ate);
     if (!inputstream.is_open()) {
-        SIGNATURE_TOOLS_LOGI("[SignElf] input file open is fail\n");
+        SIGNATURE_TOOLS_LOGI("[SignElf] input file open is fail");
         return false;
     }
     std::streamsize fileSize = inputstream.tellg();
@@ -175,7 +176,7 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
     std::vector<int8_t> signature;
     bool generateSignatureFlag = GenerateSignature(fsVerityDigest, ownerID, signature);
     if (!generateSignatureFlag) {
-        SIGNATURE_TOOLS_LOGI("[SignElf] generateSignature fail\n");
+        SIGNATURE_TOOLS_LOGI("[SignElf] generateSignature fail");
         return false;
     }
 
@@ -209,7 +210,7 @@ bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
     std::vector<std::tuple<std::string, std::stringbuf, uLong>> entryNames =
         GetNativeEntriesFromHap(input);
     if (entryNames.empty()) {
-        SIGNATURE_TOOLS_LOGI("No native libs.\n");
+        SIGNATURE_TOOLS_LOGI("No native libs.");
         return true;
     }
     std::vector<std::pair<std::string, SignInfo>> nativeLibInfoList;
@@ -271,7 +272,7 @@ bool CodeSigning::HandleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalIn
     unz_file_info zFileInfo;
     char fileName[FILE_NAME_SIZE];
     char fileNameZeroBuf[FILE_NAME_SIZE] = { 0 };
-    SIGNATURE_TOOLS_LOGI("zGlobalInfo.number_entry = %lu\n", zGlobalInfo.number_entry);
+    SIGNATURE_TOOLS_LOGI("zGlobalInfo.number_entry = %lu", zGlobalInfo.number_entry);
     for (uLong i = 0; i < zGlobalInfo.number_entry; ++i) {
         if (memcpy_s(fileName, FILE_NAME_SIZE, fileNameZeroBuf, FILE_NAME_SIZE) != 0)
             return false;
@@ -317,7 +318,7 @@ bool CodeSigning::CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo,
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "unzGetCurrentFileInfo failed!");
         return false;
     }
-    SIGNATURE_TOOLS_LOGI("Open zipFile filename is : %{public}s\n", fileName);
+    SIGNATURE_TOOLS_LOGI("Open zipFile filename is : %{public}s", fileName);
     if ((*nameLen = strlen(fileName)) == 0U) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "fileName is null");
         return false;
@@ -333,7 +334,7 @@ bool CodeSigning::CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo,
 bool CodeSigning::CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen)
 {
     if (fileName[*nameLen - 1] == '/') {
-        SIGNATURE_TOOLS_LOGI("It is dictionary.\n");
+        SIGNATURE_TOOLS_LOGI("It is dictionary.");
         unzCloseCurrentFile(zFile);
         unzGoToNextFile(zFile);
         return false;
@@ -341,23 +342,12 @@ bool CodeSigning::CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen
     std::string str(fileName);
     bool nativeFileFlag = IsNativeFile(str);
     if (!nativeFileFlag) {
-        SIGNATURE_TOOLS_LOGI("Suffix mismatched.\n");
+        SIGNATURE_TOOLS_LOGI("Suffix mismatched.");
         unzCloseCurrentFile(zFile);
         unzGoToNextFile(zFile);
         return false;
     }
     return true;
-}
-
-std::string CodeSigning::SplitFileName(const std::string& path)
-{
-    size_t found = path.find_last_of("/");
-    if (found == std::string::npos) {
-        found = 0;
-    } else {
-        ++found;
-    }
-    return path.substr(found);
 }
 
 bool CodeSigning::IsNativeFile(std::string& input)
@@ -406,7 +396,7 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
     std::unique_ptr<BCSignedDataGenerator> bcSignedDataGenerator =
         std::make_unique<BCSignedDataGenerator>();
     if (!ownerID.empty()) {
-        SIGNATURE_TOOLS_LOGW("generate signature get owner id not null.\n");
+        SIGNATURE_TOOLS_LOGW("generate signature get owner id not null.");
         bcSignedDataGenerator->SetOwnerId(ownerID);
     }
     std::string signed_data(signedData.begin(), signedData.end());

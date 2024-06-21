@@ -1,0 +1,35 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+group("codesigning_fuzztest") {
+  testonly = true
+  deps = [
+    "./datastructure/codesignblock_fuzzer:CodeSignBlock",
+    "./datastructure/codesignblockheader_fuzzer:CodeSignBlockHeader",
+    "./datastructure/elfsignblock_fuzzer:ElfSignBlock",
+    "./datastructure/extension_fuzzer:Extension",
+    "./datastructure/fsverityinfosegment_fuzzer:FsVerityInfoSegment",
+    "./datastructure/hapinfosegment_fuzzer:HapInfoSegment",
+    "./datastructure/merkletreeextension_fuzzer:MerkleTreeExtension",
+    "./datastructure/nativelibinfosegment_fuzzer:NativeLibInfoSegment",
+    "./datastructure/segmentheader_fuzzer:SegmentHeader",
+    "./datastructure/signinfo_fuzzer:SignInfo",
+    "./datastructure/signedfilepos_fuzzer:SignedFilePos",
+    "./fsverity/fsveritydescriptor_fuzzer:FsVerityDescriptor",
+    "./fsverity/fsveritydescriptorwithsign_fuzzer:FsVerityDescriptorWithSign",
+    "./fsverity/fsveritydigest_fuzzer:FsVerityDigest",
+    "./fsverity/fsveritygenerator_fuzzer:FsVerityGenerator",
+    "./fsverity/fsverityhashalgorithm_fuzzer:FsVerityHashAlgorithm",
+    "./fsverity/merkletreebuilder_fuzzer:MerkleTreeBuilder",
+  ]
+}

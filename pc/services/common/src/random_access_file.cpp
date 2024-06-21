@@ -176,7 +176,7 @@ int32_t RandomAccessFile::WriteToFile(ByteBuffer& buffer, int64_t position, int6
     if (memcpy_s(mmapInfo.mapAddr + mmapInfo.readMoreLen,
         mmapInfo.mmapSize - mmapInfo.readMoreLen,
         buffer.GetBufferPtr(), bufCapacity) != RET_OK) {
-        SIGNATURE_TOOLS_LOGE("memcpy_s error\n");
+        SIGNATURE_TOOLS_LOGE("memcpy_s error");
         return MMAP_COPY_FAILED;
     }
     munmap(mmapInfo.mapAddr, mmapInfo.mmapSize);

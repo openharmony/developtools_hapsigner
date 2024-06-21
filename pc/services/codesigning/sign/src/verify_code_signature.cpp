@@ -22,7 +22,7 @@ bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t le
 {
     if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
         fileFormat) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify\n");
+        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify");
         return true;
     }
     // 1) generate CodeSignBlock
@@ -101,7 +101,7 @@ bool VerifyCodeSignature::VerifyNativeLib(CodeSignBlock& csb, std::string& file,
     std::vector<std::tuple<std::string, std::stringbuf, uLong>> nativeEntries
         = CodeSigning::GetNativeEntriesFromHap(file);
     if (nativeEntries.empty()) {
-        SIGNATURE_TOOLS_LOGI("No native libs to verify.\n");
+        SIGNATURE_TOOLS_LOGI("No native libs to verify.");
         return true;
     }
     for (int i = 0; i < csb.GetSoInfoSegment().GetSectionNum(); i++) {

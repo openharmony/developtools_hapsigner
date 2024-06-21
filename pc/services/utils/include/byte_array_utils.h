@@ -31,8 +31,6 @@ public:
     static int InsertCharToByteArray(std::vector<int8_t>& des, int start, std::string src);
 
 private:
-    ByteArrayUtils();
-
     static constexpr int BIT_SIZE = 8;
     static constexpr int DOUBLE_BIT_SIZE = 16;
     static constexpr int TRIPLE_BIT_SIZE = 24;

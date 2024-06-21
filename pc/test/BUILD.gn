@@ -99,8 +99,7 @@ ohos_source_set("service_target") {
   public_external_deps = [
     "c_utils:utils",
     "hilog:libhilog",
-    "ipc:ipc_core",
-    "samgr:samgr_proxy",
+    "json:nlohmann_json_static",
   ]
 
   part_name = "hapsigner"

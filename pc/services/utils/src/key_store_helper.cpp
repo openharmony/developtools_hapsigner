@@ -278,10 +278,8 @@ int KeyStoreHelper::GetPublicKey(PKCS7* safe, const char* alias, char* pass, int
     for (int i = 0; i < sk_X509_num(ocerts); i++) {
         bag = sk_PKCS12_SAFEBAG_value(bags, i);
         name = PKCS12_get_friendlyname(bag);
-
         if (strcmp(name, alias) != 0)
             continue;
-
         X509* cert = sk_X509_value(ocerts, i);
         if (cert == nullptr) {
             KeyPairFree(keyPiar, ocerts, bags, name);

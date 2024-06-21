@@ -24,14 +24,14 @@ const int FsVerityDigest::DIGEST_HEADER_SIZE = 12;
 std::vector<int8_t> FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector<int8_t>& digest)
 {
     const int size = DIGEST_HEADER_SIZE + digest.size();
+    if (size <= 0)
+        return std::vector<int8_t>();
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(size));
     buffer->PutData(FSVERITY_DIGEST_MAGIC.c_str(), (int32_t)FSVERITY_DIGEST_MAGIC.length());
     buffer->PutInt16(algoID);
     buffer->PutInt16((int16_t)digest.size());
     buffer->PutData(digest.data(), digest.size());
     buffer->Flip();
-    if (size <= 0)
-        return std::vector<int8_t>();
     char dataArr[size];
     if (memset_s(dataArr, size, 0, size) != RET_OK) {
         SIGNATURE_TOOLS_LOGE("memcpy_s failed");

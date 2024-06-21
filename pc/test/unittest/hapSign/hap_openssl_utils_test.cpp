@@ -300,8 +300,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_019, testing::ext::TestSize
     pkcs7Context.p7 = PKCS7_new();
     PKCS7_set_type(pkcs7Context.p7, NID_pkcs7_signed);
     PKCS7_content_new(pkcs7Context.p7, NID_pkcs7_data);
-    PKCS7* p7_t = pkcs7Context.p7;
-    bool ret = VerifyHapOpensslUtils::GetCertChains(p7_t, pkcs7Context);
+    PKCS7* pkcsBak = pkcs7Context.p7;
+    bool ret = VerifyHapOpensslUtils::GetCertChains(pkcsBak, pkcs7Context);
     EXPECT_EQ(ret, false);
 }
 /*

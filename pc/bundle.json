@@ -23,12 +23,12 @@
     },
     "component": {
         "name": "hapsigner",
-        "subsystem": "publickeyinfrastructure",
+        "subsystem": "developtools",
         "syscap": [],
         "features": [],
         "adapted_system_type": [ "standard" ],
-        "rom": "",
-        "ram": "",
+        "rom": "0KB",
+        "ram": "0KB",
         "deps": {
             "components": [
                 "c_utils",
@@ -44,8 +44,7 @@
         },
         "build": {
             "sub_component": [
-                "//developtools/hapsigner/pc/services:hap-sign-tool",
-                "//developtools/hapsigner/pc/remote_signer:remote_signer"
+                "//developtools/hapsigner/pc/services:hap-sign-tool"
             ],
             "inner_kits": [],
             "test": [

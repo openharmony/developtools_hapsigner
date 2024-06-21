@@ -115,6 +115,7 @@ bool VerifyHap::CheckFilePath(const std::string& filePath, std::string& standard
                 !std::regex_match(standardFilePath, std::regex(HQF_APP_PATTERN)));
     if (ret) {
         SIGNATURE_TOOLS_LOGE("file is not hap, hsp or hqf package");
+        PrintErrorNumberMsg("Verify Hap failed", VERIFY_ERROR, "unsupported format hap");
         return false;
     }
     return true;
@@ -202,21 +203,21 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
         ByteBuffer propertyBlockArray = map[HapUtils::HAP_PROPERTY_BLOCK_ID];
         std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
         if (fileNameArray.size() < ParamConstants::FILE_NAME_MIN_LENGTH) {
-            SIGNATURE_TOOLS_LOGE("ZIP64 format not supported\n");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "ZIP64 format not supported.");
             return false;
         }
-        
+
         if (propertyBlockArray.GetCapacity() < ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH)
             return false;
         uint32_t blockType;
-        propertyBlockArray.GetUInt32(0,blockType);
+        propertyBlockArray.GetUInt32(OFFSET_ZERO, blockType);
         uint32_t blockLength;
-        propertyBlockArray.GetUInt32(4, blockLength);
+        propertyBlockArray.GetUInt32(OFFSET_FOUR, blockLength);
         uint32_t blockOffset;
-        propertyBlockArray.GetUInt32(8, blockOffset);
+        propertyBlockArray.GetUInt32(OFFSET_EIGHT, blockOffset);
 
         if (blockType != HapUtils::HAP_CODE_SIGN_BLOCK_ID) {
-            SIGNATURE_TOOLS_LOGE("Verify Hap has no code sign data error!\n");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify Hap has no code sign data error!");
             return false;
         }
         auto ite = map.find(HapUtils::HAP_PROFILE_BLOCK_ID);
@@ -226,20 +227,20 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
         std::string profileArray_(profileArray.GetBufferPtr(), profileArray.GetCapacity());
         std::string profileContent;
         if (GetProfileContent(profileArray_, profileContent) < 0) {
-            SIGNATURE_TOOLS_LOGE("get profile content failed\n");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "get profile content failed.");
             return false;
         }
         std::string suffix = fileNameArray[fileNameArray.size() - 1];
         bool isCodeSign = VerifyCodeSignature::VerifyHap(hapFilePath, blockOffset, blockLength,
                                                          suffix, profileContent);
         if (!isCodeSign) {
-            SIGNATURE_TOOLS_LOGE("Verify Hap has no code sign data error!\n");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "verify codesign failed.");
             return false;
         }
-        SIGNATURE_TOOLS_LOGI("verify codesign success\n");
+        SIGNATURE_TOOLS_LOGI("verify codesign success.");
         return true;
     }
-    SIGNATURE_TOOLS_LOGI("can not find codesign block\n");
+    SIGNATURE_TOOLS_LOGI("can not find codesign block.");
     return true;
 }
 
@@ -572,7 +573,7 @@ int32_t VerifyHap::VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyR
 int32_t VerifyHap::WriteVerifyOutput(Pkcs7Context& pkcs7Context, Options* options)
 {
     bool flag = VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
-        options->GetString(Options::OUT_CERT_CHAIN));
+                                              options->GetString(Options::OUT_CERT_CHAIN));
     if (!flag) {
         SIGNATURE_TOOLS_LOGE("out put cert chain failed");
         return OUT_PUT_FILE_FAIL;

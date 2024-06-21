@@ -66,6 +66,7 @@ bool HapSignerBlockUtils::FindHapSignature(RandomAccessFile& hapFile, SignatureI
     signInfo.hapEocdOffset = eocdAndOffsetInFile.second;
     if (!GetCentralDirectoryOffset(signInfo.hapEocd, signInfo.hapEocdOffset, signInfo.hapCentralDirOffset)) {
         SIGNATURE_TOOLS_LOGE("get CD offset failed");
+        PrintErrorNumberMsg("verify", VERIFY_ERROR, "ZIP End of Central Directory not found");
         return false;
     }
 

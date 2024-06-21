@@ -33,26 +33,26 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
     int result = RET_OK;
     std::string sigAlg;
     if (content.empty()) {
-        SIGNATURE_TOOLS_LOGE("Verify digest is empty\n");
+        SIGNATURE_TOOLS_LOGE("Verify digest is empty");
         return INVALIDPARAM_ERROR;
     }
     if (signerConfig == NULL) {
-        SIGNATURE_TOOLS_LOGE("NULL signerConfig\n");
+        SIGNATURE_TOOLS_LOGE("NULL signerConfig");
         return INVALIDPARAM_ERROR;
     }
     std::shared_ptr<Signer> signer(signerConfig->GetSigner());
     if (signer == NULL) {
-        SIGNATURE_TOOLS_LOGE("NULL signer\n");
+        SIGNATURE_TOOLS_LOGE("NULL signer");
         return INVALIDPARAM_ERROR;
     }
     result = BCSignedDataGenerator::GetSigAlg(signerConfig, sigAlg);
     if (result < 0) {
-        SIGNATURE_TOOLS_LOGE("get sigAlg failed\n");
+        SIGNATURE_TOOLS_LOGE("get sigAlg failed");
         return INVALIDPARAM_ERROR;
     }
     result = PackagePKCS7(content, signer, sigAlg, ret);
     if (result < 0) {
-        SIGNATURE_TOOLS_LOGE("PackageSignedData error!\n");
+        SIGNATURE_TOOLS_LOGE("PackageSignedData error!");
         return GENERATEPKCS7_ERROR;
     }
     return result;
@@ -64,17 +64,17 @@ int BCPkcs7Generator::PackagePKCS7(const std::string& content, std::shared_ptr<S
     int result = RET_OK;
     result = p7Data.Sign(content, signer, sigAlg, ret);
     if (result < 0) {
-        SIGNATURE_TOOLS_LOGE("generate pkcs7 block failed\n");
+        SIGNATURE_TOOLS_LOGE("generate pkcs7 block failed");
         return PKCS7_SIGN_ERROR;
     }
     result = p7Data.Parse(ret);
     if (result < 0) {
-        SIGNATURE_TOOLS_LOGE("parse pkcs7 bytes failed\n");
+        SIGNATURE_TOOLS_LOGE("parse pkcs7 bytes failed");
         return PARSE_ERROR;
     }
     result = p7Data.Verify();
     if (result < 0) {
-        SIGNATURE_TOOLS_LOGE("verify pkcs7 block failed\n");
+        SIGNATURE_TOOLS_LOGE("verify pkcs7 block failed");
         return VERIFY_ERROR;
     }
     return result;
