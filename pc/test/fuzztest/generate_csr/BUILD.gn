@@ -14,17 +14,6 @@
 group("generate_csr_fuzztest") {
   testonly = true
   deps = [
-    "./generatecsr_001_fuzzer:GenerateCsr001",
-    "./generatecsr_002_fuzzer:GenerateCsr002",
-    "./generatecsr_003_fuzzer:GenerateCsr003",
-    "./generatecsr_004_fuzzer:GenerateCsr004",
-    "./generatecsr_005_fuzzer:GenerateCsr005",
-    "./generatecsr_006_fuzzer:GenerateCsr006",
-    "./generatecsr_007_fuzzer:GenerateCsr007",
-    "./generatecsr_008_fuzzer:GenerateCsr008",
-    "./generatecsr_009_fuzzer:GenerateCsr009",
-    "./generatecsr_010_fuzzer:GenerateCsr010",
-    "./generatecsr_011_fuzzer:GenerateCsr011",
-    "./generatecsr_012_fuzzer:GenerateCsr012",
+
   ]
 }

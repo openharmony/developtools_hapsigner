@@ -60,8 +60,8 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./elfVerify/hap_utils_test.cpp",
     "./generateCsr/generate_csr_test.cpp",
     "./generateCA/generate_ca_test.cpp",
-    "./generateCA/generate_ca_test_two.cpp",
-    "./generateCA/generate_ca_test_three.cpp",
+    "./generateCA/generate_sub_ca_test.cpp",
+    "./generateCA/generate_general_ca_test.cpp",
 
     "./codeSigning/datastructure/code_sign_block_header_test.cpp",
     "./codeSigning/datastructure/code_sign_block_test.cpp",
@@ -91,9 +91,10 @@ ohos_unittest("hapsigntool_pc_unittest") {
 
     "./remoteSigner/remote_signer_test.cpp",
 
-    "signProfile/sign_profile_test.cpp",
-    "signProfile/pkcs7_data_test.cpp",
-    "signProfile/provision_test.cpp",
+    "./signProfile/sign_profile_test.cpp",
+    "./signProfile/pkcs7_data_test.cpp",
+    "./signProfile/provision_test.cpp",
+    "./signProfile/profile_test.cpp",
 
     "./byteBuffer/byte_buffer_test.cpp",
   ]

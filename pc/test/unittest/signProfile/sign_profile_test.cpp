@@ -685,13 +685,13 @@ static const std::string VERIFY_APP_IN_FILE = "./signProfile/phone-default-signe
         EXPECT_EQ(result, 0);
     }
     /**
- * @tc.name: run_sign_app_test001
- * @tc.desc: Test function of HapSignTool::RunSignApp() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
+     * @tc.name: run_sign_app_test001
+      * @tc.desc: Test function of HapSignTool::RunSignApp() interface for SUCCESS.
+      * @tc.size: MEDIUM
+      * @tc.type: FUNC
+      * @tc.level Level 1
+      * @tc.require: SR000H63TL
+    */
     HWTEST_F(SignProfileTest, run_sign_app_test001, testing::ext::TestSize.Level1)
     {
         SIGNATURE_TOOLS_LOGI("hello world !!!");
@@ -728,13 +728,13 @@ static const std::string VERIFY_APP_IN_FILE = "./signProfile/phone-default-signe
 
 
     /**
-* @tc.name: run_sign_app_test002
-* @tc.desc: Test function of HapSignTool::RunSignApp() interface for SUCCESS.
-* @tc.size: MEDIUM
-* @tc.type: FUNC
-* @tc.level Level 1
-* @tc.require: SR000H63TL
-*/
+     * @tc.name: run_sign_app_test002
+     * @tc.desc: Test function of HapSignTool::RunSignApp() interface for SUCCESS.
+     * @tc.size: MEDIUM
+     * @tc.type: FUNC
+     * @tc.level Level 1
+     * @tc.require: SR000H63TL
+    */
     HWTEST_F(SignProfileTest, run_sign_app_test002, testing::ext::TestSize.Level1)
     {
         SIGNATURE_TOOLS_LOGI("hello world !!!");
@@ -768,13 +768,13 @@ static const std::string VERIFY_APP_IN_FILE = "./signProfile/phone-default-signe
     }
 
     /**
- * @tc.name: run_verify_app_test001
- * @tc.desc: Test function of HapSignTool::RunVerifyApp() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
+     * @tc.name: run_verify_app_test001
+     * @tc.desc: Test function of HapSignTool::RunVerifyApp() interface for SUCCESS.
+     * @tc.size: MEDIUM
+     * @tc.type: FUNC
+     * @tc.level Level 1
+     * @tc.require: SR000H63TL
+    */
     HWTEST_F(SignProfileTest, run_verify_app_test001, testing::ext::TestSize.Level1)
     {
         Options options;

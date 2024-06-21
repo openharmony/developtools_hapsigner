@@ -62,7 +62,6 @@ public:
     void UpdateCodeSignBlock();
     static std::vector<std::tuple<std::string, std::stringbuf, uLong>> GetNativeEntriesFromHap(
         std::string& packageName);
-    static std::string SplitFileName(const std::string& path);
     static bool IsNativeFile(std::string& input);
     bool SignFilesFromJar(std::vector<std::tuple<std::string,
         std::stringbuf, uLong>>&,

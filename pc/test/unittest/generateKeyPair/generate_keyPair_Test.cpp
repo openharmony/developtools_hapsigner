@@ -661,12 +661,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_028, testing::ext::TestSize.
  */
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.Level1)
 {
-    int nid_key = 0;
+    int nidKey = 0;
     int iter = 0;
-    int mac_iter = 0;
+    int macIter = 0;
     bool ret = true;
     KeyStoreHelper keyhelper;
-    keyhelper.SetNidMac(nid_key, iter, mac_iter);
+    keyhelper.SetNidMac(nidKey, iter, macIter);
     EXPECT_EQ(ret, true);
 }
 

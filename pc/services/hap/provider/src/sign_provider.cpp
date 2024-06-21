@@ -124,7 +124,8 @@ bool SignProvider::InitDataSourceContents(RandomAccessFile& outputHap, DataSourc
 {
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(outputHap);
     // get eocd bytebuffer and eocd offset
-    if (!HapSignerBlockUtils::FindEocdInHap(outputHap, dataSrcContents.eocdPair)) return false;
+    if (!HapSignerBlockUtils::FindEocdInHap(outputHap, dataSrcContents.eocdPair)) 
+        return PrintErrorLog("[signHap] can not find eocd in file", ZIP_ERROR);
     dataSrcContents.endOfCentralDir = new ByteBufferDataSource(dataSrcContents.eocdPair.first);
     if (!dataSrcContents.endOfCentralDir) return false;
 
@@ -162,60 +163,48 @@ bool SignProvider::Sign(Options* options)
         PrintErrorNumberMsg("SIGNHAP_ERROR", ret, "get X509 Certificates failed");
         return false;
     }
-
     // todo 错误判断
     if (!CheckCompatibleVersion())
         return PrintErrorLog("[SignHap] check Compatible Version failed!!", COMMAND_PARAM_ERROR);
-
     std::string inputFilePath = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
     std::string suffix = FileUtils::GetSuffix(inputFilePath);
     if (suffix == "")
         return PrintErrorLog("[SignHap] hap format error pleass check!!", COMMAND_PARAM_ERROR);
-
     auto [inputStream, tmpOutput, tmpOutputFilePath] =
         PrepareIOStreams(inputFilePath,
                          signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE),
                          isPathOverlap);
-
     if (!inputStream || !tmpOutput)
         return PrintErrorLog("[signHap] Prepare IO Streams failed", IO_ERROR);
-
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
     if (!InitZipOutput(outputHap, zip, inputStream, tmpOutput, tmpOutputFilePath))
         return PrintErrorLog("[signHap] Init Zip Output failed", IO_ERROR);
-
     DataSourceContents dataSrcContents;
     if (!InitDataSourceContents(*outputHap, dataSrcContents))
-        return PrintErrorLog("[signHap] Init Data Source Contents failed", ZIP_ERROR);;
+        return PrintErrorLog("[signHap] Init Data Source Contents failed", ZIP_ERROR);
     DataSource* contents[] = { dataSrcContents.beforeCentralDir,
         dataSrcContents.centralDir, dataSrcContents.endOfCentralDir
     };
-
     SignerConfig signerConfig;
     if (!InitSigerConfig(signerConfig, publicCerts, options))
         return PrintErrorLog("SignHap] create Signer Configs failed", COMMAND_PARAM_ERROR, tmpOutputFilePath);
-
     //// 追加代码签名块
     if (!AppendCodeSignBlock(&signerConfig, tmpOutputFilePath, suffix, dataSrcContents.cDOffset, *zip))
         return PrintErrorLog("[SignCode] AppendCodeSignBlock failed", SIGN_ERROR, tmpOutputFilePath);
-
     ByteBuffer signingBlock;
     if (!SignHap::Sign(contents, sizeof(contents) / sizeof(contents[0]), signerConfig, optionalBlocks,
         signingBlock))
         return PrintErrorLog("[SignHap] SignHap Sign failed.", SIGN_ERROR, tmpOutputFilePath);
-
     long long newCentralDirectoryOffset = dataSrcContents.cDOffset + signingBlock.GetCapacity();
-    SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %{public}lld.\n", newCentralDirectoryOffset);
+    SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %{public}lld.", newCentralDirectoryOffset);
 
     dataSrcContents.eocdPair.first.SetPosition(0);
     if (!ZipUtils::SetCentralDirectoryOffset(dataSrcContents.eocdPair.first, newCentralDirectoryOffset))
         return PrintErrorLog("[SignHap] Set Central Directory Offset.", ZIP_ERROR, tmpOutputFilePath);
-
     if (!OutputSignedFile(outputHap.get(), dataSrcContents.cDOffset, signingBlock, dataSrcContents.centralDir,
         dataSrcContents.eocdPair.first))
         return PrintErrorLog("[SignHap] write output signed file failed.", ZIP_ERROR, tmpOutputFilePath);
-
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
 }
 
@@ -283,23 +272,23 @@ bool SignProvider::SignBin(Options* options)
         return false;
     }
     if (!CheckCompatibleVersion()) {
-        SIGNATURE_TOOLS_LOGE("check Compatible Version failed!\n");
+        SIGNATURE_TOOLS_LOGE("check Compatible Version failed!");
         return false;
     }
 
     SignerConfig signerConfig;
     if (!InitSigerConfig(signerConfig, x509Certificates, options)) {
-        SIGNATURE_TOOLS_LOGE("[SignBin] create Signer Configs failed\n");
+        SIGNATURE_TOOLS_LOGE("[SignBin] create Signer Configs failed");
         return false;
     }
 
     bool signFlag = SignBin::Sign(signerConfig, signParams);
     if (!signFlag) {
-        SIGNATURE_TOOLS_LOGE("sign bin internal failed\n");
+        SIGNATURE_TOOLS_LOGE("sign bin internal failed");
         return false;
     }
 
-    SIGNATURE_TOOLS_LOGE("sign bin success\n");
+    SIGNATURE_TOOLS_LOGE("sign bin success");
     return true;
 }
 
@@ -307,10 +296,10 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
                                        const std::string& suffix, long long centralDirectoryOffset, ZipSigner& zip)
 {
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CodeSigning::ENABLE_SIGN_CODE_VALUE) {
-        SIGNATURE_TOOLS_LOGI("start code signing.\n");
+        SIGNATURE_TOOLS_LOGI("start code signing.");
         if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
             suffix) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-            SIGNATURE_TOOLS_LOGE("no need to sign code.\n");
+            SIGNATURE_TOOLS_LOGE("no need to sign code.");
             return true;
         }
         // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
@@ -320,10 +309,10 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
         std::vector<int8_t> codeSignArray;
         if (!codeSigning.GetCodeSignBlock(outputFilePath, codeSignOffset, suffix, profileContent, zip,
             codeSignArray)) {
-            SIGNATURE_TOOLS_LOGE("Codesigning getCodeSignBlock Fail.\n");
+            SIGNATURE_TOOLS_LOGE("Codesigning getCodeSignBlock Fail.");
             return false;
         }
-        SIGNATURE_TOOLS_LOGI("generate codeSignArray finished.\n");
+        SIGNATURE_TOOLS_LOGI("generate codeSignArray finished.");
         std::unique_ptr<ByteBuffer> result =
             std::make_unique<ByteBuffer>(codeSignArray.size()
                                          + (FOUR_BYTE + FOUR_BYTE + FOUR_BYTE));
@@ -407,7 +396,7 @@ std::optional<X509_CRL*> SignProvider::GetCrl()
 bool SignProvider::CheckFile(const std::string& filePath)
 {
     if (filePath.empty()) {
-        SIGNATURE_TOOLS_LOGE("fileName is null.\n");
+        SIGNATURE_TOOLS_LOGE("fileName is null.");
         return false;
     }
     if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
@@ -435,9 +424,9 @@ int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)** X509Vec
     if (ret != RET_OK) {
         return ret;
     }
-    // 4. check Profile Valid;
+    // 4. check Profile Valid
     if ((ret = CheckProfileValid(*X509Vec)) < 0) {
-        SIGNATURE_TOOLS_LOGE("invalid profile!\n");
+        SIGNATURE_TOOLS_LOGE("invalid profile!");
         sk_X509_pop_free(*X509Vec, X509_free);
         *X509Vec = nullptr;
         return ret;
@@ -666,7 +655,7 @@ X509* SignProvider::GetCertificate(const std::string& certificate)const
 {
     BIO* in = BIO_new_mem_buf(certificate.data(), certificate.size());
     if (!in) {
-        SIGNATURE_TOOLS_LOGE("bio new error\n");
+        SIGNATURE_TOOLS_LOGE("bio new error");
         return NULL;
     }
     X509* cert = NULL;
@@ -689,7 +678,7 @@ std::string SignProvider::GetCertificateCN(X509* cert)const
         return "";
     name = X509_get_subject_name(cert);
     if (!name) {
-        SIGNATURE_TOOLS_LOGE("get subject failed\n");
+        SIGNATURE_TOOLS_LOGE("get subject failed");
         return "";
     }
     len = X509_NAME_get_text_by_NID(name, NID_countryName, NULL, 0);

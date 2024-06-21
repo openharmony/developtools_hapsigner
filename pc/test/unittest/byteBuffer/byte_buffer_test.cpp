@@ -22,10 +22,18 @@ namespace OHOS {
 namespace SignatureTools {
 class ByteBufferTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase(void) {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void)
+    {
+    };
+    static void TearDownTestCase(void)
+    {
+    };
+    void SetUp()
+    {
+    };
+    void TearDown()
+    {
+    };
 };
 
 /**
@@ -38,9 +46,9 @@ HWTEST_F(ByteBufferTest, ByteBufferConstructorTest001, testing::ext::TestSize.Le
     ByteBuffer buffer1;
     ByteBuffer buffer2(buffer1);
     bool judge1 = (buffer2.GetCapacity() == buffer1.GetCapacity()) &&
-                 (buffer2.GetPosition() == buffer1.GetPosition()) &&
-                 (buffer2.GetLimit() == buffer1.GetLimit()) &&
-                 (buffer2.GetBufferPtr() == nullptr);
+        (buffer2.GetPosition() == buffer1.GetPosition()) &&
+        (buffer2.GetLimit() == buffer1.GetLimit()) &&
+        (buffer2.GetBufferPtr() == nullptr);
     ASSERT_TRUE(judge1);
 
     ByteBuffer buffer3(1);
@@ -99,7 +107,7 @@ HWTEST_F(ByteBufferTest, PutGetDataTest001, testing::ext::TestSize.Level1)
     ByteBuffer buffer(1);
     uint32_t v1;
     ASSERT_FALSE(buffer.GetUInt32(v1));
-    
+
     uint16_t v2;
     ASSERT_FALSE(buffer.GetUInt16(v2));
 
@@ -115,7 +123,7 @@ HWTEST_F(ByteBufferTest, PutGetDataTest001, testing::ext::TestSize.Level1)
     int8_t v6;
     ASSERT_FALSE(buffer.GetInt8(v6));
 
-    
+
     int16_t v7 = 1;
     int32_t v8 = 1;
     int64_t v9 = 1;
@@ -135,7 +143,7 @@ HWTEST_F(ByteBufferTest, PutGetDataTest001, testing::ext::TestSize.Level1)
     buffer.PutData(data, 1);
     buffer.PutInt16(1);
     buffer.ClearData();
-    
+
     ByteBuffer empty;
     empty.PutByte(1);
     empty.PutInt16(1);
@@ -145,7 +153,6 @@ HWTEST_F(ByteBufferTest, PutGetDataTest001, testing::ext::TestSize.Level1)
     empty.PutData("a", 2);
     empty.PutData(data, 1);
     empty.ClearData();
-
 }
 
 /**

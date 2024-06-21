@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+# Copyright (c) 2024-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,29 +12,29 @@
 # limitations under the License.
 
 import("../signature_tools.gni")
-import("./utils/signature_tools_utils.gni")
-import("./zip/signature_tools_zip.gni")
 import("./cmd/signature_tools_cmd.gni")
 import("./codesigning/signature_tools_codesigning.gni")
 import("./common/signature_tools_common.gni")
 import("./hap/signature_tools_hap.gni")
 import("./profile/signature_tools_profile.gni")
+import("./utils/signature_tools_utils.gni")
+import("./zip/signature_tools_zip.gni")
 
 import("//build/ohos.gni")
 
-
-ohos_copy("copy_signature_tools_resource"){
+ohos_copy("copy_signature_tools_resource") {
   sources = [
-      "config/help.txt",
-      "../../dist/OpenHarmony.p12",
-      "../../dist/OpenHarmonyApplication.pem",
-      "../../dist/OpenHarmonyProfileDebug.pem",
-      "../../dist/OpenHarmonyProfileRelease.pem",
-      "../../dist/SgnedReleaseProfileTemplate.p7b",
-      "../../dist/UnsgnedDebugProfileTemplate.json",
-      "../../dist/UnsgnedReleasedProfileTemplate.json",
+    "../../dist/OpenHarmony.p12",
+    "../../dist/OpenHarmonyApplication.pem",
+    "../../dist/OpenHarmonyProfileDebug.pem",
+    "../../dist/OpenHarmonyProfileRelease.pem",
+    "../../dist/SgnedReleaseProfileTemplate.p7b",
+    "../../dist/UnsgnedDebugProfileTemplate.json",
+    "../../dist/UnsgnedReleasedProfileTemplate.json",
+    "config/help.txt",
   ]
-  outputs = [ "${target_out_dir}/toolchains/hapsigntool_pc/{{source_file_part}}" ]
+  outputs =
+      [ "${target_out_dir}/toolchains/hapsigntool_pc/{{source_file_part}}" ]
   module_source_dir = target_out_dir + "/toolchains/hapsigntool_pc"
   module_install_name = ""
   part_name = "hapsigner"
@@ -42,25 +42,25 @@ ohos_copy("copy_signature_tools_resource"){
 }
 
 signature_tools_main_include = [
-    "${signature_tools_service}/api/include",
-    "${signature_tools_service}/signer/include",
-    "//third_party/openssl/include",
-    "//third_party/openssl/crypto/pkcs12",
+  "${signature_tools_service}/api/include",
+  "${signature_tools_service}/signer/include",
+  "//third_party/openssl/include",
+  "//third_party/openssl/crypto/pkcs12",
 ]
 
 signature_tools_main_src = [
-    "main.cpp",
-    "${signature_tools_service}/api/src/localization_adapter.cpp",
-    "${signature_tools_service}/api/src/sign_tool_service_impl.cpp",
-    "${signature_tools_service}/api/src/cert_tools.cpp",
-    "${signature_tools_service}/signer/src/signer_factory.cpp",
-    "${signature_tools_service}/signer/src/local_signer.cpp",
+  "main.cpp",
+  "${signature_tools_service}/api/src/localization_adapter.cpp",
+  "${signature_tools_service}/api/src/sign_tool_service_impl.cpp",
+  "${signature_tools_service}/api/src/cert_tools.cpp",
+  "${signature_tools_service}/signer/src/signer_factory.cpp",
+  "${signature_tools_service}/signer/src/local_signer.cpp",
 ]
 
 ohos_executable("hap-sign-tool") {
-
   signature_tools_main_include += signature_tools_utils_include
   signature_tools_main_include += signature_tools_zip_include
+
   # signature_tools_main_include += signature_tools_entity_include
   signature_tools_main_include += signature_tools_codesigning_include
   signature_tools_main_include += signature_tools_common_include
@@ -70,8 +70,10 @@ ohos_executable("hap-sign-tool") {
 
   # 在 //developtools/signaturetools/services/utils 模块里面定义编译脚本 signature_tools_utils.gni
   signature_tools_main_src += signature_tools_utils_src
+
   # 在 //developtools/signaturetools/services/zip 模块里面定义编译脚本 signature_tools_zip.gni
   signature_tools_main_src += signature_tools_zip_src
+
   # signature_tools_main_src += signature_tools_entity_src
   signature_tools_main_src += signature_tools_codesigning_src
   signature_tools_main_src += signature_tools_common_src
@@ -89,10 +91,10 @@ ohos_executable("hap-sign-tool") {
   ]
 
   deps = [
-    "//third_party/zlib:shared_libz",
     "//third_party/bzip2:libbz2",
     "//third_party/openssl:libcrypto_shared",
     "//third_party/openssl:libssl_shared",
+    "//third_party/zlib:shared_libz",
   ]
 
   external_deps = [
@@ -101,15 +103,15 @@ ohos_executable("hap-sign-tool") {
     "json:nlohmann_json_static",
   ]
 
-   cflags_cc = [
-     "-std=c++17",
-     "-fno-rtti",
-   ]
+  cflags_cc = [
+    "-std=c++17",
+    "-fno-rtti",
+  ]
 
-    cflags = [
-     "-fno-rtti",
-     "-Wno-c++20-extensions",
-   ]
+  cflags = [
+    "-fno-rtti",
+    "-Wno-c++20-extensions",
+  ]
 
   install_images = [ "system" ]
   install_enable = true

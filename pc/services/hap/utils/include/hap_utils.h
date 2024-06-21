@@ -80,8 +80,6 @@ public:
     static bool ReadFileToByteBuffer(const std::string& file, ByteBuffer& buffer);
 
 private:
-    HapUtils();
-
     static const int32_t MAX_APP_ID_LEN = 32;
     static const std::string HAP_DEBUG_OWNER_ID;
     static std::set<int> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS;

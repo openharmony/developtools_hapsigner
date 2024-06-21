@@ -34,7 +34,7 @@ static int PKCS7AddAttribute(PKCS7* p7, const std::vector<PKCS7Attr>& attrs)
 {
     STACK_OF(PKCS7_SIGNER_INFO)* signerInfos = PKCS7_get_signer_info(p7);
     if (signerInfos == NULL || sk_PKCS7_SIGNER_INFO_num(signerInfos) != 1) {
-        SIGNATURE_TOOLS_LOGE("signer info count not equal 1 or invalid signerInfos\n");
+        SIGNATURE_TOOLS_LOGE("signer info count not equal 1 or invalid signerInfos");
         return INVALIDPARAM_ERROR;
     }
     PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(signerInfos, 0);
@@ -42,7 +42,7 @@ static int PKCS7AddAttribute(PKCS7* p7, const std::vector<PKCS7Attr>& attrs)
         if (PKCS7_add_signed_attribute(signerInfo, attr.nid, attr.atrtype, attr.value) != 1) {
             if (attr.atrtype == V_ASN1_UTF8STRING)
                 ASN1_STRING_free(reinterpret_cast<ASN1_STRING*>(attr.value));
-            SIGNATURE_TOOLS_LOGE("PKCS7 add  attribute error!\n");
+            SIGNATURE_TOOLS_LOGE("PKCS7 add  attribute error!");
             return PKCS7_ADD_ATTRIBUTE_ERROR;
         }
     }
@@ -55,7 +55,7 @@ static int I2dPkcs7Str(PKCS7* p7, std::string& ret)
     int outSize = 0;
     outSize = i2d_PKCS7(p7, &out); // 反序列化获得p7b字节流
     if (out == NULL || outSize <= 0) {
-        SIGNATURE_TOOLS_LOGE("pkcs7 to der failed\n");
+        SIGNATURE_TOOLS_LOGE("pkcs7 to der failed");
         return INVALIDPARAM_ERROR;
     }
     ret.clear();
@@ -92,7 +92,7 @@ static int VerifySignature(PKCS7* p7, BIO* p7bio)
         PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(skSignerInfo, i);
         X509* sigCert = PKCS7_cert_from_signer_info(p7, signerInfo);
         if (PKCS7_signatureVerify(p7bio, p7, signerInfo, sigCert) != 1) {
-            SIGNATURE_TOOLS_LOGE("signature verify failed\n");
+            SIGNATURE_TOOLS_LOGE("signature verify failed");
             return PKCS7_VERIFY_ERROR;
         }
     }
@@ -125,7 +125,7 @@ int PKCS7Data::Sign(const std::string& content, std::shared_ptr<Signer> signer,
 err:
     if (result < 0) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "sign content failed\n");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "sign content failed");
     }
     return result;
 }
@@ -150,7 +150,7 @@ int PKCS7Data::Parse(const unsigned char** in, long len)
     // 反序列化
     p7 = d2i_PKCS7(NULL, in, len);
     if (p7 == NULL) {
-        SIGNATURE_TOOLS_LOGE("der to pkcs7 failed\n");
+        SIGNATURE_TOOLS_LOGE("der to pkcs7 failed");
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
         return INVALIDPARAM_ERROR;
     }
@@ -160,12 +160,12 @@ int PKCS7Data::Parse(const unsigned char** in, long len)
 int PKCS7Data::Verify(const std::string& content) const
 {
     if (VerifySign(content) < 0) {
-        SIGNATURE_TOOLS_LOGE("signature verify failed\n");
+        SIGNATURE_TOOLS_LOGE("signature verify failed");
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "signature verify failed");
         return VERIFY_ERROR;
     }
     if (VerifyCertChain() < 0) {
-        SIGNATURE_TOOLS_LOGE("cert Chain verify failed:\n");
+        SIGNATURE_TOOLS_LOGE("cert Chain verify failed:");
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "cert Chain verify failed");
         PrintCertChainSub(p7->d.sign->cert);
         return VERIFY_ERROR;
@@ -177,7 +177,7 @@ int PKCS7Data::GetContent(std::string& originalRawData) const
 {
     BIO* oriBio = PKCS7_dataDecode(p7, NULL, NULL, NULL);
     if (oriBio == NULL) {
-        SIGNATURE_TOOLS_LOGE("get pkcs7 raw data failed！\n");
+        SIGNATURE_TOOLS_LOGE("get pkcs7 raw data failed！");
         BIO_free_all(oriBio);
         return INVALIDPARAM_ERROR;
     }
@@ -212,13 +212,13 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
     this->sigAlg = sigAlg;
     certs = signer->GetCertificates();
     if (sk_X509_num(certs) < MIN_CERTS_NUM) {
-        SIGNATURE_TOOLS_LOGE("Error certChain count\n");
+        SIGNATURE_TOOLS_LOGE("Error certChain count");
         result = INVALIDPARAM_ERROR;
         goto err;
     }
     certsDup = sk_X509_dup(certs);
     if (certsDup == NULL) {
-        SIGNATURE_TOOLS_LOGE("dup certs failed\n");
+        SIGNATURE_TOOLS_LOGE("dup certs failed");
         result = INVALIDPARAM_ERROR;
         goto err;
     }
@@ -227,14 +227,14 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
     } else if (sigAlg == SIGN_ALG_SHA256) {
         md = EVP_sha256();
     } else {
-        SIGNATURE_TOOLS_LOGE("Error sigAlg please use SHAwith384 or SHAwith256\n");
+        SIGNATURE_TOOLS_LOGE("Error sigAlg please use SHAwith384 or SHAwith256");
         result = INVALIDPARAM_ERROR;
         goto err;
     }
     cert = sk_X509_delete(certsDup, 0); // 从证书链中分离出实体证书
     this->p7 = Pkcs7Sign(cert, certsDup, md, content, this->flags, attrs);
     if (this->p7 == NULL) {
-        SIGNATURE_TOOLS_LOGE("pkcs7 sign content failed\n");
+        SIGNATURE_TOOLS_LOGE("pkcs7 sign content failed");
         result = SIGN_ERROR;
         goto err;
     }
@@ -263,14 +263,14 @@ void PKCS7Data::PrintCertChainSub(const STACK_OF(X509)* certs)
 {
     if (certs == NULL)
         return;
-    SIGNATURE_TOOLS_LOGI("certChainSubject:\n");
+    SIGNATURE_TOOLS_LOGI("certChainSubject:");
     int certNum = sk_X509_num(certs);
-    SIGNATURE_TOOLS_LOGI("certNum%{public}s\n", std::to_string(certNum).c_str());
+    SIGNATURE_TOOLS_LOGI("certNum%{public}s", std::to_string(certNum).c_str());
     for (int i = 0; i < certNum; i++) {
         SIGNATURE_TOOLS_LOGI("certificate %{public}s", std::to_string(i).c_str());
         std::string sub;
         VerifyCertOpensslUtils::GetSubjectFromX509(sk_X509_value(certs, i), sub);
-        SIGNATURE_TOOLS_LOGI("%{public}s\n", sub.c_str());
+        SIGNATURE_TOOLS_LOGI("%{public}s", sub.c_str());
     }
 }
 
@@ -302,7 +302,7 @@ std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
 bool PKCS7Data::X509NameCompare(const X509* cert, const X509* issuerCert)
 {
     if (cert == nullptr || issuerCert == nullptr) {
-        SIGNATURE_TOOLS_LOGE("NULL Cert\n");
+        SIGNATURE_TOOLS_LOGE("NULL Cert");
         return false;
     }
     X509_NAME* aName = X509_get_issuer_name(cert);
@@ -355,7 +355,7 @@ int PKCS7Data::VerifySign(const std::string& content)const
         inBio = BIO_new_mem_buf(reinterpret_cast<const void*>(content.c_str()),
                                 static_cast<int>(content.size()));
         if (inBio == NULL) {
-            SIGNATURE_TOOLS_LOGE("new mem buf error!\n");
+            SIGNATURE_TOOLS_LOGE("new mem buf error!");
             return MEMORY_ALLOC_ERROR;
         }
     }
@@ -398,7 +398,7 @@ int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* 
                                                              STACK_OF(X509)* certs) const
 {
     if (signerInfo == NULL || certs == NULL) {
-        SIGNATURE_TOOLS_LOGE("invalid input\n");
+        SIGNATURE_TOOLS_LOGE("invalid input");
         return INVALIDPARAM_ERROR;
     }
     ASN1_TYPE* signTime = PKCS7_get_signed_attribute(signerInfo, NID_pkcs9_signingTime);
@@ -407,7 +407,7 @@ int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* 
         const ASN1_TIME* notBefore = X509_get0_notBefore(cert);
         const ASN1_TIME* notAfter = X509_get0_notAfter(cert);
         if (CheckSignTimeInValidPeriod(signTime, notBefore, notAfter) < 0) {
-            SIGNATURE_TOOLS_LOGE("Error sign time\n");
+            SIGNATURE_TOOLS_LOGE("Error sign time");
             return INVALIDPARAM_ERROR;
         }
     }
@@ -421,36 +421,39 @@ int PKCS7Data::VerifySignerInfoCertchain(PKCS7* p7, PKCS7_SIGNER_INFO* signerInf
     int j = 0;
     // 通过主题信息追溯 并验证每个证书签名值
     if (X509NameCompare(sigCert, sk_X509_value(certs, 0)) == false) {
-        SIGNATURE_TOOLS_LOGE("sigCert subject not matched\n");
+        SIGNATURE_TOOLS_LOGE("sigCert subject not matched");
         return VERIFY_ERROR;
     }
     if (VerifyCertOpensslUtils::CertVerify(sigCert, sk_X509_value(certs, 0)) == false) { // 验证实体证书签名值
-        SIGNATURE_TOOLS_LOGE("sigCert signature verifitication failed\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "entity cert signature verifitication failed");
+        SIGNATURE_TOOLS_LOGE("sigCert signature verifitication failed");
         return VERIFY_ERROR;
     }
     for (; j + 1 < sk_X509_num(certs); j++) {
         if (X509NameCompare(sk_X509_value(certs, j), sk_X509_value(certs, j + 1)) == false) {
-            SIGNATURE_TOOLS_LOGE("middle cert subject not matched\n");
+            SIGNATURE_TOOLS_LOGE("middle cert subject not matched");
             return VERIFY_ERROR;
         }
         // 验证中间证书签名值
         if (VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j + 1)) == false) {
-            SIGNATURE_TOOLS_LOGE("middle cert signature verifitication failed\n");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "sub ca cert signature verifitication failed");
+            SIGNATURE_TOOLS_LOGE("middle cert signature verifitication failed");
             return VERIFY_ERROR;
         }
     }
     if (X509NameCompare(sk_X509_value(certs, j), sk_X509_value(certs, j)) == false) {
-        SIGNATURE_TOOLS_LOGE("root cert subject not matched\n");
+        SIGNATURE_TOOLS_LOGE("root cert subject not matched");
         return VERIFY_ERROR;
     }
     // 验证根证书签名值
     if (VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j)) == false) { // 验证根证书签名值
-        SIGNATURE_TOOLS_LOGE("root cert signature verifitication failed\n");
+        SIGNATURE_TOOLS_LOGE("root cert signature verifitication failed");
         return VERIFY_ERROR;
     }
     // 验证签名信息中的签名时间在证书链有效期内(实体证书会在PKCS7_verify中得到验证)
     if (CheckSginerInfoSignTimeInCertChainValidPeriod(signerInfo, certChain) < 0) {
-        SIGNATURE_TOOLS_LOGE("sign time not invalid\n");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "sign time not invalid");
+        SIGNATURE_TOOLS_LOGE("sign time not invalid");
         return VERIFY_ERROR;
     }
     return RET_OK;
@@ -704,7 +707,7 @@ int PKCS7Data::Pkcs7Final(PKCS7* p7, const std::string& content, int flags)
     }
 
     if (BIO_write(p7bio, content.c_str(), static_cast<int>(content.size())) <= 0) {
-        SIGNATURE_TOOLS_LOGE("add json data to pkcs7 failed\n");
+        SIGNATURE_TOOLS_LOGE("add json data to pkcs7 failed");
         goto err;
     }
 

@@ -331,12 +331,29 @@ static bool UpdateParam(ParamsSharedPtr param)
     return true;
 }
 
+int CmdUtil::GetCommandParameterKey(char strChar, std::string& strChars, std::vector<std::string>& trustList,
+                                    std::string& keyStandBy)
+{
+    if (strChar == '-') {
+        bool isTrust = std::find(trustList.begin(), trustList.end(), strChars) != trustList.end();
+        if (!isTrust) {
+            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Not support command param");
+            return RET_FAILED;
+        }
+        keyStandBy = strChars.substr(1);
+    } else {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Param key-value must in pairs");
+        return RET_FAILED;
+    }
+
+    return RET_OK;
+}
+
 bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
 {
     param->SetMethod(args[1]);
     std::string keyStandBy = "";
     bool readKey = true;
-    // 获取help中generate-keypair [options]:和下面对应的字段，存入map中
     ParamsTrustlist params_trust_list;
     std::vector<std::string> trustList = params_trust_list.GetTrustList(args[1]);
     if (trustList.empty()) {
@@ -344,23 +361,18 @@ bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
         return false;
     }
     size_t i = 2;
+    char strChar;
+    std::string strChars;
     for (; i < size; i++) {
         if (readKey) {
-            // prepare key
-            if (args[i][0] == '-') {
-                bool isTrust = std::find(trustList.begin(), trustList.end(), args[i]) != trustList.end();
-                if (!isTrust) {
-                    PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Not support command param");
-                    return false;
-                }
-                keyStandBy = std::string(args[i]).substr(1);
+            strChar = args[i][0];
+            strChars = args[i];
+            if (GetCommandParameterKey(strChar, strChars, trustList, keyStandBy) == RET_OK) {
                 readKey = false;
             } else {
-                PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Param key-value must in pairs");
                 return false;
             }
         } else {
-            // prepare value
             bool success = ValidAndPutParam(param, keyStandBy, args[i]);
             if (success) {
                 keyStandBy = "";

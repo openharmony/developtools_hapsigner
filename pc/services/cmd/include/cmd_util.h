@@ -45,6 +45,8 @@ public:
     static constexpr int ARGS_MIN_LEN = 2;
 
 private:
+    int GetCommandParameterKey(char strChar, std::string& strChars,
+                               std::vector<std::string>& trustList, std::string& keyStandBy);
     bool ValidAndPutParam(ParamsSharedPtr params, const std::string& key, char* value);
     static const std::regex INTEGER_PATTERN;
 };

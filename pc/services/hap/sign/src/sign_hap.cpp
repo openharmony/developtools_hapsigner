@@ -141,9 +141,11 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     // uint32: version
     long optionalBlockSize = 0L;
     for (const auto& elem : optionalBlocks) optionalBlockSize += elem.optionalBlockValue.GetCapacity();
-    long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1))
-        + optionalBlockSize + hapSignatureSchemeBlock.size() + BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC
-        + BLOCK_VERSION; 
+    long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) *
+                       (optionalBlocks.size() + 1)) +
+        optionalBlockSize +
+        hapSignatureSchemeBlock.size() +
+        BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC + BLOCK_VERSION;
     if (resultSize > INT_MAX) {
         SIGNATURE_TOOLS_LOGE("Illegal Argument. HapSigningBlock out of range: %{public}ld", resultSize);
         return false;

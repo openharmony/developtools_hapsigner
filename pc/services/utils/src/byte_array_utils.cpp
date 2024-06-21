@@ -19,11 +19,6 @@
 
 namespace OHOS {
 namespace SignatureTools {
-    
-ByteArrayUtils::ByteArrayUtils()
-{
-}
-
 int ByteArrayUtils::InsertIntToByteArray(std::vector<int8_t>& desByte, int index, int num)
 {
     if (index + sizeof(int) > desByte.size()) {

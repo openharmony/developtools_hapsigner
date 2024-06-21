@@ -200,7 +200,7 @@ STACK_OF(X509)* LocalizationAdapter::GetSignCertChain()
     }
     STACK_OF(X509)* certificates = sk_X509_new(NULL);
     if (certificates == NULL) {
-        SIGNATURE_TOOLS_LOGE("sk_X509_new failed\n");
+        SIGNATURE_TOOLS_LOGE("sk_X509_new failed");
         return  NULL;
     }
     std::vector<X509*> certs = this->GetCertsFromFile(certPath, Options::PROFILE_CERT_FILE);

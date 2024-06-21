@@ -42,10 +42,6 @@ HapUtils::StaticConstructor::StaticConstructor()
 
 HapUtils::StaticConstructor HapUtils::staticConstructor;
 
-HapUtils::HapUtils()
-{
-}
-
 std::string HapUtils::GetAppIdentifier(const std::string& profileContent)
 {
     std::pair<std::string, std::string> resultPair = ParseAppIdentifier(profileContent);

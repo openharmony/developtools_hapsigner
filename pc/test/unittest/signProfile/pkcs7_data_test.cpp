@@ -70,7 +70,14 @@ void Pkcs7DataTest::TearDown()
 {
 }
 
-// cert verify cert NULL
+/**
+ * @tc.name: pkcs7_test001
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify（） interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test001, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
@@ -81,7 +88,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test001, testing::ext::TestSize.Level1)
     EXPECT_FALSE(result);
 }
 
-// cert verify issuerCert NULL
+/**
+ * @tc.name: pkcs7_test002
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test002, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
@@ -92,7 +106,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test002, testing::ext::TestSize.Level1)
     EXPECT_FALSE(result);
 }
 
-// cert verify pubkey NULL
+/**
+ * @tc.name: pkcs7_test003
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test003, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
@@ -103,7 +124,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test003, testing::ext::TestSize.Level1)
     EXPECT_FALSE(result);
 }
 
-// cert verify pubkey NULL
+/**
+ * @tc.name: pkcs7_test004
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test004, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
@@ -114,7 +142,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test004, testing::ext::TestSize.Level1)
     EXPECT_FALSE(result);
 }
 
-// cert verify failed
+/**
+ * @tc.name: pkcs7_test005
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test005, testing::ext::TestSize.Level1)
 {
     Options options;
@@ -140,7 +175,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test005, testing::ext::TestSize.Level1)
     EXPECT_FALSE(result);
 }
 
-// X509 stack sort certsNum 0
+/**
+ * @tc.name: pkcs7_test006
+ * @tc.desc: Test function of PKCS7Data::SortX509Stack() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test006, testing::ext::TestSize.Level1)
 {
     STACK_OF(X509)* certs = sk_X509_new(NULL);
@@ -149,7 +191,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test006, testing::ext::TestSize.Level1)
     EXPECT_TRUE(true);
 }
 
-// get asn1 time
+/**
+ * @tc.name: pkcs7_test007
+ * @tc.desc: Test function of PKCS7Data::GetASN1Time() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test007, testing::ext::TestSize.Level1)
 {
     ASN1_TIME* time = ASN1_TIME_new();
@@ -159,7 +208,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test007, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result.empty());
 }
 
-// empty x509Name
+/**
+ * @tc.name: pkcs7_test008
+ * @tc.desc: Test function of VerifyCertOpensslUtils::GetTextFromX509Name() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test008, testing::ext::TestSize.Level1)
 {
     std::string text;
@@ -167,14 +223,28 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test008, testing::ext::TestSize.Level1)
     EXPECT_TRUE(text.empty());
 }
 
-// GetDnToString
+/**
+ * @tc.name: pkcs7_test009
+ * @tc.desc: Test function of VerifyCertOpensslUtils::GetDnToString() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test009, testing::ext::TestSize.Level1)
 {
     std::string result = VerifyCertOpensslUtils::GetDnToString(NULL);
     EXPECT_TRUE(result.empty());
 }
 
-// GetSubjectFromX509
+/**
+ * @tc.name: pkcs7_test010
+ * @tc.desc: Test function of VerifyCertOpensslUtils::GetSubjectFromX509() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test010, testing::ext::TestSize.Level1)
 {
     std::string subject;
@@ -182,14 +252,28 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test010, testing::ext::TestSize.Level1)
     EXPECT_FALSE(result);
 }
 
-// X509NameCompare
+/**
+ * @tc.name: pkcs7_test011
+ * @tc.desc: Test function of PKCS7Data::X509NameCompare() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test011, testing::ext::TestSize.Level1)
 {
     int result = PKCS7Data::X509NameCompare(NULL, NULL);
     EXPECT_EQ(result, false);
 }
 
-// X509NameCompare
+/**
+ * @tc.name: pkcs7_test012
+ * @tc.desc: Test function of PKCS7Data::X509NameCompare() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test012, testing::ext::TestSize.Level1)
 {
     Options options;
@@ -213,7 +297,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test012, testing::ext::TestSize.Level1)
     EXPECT_EQ(result, false);
 }
 
-// X509NameCompare
+/**
+ * @tc.name: pkcs7_test013
+ * @tc.desc: Test function of PKCS7Data::X509NameCompare() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test013, testing::ext::TestSize.Level1)
 {
     Options options;
@@ -237,7 +328,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test013, testing::ext::TestSize.Level1)
     EXPECT_EQ(result, true);
 }
 
-// pkcs7Data parse
+/**
+ * @tc.name: pkcs7_test014
+ * @tc.desc: Test function of Pkcs7Data::Parse() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test014, testing::ext::TestSize.Level1)
 {
     PKCS7Data p7Data;
@@ -249,17 +347,32 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test014, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data parse check sign time
+/**
+ * @tc.name: pkcs7_test015
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test015, testing::ext::TestSize.Level1)
 {
     ASN1_TYPE* signTime = NULL;
     ASN1_TIME* notBefore = NULL;
     ASN1_TIME* notAfter = NULL;
     PKCS7Data p7Data;
-    PKCS7Data::CheckSignTimeInValidPeriod(signTime, notBefore, notAfter);
+    int result = PKCS7Data::CheckSignTimeInValidPeriod(signTime, notBefore, notAfter);
+    EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test016
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test016, testing::ext::TestSize.Level1)
 {
     ASN1_TYPE* signTime = NULL;
@@ -271,7 +384,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test016, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test017
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test017, testing::ext::TestSize.Level1)
 {
     unsigned char data[5] = "hell";
@@ -284,7 +404,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test017, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test018
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test018, testing::ext::TestSize.Level1)
 {
     unsigned char data[5] = "hell";
@@ -298,7 +425,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test018, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test019
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test019, testing::ext::TestSize.Level1)
 {
     unsigned char data[5] = "hell";
@@ -312,7 +446,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test019, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test020
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test020, testing::ext::TestSize.Level1)
 {
     unsigned char data[5] = "hell";
@@ -327,7 +468,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test020, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test021
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test021, testing::ext::TestSize.Level1)
 {
     ASN1_STRING* tmp = ASN1_STRING_new();
@@ -345,7 +493,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test021, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test022
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test022, testing::ext::TestSize.Level1)
 {
     ASN1_TIME* tmp = NULL;
@@ -370,7 +525,14 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test022, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result < 0);
 }
 
-// pkcs7Data check sign time
+/**
+ * @tc.name: pkcs7_test023
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
 HWTEST_F(Pkcs7DataTest, pkcs7_test023, testing::ext::TestSize.Level1)
 {
     ASN1_TIME* tmp = NULL;

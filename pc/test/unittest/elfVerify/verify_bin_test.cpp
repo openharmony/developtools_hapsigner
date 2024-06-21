@@ -25,21 +25,33 @@ using namespace OHOS::SignatureTools;
 
 class VerifyBinTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void)
+    {
+    };
+    static void TearDownTestCase()
+    {
+    };
+    void SetUp()
+    {
+    };
+    void TearDown()
+    {
+    };
 };
-  
-static const 
-std::map<std::string, std::string> PARAMS = {
-                                            {"keyPwd", "123456"}, {"mode", "localSign"}, {"keyAlias", "oh-app1-key-v1"}, 
-                                            {"signAlg", "SHA256withECDSA"}, {"appCertFile", "./hapSign/app-release1.pem"},
-                                            {"signCode", "1"}, {"compatibleVersion", "9"}, {"keystorePwd", "123456"}, 
-                                            {"outFile", "./elfVerify/linuxout-signed.bin"}, {"profileSigned", "1"}, 
-                                            {"profileFile", "./hapSign/signed-profile.p7b"}, 
-                                            {"keystoreFile", "./hapSign/ohtest.jks"}, 
-                                            {"inFile", "./elfVerify/linuxout-unsigned.bin"}};
+
+static const std::map<std::string, std::string> PARAMS = { {"keyPwd", "123456"},
+                                                           {"mode", "localSign"},
+                                                           {"keyAlias", "oh-app1-key-v1"},
+                                                           {"signAlg", "SHA256withECDSA"},
+                                                           {"appCertFile", "./hapSign/app-release1.pem"},
+                                                           {"signCode", "1"},
+                                                           {"compatibleVersion", "9"},
+                                                           {"keystorePwd", "123456"},
+                                                           {"outFile", "./elfVerify/linuxout-signed.bin"},
+                                                           {"profileSigned", "1"},
+                                                           {"profileFile", "./hapSign/signed-profile.p7b"},
+                                                           {"keystoreFile", "./hapSign/ohtest.jks"},
+                                                           {"inFile", "./elfVerify/linuxout-unsigned.bin"} };
 
 /**
  * @tc.name: Verify001
@@ -318,7 +330,7 @@ HWTEST_F(VerifyBinTest, SignBin001, testing::ext::TestSize.Level1)
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-        contentDigestAlgorithm, signatureAlgAndParams);
+                                                contentDigestAlgorithm, signatureAlgAndParams);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     signatureAlgorithms.push_back(signatureAlgorithm);
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
@@ -489,11 +501,11 @@ HWTEST_F(VerifyBinTest, GetDigestFromBytes001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(VerifyBinTest, GetDigestFromBytes002, testing::ext::TestSize.Level1)
 {
-    std::vector<int8_t> fileBytes = {1, 1};
+    std::vector<int8_t> fileBytes = { 1, 1 };
     int64_t length = 0;
     std::string algName = "SHA-256";
     std::vector<signed char> dig = HashUtils::GetDigestFromBytes(fileBytes, length, algName);
     int size = dig.size();
-    
+
     EXPECT_EQ(size, 0);
 }

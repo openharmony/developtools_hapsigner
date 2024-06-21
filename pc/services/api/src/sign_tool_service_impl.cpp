@@ -204,7 +204,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
     if (!subjectkeyPair) {
         goto err;
     }
-    adapter->SetIssuerKeyStoreFile(true);   
+    adapter->SetIssuerKeyStoreFile(true);
     rootKeyPair = adapter->GetIssureKeyByAlias();
     if (!rootKeyPair) {
         goto err;
@@ -325,7 +325,7 @@ bool SignToolServiceImpl::OutputString(std::string content, std::string file)
 
 bool SignToolServiceImpl::X509CertVerify(X509* cert, EVP_PKEY* privateKey)
 {
-    if (!X509_verify(cert, privateKey)) {      
+    if (!X509_verify(cert, privateKey)) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "private key verify  cert failed!");
         return false;
     }
@@ -369,7 +369,7 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
         }
         adapter->ResetPwd(); // clean pwd for safety
         csr = GetCsr(keyPair, signAlg, subject);
-        if (!csr) { // get CSR request 
+        if (!csr) { // get CSR request
             break;
         }
         x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
@@ -448,7 +448,7 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
         // add sub and ca cert
         successflag = (!(subCaCert = adapter.GetSubCaCertFile()) ||
                        !(rootCaCert = adapter.GetCaCertFile()));
-        if(successflag){
+        if (successflag) {
             return false;
         }
         certificates.emplace_back(subCaCert);

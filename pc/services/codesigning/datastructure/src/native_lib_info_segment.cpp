@@ -21,6 +21,10 @@ NativeLibInfoSegment::NativeLibInfoSegment()
 {
     this->magic = MAGIC_NUM;
     this->zeroPadding = std::vector<int8_t>(0);
+    this->fileNameListBlockSize = 0;
+    this->segmentSize = 0;
+    this->sectionNum = 0;
+    this->signInfoListBlockSize = 0;
 }
 
 NativeLibInfoSegment::NativeLibInfoSegment(int32_t magic,
@@ -39,6 +43,8 @@ NativeLibInfoSegment::NativeLibInfoSegment(int32_t magic,
     this->fileNameList = fileNameList;
     this->signInfoList = signInfoList;
     this->zeroPadding = zeroPadding;
+    this->fileNameListBlockSize = 0;
+    this->signInfoListBlockSize = 0;
 }
 
 void NativeLibInfoSegment::SetSoInfoList(std::vector<std::pair<std::string, SignInfo>> soInfoList)
