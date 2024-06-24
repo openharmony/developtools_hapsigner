@@ -42,8 +42,6 @@ std::optional<EndOfCentralDirectory*> EndOfCentralDirectory::GetEOCDByBytes(cons
     bf.GetInt32(signValue);
     if (signValue != SIGNATURE) {
         delete eocd;
-        SIGNATURE_TOOLS_LOGE("signValue is not equal to SIGNATURE, signValue: %{public}d, SIGNATURE: %{public}d",
-                             signValue, SIGNATURE);
         return std::nullopt;
     }
     eocd->SetDiskNum(UnsignedDecimalUtil::GetUnsignedShort(bf));

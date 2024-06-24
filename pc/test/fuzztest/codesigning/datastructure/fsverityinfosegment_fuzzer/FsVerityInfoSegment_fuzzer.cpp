@@ -160,15 +160,6 @@ bool ToByteArray(const uint8_t* data, size_t size)
 
     return byteArray.size() == 64;
 }
-
-bool ToString(const uint8_t* data, size_t size)
-{
-    std::shared_ptr<FsVerityInfoSegment> api = std::make_shared<FsVerityInfoSegment>();
-
-    std::string str = api->ToString();
-
-    return str.size() == 75;
-}
 }
 
 /* Fuzzer entry point */
@@ -184,6 +175,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::FromByteArray(data, size);
     OHOS::Size(data, size);
     OHOS::ToByteArray(data, size);
-    OHOS::ToString(data, size);
     return 0;
 }

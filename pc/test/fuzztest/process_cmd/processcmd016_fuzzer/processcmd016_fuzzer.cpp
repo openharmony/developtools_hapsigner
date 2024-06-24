@@ -26,21 +26,33 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
-        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
-        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
-        arg19[] = "./generateKeyPair/profile-release1.pem";
+    char arg0[] = "";
+    char arg1[] = "sign-profile";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-mode";
+    char arg7[] = "localSign";
+    char arg8[] = "-signAlg";
+    char arg9[] = "SHA384withECDSA";
+    char arg10[] = "-inFile";
+    char arg11[] = "./generateKeyPair/profile.json";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/signed-profile.p7b";
+    char arg18[] = "-profileCertFile";
+    char arg19[] = "./generateKeyPair/profile-release1.pem";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
     int argc = 20;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

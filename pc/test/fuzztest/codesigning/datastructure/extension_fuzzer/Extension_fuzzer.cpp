@@ -17,14 +17,14 @@
 #include <cstdint>
 #include <cstdio>
 #include "extension.h"
+#include "code_signing.h"
 using namespace OHOS::SignatureTools;
 
 namespace OHOS {
 bool GetSize(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
+    CodeSigning object;
+    Extension extension;
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
 
     int32_t sizeInt = api->GetSize();
@@ -34,9 +34,6 @@ bool GetSize(const uint8_t* data, size_t size)
 
 bool IsType(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
 
     int32_t type = 1;
@@ -47,26 +44,11 @@ bool IsType(const uint8_t* data, size_t size)
 
 bool ToByteArray(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<Extension> api = std::make_shared<Extension>();
    
     std::vector<int8_t> byteArray = api->ToByteArray();
 
     return byteArray.size() == 8;
-}
-
-bool ToString(const uint8_t* data, size_t size)
-{
-    if (!data || !size) {
-        return true;
-    }
-    std::shared_ptr<Extension> api = std::make_shared<Extension>();
-
-    std::string str = api->ToString();
-
-    return str.size() == 27;
 }
 }
 
@@ -77,6 +59,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::GetSize(data, size);
     OHOS::IsType(data, size);
     OHOS::ToByteArray(data, size);
-    OHOS::ToString(data, size);
     return 0;
 }

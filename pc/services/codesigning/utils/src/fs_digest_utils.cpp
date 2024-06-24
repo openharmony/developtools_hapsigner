@@ -28,42 +28,6 @@ void DigestUtils::AddData(const char* data, int length)
     }
 }
 
-X509_CRL* DigestUtils::ParseBase64DecodedCRL(const std::string& encodedCRL)
-{
-    // 将base64编码的CRL字符串转换为BIO
-    BIO* bio = BIO_new_mem_buf((void*)encodedCRL.c_str(), -1);
-    if (bio == nullptr) {
-        printf("Error creating BIO from CRL data\n");
-        return nullptr;
-    }
-    // 从BIO中读取PEM格式的X509_CRL结构体
-    X509_CRL* crl = PEM_read_bio_X509_CRL(bio, nullptr, nullptr, nullptr);
-    if (crl == nullptr) {
-        printf("Error reading X509_CRL\n");
-    }
-    // 释放BIO资源
-    BIO_free(bio);
-    return crl;
-}
-
-X509* DigestUtils::DecodeBase64ToX509Certifate(const std::string& encodeString)
-{
-    // 将base64编码的证书字符串转换为BIO
-    BIO* bio = BIO_new_mem_buf((void*)encodeString.c_str(), -1);
-    if (bio == nullptr) {
-        printf("Error creating BIO from certificate data\n");
-        return nullptr;
-    }
-    // 从BIO中读取PEM格式的X509证书
-    X509* cert = PEM_read_bio_X509(bio, nullptr, nullptr, nullptr);
-    if (cert == nullptr) {
-        printf("Error reading X509 certificate\n");
-    }
-    // 释放BIO资源
-    BIO_free(bio);
-    return cert;
-}
-
 std::string DigestUtils::Result(DigestUtils::Type type)
 {
     unsigned int len = 0;

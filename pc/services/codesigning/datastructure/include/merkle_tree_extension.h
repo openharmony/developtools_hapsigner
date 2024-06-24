@@ -32,7 +32,6 @@ public:
     virtual ~MerkleTreeExtension();
     virtual int32_t GetSize();
     virtual std::vector<int8_t> ToByteArray();
-    virtual std::string ToString();
     int64_t GetMerkleTreeSize();
     int64_t GetMerkleTreeOffset();
     void SetMerkleTreeOffset(int64_t offset);

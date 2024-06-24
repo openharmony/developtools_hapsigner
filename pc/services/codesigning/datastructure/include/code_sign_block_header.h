@@ -58,7 +58,6 @@ public:
     virtual std::vector<int8_t> ToByteArray();
     static CodeSignBlockHeader* FromByteArray(std::vector<signed char>& bytes);
     static int Size();
-    virtual std::string ToString();
 
 private:
     static const signed int  MAGIC_BYTE_LENGTH = 4;

@@ -45,8 +45,6 @@ public:
     void AddContentHashData(char type, char tag, short algId, int length, std::vector<int8_t> hash);
     void AddHashData(SignContentHash signInfo);
     std::vector<int8_t> GetByteContent();
-    void SetVersion(std::string version);
-    void SetSize(short size);
 
 private:
     std::string version;

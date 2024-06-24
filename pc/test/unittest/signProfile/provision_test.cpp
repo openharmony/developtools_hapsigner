@@ -50,7 +50,7 @@ static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
 static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
 static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
-                                                        "profile-release1-invalid_cert_chain.pem";
+"profile-release1-invalid_cert_chain.pem";
 
 //verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
@@ -203,7 +203,8 @@ HWTEST_F(ProvisionTest, provision_test003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProvisionTest, provision_test004, testing::ext::TestSize.Level1)
 {
-    std::string provision = "{\"acls\":{\"allowed-acls\":[\"ac1\",\"ac2\"]},\"bundle-info\":{\"app-feature\":\"hos_system_"
+    std::string provision = "{\"acls\":{\"allowed-acls\":[\"ac1\",\"ac2\"]},\"bundle-info\":{\"app-feature\":"
+        "\"hos_system_"
         "app\",\"bundle-name\":\".*\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":"
         "\"-----BEGIN CERTIFICATE-----\\n"
         "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"

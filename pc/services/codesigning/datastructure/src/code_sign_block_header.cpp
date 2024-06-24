@@ -126,15 +126,6 @@ int CodeSignBlockHeader::Size()
     return MAGIC_BYTE_ARRAY_LENGTH + MAGIC_BYTE_LENGTH * MAGIC_BYTE_LENGTH + RESERVED_BYTE_ARRAY_LENGTH;
 }
 
-std::string CodeSignBlockHeader::ToString()
-{
-    return std::string("CodeSignBlockHeader{magic: " + std::to_string(this->magic)
-                       + ", version: " + std::to_string(this->version)
-                       + ", blockSize: " + std::to_string(this->blockSize)
-                       + ", segmentNum: " + std::to_string(this->segmentNum)
-                       + ", flags: " + std::to_string(this->flags) + "}");
-}
-
 CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetMagic(long long magic)
 {
     this->magic = magic;

@@ -36,7 +36,6 @@ public:
     virtual int Size();
     virtual std::vector<int8_t> ToByteArray();
     static FsVerityInfoSegment FromByteArray(std::vector<int8_t> bytes);
-    virtual std::string ToString();
 
 private:
     static const int MAGIC;

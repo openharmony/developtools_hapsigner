@@ -26,23 +26,35 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias",
-        arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
     int argc = 22;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

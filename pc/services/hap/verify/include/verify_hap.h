@@ -71,7 +71,6 @@ public:
     static const int OFFSET_ZERO = 0;
     static const int OFFSET_FOUR = 4;
     static const int OFFSET_EIGHT = 8;
-
 };
 } // namespace SignatureTools
 } // namespace OHOS

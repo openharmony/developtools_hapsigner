@@ -39,14 +39,10 @@ static constexpr OHOS::HiviewDFX::HiLogLabel SIGNATURE_MGR_LABEL = { LOG_CORE, L
 inline void PrintErrorNumberMsg(const std::string& command, const int code, const std::string& details)
 {
     time_t now = time(0);
-    if (!now) {
-        return;
-    }
+    if (!now) return;
     char timebuffer[100] = { 0 };
     struct tm* time = localtime(&now);
-    if (!time && !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", time)) {
-        return;
-    }
+    if (!time && !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", time)) return;
     std::cerr << timebuffer << " ERROR - " << command << ", code: "
         << code << ". Details: " << details << std::endl;
 }

@@ -21,10 +21,15 @@ namespace OHOS {
 namespace SignatureTools {
 void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    HashUtils::GetHashAlgName(5);
-    HashUtils::GetHashAlgName(7);
-    HashUtils::GetHashAlgName(8);
-    HashUtils::GetHashAlgName(9);
+    int virtual = 9;
+    int sev = 7;
+    int fiv = 5;
+    int eight = 8;
+
+    HashUtils::GetHashAlgName(fiv);
+    HashUtils::GetHashAlgName(sev);
+    HashUtils::GetHashAlgName(eight);
+    HashUtils::GetHashAlgName(virtual);
 }
 }
 }

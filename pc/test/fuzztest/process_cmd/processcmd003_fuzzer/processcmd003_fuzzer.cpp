@@ -26,13 +26,14 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "-h";
+    char arg0[] = "";
+    char arg1[] = "-h";
     char* argv[] = { arg0, arg1 };
 
     int argc = 2;
     ParamsRunTool ParamsRunToolPtr;
     bool ret = ParamsRunToolPtr.ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

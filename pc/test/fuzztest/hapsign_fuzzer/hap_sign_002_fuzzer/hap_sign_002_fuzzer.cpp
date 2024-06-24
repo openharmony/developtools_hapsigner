@@ -25,6 +25,9 @@
 
 namespace OHOS {
 namespace SignatureTools {
+
+#define CHARSIZE 9
+
 bool HapSignTest011(const uint8_t* data, size_t size)
 {
     if (!data || !size) {
@@ -41,7 +44,7 @@ bool HapSignTest011(const uint8_t* data, size_t size)
 
     ContentDigestAlgorithm alg_384 = ContentDigestAlgorithm::SHA384;
     std::string algname_384 = alg_384.GetDigestAlgorithm();
-    
+
     alg_384.GetDigestOutputByteSize();
 
     ContentDigestAlgorithm alg_512 = ContentDigestAlgorithm::SHA512;
@@ -56,19 +59,19 @@ bool HapSignTest012(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-    ByteBuffer bf1("123456789", 9); // key
-    ByteBuffer bf2("123456789", 9);
-    ByteBuffer bf3("123456789", 9);
-    ByteBuffer bf4("123456789", 9);
+    ByteBuffer bf1("123456789", CHARSIZE); // key
+    ByteBuffer bf2("123456789", CHARSIZE);
+    ByteBuffer bf3("123456789", CHARSIZE);
+    ByteBuffer bf4("123456789", CHARSIZE);
     ByteBufferDataSource ds1(bf1);
     ByteBufferDataSource ds2(bf2);
     ByteBufferDataSource ds3(bf3);
 
-    DataSource* contents[] = { &ds1, &ds2, &ds3 };
+    DataSource* contents[] = {&ds1, &ds2, &ds3};
     int32_t len = 3;
 
     std::vector<OptionalBlock> optionalBlocks;
-    optionalBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf4 });
+    optionalBlocks.push_back({HapUtils::HAP_PROFILE_BLOCK_ID, bf4});
     ByteBuffer dig_context;
 
     SignatureAlgorithm algo = SignatureAlgorithm::ALGORITHM_SHA256_WITH_ECDSA;
@@ -109,10 +112,7 @@ bool HapSignTest013(const uint8_t* data, size_t size)
     (*params)["outFile"] = outFile;
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
-
     (void)signProvider->GetCrl();
-    
-
     return signProvider->Sign(params.get());
 }
 
@@ -188,10 +188,7 @@ bool HapSignTest015(const uint8_t* data, size_t size)
     (*params)["outFile"] = outFile;
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
-
     signProvider->CheckParams(params.get());
-
-
     return signProvider->Sign(params.get());
 }
 
@@ -267,7 +264,7 @@ bool HapSignTest017(const uint8_t* data, size_t size)
     (*params)["keystorePwd"] = keystorePwd;
 
     signProvider->CheckParams(params.get());
-    
+
     return signProvider->Sign(params.get());
 }
 
@@ -558,21 +555,22 @@ bool HapSignTest026(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-    ByteBuffer bf1("123456789", 9); //key
-    ByteBuffer bf2("123456789", 9);
-    ByteBuffer bf3("123456789", 9);
-    ByteBuffer bf4("123456789", 9);
+    ByteBuffer bf1("123456789", CHARSIZE); //key
+    ByteBuffer bf2("123456789", CHARSIZE);
+    ByteBuffer bf3("123456789", CHARSIZE);
+    ByteBuffer bf4("123456789", CHARSIZE);
     ByteBufferDataSource ds1(bf1);
     ByteBufferDataSource ds2(bf2);
     ByteBufferDataSource ds3(bf3);
+    int32_t size = 2;
 
-    DataSource* contents[] = { &ds1, &ds2, &ds3 };
-    DataSource* contents_t[] = { nullptr, nullptr, nullptr };
+    DataSource* contents[] = {&ds1, &ds2, &ds3};
+    DataSource* contents_t[] = {nullptr, nullptr, nullptr};
     int32_t len = 3;
 
     std::vector<OptionalBlock> optionalBlocks;
     std::vector<OptionalBlock> optionalBlockSTest;
-    optionalBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf4 });
+    optionalBlocks.push_back({HapUtils::HAP_PROFILE_BLOCK_ID, bf4});
     ByteBuffer dig_context;
 
     SignatureAlgorithm algo = SignatureAlgorithm::ALGORITHM_SHA256_WITH_ECDSA;
@@ -582,16 +580,14 @@ bool HapSignTest026(const uint8_t* data, size_t size)
     SignerConfig config;
     ByteBuffer result;
     ByteBuffer result1;
-    (void)SignHap::Sign(contents, 2, config, optionalBlocks, result);
-    
 
-    (void)SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
-    
+    (void)SignHap::Sign(contents, size, config, optionalBlocks, result);
+    (void)SignHap::Sign(contents_t, len, config, optionalBlocks, result1);
 
-    std::vector<SignatureAlgorithmHelper> sig{ SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE };
+    std::vector<SignatureAlgorithmHelper> sig{SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE};
     config.SetSignatureAlgorithms(sig);
-    (void)SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
-    
+    (void)SignHap::Sign(contents_t, len, config, optionalBlocks, result1);
+
     (void)SignHap::ComputeDigests(digestParam, contents, len, optionalBlockSTest, dig_context);
     return SignHap::ComputeDigests(digestParam, contents_t, len, optionalBlocks, dig_context);
 }

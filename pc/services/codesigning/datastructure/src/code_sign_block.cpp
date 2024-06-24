@@ -103,11 +103,6 @@ void CodeSignBlock::SetFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg)
     this->fsVerityInfoSegment = fsVeritySeg;
 }
 
-FsVerityInfoSegment& CodeSignBlock::GetFsVerityInfoSegment()
-{
-    return fsVerityInfoSegment;
-}
-
 HapInfoSegment& CodeSignBlock::GetHapInfoSegment()
 {
     return hapInfoSegment;
@@ -192,11 +187,6 @@ std::vector<int8_t> CodeSignBlock::GenerateCodeSignBlockByte(long long fsvTreeOf
     this->codeSignBlockHeader.SetBlockSize(csbSize);
     // 2) generate byte array of complete code sign block
     return ToByteArray();
-}
-
-std::string CodeSignBlock::ToString()
-{
-    return "";
 }
 
 }

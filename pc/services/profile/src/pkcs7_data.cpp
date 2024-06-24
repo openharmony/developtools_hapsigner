@@ -43,7 +43,7 @@ static int PKCS7AddAttribute(PKCS7* p7, const std::vector<PKCS7Attr>& attrs)
             if (attr.atrtype == V_ASN1_UTF8STRING)
                 ASN1_STRING_free(reinterpret_cast<ASN1_STRING*>(attr.value));
             SIGNATURE_TOOLS_LOGE("PKCS7 add  attribute error!");
-            return PKCS7_ADD_ATTRIBUTE_ERROR;
+            return RET_FAILED;
         }
     }
     return RET_OK;
@@ -93,7 +93,7 @@ static int VerifySignature(PKCS7* p7, BIO* p7bio)
         X509* sigCert = PKCS7_cert_from_signer_info(p7, signerInfo);
         if (PKCS7_signatureVerify(p7bio, p7, signerInfo, sigCert) != 1) {
             SIGNATURE_TOOLS_LOGE("signature verify failed");
-            return PKCS7_VERIFY_ERROR;
+            return VERIFY_ERROR;
         }
     }
     return RET_OK;
@@ -333,7 +333,7 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
                              "notAfter: %{public}s", GetASN1Time(asn1_tm).c_str(),
                              GetASN1Time(notBefore).c_str(), GetASN1Time(notAfter).c_str());
         ASN1_TIME_free(asn1_tm);
-        return INVALIDSIGNTIME_ERROR;
+        return RET_FAILED;
     }
     ASN1_TIME_free(asn1_tm);
     return RET_OK;

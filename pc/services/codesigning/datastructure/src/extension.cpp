@@ -59,11 +59,5 @@ std::vector<int8_t> Extension::ToByteArray()
     return ret;
 }
 
-std::string Extension::ToString()
-{
-    std::string str = "Extension: type[" + std::to_string(this->type) + "], size[" + std::to_string(this->size) + "]";
-    return str;
-}
-
 }
 }

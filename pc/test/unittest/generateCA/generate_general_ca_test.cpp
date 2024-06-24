@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <openssl/ssl.h>
 #include <gtest/gtest.h>
 #include "signature_tools_log.h"
@@ -45,7 +45,7 @@ public:
     };
 };
 
-	
+
 /**
  * @tc.name: generate_cert_test_017
  * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
@@ -821,8 +821,6 @@ HWTEST_F(GenerateCaTest, judge_size_test_001, testing::ext::TestSize.Level1)
     bool ret = CmdUtil::JudgeSize(size);
     EXPECT_EQ(ret, false);
 }
-
-
 
 /**
  * @tc.name:generate_root_cert_001

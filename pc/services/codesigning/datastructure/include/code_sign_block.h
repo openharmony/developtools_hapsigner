@@ -43,7 +43,6 @@ public:
     CodeSignBlockHeader& GetCodeSignBlockHeader();
     void SetCodeSignBlockHeader(CodeSignBlockHeader& csbHeader);
     void SetFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg);
-    FsVerityInfoSegment& GetFsVerityInfoSegment();
     HapInfoSegment& GetHapInfoSegment();
     void SetHapInfoSegment(HapInfoSegment& hapSeg);
     NativeLibInfoSegment& GetSoInfoSegment();
@@ -52,7 +51,6 @@ public:
     void ComputeSegmentOffset();
     long long ComputeMerkleTreeOffset(long long codeSignBlockOffset);
     std::vector<int8_t> GenerateCodeSignBlockByte(long long fsvTreeOffset);
-    std::string ToString();
 
 public:
     static const long PAGE_SIZE_4K;

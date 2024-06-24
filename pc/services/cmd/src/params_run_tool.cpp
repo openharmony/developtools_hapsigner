@@ -87,22 +87,22 @@ bool ParamsRunTool::CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& 
     map.insert(std::make_pair(Params::GENERATE_CERT, MapNum::NUM_6));
     switch (map[params->GetMethod()]) {
         case MapNum::NUM_1:
-            isSuccess = RunKeypair(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunKeypair(params->GetOptions(), api);
             break;
         case MapNum::NUM_2:
-            isSuccess = RunCsr(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunCsr(params->GetOptions(), api);
             break;
         case MapNum::NUM_3:
-            isSuccess = RunCa(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunCa(params->GetOptions(), api);
             break;
         case MapNum::NUM_4:
-            isSuccess = RunAppCert(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunAppCert(params->GetOptions(), api);
             break;
         case MapNum::NUM_5:
-            isSuccess = RunProfileCert(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunProfileCert(params->GetOptions(), api);
             break;
         case MapNum::NUM_6:
-            isSuccess = RunCert(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunCert(params->GetOptions(), api);
             break;
         default:
             break;
@@ -180,13 +180,13 @@ bool ParamsRunTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& 
     map.insert(std::make_pair(Params::VERIFY_PROFILE, MapNum::NUM_4));
     switch (map[params->GetMethod()]) {
         case MapNum::NUM_1:
-            isSuccess = RunSignApp(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunSignApp(params->GetOptions(), api);
             break;
         case MapNum::NUM_2:
             isSuccess = ParamsRunTool::RunSignProfile(params->GetOptions(), api);
             break;
         case MapNum::NUM_3:
-            isSuccess = RunVerifyApp(params->GetOptions(), api);
+            isSuccess = ParamsRunTool::RunVerifyApp(params->GetOptions(), api);
             break;
         case MapNum::NUM_4:
             isSuccess = ParamsRunTool::RunVerifyProfile(params->GetOptions(), api);

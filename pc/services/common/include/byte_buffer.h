@@ -91,7 +91,6 @@ public:
     DLL_EXPORT void Put(const ByteBuffer& byteBuffer);
     DLL_EXPORT std::string GetData(int32_t len);
     DLL_EXPORT void GetData(char data[], int32_t len);
-    DLL_EXPORT void GetData(int32_t offset, char data[], int32_t len);
     DLL_EXPORT void GetData(int32_t offset, int8_t data[], int32_t len);
     DLL_EXPORT void GetByte(int8_t data[], int32_t len);
     DLL_EXPORT void ClearData();
@@ -109,8 +108,6 @@ public:
     DLL_EXPORT bool HasRemaining() const;
     DLL_EXPORT void Clear();
     DLL_EXPORT ByteBuffer& Flip();
-    // Compress the cache area and move the data between the current position and limit
-    DLL_EXPORT ByteBuffer& Compact();
     // to the beginning of the cache area; Switch to write state
     DLL_EXPORT bool IsEqual(const ByteBuffer& other);
     DLL_EXPORT bool IsEqual(const std::string& other);

@@ -124,7 +124,7 @@ bool SignProvider::InitDataSourceContents(RandomAccessFile& outputHap, DataSourc
 {
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(outputHap);
     // get eocd bytebuffer and eocd offset
-    if (!HapSignerBlockUtils::FindEocdInHap(outputHap, dataSrcContents.eocdPair)) 
+    if (!HapSignerBlockUtils::FindEocdInHap(outputHap, dataSrcContents.eocdPair))
         return PrintErrorLog("[signHap] can not find eocd in file", ZIP_ERROR);
     dataSrcContents.endOfCentralDir = new ByteBufferDataSource(dataSrcContents.eocdPair.first);
     if (!dataSrcContents.endOfCentralDir) return false;
@@ -460,13 +460,13 @@ int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X50
     *ret = sk_X509_new(nullptr);
     if (*ret == nullptr) {
         SIGNATURE_TOOLS_LOGE("[SignHap] get CertList FromFile [sk_X509_new] failed");
-        return IO_CERT_ERROR;
+        return MEMORY_ALLOC_ERROR;
     }
     BIO* certBio = BIO_new_file(certsFile.c_str(), "rb");
     if (!certBio) {
         SIGNATURE_TOOLS_LOGE("[SignHap] get CertList FromFile [BIO_new_file] failed");
         sk_X509_free(*ret);
-        return READ_FILE_ERROR;
+        return IO_ERROR;
     }
     // 读取
     while (1) {
@@ -709,7 +709,7 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
         this->signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
     if (ite == this->signParams.end()) {
         SIGNATURE_TOOLS_LOGE("find PARAM_BASIC_PROFILE_SIGNED failed");
-        return CHCKE_PROFILE_ERROR;
+        return CHECK_ERROR;
     }
     bool isProfileWithoutSign = (ParamConstants::DISABLE_SIGN_CODE == ite->second);
     if (!isProfileWithoutSign) {
@@ -720,15 +720,15 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
         }
         PKCS7Data p7Data;
         if (p7Data.Parse(profile) < 0)
-            return PKCS7_PARSE_ERROR;
+            return PARSE_ERROR;
         if (p7Data.Verify() < 0) {
             SIGNATURE_TOOLS_LOGE("Verify profile pkcs7 failed! Profile is invalid.");
-            return PKCS7_VERIFY_ERROR;
+            return VERIFY_ERROR;
         }
         this->profileContent.clear();
         if (p7Data.GetContent(this->profileContent) < 0) {
             SIGNATURE_TOOLS_LOGE("get content data failed");
-            return  NO_CONTENT_ERROR;
+            return  INVALIDPARAM_ERROR;
         }
     } else {
         this->profileContent = profile;
@@ -737,10 +737,10 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
     ProfileInfo info;
     if (ParseProvision(this->profileContent, info) != PROVISION_OK) {
         SIGNATURE_TOOLS_LOGE("parse provision error");
-        return PARSE_PROVISION_ERROR;
+        return PARSE_ERROR;
     }
     if (CheckProfileInfo(info, inputCerts) < 0) {
-        return CHCKE_PROFILE_ERROR;
+        return CHECK_ERROR;
     }
     return 0;
 }
@@ -760,7 +760,7 @@ int SignProvider::CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inpu
         certInProfile)) {
         X509_free(certInProfile);
         SIGNATURE_TOOLS_LOGE("input certificates do not match with profile!");
-        return MATCH_ERROR;
+        return CHECK_ERROR;
     }
     std::string cn = GetCertificateCN(certInProfile);
     X509_free(certInProfile);

@@ -39,11 +39,6 @@ char SignBlockData::GetType()
     return type;
 }
 
-void SignBlockData::SetType(char type)
-{
-    this->type = type;
-}
-
 std::vector<int8_t> SignBlockData::GetBlockHead()
 {
     return blockHead;
@@ -59,19 +54,9 @@ std::vector<int8_t> SignBlockData::GetSignData()
     return signData;
 }
 
-void SignBlockData::SetSignData(std::vector<int8_t>& signData)
-{
-    this->signData = signData;
-}
-
 std::string SignBlockData::GetSignFile()
 {
     return signFile;
-}
-
-void SignBlockData::SetSignFile(std::string signFile)
-{
-    this->signFile = signFile;
 }
 
 long SignBlockData::GetLen()
@@ -82,16 +67,6 @@ long SignBlockData::GetLen()
 bool SignBlockData::GetByte()
 {
     return isByte;
-}
-
-void SignBlockData::SetLen(long len)
-{
-    this->len = len;
-}
-
-void SignBlockData::SetByte(bool isByte)
-{
-    this->isByte = isByte;
 }
 
 } // namespace SignatureTools

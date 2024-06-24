@@ -114,14 +114,5 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(std::vector<int8_t> bytes
     return FsVerityInfoSegment(inMagic, inVersion, inHashAlgorithm, inLog2BlockSize, reverseData);
 }
 
-std::string FsVerityInfoSegment::ToString()
-{
-    return std::string("FsVerityInfoSeg: magic[" + std::to_string(this->magic)
-                       + "], version[" + std::to_string(this->version) + "], hashAlg["
-                       + std::to_string(this->hashAlgorithm)
-                       + "], log2BlockSize[" + std::to_string(this->log2BlockSize)
-                       + "]");
-}
-
 }
 }

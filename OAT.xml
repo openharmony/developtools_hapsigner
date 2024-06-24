@@ -37,6 +37,7 @@
 				<filteritem type="filename" name="*.hqf"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
+				<filteritem type="filename" name="init" desc="test case unsigned file"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="">
                 <filteritem type="filename" name="pom.xml"/>
@@ -51,6 +52,7 @@
 				<filteritem type="filename" name="*.hqf"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
+				<filteritem type="filename" name="init" desc="test case unsigned file"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="">
                 <filteritem type="filename" name="pom.xml"/>
@@ -59,6 +61,7 @@
 				<filteritem type="filename" name="*.jks"/>
 				<filteritem type="filename" name="*.hsp"/>
 				<filteritem type="filename" name="*.hqf"/>
+				<filteritem type="filename" name="init" desc="test case unsigned file"/>
             </filefilter>
             <filefilter name="readmeFileNamePolicyFilter" desc="">
             </filefilter>

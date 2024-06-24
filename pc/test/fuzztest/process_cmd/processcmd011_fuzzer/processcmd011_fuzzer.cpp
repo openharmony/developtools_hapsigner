@@ -26,20 +26,34 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias",
-        arg3[] = "oh-app-sign-srv-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-root-ca-key-v1",
-        arg10[] = "-subject",
-        arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Application Signature Service CA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456",
-        arg16[] = "-outFile", arg17[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg18[] = "-validity", arg19[] = "365", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-keyAlg", arg23[] = "ECC",
-        arg24[] = "-signAlg", arg25[] = "SHA384withECDSA",
-        arg26[] = "-issuerKeyPwd", arg27[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app-sign-srv-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Root CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-root-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN= Application Signature Service CA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg18[] = "-validity";
+    char arg19[] = "365";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-keyAlg";
+    char arg23[] = "ECC";
+    char arg24[] = "-signAlg";
+    char arg25[] = "SHA384withECDSA";
+    char arg26[] = "-issuerKeyPwd";
+    char arg27[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20,
                      arg21, arg22, arg23, arg24, arg25, arg26, arg27 };
@@ -47,7 +61,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

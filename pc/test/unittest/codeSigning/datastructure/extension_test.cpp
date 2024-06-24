@@ -81,20 +81,3 @@ HWTEST_F(ExtensionTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 8);
 }
-
-/**
- * @tc.name: toString
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ExtensionTest, toString, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<Extension> api = std::make_shared<Extension>();
-
-    std::string str = api->ToString();
-
-    EXPECT_EQ(str.size(), 27);
-}

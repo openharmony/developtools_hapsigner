@@ -14,7 +14,6 @@
 group("hapsign_fuzzer_fuzztest") {
   testonly = true
   deps = [
-    "./hap_sign_001_fuzzer:HapSign001",
-    "./hap_sign_002_fuzzer:HapSign002",
+    "./hapsign001_fuzzer:HapSign001FuzzTest",
   ]
 }

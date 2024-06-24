@@ -24,9 +24,6 @@
 namespace OHOS {
 namespace SignatureTools {
 
-ProfileSignTool::ProfileSignTool()
-{
-}
 int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string& content, std::string& ret)
 {
     std::unique_ptr<SignerFactory> signerFactory = std::make_unique<SignerFactory>();
@@ -52,7 +49,7 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
     result = p7Data.Parse(ret);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("verify profile failed");
-        return INIT_ERROR;
+        return PARSE_ERROR;
     }
     result = p7Data.Verify();
     if (result < 0) {
@@ -76,7 +73,7 @@ int ProfileSignTool::SignProfile(const std::string& content, std::shared_ptr<Sig
     result = p7Data.Sign(content, signer, sigAlg, ret);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("SignProfile faild!");
-        return PKCS7_SIGN_ERROR;
+        return SIGN_ERROR;
     }
     return result;
 }

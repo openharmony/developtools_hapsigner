@@ -31,7 +31,6 @@ public:
     virtual ~Extension();
     virtual int32_t GetSize();
     virtual std::vector<int8_t> ToByteArray();
-    virtual std::string ToString();
     bool IsType(int32_t type);
     static const int32_t EXTENSION_HEADER_SIZE;
 

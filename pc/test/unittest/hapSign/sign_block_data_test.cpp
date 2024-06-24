@@ -149,82 +149,8 @@ HWTEST_F(SignBlockDataTest, setBlockHead, testing::ext::TestSize.Level1)
     EXPECT_EQ(true, 1);
 }
 
-/**
- * @tc.name: setByte
- * @tc.desc: Test interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockDataTest, setByte, testing::ext::TestSize.Level1)
-{
-    std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
-    std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
-    api->SetByte(true);
-    EXPECT_EQ(true, 1);
-}
 
-/**
- * @tc.name: setLen
- * @tc.desc: Test interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockDataTest, setLen, testing::ext::TestSize.Level1)
-{
-    std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
-    std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
-    api->SetLen(32);
-    EXPECT_EQ(true, 1);
-}
 
-/**
- * @tc.name: setSignData
- * @tc.desc: Test interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockDataTest, setSignData, testing::ext::TestSize.Level1)
-{
-    std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
-    std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
-    api->SetSignData(signData);
-    EXPECT_EQ(true, 1);
-}
 
-/**
- * @tc.name: setSignFile
- * @tc.desc: Test interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockDataTest, setSignFile, testing::ext::TestSize.Level1)
-{
-    std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
-    std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
-    api->SetSignFile("");
-    EXPECT_EQ(true, 1);
-}
 
-/**
- * @tc.name: setType
- * @tc.desc: Test interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockDataTest, setType, testing::ext::TestSize.Level1)
-{
-    std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
-    std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
-    api->SetType(3);
-    EXPECT_EQ(true, 1);
-}
+

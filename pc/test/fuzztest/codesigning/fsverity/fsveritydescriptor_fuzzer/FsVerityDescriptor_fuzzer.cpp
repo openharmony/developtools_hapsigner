@@ -23,7 +23,7 @@ namespace OHOS {
 bool Build(const uint8_t* data, size_t size)
 {
     std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -43,8 +43,8 @@ bool Build(const uint8_t* data, size_t size)
 
 bool GetFileSize(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -59,13 +59,13 @@ bool GetFileSize(const uint8_t* data, size_t size)
 
     FsVerityDescriptor fsVerityDescriptor = builder.Build();
 
-     return fsVerityDescriptor.GetFileSize() == 32;
+    return fsVerityDescriptor.GetFileSize() == 32;
 }
 
 bool GetMerkleTreeOffset(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -85,8 +85,8 @@ bool GetMerkleTreeOffset(const uint8_t* data, size_t size)
 
 bool GetSignSize(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -106,8 +106,8 @@ bool GetSignSize(const uint8_t* data, size_t size)
 
 bool ToByteArray001(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -128,8 +128,8 @@ bool ToByteArray001(const uint8_t* data, size_t size)
 
 bool ToByteArray002(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -151,8 +151,8 @@ bool ToByteArray002(const uint8_t* data, size_t size)
 
 bool FromByteArray001(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -174,8 +174,8 @@ bool FromByteArray001(const uint8_t* data, size_t size)
 
 bool FromByteArray002(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -198,8 +198,8 @@ bool FromByteArray002(const uint8_t* data, size_t size)
 
 bool FromByteArray003(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -221,8 +221,8 @@ bool FromByteArray003(const uint8_t* data, size_t size)
 
 bool GetByteForGenerateDigest001(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -243,8 +243,8 @@ bool GetByteForGenerateDigest001(const uint8_t* data, size_t size)
 
 bool GetByteForGenerateDigest002(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -266,8 +266,8 @@ bool GetByteForGenerateDigest002(const uint8_t* data, size_t size)
 
 bool WriteBytesWithSize(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> salt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    std::vector<int8_t> rootHash = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::vector<int8_t> salt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<int8_t> rootHash = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     FsVerityDescriptor::Builder builder = (new FsVerityDescriptor::Builder())->SetFileSize(32)
         .SetCsVersion(1)
         .SetHashAlgorithm(1)
@@ -282,7 +282,7 @@ bool WriteBytesWithSize(const uint8_t* data, size_t size)
     FsVerityDescriptor fsVerityDescriptor = builder.Build();
 
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(64);
-    std::vector<int8_t> src = { 1, 1, 1, 1, 1, 1, 1, 1 };
+    std::vector<int8_t> src = {1, 1, 1, 1, 1, 1, 1, 1};
     fsVerityDescriptor.WriteBytesWithSize(buffer.get(), src, 4);
     int32_t sizet = src.size();
 

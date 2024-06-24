@@ -17,6 +17,10 @@
 #include <cstdint>
 #include <cstdio>
 #include "params_run_tool.h"
+#include "extension.h"
+#include "merkle_tree_extension.h"
+#include "segment_header.h"
+#include "code_signing.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -26,16 +30,20 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
-        arg3[] = "./generateKeyPair/entry-default-signed-so.hap",
-        arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b";
+    char arg0[] = "";
+    char arg1[] = "verify-app";
+    char arg2[] = "-inFile";
+    char arg3[] = "./generateKeyPair/entry-default-signed-so.hap";
+    char arg4[] = "-outCertChain";
+    char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg6[] = "-outProfile";
+    char arg7[] = "./generateKeyPair/app-profile.p7b";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
     int argc = 8;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 
 bool VerifyElf(const uint8_t* data, size_t size)
@@ -44,17 +52,22 @@ bool VerifyElf(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
-        arg3[] = "./generateKeyPair/entry-default-signed-so.elf",
-        arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b",
-        arg8[] = "-inForm", arg9[] = "elf";
+    char arg0[] = "";
+    char arg1[] = "verify-app";
+    char arg2[] = "-inFile";
+    char arg3[] = "./generateKeyPair/entry-default-signed-so.elf";
+    char arg4[] = "-outCertChain";
+    char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg6[] = "-outProfile";
+    char arg7[] = "./generateKeyPair/app-profile.p7b";
+    char arg8[] = "-inForm";
+    char arg9[] = "elf";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 };
     int argc = 10;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 
 bool VerifyBin(const uint8_t* data, size_t size)
@@ -63,17 +76,32 @@ bool VerifyBin(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
-        arg3[] = "./generateKeyPair/entry-default-signed-so.bin",
-        arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b",
-        arg8[] = "-inForm", arg9[] = "bin";
+    char arg0[] = "";
+    char arg1[] = "verify-app";
+    char arg2[] = "-inFile";
+    char arg3[] = "./generateKeyPair/entry-default-signed-so.bin";
+    char arg4[] = "-outCertChain";
+    char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg6[] = "-outProfile";
+    char arg7[] = "./generateKeyPair/app-profile.p7b";
+    char arg8[] = "-inForm";
+    char arg9[] = "bin";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 };
     int argc = 10;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
+}
+
+bool TestDatastructure(const uint8_t* data, size_t size)
+{
+    Extension extension;
+    int32_t sizet = extension.GetSize();
+    MerkleTreeExtension merkleTreeExtension;
+    SegmentHeader segmentHeader;
+    CodeSigning codeSigning;
+    return sizet != 0;
 }
 } // namespace SignatureTools
 } // namespace OHOS
@@ -85,5 +113,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     OHOS::SignatureTools::VerifyElf(data, size);
     OHOS::SignatureTools::VerifyBin(data, size);
+    OHOS::SignatureTools::TestDatastructure(data, size);
     return 0;
 }

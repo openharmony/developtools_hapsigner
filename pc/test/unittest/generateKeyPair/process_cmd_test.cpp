@@ -57,10 +57,20 @@ public:
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_001, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-384";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
     int argc = 14;
@@ -78,7 +88,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_002, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "";
+    char arg0[] = "";
+    char arg1[] = "";
     char* argv[] = { arg0, arg1 };
 
     int argc = 2;
@@ -96,7 +107,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_003, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "-h";
+    char arg0[] = "";
+    char arg1[] = "-h";
     char* argv[] = { arg0, arg1 };
 
     int argc = 2;
@@ -114,7 +126,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_004, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "-v";
+    char arg0[] = "";
+    char arg1[] = "-v";
     char* argv[] = { arg0, arg1 };
 
     int argc = 2;
@@ -132,7 +145,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_005, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "";
     char* argv[] = { arg0, arg1, arg2, arg3 };
 
     int argc = 4;
@@ -150,7 +166,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_006, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "", arg3[] = "";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "";
+    char arg3[] = "";
     char* argv[] = { arg0, arg1, arg2, arg3 };
 
     int argc = 4;
@@ -168,10 +187,20 @@ HWTEST_F(ProcessCmdTest, processcmd_test_006, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_008, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-385", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-385";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
                      arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
@@ -191,10 +220,20 @@ HWTEST_F(ProcessCmdTest, processcmd_test_008, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_012, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-256";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5,
                      arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
@@ -213,10 +252,20 @@ HWTEST_F(ProcessCmdTest, processcmd_test_012, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_013, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-257";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
                      arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
 
@@ -235,10 +284,22 @@ HWTEST_F(ProcessCmdTest, processcmd_test_013, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-257", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456", arg14[] = "-extKeyUsageCritical", arg15[] = "false";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-257";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
+    char arg14[] = "-extKeyUsageCritical";
+    char arg15[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
                      arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
 
@@ -257,17 +318,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_028, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias",
-        arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-keyUsageCritical", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-keyUsageCritical";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -285,16 +359,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_028, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_029, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-keyUsageCritical", arg23[] = "false";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-keyUsageCritical";
+    char arg23[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -312,16 +400,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_029, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_030, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-keyUsageCritical", arg23[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-keyUsageCritical";
+    char arg23[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -339,16 +441,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_030, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_031, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-extKeyUsageCritical", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-extKeyUsageCritical";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -366,15 +482,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_031, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_032, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365", arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-extKeyUsageCritical", arg23[] = "false";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-extKeyUsageCritical";
+    char arg23[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -392,16 +523,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_032, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_033, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-extKeyUsageCritical", arg23[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-extKeyUsageCritical";
+    char arg23[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -419,16 +564,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_033, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_034, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraints", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraints";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -446,16 +605,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_034, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_035, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraints", arg23[] = "false";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraints";
+    char arg23[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -473,16 +646,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_035, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_036, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraints", arg23[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraints";
+    char arg23[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -500,16 +687,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_036, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_037, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraintsCritical", arg23[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraintsCritical";
+    char arg23[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -527,16 +728,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_037, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_038, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraintsCritical", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraintsCritical";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -554,16 +769,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_038, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_039, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraintsCritical", arg23[] = "false";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraintsCritical";
+    char arg23[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -581,16 +810,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_039, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_040, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraintsCa", arg23[] = "false";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraintsCa";
+    char arg23[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -608,16 +851,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_040, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_041, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456",
-        arg16[] = "-outFile", arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize",
-        arg21[] = "NIST-P-384", arg22[] = "-basicConstraintsCa", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraintsCa";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -635,16 +892,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_041, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_042, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-keystoreFile", arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456",
-        arg16[] = "-outFile", arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384",
-        arg22[] = "-basicConstraintsCa", arg23[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
+    char arg22[] = "-basicConstraintsCa";
+    char arg23[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -662,15 +933,29 @@ HWTEST_F(ProcessCmdTest, processcmd_test_042, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_043, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer", arg22[] = "-keyPwd";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-keyPwd";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22 };
     int argc = 23;
@@ -688,10 +973,20 @@ HWTEST_F(ProcessCmdTest, processcmd_test_043, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_044, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-256";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
     int argc = 14;
 
@@ -709,16 +1004,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_044, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_045, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "/mnt/d/file/0613test/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "/mnt/d/file/0613test/general.cer",
-        arg22[] = "-basicConstraintsPathLen", arg23[] = "0";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "/mnt/d/file/0613test/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "/mnt/d/file/0613test/general.cer";
+    char arg22[] = "-basicConstraintsPathLen";
+    char arg23[] = "0";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -737,7 +1046,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_045, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_046, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "1";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "1";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -755,7 +1067,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_046, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_047, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "true";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -773,7 +1088,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_047, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_048, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "TRUE";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "TRUE";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -791,7 +1109,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_048, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_049, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "0";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "0";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -809,7 +1130,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_049, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_050, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "false";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "false";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -827,7 +1151,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_050, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_051, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "FALSE";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "FALSE";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -845,7 +1172,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_051, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_052, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-profileSigned", arg3[] = "abcd";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "abcd";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -863,10 +1193,20 @@ HWTEST_F(ProcessCmdTest, processcmd_test_052, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_053, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./aabc123/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-256";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./aabc123/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
     int argc = 14;
 
@@ -884,10 +1224,20 @@ HWTEST_F(ProcessCmdTest, processcmd_test_053, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_054, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-256", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-256";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
     int argc = 14;
 
@@ -905,7 +1255,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_054, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_055, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "abcd";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-signAlg";
+    char arg3[] = "abcd";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -923,7 +1276,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_055, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_056, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-signAlg", arg3[] = "SHA384withECDSA";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-signAlg";
+    char arg3[] = "SHA384withECDSA";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -941,7 +1297,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_056, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_057, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inForm", arg3[] = "abcd";
+    char arg0[] = "";
+    char arg1[] = "verify-app";
+    char arg2[] = "-inForm";
+    char arg3[] = "abcd";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -959,7 +1318,10 @@ HWTEST_F(ProcessCmdTest, processcmd_test_057, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_058, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-outForm", arg3[] = "abcd";
+    char arg0[] = "";
+    char arg1[] = "generate-app-cert";
+    char arg2[] = "-outForm";
+    char arg3[] = "abcd";
     char* argv[] = { arg0, arg1, arg2, arg3 };
     int argc = 4;
 
@@ -977,7 +1339,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_058, testing::ext::TestSize.Level1)
 */
 HWTEST_F(ProcessCmdTest, processcmd_test_059, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-app-cert";
+    char arg0[] = "";
+    char arg1[] = "generate-app-cert";
     char* argv[] = { arg0, arg1 };
     int argc = 2;
 
@@ -995,7 +1358,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_059, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_063, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "-h";
+    char arg0[] = "";
+    char arg1[] = "-h";
     char* argv[] = { arg0, arg1 };
     int argc = 2;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
@@ -1012,7 +1376,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_063, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_064, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "-help";
+    char arg0[] = "";
+    char arg1[] = "-help";
     char* argv[] = { arg0, arg1 };
     int argc = 2;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
@@ -1029,7 +1394,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_064, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_065, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "-v";
+    char arg0[] = "";
+    char arg1[] = "-v";
     char* argv[] = { arg0, arg1 };
     int argc = 2;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
@@ -1046,7 +1412,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_065, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_066, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "-version";
+    char arg0[] = "";
+    char arg1[] = "-version";
     char* argv[] = { arg0, arg1 };
     int argc = 2;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
@@ -1075,16 +1442,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_067, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_079, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-keyUsageCritical", arg23[] = "TRUE";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-keyUsageCritical";
+    char arg23[] = "TRUE";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1103,16 +1484,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_079, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_080, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-keyUsageCritical", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-keyUsageCritical";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1131,16 +1526,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_080, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_081, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-extKeyUsageCritical", arg23[] = "1";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-extKeyUsageCritical";
+    char arg23[] = "1";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1159,16 +1568,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_081, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_082, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-extKeyUsageCritical", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-extKeyUsageCritical";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1187,16 +1610,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_082, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_083, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-extKeyUsageCritical", arg23[] = "TRUE";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-extKeyUsageCritical";
+    char arg23[] = "TRUE";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1215,16 +1652,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_083, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_084, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraints", arg23[] = "TRUE";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraints";
+    char arg23[] = "TRUE";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1243,16 +1694,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_084, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_085, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraints", arg23[] = "1";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraints";
+    char arg23[] = "1";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1271,16 +1736,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_085, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_086, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraints", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraints";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1299,16 +1778,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_086, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_087, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraintsCritical", arg23[] = "true";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraintsCritical";
+    char arg23[] = "true";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1327,16 +1820,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_087, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_088, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraintsCritical", arg23[] = "TRUE";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraintsCritical";
+    char arg23[] = "TRUE";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1355,16 +1862,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_088, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_089, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraintsCritical", arg23[] = "1";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraintsCritical";
+    char arg23[] = "1";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1383,16 +1904,30 @@ HWTEST_F(ProcessCmdTest, processcmd_test_089, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProcessCmdTest, processcmd_test_090, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraintsCa", arg23[] = "1";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-basicConstraintsCa";
+    char arg23[] = "1";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -1401,88 +1936,6 @@ HWTEST_F(ProcessCmdTest, processcmd_test_090, testing::ext::TestSize.Level1)
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
     EXPECT_EQ(ret, true);
-}
-
-/*
- * @tc.name: processcmd_test_091
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_091, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraintsCa", arg23[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-
-    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, true);
-}
-
-/*
- * @tc.name: processcmd_test_092
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_092, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-basicConstraintsCa", arg23[] = "TRUE";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-
-    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, true);
-}
-
-/*
- * @tc.name: processcmd_test_093
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_093, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
-        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
-        arg10[] = "-inFile", arg11[] = "./abcd/profile11.json", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
-        arg19[] = "./generateKeyPair/signed-profile.p7b";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
-    int argc = 20;
-
-    std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-    bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
 }
 } // namespace SignatureTools
 } // namespace OHOS

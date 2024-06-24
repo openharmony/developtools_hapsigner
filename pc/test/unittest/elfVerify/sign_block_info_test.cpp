@@ -47,24 +47,6 @@ HWTEST_F(SignBlockInfoTest, GetSignBlockMap, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: SetSignBlockMap
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockInfoTest, SetSignBlockMap, testing::ext::TestSize.Level1)
-{
-    SignBlockInfo signBlockInfo(false);
-    std::unordered_map<signed char, SigningBlock> signBlockMap;
-    signBlockInfo.SetSignBlockMap(signBlockMap);
-    int size = signBlockMap.size();
-
-    EXPECT_EQ(size, 0);
-}
-
-/**
  * @tc.name: GetFileDigest
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
@@ -145,23 +127,6 @@ HWTEST_F(SignBlockInfoTest, SetRawDigest, testing::ext::TestSize.Level1)
 HWTEST_F(SignBlockInfoTest, GetNeedGenerateDigest, testing::ext::TestSize.Level1)
 {
     SignBlockInfo signBlockInfo(true);
-    bool needGenerateDigest = signBlockInfo.GetNeedGenerateDigest();
-
-    EXPECT_EQ(needGenerateDigest, true);
-}
-
-/**
- * @tc.name: SetNeedGenerateDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SignBlockInfoTest, SetNeedGenerateDigest, testing::ext::TestSize.Level1)
-{
-    SignBlockInfo signBlockInfo;
-    signBlockInfo.SetNeedGenerateDigest(true);
     bool needGenerateDigest = signBlockInfo.GetNeedGenerateDigest();
 
     EXPECT_EQ(needGenerateDigest, true);

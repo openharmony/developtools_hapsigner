@@ -49,6 +49,7 @@ bool FromByteArray002(const uint8_t* data, size_t size)
 
 bool FromByteArray003(const uint8_t* data, size_t size)
 {
+    SegmentHeader segmentHeader1;
     SegmentHeader segmentHeader(1, 1, -1);
     std::vector<int8_t> arr = segmentHeader.ToByteArray();
     std::unique_ptr<SegmentHeader> ptr = segmentHeader.FromByteArray(arr);

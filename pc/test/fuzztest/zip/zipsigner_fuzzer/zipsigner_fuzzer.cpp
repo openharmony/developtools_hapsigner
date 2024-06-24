@@ -21,12 +21,16 @@
 
 using namespace OHOS::SignatureTools;
 namespace OHOS {
+namespace SignatureTools {
 static constexpr int ALIGNMENT = 4;
+const char* RAW_HAP_FILE_PATH = "./zip/test1.hap";
+const char* FULL_HAP_FILE_PATH = "./zip/test2.hap";
+const char* OUT_HAP_FILE_PATH = "./zip/signed.hap";
 
 void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile("./zip/test1.hap", std::ios::binary);
-    std::ofstream outputFile("./zip/signed-test1.hap", std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(FULL_HAP_FILE_PATH, std::ios::binary);
+    std::ofstream outputFile(OUT_HAP_FILE_PATH, std::ios::binary | std::ios::trunc);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -36,14 +40,14 @@ void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
     zip->ToFile(inputFile, outputFile);
 }
 
-void SetZipSignerInfoFunc(const uint8_t* data, size_t size)
+void ZipSignerInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile("./zip/signed-test1.hap", std::ios::binary);
+    std::ifstream inputFile(FULL_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
     }
-    std::vector<ZipEntry*> zipEntries{ nullptr };
+    std::vector<ZipEntry*> zipEntries { nullptr };
     zip->SetZipEntries(zipEntries);
     zip->SetSigningOffset(size);
     std::string signingBlock(reinterpret_cast<const char*>(data), size);
@@ -51,15 +55,7 @@ void SetZipSignerInfoFunc(const uint8_t* data, size_t size)
     zip->SetCDOffset(size);
     zip->SetEOCDOffset(size);
     zip->SetEndOfCentralDirectory(nullptr);
-}
 
-void GetZipSignerInfoFunc(const uint8_t* data, size_t size)
-{
-    std::ifstream inputFile("./zip/signed-test1.hap", std::ios::binary);
-    auto zip = std::make_shared<ZipSigner>();
-    if (!zip->Init(inputFile)) {
-        return;
-    }
     zip->GetZipEntries();
     zip->GetSigningOffset();
     zip->GetSigningBlock();
@@ -68,25 +64,116 @@ void GetZipSignerInfoFunc(const uint8_t* data, size_t size)
     zip->GetEndOfCentralDirectory();
 }
 
-void GetZipEntriesFunc(const uint8_t* data, size_t size)
+void ZipEntryHeaderInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile("./zip/unsigned_with_eocd.hap", std::ios::binary);
-    auto zip = std::make_shared<ZipSigner>();
-    zip->Init(inputFile);
-}
-
-void AlignmentFunc(const uint8_t* data, size_t size)
-{
-    std::ifstream inputFile("./zip/signed-test1.hap", std::ios::binary);
+    std::ifstream inputFile(FULL_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
     }
-    std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
-    zipEntries[0]->Alignment(102400);
+    auto zipEntries = zip->GetZipEntries();
+    for (const auto& zipEntry : zipEntries) {
+        auto zipEntryData = zipEntry->GetZipEntryData();
+        auto zipEntryHeader = zipEntryData->GetZipEntryHeader();
+
+        std::string fileName(reinterpret_cast<const char*>(data), size);
+        zipEntryHeader->SetFileName(fileName);
+
+        zipEntryHeader->GetCrc32();
+        zipEntryHeader->GetLastTime();
+        zipEntryHeader->GetLastDate();
+        zipEntryHeader->GetCompressedSize();
+        zipEntryHeader->GetUnCompressedSize();
+        zipEntryHeader->GetHeaderLength();
+        zipEntryHeader->GetSIGNATURE();
+        zipEntryHeader->GetVersion();
+    }
 }
 
+void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
+{
+    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    auto zip = std::make_shared<ZipSigner>();
+    if (!zip->Init(inputFile)) {
+        return;
+    }
+    auto zipEntries = zip->GetZipEntries();
+    for (const auto& zipEntry : zipEntries) {
+        auto cd = zipEntry->GetCentralDirectory();
+        cd->GetLength();
+        cd->GetSIGNATURE();
+        cd->GetVersion();
+        cd->GetVersionExtra();
+        cd->GetFlag();
+        cd->GetLastTime();
+        cd->GetLastDate();
+        cd->GetCrc32();
+        cd->GetDiskNumStart();
+        cd->GetInternalFile();
+        cd->GetExternalFile();
+        cd->GetFileName();
 
+        std::string comment(reinterpret_cast<const char*>(data), size);
+        cd->SetComment(comment);
+
+        cd->GetComment();
+    }
+}
+
+void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
+{
+    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    auto zip = std::make_shared<ZipSigner>();
+    if (!zip->Init(inputFile)) {
+        return;
+    }
+    auto zipEntries = zip->GetZipEntries();
+    for (const auto& zipEntry : zipEntries) {
+        auto zipEntryData = zipEntry->GetZipEntryData();
+        auto dataDescriptor = zipEntryData->GetDataDescriptor();
+        if (!dataDescriptor) {
+            continue;
+        }
+        dataDescriptor->GetDesLength();
+        dataDescriptor->GetSIGNATURE();
+        dataDescriptor->GetCrc32();
+        dataDescriptor->GetCompressedSize();
+        dataDescriptor->GetUnCompressedSize();
+    }
+}
+
+void AlignmentFunc(const uint8_t* data, size_t size)
+{
+    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    auto zip = std::make_shared<ZipSigner>();
+    if (!zip->Init(inputFile)) {
+        return;
+    }
+    auto zipEntries = zip->GetZipEntries();
+    for (const auto& zipEntry : zipEntries) {
+        zipEntry->Alignment(102400);
+    }
+}
+
+void EndOfCentralDirectoryInfoFunc(const uint8_t* data, size_t size)
+{
+    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    auto zip = std::make_shared<ZipSigner>();
+    if (!zip->Init(inputFile)) {
+        return;
+    }
+    auto eocd = zip->GetEndOfCentralDirectory();
+    eocd->GetEocdLength();
+    eocd->GetSIGNATURE();
+    eocd->GetDiskNum();
+    eocd->GetcDStartDiskNum();
+    eocd->GetThisDiskCDNum();
+
+    std::string comment(reinterpret_cast<const char*>(data), size);
+    eocd->SetComment(comment);
+
+    eocd->GetComment();
+}
 
 void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
@@ -95,16 +182,20 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     }
 
     ZipSignerCompleteFlowFunc(data, size);
-    SetZipSignerInfoFunc(data, size);
-    GetZipEntriesFunc(data, size);
+    ZipSignerInfoFunc(data, size);
+    ZipEntryHeaderInfoFunc(data, size);
+    CentralDirectoryInfoFunc(data, size);
+    DataDescriptorInfoFunc(data, size);
     AlignmentFunc(data, size);
+    EndOfCentralDirectoryInfoFunc(data, size);
 }
+} // namespace SignatureTools
 } // namespace OHOS
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithMyAPI(data, size);
+    OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;
 }

@@ -48,22 +48,6 @@ HWTEST_F(HapUtilsTest, GetAppIdentifier, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: GetHapSignatureOptionalBlockIds
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(HapUtilsTest, GetHapSignatureOptionalBlockIds, testing::ext::TestSize.Level1)
-{
-    std::set<int> result = HapUtils::GetHapSignatureOptionalBlockIds();
-    int size = result.size();
-
-    EXPECT_NE(size, 0);
-}
-
-/**
  * @tc.name: GetHapSigningBlockMagic
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
