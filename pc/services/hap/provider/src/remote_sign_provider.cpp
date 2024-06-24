@@ -28,6 +28,7 @@ RemoteSignProvider::~RemoteSignProvider()
 
 bool RemoteSignProvider::CheckParams(Options* options)
 {
+    bool flag = false;
     if (!SignProvider::CheckParams(options)) {
         SIGNATURE_TOOLS_LOGE("Parameter check failed !");
         return false;
@@ -40,11 +41,13 @@ bool RemoteSignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_SIGNERPLUGIN);
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
     for (auto it = options->begin(); it != options->end(); it++) {
-        if (paramSet.find(it->first) != paramSet.end()) {
+        flag = (paramSet.find(it->first) != paramSet.end());
+        if (flag) {
             size_t size = it->first.size();
             std::string str = it->first.substr(size - 3);
             if (str == "Pwd") {
                 std::string strPwd = options->GetChars(it->first);
+                strPwd = "";
                 signParams.insert(std::make_pair(it->first, strPwd));
             } else {
                 signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
@@ -52,7 +55,8 @@ bool RemoteSignProvider::CheckParams(Options* options)
         }
     }
     for (const auto& param : paramFileds) {
-        if (signParams.find(param) == signParams.end()) {
+        flag = (signParams.find(param) == signParams.end());
+        if (flag) {
             SIGNATURE_TOOLS_LOGE("Parameter check failed!! please input param: %{public}s", param.c_str());
             return false;
         }

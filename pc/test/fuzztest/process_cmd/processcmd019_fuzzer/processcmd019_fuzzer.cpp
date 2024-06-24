@@ -21,6 +21,7 @@
 #include "merkle_tree_extension.h"
 #include "segment_header.h"
 #include "code_signing.h"
+#include "file_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -103,6 +104,15 @@ bool TestDatastructure(const uint8_t* data, size_t size)
     CodeSigning codeSigning;
     return sizet != 0;
 }
+
+bool TestFileUtils(const uint8_t* data, size_t size)
+{
+    std::string bytes;
+    std::string file;
+    bool flag = FileUtils::WriteByteToOutFile(bytes, file);
+    FileUtils::DelDir(file);
+    return flag;
+}
 } // namespace SignatureTools
 } // namespace OHOS
 
@@ -114,5 +124,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::SignatureTools::VerifyElf(data, size);
     OHOS::SignatureTools::VerifyBin(data, size);
     OHOS::SignatureTools::TestDatastructure(data, size);
+    OHOS::SignatureTools::TestFileUtils(data, size);
     return 0;
 }

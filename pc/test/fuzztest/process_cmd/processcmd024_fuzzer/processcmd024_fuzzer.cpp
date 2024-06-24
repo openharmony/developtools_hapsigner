@@ -34,7 +34,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     Params param;
     HashUtils hashUtils;
     VerifyCertOpensslUtils verify;
-    std::string str, retStr, algName;
+    std::string str;
+    std::string  retStr;
+    std::string  algName;
     bool retBool = false;
     int algId = 256;
     std::vector<std::string> paramFields;

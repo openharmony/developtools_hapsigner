@@ -25,7 +25,7 @@ std::shared_ptr<Signer> SignerFactory::GetSigner(LocalizationAdapter& adapter)co
 
     EVP_PKEY* keyPair = adapter.GetAliasKey(false);
     if (keyPair == NULL) {
-        PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "get keypair " + 
+        PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "get keypair " +
                             adapter.options->GetString(Options::KEY_ALIAS) + " failed");
         SIGNATURE_TOOLS_LOGE("NULL keyPair");
         return NULL;
@@ -67,11 +67,11 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
         return nullptr;
     }
 
-    RemoteSignerParamType keyAliasType{ keyAlias.c_str(), keyAlias.size() };
-    RemoteSignerParamType signServerType{ signServer.c_str(), signServer.size() };
-    RemoteSignerParamType onlineAuthModeType{ onlineAuthMode.c_str(), onlineAuthMode.size() };
-    RemoteSignerParamType usernameType{ username.c_str(), username.size() };
-    RemoteSignerParamType userPwdType{ userPwd.c_str(), userPwd.size() };
+    RemoteSignerParamType keyAliasType{keyAlias.c_str(), keyAlias.size()};
+    RemoteSignerParamType signServerType{signServer.c_str(), signServer.size()};
+    RemoteSignerParamType onlineAuthModeType{onlineAuthMode.c_str(), onlineAuthMode.size()};
+    RemoteSignerParamType usernameType{username.c_str(), username.size()};
+    RemoteSignerParamType userPwdType{userPwd.c_str(), userPwd.size()};
 
     Signer* signer = remoteSignerCreator(keyAliasType, signServerType, onlineAuthModeType, usernameType, userPwdType);
 

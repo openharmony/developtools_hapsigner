@@ -98,7 +98,7 @@ int32_t RandomAccessFile::DoMMap(int32_t bufCapacity, int64_t offset, MmapInfo& 
     mmapInfo.readMoreLen = static_cast<int>(offset - mmapInfo.mmapPosition);
     mmapInfo.mmapSize = bufCapacity + mmapInfo.readMoreLen;
     mmapInfo.mapAddr = reinterpret_cast<char*>(mmap(nullptr, mmapInfo.mmapSize, PROT_READ | PROT_WRITE,
-                                               MAP_SHARED | MAP_POPULATE, fd, mmapInfo.mmapPosition));
+                                                    MAP_SHARED | MAP_POPULATE, fd, mmapInfo.mmapPosition));
     if (mmapInfo.mapAddr == MAP_FAILED) {
         SIGNATURE_TOOLS_LOGE("MAP_FAILED");
         return MMAP_FAILED;
@@ -120,7 +120,7 @@ int32_t RandomAccessFile::ReadFileFullyFromOffset(char buf[], int64_t offset, in
     }
 
     if (memcpy_s(buf, bufCapacity, mmapInfo.mapAddr + mmapInfo.readMoreLen,
-        mmapInfo.mmapSize - mmapInfo.readMoreLen) != EOK) {
+                 mmapInfo.mmapSize - mmapInfo.readMoreLen) != EOK) {
         munmap(mmapInfo.mapAddr, mmapInfo.mmapSize);
         SIGNATURE_TOOLS_LOGE("MMAP_COPY_FAILED");
 
@@ -174,7 +174,7 @@ int32_t RandomAccessFile::WriteToFile(ByteBuffer& buffer, int64_t position, int6
     }
 
     if (memcpy_s(mmapInfo.mapAddr + mmapInfo.readMoreLen,
-        mmapInfo.mmapSize - mmapInfo.readMoreLen,
+                 mmapInfo.mmapSize - mmapInfo.readMoreLen,
         buffer.GetBufferPtr(), bufCapacity) != RET_OK) {
         SIGNATURE_TOOLS_LOGE("memcpy_s error");
         return MMAP_COPY_FAILED;

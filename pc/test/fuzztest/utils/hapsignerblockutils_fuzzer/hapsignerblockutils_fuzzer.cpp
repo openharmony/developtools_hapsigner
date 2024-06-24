@@ -29,7 +29,9 @@ void HapSignerBlockUtilsFunc(const uint8_t* data, size_t size)
     HapSignerBlockUtils hapSignerBlockUtils;
     hapSignerBlockUtils.CreatTestZipFile(pathFile, info);
 
-    HapSubSignBlockHead signBlock, profileBlock, propertyBlock;
+    HapSubSignBlockHead signBlock;
+    HapSubSignBlockHead profileBlock;
+    HapSubSignBlockHead propertyBlock;
     hapSignerBlockUtils.CreateHapSubSignBlockHead(signBlock, profileBlock, propertyBlock);
 }
 
@@ -38,7 +40,7 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (data == nullptr || size == 0) {
         return;
     }
-    
+
     HapSignerBlockUtilsFunc(data, size);
 }
 } // namespace SignatureTools

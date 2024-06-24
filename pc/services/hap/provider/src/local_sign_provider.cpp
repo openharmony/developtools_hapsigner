@@ -24,6 +24,7 @@ std::optional<X509_CRL*> LocalSignProvider::GetCrl()
 
 bool LocalSignProvider::CheckParams(Options* options)
 {
+    bool flag = false;
     if (!SignProvider::CheckParams(options)) {
         SIGNATURE_TOOLS_LOGE("Parameter check failed !");
         return false;
@@ -34,7 +35,8 @@ bool LocalSignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_LOCAL_JKS_KEYALIAS_CODE);
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
     for (auto it = options->begin(); it != options->end(); it++) {
-        if (paramSet.find(it->first) != paramSet.end()) {
+        flag = (paramSet.find(it->first) != paramSet.end());
+        if (flag) {
             size_t size = it->first.size();
             std::string str = it->first.substr(size - 3);
             if (str == "Pwd") {
@@ -49,7 +51,8 @@ bool LocalSignProvider::CheckParams(Options* options)
         SIGNATURE_TOOLS_LOGE("Error: PARAM_SIGN_CODE Parameter check error !");
         return false;
     }
-    if (!CheckPublicKeyPath()) {
+    flag = !CheckPublicKeyPath();
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Error: appCertFile Parameter check error !");
         return false;
     }
@@ -58,13 +61,16 @@ bool LocalSignProvider::CheckParams(Options* options)
 
 bool LocalSignProvider::CheckPublicKeyPath()
 {
+    bool flag = false;
     std::string publicCertsFile = signParams[ParamConstants::PARAM_LOCAL_PUBLIC_CERT];
-    if (!FileUtils::IsValidFile(publicCertsFile)) {
+    flag = !FileUtils::IsValidFile(publicCertsFile);
+    if (flag) {
         PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, publicCertsFile + "not support");
         return false;
     }
     std::ifstream publicKeyFile(publicCertsFile);
-    if (!publicKeyFile.is_open()) {
+    flag = !publicKeyFile.is_open();
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("File opening failure %{public}s", publicCertsFile.c_str());
         publicKeyFile.close();
         return false;

@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 signature_tools_root_path = "//developtools/hapsigner/pc"
 signature_tools_service = "${signature_tools_root_path}/services"
 signature_tools_service_utils = "${signature_tools_service}/utils"

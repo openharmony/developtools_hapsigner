@@ -26,13 +26,14 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "-version";
-    char* argv[] = { arg0, arg1 };
+    char arg0[] = "";
+    char arg1[] = "-version";
+    char* argv[] = {arg0, arg1};
 
     int argc = 2;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

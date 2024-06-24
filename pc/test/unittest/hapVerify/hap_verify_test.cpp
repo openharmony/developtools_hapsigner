@@ -16,6 +16,7 @@
 #include "hap_verify_test.h"
 #include <string>
 #include <gtest/gtest.h>
+#include <filesystem>
 #include "profile_info.h"
 #include "verify_hap.h"
 #include "test_hap_file_data.h"
@@ -51,6 +52,18 @@ LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\n\
 zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n\
 -----END CERTIFICATE-----\n";
 
+void GenUnvaildHap(const std::string& path)
+{
+    std::ofstream outfile(path);
+    if (!outfile) {
+        std::cerr << "Unable to open file:" << path << std::endl;
+        return;
+    }
+    outfile << "Hello, this is a Unvaild Hap.\n";
+    outfile.close();
+    return;
+}
+
 class VerifyHapTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
@@ -64,10 +77,20 @@ public:
 
 void VerifyHapTest::SetUpTestCase(void)
 {
+    GenUnvaildHap("./hapVerify/unvaild.app");
+    GenUnvaildHap("./hapVerify/unvaild.hap");
+    GenUnvaildHap("./hapVerify/unvaild.hqf");
+    GenUnvaildHap("./hapVerify/unvaild.hsp");
+    GenUnvaildHap("./hapVerify/unvaild.txt");
 }
 
 void VerifyHapTest::TearDownTestCase(void)
 {
+    remove("./hapVerify/unvaild.app");
+    remove("./hapVerify/unvaild.hap");
+    remove("./hapVerify/unvaild.hqf");
+    remove("./hapVerify/unvaild.hsp");
+    remove("./hapVerify/unvaild.txt");
 }
 
 void VerifyHapTest::SetUp()

@@ -37,10 +37,10 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-app1-key-v1";
-	std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-	std::string keyUsage = "digitalSignature";
-	std::string extKeyUsage ="codeSignature";
-	std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string keyUsage = "digitalSignature";
+    std::string extKeyUsage = "codeSignature";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Application Signature Service CA";
     std::string keyAlg = "ECC";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
     std::string signAlg = "SHA256withECDSA";
@@ -50,18 +50,18 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int keySize = 384;
     char keyPwd[] = "123456";
     char ksPwd[] = "123456";
-	bool extKeyUsageCritical = true;
-	bool basicConstraints = true;
+    bool extKeyUsageCritical = true;
+    bool basicConstraints = true;
     bool basicConstraintsCritical = true;
     bool basicConstraintsCa = true;
-	std::string outFile = "/data/test/generateCA/single-app1.cer";
+    std::string outFile = "/data/test/generateCA/single-app1.cer";
     (*params)["keyPwd"] = keyPwd;
-	(*params)["issuer"] = issuer;
+    (*params)["issuer"] = issuer;
     (*params)["keystorePwd"] = ksPwd;
     (*params)["keyAlias"] = keyAlias;
-	(*params)["issuerKeyAlias"] = issuerKeyAlias;
-	(*params)["keyUsage"] = keyUsage;
-	(*params)["extKeyUsage"] = extKeyUsage;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["extKeyUsage"] = extKeyUsage;
     (*params)["keyAlg"] = keyAlg;
     (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
@@ -70,10 +70,10 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
     (*params)["outFile"] = outFile;
     (*params)["validity"] = validity;
-	(*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraints"] = basicConstraints;
     (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
     (*params)["basicConstraintsCa"] = basicConstraintsCa;
-	(*params)["extKeyUsageCritical"] = extKeyUsageCritical;
+    (*params)["extKeyUsageCritical"] = extKeyUsageCritical;
     return api->GenerateCert(params.get());
 }
 }
