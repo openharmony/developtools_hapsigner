@@ -131,15 +131,6 @@ bool ToByteArray(const uint8_t* data, size_t size)
 
     return byteArray.size() == 88;
 }
-
-bool ToString(const uint8_t* data, size_t size)
-{
-    std::shared_ptr<MerkleTreeExtension> api = std::make_shared<MerkleTreeExtension>();
-
-    std::string str = api->ToString();
-
-    return str.size() == 0;
-}
 }
 
 /* Fuzzer entry point */

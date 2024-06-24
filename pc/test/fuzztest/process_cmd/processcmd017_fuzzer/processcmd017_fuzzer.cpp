@@ -26,15 +26,18 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "verify-profile", arg2[] = "-inFile",
-        arg3[] = "./generateKeyPair/signed-profile.p7b",
-        arg4[] = "-outFile", arg5[] = "./generateKeyPair/VerifyResult.json";
+    char arg0[] = "";
+    char arg1[] = "verify-profile";
+    char arg2[] = "-inFile";
+    char arg3[] = "./generateKeyPair/signed-profile.p7b";
+    char arg4[] = "-outFile";
+    char arg5[] = "./generateKeyPair/VerifyResult.json";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
     int argc = 6;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

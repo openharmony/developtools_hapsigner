@@ -22,47 +22,75 @@ namespace OHOS {
 namespace SignatureTools {
 bool GenerateAppCertTest2(ParamsRunTool& params)
 {
-    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA256withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", 
-        arg20[] = "-subCaCertFile", arg21[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg22[] = "-outForm", arg23[] = "certChain", arg24[] = "-rootCaCertFile",
-        arg25[] = "./generateKeyPair/root-ca1.cer",
-        arg26[] = "-issuerKeyPwd", arg27[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-app-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-app-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA256withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-subCaCertFile";
+    char arg21[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg22[] = "-outForm";
+    char arg23[] = "certChain";
+    char arg24[] = "-rootCaCertFile";
+    char arg25[] = "./generateKeyPair/root-ca1.cer";
+    char arg26[] = "-issuerKeyPwd", arg27[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
                      arg22, arg23, arg24, arg25, arg26, arg27 };
     int argc = 27;
 
-	return params.ProcessCmd(argv, argc);;
+    return params.ProcessCmd(argv, argc);;
 }
 bool GenerateAppCertTest3(ParamsRunTool& params)
 {
-    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA256withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", 
-        arg20[] = "-subCaCertFile", arg21[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg22[] = "-outForm", arg23[] = "cert", arg24[] = "-rootCaCertFile",
-        arg25[] = "./generateKeyPair/root-ca1.cer",
-        arg26[] = "-issuerKeyPwd", arg27[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-app-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-app-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA256withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-subCaCertFile";
+    char arg21[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg22[] = "-outForm";
+    char arg23[] = "cert";
+    char arg24[] = "-rootCaCertFile";
+    char arg25[] = "./generateKeyPair/root-ca1.cer";
+    char arg26[] = "-issuerKeyPwd", arg27[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
                      arg22, arg23, arg24, arg25, arg26, arg27 };
     int argc = 27;
 
-	return params.ProcessCmd(argv, argc);
+    return params.ProcessCmd(argv, argc);
 }
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
@@ -70,26 +98,43 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA256withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
-        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg24[] = "-outForm", arg25[] = "cert", arg26[] = "-rootCaCertFile",
-        arg27[] = "./generateKeyPair/root-ca1.cer",
-        arg28[] = "-issuerKeyPwd", arg29[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-app-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-app-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA256withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/app-release1.pem";
+    char arg22[] = "-subCaCertFile";
+    char arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg24[] = "-outForm";
+    char arg25[] = "cert";
+    char arg26[] = "-rootCaCertFile";
+    char arg27[] = "./generateKeyPair/root-ca1.cer";
+    char arg28[] = "-issuerKeyPwd";
+    char arg29[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
                      arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29 };
     int argc = 30;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
-    bool ret;
+    bool ret = false;
     ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
     ret = GenerateAppCertTest2(*ParamsRunToolPtr);
     ret = GenerateAppCertTest3(*ParamsRunToolPtr);

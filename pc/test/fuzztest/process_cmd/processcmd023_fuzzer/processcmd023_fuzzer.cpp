@@ -27,7 +27,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-
+    X509* cert = X509_new();
+    std::vector<X509*> certChain;
     std::string inputType = "clientAuthentication";
     CmdUtil::VerifyType(inputType);
     Options options;
@@ -37,6 +38,11 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     (options)["booltype"] = status;
     options.Equals(key1, key2);
     options.GetBool("booltype");
+    std::shared_ptr<SignToolServiceImpl> serviceImplPtr = std::make_shared<SignToolServiceImpl>();
+    serviceImplPtr->PrintX509CertFromMemory(cert);
+    serviceImplPtr->PrintX509CertChainFromMemory(certChain);
+    X509_free(cert);
+
     return true;
 }
 } // namespace SignatureTools

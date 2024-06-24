@@ -93,15 +93,6 @@ bool GetCodeSignBlockHeader(const uint8_t* data, size_t size)
     return true;
 }
 
-bool GetFsVerityInfoSegment(const uint8_t* data, size_t size)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    api->GetFsVerityInfoSegment();
-
-    return true;
-}
-
 bool GetHapInfoSegment(const uint8_t* data, size_t size)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
@@ -264,15 +255,6 @@ bool SetSoInfoSegment(const uint8_t* data, size_t size)
 
     return true;
 }
-
-bool ToString(const uint8_t* data, size_t size)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    std::string str = api->ToString();
-
-    return str.size() == 0;
-}
 }
 
 /* Fuzzer entry point */
@@ -286,7 +268,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::ComputeMerkleTreeOffset002(data, size);
     OHOS::ComputeSegmentOffset(data, size);
     OHOS::GetCodeSignBlockHeader(data, size);
-    OHOS::GetFsVerityInfoSegment(data, size);
     OHOS::GetHapInfoSegment(data, size);
     OHOS::GetOneMerkleTreeByFileName001(data, size);
     OHOS::GetOneMerkleTreeByFileName002(data, size);
@@ -300,6 +281,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::SetSegmentHeaders(data, size);
     OHOS::SetSegmentNum(data, size);
     OHOS::SetSoInfoSegment(data, size);
-    OHOS::ToString(data, size);
     return 0;
 }

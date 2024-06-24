@@ -27,7 +27,7 @@
 
 namespace OHOS {
 namespace SignatureTools {
-	
+
 class GenerateCaTest : public testing::Test {
 public:
     static void SetUpTestCase()
@@ -1786,7 +1786,6 @@ HWTEST_F(GenerateCaTest, generate_end_cert_003, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateCaTest, generate_end_cert_004, testing::ext::TestSize.Level1)
 {
-
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-profile1-key-v1";
     std::string issuerkeyAlias = "oh-profile-sign-srv-ca-key-v1";
@@ -1819,7 +1818,8 @@ HWTEST_F(GenerateCaTest, generate_end_cert_004, testing::ext::TestSize.Level1)
     X509_REQ* csr = nullptr;
     csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateEndCert(csr, issuerkeyPair, *adaptePtr, PROFILE_SIGNING_CAPABILITY, sizeof(PROFILE_SIGNING_CAPABILITY));
+    bool ret = CertTools::GenerateEndCert(csr, issuerkeyPair, *adaptePtr, PROFILE_SIGNING_CAPABILITY,
+                                          sizeof(PROFILE_SIGNING_CAPABILITY));
     EXPECT_EQ(ret, true);
 }
 

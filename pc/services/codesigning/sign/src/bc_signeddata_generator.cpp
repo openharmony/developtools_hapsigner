@@ -57,7 +57,7 @@ int BCSignedDataGenerator::GenerateSignedData(const std::string& content,
     if (result < 0) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             "PackageSignedData error!");
-        return GENERATEPKCS7_ERROR;
+        return SIGN_ERROR;
     }
     return result;
 }
@@ -84,9 +84,9 @@ int BCSignedDataGenerator::PackageSignedData(const std::string& content,
     // 生成pkcs7
     result = p7Data.Sign(content, signer, sigAlg, ret, attrs);
     if (result < 0) {
-        PrintErrorNumberMsg("PKCS7_SIGN_ERROR", PKCS7_SIGN_ERROR,
+        PrintErrorNumberMsg("PKCS7_SIGN_ERROR", SIGN_ERROR,
                             "generate pkcs7 signed data block failed");
-        return PKCS7_SIGN_ERROR;
+        return SIGN_ERROR;
     }
     // 解析后验证
     result = p7Data.Parse(ret);
@@ -138,7 +138,7 @@ int BCSignedDataGenerator::AddOwnerID(std::vector<PKCS7Attr>& attrs, const std::
     PKCS7Attr attr;
     int nid = CreateNIDFromOID(OWNERID_OID, OWNERID_OID_SHORT_NAME, OWNERID_OID_LONG_NAME);
     if (nid == NID_undef) {
-        return CREATE_NID_ERROR;
+        return RET_FAILED;
     }
     ASN1_STRING* ownerIDAsn1 = ASN1_STRING_new();
     if (ownerIDAsn1 == NULL) {

@@ -67,12 +67,12 @@ int FileUtils::Write(const std::string& content, const std::string& output)
     std::ofstream outFile(output, std::ios::binary);
     if (outFile.rdstate() != 0) {
         SIGNATURE_TOOLS_LOGE("Failed get output stream!");
-        return WRITE_FILE_ERROR;
+        return IO_ERROR;
     }
     outFile.write(&content[0], content.size());
     if (outFile.rdstate() != 0) {
         SIGNATURE_TOOLS_LOGE("Failed to write data to output stream.");
-        return WRITE_FILE_ERROR;
+        return IO_ERROR;
     }
     return RET_OK;
 }
@@ -82,7 +82,7 @@ int FileUtils::Read(std::ifstream& input, std::string& ret)
     ret.clear();
     if (input.rdstate() != 0) {
         SIGNATURE_TOOLS_LOGE("io error!");
-        return READ_FILE_ERROR;
+        return IO_ERROR;
     }
     ret.clear();
     std::string buffer(FileUtils::FILE_BUFFER_BLOCK, 0);
@@ -98,11 +98,11 @@ int FileUtils::ReadFile(const std::string& path, std::string& ret)
     std::ifstream file(path, std::ios::binary);
     if (file.rdstate() != 0) {
         SIGNATURE_TOOLS_LOGE("open %{public}s error", path.c_str());
-        return READ_FILE_ERROR;
+        return IO_ERROR;
     }
     if (Read(file, ret) < 0) {
         SIGNATURE_TOOLS_LOGE("read error!");
-        return READ_FILE_ERROR;
+        return IO_ERROR;
     }
     return RET_OK;
 }

@@ -395,10 +395,20 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_010, testing::ext::TestSize.Level1)
 */
 HWTEST_F(HapSignToolTest, hap_sign_tool_test_011, testing::ext::TestSize.Level1)
 {
-    char arg0[] = "", arg1[] = "generate-keypair", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-keyAlg", arg7[] = "ECC", arg8[] = "-keySize",
-        arg9[] = "NIST-P-384", arg10[] = "-keystoreFile", arg11[] = "./generateKeyPair/OpenHarmony.p12",
-        arg12[] = "-keystorePwd", arg13[] = "123456";
+    char arg0[] = "";
+    char arg1[] = "generate-keypair";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-keyAlg";
+    char arg7[] = "ECC";
+    char arg8[] = "-keySize";
+    char arg9[] = "NIST-P-384";
+    char arg10[] = "-keystoreFile";
+    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg12[] = "-keystorePwd";
+    char arg13[] = "123456";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
     int argc = 14;
 
@@ -422,15 +432,30 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_012, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign", arg8[] = "-signCode",
-        arg9[] = "1", arg10[] = "-signAlg", arg11[] = "SHA384withECDSA",
-        arg12[] = "-appCertFile", arg13[] = "./generateKeyPair/app-release1.pem",
-        arg14[] = "-profileFile", arg15[] = "./generateKeyPair/signed-profile.p7b",
-        arg16[] = "-inFile", arg17[] = "entry-default-unsigned-so.hap", arg18[] = "-keystoreFile",
-        arg19[] = "./generateKeyPair/OpenHarmony.p12",
-        arg20[] = "-keystorePwd", arg21[] = "123456", arg22[] = "-outFile",
-        arg23[] = "./generateKeyPair/entry-default-signed-so.hap";
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-mode";
+    char arg7[] = "localSign";
+    char arg8[] = "-signCode";
+    char arg9[] = "1";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-appCertFile";
+    char arg13[] = "./generateKeyPair/app-release1.pem";
+    char arg14[] = "-profileFile";
+    char arg15[] = "./generateKeyPair/signed-profile.p7b";
+    char arg16[] = "-inFile";
+    char arg17[] = "entry-default-unsigned-so.hap";
+    char arg18[] = "-keystoreFile";
+    char arg19[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg20[] = "-keystorePwd";
+    char arg21[] = "123456";
+    char arg22[] = "-outFile";
+    char arg23[] = "./generateKeyPair/entry-default-signed-so.hap";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -455,14 +480,26 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_013, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "sign-profile", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-mode", arg7[] = "localSign",
-        arg8[] = "-signAlg", arg9[] = "SHA384withECDSA",
-        arg10[] = "-inFile", arg11[] = "./generateKeyPair/profile.json", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/signed-profile.p7b", arg18[] = "-profileCertFile",
-        arg19[] = "./generateKeyPair/signed-profile.p7b";
+    char arg0[] = "";
+    char arg1[] = "sign-profile";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-mode";
+    char arg7[] = "localSign";
+    char arg8[] = "-signAlg";
+    char arg9[] = "SHA384withECDSA";
+    char arg10[] = "-inFile";
+    char arg11[] = "./generateKeyPair/profile.json";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/signed-profile.p7b";
+    char arg18[] = "-profileCertFile";
+    char arg19[] = "./generateKeyPair/signed-profile.p7b";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19 };
     int argc = 20;
@@ -487,10 +524,14 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_014, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "verify-app", arg2[] = "-inFile",
-        arg3[] = "./generateKeyPair/entry-default-signed-so.hap",
-        arg4[] = "-outCertChain", arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg6[] = "-outProfile", arg7[] = "./generateKeyPair/app-profile.p7b";
+    char arg0[] = "";
+    char arg1[] = "verify-app";
+    char arg2[] = "-inFile";
+    char arg3[] = "./generateKeyPair/entry-default-signed-so.hap";
+    char arg4[] = "-outCertChain";
+    char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg6[] = "-outProfile";
+    char arg7[] = "./generateKeyPair/app-profile.p7b";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
     int argc = 8;
 
@@ -520,9 +561,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_015, testing::ext::TestSize.Level1)
     (*params)["inFile"] = inFile;
     (*params)["outFile"] = outFile;
 
-    char arg0[] = "", arg1[] = "verify-profile", arg2[] = "-inFile",
-        arg3[] = "./generateKeyPair/signed-profile.p7b",
-        arg4[] = "-outFile", arg5[] = "./generateKeyPair/VerifyResult.json";
+    char arg0[] = "";
+    char arg1[] = "verify-profile";
+    char arg2[] = "-inFile";
+    char arg3[] = "./generateKeyPair/signed-profile.p7b";
+    char arg4[] = "-outFile";
+    char arg5[] = "./generateKeyPair/VerifyResult.json";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
     int argc = 6;
 
@@ -546,15 +590,28 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_016, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "generate-ca", arg2[] = "-keyAlias", arg3[] = "oh-root-ca-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-subject",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA",
-        arg8[] = "-validity", arg9[] = "365",
-        arg10[] = "-signAlg", arg11[] = "SHA384withECDSA", arg12[] = "-keystoreFile",
-        arg13[] = "./generateKeyPair/OpenHarmony.p12",
-        arg14[] = "-keystorePwd", arg15[] = "123456", arg16[] = "-outFile",
-        arg17[] = "./generateKeyPair/root-ca1.cer", arg18[] = "-keyAlg",
-        arg19[] = "ECC", arg20[] = "-keySize", arg21[] = "NIST-P-384";
+    char arg0[] = "";
+    char arg1[] = "generate-ca";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-root-ca-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-subject";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-validity";
+    char arg9[] = "365";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA384withECDSA";
+    char arg12[] = "-keystoreFile";
+    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg14[] = "-keystorePwd";
+    char arg15[] = "123456";
+    char arg16[] = "-outFile";
+    char arg17[] = "./generateKeyPair/root-ca1.cer";
+    char arg18[] = "-keyAlg";
+    char arg19[] = "ECC";
+    char arg20[] = "-keySize";
+    char arg21[] = "NIST-P-384";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
     int argc = 20;
@@ -579,18 +636,34 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_017, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "generate-app-cert", arg2[] = "-keyAlias", arg3[] = "oh-app1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-app-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/app-release1.pem",
-        arg22[] = "-subCaCertFile", arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer",
-        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
-        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char arg0[] = "";
+    char arg1[] = "generate-app-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-app1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-app-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/app-release1.pem";
+    char arg22[] = "-subCaCertFile";
+    char arg23[] = "./generateKeyPair/app-sign-srv-ca1.cer";
+    char arg24[] = "-outForm";
+    char arg25[] = "certChain";
+    char arg26[] = "-rootCaCertFile";
+    char arg27[] = "./generateKeyPair/root-ca1.cer";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
                      arg22, arg23, arg24, arg25, arg26, arg27 };
@@ -616,19 +689,34 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_018, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "generate-profile-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/profile-release1.pem",
-        arg22[] = "-subCaCertFile",
-        arg23[] = "./generateKeyPair/profile-sign-srv-ca1.cer",
-        arg24[] = "-outForm", arg25[] = "certChain", arg26[] = "-rootCaCertFile",
-        arg27[] = "./generateKeyPair/root-ca1.cer";
+    char arg0[] = "";
+    char arg1[] = "generate-profile-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/profile-release1.pem";
+    char arg22[] = "-subCaCertFile";
+    char arg23[] = "./generateKeyPair/profile-sign-srv-ca1.cer";
+    char arg24[] = "-outForm";
+    char arg25[] = "certChain";
+    char arg26[] = "-rootCaCertFile";
+    char arg27[] = "./generateKeyPair/root-ca1.cer";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20,
                      arg21, arg22, arg23, arg24, arg25, arg26, arg27 };
@@ -654,15 +742,28 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_019, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
     int argc = 22;
@@ -687,15 +788,28 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_020, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    char arg0[] = "", arg1[] = "generate-parameter", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA", arg16[] = "-keystoreFile",
-        arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile", arg21[] = "./generateKeyPair/general.cer";
+    char arg0[] = "";
+    char arg1[] = "generate-parameter";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
     int argc = 22;

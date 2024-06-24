@@ -460,13 +460,6 @@ void ByteBuffer::GetData(char data[], int32_t len)
     }
 }
 
-void ByteBuffer::GetData(int32_t offset, char data[], int32_t len)
-{
-    if (0 == memcpy_s(data, len, buffer.get() + offset, len)) {
-        position = position + len;
-    }
-}
-
 void ByteBuffer::GetData(int32_t offset, int8_t data[], int32_t len)
 {
     if (0 == memcpy_s(data, len, buffer.get() + offset, len)) {
@@ -563,22 +556,6 @@ ByteBuffer& ByteBuffer::Flip()
 {
     limit = position;
     position = 0;
-    return *this;
-}
-
-ByteBuffer& ByteBuffer::Compact()
-{
-    do {
-        if (position >= limit) {
-            position = 0;
-            break;
-        }
-        for (uint32_t i = 0; i < limit - position; i++) {
-            buffer.get()[i] = buffer.get()[position + i];
-        }
-        position = limit - position;
-    } while (0);
-    limit = capacity;
     return *this;
 }
 

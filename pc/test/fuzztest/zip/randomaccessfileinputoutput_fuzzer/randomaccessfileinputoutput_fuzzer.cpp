@@ -18,28 +18,41 @@
 #include <cstdio>
 
 #include "random_access_file.h"
+#include "random_access_file_input.h"
+#include "random_access_file_output.h"
 
 using namespace OHOS::SignatureTools;
 namespace OHOS {
-void ReadFileFullyFromOffsetFuncV1(const uint8_t* data, size_t size)
+namespace SignatureTools {
+const char* RAW_HAP_FILE_PATH = "./zip/test1.hap";
+void RandomAccessFileReadFileFunc(const uint8_t* data, size_t size)
 {
     auto outputHap = std::make_shared<RandomAccessFile>();
-    if (!outputHap->Init("./zip/test1.cpp")) {
+    if (!outputHap->Init(RAW_HAP_FILE_PATH)) {
         return;
     }
     std::string buf(1, 0);
     outputHap->ReadFileFullyFromOffset(buf.data(), 0, 1);
 }
 
-void WriteToFileFunc(const uint8_t* data, size_t size)
+void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 {
-    auto outputHap = std::make_shared<RandomAccessFile>();
-    if (!outputHap->Init("./zip/test1.cpp")) {
+    RandomAccessFile file;
+    if (!file.Init(RAW_HAP_FILE_PATH)) {
         return;
     }
-    ByteBuffer buffer(1);
-    buffer.PutByte(1);
-    outputHap->WriteToFile(buffer, 0, 1);
+    int64_t fileLength = file.GetLength();
+    RandomAccessFileInput fileInput(file, 0, fileLength);
+    fileInput.Size();
+}
+
+void RandomAccessFileOutputConstructor(const uint8_t* data, size_t size)
+{
+    RandomAccessFile file;
+    if (!file.Init(RAW_HAP_FILE_PATH)) {
+        return;
+    }
+    RandomAccessFileOutput fileOutput(&file);
 }
 
 void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
@@ -48,15 +61,17 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return;
     }
 
-    ReadFileFullyFromOffsetFuncV1(data, size);
-    WriteToFileFunc(data, size);
+    RandomAccessFileReadFileFunc(data, size);
+    RandomAccessFileInputConstructor(data, size);
+    RandomAccessFileOutputConstructor(data, size);
 }
+} // namespace SignatureTools
 } // namespace OHOS
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithMyAPI(data, size);
+    OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;
 }

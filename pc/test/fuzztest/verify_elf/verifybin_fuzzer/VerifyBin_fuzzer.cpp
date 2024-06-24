@@ -22,8 +22,14 @@
 #include "hash_utils.h"
 using namespace OHOS::SignatureTools;
 
+#define SHA_224 5
+#define SHA_256 6
+#define VERSION 9
+#define SHA_384 7
+#define SHA_512 8
+
 namespace OHOS {
-static const std::map<std::string, std::string> PARAMS = { {"keyPwd", "123456"},
+static const std::map<std::string, std::string> PARAMS = {{"keyPwd", "123456"},
                                                            {"mode", "localSign"},
                                                            {"keyAlias", "oh-app1-key-v1"},
                                                            {"signAlg", "SHA256withECDSA"},
@@ -35,7 +41,7 @@ static const std::map<std::string, std::string> PARAMS = { {"keyPwd", "123456"},
                                                            {"profileSigned", "1"},
                                                            {"profileFile", "./hapSign/signed-profile.p7b"},
                                                            {"keystoreFile", "./hapSign/ohtest.jks"},
-                                                           {"inFile", "./elfVerify/linuxout-unsigned.bin"} };
+                                                           {"inFile", "./elfVerify/linuxout-unsigned.bin"}};
 
 bool Verify001(const uint8_t* data, size_t size)
 {
@@ -202,12 +208,12 @@ bool SignBin001(const uint8_t* data, size_t size)
     signParams["profileSigned"] = "1";
     signParams["signAlg"] = "SHA256withECDSA";
     signParams["signCode"] = "1";
-
+    int size = 32;
     SignerConfig signerConfig;
-    signerConfig.SetCompatibleVersion(9);
+    signerConfig.SetCompatibleVersion(VERSION);
     signerConfig.FillParameters(PARAMS);
 
-    ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
+    ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", size);
     std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
     SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::ECDSA_WITH_SHA256, "ECDSA_WITH_SHA256",
                                                 contentDigestAlgorithm, signatureAlgAndParams);
@@ -236,54 +242,54 @@ bool GetHashAlgsId001(const uint8_t* data, size_t size)
 {
     int algId = HashUtils::GetHashAlgsId("SHA-224");
 
-    return algId == 5;
+    return algId == SHA_224;
 }
 
 bool GetHashAlgsId002(const uint8_t* data, size_t size)
 {
     int algId = HashUtils::GetHashAlgsId("SHA-256");
 
-    return algId == 6;
+    return algId == SHA_256;
 }
 
 bool GetHashAlgsId003(const uint8_t* data, size_t size)
 {
     int algId = HashUtils::GetHashAlgsId("SHA-384");
 
-    return algId == 7;
+    return algId == SHA_384;
 }
 
 bool GetHashAlgsId004(const uint8_t* data, size_t size)
 {
     int algId = HashUtils::GetHashAlgsId("SHA-512");
 
-    return algId == 8;
+    return algId == SHA_512;
 }
 
 bool GetHashAlgName001(const uint8_t* data, size_t size)
 {
-    std::string alg = HashUtils::GetHashAlgName(5);
+    std::string alg = HashUtils::GetHashAlgName(SHA_224);
     int sizet = alg.size();
     return sizet != 0;
 }
 
 bool GetHashAlgName002(const uint8_t* data, size_t size)
 {
-    std::string alg = HashUtils::GetHashAlgName(6);
+    std::string alg = HashUtils::GetHashAlgName(SHA_256);
     int sizet = alg.size();
     return sizet != 0;
 }
 
 bool GetHashAlgName003(const uint8_t* data, size_t size)
 {
-    std::string alg = HashUtils::GetHashAlgName(7);
+    std::string alg = HashUtils::GetHashAlgName(SHA_384);
     int sizet = alg.size();
     return sizet != 0;
 }
 
 bool GetHashAlgName004(const uint8_t* data, size_t size)
 {
-    std::string alg = HashUtils::GetHashAlgName(8);
+    std::string alg = HashUtils::GetHashAlgName(SHA_512);
     int sizet = alg.size();
     return sizet != 0;
 }
@@ -300,7 +306,7 @@ bool GetDigestFromBytes001(const uint8_t* data, size_t size)
 
 bool GetDigestFromBytes002(const uint8_t* data, size_t size)
 {
-    std::vector<int8_t> fileBytes = { 1, 1 };
+    std::vector<int8_t> fileBytes = {1, 1};
     int64_t length = 0;
     std::string algName = "SHA-256";
     std::vector<signed char> dig = HashUtils::GetDigestFromBytes(fileBytes, length, algName);

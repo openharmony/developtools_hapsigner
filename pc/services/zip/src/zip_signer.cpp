@@ -109,6 +109,7 @@ EndOfCentralDirectory* ZipSigner::GetZipEndOfCentralDirectory(std::ifstream& inp
         }
     }
     SIGNATURE_TOOLS_LOGE("read zip failed: can not find eocd in file");
+    PrintErrorNumberMsg("ZIP_ERROR", ZIP_ERROR, "can not find eocd in file");
     return nullptr;
 }
 

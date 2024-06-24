@@ -29,6 +29,7 @@
 #include "bc_pkcs7_generator.h"
 #include "bc_signeddata_generator.h"
 #include "profile_verify.h"
+#include "verify_hap_openssl_utils.h"
 
 using  nlohmann::json;
 
@@ -555,6 +556,264 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test023, testing::ext::TestSize.Level1)
     ASN1_TIME_free(notBefore);
     ASN1_TIME_free(notAfter);
     EXPECT_TRUE(result < 0);
+}
+
+/**
+ * @tc.name: pkcs7_test024
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test024, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test025
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test025, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test026
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test026, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test027
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test027, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test028
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test028, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = "LocalSign";
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test029
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test029, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test030
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test030, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test031
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test031, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = ParamsRunTool::RunSignProfile(&options, api);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test032
+ * @tc.desc: Test function of SignToolServiceImpl::GetProvisionContent() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test032, testing::ext::TestSize.Level1)
+{
+    std::string ret;
+    const std::string input = "invalid.txt";
+    SignToolServiceImpl::GetProvisionContent(input, ret);
+    EXPECT_TRUE(ret.empty());
+}
+
+/**
+ * @tc.name: pkcs7_test033
+ * @tc.desc: Test function of VerifyHapOpensslUtils::ParsePkcs7Package() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test033, testing::ext::TestSize.Level1)
+{
+    unsigned char packageData[] = "hello,world";
+    uint32_t packageLen = 0;
+    Pkcs7Context ctx;
+    bool result = VerifyHapOpensslUtils::ParsePkcs7Package(packageData, packageLen, ctx);
+    EXPECT_EQ(result, false);
 }
 }
 }

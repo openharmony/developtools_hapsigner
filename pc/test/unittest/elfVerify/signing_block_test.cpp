@@ -30,23 +30,6 @@ public:
 };
 
 /**
- * @tc.name: GetType
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(SigningBlockTest, GetType, testing::ext::TestSize.Level1)
-{
-    std::vector<int8_t> value;
-    SigningBlock signingBlock(0, value);
-    int32_t type = signingBlock.GetType();
-
-    EXPECT_EQ(type, 0);
-}
-
-/**
  * @tc.name: GetLength
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM

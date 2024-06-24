@@ -22,9 +22,6 @@ using namespace OHOS::SignatureTools;
 namespace OHOS {
 bool FromByteArray001(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     std::vector<signed char> bytes;
     CodeSignBlockHeader* codeSignBlockHeader = api->FromByteArray(bytes);
@@ -34,9 +31,6 @@ bool FromByteArray001(const uint8_t* data, size_t size)
 
 bool FromByteArray002(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     std::vector<signed char> bytes{ -1, -91, 34, -16, 97, -32, -121, 1, 5, 3, 8, 8, 15,
         12, 12, 13, 58, 19, 50, 10, 54, 29, 59, 17, 102, 105, 15, 19, 29, 30, 32, 59 };
@@ -47,9 +41,6 @@ bool FromByteArray002(const uint8_t* data, size_t size)
 
 bool FromByteArray003(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     ByteBuffer byteBuffer(33);
     byteBuffer.PutInt64(-2285919006713316147);
@@ -65,9 +56,6 @@ bool FromByteArray003(const uint8_t* data, size_t size)
 
 bool FromByteArray004(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     ByteBuffer byteBuffer(33);
     byteBuffer.PutInt64(-2285919006713316147);
@@ -85,9 +73,6 @@ bool FromByteArray004(const uint8_t* data, size_t size)
 
 bool FromByteArray005(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     ByteBuffer byteBuffer(33);
     byteBuffer.PutInt64(-2285919006713316147);
@@ -105,9 +90,6 @@ bool FromByteArray005(const uint8_t* data, size_t size)
 
 bool FromByteArray006(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     ByteBuffer byteBuffer(33);
     byteBuffer.PutInt64(-2285919006713316147);
@@ -126,9 +108,6 @@ bool FromByteArray006(const uint8_t* data, size_t size)
 
 bool GetBlockSize(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     int blockSize = api->GetBlockSize();
 
@@ -137,9 +116,6 @@ bool GetBlockSize(const uint8_t* data, size_t size)
 
 bool GetSegmentNum(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     int segmentNum = api->GetSegmentNum();
 
@@ -148,9 +124,6 @@ bool GetSegmentNum(const uint8_t* data, size_t size)
 
 bool SetBlockSize(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     api->SetBlockSize(1024);
 
@@ -159,9 +132,6 @@ bool SetBlockSize(const uint8_t* data, size_t size)
 
 bool SetFlags(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     int flags = 1;
     api->SetFlags(flags);
@@ -171,9 +141,6 @@ bool SetFlags(const uint8_t* data, size_t size)
 
 bool SetSegmentNum(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     api->SetSegmentNum(4);
 
@@ -182,9 +149,6 @@ bool SetSegmentNum(const uint8_t* data, size_t size)
 
 bool Size(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     int headerSize = api->Size();
 
@@ -193,9 +157,6 @@ bool Size(const uint8_t* data, size_t size)
 
 bool ToByteArray(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     std::shared_ptr<CodeSignBlockHeader> api = std::make_shared<CodeSignBlockHeader>();
     std::vector<int8_t> byteArray = api->ToByteArray();
 

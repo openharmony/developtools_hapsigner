@@ -22,9 +22,6 @@ using namespace OHOS::SignatureTools;
 namespace OHOS {
 bool FromByteArray001(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     int32_t treeLength = 8;
     std::vector<int8_t> merkleTreeWithPadding = { 1, 1, 1, 1, 1, 1, 1, 1 };
     FsVerityDescriptorWithSign descriptorWithSign;
@@ -38,9 +35,6 @@ bool FromByteArray001(const uint8_t* data, size_t size)
 
 bool FromByteArray002(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
     int32_t treeLength = 8;
     std::vector<int8_t> merkleTreeWithPadding = { 1, 1, 1, 1, 1, 1, 1, 1 };
     FsVerityDescriptorWithSign descriptorWithSign;

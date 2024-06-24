@@ -32,11 +32,6 @@ std::unordered_map<signed char, SigningBlock>& SignBlockInfo::GetSignBlockMap()
     return signBlockMap;
 }
 
-void SignBlockInfo::SetSignBlockMap(std::unordered_map<signed char, SigningBlock>& signBlockMap)
-{
-    this->signBlockMap = signBlockMap;
-}
-
 std::vector<int8_t> SignBlockInfo::GetFileDigest()
 {
     return fileDigest;
@@ -60,11 +55,6 @@ void SignBlockInfo::SetRawDigest(std::vector<int8_t> rawDigest)
 bool SignBlockInfo::GetNeedGenerateDigest()
 {
     return needGenerateDigest;
-}
-
-void SignBlockInfo::SetNeedGenerateDigest(bool needGenerateDigest)
-{
-    this->needGenerateDigest = needGenerateDigest;
 }
 
 } // namespace SignatureTools

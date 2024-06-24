@@ -82,11 +82,6 @@ std::pair<std::string, std::string> HapUtils::ParseAppIdentifier(const std::stri
     return std::pair(ownerID, profileType);
 }
 
-std::set<int> HapUtils::GetHapSignatureOptionalBlockIds()
-{
-    return HAP_SIGNATURE_OPTIONAL_BLOCK_IDS;
-}
-
 std::vector<signed char> HapUtils::GetHapSigningBlockMagic(int compatibleVersion)
 {
     if (compatibleVersion >= MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3) {

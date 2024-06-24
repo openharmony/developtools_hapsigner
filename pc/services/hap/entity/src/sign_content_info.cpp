@@ -89,15 +89,5 @@ std::vector<int8_t> SignContentInfo::GetByteContent()
     return ret;
 }
 
-void SignContentInfo::SetVersion(std::string version)
-{
-    this->version = version;
-}
-
-void SignContentInfo::SetSize(short size)
-{
-    this->size = size;
-}
-
 } // namespace SignatureTools
 } // namespace OHOS

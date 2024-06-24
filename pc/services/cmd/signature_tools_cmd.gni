@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Copyright (c) 2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,14 +12,12 @@
 # limitations under the License.
 
 import("../../signature_tools.gni")
-signature_tools_cmd_include = [
-    "${signature_tools_service_cmd}/include",
-]
+signature_tools_cmd_include = [ "${signature_tools_service_cmd}/include" ]
 
 signature_tools_cmd_src = [
-    "${signature_tools_service_cmd}/src/cmd_util.cpp",
-    "${signature_tools_service_cmd}/src/params_run_tool.cpp",
-    "${signature_tools_service_cmd}/src/options.cpp",
-    "${signature_tools_service_cmd}/src/params_trust_list.cpp",
-    "${signature_tools_service_cmd}/src/params.cpp",
+  "${signature_tools_service_cmd}/src/cmd_util.cpp",
+  "${signature_tools_service_cmd}/src/params_run_tool.cpp",
+  "${signature_tools_service_cmd}/src/options.cpp",
+  "${signature_tools_service_cmd}/src/params_trust_list.cpp",
+  "${signature_tools_service_cmd}/src/params.cpp",
 ]

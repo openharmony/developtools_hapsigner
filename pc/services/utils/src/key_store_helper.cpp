@@ -15,7 +15,6 @@
 #include "key_store_helper.h"
 #include <cstring>
 #include "openssl/err.h"
-#include "p12_local.h"
 #include "constant.h"
 #include "signature_tools_errno.h"
 
@@ -664,7 +663,8 @@ int KeyStoreHelper::CopyBagAttr(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid)
     if (idx < 0)
         return RET_OK;
     attr = EVP_PKEY_get_attr(pkey, idx);
-    if (!X509at_add1_attr(&(bag->attrib), attr))
+    STACK_OF(X509_ATTRIBUTE)* attrlib = const_cast<STACK_OF(X509_ATTRIBUTE)*>(PKCS12_SAFEBAG_get0_attrs(bag));
+    if (!X509at_add1_attr(&attrlib, attr))
         return RET_FAILED;
     return RET_OK;
 }

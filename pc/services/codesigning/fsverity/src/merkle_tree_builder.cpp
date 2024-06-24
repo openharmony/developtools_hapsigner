@@ -61,7 +61,7 @@ void MerkleTreeBuilder::TransInputStreamToHashData(std::istream& inputStream,
             flag = 1;
         }
         if (offset != readSize)
-            PrintErrorNumberMsg("READ_FILE_ERROR", READ_FILE_ERROR, "Error reading buffer from input");
+            PrintErrorNumberMsg("READ_FILE_ERROR", IO_ERROR, "Error reading buffer from input");
         byteBuffer->Flip();
         int readChunkIndex = (int)(GetFullChunkSize(MAX_READ_SIZE, CHUNK_SIZE, i));
         thread_results.push_back(mPools->Enqueue(&MerkleTreeBuilder::RunHashTask, this, std::ref(hashes),

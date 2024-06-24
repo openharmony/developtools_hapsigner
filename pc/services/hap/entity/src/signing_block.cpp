@@ -33,11 +33,6 @@ SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value, int64_t offs
     this->offset = offset;
 }
 
-int32_t SigningBlock::GetType()
-{
-    return type;
-}
-
 int32_t SigningBlock::GetLength()
 {
     return length;

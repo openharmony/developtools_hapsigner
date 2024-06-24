@@ -15,6 +15,13 @@ import("../../signature_tools.gni")
 group("hapsigntool_pc_fuzztest") {
   testonly = true
   deps = [
+    "${signature_tools_test}/fuzztest/generate_ca:generate_ca_fuzztest",
     "${signature_tools_test}/fuzztest/process_cmd:process_cmd_fuzztest",
+    "${signature_tools_test}/fuzztest/zip:zip_fuzztest",
+    "${signature_tools_test}/fuzztest/utils:utils_fuzztest",
+    "${signature_tools_test}/fuzztest/remote_signer_fuzzer:remote_signer_fuzztest",
+    "${signature_tools_test}/fuzztest/profile:profile_fuzztest",
+    "${signature_tools_test}/fuzztest/hapsign_fuzzer:hapsign_fuzzer_fuzztest",
+    "${signature_tools_test}/fuzztest/common:common_fuzztest"
   ]
 }

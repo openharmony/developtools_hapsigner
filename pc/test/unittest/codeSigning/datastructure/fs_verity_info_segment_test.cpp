@@ -242,20 +242,3 @@ HWTEST_F(FsVerityInfoSegmentTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 64);
 }
-
-/**
- * @tc.name: toString
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FsVerityInfoSegmentTest, toString, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<FsVerityInfoSegment> api = std::make_shared<FsVerityInfoSegment>();
-
-    std::string str = api->ToString();
-
-    EXPECT_EQ(str.size(), 75);
-}

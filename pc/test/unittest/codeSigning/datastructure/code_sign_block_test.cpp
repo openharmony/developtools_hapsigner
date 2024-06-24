@@ -161,23 +161,6 @@ HWTEST_F(CodeSignBlockTest, getCodeSignBlockHeader, testing::ext::TestSize.Level
 }
 
 /**
- * @tc.name: getFsVerityInfoSegment
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, getFsVerityInfoSegment, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    api->GetFsVerityInfoSegment();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
  * @tc.name: getHapInfoSegment
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
@@ -442,21 +425,4 @@ HWTEST_F(CodeSignBlockTest, setSoInfoSegment, testing::ext::TestSize.Level1)
     api->SetSoInfoSegment(soSeg);
 
     EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: toString
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, toString, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    std::string str = api->ToString();
-
-    EXPECT_EQ(str.size(), 0);
 }

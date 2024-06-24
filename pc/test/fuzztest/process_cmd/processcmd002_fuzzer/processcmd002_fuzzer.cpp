@@ -29,7 +29,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int argc = 5;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(nullptr, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

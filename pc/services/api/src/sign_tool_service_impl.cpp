@@ -144,7 +144,7 @@ void SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
 {
     std::string iksFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
     if (!FileUtils::IsEmpty(iksFile) && !options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE)) {
-        PrintErrorNumberMsg("WRITE_FILE_ERROR", WRITE_FILE_ERROR,
+        PrintErrorNumberMsg("WRITE_FILE_ERROR", IO_ERROR,
                             "ksFile and iksFile are  inconsistent!");
         return;
     }
@@ -154,7 +154,7 @@ void SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
         return;
     } else {
         if (std::strcmp(keyStoreRights, issuerKeyStoreRights) != 0) {
-            PrintErrorNumberMsg("WRITE_FILE_ERROR", WRITE_FILE_ERROR,
+            PrintErrorNumberMsg("WRITE_FILE_ERROR", IO_ERROR,
                                 "KEY_STORE_RIGHTS and ISSUER_KEY_STORE_RIGHTS are  inconsistent!");
             return;
         }
@@ -179,7 +179,7 @@ bool SignToolServiceImpl::OutputModeOfCert(X509* cert, Options* options)
     std::string outFile = options->GetString(Options::OUT_FILE);
     if (!outFile.empty()) {
         if (!CertTools::SaveCertTofile(outFile, cert)) {
-            PrintErrorNumberMsg("WRITE_FILE_ERROR", WRITE_FILE_ERROR, "failed to save cert to file");
+            PrintErrorNumberMsg("WRITE_FILE_ERROR", IO_ERROR, "failed to save cert to file");
             return false;
         }
     } else {
@@ -605,7 +605,7 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
     std::string bytes;
     if (FileUtils::ReadFile(input, bytes) < 0) {
         SIGNATURE_TOOLS_LOGE("provision read faild!\n");
-        return READ_FILE_ERROR;
+        return IO_ERROR;
     }
     nlohmann::json obj = nlohmann::json::parse(bytes);
     if (obj.is_discarded() || (!obj.is_structured())) {

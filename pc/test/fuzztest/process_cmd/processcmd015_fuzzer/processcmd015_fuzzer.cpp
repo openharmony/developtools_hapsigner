@@ -26,24 +26,37 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "generate-cert", arg2[] = "-keyAlias", arg3[] = "oh-profile1-key-v1",
-        arg4[] = "-keyPwd", arg5[] = "123456", arg6[] = "-issuer",
-        arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA",
-        arg8[] = "-issuerKeyAlias", arg9[] = "oh-profile-sign-srv-ca-key-v1",
-        arg10[] = "-subject", arg11[] = "C=CN,O=OpenHarmony,OU = OpenHarmony Community, CN = App1 Release",
-        arg12[] = "-validity", arg13[] = "365",
-        arg14[] = "-signAlg", arg15[] = "SHA384withECDSA",
-        arg16[] = "-keystoreFile", arg17[] = "./generateKeyPair/OpenHarmony.p12", arg18[] = "-keystorePwd",
-        arg19[] = "123456", arg20[] = "-outFile",
-        arg21[] = "./generateKeyPair/general.cer",
-        arg22[] = "-keyUsage", arg23[] = "digitalSignature";
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN;O=OpenHarmony;OU = OpenHarmony Community; CN = App1 Release";
+    char arg12[] = "-validity";
+    char arg13[] = "365";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-keyUsage";
+    char arg23[] = "digitalSignature";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

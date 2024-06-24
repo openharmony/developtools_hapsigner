@@ -25,6 +25,8 @@ std::shared_ptr<Signer> SignerFactory::GetSigner(LocalizationAdapter& adapter)co
 
     EVP_PKEY* keyPair = adapter.GetAliasKey(false);
     if (keyPair == NULL) {
+        PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "get keypair " + 
+                            adapter.options->GetString(Options::KEY_ALIAS) + " failed");
         SIGNATURE_TOOLS_LOGE("NULL keyPair");
         return NULL;
     }

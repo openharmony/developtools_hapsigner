@@ -29,16 +29,11 @@ public:
     SignBlockData(std::string &signFile, char type);
 
     char GetType();
-    void SetType(char type);
     std::vector<int8_t> GetBlockHead();
     void SetBlockHead(std::vector<int8_t> &blockHead);
     std::vector<int8_t> GetSignData();
-    void SetSignData(std::vector<int8_t> &signData);
     std::string GetSignFile();
-    void SetSignFile(std::string signFile);
     long GetLen();
-    void SetLen(long len);
-    void SetByte(bool isByte);
     bool GetByte();
 
 private:

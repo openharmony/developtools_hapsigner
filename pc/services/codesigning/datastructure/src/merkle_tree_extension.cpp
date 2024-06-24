@@ -74,11 +74,6 @@ std::vector<int8_t> MerkleTreeExtension::ToByteArray()
     return ret;
 }
 
-std::string MerkleTreeExtension::ToString()
-{
-    return "";
-}
-
 MerkleTreeExtension* MerkleTreeExtension::FromByteArray(std::vector<int8_t> bytes)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));

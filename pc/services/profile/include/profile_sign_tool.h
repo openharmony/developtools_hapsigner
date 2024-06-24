@@ -54,9 +54,6 @@ public:
       */
     static int SignProfile(const std::string& content,
                            std::shared_ptr<Signer> signer, const std::string& sigAlg, std::string& ret);
-
-private:
-    ProfileSignTool();
 };
 } // namespace SignatureTools
 } // namespace OHOS

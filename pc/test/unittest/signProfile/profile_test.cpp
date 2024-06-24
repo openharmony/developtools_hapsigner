@@ -38,7 +38,7 @@ using  nlohmann::json;
 namespace OHOS {
 namespace SignatureTools {
 
-// sign profile使用的全局参数
+// sign profile浣跨敤鐨勫叏灞�鍙傛暟
 static const std::string SIGN_PROFILE_MODE = "localSign";
 static const std::string SIGN_PROFILE_KEY_ALIAS = "oh-profile1-key-v1";
 static const std::string SIGN_PROFILE_PROFILE_CERT_FILE = "./signProfile/profile-release1.pem";
@@ -52,10 +52,10 @@ static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-relea
 static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
                                                         "profile-release1-invalid_cert_chain.pem";
 
-//verify profile 使用的全局参数
+//verify profile 浣跨敤鐨勫叏灞�鍙傛暟
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
 static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
-//sign app 使用全局参数
+//sign app 浣跨敤鍏ㄥ眬鍙傛暟
 static const std::string SIGN_APP_MODE = "localSign";
 static const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
 static const std::string SIGN_APP_APP_CERT_FILE = "./signProfile/app-release1.pem";
@@ -64,7 +64,7 @@ static const std::string SIGN_APP_IN_FILE = "./signProfile/app1-unsigned.hap";
 static const std::string SIGN_APP_SIGN_ALG = "SHA256withECDSA";
 static const std::string SIGN_APP_KEY_STORE_FILE = "./signProfile/ohtest.p12";
 static const std::string SIGN_APP_OUT_FILE = "./signProfile/app1-signed.hap";
-//verify app 使用全局参数
+//verify app 浣跨敤鍏ㄥ眬鍙傛暟
 static const std::string VERIFY_APP_CERT_FILE = "./signProfile/app-release1.pem";
 static const std::string VERIFY_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
 static const std::string VERIFY_APP_IN_FILE = "./signProfile/app1-signed.hap";
@@ -207,7 +207,7 @@ HWTEST_F(ProfileTest, profile_test006, testing::ext::TestSize.Level1)
     options[Options::KEY_RIGHTS] = keyStorePwd;
     options[Options::KEY_STORE_RIGHTS] = keypwd;
 
-    // config设置算法 signer
+    // config璁剧疆绠楁硶 signer
     SignerConfig config;
     config.SetOptions(&options);
     SignatureAlgorithmHelper algClass;
@@ -247,7 +247,7 @@ HWTEST_F(ProfileTest, profile_test007, testing::ext::TestSize.Level1)
     options[Options::KEY_RIGHTS] = keyStorePwd;
     options[Options::KEY_STORE_RIGHTS] = keypwd;
 
-    // config设置算法 signer
+    // config璁剧疆绠楁硶 signer
     SignerConfig config;
     config.SetOptions(&options);
     SignatureAlgorithmHelper algClass;
@@ -287,7 +287,7 @@ HWTEST_F(ProfileTest, profile_test008, testing::ext::TestSize.Level1)
     options[Options::KEY_RIGHTS] = keyStorePwd;
     options[Options::KEY_STORE_RIGHTS] = keypwd;
 
-    // config设置算法 signer
+    // config璁剧疆绠楁硶 signer
     SignerConfig config;
     config.SetOptions(&options);
     SignatureAlgorithmHelper algClass;
@@ -327,7 +327,7 @@ HWTEST_F(ProfileTest, profile_test009, testing::ext::TestSize.Level1)
     options[Options::KEY_RIGHTS] = keyStorePwd;
     options[Options::KEY_STORE_RIGHTS] = keypwd;
 
-    // config设置算法 signer
+    // config璁剧疆绠楁硶 signer
     SignerConfig config;
     config.SetOptions(&options);
     SignatureAlgorithmHelper algClass;
@@ -369,7 +369,7 @@ HWTEST_F(ProfileTest, profile_test010, testing::ext::TestSize.Level1)
     options[Options::KEY_RIGHTS] = keyStorePwd;
     options[Options::KEY_STORE_RIGHTS] = keypwd;
 
-    // config设置算法 signer
+    // config璁剧疆绠楁硶 signer
     SignerConfig config;
     config.SetOptions(&options);
     SignatureAlgorithmHelper algClass;
@@ -821,6 +821,66 @@ HWTEST_F(ProfileTest, profile_test026, testing::ext::TestSize.Level1)
     STACK_OF(X509)* certs = sk_X509_new(NULL);
     PKCS7Data::ReverseX509Stack(certs);
     sk_X509_free(certs);
+}
+
+/**
+ * @tc.name: profile_test027
+ * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ProfileTest, profile_test027, testing::ext::TestSize.Level1)
+{
+    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+    ProfileInfo info;
+    AppProvisionVerifyResult result = ParseProvision(provision, info);
+    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_INVALID);
+}
+
+/**
+ * @tc.name: profile_test028
+ * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ProfileTest, profile_test028, testing::ext::TestSize.Level1)
+{
+    std::string  provision = "{\"app-distribution-type\": \"\",\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+    ProfileInfo info;
+    AppProvisionVerifyResult result = ParseProvision(provision, info);
+    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_INVALID);
 }
 
 }

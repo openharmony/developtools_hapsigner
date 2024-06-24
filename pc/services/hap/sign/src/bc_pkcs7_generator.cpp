@@ -53,7 +53,7 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
     result = PackagePKCS7(content, signer, sigAlg, ret);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("PackageSignedData error!");
-        return GENERATEPKCS7_ERROR;
+        return SIGN_ERROR;
     }
     return result;
 }
@@ -65,7 +65,7 @@ int BCPkcs7Generator::PackagePKCS7(const std::string& content, std::shared_ptr<S
     result = p7Data.Sign(content, signer, sigAlg, ret);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("generate pkcs7 block failed");
-        return PKCS7_SIGN_ERROR;
+        return SIGN_ERROR;
     }
     result = p7Data.Parse(ret);
     if (result < 0) {
