@@ -32,40 +32,44 @@
 #include "profile_verify_utils.h"
 #include "cms_utils.h"
 
+#ifndef PROFILE_RESOURCE_H
+#define PROFILE_RESOURCE_H
 using  nlohmann::json;
 
 namespace OHOS {
 namespace SignatureTools {
 
 // sign profile使用的全局参数
-static const std::string SIGN_PROFILE_MODE = "localSign";
-static const std::string SIGN_PROFILE_KEY_ALIAS = "oh-profile1-key-v1";
-static const std::string SIGN_PROFILE_PROFILE_CERT_FILE = "./signProfile/profile-release1.pem";
-static const std::string SIGN_PROFILE_SIGN_ALG = "SHA384withECDSA";
-static const std::string SIGN_PROFILE_KEY_STORE_FILE = "./signProfile/ohtest.p12";
-static const std::string SIGN_PROFILE_OUT_FILE = "./signProfile/signed-profile.p7b";
-static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
+const std::string SIGN_PROFILE_MODE = "localSign";
+const std::string SIGN_PROFILE_KEY_ALIAS = "oh-profile1-key-v1";
+const std::string SIGN_PROFILE_PROFILE_CERT_FILE = "./signProfile/profile-release1.pem";
+const std::string SIGN_PROFILE_SIGN_ALG = "SHA384withECDSA";
+const std::string SIGN_PROFILE_KEY_STORE_FILE = "./signProfile/ohtest.p12";
+const std::string SIGN_PROFILE_OUT_FILE = "./signProfile/signed-profile.p7b";
+const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 
-static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
-static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
-static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
+const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
+const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
+const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
 "profile-release1-invalid_cert_chain.pem";
 
 //verify profile 使用的全局参数
-static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
+const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
+const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
 //sign app 使用全局参数
-static const std::string SIGN_APP_MODE = "localSign";
-static const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
-static const std::string SIGN_APP_APP_CERT_FILE = "./signProfile/app-release1.pem";
-static const std::string SIGN_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string SIGN_APP_IN_FILE = "./signProfile/app1-unsigned.hap";
-static const std::string SIGN_APP_SIGN_ALG = "SHA256withECDSA";
-static const std::string SIGN_APP_KEY_STORE_FILE = "./signProfile/ohtest.p12";
-static const std::string SIGN_APP_OUT_FILE = "./signProfile/app1-signed.hap";
+const std::string SIGN_APP_MODE = "localSign";
+const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
+const std::string SIGN_APP_APP_CERT_FILE = "./signProfile/app-release1.pem";
+const std::string SIGN_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
+const std::string SIGN_APP_IN_FILE = "./signProfile/app1-unsigned.hap";
+const std::string SIGN_APP_SIGN_ALG = "SHA256withECDSA";
+const std::string SIGN_APP_KEY_STORE_FILE = "./signProfile/ohtest.p12";
+const std::string SIGN_APP_OUT_FILE = "./signProfile/app1-signed.hap";
 //verify app 使用全局参数
-static const std::string VERIFY_APP_CERT_FILE = "./signProfile/app-release1.pem";
-static const std::string VERIFY_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string VERIFY_APP_IN_FILE = "./signProfile/app1-signed.hap";
+const std::string VERIFY_APP_CERT_FILE = "./signProfile/app-release1.pem";
+const std::string VERIFY_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
+const std::string VERIFY_APP_IN_FILE = "./signProfile/app1-signed.hap";
 }
 }
+#endif
+

@@ -180,6 +180,7 @@ bool HapSignTest005(const uint8_t* data, size_t size)
     ProfileInfo provisionInfo;
     VerifyHap verify;
     bool ret = verify.IsAppDistributedTypeAllowInstall(type, provisionInfo);
+    int capacity = 120;
 
     HapVerifyResult hapVerifyResult;
     hapVerifyResult.SetVersion(1);
@@ -190,7 +191,7 @@ bool HapSignTest005(const uint8_t* data, size_t size)
     std::vector<OptionalBlock> option;
     OptionalBlock testblock;
     testblock.optionalType = PROPERTY_BLOB;
-    testblock.optionalBlockValue.SetCapacity(120);
+    testblock.optionalBlockValue.SetCapacity(capacity);
     option.push_back(testblock);
     hapVerifyResult.SetOptionalBlocks(option);
 

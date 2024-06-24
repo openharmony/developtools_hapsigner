@@ -46,7 +46,8 @@ std::string FileUtils::GetSuffix(std::string filePath)
         return "";
     }
     size_t last_dot_position = filePath.rfind(".");
-    if (last_dot_position == std::string::npos || last_dot_position == filePath.size() - 1) {
+    bool positionFlag = (last_dot_position == std::string::npos) || (last_dot_position == filePath.size() - 1);
+    if (positionFlag) {
         return "";
     }
     return filePath.substr(last_dot_position + 1);
@@ -55,7 +56,8 @@ std::string FileUtils::GetSuffix(std::string filePath)
 bool FileUtils::ValidFileType(const std::string& filePath, std::initializer_list<std::string> types)
 {
     std::string suffix = GetSuffix(filePath);
-    if (suffix.empty() || StringUtils::ContainsCase(types, suffix) == false) {
+    bool flag = suffix.empty() || (StringUtils::ContainsCase(types, suffix) == false);
+    if (flag) {
         PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "Not support file: " + filePath);
         return false;
     }
@@ -65,7 +67,8 @@ bool FileUtils::ValidFileType(const std::string& filePath, std::initializer_list
 int FileUtils::Write(const std::string& content, const std::string& output)
 {
     std::ofstream outFile(output, std::ios::binary);
-    if (outFile.rdstate() != 0) {
+    bool flag = (outFile.rdstate() != 0);
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed get output stream!");
         return IO_ERROR;
     }
@@ -96,7 +99,8 @@ int FileUtils::Read(std::ifstream& input, std::string& ret)
 int FileUtils::ReadFile(const std::string& path, std::string& ret)
 {
     std::ifstream file(path, std::ios::binary);
-    if (file.rdstate() != 0) {
+    bool flag = (file.rdstate() != 0);
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("open %{public}s error", path.c_str());
         return IO_ERROR;
     }
@@ -150,7 +154,8 @@ int FileUtils::ReadInputByLength(std::ifstream& input, size_t length, std::strin
     while (hasReadLen < length && input) {
         int readLen = static_cast<int>(std::min(length - hasReadLen, (size_t)FILE_BUFFER_BLOCK));
         input.read(&buffer[0], readLen);
-        if (input.gcount() != readLen) {
+        bool flag = (input.gcount() != readLen);
+        if (flag) {
             SIGNATURE_TOOLS_LOGE("read %zu bytes data less than %zu", hasReadLen, length);
             return -1;
         }
@@ -186,11 +191,13 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
 {
     std::ifstream input(inputFile, std::ios::binary);
     std::ofstream output(outputFile, std::ios::binary | std::ios::app);
-    if (0 != input.rdstate()) {
+    bool flag = (0 != input.rdstate());
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed to get input stream object!");
         return false;
     }
-    if (0 != output.rdstate()) {
+    flag = (0 != output.rdstate());
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed to get output stream object!");
         return false;
     }
@@ -220,8 +227,8 @@ bool FileUtils::AppendWriteFileToFile(const std::string& inputFile, const std::s
 bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::string& outputFile)
 {
     std::ofstream output(outputFile, std::ios::binary | std::ios::app);
-
-    if (WriteByteToOutFile(bytes, output) == false) {
+    bool flag = (WriteByteToOutFile(bytes, output) == false);
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed to write data to output stream, outfile: %s", outputFile.c_str());
         return false;
     }
@@ -265,12 +272,13 @@ bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& 
 {
     std::ifstream in(input, std::ios::binary);
     std::ofstream out(output, std::ios::binary);
-    if (in.rdstate() != 0) {
+    bool flag = (in.rdstate() != 0);
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed to get input stream object!");
         return false;
     }
-
-    if (out.rdstate() != 0) {
+    flag = (out.rdstate() != 0);
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed to get output stream object!");
         return false;
     }
@@ -302,7 +310,8 @@ bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& 
 bool FileUtils::WriteByteToOutFile(const std::string& bytes, const std::string& outFile)
 {
     std::ofstream ops(outFile, std::ios::binary);
-    if (WriteByteToOutFile(bytes, ops) == false) {
+    bool flag = (WriteByteToOutFile(bytes, ops) == false);
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("Failed to write data to ops, outfile: %s", outFile.c_str());
         return false;
     }
@@ -352,12 +361,16 @@ bool FileUtils::IsRunnableFile(const std::string& name)
     if (name.empty()) {
         return false;
     }
-    if (name.size() >= NUM_THREE && name[name.size() - NUM_THREE] == '.' && name[name.size() - NUM_TWO] == 'a'
-        && name[name.size() - 1] == 'n') {
+    bool flag = (name.size() >= NUM_THREE) && (name[name.size() - NUM_THREE] == '.')
+        && (name[name.size() - NUM_TWO] == 'a')
+        && (name[name.size() - 1] == 'n');
+    if (flag) {
         return true;
     }
-    if (name.size() >= NUM_FOUR && name[name.size() - NUM_FOUR] == '.' && name[name.size() - NUM_THREE] == 'a'
-        && name[name.size() - NUM_TWO] == 'b' && name[name.size() - 1] == 'c') {
+    flag = (name.size() >= NUM_FOUR) && (name[name.size() - NUM_FOUR] == '.')
+        && (name[name.size() - NUM_THREE] == 'a')
+        && (name[name.size() - NUM_TWO] == 'b') && (name[name.size() - 1] == 'c');
+    if (flag) {
         return true;
     }
     for (const auto& val : SUFFIX_REGEX_MAP) {
@@ -372,10 +385,12 @@ bool FileUtils::IsRunnableFile(const std::string& name)
 bool FileUtils::IsValidFile(std::string file)
 {
     std::filesystem::path filePath = file;
-    if (!std::filesystem::exists(filePath)) {
+    bool flag = std::filesystem::exists(filePath);
+    if (!flag) {
         return false;
     }
-    if (std::filesystem::is_directory(filePath)) {
+    flag = std::filesystem::is_directory(filePath);
+    if (flag) {
         return false;
     }
     return true;
@@ -384,7 +399,8 @@ bool FileUtils::IsValidFile(std::string file)
 int64_t FileUtils::GetFileLen(const std::string& file)
 {
     std::filesystem::path filePath = file;
-    if (std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath)) {
+    bool flag = std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath);
+    if (flag) {
         return std::filesystem::file_size(filePath);
     }
     return -1;
@@ -393,7 +409,8 @@ int64_t FileUtils::GetFileLen(const std::string& file)
 void FileUtils::DelDir(const std::string& file)
 {
     std::filesystem::path filePath = file;
-    if (std::filesystem::is_directory(filePath)) {
+    bool flag = std::filesystem::is_directory(filePath);
+    if (flag) {
         for (auto& p : std::filesystem::recursive_directory_iterator(filePath)) {
             DelDir(p.path());
         }

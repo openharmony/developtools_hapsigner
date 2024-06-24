@@ -54,7 +54,7 @@ static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
 
 //verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
+static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/VerifyResult.json";
 //sign app 使用全局参数
 static const std::string SIGN_APP_MODE = "localSign";
 static const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";

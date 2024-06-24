@@ -88,7 +88,7 @@ void ConstructSignParams(std::map<std::string, std::string>& signParams)
     signParams["a"] = "4";
     signParams["appCertFile"] = "./hapSign/app-release1.pem";
     signParams["compatibleVersion"] = "9";
-    signParams["inFile"] = "./hapSign/unsigned-linux.out";
+    signParams["inFile"] = "./hapSign/unsigned-1M.bin";
     signParams["inForm"] = "bin";
     signParams["keyAlias"] = "oh-app1-key-v1";
     signParams["keyPwd"] = "123456";

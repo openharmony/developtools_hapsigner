@@ -47,7 +47,7 @@ void ZipSignerInfoFunc(const uint8_t* data, size_t size)
     if (!zip->Init(inputFile)) {
         return;
     }
-    std::vector<ZipEntry*> zipEntries { nullptr };
+    std::vector<ZipEntry*> zipEntries{nullptr};
     zip->SetZipEntries(zipEntries);
     zip->SetSigningOffset(size);
     std::string signingBlock(reinterpret_cast<const char*>(data), size);
@@ -101,6 +101,7 @@ void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
     for (const auto& zipEntry : zipEntries) {
         auto cd = zipEntry->GetCentralDirectory();
         cd->GetLength();
+        cd->GetCdLength();
         cd->GetSIGNATURE();
         cd->GetVersion();
         cd->GetVersionExtra();
@@ -146,12 +147,13 @@ void AlignmentFunc(const uint8_t* data, size_t size)
 {
     std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
+    int aliBytes = 102400;
     if (!zip->Init(inputFile)) {
         return;
     }
     auto zipEntries = zip->GetZipEntries();
     for (const auto& zipEntry : zipEntries) {
-        zipEntry->Alignment(102400);
+        zipEntry->Alignment(aliBytes);
     }
 }
 
@@ -163,6 +165,7 @@ void EndOfCentralDirectoryInfoFunc(const uint8_t* data, size_t size)
         return;
     }
     auto eocd = zip->GetEndOfCentralDirectory();
+    eocd->GetLength();
     eocd->GetEocdLength();
     eocd->GetSIGNATURE();
     eocd->GetDiskNum();

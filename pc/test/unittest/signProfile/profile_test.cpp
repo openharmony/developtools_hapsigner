@@ -50,11 +50,11 @@ static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
 static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
 static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
-                                                        "profile-release1-invalid_cert_chain.pem";
+"profile-release1-invalid_cert_chain.pem";
 
 //verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
+static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/VerifyResult.json";
 //sign app 使用全局参数
 static const std::string SIGN_APP_MODE = "localSign";
 static const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
@@ -833,7 +833,10 @@ HWTEST_F(ProfileTest, profile_test026, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, profile_test027, testing::ext::TestSize.Level1)
 {
-    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+    std::string  provision = "{\"app-distribution-type\": \"app_gallery\","
+        "\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":"
+        "\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\","
+        "\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
         "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
         "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
         "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
@@ -847,7 +850,12 @@ HWTEST_F(ProfileTest, profile_test027, testing::ext::TestSize.Level1)
         "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
         "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
         "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":["
+        "\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\","
+        "\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},"
+        "\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions"
+        "\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"not-after"
+        "\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     ProfileInfo info;
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_INVALID);
@@ -863,7 +871,10 @@ HWTEST_F(ProfileTest, profile_test027, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, profile_test028, testing::ext::TestSize.Level1)
 {
-    std::string  provision = "{\"app-distribution-type\": \"\",\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+    std::string  provision = "{\"app-distribution-type\": \"app_gallery\","
+        "\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":"
+        "\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\","
+        "\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
         "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
         "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
         "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
@@ -877,7 +888,12 @@ HWTEST_F(ProfileTest, profile_test028, testing::ext::TestSize.Level1)
         "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
         "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
         "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":["
+        "\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\","
+        "\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},"
+        "\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions"
+        "\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"not-after"
+        "\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     ProfileInfo info;
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_INVALID);

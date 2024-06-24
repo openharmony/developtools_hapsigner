@@ -14,9 +14,17 @@
 group("generate_ca_fuzztest") {
   testonly = true
   deps = [
-    "./generateca_001_fuzzer:GenerateCa001FuzzTest",
-    "./generateca_002_fuzzer:GenerateCa002FuzzTest",
-    "./generateca_003_fuzzer:GenerateCa003FuzzTest",
-    "./generateca_004_fuzzer:GenerateCa004FuzzTest",
+    "./generateca001_fuzzer:GenerateCa001FuzzTest",
+    "./generateca002_fuzzer:GenerateCa002FuzzTest",
+    "./generateca003_fuzzer:GenerateCa003FuzzTest",
+    "./generateca004_fuzzer:GenerateCa004FuzzTest",
+    "./generateca005_fuzzer:GenerateCa005FuzzTest",
+    "./generateca006_fuzzer:GenerateCa006FuzzTest",
+    "./generateca007_fuzzer:GenerateCa007FuzzTest",
+    "./generateca008_fuzzer:GenerateCa008FuzzTest",
+    "./generateca009_fuzzer:GenerateCa009FuzzTest",
+    "./generateca010_fuzzer:GenerateCa010FuzzTest",
+    "./generateca011_fuzzer:GenerateCa011FuzzTest",
+    "./generateca012_fuzzer:GenerateCa012FuzzTest",
   ]
 }

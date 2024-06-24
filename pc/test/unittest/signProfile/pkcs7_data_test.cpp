@@ -44,9 +44,14 @@ static const std::string SIGN_PROFILE_KEY_STORE_FILE = "./signProfile/ohtest.p12
 static const std::string SIGN_PROFILE_OUT_FILE = "./signProfile/signed-profile.p7b";
 static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 
+static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
+static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
+static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
+"profile-release1-invalid_cert_chain.pem";
+
 // verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/signed-profile.p7b";
-static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
+static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/VerifyResult.json";
 
 class Pkcs7DataTest : public testing::Test {
 public:
@@ -815,5 +820,148 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test033, testing::ext::TestSize.Level1)
     bool result = VerifyHapOpensslUtils::ParsePkcs7Package(packageData, packageLen, ctx);
     EXPECT_EQ(result, false);
 }
+
+/**
+ * @tc.name: pkcs7_test034
+ * @tc.desc: Test function of SignToolServiceImpl::SignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test034, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = "test.bin";
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = api.SignProfile(&options);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test035
+ * @tc.desc: Test function of SignToolServiceImpl::SignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test035, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_PROFILE_CERT_FILE;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = "test.bin";
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = api.SignProfile(&options);
+    EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: pkcs7_test036
+ * @tc.desc: Test function of SignToolServiceImpl::SignProfile() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(Pkcs7DataTest, pkcs7_test036, testing::ext::TestSize.Level1)
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_DOUBLE_CERT_PEM;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignToolServiceImpl api;
+    bool result = api.SignProfile(&options);
+    EXPECT_EQ(result, false);
+}
+
+/**
+* @tc.name: pkcs7_test037
+* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() interface for SUCCESS json写入OUT_FILE.
+* @tc.size: MEDIUM
+* @tc.type: FUNC
+* @tc.level Level 1
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(Pkcs7DataTest, pkcs7_test037, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options[Options::IN_FILE] = SIGN_PROFILE_CERT_PEM;
+    options[Options::OUT_FILE] = VERIFY_PROFILE_OUT_FILE;
+    bool result = false;
+    SignToolServiceImpl api;
+    result = api.VerifyProfile(&options);
+    EXPECT_EQ(result, false);
+}
+
+/**
+* @tc.name: pkcs7_test038
+* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() interface for SUCCESS json写入OUT_FILE.
+* @tc.size: MEDIUM
+* @tc.type: FUNC
+* @tc.level Level 1
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(Pkcs7DataTest, pkcs7_test038, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options[Options::IN_FILE] = VERIFY_PROFILE_IN_FILE;
+    bool result = false;
+    SignToolServiceImpl api;
+    result = api.VerifyProfile(&options);
+    EXPECT_EQ(result, true);
+}
+
+/**
+* @tc.name: pkcs7_test039
+* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() interface for SUCCESS json写入OUT_FILE.
+* @tc.size: MEDIUM
+* @tc.type: FUNC
+* @tc.level Level 1
+* @tc.require: SR000H63TL
+*/
+HWTEST_F(Pkcs7DataTest, pkcs7_test039, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options[Options::IN_FILE] = "text.bin";
+    bool result = false;
+    SignToolServiceImpl api;
+    result = api.VerifyProfile(&options);
+    EXPECT_EQ(result, false);
+}
+
 }
 }

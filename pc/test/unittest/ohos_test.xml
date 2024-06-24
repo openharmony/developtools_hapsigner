@@ -37,11 +37,6 @@
         <option name="push" value="./resource/hapVerify/phone-default-signed.hap -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/test_hap_verify_v2.hap -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/test_hap_verify_v3.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/unvaild.app -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/unvaild.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/unvaild.hqf -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/unvaild.hsp -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/unvaild.txt -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/test.hap -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/test1.hap -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/test2.hap -> /data/test/hapVerify/" src="res" />

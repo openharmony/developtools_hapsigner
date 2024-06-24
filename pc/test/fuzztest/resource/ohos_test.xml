@@ -560,6 +560,7 @@
         <option name="push" value="remote_signer/signed-profile.p7b -> /data/test/remote_signer/" src="res" />
         <option name="push" value="remote_signer/test1.hap -> /data/test/remote_signer/" src="res" />
         <option name="push" value="remote_signer/libremote_signer.z.so -> /data/test/remote_signer/" src="res" />
+        <option name="push" value="help.txt -> /data/test/" src="res" />
       </preparer>
       <cleaner>
       </cleaner>

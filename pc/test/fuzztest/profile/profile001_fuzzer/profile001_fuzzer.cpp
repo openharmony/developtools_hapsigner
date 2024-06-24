@@ -22,139 +22,141 @@
 using namespace OHOS::SignatureTools;
 
 namespace OHOS {
-    bool SignProfileTest001(const uint8_t* data, size_t size)
-    {
-        std::string content(data, data + size);
-        Options options;
-        std::string mode = SIGN_PROFILE_MODE;
-        std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
-        std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
-        std::string signAlg = SIGN_PROFILE_SIGN_ALG;
-        std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
-        std::string outFile = SIGN_PROFILE_OUT_FILE;
-        std::string inFile = SIGN_PROFILE_IN_FILE;
-        char keyStorePwd[] = "123456";
-        char keypwd[] = "123456";
-        options[Options::KEY_ALIAS] = keyAlias;
-        options[Options::MODE] = mode;
-        options[Options::PROFILE_CERT_FILE] = profileCertFile;
-        options[Options::SIGN_ALG] = signAlg;
-        options[Options::KEY_STORE_FILE] = keystoreFile;
-        options[Options::OUT_FILE] = outFile;
-        options[Options::IN_FILE] = inFile;
-        options[Options::KEY_RIGHTS] = keypwd;
-        options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+bool SignProfileTest001(const uint8_t* data, size_t size)
+{
+    std::string content(data, data + size);
+    Options options;
+    std::string mode = SIGN_PROFILE_MODE;
+    std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    std::string outFile = SIGN_PROFILE_OUT_FILE;
+    std::string inFile = SIGN_PROFILE_IN_FILE;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = keyAlias;
+    options[Options::MODE] = mode;
+    options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    options[Options::SIGN_ALG] = signAlg;
+    options[Options::KEY_STORE_FILE] = keystoreFile;
+    options[Options::OUT_FILE] = outFile;
+    options[Options::IN_FILE] = inFile;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
 
-        LocalizationAdapter adapter(&options);
-        SignerFactory factory;
-        std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
-        PKCS7Data p7;
-        std::string p7b;
-        int result = p7.Sign(content, signer, signAlg, p7b);
-        return result == 0;
+    LocalizationAdapter adapter(&options);
+    SignerFactory factory;
+    std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
+    PKCS7Data p7;
+    std::string p7b;
+    int result = p7.Sign(content, signer, signAlg, p7b);
+    return result == 0;
+}
+
+bool SignProfileTest002(const uint8_t* data, size_t size)
+{
+    std::string content(data, data + size);
+    Options options;
+    std::string mode = SIGN_PROFILE_MODE;
+    std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    std::string outFile = SIGN_PROFILE_OUT_FILE;
+    std::string inFile = SIGN_PROFILE_IN_FILE;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = keyAlias;
+    options[Options::MODE] = mode;
+    options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    options[Options::SIGN_ALG] = signAlg;
+    options[Options::KEY_STORE_FILE] = keystoreFile;
+    options[Options::OUT_FILE] = outFile;
+    options[Options::IN_FILE] = inFile;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignerFactory factory;
+    std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
+    STACK_OF(X509)* certs = signer->GetCertificates();
+    PKCS7Data::ReverseX509Stack(certs);
+    return true;
+}
+
+bool SignProfileTest003(const uint8_t* data, size_t size)
+{
+    std::string content(data, data + size);
+    Options options;
+    std::string mode = SIGN_PROFILE_MODE;
+    std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
+    std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
+    std::string signAlg = SIGN_PROFILE_SIGN_ALG;
+    std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
+    std::string outFile = SIGN_PROFILE_OUT_FILE;
+    std::string inFile = SIGN_PROFILE_IN_FILE;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = keyAlias;
+    options[Options::MODE] = mode;
+    options[Options::PROFILE_CERT_FILE] = profileCertFile;
+    options[Options::SIGN_ALG] = signAlg;
+    options[Options::KEY_STORE_FILE] = keystoreFile;
+    options[Options::OUT_FILE] = outFile;
+    options[Options::IN_FILE] = inFile;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    SignerFactory factory;
+    std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
+    STACK_OF(X509)* certs = signer->GetCertificates();
+    PKCS7Data::PrintCertChainSub(certs);
+    return true;
+}
+
+bool SignProfileTest004(const uint8_t* data, size_t size)
+{
+    ASN1_TIME* time_ = ASN1_TIME_new();
+    time_t now;
+    if (time(&now) < 0) {
+        return false;
     }
+    ASN1_TIME_set(time_, now);
+    std::string result = PKCS7Data::GetASN1Time(time_);
+    ASN1_TIME_free(time_);
+    return result.empty() == false;
+}
 
-    bool SignProfileTest002(const uint8_t* data, size_t size)
-    {
-        std::string content(data, data + size);
-        Options options;
-        std::string mode = SIGN_PROFILE_MODE;
-        std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
-        std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
-        std::string signAlg = SIGN_PROFILE_SIGN_ALG;
-        std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
-        std::string outFile = SIGN_PROFILE_OUT_FILE;
-        std::string inFile = SIGN_PROFILE_IN_FILE;
-        char keyStorePwd[] = "123456";
-        char keypwd[] = "123456";
-        options[Options::KEY_ALIAS] = keyAlias;
-        options[Options::MODE] = mode;
-        options[Options::PROFILE_CERT_FILE] = profileCertFile;
-        options[Options::SIGN_ALG] = signAlg;
-        options[Options::KEY_STORE_FILE] = keystoreFile;
-        options[Options::OUT_FILE] = outFile;
-        options[Options::IN_FILE] = inFile;
-        options[Options::KEY_RIGHTS] = keypwd;
-        options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+bool SignProfileTest005(const uint8_t* data, size_t size)
+{
+    ProfileInfo info;
+    info.type = ProvisionType::RELEASE;
+    ProfileInfo info2(info);
+    return true;
+}
 
-        LocalizationAdapter adapter(&options);
-        SignerFactory factory;
-        std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
-        STACK_OF(X509)* certs = signer->GetCertificates();
-        PKCS7Data::ReverseX509Stack(certs);
-        return true;
-    }
+bool SignProfileTest006(const uint8_t* data, size_t size)
+{
+    SetRdDevice(static_cast<bool>(size));
+    return true;
+}
 
-    bool SignProfileTest003(const uint8_t* data, size_t size)
-    {
-        std::string content(data, data + size);
-        Options options;
-        std::string mode = SIGN_PROFILE_MODE;
-        std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;
-        std::string profileCertFile = SIGN_PROFILE_PROFILE_CERT_FILE;
-        std::string signAlg = SIGN_PROFILE_SIGN_ALG;
-        std::string keystoreFile = SIGN_PROFILE_KEY_STORE_FILE;
-        std::string outFile = SIGN_PROFILE_OUT_FILE;
-        std::string inFile = SIGN_PROFILE_IN_FILE;
-        char keyStorePwd[] = "123456";
-        char keypwd[] = "123456";
-        options[Options::KEY_ALIAS] = keyAlias;
-        options[Options::MODE] = mode;
-        options[Options::PROFILE_CERT_FILE] = profileCertFile;
-        options[Options::SIGN_ALG] = signAlg;
-        options[Options::KEY_STORE_FILE] = keystoreFile;
-        options[Options::OUT_FILE] = outFile;
-        options[Options::IN_FILE] = inFile;
-        options[Options::KEY_RIGHTS] = keypwd;
-        options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
-
-        LocalizationAdapter adapter(&options);
-        SignerFactory factory;
-        std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
-        STACK_OF(X509)* certs = signer->GetCertificates();
-        PKCS7Data::PrintCertChainSub(certs);
-        return true;
-    }
-
-    bool SignProfileTest004(const uint8_t* data, size_t size)
-    {
-        ASN1_TIME* time_ = ASN1_TIME_new();
-        time_t now;
-        time(&now);
-        ASN1_TIME_set(time_, now);
-        std::string result = PKCS7Data::GetASN1Time(time_);
-        ASN1_TIME_free(time_);
-        return result.empty() == false;
-    }
-
-    bool SignProfileTest005(const uint8_t* data, size_t size)
-    {
-        ProfileInfo info;
-        info.type = ProvisionType::RELEASE;
-        ProfileInfo info2(info);
-        return true;
-    }
-
-    bool SignProfileTest006(const uint8_t* data, size_t size)
-    {
-        SetRdDevice(static_cast<bool>(size));
-        return true;
-    }
-
-    bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
-    {
-        SignProfileTest001(data, size);
-        SignProfileTest002(data, size);
-        SignProfileTest003(data, size);
-        SignProfileTest004(data, size);
-        SignProfileTest005(data, size);
-        SignProfileTest006(data, size);
-        return true;
-    }
+bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
+{
+    SignProfileTest001(data, size);
+    SignProfileTest002(data, size);
+    SignProfileTest003(data, size);
+    SignProfileTest004(data, size);
+    SignProfileTest005(data, size);
+    SignProfileTest006(data, size);
+    return true;
+}
 }
 
 /* Fuzzer entry point */
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t * data, size_t size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
     OHOS::DoSomethingInterestingWithMyAPI(data, size);

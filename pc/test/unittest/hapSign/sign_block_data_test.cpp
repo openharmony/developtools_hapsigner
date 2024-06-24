@@ -148,9 +148,3 @@ HWTEST_F(SignBlockDataTest, setBlockHead, testing::ext::TestSize.Level1)
     api->SetBlockHead(signData);
     EXPECT_EQ(true, 1);
 }
-
-
-
-
-
-

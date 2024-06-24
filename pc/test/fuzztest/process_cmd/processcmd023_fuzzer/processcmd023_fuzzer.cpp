@@ -19,6 +19,7 @@
 #include "params_run_tool.h"
 #include "cmd_util.h"
 #include "options.h"
+#include "file_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -42,6 +43,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     serviceImplPtr->PrintX509CertFromMemory(cert);
     serviceImplPtr->PrintX509CertChainFromMemory(certChain);
     X509_free(cert);
+	
+    status = FileUtils::WriteInputToOutPut("", "");
+    FileUtils::DelDir("");
 
     return true;
 }

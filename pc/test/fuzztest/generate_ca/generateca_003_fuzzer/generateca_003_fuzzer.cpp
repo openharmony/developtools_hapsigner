@@ -33,9 +33,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-   LocalizationAdapter adapter;
-   adapter.GetOptions();
-   return true;
+    LocalizationAdapter adapter;
+    adapter.GetOptions();
+    return true;
 }
 }
 }

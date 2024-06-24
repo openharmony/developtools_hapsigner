@@ -800,7 +800,7 @@ HWTEST_F(GenerateCaTest, WriteByteToOutFile_test_004, testing::ext::TestSize.Lev
 */
 HWTEST_F(GenerateCaTest, ParsePkcs7Package_test_001, testing::ext::TestSize.Level1)
 {
-    const unsigned char packageData[] = { 0 };
+    const unsigned char packageData[] = {0};
     Pkcs7Context pkcs7Context;
     bool res = VerifyHapOpensslUtils::ParsePkcs7Package(packageData, 10, pkcs7Context);
     EXPECT_EQ(res, false);
@@ -813,7 +813,7 @@ HWTEST_F(GenerateCaTest, ParsePkcs7Package_test_001, testing::ext::TestSize.Leve
 */
 HWTEST_F(GenerateCaTest, ParsePkcs7Package_test_002, testing::ext::TestSize.Level1)
 {
-    const unsigned char packageData[] = { 1, 1, 1, 1, 1 };
+    const unsigned char packageData[] = {1, 1, 1, 1, 1};
     Pkcs7Context pkcs7Context;
     bool res = VerifyHapOpensslUtils::ParsePkcs7Package(packageData, 10, pkcs7Context);
     EXPECT_EQ(res, false);
@@ -1727,7 +1727,8 @@ HWTEST_F(GenerateCaTest, generate_end_cert_002, testing::ext::TestSize.Level1)
     X509_REQ* csr = nullptr;
     csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateEndCert(csr, issuerkeyPair, *adaptePtr, PROFILE_SIGNING_CAPABILITY, sizeof(PROFILE_SIGNING_CAPABILITY));
+    bool ret = CertTools::GenerateEndCert(csr, issuerkeyPair, *adaptePtr, PROFILE_SIGNING_CAPABILITY,
+                                          sizeof(PROFILE_SIGNING_CAPABILITY));
     EXPECT_EQ(ret, true);
 }
 
@@ -1739,7 +1740,6 @@ HWTEST_F(GenerateCaTest, generate_end_cert_002, testing::ext::TestSize.Level1)
 */
 HWTEST_F(GenerateCaTest, generate_end_cert_003, testing::ext::TestSize.Level1)
 {
-
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-profile1-key-v1";
     std::string issuerkeyAlias = "oh-profile-sign-srv-ca-key-v1";
@@ -1774,7 +1774,8 @@ HWTEST_F(GenerateCaTest, generate_end_cert_003, testing::ext::TestSize.Level1)
     X509_REQ* csr = nullptr;
     csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateEndCert(csr, issuerkeyPair, *adaptePtr, PROFILE_SIGNING_CAPABILITY, sizeof(PROFILE_SIGNING_CAPABILITY));
+    bool ret = CertTools::GenerateEndCert(csr, issuerkeyPair, *adaptePtr, PROFILE_SIGNING_CAPABILITY,
+                                          sizeof(PROFILE_SIGNING_CAPABILITY));
     EXPECT_EQ(ret, true);
 }
 
