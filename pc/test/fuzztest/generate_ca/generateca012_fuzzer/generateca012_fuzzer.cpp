@@ -33,7 +33,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-	std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-app-sign-srv-ca-key-v1";
     std::string issuerkeyAlias = "oh-root-ca-key-v1";
@@ -49,7 +49,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char ksPwd[] = "123456";
     char issuerKeyPwd[] = "123456";
     (*params)["keyPwd"] = secret;
-	(*params)["issuerKeyPwd"] = issuerKeyPwd;
+    (*params)["issuerKeyPwd"] = issuerKeyPwd;
     (*params)["keystorePwd"] = ksPwd;
     (*params)["keyAlias"] = keyAlias;
     (*params)["issuerKeyAlias"] = issuerkeyAlias;
@@ -61,12 +61,11 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     (*params)["keystoreFile"] = keystoreFile;
     (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
     (*params)["outFile"] = outFile;
-     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = adaptePtr->GetAliasKey(true);
     X509_REQ* rootcsr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     CertTools::GenerateSubCert(keyPair, rootcsr, params.get());
     return false;
-	 
 }
 }
 }

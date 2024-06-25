@@ -51,8 +51,8 @@ bool GenerateAppCertTest2(ParamsRunTool& params)
     char arg26[] = "-issuerKeyPwd";
     char arg27[] = "123456";
     char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
-                     arg22, arg23, arg24, arg25, arg26, arg27};
+                    arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                    arg22, arg23, arg24, arg25, arg26, arg27};
     int argc = 27;
 
     return params.ProcessCmd(argv, argc);
@@ -88,8 +88,8 @@ bool GenerateAppCertTest3(ParamsRunTool& params)
     char arg26[] = "-issuerKeyPwd";
     char arg27[] = "123456";
     char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
-                     arg22, arg23, arg24, arg25, arg26, arg27};
+                    arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                    arg22, arg23, arg24, arg25, arg26, arg27};
     int argc = 27;
 
     return params.ProcessCmd(argv, argc);
@@ -131,8 +131,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg28[] = "-issuerKeyPwd";
     char arg29[] = "123456";
     char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
-                     arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29};
+                    arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21,
+                    arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29};
     int argc = 30;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();

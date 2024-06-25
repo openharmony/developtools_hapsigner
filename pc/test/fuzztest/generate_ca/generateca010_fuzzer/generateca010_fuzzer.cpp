@@ -33,13 +33,12 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-	std::shared_ptr<Options> params = std::make_shared<Options>();
-	std::string signAlg = "SHA256withECDSA";
-	(*params)["signAlg"] = signAlg;
-	X509* cert = X509_new();
-	CertTools::SignForSubCert(cert, nullptr, nullptr, nullptr, params.get());
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string signAlg = "SHA256withECDSA";
+    (*params)["signAlg"] = signAlg;
+    X509* cert = X509_new();
+    CertTools::SignForSubCert(cert, nullptr, nullptr, nullptr, params.get());
     return false;
-	 
 }
 }
 }

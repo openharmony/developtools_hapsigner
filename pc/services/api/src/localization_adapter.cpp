@@ -77,7 +77,8 @@ EVP_PKEY* LocalizationAdapter::GetAliasKey(bool autoCreate)
 {
     EVP_PKEY* keyPair = nullptr;
     int status = this->GetKeyPair(autoCreate, &keyPair);
-    if ((status == RET_FAILED) && (keyPair == nullptr)) {
+    if (status == RET_FAILED) {
+        EVP_PKEY_free(keyPair);
         return nullptr;
     }
 

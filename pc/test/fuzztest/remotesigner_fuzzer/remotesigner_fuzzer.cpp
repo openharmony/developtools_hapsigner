@@ -26,24 +26,37 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "", arg1[] = "sign-app", arg2[] = "-mode", arg3[] = "remoteSign",
-        arg4[] = "-keyAlias", arg5[] = "oh-app1-key-v1",
-        arg6[] = "-profileFile", arg7[] = "./remote_signer/signed-profile.p7b",
-        arg8[] = "-inFile", arg9[] = "./remote_signer/test1.hap",
-        arg10[] = "-signAlg", arg11[] = "SHA256withECDSA",
-        arg12[] = "-outFile", arg13[] = "./remote_signer/signed-test1.hap",
-        arg14[] = "-signServer", arg15[] = "./remote_signer/app-release1.pem",
-        arg16[] = "-signerPlugin", arg17[] = "./remote_signer/libremote_signer.z.so",
-        arg18[] = "-onlineAuthMode", arg19[] = "./remote_signer/OpenHarmony.p12",
-        arg20[] = "-username", arg21[] = "123456",
-        arg22[] = "-userPwd", arg23[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-mode";
+    char arg3[] = "remoteSign";
+    char arg4[] = "-keyAlias";
+    char arg5[] = "oh-app1-key-v1";
+    char arg6[] = "-profileFile";
+    char arg7[] = "./remote_signer/signed-profile.p7b";
+    char arg8[] = "-inFile";
+    char arg9[] = "./remote_signer/test1.hap";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA256withECDSA";
+    char arg12[] = "-outFile";
+    char arg13[] = "./remote_signer/signed-test1.hap";
+    char arg14[] = "-signServer";
+    char arg15[] = "./remote_signer/app-release1.pem";
+    char arg16[] = "-signerPlugin";
+    char arg17[] = "./remote_signer/libremote_signer.z.so";
+    char arg18[] = "-onlineAuthMode";
+    char arg19[] = "./remote_signer/OpenHarmony.p12";
+    char arg20[] = "-username";
+    char arg21[] = "123456";
+    char arg22[] = "-userPwd";
+    char arg23[] = "123456";
+    char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23};
     int argc = 24;
 
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
-	return ret;
+    return ret;
 }
 
 } // namespace SignatureTools

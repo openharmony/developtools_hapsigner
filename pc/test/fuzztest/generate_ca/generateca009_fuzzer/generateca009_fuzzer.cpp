@@ -33,9 +33,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-	std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     return api->OutputString("hello world", "/data/test/tmp.data");
-	 
 }
 }
 }

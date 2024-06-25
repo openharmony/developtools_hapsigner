@@ -14,7 +14,7 @@
 group("zip_fuzztest") {
   testonly = true
   deps = [
+    "./randomaccessfileinputoutput_fuzzer:RandomAccessFileInputOutputFuzzTest",
     "./zipsigner_fuzzer:ZipSignerFuzzTest",
-    "./randomaccessfileinputoutput_fuzzer:RandomAccessFileInputOutputFuzzTest"
   ]
 }

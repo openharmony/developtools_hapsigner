@@ -13,7 +13,5 @@
 
 group("codesigning_fuzztest") {
   testonly = true
-  deps = [
-    "./codesigning_fuzzer:CodeSigningFuzzTest",
-  ]
+  deps = [ "./codesigning_fuzzer:CodeSigningFuzzTest" ]
 }

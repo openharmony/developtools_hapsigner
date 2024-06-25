@@ -14,7 +14,7 @@
 group("common_fuzztest") {
   testonly = true
   deps = [
-    "./digestparameter/digestparameterbuild_fuzzer:DigestParameterBuildFuzzTest",
     "./bytebuffer/bytebufferinit_fuzzer:ByteBufferInitFuzzTest",
+    "./digestparameter/digestparameterbuild_fuzzer:DigestParameterBuildFuzzTest",
   ]
 }

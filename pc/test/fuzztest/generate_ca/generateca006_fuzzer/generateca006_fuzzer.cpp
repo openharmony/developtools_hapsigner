@@ -63,9 +63,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     (*params)["keystoreFile"] = keystoreFile;
     (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
     (*params)["outFile"] = outFile;
-    (*params)["validity"] = validity; 
+    (*params)["validity"] = validity;
     return api->GenerateCA(params.get());
-    
 }
 }
 }

@@ -33,11 +33,10 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-	std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
-    X509 *cert = X509_new();   
-    const std::string path = "/data/test/generateCA/cer";  
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    X509* cert = X509_new();
+    const std::string path = "/data/test/generateCA/cer";
     return api->OutPutCert(cert, path);
-	 
 }
 }
 }

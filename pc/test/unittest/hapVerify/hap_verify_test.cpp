@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,11 +87,11 @@ void VerifyHapTest::SetUpTestCase(void)
 
 void VerifyHapTest::TearDownTestCase(void)
 {
-    remove("./hapVerify/unvaild.app");
-    remove("./hapVerify/unvaild.hap");
-    remove("./hapVerify/unvaild.hqf");
-    remove("./hapVerify/unvaild.hsp");
-    remove("./hapVerify/unvaild.txt");
+    (void)remove("./hapVerify/unvaild.app");
+    (void)remove("./hapVerify/unvaild.hap");
+    (void)remove("./hapVerify/unvaild.hqf");
+    (void)remove("./hapVerify/unvaild.hsp");
+    (void)remove("./hapVerify/unvaild.txt");
 }
 
 void VerifyHapTest::SetUp()
