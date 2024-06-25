@@ -68,7 +68,7 @@ fileIOTuple SignProvider::PrepareIOStreams(const std::string& inputPath,
     inputFile = std::make_shared<std::ifstream>(inputPath, std::ios::binary);
     if (!inputFile->good()) {
         SIGNATURE_TOOLS_LOGE("[signHap] Failed to open input file : %s", inputPath.c_str());
-        return { nullptr, nullptr, "" };
+        return {nullptr, nullptr, ""};
     }
     if (inputPath == outputPath) {
         std::filesystem::path filePath = outputPath;
@@ -78,18 +78,18 @@ fileIOTuple SignProvider::PrepareIOStreams(const std::string& inputPath,
         outputFile = std::make_shared<std::ofstream>(tmpOutputFilePath, std::ios::binary | std::ios::trunc);
         if (!outputFile->good()) {
             SIGNATURE_TOOLS_LOGE("[signHap] Failed to open output file : %s", tmpOutputFilePath.c_str());
-            return { nullptr, nullptr, "" };
+            return {nullptr, nullptr, ""};
         }
         ret = true;
     } else {
         outputFile = std::make_shared<std::ofstream>(outputPath, std::ios::binary | std::ios::trunc);
         if (!outputFile->good()) {
             SIGNATURE_TOOLS_LOGE("[signHap] Failed to open output file : %s", outputPath.c_str());
-            return { nullptr, nullptr, "" };
+            return {nullptr, nullptr, ""};
         }
         tmpOutputFilePath = outputPath;
     }
-    return { inputFile, outputFile, tmpOutputFilePath };
+    return {inputFile, outputFile, tmpOutputFilePath};
 }
 
 bool SignProvider::InitZipOutput(std::shared_ptr<RandomAccessFile> outputHap,
@@ -131,7 +131,7 @@ bool SignProvider::InitDataSourceContents(RandomAccessFile& outputHap, DataSourc
 
     // get cd offset
     if (!HapSignerBlockUtils::GetCentralDirectoryOffset(dataSrcContents.eocdPair.first,
-        dataSrcContents.eocdPair.second, dataSrcContents.cDOffset)) return false;
+                                                        dataSrcContents.eocdPair.second, dataSrcContents.cDOffset)) return false;
 
     SIGNATURE_TOOLS_LOGI("Central Directory Offset is %{public}lld.", dataSrcContents.cDOffset);
 
@@ -157,9 +157,7 @@ bool SignProvider::Sign(Options* options)
     STACK_OF(X509)* publicCerts = nullptr;
     int ret = GetX509Certificates(options, &publicCerts);
     if (ret != RET_OK) {
-        if (publicCerts) {
-            sk_X509_pop_free(publicCerts, X509_free);
-        }
+        if (publicCerts) sk_X509_pop_free(publicCerts, X509_free);
         PrintErrorNumberMsg("SIGNHAP_ERROR", ret, "get X509 Certificates failed");
         return false;
     }
@@ -170,10 +168,10 @@ bool SignProvider::Sign(Options* options)
     std::string suffix = FileUtils::GetSuffix(inputFilePath);
     if (suffix == "")
         return PrintErrorLog("[SignHap] hap format error pleass check!!", COMMAND_PARAM_ERROR);
-    auto [inputStream, tmpOutput, tmpOutputFilePath] =
-        PrepareIOStreams(inputFilePath,
-                         signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE),
-                         isPathOverlap);
+    auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(
+        inputFilePath,
+        signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE),
+        isPathOverlap);
     if (!inputStream || !tmpOutput)
         return PrintErrorLog("[signHap] Prepare IO Streams failed", IO_ERROR);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
@@ -183,7 +181,7 @@ bool SignProvider::Sign(Options* options)
     DataSourceContents dataSrcContents;
     if (!InitDataSourceContents(*outputHap, dataSrcContents))
         return PrintErrorLog("[signHap] Init Data Source Contents failed", ZIP_ERROR);
-    DataSource* contents[] = { dataSrcContents.beforeCentralDir,
+    DataSource* contents[] = {dataSrcContents.beforeCentralDir,
         dataSrcContents.centralDir, dataSrcContents.endOfCentralDir
     };
     SignerConfig signerConfig;
@@ -194,16 +192,15 @@ bool SignProvider::Sign(Options* options)
         return PrintErrorLog("[SignCode] AppendCodeSignBlock failed", SIGN_ERROR, tmpOutputFilePath);
     ByteBuffer signingBlock;
     if (!SignHap::Sign(contents, sizeof(contents) / sizeof(contents[0]), signerConfig, optionalBlocks,
-        signingBlock))
+                       signingBlock))
         return PrintErrorLog("[SignHap] SignHap Sign failed.", SIGN_ERROR, tmpOutputFilePath);
     long long newCentralDirectoryOffset = dataSrcContents.cDOffset + signingBlock.GetCapacity();
     SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %{public}lld.", newCentralDirectoryOffset);
-
     dataSrcContents.eocdPair.first.SetPosition(0);
     if (!ZipUtils::SetCentralDirectoryOffset(dataSrcContents.eocdPair.first, newCentralDirectoryOffset))
         return PrintErrorLog("[SignHap] Set Central Directory Offset.", ZIP_ERROR, tmpOutputFilePath);
     if (!OutputSignedFile(outputHap.get(), dataSrcContents.cDOffset, signingBlock, dataSrcContents.centralDir,
-        dataSrcContents.eocdPair.first))
+                          dataSrcContents.eocdPair.first))
         return PrintErrorLog("[SignHap] write output signed file failed.", ZIP_ERROR, tmpOutputFilePath);
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
 }
@@ -298,7 +295,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CodeSigning::ENABLE_SIGN_CODE_VALUE) {
         SIGNATURE_TOOLS_LOGI("start code signing.");
         if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
-            suffix) == CodeSigning::SUPPORT_FILE_FORM.end()) {
+                      suffix) == CodeSigning::SUPPORT_FILE_FORM.end()) {
             SIGNATURE_TOOLS_LOGE("no need to sign code.");
             return true;
         }
@@ -308,7 +305,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
         CodeSigning codeSigning(signerConfig);
         std::vector<int8_t> codeSignArray;
         if (!codeSigning.GetCodeSignBlock(outputFilePath, codeSignOffset, suffix, profileContent, zip,
-            codeSignArray)) {
+                                          codeSignArray)) {
             SIGNATURE_TOOLS_LOGE("Codesigning getCodeSignBlock Fail.");
             return false;
         }
@@ -321,7 +318,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
         result->PutInt32((int32_t)codeSignOffset); // offset
         result->PutData(codeSignArray.data(), codeSignArray.size());
 
-        OptionalBlock tmp = { HapUtils::HAP_PROPERTY_BLOCK_ID, *result };
+        OptionalBlock tmp = {HapUtils::HAP_PROPERTY_BLOCK_ID, *result};
         optionalBlocks.insert(optionalBlocks.begin(), tmp);
     }
     return true;
@@ -337,7 +334,7 @@ bool SignProvider::CreateSignerConfigs(STACK_OF(X509)* certificates, const std::
     // lhx todo 默认构造函数
     SignatureAlgorithmHelper alg;
     if (!Params::GetSignatureAlgorithm(signParams.at(ParamConstants::PARAM_BASIC_SIGANTURE_ALG),
-        alg)) {
+                                       alg)) {
         SIGNATURE_TOOLS_LOGE("[SignHap] get Signature Algorithm failed");
         return false;
     }
@@ -384,7 +381,7 @@ int SignProvider::LoadOptionalBlock(const std::string& file, int type)
         SIGNATURE_TOOLS_LOGE("Optional block is empty!");
         return IO_ERROR;
     }
-    optionalBlocks.push_back({ type, optionalBlockBuffer });
+    optionalBlocks.push_back({type, optionalBlockBuffer});
     return RET_OK;
 }
 
@@ -757,7 +754,7 @@ int SignProvider::CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inpu
         return NOT_SUPPORT_ERROR;
     }
     if (!sk_X509_num(inputCerts) && !CheckInputCertMatchWithProfile(sk_X509_value(inputCerts, 0),
-        certInProfile)) {
+                                                                    certInProfile)) {
         X509_free(certInProfile);
         SIGNATURE_TOOLS_LOGE("input certificates do not match with profile!");
         return CHECK_ERROR;

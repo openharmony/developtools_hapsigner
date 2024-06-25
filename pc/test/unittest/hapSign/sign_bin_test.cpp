@@ -17,6 +17,7 @@
 #include "sign_bin.h"
 #include "sign_provider.h"
 #include "local_sign_provider.h"
+#include "unsigned_bin.h"
 #define VERSION 9
 #define BYTE_NUMBER 32
 namespace OHOS {
@@ -83,18 +84,51 @@ void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
     signerConfig.SetOptions(&options);
 }
 
+// base64解码接口
+std::string base64_decode(std::string input)
+{
+    char buf[4096];
+    std::string ret;
+    size_t bytes;
+    BIO* b64 = BIO_new(BIO_f_base64());
+    BIO* mem = BIO_new_mem_buf(input.data(), input.size());
+    if (b64 == NULL || mem == NULL) {
+        BIO_free(b64);
+        BIO_free(mem);
+        return "";
+    }
+    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
+    BIO* bio = BIO_push(b64, mem);
+    if (!bio)
+        goto err;
+    //if (BIO_write(mem, input.data(), input.size()) != input.size())
+     //   goto err;
+    BIO_flush(mem);
+    while (BIO_read_ex(bio, buf, sizeof(buf), &bytes)) {
+        ret.append(buf, bytes);
+    }
+err:
+    BIO_free_all(bio);
+    return ret;
+}
+
 void ConstructSignParams(std::map<std::string, std::string>& signParams)
 {
+    // decode unsigned.bin content and write to file
+    std::string str = base64_decode(GetUnsignedBin());
+    std::string outputFile = "./hapSign/unsigned.bin";
+    FileUtils::Write(str, outputFile);
+
     signParams["a"] = "4";
     signParams["appCertFile"] = "./hapSign/app-release1.pem";
     signParams["compatibleVersion"] = "9";
-    signParams["inFile"] = "./hapSign/unsigned-1M.bin";
+    signParams["inFile"] = "./hapSign/unsigned.bin";
     signParams["inForm"] = "bin";
     signParams["keyAlias"] = "oh-app1-key-v1";
     signParams["keyPwd"] = "123456";
     signParams["keystoreFile"] = "./hapSign/ohtest.p12";
     signParams["keystorePwd"] = "123456";
-    signParams["outFile"] = "./hapSign/signed-linux.out";
+    signParams["outFile"] = "./hapSign/signed.bin";
     signParams["profileFile"] = "./hapSign/app1-profile1.p7b";
     signParams["profileSigned"] = "1";
     signParams["signAlg"] = "SHA256withECDSA";

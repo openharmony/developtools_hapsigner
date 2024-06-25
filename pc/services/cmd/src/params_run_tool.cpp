@@ -60,6 +60,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
         CmdUtil cmdUtil;
         ParamsSharedPtr param = std::make_shared<Params>();
         if (!cmdUtil.Convert2Params(args, size, param)) {
+            PrintMsg("Parameter processing failed");
             return false;
         }
         PrintMsg("Start " + param->GetMethod());

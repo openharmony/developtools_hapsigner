@@ -89,19 +89,19 @@ err:
 
 bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, EVP_PKEY* ca_prikey, Options* options)
 {
-    std::string signAlg = "";
-    EVP_PKEY* pubKey = NULL;
     bool result = false;
-    if (ca_prikey == nullptr || rootcsr == nullptr || subcsr == nullptr) {
-        SIGNATURE_TOOLS_LOGE("Sign failed because of ca_prikey, roocsr or subcsr is nullptr\n");
-        goto err;
-    }
-    pubKey = X509_REQ_get_pubkey(subcsr);
+    std::string signAlg = options->GetString(Options::SIGN_ALG);
+    EVP_PKEY* pubKey = X509_REQ_get_pubkey(subcsr);
     if (pubKey == NULL) {
         SIGNATURE_TOOLS_LOGE("X509_REQ_get_pubkey failed\n");
         goto err;
     }
-    if (!X509_set_pubkey(cert, pubKey)) {
+    if (ca_prikey == nullptr || rootcsr == nullptr || subcsr == nullptr) {
+        SIGNATURE_TOOLS_LOGE("Sign failed because of ca_prikey, roocsr or subcsr is nullptr\n");
+        goto err;
+    }
+    result = (!X509_set_pubkey(cert, pubKey));
+    if(result){
         SIGNATURE_TOOLS_LOGE("X509_set_pubkey failed\n");
         goto err;
     }
@@ -116,9 +116,9 @@ bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, 
         SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(subcsr));
         goto err;
-    }
-    signAlg = options->GetString(Options::SIGN_ALG);
-    if (!SignCert(cert, ca_prikey, signAlg)) {
+    }  
+    result = (!SignCert(cert, ca_prikey, signAlg));
+    if(result){
         goto err;
     }
     EVP_PKEY_free(pubKey);
@@ -132,17 +132,16 @@ err:
 X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
                                      EVP_PKEY* keyPair, Options* options)
 {
-    long serialNumber = 0;
-    int validity = 0;
-    X509* cert = X509_new();
     bool result = false;
+    X509* cert = X509_new();
+    long serialNumber = 0;
+    int validity = options->GetInt(Options::VALIDITY);
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert, serialNumber));
     if (result) {
         goto err;
     }
-    validity = options->GetInt(Options::VALIDITY);
     result = SetCertValidity(cert, validity);
     if (!result) {
         goto err;
@@ -182,18 +181,17 @@ err:
 
 X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, Options* options)
 {
-    long serialNumber = 0;
-    int validity = 0;
-    std::string signAlg = "";
-    X509* cert = X509_new();
+    long serialNumber = 0; 
     bool result = false;
+    X509* cert = X509_new();
+    int validity = options->GetInt(Options::VALIDITY);
+    std::string signAlg = options->GetString(Options::SIGN_ALG);
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert, serialNumber));
     if (result) {
         goto err;
     }
-    validity = options->GetInt(Options::VALIDITY);
     if (validity != 0) {
         if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
             goto err;
@@ -209,7 +207,6 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     if (result) {
         goto err;
     }
-    signAlg = options->GetString(Options::SIGN_ALG);
     result = (!SignCert(cert, keyPair, signAlg));
     if (result) {
         goto err;
@@ -223,28 +220,33 @@ err:
 X509* CertTools::GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* rootcsr, Options* options)
 {
     std::unique_ptr<LocalizationAdapter> adapter = std::make_unique< LocalizationAdapter>(options);
-    EVP_PKEY* subKey = adapter->GetAliasKey(false);
+    EVP_PKEY* subKey = nullptr;
+    X509_REQ* subcsr = nullptr;
+    X509* subCert = nullptr;
+    subKey = adapter->GetAliasKey(false);
     if (subKey == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to get the keypair\n");
-        return nullptr;
+        goto err;
     }
-    X509_REQ* subcsr = CertTools::GenerateCsr(subKey, options->GetString(Options::SIGN_ALG),
+    subcsr = CertTools::GenerateCsr(subKey, options->GetString(Options::SIGN_ALG),
                                               options->GetString(Options::SUBJECT));
-    if (!subcsr) {
+    if (subcsr == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to generate csr\n");
-        EVP_PKEY_free(subKey);
-        return nullptr;
+        goto err;
     }
-    X509* subCert = SignCsrGenerateCert(rootcsr, subcsr, keyPair, options);
-    if (subCert == nullptr) {
-        EVP_PKEY_free(subKey);
-        X509_REQ_free(subcsr);
+    subCert = SignCsrGenerateCert(rootcsr, subcsr, keyPair, options);
+    if (subCert == nullptr) {       
         SIGNATURE_TOOLS_LOGE("failed to generate the subCert\n");
-        return nullptr;
+        goto err;
     }
     EVP_PKEY_free(subKey);
     X509_REQ_free(subcsr);
     return subCert;
+err:
+    EVP_PKEY_free(subKey);
+    X509_REQ_free(subcsr);
+    return nullptr;
+
 }
 
 bool CertTools::SetExpandedInfExtOne(X509* cert, Options* options,

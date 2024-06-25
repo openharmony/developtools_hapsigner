@@ -40,7 +40,7 @@ public:
     int GetPublicKey(PKCS7* safe, const char* alias, char* pass, int passlen, EVP_PKEY** publickey);
     int GetPrivateKey(PKCS7* safe, const char* alias, char* pass, int passlen, EVP_PKEY** keyPiar);
     int SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
-                      unsigned char* keyid, unsigned int keyidlen, STACK_OF(X509)* ca,
+                      unsigned char* keyid, unsigned int keyidlen,
                       const char* name, STACK_OF(PKCS7)** safes,
                       int nid_cert, int iter, const char* pass);
 
@@ -56,7 +56,7 @@ public:
 
     PKCS12* Pkcs12Create(const char* pass, const char* keyPass,
                          const char* name, EVP_PKEY* pkey, X509* cert,
-                         STACK_OF(X509)* ca, int nid_key, int nid_cert, int iter,
+                         int nid_key, int nid_cert, int iter,
                          int mac_iter, int keytype, STACK_OF(PKCS7)** safes);
 
     int CopyBagAttr(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid);

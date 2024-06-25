@@ -1,9 +1,9 @@
-# Copyright (c) 2024-2024 Huawei Device Co., Ltd.
+# Copyright (c) 2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,6 +31,7 @@ config("service_include") {
     "${signature_tools_service_api}/include",
     "${signature_tools_service_signer}/include",
     "${signature_tools_service_thirdparty}/window/json",
+    "${signature_tools_test}/unittest/packets",
   ]
 
   include_dirs += signature_tools_utils_include

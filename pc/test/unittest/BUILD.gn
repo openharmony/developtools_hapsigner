@@ -25,6 +25,7 @@ ohos_unittest("hapsigntool_pc_unittest") {
   configs = [ "${signature_tools_test}:service_include" ]
 
   sources = [
+    "./packets/unsigned_bin.cpp",
     "./byteBuffer/byte_buffer_test.cpp",
     "./codeSigning/datastructure/code_sign_block_header_test.cpp",
     "./codeSigning/datastructure/code_sign_block_test.cpp",

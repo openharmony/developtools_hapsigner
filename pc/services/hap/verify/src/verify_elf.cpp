@@ -64,7 +64,7 @@ bool VerifyElf::Verify(Options* options)
     }
     // write certificate and p7b file
     VerifyHap hapVerifyV2;
-    int32_t writeVerifyOutputFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, options);
+    int32_t writeVerifyOutputFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, verifyResult.GetProfile(), options);
     if (writeVerifyOutputFlag != VERIFY_SUCCESS) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify elf WriteElfOutput failed!");
         return false;

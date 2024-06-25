@@ -1617,7 +1617,6 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_empty_004, testing::ext::TestSi
 */
 HWTEST_F(GenerateCaTest, handle_issuer_key_alias_not_empty_001, testing::ext::TestSize.Level1)
 {
-
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::string issuerKeystoreFile = "";
