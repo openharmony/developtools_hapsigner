@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef PROFILE_RESOURCE_H
+#define PROFILE_RESOURCE_H
+
 #include <chrono>
 #include <thread>
 #include <string>
@@ -32,8 +35,7 @@
 #include "profile_verify_utils.h"
 #include "cms_utils.h"
 
-#ifndef PROFILE_RESOURCE_H
-#define PROFILE_RESOURCE_H
+
 using  nlohmann::json;
 
 namespace OHOS {

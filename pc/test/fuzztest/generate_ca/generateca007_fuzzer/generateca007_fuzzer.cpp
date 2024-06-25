@@ -43,7 +43,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::string keystoreFile = "/data/test/generateCA/OpenHarmony.p12";
     char keyPwd[] = "123456";
     char ksPwd[] = "123456";
-	std::string outFile = "/data/test/generateCA/oh-app1-key-v1.csr";
+    std::string outFile = "/data/test/generateCA/oh-app1-key-v1.csr";
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = ksPwd;
     (*params)["keyAlias"] = keyAlias;

@@ -63,11 +63,9 @@ public:
 
     int FindFriendlyName(PKCS12* p12, const char* alias, char* keyPass, char* pass, EVP_PKEY** keyPiar);
 
-    int ParseBag(PKCS12_SAFEBAG* bag, const char* pass, int passlen,
-                 EVP_PKEY** pkey, STACK_OF(X509)* ocerts);
+    int ParseBag(PKCS12_SAFEBAG* bag, const char* pass, int passlen, STACK_OF(X509)* ocerts);
 
-    int ParseBags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass,
-                  int passlen, EVP_PKEY** pkey, STACK_OF(X509)* ocerts);
+    int ParseBags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass, int passlen, STACK_OF(X509)* ocerts);
 
     bool X509AliasSet1(int len, X509* x509, unsigned char* data);
     int Pkcs12Parse(PKCS12* p12, const char* pass);
@@ -82,8 +80,7 @@ private:
     void KeyPairFree(BIGNUM* bnSerial, X509_NAME* issuerName, X509_NAME* subjectName,
                      ASN1_INTEGER* ai, const std::string& Message);
     void KeyPairFree(X509* cert, PKCS12* p12, BIO* bioOut, const std::string& Message);
-    void KeyPairFree(EVP_PKEY* keyPiar, STACK_OF(X509)* ocerts,
-                     STACK_OF(PKCS12_SAFEBAG)* bags, char* name);
+    void KeyPairFree(STACK_OF(X509)* ocerts, STACK_OF(PKCS12_SAFEBAG)* bags, char* name);
     void KeyPairFree(STACK_OF(PKCS7)* safes, EVP_PKEY* publickey);
     void KeyPairFree(STACK_OF(PKCS12_SAFEBAG)* bags, PKCS8_PRIV_KEY_INFO* p8, char* name, const std::string& Message);
     void ResetKeyStatusvariable();

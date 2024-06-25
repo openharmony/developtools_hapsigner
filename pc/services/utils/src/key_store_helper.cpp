@@ -100,12 +100,8 @@ void KeyStoreHelper::KeyPairFree(X509* cert, PKCS12* p12, BIO* bioOut, const std
     bioOut = nullptr;
 }
 
-void KeyStoreHelper::KeyPairFree(EVP_PKEY* keyPiar, STACK_OF(X509)* ocerts,
-                                 STACK_OF(PKCS12_SAFEBAG)* bags, char* name)
+void KeyStoreHelper::KeyPairFree(STACK_OF(X509)* ocerts, STACK_OF(PKCS12_SAFEBAG)* bags, char* name)
 {
-    EVP_PKEY_free(keyPiar);
-    keyPiar = nullptr;
-
     sk_X509_pop_free(ocerts, X509_free);
     ocerts = nullptr;
 
@@ -255,21 +251,20 @@ int KeyStoreHelper::GetPublicKey(PKCS7* safe, const char* alias, char* pass, int
 {
     char* name = NULL;
     PKCS12_SAFEBAG* bag = nullptr;
-    EVP_PKEY* keyPiar = EVP_PKEY_new();
     STACK_OF(PKCS12_SAFEBAG)* bags = nullptr;
     STACK_OF(X509)* ocerts = sk_X509_new_null();
 
     bags = PKCS12_unpack_p7encdata(safe, pass, passlen);
     if (bags == nullptr) {
         PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair password error");
-        KeyPairFree(keyPiar, ocerts, bags, name);
+        KeyPairFree(ocerts, bags, name);
         SetPassWordStatus(false);
         return RET_FAILED;
     }
 
-    if (this->ParseBags(bags, pass, passlen, &keyPiar, ocerts) == RET_FAILED) {
+    if (this->ParseBags(bags, pass, passlen, ocerts) == RET_FAILED) {
         PrintErrorNumberMsg("KEY_ERROR", KEY_ERROR, "keypair password error");
-        KeyPairFree(keyPiar, ocerts, bags, name);
+        KeyPairFree(ocerts, bags, name);
         SetPassWordStatus(false);
         return RET_FAILED;
     }
@@ -277,21 +272,23 @@ int KeyStoreHelper::GetPublicKey(PKCS7* safe, const char* alias, char* pass, int
     for (int i = 0; i < sk_X509_num(ocerts); i++) {
         bag = sk_PKCS12_SAFEBAG_value(bags, i);
         name = PKCS12_get_friendlyname(bag);
+
         if (strcmp(name, alias) != 0)
             continue;
+
         X509* cert = sk_X509_value(ocerts, i);
         if (cert == nullptr) {
-            KeyPairFree(keyPiar, ocerts, bags, name);
+            KeyPairFree(ocerts, bags, name);
             return RET_FAILED;
         }
         *publickey = X509_get_pubkey(cert);
         if (*publickey != nullptr) {
-            KeyPairFree(keyPiar, ocerts, bags, name);
+            KeyPairFree(ocerts, bags, name);
             return RET_OK;
         }
     }
 
-    KeyPairFree(keyPiar, ocerts, bags, name);
+    KeyPairFree(ocerts, bags, name);
     return RET_FAILED;
 }
 
@@ -669,53 +666,45 @@ int KeyStoreHelper::CopyBagAttr(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid)
     return RET_OK;
 }
 
-int KeyStoreHelper::ParseBag(PKCS12_SAFEBAG* bag, const char* pass, int passlen,
-                             EVP_PKEY** pkey, STACK_OF(X509)* ocerts)
+int KeyStoreHelper::ParseBag(PKCS12_SAFEBAG* bag, const char* pass, int passlen, STACK_OF(X509)* ocerts)
 {
-    PKCS8_PRIV_KEY_INFO* p8;
-    X509* x509;
+    X509* x509 = nullptr;
     const ASN1_TYPE* attrib;
     ASN1_BMPSTRING* fname = NULL;
     ASN1_OCTET_STRING* lkid = NULL;
-    if ((attrib = PKCS12_SAFEBAG_get0_attr(bag, NID_friendlyName)))fname = attrib->value.bmpstring;
-    if ((attrib = PKCS12_SAFEBAG_get0_attr(bag, NID_localKeyID)))lkid = attrib->value.octet_string;
-    switch (PKCS12_SAFEBAG_get_nid(bag)) {
-        case NID_keyBag:
-            if (!pkey || *pkey)return RET_OK;
-            *pkey = EVP_PKCS82PKEY(PKCS12_SAFEBAG_get0_p8inf(bag));
-            if (*pkey == NULL)return RET_FAILED;
-            break;
-        case NID_pkcs8ShroudedKeyBag:
-            if (!pkey || *pkey)return RET_OK;
-            if ((p8 = PKCS12_decrypt_skey(bag, pass, passlen)) == NULL)return RET_FAILED;
-            *pkey = EVP_PKCS82PKEY(p8);
-            PKCS8_PRIV_KEY_INFO_free(p8);
-            if (!(*pkey))return RET_FAILED;
-            break;
-        case NID_certBag:
-            if (PKCS12_SAFEBAG_get_bag_nid(bag) != NID_x509Certificate)return RET_OK;
-            if ((x509 = PKCS12_SAFEBAG_get1_cert(bag)) == NULL)return RET_FAILED;
-            if (lkid && !X509_keyid_set1(x509, lkid->data, lkid->length)) {
-                X509_free(x509);
-                return RET_FAILED;
-            }
-            if (fname) {
-                int len;
-                unsigned char* data;
-                len = ASN1_STRING_to_UTF8(&data, fname);
-                if (!X509AliasSet1(len, x509, data)) {
-                    return RET_FAILED;
-                }
-            }
-            if (!sk_X509_push(ocerts, x509)) {
-                X509_free(x509);
-                return RET_FAILED;
-            }
-            break;
-        default:
-            return RET_OK;
+    if ((attrib = PKCS12_SAFEBAG_get0_attr(bag, NID_friendlyName)))
+        fname = attrib->value.bmpstring;
+
+    if ((attrib = PKCS12_SAFEBAG_get0_attr(bag, NID_localKeyID)))
+        lkid = attrib->value.octet_string;
+
+    if (PKCS12_SAFEBAG_get_nid(bag) != NID_certBag && PKCS12_SAFEBAG_get_bag_nid(bag) != NID_x509Certificate) {
+        return RET_OK;
     }
+
+    if ((x509 = PKCS12_SAFEBAG_get1_cert(bag)) == NULL)
+        return RET_FAILED;
+
+    if (lkid && !X509_keyid_set1(x509, lkid->data, lkid->length)) {
+        goto err;
+    }
+
+    if (fname) {
+        int len;
+        unsigned char* data;
+        len = ASN1_STRING_to_UTF8(&data, fname);
+        if (!X509AliasSet1(len, x509, data)) {
+            goto err;
+        }
+    }
+    if (!sk_X509_push(ocerts, x509)) {
+        goto err;
+    }
+
     return RET_OK;
+err:
+    X509_free(x509);
+    return RET_FAILED;
 }
 
 bool KeyStoreHelper::X509AliasSet1(int len, X509* x509, unsigned char* data)
@@ -733,11 +722,11 @@ bool KeyStoreHelper::X509AliasSet1(int len, X509* x509, unsigned char* data)
 }
 
 int KeyStoreHelper::ParseBags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass,
-                              int passlen, EVP_PKEY** pkey, STACK_OF(X509)* ocerts)
+                              int passlen, STACK_OF(X509)* ocerts)
 {
     int i;
     for (i = 0; i < sk_PKCS12_SAFEBAG_num(bags); i++) {
-        if (this->ParseBag(sk_PKCS12_SAFEBAG_value(bags, i), pass, passlen, pkey, ocerts) == RET_FAILED)
+        if (this->ParseBag(sk_PKCS12_SAFEBAG_value(bags, i), pass, passlen, ocerts) == RET_FAILED)
             return RET_FAILED;
     }
     return RET_OK;

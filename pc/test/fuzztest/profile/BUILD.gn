@@ -13,7 +13,5 @@
 
 group("profile_fuzztest") {
   testonly = true
-  deps = [
-    "./profile001_fuzzer:Profile001FuzzTest",
-  ]
+  deps = [ "./profile001_fuzzer:Profile001FuzzTest" ]
 }

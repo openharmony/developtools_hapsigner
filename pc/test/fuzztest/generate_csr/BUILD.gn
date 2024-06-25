@@ -13,7 +13,5 @@
 
 group("generate_csr_fuzztest") {
   testonly = true
-  deps = [
-    "./generatecsr001_fuzzer:GenerateCsr001FuzzTest",
-  ]
+  deps = [ "./generatecsr001_fuzzer:GenerateCsr001FuzzTest" ]
 }

@@ -13,7 +13,5 @@
 
 group("utils_fuzztest") {
   testonly = true
-  deps = [
-    "./hapsignerblockutils_fuzzer:HapSignerBlockUtilsFuzzTest",
-  ]
+  deps = [ "./hapsignerblockutils_fuzzer:HapSignerBlockUtilsFuzzTest" ]
 }

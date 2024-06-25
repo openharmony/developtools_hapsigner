@@ -11,26 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("../../../../signature_tools.gni")
-import("//build/config/features.gni")
-import("//build/test.gni")
-module_out_path = "developtools/hapsigner/hapsigner_pc"
-
-ohos_fuzztest("HapSign001FuzzTest") {
+group("hapsign_fuzzer_fuzztest") {
   testonly = true
-  module_out_path = module_out_path
-  fuzz_config_file = "."
-  resource_config_file = "${signature_tools_test}/fuzztest/resource/ohos_test.xml"
-
-  configs = [ "${signature_tools_test}:service_include" ]
-
-  sources = [
-    "hapsign001_fuzzer.cpp",
-  ]
-
-  deps = [
-    "${signature_tools_test}:service_target",
-  ]
-  
-  remove_configs = [ "//build/config/compiler:no_exceptions" ]
+  deps = [ "./hapsign001_fuzzer:HapSign001FuzzTest" ]
 }
