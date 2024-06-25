@@ -619,7 +619,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_026, testing::ext::TestSize.
 {
     KeyStoreHelper keyhelper;
     PKCS12* p12 = nullptr;
-    p12 = keyhelper.Pkcs12Create(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0, 0, 0, 0, nullptr);
+    p12 = keyhelper.Pkcs12Create(nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0, 0, 0, 0, nullptr);
     EXPECT_EQ(p12, nullptr);
 }
 
@@ -679,7 +679,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.
 HWTEST_F(GenerateKeyPairTest, generate_keypair_test_030, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
-    int ret = keyhelper.SetCertPkcs12(nullptr, nullptr, nullptr, nullptr, 0, nullptr, nullptr, nullptr, 0, 0, nullptr);
+    int ret = keyhelper.SetCertPkcs12(nullptr, nullptr, nullptr, nullptr, 0, nullptr, nullptr, 0, 0, nullptr);
     EXPECT_EQ(ret, RET_OK);
 }
 
@@ -693,7 +693,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_031, testing::ext::TestSize.
 {
     KeyStoreHelper keyhelper;
     X509* cert = X509_new();
-    int ret = keyhelper.SetCertPkcs12(cert, nullptr, nullptr, nullptr, -2, nullptr, nullptr, nullptr, 0, 0, nullptr);
+    int ret = keyhelper.SetCertPkcs12(cert, nullptr, nullptr, nullptr, -2, nullptr, nullptr, 0, 0, nullptr);
     EXPECT_EQ(ret, RET_FAILED);
 }
 
@@ -731,7 +731,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_034, testing::ext::TestSize.
 
     keypair = keyhelper.GenerateKeyPair("ECC", 256);
     keyhelper.InitX509(*cert, *keypair);
-    p12 = keyhelper.Pkcs12Create(storePwd1, keyPwd, nullptr, keypair, cert, nullptr, 0, -2, -2, -1, 0, &safes);
+    p12 = keyhelper.Pkcs12Create(storePwd1, keyPwd, nullptr, keypair, cert, 0, -2, -2, -1, 0, &safes);
     EXPECT_EQ(p12, nullptr);
 }
 
@@ -756,7 +756,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_035, testing::ext::TestSize.
 
     keypair = keyhelper.GenerateKeyPair("ECC", 256);
     keyhelper.InitX509(*cert, *keypair);
-    p12 = keyhelper.Pkcs12Create(storePwd1, keyPwd, nullptr, keypair, cert, nullptr, -2, 0, 0, -1, 0, &safes);
+    p12 = keyhelper.Pkcs12Create(storePwd1, keyPwd, nullptr, keypair, cert, -2, 0, 0, -1, 0, &safes);
     EXPECT_EQ(p12, nullptr);
 }
 

@@ -46,8 +46,8 @@ bool VerifyBin::Verify(Options* options)
     }
     // write certificate and p7b file
     VerifyHap hapVerifyV2;
-    int32_t writeVerifyOutputFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, options);
-    if (writeVerifyOutputFlag != VERIFY_SUCCESS) {
+    int32_t writeFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, verifyResult.GetProfile(), options);
+    if (writeFlag != VERIFY_SUCCESS) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify bin WriteVerifyOutput failed!");
         return false;
     }

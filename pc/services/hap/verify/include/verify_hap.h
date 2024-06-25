@@ -36,7 +36,7 @@ public:
     static bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
     int32_t VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyResult& hapVerifyV1Result,
                              Options* options, Pkcs7Context& pkcs7Context);
-    int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, Options* options);
+    int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t> profile, Options* options);
     int32_t InithapVerify(RandomAccessFile& hapFile, const std::string& filePath,
                           SignatureInfo& hapSignInfo, HapVerifyResult& hapVerifyV1Result);
     int32_t Verify(RandomAccessFile& hapFile, HapVerifyResult& hapVerifyV1Result, Options* options,

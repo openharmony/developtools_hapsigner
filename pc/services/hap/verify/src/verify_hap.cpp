@@ -570,16 +570,27 @@ int32_t VerifyHap::VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyR
     return VERIFY_SUCCESS;
 }
 
-int32_t VerifyHap::WriteVerifyOutput(Pkcs7Context& pkcs7Context, Options* options)
+int32_t VerifyHap::WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t> profile, Options* options)
 {
-    bool flag = VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
-                                              options->GetString(Options::OUT_CERT_CHAIN));
-    if (!flag) {
-        SIGNATURE_TOOLS_LOGE("out put cert chain failed");
-        return OUT_PUT_FILE_FAIL;
+    if (pkcs7Context.certChains.size() > 0) {
+        bool flag = VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
+            options->GetString(Options::OUT_CERT_CHAIN));
+        if (!flag) {
+            SIGNATURE_TOOLS_LOGE("out put cert chain failed");
+            return OUT_PUT_FILE_FAIL;
+        }
     }
-    flag = VerifyHap::HapOutPutPkcs7(pkcs7Context.p7, options->GetString(Options::OUT_PROFILE));
-    if (!flag) {
+    if (pkcs7Context.p7 == nullptr) {
+        std::string p7bContent(profile.begin(), profile.end());
+        bool writeFlag = FileUtils::Write(p7bContent, options->GetString(Options::OUT_PROFILE)) < 0;
+        if (writeFlag) {
+            SIGNATURE_TOOLS_LOGE("p7b write to file falied!\n");
+            return OUT_PUT_FILE_FAIL;
+        }
+        return VERIFY_SUCCESS;
+    }
+    bool pkcs7flag = VerifyHap::HapOutPutPkcs7(pkcs7Context.p7, options->GetString(Options::OUT_PROFILE));
+    if (!pkcs7flag) {
         SIGNATURE_TOOLS_LOGE("out put p7b failed");
         return OUT_PUT_FILE_FAIL;
     }

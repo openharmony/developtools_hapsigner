@@ -39,8 +39,7 @@
                 "bzip2",
                 "openssl",
                 "jsoncpp",
-                "zlib",
-                "mbedtls"
+                "zlib"
             ]
         },
         "build": {
