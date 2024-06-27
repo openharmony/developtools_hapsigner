@@ -20,24 +20,49 @@
 #include "verify_bin.h"
 #include "sign_bin.h"
 #include "hash_utils.h"
+#include "packet_helper.h"
+
+extern char* GetSignedBinErrPacket(void);
+extern char* GetSignedBinErr2Packet(void);
+extern char* GetSignedBinErr3Packet(void);
+extern char* GetSignedBinPacket(void);
+extern char* GetUnsignedBinPacket(void);
 
 using namespace OHOS::SignatureTools;
 
 class VerifyBinTest : public testing::Test {
 public:
-    static void SetUpTestCase(void)
-    {
-    };
-    static void TearDownTestCase()
-    {
-    };
-    void SetUp()
-    {
-    };
-    void TearDown()
-    {
-    };
+    static void SetUpTestCase(void);
+    static void TearDownTestCase();
+    void SetUp();
+    void TearDown();
 };
+
+void VerifyBinTest::SetUpTestCase(void)
+{
+    (void)Base64DecodeStringToFile(GetSignedBinErrPacket(), "./elfVerify/linuxout-signed-err.bin");
+    (void)Base64DecodeStringToFile(GetSignedBinErr2Packet(), "./elfVerify/linuxout-signed-err2.bin");
+    (void)Base64DecodeStringToFile(GetSignedBinErr3Packet(), "./elfVerify/linuxout-signed-err3.bin");
+    (void)Base64DecodeStringToFile(GetSignedBinPacket(), "./elfVerify/linuxout-signed.bin");
+    (void)Base64DecodeStringToFile(GetUnsignedBinPacket(), "./elfVerify/linuxout-unsigned.bin");
+}
+
+void VerifyBinTest::TearDownTestCase(void)
+{
+    (void)remove("./elfVerify/linuxout-signed-err.bin");
+    (void)remove("./elfVerify/linuxout-signed-err2.bin");
+    (void)remove("./elfVerify/linuxout-signed-err3.bin");
+    (void)remove("./elfVerify/linuxout-signed.bin");
+    (void)remove("./elfVerify/linuxout-unsigned.bin");
+}
+
+void VerifyBinTest::SetUp()
+{
+}
+
+void VerifyBinTest::TearDown()
+{
+}
 
 static const std::map<std::string, std::string> PARAMS = { {"keyPwd", "123456"},
                                                            {"mode", "localSign"},

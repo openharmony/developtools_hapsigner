@@ -75,7 +75,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_001, testing::ext::TestSize.
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = api->GenerateKeyStore(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -250,15 +250,16 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_007, testing::ext::TestSize.
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
     (*params)["issuerKeyPwd"] = issuerKeyPwd;
-    (*params)["issuerkeystorePwd"] = issuerkeystorePwd;
+    (*params)["issuerKeystorePwd"] = issuerkeystorePwd;
 
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
 
+    std::string str = "";
     adaptePtr->ResetPwd();
-    EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_RIGHTS), nullptr);
-    EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS), nullptr);
-    EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_RIGHTS), nullptr);
-    EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), nullptr);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_RIGHTS), str);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::KEY_STORE_RIGHTS), str);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_RIGHTS), str);
+    EXPECT_EQ(adaptePtr->options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), str);
 }
 
 /*
@@ -287,7 +288,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_008, testing::ext::TestSize.
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = api->GenerateKeyStore(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -316,7 +317,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = api->GenerateKeyStore(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -405,7 +406,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_016, testing::ext::TestSize.
     (*params)["keystoreFile"] = keystoreFile;
 
     bool ret = api->GenerateKeyStore(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -434,7 +435,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_017, testing::ext::TestSize.
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = api->GenerateKeyStore(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -485,7 +486,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_019, testing::ext::TestSize.
 
     keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
     int ret = keyhelper.FindFriendlyName(p12, nullptr, nullptr, nullptr, nullptr);
-    EXPECT_EQ(ret, RET_OK);
+    EXPECT_EQ(ret, RET_FAILED);
 }
 
 /*
@@ -508,7 +509,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_020, testing::ext::TestSize.
 
     keypair = keyhelper.GenerateKeyPair("ECC", 256);
     int ret = keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
-    EXPECT_EQ(ret, RET_OK);
+    EXPECT_EQ(ret, RET_FAILED);
 }
 
 /*

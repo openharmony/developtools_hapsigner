@@ -15,6 +15,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <filesystem>
 
 #include "gtest/gtest.h"
 #include "options.h"
@@ -49,25 +50,24 @@ static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 
 static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
 static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
-static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
-"profile-release1-invalid_cert_chain.pem";
+static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/profile-release1-invalid_cert_chain.pem";
 
-//verify profile 使用的全局参数
+// verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
 static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/VerifyResult.json";
-//sign app 使用全局参数
+// sign app 使用全局参数
 static const std::string SIGN_APP_MODE = "localSign";
 static const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
 static const std::string SIGN_APP_APP_CERT_FILE = "./signProfile/app-release1.pem";
 static const std::string SIGN_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string SIGN_APP_IN_FILE = "./signProfile/app1-unsigned.hap";
+static const std::string SIGN_APP_IN_FILE = "./signProfile/unsigned.hap";
 static const std::string SIGN_APP_SIGN_ALG = "SHA256withECDSA";
 static const std::string SIGN_APP_KEY_STORE_FILE = "./signProfile/ohtest.p12";
-static const std::string SIGN_APP_OUT_FILE = "./signProfile/app1-signed.hap";
-//verify app 使用全局参数
-static const std::string VERIFY_APP_CERT_FILE = "./signProfile/app-release1.pem";
-static const std::string VERIFY_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string VERIFY_APP_IN_FILE = "./signProfile/app1-signed.hap";
+static const std::string SIGN_APP_OUT_FILE = "./signProfile/signed.hap";
+
+// base64解码接口
+extern void Base64ToFile(const char* b64, const std::string& output);
+extern const char* g_unsignedHap;
 
 class ProvisionTest : public testing::Test {
 public:
@@ -78,10 +78,12 @@ public:
 };
 void ProvisionTest::SetUpTestCase(void)
 {
+    Base64ToFile(g_unsignedHap, SIGN_APP_IN_FILE);
 }
 
 void ProvisionTest::TearDownTestCase(void)
 {
+    std::filesystem::remove(SIGN_APP_IN_FILE);
 }
 
 void ProvisionTest::SetUp()

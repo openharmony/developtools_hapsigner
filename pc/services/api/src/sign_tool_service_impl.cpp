@@ -285,8 +285,8 @@ bool SignToolServiceImpl::GenerateCsr(Options* options)
     std::string subject = options->GetString(Options::SUBJECT);
     if (signAlg.empty() || subject.empty()) {
         SIGNATURE_TOOLS_LOGE("failed to get signalg or subject!");
-        PrintErrorNumberMsg("PARAM_NOT_EXIST_ERROR",
-                            PARAM_NOT_EXIST_ERROR,
+        PrintErrorNumberMsg("INVALIDPARAM_ERROR",
+                            INVALIDPARAM_ERROR,
                             "Please check if signalg or subject has been specified which is required.");
         return false;
     }
@@ -610,6 +610,7 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
     nlohmann::json obj = nlohmann::json::parse(bytes);
     if (obj.is_discarded() || (!obj.is_structured())) {
         SIGNATURE_TOOLS_LOGE("Parsing appProvision failed!");
+        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing appProvision failed!");
         return PARSE_ERROR;
     }
     ret = obj.dump();

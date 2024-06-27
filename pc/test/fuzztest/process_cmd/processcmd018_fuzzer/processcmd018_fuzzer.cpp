@@ -15,10 +15,13 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <unistd.h>
 #include <cstdio>
 #include "params_run_tool.h"
 #include "code_signing.h"
+#include "packet_helper.h"
 
+char* GetSuccessPacketHap();
 namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
@@ -26,7 +29,6 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-
     char arg0[] = "";
     char arg1[] = "sign-app";
     char arg2[] = "-keyAlias";
@@ -51,10 +53,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg21[] = "123456";
     char arg22[] = "-outFile";
     char arg23[] = "./generateKeyPair/entry-default-signed-so.hap";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23};
     int argc = 24;
-
     CodeSigning obj;
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
@@ -66,7 +67,6 @@ bool SignElf(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-
     char arg0[] = "";
     char arg1[] = "sign-app";
     char arg2[] = "-keyAlias";
@@ -93,10 +93,9 @@ bool SignElf(const uint8_t* data, size_t size)
     char arg23[] = "./generateKeyPair/entry-default-signed-so.elf";
     char arg24[] = "-inForm";
     char arg25[] = "elf";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25 };
+    char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25};
     int argc = 26;
-
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
     return ret;
@@ -107,7 +106,6 @@ bool SignBin(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-
     char arg0[] = "";
     char arg1[] = "sign-app";
     char arg2[] = "-keyAlias";
@@ -134,10 +132,9 @@ bool SignBin(const uint8_t* data, size_t size)
     char arg23[] = "./generateKeyPair/entry-default-signed-so.bin";
     char arg24[] = "-inForm";
     char arg25[] = "bin";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25 };
+    char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25};
     int argc = 26;
-
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
     return ret;
@@ -148,9 +145,14 @@ bool SignBin(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetSuccessPacketHap(),
+                                                         "./generateKeyPair/entry-default-unsigned-so.hap");
+    sync();
     /* Run your code on data */
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     OHOS::SignatureTools::SignElf(data, size);
     OHOS::SignatureTools::SignBin(data, size);
+    (void)remove("./generateKeyPair/entry-default-unsigned-so.hap");
+    sync();
     return 0;
 }

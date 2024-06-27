@@ -66,6 +66,7 @@ bool RemoteSignProvider::CheckParams(Options* options)
 
 bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile) const
 {
+    bool ret = true;
     if (inputCert == nullptr || certInProfile == nullptr) {
         SIGNATURE_TOOLS_LOGE("Check Input Cert Match With Profile failed, param error");
         return false;
@@ -96,9 +97,13 @@ bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* c
         SIGNATURE_TOOLS_LOGE("Check Input Cert Match With Profile failed, pubkey is not compare");
         return false;
     }
+    if (!pkey1 || !pkey2) {
+        SIGNATURE_TOOLS_LOGE("Check Input Cert Match With Profile failed,have key is null");
+        ret = false;
+    }
     if (pkey1) EVP_PKEY_free(pkey1);
     if (pkey2) EVP_PKEY_free(pkey2);
-    return true;
+    return ret;
 }
 } // namespace SignatureTools
 } // namespace OHOS

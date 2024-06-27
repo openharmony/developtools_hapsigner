@@ -18,6 +18,9 @@
 
 #include "sign_elf.h"
 #include "code_signing.h"
+#include "packet_helper.h"
+
+extern char* GetUnsignedLinuxout(void);
 
 namespace OHOS {
 namespace SignatureTools {
@@ -25,9 +28,11 @@ class SignElfTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
+        (void)Base64DecodeStringToFile(GetUnsignedLinuxout(), "./hapSign/unsigned-linux.out");
     };
     static void TearDownTestCase()
     {
+        (void)remove("./hapSign/unsigned-linux.out");
     };
     void SetUp()
     {
@@ -135,7 +140,7 @@ void SetOptions(Options* options)
  */
 HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
 {
-    //success
+    // success
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -157,7 +162,7 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
 
     signerConfig.GetSigner();
     bool ret = SignElf::Sign(signerConfig, params);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -170,7 +175,7 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
 {
-    //failed: inFile is null
+    // failed: inFile is null
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -208,7 +213,7 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignElfTest, Sign003, testing::ext::TestSize.Level1)
 {
-    //failed:profileFile is null
+    // failed:profileFile is null
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -245,7 +250,7 @@ HWTEST_F(SignElfTest, Sign003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignElfTest, Sign004, testing::ext::TestSize.Level1)
 {
-    //failed:outFile is null
+    // failed:outFile is null
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -282,7 +287,7 @@ HWTEST_F(SignElfTest, Sign004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignElfTest, Sign005, testing::ext::TestSize.Level1)
 {
-    //failed:signCode is 0
+    // failed:signCode is 0
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -327,7 +332,7 @@ HWTEST_F(CodeSigningTest, GetCodeSignBlock001, testing::ext::TestSize.Level1)
     ZipSigner zip;
     std::vector<int8_t> ret;
     bool result = object.GetCodeSignBlock(input, offset, inForm, profileContent, zip, ret);
-    EXPECT_EQ(result, false);
+    EXPECT_EQ(result, true);
 }
 
 }

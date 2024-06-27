@@ -13,45 +13,69 @@
  * limitations under the License.
  */
 
+#include <unistd.h>
 #include <gtest/gtest.h>
 
 #include "remote_sign_provider.h"
+#include "packet_helper.h"
 
+char* GetRemoteSignerWholePacket();
 namespace OHOS {
 namespace SignatureTools {
+const char* g_remoteSignerWholeHapPath = "./remoteSigner/whole.hap";
 class RemoteSignerTest : public testing::Test {
 public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void);
+    static void TearDownTestCase(void);
+    void SetUp();
+    void TearDown();
 };
 
+void RemoteSignerTest::SetUpTestCase(void)
+{
+    (void)Base64DecodeStringToFile(GetRemoteSignerWholePacket(), g_remoteSignerWholeHapPath);
+    sync();
+}
+
+void RemoteSignerTest::TearDownTestCase(void)
+{
+    (void)remove(g_remoteSignerWholeHapPath);
+    sync();
+}
+
+void RemoteSignerTest::SetUp()
+{
+}
+
+void RemoteSignerTest::TearDown()
+{
+}
+
 /**
- * @tc.name: Test RemoteSigner
- * @tc.desc: Test RemoteSigner interface for SUCCESS.
+ * @tc.name: RemoteSignerTest
+ * @tc.desc: Test RemoteSigner interface.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
 HWTEST_F(RemoteSignerTest, RemoteSignerTest001, testing::ext::TestSize.Level1)
 {
-    std::unique_ptr<SignProvider> signProvider = std::make_unique<RemoteSignProvider>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
     std::string mode = "remoteSign";
     std::string keyAlias = "oh-app1-key-v1";
     std::string profileFile = "./remoteSigner/signed-profile.p7b";
     std::string signAlg = "SHA256withECDSA";
     std::string signCode = "1";
     std::string compatibleVersion = "8";
-    std::string inFile = "./remoteSigner/entry-default-unsigned-so.hap";
-    std::string outFile = "./remoteSigner/entry-default-signed-so.hap";
+    std::string inFile = g_remoteSignerWholeHapPath;
+    std::string outFile = "./remoteSigner/signed.hap";
     std::string signServer = "./remoteSigner/app-release1.pem";
-    std::string signerPlugin = "./remoteSigner/libremote_signer.z.so";
+    std::string signerPluginV1 = "./remoteSigner/libremote_signer.z.so";
+    std::string signerPluginV2 = "./remoteSigner/libremote_signer_without_create.z.so";
+    std::string signerPluginV3 = "./remoteSigner/dummy.z.so";
     std::string onlineAuthMode = "./remoteSigner/OpenHarmony.p12";
     std::string username = "123456";
     char userPwd[] = "123456";
 
+    std::shared_ptr<Options> params = std::make_shared<Options>();
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
     (*params)["profileFile"] = profileFile;
@@ -61,100 +85,33 @@ HWTEST_F(RemoteSignerTest, RemoteSignerTest001, testing::ext::TestSize.Level1)
     (*params)["inFile"] = inFile;
     (*params)["outFile"] = outFile;
     (*params)["signServer"] = signServer;
-    (*params)["signerPlugin"] = signerPlugin;
     (*params)["onlineAuthMode"] = onlineAuthMode;
     (*params)["username"] = username;
     (*params)["userPwd"] = userPwd;
 
-    bool res = signProvider->Sign(params.get());
-    EXPECT_EQ(res, true);
+    /*
+     * @tc.steps: step1. test remoteSign full process
+     * @tc.expected: step1. make the remote sign so file is right, the return will be true.
+     */
+    (*params)["signerPlugin"] = signerPluginV1;
+    std::unique_ptr<SignProvider> signProvider1 = std::make_unique<RemoteSignProvider>();
+    ASSERT_TRUE(signProvider1->Sign(params.get()));
+
+    /*
+     * @tc.steps: step1. test remoteSign full process
+     * @tc.expected: step1. make the remote sign so file is right, the return will be true.
+     */
+    (*params)["signerPlugin"] = signerPluginV2;
+    std::unique_ptr<SignProvider> signProvider2 = std::make_unique<RemoteSignProvider>();
+    ASSERT_FALSE(signProvider2->Sign(params.get()));
+
+    /*
+     * @tc.steps: step1. test remoteSign full process
+     * @tc.expected: step1. make the remote sign so file is right, the return will be true.
+     */
+    (*params)["signerPlugin"] = signerPluginV3;
+    std::unique_ptr<SignProvider> signProvider3 = std::make_unique<RemoteSignProvider>();
+    ASSERT_FALSE(signProvider3->Sign(params.get()));
 }
-
-/**
- * @tc.name: Test RemoteSigner
- * @tc.desc: Test RemoteSigner interface for FAIL without so file.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(RemoteSignerTest, RemoteSignerTest002, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignProvider> signProvider = std::make_unique<RemoteSignProvider>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string mode = "remoteSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string profileFile = "./remoteSigner/signed-profile.p7b";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "1";
-    std::string compatibleVersion = "8";
-    std::string inFile = "./remoteSigner/entry-default-unsigned-so.hap";
-    std::string outFile = "./remoteSigner/entry-default-signed-so.hap";
-    std::string signServer = "./remoteSigner/app-release1.pem";
-    std::string signerPlugin = "./remoteSigner/dummy.z.so";
-    std::string onlineAuthMode = "./remoteSigner/OpenHarmony.p12";
-    std::string username = "123456";
-    char userPwd[] = "123456";
-
-    (*params)["mode"] = mode;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["profileFile"] = profileFile;
-    (*params)["signAlg"] = signAlg;
-    (*params)["signCode"] = signCode;
-    (*params)["compatibleVersion"] = compatibleVersion;
-    (*params)["inFile"] = inFile;
-    (*params)["outFile"] = outFile;
-    (*params)["signServer"] = signServer;
-    (*params)["signerPlugin"] = signerPlugin;
-    (*params)["onlineAuthMode"] = onlineAuthMode;
-    (*params)["username"] = username;
-    (*params)["userPwd"] = userPwd;
-
-    bool res = signProvider->Sign(params.get());
-    EXPECT_EQ(res, false);
-}
-
-/**
- * @tc.name: Test RemoteSigner
- * @tc.desc: Test RemoteSigner interface for FAIL without Create function in so file.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(RemoteSignerTest, RemoteSignerTest003, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignProvider> signProvider = std::make_unique<RemoteSignProvider>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string mode = "remoteSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    std::string profileFile = "./remoteSigner/signed-profile.p7b";
-    std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "1";
-    std::string compatibleVersion = "8";
-    std::string inFile = "./remoteSigner/entry-default-unsigned-so.hap";
-    std::string outFile = "./remoteSigner/entry-default-signed-so.hap";
-    std::string signServer = "./remoteSigner/app-release1.pem";
-    std::string signerPlugin = "./remoteSigner/libremote_signer_without_create.z.so";
-    std::string onlineAuthMode = "./remoteSigner/OpenHarmony.p12";
-    std::string username = "123456";
-    char userPwd[] = "123456";
-
-    (*params)["mode"] = mode;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["profileFile"] = profileFile;
-    (*params)["signAlg"] = signAlg;
-    (*params)["signCode"] = signCode;
-    (*params)["compatibleVersion"] = compatibleVersion;
-    (*params)["inFile"] = inFile;
-    (*params)["outFile"] = outFile;
-    (*params)["signServer"] = signServer;
-    (*params)["signerPlugin"] = signerPlugin;
-    (*params)["onlineAuthMode"] = onlineAuthMode;
-    (*params)["username"] = username;
-    (*params)["userPwd"] = userPwd;
-
-    bool res = signProvider->Sign(params.get());
-    EXPECT_EQ(res, false);
-}
-
 } // namespace SignatureTools
 } // namespace OHOS

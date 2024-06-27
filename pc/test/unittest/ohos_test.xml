@@ -19,8 +19,6 @@
         <option name="push" value="./resource/generateKeyPair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="./resource/generateKeyPair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="./resource/generateKeyPair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
@@ -34,16 +32,6 @@
         <option name="push" value="./resource/hapVerify/verify_err.p7b -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/verify_test.p7b -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/phone-default-unsigned.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/phone-default-signed.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test_hap_verify_v2.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test_hap_verify_v3.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test1.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test2.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test3.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test4.hap -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./resource/hapVerify/test5.hap -> /data/test/hapVerify/" src="res" />
-
         <option name="push" value="./resource/generateCsr/ohtest.p12 -> /data/test/generateCsr/" src="res"/>
 
         <option name="push" value="./resource/generateCA/profile-sign-srv-ca1.cer -> /data/test/generateCA/" src="res" />
@@ -55,23 +43,17 @@
         <option name="push" value="./resource/generateCA/apptest.p12 -> /data/test/generateCA/" src="res" />
         <option name="push" value="./resource/generateCA/OpenHarmony.p12 -> /data/test/generateCA/" src="res" />
 
-        <option name="push" value="./resource/hapSign/phone-default-unsigned.hap -> /data/test/hapSign/" src="res"/>
         <option name="push" value="./resource/hapSign/app-release1.pem -> /data/test/hapSign/" src="res"/>
         <option name="push" value="./resource/hapSign/signed-profile.p7b -> /data/test/hapSign/" src="res"/>
         <option name="push" value="./resource/hapSign/ohtest.p12 -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/phone-default-unsigned.txt -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/unsigned_with_eocd.hap -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/nohap.hap -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/unsigned_with_cd_and_eocd.hap -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/unsigned-linux.out -> /data/test/hapSign/" src="res"/>
+        <option name="push" value="./resource/hapSign/app1-profile1.p7b -> /data/test/hapSign/" src="res"/>
+
         <option name="push" value="./resource/hapSign/signed-linux.out -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/phone-default-unsigned -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./resource/hapSign/phone-default-unsigned-test.hap -> /data/test/hapSign/" src="res"/>
+
         <option name="push" value="./resource/hapSign/ohtest.jks -> /data/test/hapSign/" src="res"/>
 
         <option name="push" value="./resource/signProfile/app-release1.pem -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/ohtest.p12 -> /data/test/signProfile/" src="res"/>
-        <option name="push" value="./resource/signProfile/phone-default-signed.hap -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/profile-release1.pem -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/profile.json -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/signed-profile.p7b -> /data/test/signProfile/" src="res"/>
@@ -79,12 +61,9 @@
         <option name="push" value="./resource/signProfile/profile-release1-reverse.pem -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/profile-release1-cert.pem -> /data/test/signProfile/" src="res"/>
         <option name="push" value="./resource/signProfile/profile-release1-invalid_cert_chain.pem -> /data/test/signProfile/" src="res"/>
-        <option name="push" value="./resource/signProfile/phone-default-unsigned.hap -> /data/test/signProfile/" src="res"/>
 
         <option name="push" value="./resource/codeSigning/app-release1.pem -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/ohtest.jks -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/ohtest.p12 -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/profile-release1.pem -> /data/test/codeSigning/" src="res"/>
@@ -94,19 +73,6 @@
         <option name="push" value="./resource/codeSigning/rootPubkey.pem -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/signed-profile.p7b -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./resource/codeSigning/sub.csr -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/linuxout-signed.elf -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./resource/codeSigning/hap -> /data/test/codeSigning/" src="res"/>
 
         <option name="push" value="./resource/zip/unsigned.hap -> /data/test/zip" src="res"/>
         <option name="push" value="./resource/zip/unsigned_empty.hap -> /data/test/zip" src="res"/>
@@ -127,17 +93,6 @@
         <option name="push" value="./resource/remoteSigner/signed-profile.p7b -> /data/test/remoteSigner" src="res"/>
         <option name="push" value="./resource/remoteSigner/entry-default-unsigned-so.hap -> /data/test/remoteSigner" src="res"/>
 
-        <option name="push" value="./resource/elfVerify/linuxout-signed.bin -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed.elf -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-unsigned.bin -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-unsigned.elf -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err.bin -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err.elf -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err2.bin -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err2.elf -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err3.elf -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err4.elf -> /data/test/elfVerify" src="res"/>
-        <option name="push" value="./resource/elfVerify/linuxout-signed-err3.bin -> /data/test/elfVerify" src="res"/>
         <option name="push" value="./resource/elfVerify/readonly.cer -> /data/test/elfVerify" src="res"/>
 
         <option name="push" value="./resource/help.txt -> /data/test" src="res"/>

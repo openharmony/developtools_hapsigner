@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -20,15 +23,21 @@
 #include "random_access_file.h"
 #include "random_access_file_input.h"
 #include "random_access_file_output.h"
+#include "packet_helper.h"
+
+char* GetRawPacket();
 
 using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
-const char* RAW_HAP_FILE_PATH = "./zip/test1.hap";
+
+#define DONGQIQI 0777
+
+const char* g_rawHapFilePath = "./zip/raw.hap";
 void RandomAccessFileReadFileFunc(const uint8_t* data, size_t size)
 {
     auto outputHap = std::make_shared<RandomAccessFile>();
-    if (!outputHap->Init(RAW_HAP_FILE_PATH)) {
+    if (!outputHap->Init(g_rawHapFilePath)) {
         return;
     }
     std::string buf(1, 0);
@@ -38,7 +47,7 @@ void RandomAccessFileReadFileFunc(const uint8_t* data, size_t size)
 void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 {
     RandomAccessFile file;
-    if (!file.Init(RAW_HAP_FILE_PATH)) {
+    if (!file.Init(g_rawHapFilePath)) {
         return;
     }
     int64_t fileLength = file.GetLength();
@@ -49,7 +58,7 @@ void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 void RandomAccessFileOutputConstructor(const uint8_t* data, size_t size)
 {
     RandomAccessFile file;
-    if (!file.Init(RAW_HAP_FILE_PATH)) {
+    if (!file.Init(g_rawHapFilePath)) {
         return;
     }
     RandomAccessFileOutput fileOutput(&file);
@@ -72,6 +81,11 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    (void)mkdir("zip", DONGQIQI);
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetRawPacket(), g_rawHapFilePath);
+    sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
+    (void)remove(g_rawHapFilePath);
+    sync();
     return 0;
 }

@@ -15,52 +15,7 @@
 #include "cert_dn_utils.h"
 #include "signature_tools_errno.h"
 #include "constant.h"
- /*
- std::string OHOS::SignatureTools::Base64Encode(unsigned char *bytesToEncode, unsigned int inLen)
- {
-     static const std::string base64Chars =
-         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-         std::string ret;
-     int i = 0;
-     int j = 0;
-     unsigned char charArray3[3];
-     unsigned char charArray4[4];
-         while (inLen--)
-     {
-         charArray3[i++] = *(bytesToEncode++);
-         if (i == 3)
-         {
-             charArray4[0] = (charArray3[0] & 0xfc) >> 2;
-             charArray4[1] = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
-             charArray4[2] = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
-             charArray4[3] = charArray3[2] & 0x3f;
-                 for (i = 0; (i < 4); i++)
-                 ret += base64Chars[charArray4[i]];
-             i = 0;
-         }
-     }
-         if (i)
-     {
-         for (j = i; j < 3; j++)
-         {
-             charArray3[j] = '\0';
-         }
-             charArray4[0] = (charArray3[0] & 0xfc) >> 2;
-         charArray4[1] = ((charArray3[0] & 0x03) << 4) + ((charArray3[1] & 0xf0) >> 4);
-         charArray4[2] = ((charArray3[1] & 0x0f) << 2) + ((charArray3[2] & 0xc0) >> 6);
-         charArray4[3] = charArray3[2] & 0x3f;
-             for (j = 0; (j < i + 1); j++)
-         {
-             ret += base64Chars[charArray4[j]];
-         }
-             while ((i++ < 3))
-         {
-             ret += '=';
-         }
-     }
-         return ret;
- }
- */
+
 namespace OHOS {
 namespace SignatureTools {
 
@@ -83,7 +38,7 @@ int CheckDn(std::string nameString, std::vector<pair<std::string, std::string>>&
         if (kvPair[1].size() == 0) {
             return FORMAT_ERROR;
         }
-        pairs.push_back({ kvPair[0], kvPair[1] });
+        pairs.push_back({kvPair[0], kvPair[1]});
     }
     return 0;
 }
@@ -98,7 +53,7 @@ X509_NAME* BuildDN(std::string nameString, X509_REQ* req)
     if (ret == FORMAT_ERROR) {
         SIGNATURE_TOOLS_LOGE(" Description The topic information verification failed %{public}d: %{public}s",
                              ret, oss.str().c_str());
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+        PrintErrorNumberMsg("FORMAT_ERROR", FORMAT_ERROR,
                             oss.str().c_str());
         return nullptr;
     }

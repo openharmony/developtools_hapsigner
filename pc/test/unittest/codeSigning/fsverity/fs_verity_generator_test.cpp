@@ -16,14 +16,23 @@
 #include <memory>
 #include <fstream>
 #include <gtest/gtest.h>
+#include "packet_helper.h"
 #include "fs_verity_generator.h"
+
+extern char* GetSignedSoPacket(void);
 
 using namespace OHOS::SignatureTools;
 
 class FsVerityGeneratorTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase() {};
+    static void SetUpTestCase(void)
+    {
+        (void)Base64DecodeStringToFile(GetSignedSoPacket(), "./codeSigning/entry-default-signed-so.hap");
+    }
+    static void TearDownTestCase()
+    {
+        (void)remove("./codeSigning/entry-default-signed-so.hap");
+    }
     void SetUp() {};
     void TearDown() {};
 };

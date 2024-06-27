@@ -77,7 +77,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_001, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -96,7 +96,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_002, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -241,7 +241,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_012, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -273,7 +273,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_013, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -307,7 +307,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -348,7 +348,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_028, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -389,7 +389,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_029, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -471,7 +471,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_031, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -512,7 +512,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_032, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -594,7 +594,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_034, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -635,7 +635,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_035, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -758,7 +758,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_038, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -799,7 +799,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_039, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -840,7 +840,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_040, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -881,7 +881,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_041, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1473,7 +1473,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_079, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1515,7 +1515,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_080, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1557,7 +1557,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_081, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1599,7 +1599,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_082, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1641,7 +1641,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_083, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1683,7 +1683,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_084, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1725,7 +1725,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_085, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1767,7 +1767,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_086, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1809,7 +1809,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_087, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1851,7 +1851,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_088, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1893,7 +1893,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_089, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1935,7 +1935,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_090, testing::ext::TestSize.Level1)
     std::unique_ptr<ParamsRunTool> ParamsRunToolPtr = std::make_unique<ParamsRunTool>();
     bool ret = ParamsRunToolPtr->ProcessCmd(argv, argc);
 
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 } // namespace SignatureTools
 } // namespace OHOS

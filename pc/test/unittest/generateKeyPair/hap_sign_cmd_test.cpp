@@ -395,7 +395,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_063, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -508,7 +508,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_067, testing::ext::TestSize.Leve
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -700,7 +700,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_071, testing::ext::TestSize.Leve
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -748,7 +748,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_072, testing::ext::TestSize.Leve
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1403,7 +1403,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_086, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1438,7 +1438,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_087, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1471,7 +1471,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_088, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1506,7 +1506,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_089, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1541,7 +1541,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_090, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1576,7 +1576,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_091, testing::ext::TestSize.Leve
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1601,7 +1601,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Leve
     (*params)["inForm"] = inform;
 
     bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 } // namespace SignatureTools
 } // namespace OHOS

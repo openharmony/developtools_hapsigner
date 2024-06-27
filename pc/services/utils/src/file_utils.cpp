@@ -418,5 +418,17 @@ void FileUtils::DelDir(const std::string& file)
     std::filesystem::remove(file);
     return;
 }
+
+void FileUtils::MkDir(const std::string& dirname)
+{
+    std::filesystem::path dir_path(dirname);
+    
+    if (std::filesystem::create_directory(dir_path)) {
+        SIGNATURE_TOOLS_LOGE("Directory created successfully!");
+    } else {
+        SIGNATURE_TOOLS_LOGE("Directory already exists or cannot be created!");
+    }
+}
+
 } // namespace SignatureTools
 } // namespace OHOS

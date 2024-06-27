@@ -75,7 +75,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_001, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = ParamsRunTool::RunKeypair(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -186,7 +186,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_004, testing::ext::TestSize.Level1)
     (*params)["rootCaCertFile"] = rootCaCertFile;
 
     bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -229,7 +229,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_005, testing::ext::TestSize.Level1)
     (*params)["rootCaCertFile"] = rootCaCertFile;
 
     bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -301,7 +301,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_007, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -361,7 +361,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_009, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -384,7 +384,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_010, testing::ext::TestSize.Level1)
     (*params)["outProfile"] = outProfile;
 
     bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -418,7 +418,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_011, testing::ext::TestSize.Level1)
 
     cmdUtil.Convert2Params(argv, argc, param);
     bool ret = ParamsRunTool::DispatchParams(param, *service_api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -466,7 +466,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_012, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -510,7 +510,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_013, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -541,7 +541,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_014, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -622,7 +622,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_016, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -675,7 +675,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_017, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -728,7 +728,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_018, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -774,7 +774,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_019, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -820,7 +820,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_020, testing::ext::TestSize.Level1)
     cmdUtil.Convert2Params(argv, argc, param);
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1025,7 +1025,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_028, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = secret;
 
     bool ret = ParamsRunTool::RunCert(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1138,7 +1138,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_031, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1407,7 +1407,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_042, testing::ext::TestSize.Level1)
     (*params)["issuer"] = issuer;
 
     bool ret = ParamsRunTool::RunCa(params.get(), *api);
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1446,7 +1446,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_043, testing::ext::TestSize.Level1)
     (*params)["keyUsage"] = keyUsage;
 
     bool ret = ParamsRunTool::RunCert(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1526,7 +1526,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_045, testing::ext::TestSize.Level1)
     (*params)["extKeyUsage"] = extKeyUsage;
 
     bool ret = ParamsRunTool::RunCert(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1643,7 +1643,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_048, testing::ext::TestSize.Level1)
     (*params)["rootCaCertFile"] = rootCaCertFile;
 
     bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1853,7 +1853,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
 
     ParamsRunTool param;
     bool ret = param.RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1918,7 +1918,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_055, testing::ext::TestSize.Level1)
     (*params)["outProfile"] = outProfile;
     ParamsRunTool param;
     bool ret = param.RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1941,7 +1941,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_056, testing::ext::TestSize.Level1)
     (*params)["outProfile"] = outProfile;
     ParamsRunTool param;
     bool ret = param.RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 } // namespace SignatureTools

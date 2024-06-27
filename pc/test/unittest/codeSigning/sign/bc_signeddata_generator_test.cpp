@@ -18,6 +18,9 @@
 #include "bc_signeddata_generator.h"
 #include "code_signing.h"
 #include "options.h"
+#include "packet_helper.h"
+
+char* GetUnSignedSoPacket(void);
 
 using namespace OHOS::SignatureTools;
 
@@ -26,19 +29,29 @@ using namespace OHOS::SignatureTools;
  */
 class BCSignedDataGeneratorTest : public testing::Test {
 public:
-    static void SetUpTestCase(void)
-    {
-    };
-    static void TearDownTestCase()
-    {
-    };
-    void SetUp()
-    {
-    };
-    void TearDown()
-    {
-    };
+    static void SetUpTestCase(void);
+    static void TearDownTestCase();
+    void SetUp();
+    void TearDown();
 };
+
+void BCSignedDataGeneratorTest::SetUpTestCase(void)
+{
+    (void)Base64DecodeStringToFile(GetUnSignedSoPacket(), "./codeSigning/entry-default-unsigned-so.hap");
+}
+
+void BCSignedDataGeneratorTest::TearDownTestCase(void)
+{
+    (void)remove("./codeSigning/entry-default-unsigned-so.hap");
+}
+
+void BCSignedDataGeneratorTest::SetUp()
+{
+}
+
+void BCSignedDataGeneratorTest::TearDown()
+{
+}
 
 /**
  * @tc.name: GenerateSignedData001

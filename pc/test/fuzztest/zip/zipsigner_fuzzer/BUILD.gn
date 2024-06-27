@@ -25,7 +25,11 @@ ohos_fuzztest("ZipSignerFuzzTest") {
 
   configs = [ "${signature_tools_test}:service_include" ]
 
-  sources = [ "zipsigner_fuzzer.cpp" ]
+  sources = [
+    "${signature_tools_test}/unittest/zip/packets/raw.cpp",
+    "${signature_tools_test}/unittest/zip/packets/whole.cpp",
+    "zipsigner_fuzzer.cpp",
+  ]
 
   deps = [ "${signature_tools_test}:service_target" ]
 

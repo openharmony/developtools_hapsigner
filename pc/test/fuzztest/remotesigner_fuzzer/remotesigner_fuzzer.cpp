@@ -13,11 +13,14 @@
  * limitations under the License.
  */
 
+#include <unistd.h>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include "params_run_tool.h"
+#include "packet_helper.h"
 
+char* GetRawPacket();
 namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
@@ -35,11 +38,11 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg6[] = "-profileFile";
     char arg7[] = "./remote_signer/signed-profile.p7b";
     char arg8[] = "-inFile";
-    char arg9[] = "./remote_signer/test1.hap";
+    char arg9[] = "./remote_signer/raw.hap";
     char arg10[] = "-signAlg";
     char arg11[] = "SHA256withECDSA";
     char arg12[] = "-outFile";
-    char arg13[] = "./remote_signer/signed-test1.hap";
+    char arg13[] = "./remote_signer/signed-raw.hap";
     char arg14[] = "-signServer";
     char arg15[] = "./remote_signer/app-release1.pem";
     char arg16[] = "-signerPlugin";
@@ -66,6 +69,11 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetRawPacket(), "./remote_signer/raw.hap");
+    sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
+    (void)remove("./remote_signer/raw.hap");
+    (void)remove("./remote_signer/signed-raw.hap");
+    sync();
     return 0;
 }

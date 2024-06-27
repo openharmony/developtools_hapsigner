@@ -23,7 +23,7 @@ namespace SignatureTools {
 std::vector<std::string> ParamsTrustlist::commands;
 std::unordered_map<std::string, std::vector<std::string>> ParamsTrustlist::trustMap;
 const std::string ParamsTrustlist::options = " [options]:";
-
+extern std::string GetCurrentHelpTxtPath();
 ParamsTrustlist::ParamsTrustlist()
 {
     commands.push_back(Params::GENERATE_KEYPAIR + options);
@@ -80,9 +80,9 @@ void ParamsTrustlist::ReadHelpParam(std::ifstream& fd)
 bool ParamsTrustlist::GenerateTrustlist()
 {
     std::ifstream fd;
-    fd.open(HELP_FILE_PATH.c_str());
+    fd.open(GetCurrentHelpTxtPath().c_str());
     if (!fd.is_open()) {
-        PrintErrorNumberMsg("OPEN_FILE_ERROR", OPEN_FILE_ERROR, "Open " + HELP_FILE_PATH + " failed");
+        PrintErrorNumberMsg("OPEN_FILE_ERROR", OPEN_FILE_ERROR, "Open " + GetCurrentHelpTxtPath() + " failed");
         return false;
     }
     ReadHelpParam(fd);
@@ -91,16 +91,18 @@ bool ParamsTrustlist::GenerateTrustlist()
 
 std::vector<std::string> ParamsTrustlist::GetTrustList(const std::string& commond)
 {
-    std::vector<std::string> trustList;
-    if (!GenerateTrustlist()) {
-        return trustList;
-    }
     std::string keyParam = commond + options;
-    bool isExists = false;
-    if (trustMap.find(keyParam) != trustMap.end()) {
-        isExists = true;
+    if (!GenerateTrustlist()) {
+        trustMap[keyParam].clear();
+        return trustMap[keyParam];
     }
-    return isExists ? trustMap[keyParam] : trustList;
+    if (trustMap.find(keyParam) != trustMap.end()) {
+        return trustMap[keyParam];
+    } else {
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupport command:" + commond);
+        trustMap[keyParam].clear();
+        return trustMap[keyParam];
+    }
 }
 } // namespace SignatureTools
 } // namespace OHOS

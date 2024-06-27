@@ -21,8 +21,8 @@
 
 namespace OHOS {
 namespace SignatureTools {
-const char APP_SIGNING_CAPABILITY[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00 };
-const char PROFILE_SIGNING_CAPABILITY[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x01 };
+const char APP_SIGNING_CAPABILITY[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
+const char PROFILE_SIGNING_CAPABILITY[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x01};
 
 const long DEFAULT_VALIDITY = 31536000;
 const long DEFAULT_START_VALIDITY = 0;
@@ -51,7 +51,6 @@ const std::string DEFAULT_EXTEND_KEYUSAGE = "codeSigning";
 const std::string NID_BASIC_CONST = "basicConstraints";
 const std::string NID_KEYUSAGE_CONST = "keyUsage";
 const std::string NID_EXT_KEYUSAGE_CONST = "extendedKeyUsage";
-const std::string HELP_FILE_PATH = "./help.txt";
 const std::string PKCS7_EXT_SIGNATURE_OID = "1.2.840.113549.1.1.10";
 const std::string X509_EXT_OID = "1.3.6.1.4.1.2011.2.376.1.3";
 const std::string OWNERID_OID = "1.3.6.1.4.1.2011.2.376.1.4.1"; // SIGNED_ID
@@ -74,6 +73,7 @@ const std::string OUT_FORM_CERT = "cert";
 const std::string OUT_FORM_CERT_CHAIN = "certChain";
 const std::string DEBUG_STR = "debug";
 const std::string DEBUG_LIB_ID = "DEBUG_LIB_ID";
+const std::string HELP_FILE_PATH = "./help.txt";
 
 const int32_t ONE_DAY_HOUR = 24;
 const int32_t ONE_DAY_MINUTE = 60;

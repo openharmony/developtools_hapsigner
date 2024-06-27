@@ -30,9 +30,10 @@ SignerConfig::SignerConfig() : options(nullptr),
 
 SignerConfig::~SignerConfig()
 {
-    if (!certificates) {
+    if (certificates) {
         sk_X509_pop_free(certificates, X509_free);
     }
+    certificates = NULL;
 }
 
 Options* SignerConfig::GetOptions() const

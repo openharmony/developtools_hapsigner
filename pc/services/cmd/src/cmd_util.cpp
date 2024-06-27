@@ -193,8 +193,8 @@ static bool outFilePath(Options* options)
             }
             std::string parentPath = pat.parent_path();
             if (!std::filesystem::exists(parentPath)) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "File: " + std::string(pat.c_str())
-                                    + " not exist");
+                PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "output file parent directory not exist : "
+                                    + std::string(parentPath.c_str()) + " not exist");
                 return false;
             }
         }
@@ -357,7 +357,6 @@ bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
     ParamsTrustlist params_trust_list;
     std::vector<std::string> trustList = params_trust_list.GetTrustList(args[1]);
     if (trustList.empty()) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupport comand");
         return false;
     }
     size_t i = 2;

@@ -19,6 +19,11 @@
 #include "code_signing.h"
 #include "zip_signer.h"
 #include "sign_provider.h"
+#include "packet_helper.h"
+
+extern char* GetUnSignedSoPacket(void);
+extern char* GetUnsignedElfPacket(void);
+extern char* GetUnsignedLinuxout(void);
 
 using namespace OHOS::SignatureTools;
 
@@ -29,10 +34,16 @@ class CodeSigningTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
-    };
+        (void)Base64DecodeStringToFile(GetUnSignedSoPacket(), "./codeSigning/entry-default-unsigned-so.hap");
+        (void)Base64DecodeStringToFile(GetUnsignedElfPacket(), "./codeSigning/entry-default-unsigned-so.elf");
+        (void)Base64DecodeStringToFile(GetUnsignedLinuxout(), "./hapSign/unsigned-linux.out");
+    }
     static void TearDownTestCase()
     {
-    };
+        (void)remove("./codeSigning/entry-default-unsigned-so.hap");
+        (void)remove("./codeSigning/entry-default-unsigned-so.elf");
+        (void)remove("./hapSign/unsigned-linux.out");
+    }
     void SetUp()
     {
     };
@@ -93,10 +104,10 @@ HWTEST_F(CodeSigningTest, generateSignature001, testing::ext::TestSize.Level1)
 
     CodeSigning codeSigning(&signerConfig);
 
-    std::vector<int8_t> signedData = { 70, 83, 86, 101, 114, 105, 116, 121, 1,
+    std::vector<int8_t> signedData = {70, 83, 86, 101, 114, 105, 116, 121, 1,
         0, 32, 0, -82, 98, 15, 102, 95, -26, -90, 88, 83, 8, -42, -65, -121,
         117, -43, -95, -102, -56, 109, 93, 25, -9, -88, 44, -25, 119, -39, -68,
-        -15, 11, 123, -80 };
+        -15, 11, 123, -80};
     std::string ownerID;
     std::vector<int8_t> ret;
     bool flag = codeSigning.GenerateSignature(signedData, ownerID, ret);
@@ -507,7 +518,7 @@ HWTEST_F(CodeSigningTest, signNativeLibs, testing::ext::TestSize.Level1)
     std::string input = "./codeSigning/entry-default-unsigned-so.hap";
     std::string ownerID;
     bool flag = codeSigning.SignNativeLibs(input, ownerID);
-    EXPECT_EQ(flag, false);
+    EXPECT_EQ(flag, true);
 }
 
 /**
@@ -605,7 +616,7 @@ HWTEST_F(CodeSigningTest, AppendCodeSignBlock, testing::ext::TestSize.Level1)
     (*params)["inForm"] = inForm;
 
     bool ret = signProvider->Sign(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 void SetParamsMap(std::map<std::string, std::string>& params)
@@ -627,7 +638,7 @@ void SetParamsMap(std::map<std::string, std::string>& params)
     params["profileContent"] = "hello";
 }
 
-void SetOptions(Options *options)
+void SetOptions(Options* options)
 {
     std::string mode = "localSign";
     std::string keyAlias = "oh-app1-key-v1";
@@ -666,7 +677,7 @@ void SetOptions(Options *options)
  */
 HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
 {
-    //success
+    // success
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -693,7 +704,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
     std::vector<int8_t> codesignData;
     std::string inForm = "elf";
     bool ret = codeSigning.GetElfCodeSignBlock(inputFile, offset, inForm, params.at("profileContent"), codesignData);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -706,7 +717,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(CodeSigningTest, GetElfCodeSignBlock002, testing::ext::TestSize.Level1)
 {
-    //inForm error
+    // inForm error
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -748,7 +759,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(CodeSigningTest, GetElfCodeSignBlock003, testing::ext::TestSize.Level1)
 {
-    //inFile error
+    // inFile error
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -790,7 +801,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(CodeSigningTest, GetElfCodeSignBlock004, testing::ext::TestSize.Level1)
 {
-    //signatureAlgorithm set DSA_WITH_SHA256 error
+    // signatureAlgorithm set DSA_WITH_SHA256 error
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 

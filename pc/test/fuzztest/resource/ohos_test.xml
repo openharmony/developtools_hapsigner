@@ -38,20 +38,6 @@
   </target>
   <target name="ProcessCmd001FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -59,20 +45,6 @@
   </target>
   <target name="ProcessCmd002FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -80,20 +52,6 @@
   </target>
   <target name="ProcessCmd003FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -101,20 +59,6 @@
   </target>
   <target name="ProcessCmd004FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -122,20 +66,6 @@
   </target>
   <target name="ProcessCmd005FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -143,20 +73,6 @@
   </target>
   <target name="ProcessCmd006FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -164,20 +80,7 @@
   </target>
   <target name="ProcessCmd007FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -185,20 +88,6 @@
   </target>
   <target name="ProcessCmd008FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -206,20 +95,7 @@
   </target>
   <target name="ProcessCmd009FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -227,20 +103,7 @@
   </target>
   <target name="ProcessCmd010FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -248,20 +111,8 @@
   </target>
   <target name="ProcessCmd011FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -269,20 +120,8 @@
   </target>
   <target name="ProcessCmd012FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -290,19 +129,11 @@
   </target>
   <target name="ProcessCmd013FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
@@ -311,19 +142,11 @@
   </target>
   <target name="ProcessCmd014FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
@@ -332,19 +155,13 @@
   </target>
   <target name="ProcessCmd015FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
@@ -357,8 +174,6 @@
         <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
@@ -378,8 +193,6 @@
         <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
@@ -399,10 +212,6 @@
         <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.elf -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.bin -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
@@ -422,10 +231,6 @@
         <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.elf -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.bin -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
@@ -441,20 +246,13 @@
   </target>
   <target name="ProcessCmd020FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
       <cleaner>
@@ -462,19 +260,12 @@
   </target>
   <target name="ProcessCmd021FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
@@ -483,19 +274,13 @@
   </target>
   <target name="ProcessCmd022FuzzTest">
       <preparer>
-        <option name="push" value="generate_keypair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-signed-so.hap -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/entry-default-unsigned-so.hap -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/profile.json -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/profile-release1.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res"/>
       </preparer>
@@ -521,34 +306,11 @@
 	</target>
 	<target name="HapSign001FuzzTest" timeout="3000">
       <preparer>
-        <option name="push" value="hap_sign/phone-default-unsigned.hap -> /data/test/hapSign/" src="res"/>
         <option name="push" value="hap_sign/app-release1.pem -> /data/test/hapSign/" src="res"/>
         <option name="push" value="hap_sign/app1-profile1.p7b -> /data/test/hapSign/" src="res"/>
         <option name="push" value="hap_sign/signed-profile.p7b -> /data/test/hapSign/" src="res"/>
         <option name="push" value="hap_sign/ohtest.p12 -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="hap_sign/phone-default-unsigned.txt -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="hap_sign/unsigned_with_eocd.hap -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="hap_sign/nohap.hap -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="hap_sign/unsigned_with_cd_and_eocd.hap -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="hap_sign/phone-default-unsigned -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="hap_sign/phone-default-unsigned-test.hap -> /data/test/hapSign/" src="res"/>
         <option name="push" value="hap_sign/ohtest.jks -> /data/test/hapSign/" src="res"/>
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="ZipSignerFuzzTest">
-      <preparer>
-        <option name="push" value="zip/test1.hap -> /data/test/zip/" src="res" />
-        <option name="push" value="zip/test2.hap -> /data/test/zip/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="RandomAccessFileInputOutputFuzzTest">
-      <preparer>
-        <option name="push" value="zip/test1.hap -> /data/test/zip/" src="res" />
-        <option name="push" value="zip/test2.hap -> /data/test/zip/" src="res" />
       </preparer>
       <cleaner>
       </cleaner>
@@ -558,593 +320,8 @@
         <option name="push" value="remote_signer/app-release1.pem -> /data/test/remote_signer/" src="res" />
         <option name="push" value="remote_signer/OpenHarmony.p12 -> /data/test/remote_signer/" src="res" />
         <option name="push" value="remote_signer/signed-profile.p7b -> /data/test/remote_signer/" src="res" />
-        <option name="push" value="remote_signer/test1.hap -> /data/test/remote_signer/" src="res" />
         <option name="push" value="remote_signer/libremote_signer.z.so -> /data/test/remote_signer/" src="res" />
         <option name="push" value="help.txt -> /data/test/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="CodeSignBlockFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="CodeSignBlockHeaderFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="ElfSignBlockFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="ExtensionFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="FsVerityInfoSegmentFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="HapInfoSegmentFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="MerkleTreeExtensionFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="NativeLibInfoSegmentFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="SegmentHeaderFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="SignedFilePosFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="SignInfoFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="FsVerityDescriptorFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="FsVerityDescriptorWithSignFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="FsVerityDigestFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="FsVerityGeneratorFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="FsVerityHashAlgorithmFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="MerkleTreeBuilderFuzzTest">
-      <preparer>
-        <option name="push" value="code_signing/app-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err2.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err3.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err4.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err5.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-signed-so-err6.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/entry-default-unsigned-so.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.jks -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/ohtest.p12 -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/phone-default-unsigned.hap -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-release1.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/root-ca1.cer -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPrikey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/rootPubkey.pem -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/signed-profile.p7b -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="code_signing/sub.csr -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="VerifyBinFuzzTest">
-      <preparer>
-        <option name="push" value="elf_verify/linuxout-signed.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err2.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err2.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err3.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err3.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err4.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-unsigned.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/readonly.cer -> /data/test/codeSigning/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
-  <target name="VerifyElfFuzzTest">
-      <preparer>
-        <option name="push" value="elf_verify/linuxout-signed.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err2.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err2.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err3.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err3.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err4.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err5.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-signed-err6.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-unsigned.bin -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/linuxout-unsigned.elf -> /data/test/codeSigning/" src="res" />
-        <option name="push" value="elf_verify/readonly.cer -> /data/test/codeSigning/" src="res" />
       </preparer>
       <cleaner>
       </cleaner>

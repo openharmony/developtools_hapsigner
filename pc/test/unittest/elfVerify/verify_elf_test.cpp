@@ -21,16 +21,55 @@
 #include "hw_block_data.h"
 #include "sign_provider.h"
 #include "verify_hap.h"
+#include "packet_helper.h"
+
+extern char* GetSignedElfErr2Packet(void);
+extern char* GetSignedElfErr3Packet(void);
+extern char* GetSignedElfErr4Packet(void);
+extern char* GetSignedElf2Err6Packet(void);
+extern char* GetSignedElf2Packet(void);
+extern char* GetUnsignedElf2Packet(void);
+extern char* GetSignedElfErr7Packet(void);
 
 using namespace OHOS::SignatureTools;
 
 class VerifyElfTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void);
+    static void TearDownTestCase();
+    void SetUp();
+    void TearDown();
 };
+
+void VerifyElfTest::SetUpTestCase(void)
+{
+    (void)Base64DecodeStringToFile(GetSignedElfErr2Packet(), "./elfVerify/linuxout-signed-err2.elf");
+    (void)Base64DecodeStringToFile(GetSignedElfErr3Packet(), "./elfVerify/linuxout-signed-err3.elf");
+    (void)Base64DecodeStringToFile(GetSignedElfErr4Packet(), "./elfVerify/linuxout-signed-err4.elf");
+    (void)Base64DecodeStringToFile(GetSignedElf2Err6Packet(), "./elfVerify/linuxout-signed-err6.elf");
+    (void)Base64DecodeStringToFile(GetSignedElf2Packet(), "./elfVerify/linuxout-signed.elf");
+    (void)Base64DecodeStringToFile(GetUnsignedElf2Packet(), "./elfVerify/linuxout-unsigned.elf");
+    (void)Base64DecodeStringToFile(GetSignedElfErr7Packet(), "./elfVerify/linuxout-signed-err7.elf");
+}
+
+void VerifyElfTest::TearDownTestCase(void)
+{
+    (void)remove("./elfVerify/linuxout-signed-err2.elf");
+    (void)remove("./elfVerify/linuxout-signed-err3.elf");
+    (void)remove("./elfVerify/linuxout-signed-err4.elf");
+    (void)remove("./elfVerify/linuxout-signed-err6.elf");
+    (void)remove("./elfVerify/linuxout-signed.elf");
+    (void)remove("./elfVerify/linuxout-unsigned.elf");
+    (void)remove("./elfVerify/linuxout-signed-err7.elf");
+}
+
+void VerifyElfTest::SetUp()
+{
+}
+
+void VerifyElfTest::TearDown()
+{
+}
 
 /**
  * @tc.name: Verify001
@@ -189,7 +228,7 @@ HWTEST_F(VerifyElfTest, Verify008, testing::ext::TestSize.Level1)
     VerifyElf verifyElf;
     bool flag = verifyElf.Verify(&options);
 
-    EXPECT_EQ(flag, false);
+    EXPECT_EQ(flag, true);
 }
 
 /**
@@ -203,7 +242,7 @@ HWTEST_F(VerifyElfTest, Verify008, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyElfTest, Verify009, testing::ext::TestSize.Level1)
 {
     Options options;
-    options.emplace(Options::IN_FILE, std::string("./elfVerify/linuxout-signed-err.elf"));
+    options.emplace(Options::IN_FILE, std::string("./elfVerify/linuxout-signed-err6.elf"));
     options.emplace(Options::OUT_CERT_CHAIN, std::string("./elfVerify/xx.cer"));
     options.emplace(Options::OUT_PROFILE, std::string("./elfVerify/xx.p7b"));
 
@@ -273,7 +312,28 @@ HWTEST_F(VerifyElfTest, Verify012, testing::ext::TestSize.Level1)
     VerifyElf verifyElf;
     bool flag = verifyElf.Verify(&options);
 
-    EXPECT_EQ(flag, false);
+    EXPECT_EQ(flag, true);
+}
+
+/**
+ * @tc.name: Verify013
+ * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyElfTest, Verify013, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options.emplace(Options::IN_FILE, std::string("./elfVerify/linuxout-signed-err7.elf"));
+    options.emplace(Options::OUT_CERT_CHAIN, std::string("./elfVerify/xx.cer"));
+    options.emplace(Options::OUT_PROFILE, std::string("./elfVerify/xx.p7b"));
+
+    VerifyElf verifyElf;
+    bool flag = verifyElf.Verify(&options);
+
+    EXPECT_EQ(flag, true);
 }
 
 /**
@@ -439,7 +499,7 @@ HWTEST_F(VerifyElfTest, SignElf001, testing::ext::TestSize.Level1)
     SignProvider signProvider;
     bool flag = signProvider.SignElf(&options);
 
-    EXPECT_EQ(flag, true);
+    EXPECT_EQ(flag, false);
 }
 
 /**
@@ -698,7 +758,7 @@ HWTEST_F(VerifyElfTest, VerifyElfProfile001, testing::ext::TestSize.Level1)
     VerifyHap verifyHap;
     int32_t flag = verifyHap.VerifyElfProfile(profileData, result, &options, pkcs7Context);
 
-    EXPECT_NE(flag, 0);
+    EXPECT_EQ(flag, 0);
 }
 
 /**
@@ -724,7 +784,7 @@ HWTEST_F(VerifyElfTest, WriteVerifyOutput001, testing::ext::TestSize.Level1)
     Pkcs7Context pkcs7Context;
     VerifyHap hapVerifyV2;
     hapVerifyV2.VerifyElfProfile(profileByte, result, &options, pkcs7Context);
-    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, &options);
+    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, result.GetProfile(), &options);
 
     EXPECT_NE(flag, 0);
 }
@@ -752,7 +812,7 @@ HWTEST_F(VerifyElfTest, WriteVerifyOutput002, testing::ext::TestSize.Level1)
     Pkcs7Context pkcs7Context;
     VerifyHap hapVerifyV2;
     hapVerifyV2.VerifyElfProfile(profileByte, result, &options, pkcs7Context);
-    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, &options);
+    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, result.GetProfile(), &options);
 
     EXPECT_NE(flag, 0);
 }

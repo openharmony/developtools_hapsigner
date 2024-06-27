@@ -22,7 +22,7 @@
 using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
-std::string pathFile = "./zip/tmp.hap";
+const std::string pathFile = "./zip/tmp.hap";
 void HapSignerBlockUtilsFunc(const uint8_t* data, size_t size)
 {
     SignatureInfo info;

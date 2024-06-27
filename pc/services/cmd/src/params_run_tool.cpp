@@ -14,6 +14,7 @@
  */
 
 #include "params_run_tool.h"
+#include <unistd.h>
 #include <memory>
 
 #include "constant.h"
@@ -23,6 +24,14 @@ namespace SignatureTools {
 const std::string ParamsRunTool::VERSION = "1.0.0";
 const std::string ParamsRunTool::LOCAL_SIGN = "localSign";
 const std::string ParamsRunTool::REMOTE_SIGN = "remoteSign";
+
+std::string GetCurrentHelpTxtPath()
+{
+    static constexpr int len = 256;
+    char buf[len]{0};
+    std::string cwd = getcwd(buf, sizeof(buf));
+    return cwd + "/help.txt";
+}
 
 std::vector<std::string> ParamsRunTool::InformList;
 enum class MapNum {
@@ -113,7 +122,7 @@ bool ParamsRunTool::CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& 
 
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
 {
-    if (!params->Required({ Options::MODE, Options::IN_FILE, Options::OUT_FILE, Options::SIGN_ALG })) {
+    if (!params->Required({Options::MODE, Options::IN_FILE, Options::OUT_FILE, Options::SIGN_ALG})) {
         return false;
     }
     std::string mode = params->GetString(Options::MODE);
@@ -125,10 +134,10 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         return false;
     }
     if (StringUtils::CaseCompare(mode, ParamsRunTool::LOCAL_SIGN)) {
-        if (!params->Required({ Options::KEY_STORE_FILE, Options::KEY_ALIAS, Options::APP_CERT_FILE })) {
+        if (!params->Required({Options::KEY_STORE_FILE, Options::KEY_ALIAS, Options::APP_CERT_FILE})) {
             return false;
         }
-        if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" })) {
+        if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
             return false;
         }
     }
@@ -159,12 +168,12 @@ bool ParamsRunTool::CheckProfile(Options& params)
     }
 
     if (profileSigned == "1") {
-        if (!FileUtils::ValidFileType(profileFile, { "p7b" })) {
+        if (!FileUtils::ValidFileType(profileFile, {"p7b"})) {
             return false;
         }
         return true;
     } else {
-        if (!FileUtils::ValidFileType(profileFile, { "json" })) {
+        if (!FileUtils::ValidFileType(profileFile, {"json"})) {
             return false;
         }
         return true;
@@ -201,8 +210,8 @@ bool ParamsRunTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& 
 
 bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
 {
-    if (!params->Required({ Options::KEY_ALIAS, Options::KEY_ALG,
-        Options::KEY_SIZE, Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE })) {
+    if (!params->Required({Options::KEY_ALIAS, Options::KEY_ALG,
+        Options::KEY_SIZE, Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
     std::string keyAlg = params->GetString(Options::KEY_ALG);
@@ -217,7 +226,7 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
 
@@ -226,9 +235,9 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
 {
-    if (!params->Required({ Options::KEY_ALIAS, Options::ISSUER,
+    if (!params->Required({Options::KEY_ALIAS, Options::ISSUER,
         Options::ISSUER_KEY_ALIAS, Options::SUBJECT, Options::KEY_USAGE,
-        Options::SIGN_ALG, Options::KEY_STORE_FILE })) {
+        Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
     std::string keyusage = params->GetString(Options::KEY_USAGE);
@@ -245,7 +254,7 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
     return api.GenerateCert(params);
@@ -253,8 +262,8 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::CheckEndCertArguments(Options& params)
 {
-    if (!params.Required({ params.KEY_ALIAS, params.ISSUER, params.ISSUER_KEY_ALIAS,
-                        params.SUBJECT, params.SIGN_ALG, params.KEY_STORE_FILE })) {
+    if (!params.Required({params.KEY_ALIAS, params.ISSUER, params.ISSUER_KEY_ALIAS,
+                        params.SUBJECT, params.SIGN_ALG, params.KEY_STORE_FILE})) {
         return false;
     }
     std::string signAlg = params.GetString(params.SIGN_ALG);
@@ -268,27 +277,27 @@ bool ParamsRunTool::CheckEndCertArguments(Options& params)
         }
     }
     if (!outForm.empty() && "certChain" == outForm) {
-        if (!params.Required({ params.SUB_CA_CERT_FILE, params.CA_CERT_FILE })) {
+        if (!params.Required({params.SUB_CA_CERT_FILE, params.CA_CERT_FILE})) {
             return false;
         }
-        if (!FileUtils::ValidFileType(params.GetString(params.SUB_CA_CERT_FILE), { "cer" }) ||
-            !FileUtils::ValidFileType(params.GetString(params.CA_CERT_FILE), { "cer" })) {
+        if (!FileUtils::ValidFileType(params.GetString(params.SUB_CA_CERT_FILE), {"cer"}) ||
+            !FileUtils::ValidFileType(params.GetString(params.CA_CERT_FILE), {"cer"})) {
             return false;
         }
     }
     std::string keyStoreFile = params.GetString(params.KEY_STORE_FILE);
-    if (!FileUtils::ValidFileType(keyStoreFile, { "p12", "jks" })) {
+    if (!FileUtils::ValidFileType(keyStoreFile, {"p12", "jks"})) {
         return false;
     }
     if (params.find(params.ISSUER_KEY_STORE_FILE) != params.end()) {
         std::string issuerKeyStoreFile = params.GetString(params.ISSUER_KEY_STORE_FILE);
-        if (!FileUtils::ValidFileType(issuerKeyStoreFile, { "p12", "jks" })) {
+        if (!FileUtils::ValidFileType(issuerKeyStoreFile, {"p12", "jks"})) {
             return false;
         }
     }
     std::string outFile = params.GetString(params.OUT_FILE);
     if (!outFile.empty()) {
-        if (!FileUtils::ValidFileType(outFile, { "cer", "pem" })) {
+        if (!FileUtils::ValidFileType(outFile, {"cer", "pem"})) {
             return false;
         }
     }
@@ -313,7 +322,7 @@ bool ParamsRunTool::RunProfileCert(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::RunKeypair(Options* params, SignToolServiceImpl& api)
 {
-    if (!params->Required({ Options::KEY_ALIAS, Options::KEY_ALG, Options::KEY_SIZE, Options::KEY_STORE_FILE })) {
+    if (!params->Required({Options::KEY_ALIAS, Options::KEY_ALG, Options::KEY_SIZE, Options::KEY_STORE_FILE})) {
         return false;
     }
     std::string keyAlg = params->GetString(Options::KEY_ALG);
@@ -324,7 +333,7 @@ bool ParamsRunTool::RunKeypair(Options* params, SignToolServiceImpl& api)
     if (!CmdUtil::JudgeSize(size)) {
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
     return api.GenerateKeyStore(params);
@@ -332,24 +341,24 @@ bool ParamsRunTool::RunKeypair(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::RunCsr(Options* params, SignToolServiceImpl& api)
 {
-    if (!params->Required({ Options::KEY_ALIAS, Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE })) {
+    if (!params->Required({Options::KEY_ALIAS, Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
     std::string signAlg = params->GetString(Options::SIGN_ALG);
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::OUT_FILE), { "csr" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::OUT_FILE), {"csr"})) {
     }
     return api.GenerateCsr(params);
 }
 
 bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
 {
-    if (params->Required({ params->MODE, params->SIGN_ALG, params->OUT_FILE, params->IN_FILE }) == false) {
+    if (params->Required({params->MODE, params->SIGN_ALG, params->OUT_FILE, params->IN_FILE}) == false) {
         return false;
     }
     std::string mode = params->GetString(Options::MODE);
@@ -359,9 +368,9 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
         return false;
     }
     if (StringUtils::CaseCompare(mode, ParamsRunTool::LOCAL_SIGN)) {
-        if (params->Required({ params->KEY_STORE_FILE, params->KEY_ALIAS, params->PROFILE_CERT_FILE }) == false)
+        if (params->Required({params->KEY_STORE_FILE, params->KEY_ALIAS, params->PROFILE_CERT_FILE}) == false)
             return false;
-        if (FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), { "p12", "jks" }) == false)
+        if (FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"}) == false)
             return false;
     }
     std::string signAlg = params->GetString(Options::SIGN_ALG);
@@ -369,7 +378,7 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
         return false;
     }
     std::string outFile = params->GetString(Options::OUT_FILE);
-    if (FileUtils::ValidFileType(outFile, { "p7b" }) == false) {
+    if (FileUtils::ValidFileType(outFile, {"p7b"}) == false) {
         return false;
     }
     return api.SignProfile(params);
@@ -377,13 +386,13 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::RunVerifyProfile(Options* params, SignToolServiceImpl& api)
 {
-    if (params->Required({ Options::IN_FILE }) == false)
+    if (params->Required({Options::IN_FILE}) == false)
         return false;
-    if (FileUtils::ValidFileType(params->GetString(Options::IN_FILE), { "p7b" }) == false)
+    if (FileUtils::ValidFileType(params->GetString(Options::IN_FILE), {"p7b"}) == false)
         return true;
     std::string outFile = params->GetString(Options::OUT_FILE);
     if (!outFile.empty()) {
-        if (FileUtils::ValidFileType(outFile, { "json" }) == false)
+        if (FileUtils::ValidFileType(outFile, {"json"}) == false)
             return false;
     }
     return api.VerifyProfile(params);
@@ -391,7 +400,7 @@ bool ParamsRunTool::RunVerifyProfile(Options* params, SignToolServiceImpl& api)
 
 void ParamsRunTool::PrintHelp()
 {
-    std::ifstream readHelp(HELP_FILE_PATH.c_str(), std::ios::in | std::ios::binary);
+    std::ifstream readHelp(GetCurrentHelpTxtPath().c_str(), std::ios::in | std::ios::binary);
     if (readHelp.is_open()) {
         std::string line;
         PrintMsg("");
@@ -400,7 +409,7 @@ void ParamsRunTool::PrintHelp()
         }
         readHelp.close();
     } else {
-        PrintErrorNumberMsg("OPEN_FILE_ERROR", OPEN_FILE_ERROR, "Open " + HELP_FILE_PATH + " failed");
+        PrintErrorNumberMsg("OPEN_FILE_ERROR", OPEN_FILE_ERROR, "Open " + GetCurrentHelpTxtPath() + " failed");
     }
 }
 
@@ -411,7 +420,7 @@ void  ParamsRunTool::Version()
 
 bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)
 {
-    if (!params->Required({ Options::IN_FILE, Options::OUT_CERT_CHAIN, Options::OUT_PROFILE })) {
+    if (!params->Required({Options::IN_FILE, Options::OUT_CERT_CHAIN, Options::OUT_PROFILE})) {
         return false;
     }
     std::string inForm = params->GetString(Options::INFORM, ZIP);
@@ -419,10 +428,10 @@ bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)
         PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "inForm params must is [bin, elf, zip]");
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::OUT_CERT_CHAIN), { "cer" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::OUT_CERT_CHAIN), {"cer"})) {
         return false;
     }
-    if (!FileUtils::ValidFileType(params->GetString(Options::OUT_PROFILE), { "p7b" })) {
+    if (!FileUtils::ValidFileType(params->GetString(Options::OUT_PROFILE), {"p7b"})) {
         return false;
     }
     return api.VerifyHapSigner(params);

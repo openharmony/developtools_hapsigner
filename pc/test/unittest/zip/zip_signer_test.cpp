@@ -13,10 +13,14 @@
  * limitations under the License.
  */
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <fstream>
-#include <gtest/gtest.h>
 #include <memory>
 #include <string>
+#include <filesystem>
+#include <gtest/gtest.h>
 
 #include "endof_central_directory.h"
 #include "file_utils.h"
@@ -24,101 +28,169 @@
 #include "zip_entry.h"
 #include "zip_signer.h"
 #include "zip_utils.h"
+#include "packet_helper.h"
 
+char* GetCdOnlyV1Packet();
+char* GetCdOnlyV2Packet();
+char* GetRawPacket();
+char* GetWholePacket();
+char* GetDataDescriptorPacket();
+char* GetzipEntriesWrongV1Packet();
+char* GetzipEntriesWrongV2Packet();
+char* GetzipEntriesWrongV3Packet();
+char* GetzipEntriesWrongV4Packet();
+char* GetZipEntryDataWrongPacket();
 namespace OHOS {
 namespace SignatureTools {
+const std::string ZIP_RES_PATH = "zip";
+const std::string RAW_HAP_PATH = "./zip/raw.hap";
+const std::string WHOLE_HAP_PATH = "./zip/whole.hap";
+const std::string EMPTY_HAP_PATH = "./zip/empty.hap";
+const std::string DATA_DESCRIPTOR_HAP_PATH = "./zip/data_descriptor_hap.hap";
+const std::string EOCD_ONLY_HAP_PATH = "./zip/eocd_only.hap";
+const std::string DUMMY_HAP_PATH = "./zip/dummy.hap";
+const std::string ZIP_ENTRIES_WRONG_HAP_V1_PATH = "./zip/zip_entries_wrong_v1.hap";
+const std::string ZIP_ENTRIES_WRONG_HAP_V2_PATH = "./zip/zip_entries_wrong_v2.hap";
+const std::string ZIP_ENTRIES_WRONG_HAP_V3_PATH = "./zip/zip_entries_wrong_v3.hap";
+const std::string ZIP_ENTRIES_WRONG_HAP_V4_PATH = "./zip/zip_entries_wrong_v4.hap";
+const std::string ZIP_ENTRY_DATA_WRONG_HAP_PATH = "./zip/zip_entry_data_wrong.hap";
+const std::string CD_ONLY_HAP_V1_PATH = "./zip/cd_only_v1.hap";
+const std::string CD_ONLY_HAP_V2_PATH = "./zip/cd_only_v2.hap";
+const std::string OUTPUT_WHOLE_HAP_PATH = "./zip/output_whole.hap";
+const std::string ZERO_HAP_PATH = "./zip/zero.hap";
+const static int ALIGNMENT = 4;
 class ZipSignerTest : public testing::Test {
 public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void);
+    static void TearDownTestCase(void);
+    void SetUp();
+    void TearDown();
 };
 
-/**
- * @tc.name: Test Init Function
- * @tc.desc: Test function of ZipSigner::Init() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, InitTest001, testing::ext::TestSize.Level1)
+void ZipSignerTest::SetUpTestCase(void)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    EXPECT_EQ(zip->Init(inputFile), true);
+    int dong = 0777;
+    (void)mkdir(ZIP_RES_PATH.c_str(), dong);
+    (void)Base64DecodeStringToFile(GetCdOnlyV1Packet(), CD_ONLY_HAP_V1_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetCdOnlyV2Packet(), CD_ONLY_HAP_V2_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetRawPacket(), RAW_HAP_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetWholePacket(), WHOLE_HAP_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetDataDescriptorPacket(), DATA_DESCRIPTOR_HAP_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetzipEntriesWrongV1Packet(), ZIP_ENTRIES_WRONG_HAP_V1_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetzipEntriesWrongV2Packet(), ZIP_ENTRIES_WRONG_HAP_V2_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetzipEntriesWrongV3Packet(), ZIP_ENTRIES_WRONG_HAP_V3_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetzipEntriesWrongV4Packet(), ZIP_ENTRIES_WRONG_HAP_V4_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetZipEntryDataWrongPacket(), ZIP_ENTRY_DATA_WRONG_HAP_PATH.c_str());
+    sync();
+}
+
+void ZipSignerTest::TearDownTestCase(void)
+{
+    (void)remove(CD_ONLY_HAP_V1_PATH.c_str());
+    (void)remove(CD_ONLY_HAP_V2_PATH.c_str());
+    (void)remove(RAW_HAP_PATH.c_str());
+    (void)remove(WHOLE_HAP_PATH.c_str());
+    (void)remove(DATA_DESCRIPTOR_HAP_PATH.c_str());
+    (void)remove(ZIP_ENTRIES_WRONG_HAP_V1_PATH.c_str());
+    (void)remove(ZIP_ENTRIES_WRONG_HAP_V2_PATH.c_str());
+    (void)remove(ZIP_ENTRIES_WRONG_HAP_V3_PATH.c_str());
+    (void)remove(ZIP_ENTRIES_WRONG_HAP_V4_PATH.c_str());
+    (void)remove(ZIP_ENTRY_DATA_WRONG_HAP_PATH.c_str());
+    sync();
+}
+
+void ZipSignerTest::SetUp()
+{
+}
+
+void ZipSignerTest::TearDown()
+{
 }
 
 /**
- * @tc.name: Test Init Function
- * @tc.desc: Test function of ZipSigner::Init() interface for SUCCESS.
+ * @tc.name: Test ZipSigner Full process
+ * @tc.desc: Test function of ZipSigner interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(ZipSignerTest, InitTest002, testing::ext::TestSize.Level1)
+HWTEST_F(ZipSignerTest, FullProcessTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/signed.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    EXPECT_EQ(zip->Init(inputFile), true);
+    /*
+     * @tc.steps: step0. test ZipSigner full process function
+     * @tc.expected: step0. the return will be true.
+     */
+    std::ifstream rawInput(RAW_HAP_PATH, std::ios::binary);
+    std::ofstream rawOutput(OUTPUT_WHOLE_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
+    auto zip0 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip0->Init(rawInput));
+    zip0->Alignment(ALIGNMENT);
+    zip0->RemoveSignBlock();
+    ASSERT_TRUE(zip0->ToFile(rawInput, rawOutput));
+    rawOutput.close();
+    rawInput.close();
+
+    /*
+     * @tc.steps: step1. test ZipSigner full process function
+     * @tc.expected: step1. the return will be true.
+     */
+    std::ifstream wholeInput(WHOLE_HAP_PATH, std::ios::binary);
+    std::ofstream wholeOutput(OUTPUT_WHOLE_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
+    auto zip1 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip1->Init(wholeInput));
+    zip1->Alignment(ALIGNMENT);
+    zip1->RemoveSignBlock();
+    ASSERT_TRUE(zip1->ToFile(wholeInput, wholeOutput));
+    wholeOutput.close();
+    wholeInput.close();
+
+    /*
+     * @tc.steps: step2. test ZipSigner full process function
+     * @tc.expected: step2. the return will be true.
+     */
+    std::ifstream dataDescInput(DATA_DESCRIPTOR_HAP_PATH, std::ios::binary);
+    std::ofstream dataDescOutput(OUTPUT_WHOLE_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
+    auto zip2 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip2->Init(dataDescInput));
+    zip2->Alignment(ALIGNMENT);
+    zip2->RemoveSignBlock();
+    ASSERT_TRUE(zip2->ToFile(dataDescInput, dataDescOutput));
+    dataDescOutput.close();
+    dataDescInput.close();
 }
 
 /**
- * @tc.name: Test Init Function
- * @tc.desc: Test function of ZipSigner::Init() interface for FAIL.
+ * @tc.name: Test ZipSigner Init Function
+ * @tc.desc: Test function of ZipSigner interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(ZipSignerTest, InitTest003, testing::ext::TestSize.Level1)
+HWTEST_F(ZipSignerTest, ZipSignerInitTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned_empty.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    EXPECT_EQ(zip->Init(inputFile), false);
-}
+    /*
+     * @tc.steps: step2. test Init function
+     * @tc.expected: step2. make the zip original file is empty, the return will be false.
+     */
+    std::ofstream emptyOuptut(EMPTY_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
+    emptyOuptut << "";
+    emptyOuptut.close();
+    auto zip2 = std::make_shared<ZipSigner>();
+    std::ifstream emptyInput(EMPTY_HAP_PATH, std::ios::binary);
+    ASSERT_FALSE(zip2->Init(emptyInput));
+    emptyInput.close();
 
-/**
- * @tc.name: Test Init Function
- * @tc.desc: Test function of ZipSigner::Init() interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, InitTest004, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/unsigned_with_eocd.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    EXPECT_EQ(zip->Init(inputFile), false);
-}
-
-/**
- * @tc.name: Test Init Function
- * @tc.desc: Test function of ZipSigner::Init() interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, InitTest005, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/dummy.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    EXPECT_EQ(zip->Init(inputFile), false);
-}
-
-/**
- * @tc.name: Test GetZipEntries Function
- * @tc.desc: Test function of ZipSigner::GetZipEntries() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, GetZipEntriesTest001, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool zipRes = zip->Init(inputFile);
-    std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
-    EXPECT_EQ(zipRes && zipEntries.size() > 0, true);
+    /*
+     * @tc.steps: step3. test Init function
+     * @tc.expected: step3. make the zip original file is ONLY have eocd block, the return will be false.
+     */
+    std::ofstream eocdOutput(EOCD_ONLY_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
+    char eocd[] = {0x50, 0x4b, 0x05, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x40, 0x00, 0x00, 0x00,
+                    0x46, 0x02, 0x00, 0x00, 0x00, 0x00};
+    eocdOutput.write(eocd, sizeof(eocd) / sizeof(eocd[0]));
+    eocdOutput.close();
+    auto zip3 = std::make_shared<ZipSigner>();
+    std::ifstream eocdInput(EOCD_ONLY_HAP_PATH, std::ios::binary);
+    ASSERT_FALSE(zip3->Init(eocdInput));
+    eocdInput.close();
 }
 
 /**
@@ -127,146 +199,75 @@ HWTEST_F(ZipSignerTest, GetZipEntriesTest001, testing::ext::TestSize.Level1)
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
-HWTEST_F(ZipSignerTest, GetZipEntriesTest002, testing::ext::TestSize.Level1)
+HWTEST_F(ZipSignerTest, GetZipEntriesTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned_with_eocd.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    EXPECT_EQ(zip->Init(inputFile), false);
+    /*
+     * @tc.steps: step1. test GetZipEntries function
+     * @tc.expected: step1. make the cd offset int front of entry end, return will be false.
+     */
+    std::ifstream inputFile(ZIP_ENTRIES_WRONG_HAP_V3_PATH, std::ios::binary);
+    auto zip = std::make_shared<ZipSigner>();
+    ASSERT_FALSE(zip->Init(inputFile));
 }
 
 /**
  * @tc.name: Test Alignment Function
- * @tc.desc: Test function of ZipSigner::Alignment() interface for SUCCESS.
+ * @tc.desc: Test function of ZipEntry::Alignment() interface.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
 HWTEST_F(ZipSignerTest, AlignmentTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    int alignment = 4;
-    zip->Alignment(alignment);
-    EXPECT_EQ(res, true);
-}
+    /*
+     * @tc.steps: step1. test Alignment function
+     * @tc.expected: step1. make the alignment is equal to 0, return will be equal to -1.
+     */
+    std::ifstream inputFile(WHOLE_HAP_PATH, std::ios::binary);
+    auto zip1 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip1->Init(inputFile));
+    auto zipEntries1 = zip1->GetZipEntries();
+    int zeroAlignment = 0;
+    for (const auto& zipEntry : zipEntries1) {
+        ASSERT_EQ(zipEntry->Alignment(zeroAlignment), -1);
+    }
 
-/**
- * @tc.name: Test Alignment Function
- * @tc.desc: Test function of ZipSigner::Alignment() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, AlignmentTest002, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    EXPECT_EQ(res, true);
-    std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
-    int alignmentRes = zipEntries[0]->Alignment(0);
-    EXPECT_EQ(alignmentRes, -1);
-}
+    /*
+     * @tc.steps: step2. test Alignment function
+     * @tc.expected: step2. make the alignment is equal to INT_MAX, return will be equal to -1.
+     */
+    auto zip2 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip2->Init(inputFile));
+    auto zipEntries2 = zip2->GetZipEntries();
+    int bigAlignment = INT_MAX;
+    for (const auto& zipEntry : zipEntries2) {
+        ASSERT_EQ(zipEntry->Alignment(bigAlignment), -1);
+    }
 
-/**
- * @tc.name: Test Alignment Function
- * @tc.desc: Test function of ZipSigner::Alignment() interface for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, AlignmentTest003, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    EXPECT_EQ(res, true);
-    std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
-    int alignmentRes = zipEntries[0]->Alignment(102400);
-    EXPECT_EQ(alignmentRes, -1);
-}
+    /*
+     * @tc.steps: step3. test Alignment function
+     * @tc.expected: step3. make the alignment is equal to 4, return will be equal to 0.
+     */
+    auto zip3 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip3->Init(inputFile));
+    auto zipEntries3 = zip3->GetZipEntries();
+    for (const auto& zipEntry : zipEntries3) {
+        ASSERT_EQ(zipEntry->Alignment(ALIGNMENT), 0);
+    }
 
-/**
- * @tc.name: Test Alignment Function
- * @tc.desc: Test function of ZipSigner::Alignment() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, AlignmentTest004, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/mini.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    EXPECT_EQ(res, true);
-    std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
-    int alignmentRes = zipEntries[0]->Alignment(4);
-    EXPECT_EQ(alignmentRes, 1);
-}
+    /*
+     * @tc.steps: step4. test Alignment function
+     * @tc.expected: step4. make the alignment is equal to 4, return will be equal to 1.
+     */
+    std::ifstream zipEntriesInput(ZIP_ENTRIES_WRONG_HAP_V4_PATH, std::ios::binary);
+    auto zip4 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip4->Init(zipEntriesInput));
+    auto zipEntries4 = zip4->GetZipEntries();
+    for (const auto& zipEntry : zipEntries4) {
+        ASSERT_EQ(zipEntry->Alignment(ALIGNMENT), 1);
+    }
 
-/**
- * @tc.name: Test Alignment Function
- * @tc.desc: Test function of ZipSigner::Alignment() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, AlignmentTest005, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("./zip/test2.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    ASSERT_TRUE(zip->Init(inputFile));
-    zip->Alignment(4);
-}
-
-/**
- * @tc.name: Test RemoveSignBlock Function
- * @tc.desc: Test function of ZipSigner::RemoveSignBlock() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, RemoveSignBlockTest001, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    zip->RemoveSignBlock();
-    EXPECT_EQ(res, true);
-}
-
-/**
- * @tc.name: Test RemoveSignBlock Function
- * @tc.desc: Test function of ZipSigner::RemoveSignBlock() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, RemoveSignBlockTest002, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/signed.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    zip->RemoveSignBlock();
-    EXPECT_EQ(res, true);
-}
-
-/**
- * @tc.name: Test GetSigningOffset Function
- * @tc.desc: Test function of ZipSigner::GetSigningOffset() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, GetSigningOffsetTest001, testing::ext::TestSize.Level1)
-{
-    std::string inputFileName("/data/test/zip/signed.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool res = zip->Init(inputFile);
-    uint64_t signingOffset = zip->GetSigningOffset();
-    EXPECT_EQ(res && signingOffset != 0, true);
+    zipEntriesInput.close();
+    inputFile.close();
 }
 
 /**
@@ -277,8 +278,7 @@ HWTEST_F(ZipSignerTest, GetSigningOffsetTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, GetCDOffsetTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/signed.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool res = zip->Init(inputFile);
     uint64_t cdOffset = zip->GetCDOffset();
@@ -293,8 +293,7 @@ HWTEST_F(ZipSignerTest, GetCDOffsetTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, GetEOCDOffsetTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/signed.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool res = zip->Init(inputFile);
     uint64_t eocdOffset = zip->GetEOCDOffset();
@@ -309,10 +308,8 @@ HWTEST_F(ZipSignerTest, GetEOCDOffsetTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, ToFileTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::string outputFileName("/data/test/zip/unsigned-zip.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
+    std::ofstream outputFile(OUTPUT_WHOLE_HAP_PATH, std::ios::binary | std::ios::trunc);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
     bool toFileRes = zip->ToFile(inputFile, outputFile);
@@ -327,10 +324,8 @@ HWTEST_F(ZipSignerTest, ToFileTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, ToFileTest002, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::string outputFileName("");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
+    std::ofstream outputFile("", std::ios::binary | std::ios::trunc);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
     bool toFileRes = zip->ToFile(inputFile, outputFile);
@@ -345,10 +340,8 @@ HWTEST_F(ZipSignerTest, ToFileTest002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, ToFileTest003, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::string outputFileName("");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
+    std::ofstream outputFile("", std::ios::binary | std::ios::trunc);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
 
@@ -366,10 +359,8 @@ HWTEST_F(ZipSignerTest, ToFileTest003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, ToFileTest004, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("./zip/signed.hap");
-    std::string outputFileName("./signed_again.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
+    std::ofstream outputFile(OUTPUT_WHOLE_HAP_PATH, std::ios::binary | std::ios::trunc);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     ASSERT_TRUE(zip->Init(inputFile));
     ASSERT_TRUE(zip->ToFile(inputFile, outputFile));
@@ -383,8 +374,7 @@ HWTEST_F(ZipSignerTest, ToFileTest004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, ZipEntryAlignmentTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool res = zip->Init(inputFile);
     std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
@@ -403,8 +393,7 @@ HWTEST_F(ZipSignerTest, ZipEntryAlignmentTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream input(inputFileName, std::ios::binary);
+    std::ifstream input(RAW_HAP_PATH, std::ios::binary);
     input.seekg(0, std::ios::end);
     uint64_t fileSize = input.tellg();
     input.seekg(0, std::ios::beg);
@@ -452,7 +441,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest003, testing::ext
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest004, testing::ext::TestSize.Level1)
 {
-    std::string bytes {
+    std::string bytes{
         80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
     std::optional<EndOfCentralDirectory*> eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(bytes);
@@ -467,7 +456,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest004, testing::ext
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest005, testing::ext::TestSize.Level1)
 {
-    std::string bytes {
+    std::string bytes{
         80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1
     };
     std::optional<EndOfCentralDirectory*> eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(bytes);
@@ -484,11 +473,11 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest005, testing::ext
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectorySetCommentTest001, testing::ext::TestSize.Level1)
 {
-    std::string bytes {
+    std::string bytes{
         80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
     std::optional<EndOfCentralDirectory*> eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(bytes);
-    std::string comment { 1 };
+    std::string comment{1};
     eocdByBytes.value()->SetComment(comment);
     EXPECT_EQ(eocdByBytes != std::nullopt, true);
 }
@@ -501,8 +490,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectorySetCommentTest001, testing::ext::Te
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryToBytesTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
     EndOfCentralDirectory* eocd = zip->GetEndOfCentralDirectory();
@@ -511,7 +499,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryToBytesTest001, testing::ext::TestS
     int diskNum = eocd->GetDiskNum();
     std::string comment = eocd->GetComment();
     EXPECT_EQ(initRes && eocd && eocdBytes.size() > 0 && signature != -1 && comment.size() == 0 && diskNum != -1,
-        true);
+              true);
 }
 
 /**
@@ -522,8 +510,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryToBytesTest001, testing::ext::TestS
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
     EndOfCentralDirectory* eocd = zip->GetEndOfCentralDirectory();
@@ -532,7 +519,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryTest001, testing::ext::TestSize.Lev
     int diskCDNum = eocd->GetThisDiskCDNum();
     int eocdLen = eocd->GetLength();
     EXPECT_EQ(initRes && eocd && eocdLength > 0 && cdStartDiskNum != -1 && diskCDNum != -1 && eocdLen != -1,
-        true);
+              true);
 }
 
 /**
@@ -544,14 +531,13 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryTest001, testing::ext::TestSize.Lev
 HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    std::string outputFile("/data/test/zip/unsigned.hap");
-    EXPECT_EQ(outputHap->Init(outputFile), true);
+    EXPECT_EQ(outputHap->Init(RAW_HAP_PATH), true);
     std::pair<ByteBuffer, long long> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
     long long centralDirectoryOffset;
     EXPECT_EQ(HapSignerBlockUtils::GetCentralDirectoryOffset(eocdPair.first, eocdPair.second,
-                  centralDirectoryOffset),
-        true);
+                                                             centralDirectoryOffset),
+              true);
     long long newCentralDirOffset = centralDirectoryOffset + 10;
     eocdPair.first.SetPosition(0);
     EXPECT_EQ(ZipUtils::SetCentralDirectoryOffset(eocdPair.first, newCentralDirOffset), true);
@@ -566,12 +552,27 @@ HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest001, testing::ext::
 HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    std::string outputFile("/data/test/zip/unsigned.hap");
-    EXPECT_EQ(outputHap->Init(outputFile), true);
+    EXPECT_EQ(outputHap->Init(RAW_HAP_PATH), true);
     std::pair<ByteBuffer, long long> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
     eocdPair.first.SetPosition(0);
     EXPECT_EQ(ZipUtils::SetCentralDirectoryOffset(eocdPair.first, -1), false);
+}
+
+/**
+ * @tc.name: Test SetCentralDirectoryOffset Function
+ * @tc.desc: Test function of ZipUtils::SetCentralDirectoryOffset() interface for FAIL.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest003, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
+    ASSERT_TRUE(outputHap->Init(RAW_HAP_PATH));
+    std::pair<ByteBuffer, long long> eocdPair;
+    ASSERT_TRUE(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair));
+    eocdPair.first.SetPosition(0);
+    ASSERT_FALSE(ZipUtils::SetCentralDirectoryOffset(eocdPair.first, 0x100000000LL));
 }
 
 /**
@@ -582,23 +583,50 @@ HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest002, testing::ext::
  */
 HWTEST_F(ZipSignerTest, ZipEntryHeaderTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
-    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
-    bool zipRes = zip->Init(inputFile);
-    std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
-    EXPECT_EQ(zipRes && zipEntries.size() > 0, true);
-    ZipEntryData* zipEntryData = zipEntries[0]->GetZipEntryData();
-    int crc32 = zipEntryData->GetZipEntryHeader()->GetCrc32();
-    short lastTime = zipEntryData->GetZipEntryHeader()->GetLastTime();
-    short lastData = zipEntryData->GetZipEntryHeader()->GetLastDate();
-    long long compressedSize = zipEntryData->GetZipEntryHeader()->GetCompressedSize();
-    long long unCompressedSize = zipEntryData->GetZipEntryHeader()->GetUnCompressedSize();
-    int headerLength = zipEntryData->GetZipEntryHeader()->GetHeaderLength();
-    int signature = zipEntryData->GetZipEntryHeader()->GetSIGNATURE();
-    short version = zipEntryData->GetZipEntryHeader()->GetVersion();
-    EXPECT_EQ(zipEntryData != nullptr && crc32 != -1 && lastTime != -1 && lastData != -1 && compressedSize != -1 &&
-        unCompressedSize != -1 && headerLength != -1 && signature != -1 && version != -1, true);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
+    auto zip = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip->Init(inputFile));
+
+    auto zipEntries = zip->GetZipEntries();
+    ASSERT_NE(zipEntries.size(), 0);
+
+    for (const auto& zipEntry : zipEntries) {
+        auto zipEntryData = zipEntry->GetZipEntryData();
+        ASSERT_NE(zipEntryData, nullptr);
+
+        int crc32 = zipEntryData->GetZipEntryHeader()->GetCrc32();
+        ASSERT_NE(crc32, -1);
+        short lastTime = zipEntryData->GetZipEntryHeader()->GetLastTime();
+        ASSERT_NE(lastTime, -1);
+        short lastData = zipEntryData->GetZipEntryHeader()->GetLastDate();
+        ASSERT_NE(lastData, -1);
+        long long compressedSize = zipEntryData->GetZipEntryHeader()->GetCompressedSize();
+        ASSERT_NE(compressedSize, -1);
+        long long unCompressedSize = zipEntryData->GetZipEntryHeader()->GetUnCompressedSize();
+        ASSERT_NE(unCompressedSize, -1);
+        int headerLength = zipEntryData->GetZipEntryHeader()->GetHeaderLength();
+        ASSERT_NE(headerLength, -1);
+        int signature = zipEntryData->GetZipEntryHeader()->GetSIGNATURE();
+        ASSERT_NE(signature, -1);
+        short version = zipEntryData->GetZipEntryHeader()->GetVersion();
+        ASSERT_NE(version, -1);
+        zipEntryData->GetZipEntryHeader()->SetFileName("");
+    }
+}
+
+/**
+ * @tc.name: Test ZipEntryHeader Class
+ * @tc.desc: Test function ToBytes of ZipEntryHeader for fail.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ZipSignerTest, ZipEntryHeaderTest002, testing::ext::TestSize.Level1)
+{
+    ZipEntryHeader zipEntryHeader;
+    zipEntryHeader.ReadFileName("");
+    zipEntryHeader.ReadExtra("");
+    std::string bytes = zipEntryHeader.ToBytes();
+    ASSERT_EQ(bytes.size(), 0);
 }
 
 /**
@@ -609,8 +637,7 @@ HWTEST_F(ZipSignerTest, ZipEntryHeaderTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, DataDescriptorTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(DATA_DESCRIPTOR_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool zipRes = zip->Init(inputFile);
     std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
@@ -625,7 +652,7 @@ HWTEST_F(ZipSignerTest, DataDescriptorTest001, testing::ext::TestSize.Level1)
             int signature = dataDescriptor->GetSIGNATURE();
             int desLength = dataDescriptor->GetDesLength();
             EXPECT_EQ(zipEntryData != nullptr && dataDescriptor != nullptr && compressedSize != -1 &&
-            unCompressedSize != -1 && crc32 != -1 && signature != -1 && desLength != -1, true);
+                      unCompressedSize != -1 && crc32 != -1 && signature != -1 && desLength != -1, true);
         } else {
             EXPECT_EQ(dataDescriptor == nullptr, true);
         }
@@ -640,20 +667,11 @@ HWTEST_F(ZipSignerTest, DataDescriptorTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, GetDataDescriptorTest001, testing::ext::TestSize.Level1)
 {
-    std::string bytes { 1 };
-    EXPECT_EQ(DataDescriptor::GetDataDescriptor(bytes) == nullptr, true);
-}
+    std::string bytes1{1};
+    ASSERT_EQ(DataDescriptor::GetDataDescriptor(bytes1), nullptr);
 
-/**
- * @tc.name: Test DataDescriptor Class
- * @tc.desc: Test function of GetDataDescriptor for FAIL.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ZipSignerTest, GetDataDescriptorTest002, testing::ext::TestSize.Level1)
-{
-    std::string bytes(16, 0);
-    EXPECT_EQ(DataDescriptor::GetDataDescriptor(bytes) == nullptr, true);
+    std::string bytes2(16, 0);
+    ASSERT_EQ(DataDescriptor::GetDataDescriptor(bytes2), nullptr);
 }
 
 /**
@@ -664,8 +682,7 @@ HWTEST_F(ZipSignerTest, GetDataDescriptorTest002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, CentralDirectoryTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/unsigned.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(RAW_HAP_PATH, std::ios::binary);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool zipRes = zip->Init(inputFile);
     std::vector<ZipEntry*> zipEntries = zip->GetZipEntries();
@@ -685,8 +702,8 @@ HWTEST_F(ZipSignerTest, CentralDirectoryTest001, testing::ext::TestSize.Level1)
     int externalFile = cd->GetExternalFile();
     std::string comment = cd->GetComment();
     EXPECT_EQ(cd != nullptr && cdLength != -1 && signature != -1 && flag != -1 && lastTime != -1 && lastDate != -1 &&
-        crc32 != -1 && fileName.size() > 0 && version != -1 && versionExtra != -1 && diskNumStart != -1 &&
-        internalFile != -1 && externalFile != -1 && comment.size() == 0, true);
+              crc32 != -1 && fileName.size() > 0 && version != -1 && versionExtra != -1 && diskNumStart != -1 &&
+              internalFile != -1 && externalFile != -1 && comment.size() == 0, true);
 }
 
 /**
@@ -712,7 +729,7 @@ HWTEST_F(ZipSignerTest, CentralDirectoryTest002, testing::ext::TestSize.Level1)
 HWTEST_F(ZipSignerTest, CentralDirectoryTest003, testing::ext::TestSize.Level1)
 {
     std::string str;
-    EXPECT_EQ(FileUtils::ReadFile("/data/test/zip/unsigned_only_cd.hap", str) == 0, true);
+    EXPECT_EQ(FileUtils::ReadFile(CD_ONLY_HAP_V1_PATH, str) == 0, true);
     ByteBuffer bf(str.c_str(), str.size());
     CentralDirectory* cd = new CentralDirectory();
     EXPECT_EQ(CentralDirectory::GetCentralDirectory(bf, cd), true);
@@ -729,7 +746,7 @@ HWTEST_F(ZipSignerTest, CentralDirectoryTest003, testing::ext::TestSize.Level1)
 HWTEST_F(ZipSignerTest, CentralDirectoryTest004, testing::ext::TestSize.Level1)
 {
     std::string str;
-    EXPECT_EQ(FileUtils::ReadFile("/data/test/zip/unsigned_only_cd_v2.hap", str) == 0, true);
+    EXPECT_EQ(FileUtils::ReadFile(CD_ONLY_HAP_V2_PATH, str) == 0, true);
     ByteBuffer bf(str.c_str(), str.size());
     CentralDirectory* cd = new CentralDirectory();
     EXPECT_EQ(CentralDirectory::GetCentralDirectory(bf, cd), true);
@@ -745,7 +762,7 @@ HWTEST_F(ZipSignerTest, CentralDirectoryTest004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, GetZipEntryHeaderTest001, testing::ext::TestSize.Level1)
 {
-    std::string headBytes { 1 };
+    std::string headBytes{1};
     ZipEntryHeader* entryHeader = ZipEntryHeader::GetZipEntryHeader(headBytes);
     EXPECT_EQ(entryHeader == nullptr, true);
     delete entryHeader;
@@ -759,8 +776,12 @@ HWTEST_F(ZipSignerTest, GetZipEntryHeaderTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, GetZipEntryTest001, testing::ext::TestSize.Level1)
 {
-    std::string inputFileName("/data/test/zip/zero.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ofstream zeroOutput(ZERO_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
+    std::string zeros(1024, 0x00);
+    zeroOutput.write(zeros.c_str(), zeros.size());
+    zeroOutput.close();
+
+    std::ifstream inputFile(ZERO_HAP_PATH, std::ios::binary);
     ZipEntryData* zipEntryData = ZipEntryData::GetZipEntry(inputFile, 0, 1024);
     EXPECT_EQ(zipEntryData == nullptr, true);
 }
@@ -777,8 +798,7 @@ HWTEST_F(ZipSignerTest, GetZipEntryTest002, testing::ext::TestSize.Level1)
      * @tc.steps: step1. test ZipEntryData::ReadEntryFileNameAndExtraByOffset function
      * @tc.expected: step1. FileNameLength and ExtraLength is zero
      */
-    std::string inputFileName("./zip/test.hap");
-    std::ifstream inputFile(inputFileName, std::ios::binary);
+    std::ifstream inputFile(ZIP_ENTRY_DATA_WRONG_HAP_PATH, std::ios::binary);
     ZipEntryData* zipEntryData = ZipEntryData::GetZipEntry(inputFile, 0, 1024);
     ASSERT_EQ(zipEntryData != nullptr, true);
 }
@@ -792,14 +812,17 @@ HWTEST_F(ZipSignerTest, GetZipEntryTest002, testing::ext::TestSize.Level1)
 HWTEST_F(ZipSignerTest, ZipSignerTest001, testing::ext::TestSize.Level1)
 {
     ZipSigner zip;
-    std::ifstream ifs("./zip/test2.hap", std::ios::binary);
+    std::ifstream ifs(ZIP_ENTRIES_WRONG_HAP_V2_PATH, std::ios::binary);
     ASSERT_TRUE(zip.Init(ifs));
-    std::vector<ZipEntry*> zipEntries{ nullptr };
+    std::vector<ZipEntry*> zipEntries{nullptr};
     zip.SetZipEntries(zipEntries);
     zip.SetSigningOffset(1);
-    std::string signingBlock{ 0x1, 0x1, 0x1, 0x1, 0x1 };
+    int64_t offset = zip.GetSigningOffset();
+    EXPECT_EQ(offset, 1);
+    std::string signingBlock{0x1, 0x1, 0x1, 0x1, 0x1};
     zip.SetSigningBlock(signingBlock);
     signingBlock = zip.GetSigningBlock();
+    EXPECT_NE(signingBlock.size(), 0);
     zip.SetCDOffset(1);
     zip.SetEOCDOffset(1);
     zip.SetEndOfCentralDirectory(nullptr);

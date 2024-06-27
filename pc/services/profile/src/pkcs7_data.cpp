@@ -213,6 +213,7 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
     certs = signer->GetCertificates();
     if (sk_X509_num(certs) < MIN_CERTS_NUM) {
         SIGNATURE_TOOLS_LOGE("Error certChain count");
+        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "Error certChain count");
         result = INVALIDPARAM_ERROR;
         goto err;
     }
@@ -356,7 +357,7 @@ int PKCS7Data::VerifySign(const std::string& content)const
                                 static_cast<int>(content.size()));
         if (inBio == NULL) {
             SIGNATURE_TOOLS_LOGE("new mem buf error!");
-            return MEMORY_ALLOC_ERROR;
+            return RET_FAILED;
         }
     }
     if (PKCS7_verify(p7, NULL, NULL, inBio, NULL, this->flags) != 1) {

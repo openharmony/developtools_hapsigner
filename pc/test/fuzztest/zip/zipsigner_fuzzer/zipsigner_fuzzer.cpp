@@ -12,25 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 
 #include "zip_signer.h"
+#include "packet_helper.h"
 
+char* GetRawPacket();
+char* GetWholePacket();
 using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
 static constexpr int ALIGNMENT = 4;
-const char* RAW_HAP_FILE_PATH = "./zip/test1.hap";
-const char* FULL_HAP_FILE_PATH = "./zip/test2.hap";
-const char* OUT_HAP_FILE_PATH = "./zip/signed.hap";
+const char* g_rawHapFilePath = "./zip/raw.hap";
+const char* g_wholeHapFilePath = "./zip/whole.hap";
+const char* g_outHapFilePath = "./zip/signed.hap";
 
 void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(FULL_HAP_FILE_PATH, std::ios::binary);
-    std::ofstream outputFile(OUT_HAP_FILE_PATH, std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(g_wholeHapFilePath, std::ios::binary);
+    std::ofstream outputFile(g_outHapFilePath, std::ios::binary | std::ios::trunc);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -42,7 +47,7 @@ void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
 
 void ZipSignerInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(FULL_HAP_FILE_PATH, std::ios::binary);
+    std::ifstream inputFile(g_wholeHapFilePath, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -66,7 +71,7 @@ void ZipSignerInfoFunc(const uint8_t* data, size_t size)
 
 void ZipEntryHeaderInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(FULL_HAP_FILE_PATH, std::ios::binary);
+    std::ifstream inputFile(g_wholeHapFilePath, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -92,7 +97,7 @@ void ZipEntryHeaderInfoFunc(const uint8_t* data, size_t size)
 
 void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -123,7 +128,7 @@ void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 
 void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -145,7 +150,7 @@ void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
 
 void AlignmentFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     int aliBytes = 102400;
     if (!zip->Init(inputFile)) {
@@ -159,7 +164,7 @@ void AlignmentFunc(const uint8_t* data, size_t size)
 
 void EndOfCentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(RAW_HAP_FILE_PATH, std::ios::binary);
+    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -199,6 +204,14 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    int dong = 0777;
+    (void)mkdir("zip", dong);
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetRawPacket(), g_rawHapFilePath);
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetWholePacket(), g_wholeHapFilePath);
+    sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
+    (void)remove(g_rawHapFilePath);
+    (void)remove(g_wholeHapFilePath);
+    sync();
     return 0;
 }
