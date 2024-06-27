@@ -17,30 +17,18 @@
 #include "sign_bin.h"
 #include "sign_provider.h"
 #include "local_sign_provider.h"
-#include "unsigned_bin.h"
+#include "packet_helper.h"
+
 #define VERSION 9
 #define BYTE_NUMBER 32
+
+char* GetAppRelease1Pem(void);
+char* GetApp1Profile1P7b(void);
+char* GetOhtestP12(void);
+char* GetUnsignedBin(void);
+
 namespace OHOS {
 namespace SignatureTools {
-/*
-* 测试套件,固定写法
-*/
-class SignBinTest : public testing::Test {
-public:
-    static void SetUpTestCase(void)
-    {
-    };
-    static void TearDownTestCase()
-    {
-    };
-    void SetUp()
-    {
-    };
-    void TearDown()
-    {
-    };
-};
-
 void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
 {
     signerConfig.SetCompatibleVersion(VERSION);
@@ -50,14 +38,14 @@ void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
     params["mode"] = "localSign";
     params["keyAlias"] = "oh-app1-key-v1";
     params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./codeSigning/app-release1.pem";
+    params["appCertFile"] = "./hapSign/app-release1.pem";
     params["signCode"] = "1";
     params["compatibleVersion"] = "9";
-    params["outFile"] = "./codeSigning/entry-default-signed-so.hap";
-    params["profileFile"] = "./codeSigning/signed-profile.p7b";
+    params["outFile"] = "./hapSign/signed.bin";
+    params["profileFile"] = "./hapSign/app1-profile1.p7b";
     params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./codeSigning/ohtest.jks";
-    params["inFile"] = "./codeSigning/entry-default-unsigned-so.hap";
+    params["keystoreFile"] = "./hapSign/ohtest.p12";
+    params["inFile"] = "./hapSign/unsigned.bin";
     params["profileSigned"] = "1";
     signerConfig.FillParameters(params);
 
@@ -72,7 +60,7 @@ void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
     options.emplace("mode", std::string("localSign"));
     char keyPwd[] = "123456";
     options.emplace("keyPwd", keyPwd);
-    options.emplace("outFile", std::string("./hapSign/signed-linux.out"));
+    options.emplace("outFile", std::string("./hapSign/signed.bin"));
     options.emplace("keyAlias", std::string("oh-app1-key-v1"));
     options.emplace("profileFile", std::string("./hapSign/app1-profile1.p7b"));
     options.emplace("signAlg", std::string("SHA256withECDSA"));
@@ -80,45 +68,12 @@ void ConstructSignerConfig(SignerConfig& signerConfig, Options& options)
     options.emplace("keystorePwd", keystorePwd);
     options.emplace("keystoreFile", std::string("./hapSign/ohtest.p12"));
     options.emplace("appCertFile", std::string("./hapSign/app-release1.pem"));
-    options.emplace("inFile", std::string("./hapSign/unsigned-linux.out"));
+    options.emplace("inFile", std::string("./hapSign/unsigned.bin"));
     signerConfig.SetOptions(&options);
-}
-
-// base64解码接口
-std::string base64_decode(std::string input)
-{
-    char buf[4096];
-    std::string ret;
-    size_t bytes;
-    BIO* b64 = BIO_new(BIO_f_base64());
-    BIO* mem = BIO_new_mem_buf(input.data(), input.size());
-    if (b64 == NULL || mem == NULL) {
-        BIO_free(b64);
-        BIO_free(mem);
-        return "";
-    }
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    BIO* bio = BIO_push(b64, mem);
-    if (!bio)
-        goto err;
-    //if (BIO_write(mem, input.data(), input.size()) != input.size())
-     //   goto err;
-    BIO_flush(mem);
-    while (BIO_read_ex(bio, buf, sizeof(buf), &bytes)) {
-        ret.append(buf, bytes);
-    }
-err:
-    BIO_free_all(bio);
-    return ret;
 }
 
 void ConstructSignParams(std::map<std::string, std::string>& signParams)
 {
-    // decode unsigned.bin content and write to file
-    std::string str = base64_decode(GetUnsignedBin());
-    std::string outputFile = "./hapSign/unsigned.bin";
-    FileUtils::Write(str, outputFile);
-
     signParams["a"] = "4";
     signParams["appCertFile"] = "./hapSign/app-release1.pem";
     signParams["compatibleVersion"] = "9";
@@ -135,6 +90,35 @@ void ConstructSignParams(std::map<std::string, std::string>& signParams)
     signParams["signCode"] = "1";
 }
 
+/*
+* 测试套件,固定写法
+*/
+class SignBinTest : public testing::Test {
+public:
+    static void SetUpTestCase(void)
+    {
+        (void)GenUnvaildHap("./hapSign/unvalid.bin");
+        (void)Base64DecodeStringToFile(GetOhtestP12(), "./hapSign/ohtest.p12");
+        (void)Base64DecodeStringToFile(GetUnsignedBin(), "./hapSign/unsigned.bin");
+        (void)Base64DecodeStringToFile(GetAppRelease1Pem(), "./hapSign/app-release1.pem");
+        (void)Base64DecodeStringToFile(GetApp1Profile1P7b(), "./hapSign/app1-profile1.p7b");
+    };
+    static void TearDownTestCase()
+    {
+        (void)remove("./hapSign/unvaild.bin");
+        (void)remove("./hapSign/ohtest.p12");
+        (void)remove("./hapSign/unsigned.bin");
+        (void)remove("./hapSign/app-release1.pem");
+        (void)remove("./hapSign/app1-profile1.p7b");
+    };
+    void SetUp()
+    {
+    };
+    void TearDown()
+    {
+    };
+};
+
 /**
  * @tc.name: GenerateFileDigest001
  * @tc.desc: Test interface for SUCCESS.
@@ -145,9 +129,9 @@ void ConstructSignParams(std::map<std::string, std::string>& signParams)
  */
 HWTEST_F(SignBinTest, GenerateFileDigest001, testing::ext::TestSize.Level1)
 {
-    // 走进分支 get Signature Algorithm failed
+    // error algorithm, go to branch "get Signature Algorithm failed"
     std::shared_ptr<SignBin> api = std::make_shared<SignBin>();
-    std::vector<int8_t> generateFileDigest = api->GenerateFileDigest("./signed-linux.out", "SHA266");
+    std::vector<int8_t> generateFileDigest = api->GenerateFileDigest("./signed.bin", "SHA266");
     EXPECT_EQ(generateFileDigest.size(), 0);
 }
 
@@ -161,9 +145,8 @@ HWTEST_F(SignBinTest, GenerateFileDigest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignBinTest, GenerateFileDigest002, testing::ext::TestSize.Level1)
 {
-    // 走进分支 GetFileDigest failed
     std::shared_ptr<SignBin> api = std::make_shared<SignBin>();
-    std::vector<int8_t> generateFileDigest = api->GenerateFileDigest("./signed-linux.out", "SHA384withECDSA");
+    std::vector<int8_t> generateFileDigest = api->GenerateFileDigest("./signed.bin", "SHA384withECDSA");
     EXPECT_EQ(generateFileDigest.size(), 0);
 }
 
@@ -177,26 +160,46 @@ HWTEST_F(SignBinTest, GenerateFileDigest002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignBinTest, Sign001, testing::ext::TestSize.Level1)
 {
-    // 走进分支 The block head data made failed
+    // go to branch "The block head data made failed"
     std::shared_ptr<SignBin> api = std::make_shared<SignBin>();
+    
+    // 1.construct SignerConfig
+    SignerConfig signerConfig;
+    Options options;
+    ConstructSignerConfig(signerConfig, options);
+
+    // 2.construct signParams
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string compatibleVersion = "9";
+    std::string inFile = "./hapSign/unvalid.bin";
+    std::string inForm = "bin";
+    std::string keyAlias = "oh-app1-key-v1";
+    static char keyPwd[] = "123456";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    static char keystorePwd[] = "123456";
+    std::string outFile = "./hapSign/signed.bin";
+    std::string profileFile = "./hapSign/app1-profile1.p7b";
+    std::string profileSigned = "1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string mode = "localSign";
 
     std::map<std::string, std::string> signParams;
     signParams["a"] = "4";
-    signParams["appCertFile"] = "./app-release1.pem";
-    signParams["compatibleVersion"] = "9";
-    signParams["inFile"] = "./unsigned-linuxxxxx.out";
-    signParams["inForm"] = "bin";
-    signParams["keyAlias"] = "oh-app1-key-v1";
-    signParams["keyPwd"] = "123456";
-    signParams["keystoreFile"] = "./ohtest.p12";
-    signParams["keystorePwd"] = "123456";
-    signParams["outFile"] = "./signed - linux.out";
-    signParams["profileFile"] = "./app1-profile1.p7b";
-    signParams["profileSigned"] = "1";
-    signParams["signAlg"] = "SHA256withECDSA";
-    signParams["signCode"] = "1";
-
-    SignerConfig signerConfig;
+    signParams["appCertFile"] = appCertFile;
+    signParams["compatibleVersion"] = compatibleVersion;
+    signParams["inFile"] = inFile;
+    signParams["inForm"] = inForm;
+    signParams["keyAlias"] = keyAlias;
+    signParams["keyPwd"] = keyPwd;
+    signParams["keystoreFile"] = keystoreFile;
+    signParams["keystorePwd"] = keystorePwd;
+    signParams["outFile"] = outFile;
+    signParams["profileFile"] = profileFile;
+    signParams["profileSigned"] = profileSigned;
+    signParams["signAlg"] = signAlg;
+    signParams["signCode"] = signCode;
+    signParams["mode"] = mode;
 
     api->Sign(signerConfig, signParams);
     EXPECT_EQ(true, 1);
@@ -212,7 +215,7 @@ HWTEST_F(SignBinTest, Sign001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignBinTest, Sign002, testing::ext::TestSize.Level1)
 {
-    // 走进分支 The sign data made failed
+    // go to branch "The sign data made failed"
     std::shared_ptr<SignBin> api = std::make_shared<SignBin>();
 
     // 1.construct SignerConfig
@@ -236,9 +239,9 @@ HWTEST_F(SignBinTest, Sign002, testing::ext::TestSize.Level1)
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(SignBinTest, SignBin, testing::ext::TestSize.Level1)
+HWTEST_F(SignBinTest, SignBin001, testing::ext::TestSize.Level1)
 {
-    // 走进sign_provider中SignBin分支 check Compatible Version failed!
+    // go to branch "check Compatible Version failed"
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -247,14 +250,58 @@ HWTEST_F(SignBinTest, SignBin, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA256withECDSA";
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string profileFile = "./hapSign/app1-profile1.p7b";
+    std::string inFile = "./hapSign/unsigned.bin";
     std::string keystoreFile = "./hapSign/ohtest.p12";
-    std::string outFile = "./hapSign/entry-default-signed.elf";
+    std::string outFile = "./hapSign/signed.bin";
     std::string inForm = "bin";
     char keyPwd[] = "123456";
     char keystorePwd[] = "123456";
     std::string compatibleVersion = "";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["inForm"] = inForm;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["compatibleVersion"] = compatibleVersion;
+    bool ret = signProvider->SignBin(params.get());
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: SignBinTest
+ * @tc.desc: Test interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SignBinTest, SignBin002, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string appCertFile = "./hapSign/app-release1.pem";
+    std::string profileFile = "./hapSign/app1-profile1.p7b";
+    std::string inFile = "./hapSign/unsigned.bin";
+    std::string keystoreFile = "./hapSign/ohtest.p12";
+    std::string outFile = "./hapSign/signed.bin";
+    std::string inForm = "bin";
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    std::string compatibleVersion = "9";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;

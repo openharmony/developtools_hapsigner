@@ -28,8 +28,8 @@ namespace OHOS {
 namespace SignatureTools {
 class SignProviderTest : public testing::Test {
 public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
+    static void SetUpTestCase();
+    static void TearDownTestCase();
     void SetUp() {};
     void TearDown() {};
 };

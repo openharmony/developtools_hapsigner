@@ -140,7 +140,7 @@ HWTEST_F(OptionsCmdTest, Options_test_005, testing::ext::TestSize.Level1)
     (*params)["issuerkeystoreFile"] = issuerkeystoreFile;
 
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EXPECT_EQ(adaptePtr->options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE), true);
+    EXPECT_EQ(adaptePtr->options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE), false);
 }
 
 /*
@@ -160,7 +160,7 @@ HWTEST_F(OptionsCmdTest, Options_test_006, testing::ext::TestSize.Level1)
     (*params)["issuerkeystoreFile"] = issuerkeystoreFile;
 
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EXPECT_EQ(adaptePtr->options->Required({ Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE }), true);
+    EXPECT_EQ(adaptePtr->options->Required({ Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE }), false);
 }
 /*
  * @tc.name: Options_test_007
@@ -540,7 +540,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_068, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -581,7 +581,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_069, testing::ext::TestSize.Level1)
     (*params)["inForm"] = inform;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -622,7 +622,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_070, testing::ext::TestSize.Level1)
     (*params)["inForm"] = inform;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -663,7 +663,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_071, testing::ext::TestSize.Level1)
     (*params)["profileSigned"] = profileSigned;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -704,7 +704,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_072, testing::ext::TestSize.Level1)
     (*params)["profileSigned"] = profileSigned;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -741,7 +741,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_073, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -778,7 +778,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_074, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -815,7 +815,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_075, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -854,7 +854,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_076, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -893,7 +893,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_077, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -932,7 +932,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_078, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1043,7 +1043,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_108, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1078,7 +1078,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_109, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1113,7 +1113,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_110, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*

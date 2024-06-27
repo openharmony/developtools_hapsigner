@@ -47,17 +47,17 @@ const int VERIFY_ERROR = -106;
  */
 const int COMMAND_PARAM_ERROR = -107;
 /**
- * Enum constant PARAM_NOT_EXIST_ERROR.
- */
-const int PARAM_NOT_EXIST_ERROR = -108;
+ * Enum constant CERTIFICATE_ERROR
+*/
+const int CERTIFICATE_ERROR = -108;
 /**
  * Enum constant KEY_ERROR.
  */
 const int KEY_ERROR = -109;
 /**
- * Enum constant MEMORY_ALLOC_ERROR.
+ * Enum constant INVALID_ERROR.
  */
-const int MEMORY_ALLOC_ERROR = -110;
+const int INVALIDPARAM_ERROR = -110;
 /**
  * Enum constant ZIP_ERROR.
  */
@@ -70,18 +70,6 @@ const int FORMAT_ERROR = -112;
  * Enum constant PARSE_ERROR.
  */
 const int PARSE_ERROR = -113;
-/**
- * Enum constant INVALID_ERROR.
- */
-const int INVALIDPARAM_ERROR = -114;
-/**
-* Enum constant CHCKE_ERROR
-*/
-const int CHECK_ERROR = -115;
-/**
- * Enum constant CERTIFICATE_ERROR
-*/
-const int CERTIFICATE_ERROR = -116;
 
 } // namespace SignatureTools
 } // namespace OHOS

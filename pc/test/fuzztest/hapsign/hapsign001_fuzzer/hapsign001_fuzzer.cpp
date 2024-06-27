@@ -17,6 +17,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <memory>
+#include <unistd.h>
 
 #include "sign_tool_service_impl.h"
 #include "options.h"
@@ -26,6 +27,7 @@
 #include "hap_signer_block_utils.h"
 #include "remote_sign_provider.h"
 #include "verify_hap.h"
+#include "packet_helper.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -34,7 +36,6 @@ bool HapSignTest001(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
@@ -138,6 +139,7 @@ bool HapSignTest004(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
+
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -168,7 +170,8 @@ bool HapSignTest004(const uint8_t* data, size_t size)
     (*params)["keystorePwd"] = keystorePwd;
     signProvider->CheckInputCertMatchWithProfile(nullptr, nullptr);
     signProvider->GetCrl();
-    return signProvider->Sign(params.get());
+    bool ret = signProvider->Sign(params.get());
+    return ret;
 }
 
 bool HapSignTest005(const uint8_t* data, size_t size)
@@ -291,6 +294,10 @@ bool HapSignTest007(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
+    OHOS::SignatureTools::GenUnvaildHap("./hapSign/unsigned_with_cd_and_eocd.hap");
+    OHOS::SignatureTools::GenUnvaildHap("./hapSign/phone-default-unsigned");
+    OHOS::SignatureTools::GenUnvaildHap("./hapSign/phone-default-unsigned.hap");
+    sync();
     /* Run your code on data */
     OHOS::SignatureTools::HapSignTest001(data, size);
     OHOS::SignatureTools::HapSignTest002(data, size);
@@ -299,5 +306,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::SignatureTools::HapSignTest005(data, size);
     OHOS::SignatureTools::HapSignTest006(data, size);
     OHOS::SignatureTools::HapSignTest007(data, size);
+    (void)remove("./hapSign/unsigned_with_cd_and_eocd.hap");
+    (void)remove("./hapSign/phone-default-unsigned");
+    (void)remove("./hapSign/phone-default-unsigned.hap");
+    sync();
     return 0;
 }

@@ -17,6 +17,9 @@
 #include <gtest/gtest.h>
 #include "cms_utils.h"
 #include "verify_code_signature.h"
+#include "packet_helper.h"
+
+char* GetUnSignedSoPacket(void);
 
 using namespace OHOS::SignatureTools;
 
@@ -25,11 +28,29 @@ using namespace OHOS::SignatureTools;
  */
 class CmsUtilsTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void);
+    static void TearDownTestCase();
+    void SetUp();
+    void TearDown();
 };
+
+void CmsUtilsTest::SetUpTestCase(void)
+{
+    (void)Base64DecodeStringToFile(GetUnSignedSoPacket(), "./codeSigning/entry-default-unsigned-so.hap");
+}
+
+void CmsUtilsTest::TearDownTestCase(void)
+{
+    (void)remove("./codeSigning/entry-default-unsigned-so.hap");
+}
+
+void CmsUtilsTest::SetUp()
+{
+}
+
+void CmsUtilsTest::TearDown()
+{
+}
 
 /**
  * @tc.name: CheckOwnerID001

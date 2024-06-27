@@ -55,10 +55,10 @@ const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-rev
 const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
 "profile-release1-invalid_cert_chain.pem";
 
-//verify profile 使用的全局参数
+// verify profile 使用的全局参数
 const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
 const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/verify-result.json";
-//sign app 使用全局参数
+// sign app 使用全局参数
 const std::string SIGN_APP_MODE = "localSign";
 const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
 const std::string SIGN_APP_APP_CERT_FILE = "./signProfile/app-release1.pem";
@@ -67,7 +67,7 @@ const std::string SIGN_APP_IN_FILE = "./signProfile/app1-unsigned.hap";
 const std::string SIGN_APP_SIGN_ALG = "SHA256withECDSA";
 const std::string SIGN_APP_KEY_STORE_FILE = "./signProfile/ohtest.p12";
 const std::string SIGN_APP_OUT_FILE = "./signProfile/app1-signed.hap";
-//verify app 使用全局参数
+// verify app 使用全局参数
 const std::string VERIFY_APP_CERT_FILE = "./signProfile/app-release1.pem";
 const std::string VERIFY_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
 const std::string VERIFY_APP_IN_FILE = "./signProfile/app1-signed.hap";

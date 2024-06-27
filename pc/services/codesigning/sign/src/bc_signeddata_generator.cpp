@@ -143,7 +143,7 @@ int BCSignedDataGenerator::AddOwnerID(std::vector<PKCS7Attr>& attrs, const std::
     ASN1_STRING* ownerIDAsn1 = ASN1_STRING_new();
     if (ownerIDAsn1 == NULL) {
         SIGNATURE_TOOLS_LOGE("asn1 string create error!\n");
-        return MEMORY_ALLOC_ERROR;
+        return RET_FAILED;
     }
     ASN1_STRING_set(ownerIDAsn1, ownerID.c_str(), ownerID.length());
     attr.nid = nid;

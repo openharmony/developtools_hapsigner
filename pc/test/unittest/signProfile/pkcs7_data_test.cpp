@@ -46,8 +46,7 @@ static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 
 static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
 static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
-static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/"
-"profile-release1-invalid_cert_chain.pem";
+static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/profile-release1-invalid_cert_chain.pem";
 
 // verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/signed-profile.p7b";

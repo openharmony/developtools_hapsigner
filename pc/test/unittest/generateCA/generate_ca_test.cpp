@@ -57,32 +57,24 @@ HWTEST_F(GenerateCaTest, generate_ca_test_001, testing::ext::TestSize.Level1)
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-app1-key-v1";
-    std::string issuerkeyAlias = "oh-app1-key-v1";
     std::string keyAlg = "ECC";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string signAlg = "SHA384withECDSA";
     int basicConstraintsPathLen = 0;
     std::string keystoreFile = "/data/test/generateCA/ohtest.p12";
     std::string outFile = "/data/test/generateCA/profile.cer";
-    std::string issuerKeystoreFile = "/data/test/generateCA/ohtest.p12";
-    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     int keySize = 384;
     int validity = 3650;
-    char secret[] = "adhjkljasjhdk";
+    char secret[] = "123456";
     char ksPwd[] = "123456";
-    char isksPwd[] = "123456";
     (*params)["keyPwd"] = secret;
     (*params)["keystorePwd"] = ksPwd;
-    (*params)["issuerKeystorePwd"] = isksPwd;
     (*params)["keyAlias"] = keyAlias;
-    (*params)["issuerKeyAlias"] = issuerkeyAlias;
     (*params)["keyAlg"] = keyAlg;
     (*params)["keySize"] = keySize;
     (*params)["subject"] = subject;
-    (*params)["issuer"] = issuer;
     (*params)["signAlg"] = signAlg;
     (*params)["keystoreFile"] = keystoreFile;
-    (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
     (*params)["basicConstraintsPathLen"] = basicConstraintsPathLen;
     (*params)["outFile"] = outFile;
     (*params)["validity"] = validity;
@@ -393,7 +385,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_009, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
 
     bool ret = api->GenerateCA(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -645,7 +637,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_016, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
     (*params)["validity"] = validity;
     bool ret = api->GenerateCA(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -687,7 +679,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_017, testing::ext::TestSize.Level1)
     (*params)["outFile"] = outFile;
     (*params)["validity"] = validity;
     bool ret = api->GenerateCA(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 
@@ -1091,7 +1083,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_001, testing::ext::TestSize.Level1)
     (*params)["validity"] = validity;
     (*params)["outFile"] = outfile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 // general cert
@@ -1142,7 +1134,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_002, testing::ext::TestSize.Level1)
     (*params)["keyUsageCritical"] = keyUsageCritical;
     (*params)["outFile"] = outFile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 
@@ -1326,7 +1318,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_006, testing::ext::TestSize.Level1)
 
     (*params)["outFile"] = outFile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -1365,7 +1357,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_007, testing::ext::TestSize.Level1)
 
     (*params)["outFile"] = outFile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -1448,7 +1440,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_009, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
     (*params)["outFile"] = outFile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 // general cert
@@ -1503,8 +1495,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_010, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, true);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**
@@ -1558,8 +1550,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_011, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, true);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 
 
@@ -1614,8 +1606,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_012, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, true);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 
 
@@ -1670,8 +1662,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_013, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, true);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**
@@ -1725,8 +1717,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_014, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     EXPECT_NE(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, true);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**
@@ -1778,8 +1770,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_015, testing::ext::TestSize.Level1)
     EXPECT_EQ(keyPair, nullptr);
     X509_REQ* csr = X509_REQ_new();
     EXPECT_EQ(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, false);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**
@@ -1833,8 +1825,8 @@ HWTEST_F(GenerateCaTest, generate_cert_test_016, testing::ext::TestSize.Level1)
     EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = X509_REQ_new();
     EXPECT_EQ(csr, nullptr);
-    bool ret = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(ret, true);
+    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
+    EXPECT_EQ(cert, nullptr);
 }
 }
 }

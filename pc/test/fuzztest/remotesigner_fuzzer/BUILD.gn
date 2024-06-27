@@ -25,7 +25,10 @@ ohos_fuzztest("RemoteSignerFuzzTest") {
 
   configs = [ "${signature_tools_test}:service_include" ]
 
-  sources = [ "remotesigner_fuzzer.cpp" ]
+  sources = [
+    "${signature_tools_test}/unittest/zip/packets/raw.cpp",
+    "remotesigner_fuzzer.cpp",
+  ]
 
   deps = [ "${signature_tools_test}:service_target" ]
 

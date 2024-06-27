@@ -101,7 +101,7 @@ bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, 
         goto err;
     }
     result = (!X509_set_pubkey(cert, pubKey));
-    if(result){
+    if (result) {
         SIGNATURE_TOOLS_LOGE("X509_set_pubkey failed\n");
         goto err;
     }
@@ -116,9 +116,9 @@ bool CertTools::SignForSubCert(X509* cert, X509_REQ* subcsr, X509_REQ* rootcsr, 
         SIGNATURE_TOOLS_LOGE("X509_set_subject_name failed\n");
         X509_NAME_free(X509_REQ_get_subject_name(subcsr));
         goto err;
-    }  
+    }
     result = (!SignCert(cert, ca_prikey, signAlg));
-    if(result){
+    if (result) {
         goto err;
     }
     EVP_PKEY_free(pubKey);
@@ -181,7 +181,7 @@ err:
 
 X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, Options* options)
 {
-    long serialNumber = 0; 
+    long serialNumber = 0;
     bool result = false;
     X509* cert = X509_new();
     int validity = options->GetInt(Options::VALIDITY);
@@ -229,13 +229,13 @@ X509* CertTools::GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* rootcsr, Options* 
         goto err;
     }
     subcsr = CertTools::GenerateCsr(subKey, options->GetString(Options::SIGN_ALG),
-                                              options->GetString(Options::SUBJECT));
+                                    options->GetString(Options::SUBJECT));
     if (subcsr == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to generate csr\n");
         goto err;
     }
     subCert = SignCsrGenerateCert(rootcsr, subcsr, keyPair, options);
-    if (subCert == nullptr) {       
+    if (subCert == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to generate the subCert\n");
         goto err;
     }
@@ -246,7 +246,6 @@ err:
     EVP_PKEY_free(subKey);
     X509_REQ_free(subcsr);
     return nullptr;
-
 }
 
 bool CertTools::SetExpandedInfExtOne(X509* cert, Options* options,
@@ -617,7 +616,7 @@ bool CertTools::SetKeyUsageEndExt(X509* cert)
 
 bool CertTools::SetKeyIdentifierExt(X509* cert)
 {
-    unsigned char digest[SHA256_DIGEST_LENGTH] = { 0 };
+    unsigned char digest[SHA256_DIGEST_LENGTH] = {0};
     unsigned int digestLen = 0;
     if (X509_pubkey_digest(cert, EVP_sha256(), digest, &digestLen) != 1) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
@@ -710,7 +709,7 @@ bool CertTools::SetCertValidity(X509* cert, int validity)
 
 bool CertTools::SerialNumberBuilder(long* serialNum)
 {
-    unsigned char serialNumber[RANDOM_SERIAL_NUMBER_LENGTH] = { 0 };
+    unsigned char serialNumber[RANDOM_SERIAL_NUMBER_LENGTH] = {0};
     if (RAND_bytes(serialNumber, RANDOM_SERIAL_NUMBER_LENGTH) != 1) {
         SIGNATURE_TOOLS_LOGE("serial number build failed\n");
         return false;
@@ -762,10 +761,10 @@ X509* CertTools::GenerateEndCert(X509_REQ* csr, EVP_PKEY* issuerKeyPair,
             break;
         }
 
-        adapter.AppAndProfileAssetsRealse({}, { issuerReq }, {}); // release this function use
+        adapter.AppAndProfileAssetsRealse({}, {issuerReq}, {}); // release this function use
         return cert; // return x509 assets
     } while (0);
-    adapter.AppAndProfileAssetsRealse({}, { issuerReq }, { cert });
+    adapter.AppAndProfileAssetsRealse({}, {issuerReq}, {cert});
     return nullptr;
 }
 

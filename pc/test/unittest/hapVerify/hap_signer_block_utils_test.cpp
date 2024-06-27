@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <unistd.h>
 #include <fstream>
 #include <map>
 
@@ -22,10 +23,12 @@
 #include "random_access_file.h"
 #include "hap_signer_block_utils.h"
 #include "hap_signer_block_utils_test.h"
+#include "packet_helper.h"
 
 using namespace testing::ext;
 using namespace OHOS::SignatureTools;
-
+char* GetHapVerifyV2Packet();
+char* GetHapVerifyV3Packet();
 namespace OHOS {
 namespace SignatureTools {
 void CreateHapSubSignBlockHead(HapSubSignBlockHead& signBlob, HapSubSignBlockHead& profileBlob,
@@ -100,6 +103,8 @@ long long CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo)
 } // namespace OHOS
 
 namespace {
+const std::string HAP_VERIFY_V2_PATH = "./hapVerify/hap_verify_v2.hap";
+const std::string HAP_VERIFY_V3_PATH = "./hapVerify/hap_verify_v3.hap";
 class HapSignerBlockUtilsTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
@@ -117,10 +122,16 @@ const int32_t HapSignerBlockUtilsTest::TEST_ZIP_BLOCKS_NUM_NEED_DIGEST = 3;
 
 void HapSignerBlockUtilsTest::SetUpTestCase(void)
 {
+    (void)Base64DecodeStringToFile(GetHapVerifyV2Packet(), HAP_VERIFY_V2_PATH.c_str());
+    (void)Base64DecodeStringToFile(GetHapVerifyV3Packet(), HAP_VERIFY_V3_PATH.c_str());
+    sync();
 }
 
 void HapSignerBlockUtilsTest::TearDownTestCase(void)
 {
+    (void)remove(HAP_VERIFY_V2_PATH.c_str());
+    (void)remove(HAP_VERIFY_V3_PATH.c_str());
+    sync();
 }
 
 void HapSignerBlockUtilsTest::SetUp()
@@ -177,7 +188,7 @@ HWTEST_F(HapSignerBlockUtilsTest, FindHapSignatureTest001, TestSize.Level1)
      * @tc.expected: step4. can not find hap signing block, the return will be false.
      */
     RandomAccessFile hapTestFile2;
-    ASSERT_TRUE(hapTestFile2.Init("./hapVerify/test_hap_verify_v2.hap"));
+    ASSERT_TRUE(hapTestFile2.Init(HAP_VERIFY_V2_PATH));
     ASSERT_FALSE(hapSignerBlockUtils.FindHapSignature(hapTestFile2, hapSignInfo));
 }
 
@@ -314,7 +325,7 @@ HWTEST_F(HapSignerBlockUtilsTest, FindHapSigningBlockTest001, TestSize.Level1)
      * @tc.expected: step5. make hapSignBlockMagic is wrong, the return will be false.
      */
     RandomAccessFile hapTestFile2;
-    ASSERT_TRUE(hapTestFile2.Init("./hapVerify/test_hap_verify_v2.hap"));
+    ASSERT_TRUE(hapTestFile2.Init(HAP_VERIFY_V2_PATH));
     int64_t fileLength = hapTestFile2.GetLength();
     ByteBuffer eocd(TEST_ZIP_EOCD_SIZE);
     int32_t centralDirOffset;
@@ -326,7 +337,7 @@ HWTEST_F(HapSignerBlockUtilsTest, FindHapSigningBlockTest001, TestSize.Level1)
      * @tc.expected: step6. make hapSignBlockOffset is wrong, the return will be false.
      */
     RandomAccessFile hapTestFile3;
-    ASSERT_TRUE(hapTestFile3.Init("./hapVerify/test_hap_verify_v3.hap"));
+    ASSERT_TRUE(hapTestFile3.Init(HAP_VERIFY_V3_PATH));
     fileLength = hapTestFile3.GetLength();
     ByteBuffer eocd2(TEST_ZIP_EOCD_SIZE);
     EXPECT_GT(hapTestFile3.ReadFileFullyFromOffset(eocd2, fileLength - TEST_ZIP_EOCD_SIZE), 0);
@@ -385,7 +396,7 @@ HWTEST_F(HapSignerBlockUtilsTest, CheckSignBlockHeadTest001, TestSize.Level1)
 HWTEST_F(HapSignerBlockUtilsTest, FindHapSubSigningBlockTest001, TestSize.Level1)
 {
     RandomAccessFile hapTestFile;
-    ASSERT_TRUE(hapTestFile.Init("./hapVerify/test_hap_verify_v2.hap"));
+    ASSERT_TRUE(hapTestFile.Init(HAP_VERIFY_V2_PATH));
     HapSignerBlockUtils hapSignerBlockUtils;
     ByteBuffer hapSignatureBlock(1);
     ByteBuffer hapEocd(1);

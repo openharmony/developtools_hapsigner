@@ -22,6 +22,11 @@
 #include "segment_header.h"
 #include "code_signing.h"
 #include "file_utils.h"
+#include "packet_helper.h"
+
+extern char* GetSignedSoHapPacket(void);
+extern char* GetSignedSoElfPacket(void);
+extern char* GetSignedSoBinPacket(void);
 
 namespace OHOS {
 namespace SignatureTools {
@@ -119,11 +124,23 @@ bool TestFileUtils(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetSignedSoHapPacket(),
+        "./generateKeyPair/entry-default-signed-so.hap");
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetSignedSoElfPacket(),
+        "./generateKeyPair/entry-default-signed-so.elf");
+    (void)OHOS::SignatureTools::Base64DecodeStringToFile(GetSignedSoBinPacket(),
+        "./generateKeyPair/entry-default-signed-so.bin");
+    sync();
     /* Run your code on data */
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     OHOS::SignatureTools::VerifyElf(data, size);
     OHOS::SignatureTools::VerifyBin(data, size);
     OHOS::SignatureTools::TestDatastructure(data, size);
     OHOS::SignatureTools::TestFileUtils(data, size);
+
+    (void)remove("./generateKeyPair/entry-default-signed-so.hap");
+    (void)remove("./generateKeyPair/entry-default-signed-so.elf");
+    (void)remove("./generateKeyPair/entry-default-signed-so.bin");
+    sync();
     return 0;
 }

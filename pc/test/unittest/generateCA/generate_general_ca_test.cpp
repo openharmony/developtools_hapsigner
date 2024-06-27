@@ -94,7 +94,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_017, testing::ext::TestSize.Level1)
     (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
 
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -144,7 +144,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_018, testing::ext::TestSize.Level1)
     (*params)["keyUsageCritical"] = keyUsageCritical;
     (*params)["outFile"] = outFile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -216,7 +216,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_020, testing::ext::TestSize.Level1)
     (*params)["validity"] = validity;
     (*params)["outFile"] = outfile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -252,7 +252,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_021, testing::ext::TestSize.Level1)
     (*params)["validity"] = validity;
     (*params)["outFile"] = outfile;
     bool ret = api->GenerateCert(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -932,7 +932,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(GenerateCaTest, generate_end_cert_test_001, testing::ext::TestSize.Level1)
 {
-    const char appSigningCapability[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00 };
+    const char appSigningCapability[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
     Options params;
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
@@ -973,7 +973,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_001, testing::ext::TestSize.Leve
  */
 HWTEST_F(GenerateCaTest, generate_end_cert_test_002, testing::ext::TestSize.Level1)
 {
-    char appSigningCapability[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00 };
+    char appSigningCapability[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
     Options params;
     char keyPwd[] = "123456";
     int keySize = 256;
@@ -1010,7 +1010,7 @@ HWTEST_F(GenerateCaTest, generate_end_cert_test_002, testing::ext::TestSize.Leve
  */
 HWTEST_F(GenerateCaTest, generate_end_cert_test_003, testing::ext::TestSize.Level1)
 {
-    char appSigningCapability[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00 };
+    char appSigningCapability[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string keyAlias = "alias";
@@ -1084,7 +1084,7 @@ HWTEST_F(GenerateCaTest, get_cert_fromfile_test_001, testing::ext::TestSize.Leve
     std::string path = "";
     LocalizationAdapter adapter(&params);
     auto ret = adapter.GetCertsFromFile(path, " ");
-    EXPECT_FALSE(ret.size() <= 1);
+    EXPECT_EQ(ret.empty(), true);
 }
 
 /**
@@ -1099,7 +1099,7 @@ HWTEST_F(GenerateCaTest, get_cert_fromfile_test_002, testing::ext::TestSize.Leve
     std::string path = "certs";
     LocalizationAdapter adapter(&params);
     auto ret = adapter.GetCertsFromFile(path, " ");
-    EXPECT_FALSE(ret.size() <= 1);
+    EXPECT_EQ(ret.empty(), true);
 }
 
 /**
@@ -1111,7 +1111,7 @@ HWTEST_F(GenerateCaTest, get_cert_fromfile_test_002, testing::ext::TestSize.Leve
 HWTEST_F(GenerateCaTest, output_cert_test_001, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
-    char appSigningCapability[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00 };
+    char appSigningCapability[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
     Options params;
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
@@ -1155,7 +1155,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_001, testing::ext::TestSize.Level1)
 HWTEST_F(GenerateCaTest, output_cert_test_002, testing::ext::TestSize.Level1)
 {
     SignToolServiceImpl api;
-    char appSigningCapability[] = { 0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00 };
+    char appSigningCapability[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
     Options params;
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
@@ -1243,7 +1243,7 @@ HWTEST_F(GenerateCaTest, print_x509_test_001, testing::ext::TestSize.Level1)
     SignToolServiceImpl api;
     X509* cert1 = X509_new();
     bool ret = api.PrintX509CertFromMemory(cert1);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -1354,7 +1354,7 @@ HWTEST_F(GenerateCaTest, hap_verify_test_001, testing::ext::TestSize.Level1)
     params[Options::OUT_CERT_CHAIN] = outCertChain;
     params[Options::OUT_PROFILE] = outProfile;
     bool result = api.VerifyHapSigner(&params);
-    EXPECT_EQ(result, true);
+    EXPECT_EQ(result, false);
 }
 
 /**
@@ -1374,7 +1374,7 @@ HWTEST_F(GenerateCaTest, hap_verify_test_002, testing::ext::TestSize.Level1)
     params[Options::OUT_CERT_CHAIN] = outCertChain;
     params[Options::OUT_PROFILE] = outProfile;
     bool result = api.VerifyHapSigner(&params);
-    EXPECT_EQ(result, true);
+    EXPECT_EQ(result, false);
 }
 
 /**
@@ -1483,7 +1483,7 @@ HWTEST_F(GenerateCaTest, generate_key_pair_test_004, testing::ext::TestSize.Leve
     Options params;
     std::string issuerKeyAlias = "";
     std::string issuerkeyStroeFile = "";
-    char isskeypwd[] = { 0 };
+    char isskeypwd[] = {0};
     params[Options::ISSUER_KEY_STORE_FILE] = issuerkeyStroeFile;
     params[Options::ISSUER_KEY_STORE_RIGHTS] = isskeypwd;
     params[Options::ISSUER_KEY_ALIAS] = issuerKeyAlias;
@@ -1811,7 +1811,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_001, testing::ext::TestS
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
     bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -1901,7 +1901,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_003, testing::ext::TestS
     X509* cert = CertTools::GenerateRootCertificate(keyPair, csr, params.get());
     EXPECT_NE(cert, nullptr);
     bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 }
 }

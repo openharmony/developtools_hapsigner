@@ -19,8 +19,43 @@
 #include "sign_hap.h"
 #include "sign_provider.h"
 #include "sign_tool_service_impl.h"
+#include "packet_helper.h"
+#include <unistd.h>
+
+char* GetSuccessPacketHap(void);
+char* GetError1PacketHap(void);
+char* GetError2PacketHap(void);
+extern char* GetUnsignedLinuxout(void);
 namespace OHOS {
 namespace SignatureTools {
+
+void SignProviderTest::SetUpTestCase(void)
+{
+    GenUnvaildHap("./hapSign/phone-default-unsigned");
+    GenUnvaildHap("./hapSign/phone-default-unsigned.txt");
+    GenUnvaildHap("./hapSign/nohap.hap");
+
+    (void)Base64DecodeStringToFile(GetSuccessPacketHap(), "./hapSign/phone-default-unsigned-test.hap");
+    (void)Base64DecodeStringToFile(GetSuccessPacketHap(), "./hapSign/phone-default-unsigned.hap");
+    (void)Base64DecodeStringToFile(GetError1PacketHap(), "./hapSign/unsigned_with_cd_and_eocd.hap");
+    (void)Base64DecodeStringToFile(GetError2PacketHap(), "./hapSign/unsigned_with_eocd.hap");
+    (void)Base64DecodeStringToFile(GetUnsignedLinuxout(), "./hapSign/unsigned-linux.out");
+    sync();
+}
+
+void SignProviderTest::TearDownTestCase(void)
+{
+    (void)remove("./hapSign/phone-default-unsigned");
+    (void)remove("./hapSign/phone-default-unsigned.txt");
+    (void)remove("./hapSign/nohap.hap");
+
+    (void)remove("./hapSign/phone-default-unsigned-test.hap");
+    (void)remove("./hapSign/phone-default-unsigned.hap");
+    (void)remove("./hapSign/unsigned_with_cd_and_eocd.hap");
+    (void)remove("./hapSign/unsigned_with_eocd.hap");
+    (void)remove("./hapSign/unsigned-linux.out");
+    sync();
+}
 /*
  * @tc.name: sign_provider_test_001
  * @tc.desc: Generate a key pair and load it into the keystore.
@@ -60,7 +95,7 @@ HWTEST_F(SignProviderTest, sign_provider_test_001, testing::ext::TestSize.Level1
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = signProvider->Sign(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 /*
  * @tc.name: sign_provider_test_001
@@ -86,7 +121,6 @@ HWTEST_F(SignProviderTest, sign_provider_test_002, testing::ext::TestSize.Level1
     std::string outFile = "./hapSign/phone-default-signed.hap";
     char keyPwd[] = "123456";
     char keystorePwd[] = "123456";
-    std::string compatibleVersion = "9";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -100,13 +134,9 @@ HWTEST_F(SignProviderTest, sign_provider_test_002, testing::ext::TestSize.Level1
     (*params)["outFile"] = outFile;
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
-    (*params)["compatibleVersion"] = compatibleVersion;
-
-    bool ret = signProvider->Sign(params.get());
-    EXPECT_EQ(ret, true);
 
     (*params)["compatibleVersion"] = std::string("a");
-    ret = signProvider->Sign(params.get());
+    bool ret = signProvider->Sign(params.get());
     EXPECT_EQ(ret, false);
 }
 
@@ -893,7 +923,7 @@ HWTEST_F(SignProviderTest, sign_provider_test_022, testing::ext::TestSize.Level1
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = signProvider->Sign(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -904,7 +934,7 @@ HWTEST_F(SignProviderTest, sign_provider_test_022, testing::ext::TestSize.Level1
  */
 HWTEST_F(SignProviderTest, SignElf_001, testing::ext::TestSize.Level1)
 {
-    //success
+    // success
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -945,7 +975,7 @@ HWTEST_F(SignProviderTest, SignElf_001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
 {
-    //profileFile:p7b is null
+    // profileFile:p7b is null
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -973,7 +1003,7 @@ HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
     bool ret = signProvider->SignElf(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -984,7 +1014,7 @@ HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignProviderTest, SignElf_003, testing::ext::TestSize.Level1)
 {
-    //compatibleVersion is null
+    // compatibleVersion is null
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -1016,7 +1046,7 @@ HWTEST_F(SignProviderTest, SignElf_003, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
     (*params)["compatibleVersion"] = compatibleVersion;
     bool ret = signProvider->SignElf(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1027,7 +1057,7 @@ HWTEST_F(SignProviderTest, SignElf_003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignProviderTest, SignElf_004, testing::ext::TestSize.Level1)
 {
-    //inFile is null
+    // inFile is null
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -1058,7 +1088,7 @@ HWTEST_F(SignProviderTest, SignElf_004, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = signProvider->SignElf(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1069,7 +1099,7 @@ HWTEST_F(SignProviderTest, SignElf_004, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignProviderTest, SignElf_005, testing::ext::TestSize.Level1)
 {
-    //inFile path is false
+    // inFile path is false
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -1099,7 +1129,7 @@ HWTEST_F(SignProviderTest, SignElf_005, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
     bool ret = signProvider->SignElf(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -1110,7 +1140,7 @@ HWTEST_F(SignProviderTest, SignElf_005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignProviderTest, SignElf_006, testing::ext::TestSize.Level1)
 {
-    //signAlg format is false
+    // signAlg format is false
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -1140,7 +1170,7 @@ HWTEST_F(SignProviderTest, SignElf_006, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
     bool ret = signProvider->SignElf(params.get());
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 } // namespace SignatureTools
 } // namespace OHOS

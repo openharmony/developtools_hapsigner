@@ -88,12 +88,15 @@ ByteBuffer RandomAccessFileInput::CreateByteBuffer(int64_t offset, int size)
 {
     ByteBuffer byteBuffer;
     if (size < 0) {
-        SIGNATURE_TOOLS_LOGE("size < 0");
+        SIGNATURE_TOOLS_LOGE("IndexOutOfBounds: The created ByteBuffer size %{public}d is less than 0", size);
         return byteBuffer;
     }
 
     byteBuffer.SetCapacity(size);
-    CopyTo(offset, size, byteBuffer);
+    if (!CopyTo(offset, size, byteBuffer)) {
+        byteBuffer.SetCapacity(0);
+        return byteBuffer;
+    }
 
     return byteBuffer.Flip();
 }
@@ -105,7 +108,7 @@ DataSource* RandomAccessFileInput::Slice(int64_t offset, int64_t size)
         return nullptr;
     }
     if (offset == 0 && size == srcSize) {
-        SIGNATURE_TOOLS_LOGE("offset = 0, size = %{public}" PRId64, size);
+        SIGNATURE_TOOLS_LOGI("offset = 0, size = %{public}" PRId64, size);
         return new FileDataSource(file, startIndex, size, 0);
     }
     return new FileDataSource(file, offset, size, 0);

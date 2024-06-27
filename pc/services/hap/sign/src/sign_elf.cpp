@@ -30,7 +30,7 @@ const int SignElf::PAGE_SIZE = 4096;
 const int SignElf::FILE_BUFFER_BLOCK = 16384;
 const std::string SignElf::CODESIGN_OFF = "0";
 
-bool SignElf::Sign(SignerConfig signerConfig, std::map<std::string, std::string> signParams)
+bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string> signParams)
 {
     std::string inputFile = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
     std::string tmpFile;
@@ -81,6 +81,10 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
     int64_t output_length = 0;
     while ((bytesRead = input.read(buffer, sizeof(buffer)).gcount()) > 0) {
         output.write(buffer, bytesRead);
+        if (!output) {
+            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] failed to write " + tmp + "s.");
+            return false;
+        }
         output_length += bytesRead;
     }
     int64_t addLength = PAGE_SIZE - (output_length % PAGE_SIZE);
@@ -90,7 +94,7 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
     return true;
 }
 
-bool SignElf::WriteBlockDataToFile(SignerConfig signerConfig,
+bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
                                    std::string inputFile, std::string outputFile, std::string profileSigned,
                                    std::map<std::string, std::string> signParams)
 {
@@ -209,7 +213,7 @@ SignBlockData SignElf::GenerateProfileSignByte(std::string profileFile, std::str
     return SignBlockData(profileFile, isSigned);
 }
 
-bool SignElf::GenerateCodeSignByte(SignerConfig signerConfig, std::map<std::string, std::string> signParams,
+bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, std::map<std::string, std::string> signParams,
                                    std::string inputFile, int blockNum, long binFileLen, SignBlockData** codeSign)
 {
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CODESIGN_OFF) {

@@ -15,6 +15,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <filesystem>
 
 #include "gtest/gtest.h"
 #include "options.h"
@@ -50,23 +51,24 @@ static const std::string SIGN_PROFILE_IN_FILE = "./signProfile/profile.json";
 static const std::string SIGN_PROFILE_CERT_PEM = "./signProfile/profile-release1-cert.pem";
 static const std::string SIGN_PROFILE_REVERSE_PEM = "./signProfile/profile-release1-reverse.pem";
 static const std::string SIGN_PROFILE_DOUBLE_CERT_PEM = "./signProfile/profile-release1-invalid_cert_chain.pem";
+static const std::string SIGN_PROFILE_TMP_P7B = "./signProfile/tmp.p7b";
 
-//verify profile 使用的全局参数
+// verify profile 使用的全局参数
 static const std::string VERIFY_PROFILE_IN_FILE = "./signProfile/app1-profile1.p7b";
 static const std::string VERIFY_PROFILE_OUT_FILE = "./signProfile/VerifyResult.json";
-//sign app 使用全局参数
+// sign app 使用全局参数
 static const std::string SIGN_APP_MODE = "localSign";
 static const std::string SIGN_APP_KEY_ALIAS = "oh-app1-key-v1";
 static const std::string SIGN_APP_APP_CERT_FILE = "./signProfile/app-release1.pem";
 static const std::string SIGN_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string SIGN_APP_IN_FILE = "./signProfile/app1-unsigned.hap";
+static const std::string SIGN_APP_IN_FILE = "./signProfile/unsigned.hap";
 static const std::string SIGN_APP_SIGN_ALG = "SHA256withECDSA";
 static const std::string SIGN_APP_KEY_STORE_FILE = "./signProfile/ohtest.p12";
-static const std::string SIGN_APP_OUT_FILE = "./signProfile/app1-signed.hap";
-//verify app 使用全局参数
-static const std::string VERIFY_APP_CERT_FILE = "./signProfile/app-release1.pem";
-static const std::string VERIFY_APP_PROFILE_FILE = "./signProfile/app1-profile1.p7b";
-static const std::string VERIFY_APP_IN_FILE = "./signProfile/app1-signed.hap";
+static const std::string SIGN_APP_OUT_FILE = "./signProfile/signed.hap";
+
+// base64解码接口
+extern void Base64ToFile(const char* b64, const std::string& output);
+extern const char* g_unsignedHap;
 
 class ProfileTest : public testing::Test {
 public:
@@ -77,10 +79,12 @@ public:
 };
 void ProfileTest::SetUpTestCase(void)
 {
+    Base64ToFile(g_unsignedHap, SIGN_APP_IN_FILE);
 }
 
 void ProfileTest::TearDownTestCase(void)
 {
+    std::filesystem::remove(SIGN_APP_IN_FILE);
 }
 
 void ProfileTest::SetUp()
@@ -896,6 +900,116 @@ HWTEST_F(ProfileTest, profile_test028, testing::ext::TestSize.Level1)
     ProfileInfo info;
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_INVALID);
+}
+
+/**
+ * @tc.name: profile_test029
+ * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ProfileTest, profile_test029, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-"
+        "feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"O"
+        "penHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
+        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
+        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
+        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
+        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
+        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
+        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
+        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
+        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
+        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
+        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
+        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
+        "-----END CERTIFICATE-----\\n"
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB"
+        "44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C76"
+        "79A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":"
+        "[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":"
+        "{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+    FileUtils::Write(provision, VERIFY_PROFILE_OUT_FILE);
+    (*params)["mode"] = SIGN_APP_MODE;
+    (*params)["keyAlias"] = SIGN_APP_KEY_ALIAS;
+    (*params)["signAlg"] = SIGN_APP_SIGN_ALG;
+    (*params)["appCertFile"] = SIGN_APP_APP_CERT_FILE;
+    (*params)["profileFile"] = VERIFY_PROFILE_OUT_FILE;
+    (*params)["inFile"] = SIGN_APP_IN_FILE;
+    (*params)["keystoreFile"] = SIGN_APP_KEY_STORE_FILE;
+    (*params)["outFile"] = SIGN_APP_OUT_FILE;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["inForm"] = std::string("zip");
+    (*params)["profileSigned"] = std::string("0");
+    (*params)["signCode"] = std::string("0");
+    ParamsRunTool tool;
+    bool ret = tool.RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, true);
+}
+
+static void GenerateTmpP7b()
+{
+    Options options;
+    char keyStorePwd[] = "123456";
+    char keypwd[] = "123456";
+    options[Options::KEY_ALIAS] = SIGN_PROFILE_KEY_ALIAS;
+    options[Options::MODE] = SIGN_PROFILE_MODE;
+    options[Options::PROFILE_CERT_FILE] = SIGN_PROFILE_DOUBLE_CERT_PEM;
+    options[Options::SIGN_ALG] = SIGN_PROFILE_SIGN_ALG;
+    options[Options::KEY_STORE_FILE] = SIGN_PROFILE_KEY_STORE_FILE;
+    options[Options::OUT_FILE] = SIGN_PROFILE_OUT_FILE;
+    options[Options::IN_FILE] = SIGN_PROFILE_IN_FILE;
+    options[Options::KEY_RIGHTS] = keypwd;
+    options[Options::KEY_STORE_RIGHTS] = keyStorePwd;
+
+    LocalizationAdapter adapter(&options);
+    std::string  provision = "45";
+    std::string ret;
+    int result = ProfileSignTool::GenerateP7b(adapter, provision, ret);
+    FileUtils::Write(ret, SIGN_PROFILE_TMP_P7B);
+    EXPECT_TRUE(result < 0);
+}
+
+/**
+ * @tc.name: profile_test030
+ * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(ProfileTest, profile_test030, testing::ext::TestSize.Level1)
+{
+    GenerateTmpP7b();
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    char keyPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    (*params)["mode"] = SIGN_APP_MODE;
+    (*params)["keyAlias"] = SIGN_APP_KEY_ALIAS;
+    (*params)["signAlg"] = SIGN_APP_SIGN_ALG;
+    (*params)["appCertFile"] = SIGN_APP_APP_CERT_FILE;
+    (*params)["profileFile"] = SIGN_PROFILE_TMP_P7B;
+    (*params)["inFile"] = SIGN_APP_IN_FILE;
+    (*params)["keystoreFile"] = SIGN_APP_KEY_STORE_FILE;
+    (*params)["outFile"] = SIGN_APP_OUT_FILE;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["inForm"] = std::string("zip");
+    (*params)["profileSigned"] = std::string("1");
+    (*params)["signCode"] = std::string("0");
+    ParamsRunTool tool;
+    bool ret = tool.RunSignApp(params.get(), *api);
+    EXPECT_FALSE(ret);
 }
 
 }

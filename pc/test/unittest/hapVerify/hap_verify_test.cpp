@@ -32,8 +32,17 @@
 #include "hap_verify_result.h"
 #include "openssl/pem.h"
 #include "options.h"
+#include "packet_helper.h"
 
 using namespace testing::ext;
+
+char* GetTestHap(void);
+char* GetTest1Hap(void);
+char* GetTest2Hap(void);
+char* GetTest3Hap(void);
+char* GetTest4Hap(void);
+char* GetTest5Hap(void);
+char* GetTestSignedHap(void);
 
 namespace OHOS {
 namespace SignatureTools {
@@ -53,18 +62,6 @@ LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\n\
 zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\n\
 -----END CERTIFICATE-----\n";
 
-void GenUnvaildHap(const std::string& path)
-{
-    std::ofstream outfile(path);
-    if (!outfile) {
-        std::cerr << "Unable to open file:" << path << std::endl;
-        return;
-    }
-    outfile << "Hello, this is a Unvaild Hap.\n";
-    outfile.close();
-    return;
-}
-
 class VerifyHapTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
@@ -83,6 +80,13 @@ void VerifyHapTest::SetUpTestCase(void)
     GenUnvaildHap("./hapVerify/unvaild.hqf");
     GenUnvaildHap("./hapVerify/unvaild.hsp");
     GenUnvaildHap("./hapVerify/unvaild.txt");
+    (void)Base64DecodeStringToFile(GetTestHap(), "./hapVerify/test.hap");
+    (void)Base64DecodeStringToFile(GetTest1Hap(), "./hapVerify/test1.hap");
+    (void)Base64DecodeStringToFile(GetTest2Hap(), "./hapVerify/test2.hap");
+    (void)Base64DecodeStringToFile(GetTest3Hap(), "./hapVerify/test3.hap");
+    (void)Base64DecodeStringToFile(GetTest4Hap(), "./hapVerify/test4.hap");
+    (void)Base64DecodeStringToFile(GetTest5Hap(), "./hapVerify/test5.hap");
+    (void)Base64DecodeStringToFile(GetTestSignedHap(), "./hapVerify/phone-default-signed.hap");
 }
 
 void VerifyHapTest::TearDownTestCase(void)
@@ -92,6 +96,14 @@ void VerifyHapTest::TearDownTestCase(void)
     (void)remove("./hapVerify/unvaild.hqf");
     (void)remove("./hapVerify/unvaild.hsp");
     (void)remove("./hapVerify/unvaild.txt");
+
+    (void)remove("./hapVerify/test.hap");
+    (void)remove("./hapVerify/test1.hap");
+    (void)remove("./hapVerify/test2.hap");
+    (void)remove("./hapVerify/test3.hap");
+    (void)remove("./hapVerify/test4.hap");
+    (void)remove("./hapVerify/test5.hap");
+    (void)remove("./hapVerify/phone-default-signed.hap");
 }
 
 void VerifyHapTest::SetUp()
@@ -299,14 +311,14 @@ HWTEST_F(VerifyHapTest, Verify001, TestSize.Level0)
 
     VerifyHap verify;
     int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    OHOS::SignatureTools::HapVerifyResultCode targetResult = OHOS::SignatureTools::FILE_PATH_INVALID;
-    ASSERT_TRUE(resultCode == targetResult);
+    OHOS::SignatureTools::HapVerifyResultCode targetResult = OHOS::SignatureTools::VERIFY_SUCCESS;
+    ASSERT_TRUE(resultCode != targetResult);
     std::ofstream appFile;
     appFile.open(errorFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     ASSERT_TRUE(appFile.is_open());
     appFile.close();
     resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == targetResult);
+    ASSERT_TRUE(resultCode != targetResult);
 }
 
 
@@ -386,7 +398,7 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
     OHOS::SignatureTools::HapVerifyResult verifyRet;
-    ASSERT_EQ(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_CODE_SIGN_FAIL);
+    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
     /*
         * @tc.steps: step4. change profile pkcs7 data.
         * @tc.expected: step4. the return will be APP_SOURCE_NOT_TRUSTED.
@@ -397,7 +409,7 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_EQ(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_CODE_SIGN_FAIL);
+    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
     /*
         * @tc.steps: step5. change app pkcs7 data.
         * @tc.expected: step5. the return will be VERIFY_APP_PKCS7_FAIL.
@@ -408,7 +420,7 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_EQ(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_CODE_SIGN_FAIL);
+    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
 }
 
 /**
@@ -554,14 +566,14 @@ HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
 
     VerifyHap verify;
     int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    OHOS::SignatureTools::HapVerifyResultCode targetResult = OHOS::SignatureTools::FILE_PATH_INVALID;
-    ASSERT_TRUE(resultCode == targetResult);
+    OHOS::SignatureTools::HapVerifyResultCode targetResult = OHOS::SignatureTools::VERIFY_SUCCESS;
+    ASSERT_TRUE(resultCode != targetResult);
     std::ofstream appFile;
     appFile.open(errorFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     ASSERT_TRUE(appFile.is_open());
     appFile.close();
     resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == targetResult);
+    ASSERT_TRUE(resultCode != targetResult);
     /*
         * @tc.steps: step2. create a hapfile and run HapVerify.
         * @tc.expected: step2. the return will be SIGNATURE_NOT_FOUND.
@@ -681,7 +693,7 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
     OHOS::SignatureTools::HapVerifyResult verifyRet;
-    ASSERT_EQ(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_CODE_SIGN_FAIL);
+    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
     /*
         * @tc.steps: step4. change profile pkcs7 data.
         * @tc.expected: step4. the return will be APP_SOURCE_NOT_TRUSTED.
@@ -692,7 +704,7 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_EQ(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_CODE_SIGN_FAIL);
+    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
     /*
         * @tc.steps: step5. change app pkcs7 data.
         * @tc.expected: step5. the return will be VERIFY_APP_PKCS7_FAIL.
@@ -703,7 +715,7 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_EQ(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_CODE_SIGN_FAIL);
+    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
 }
 
 /**

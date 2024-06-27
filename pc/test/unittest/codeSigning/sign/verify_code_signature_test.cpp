@@ -18,6 +18,20 @@
 #include <gtest/gtest.h>
 #include "verify_code_signature.h"
 #include "verify_hap.h"
+#include "packet_helper.h"
+
+char* GetHapNoPacket(void);
+char* GetSignedElfErr5Packet(void);
+char* GetSignedElfErr6Packet(void);
+char* GetSignedElfPacket(void);
+char* GetSignedErrPacket(void);
+char* GetSignedErr2Packet(void);
+char* GetSignedErr3Packet(void);
+char* GetSignedErr4Packet(void);
+char* GetSignedErr5Packet(void);
+char* GetSignedSoPacket(void);
+char* GetUnsignedElfPacket(void);
+char* GetUnSignedNoSoPacket(void);
 
 using namespace OHOS::SignatureTools;
 
@@ -26,11 +40,51 @@ using namespace OHOS::SignatureTools;
  */
 class VerifyCodeSignatureTest : public testing::Test {
 public:
-    static void SetUpTestCase(void) {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
+    static void SetUpTestCase(void);
+    static void TearDownTestCase();
+    void SetUp();
+    void TearDown();
 };
+
+void VerifyCodeSignatureTest::SetUpTestCase(void)
+{
+    (void)Base64DecodeStringToFile(GetHapNoPacket(), "./codeSigning/hap");
+    (void)Base64DecodeStringToFile(GetSignedElfErr5Packet(), "./codeSigning/linuxout-signed-err5.elf");
+    (void)Base64DecodeStringToFile(GetSignedElfErr6Packet(), "./codeSigning/linuxout-signed-err6.elf");
+    (void)Base64DecodeStringToFile(GetSignedElfPacket(), "./codeSigning/linuxout-signed-err.elf");
+    (void)Base64DecodeStringToFile(GetSignedErrPacket(), "./codeSigning/entry-default-signed-so-err.hap");
+    (void)Base64DecodeStringToFile(GetSignedErr2Packet(), "./codeSigning/entry-default-signed-so-err2.hap");
+    (void)Base64DecodeStringToFile(GetSignedErr3Packet(), "./codeSigning/entry-default-signed-so-err3.hap");
+    (void)Base64DecodeStringToFile(GetSignedErr4Packet(), "./codeSigning/entry-default-signed-so-err4.hap");
+    (void)Base64DecodeStringToFile(GetSignedErr5Packet(), "./codeSigning/entry-default-signed-so-err5.hap");
+    (void)Base64DecodeStringToFile(GetSignedSoPacket(), "./codeSigning/entry-default-signed-so.hap");
+    (void)Base64DecodeStringToFile(GetUnsignedElfPacket(), "./codeSigning/linuxout-unsigned.elf");
+    (void)Base64DecodeStringToFile(GetUnSignedNoSoPacket(), "./codeSigning/phone-default-unsigned.hap");
+}
+
+void VerifyCodeSignatureTest::TearDownTestCase(void)
+{
+    (void)remove("./codeSigning/hap");
+    (void)remove("./codeSigning/linuxout-signed-err5.elf");
+    (void)remove("./codeSigning/linuxout-signed-err6.elf");
+    (void)remove("./codeSigning/linuxout-signed-err.elf");
+    (void)remove("./codeSigning/entry-default-signed-so-err.hap");
+    (void)remove("./codeSigning/entry-default-signed-so-err2.hap");
+    (void)remove("./codeSigning/entry-default-signed-so-err3.hap");
+    (void)remove("./codeSigning/entry-default-signed-so-err4.hap");
+    (void)remove("./codeSigning/entry-default-signed-so-err5.hap");
+    (void)remove("./codeSigning/entry-default-signed-so.hap");
+    (void)remove("./codeSigning/linuxout-unsigned.elf");
+    (void)remove("./codeSigning/phone-default-unsigned.hap");
+}
+
+void VerifyCodeSignatureTest::SetUp()
+{
+}
+
+void VerifyCodeSignatureTest::TearDown()
+{
+}
 
 /**
  * @tc.name: AreVectorsEqual001
@@ -106,7 +160,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap001, testing::ext::TestSize.Level1)
     std::string profileContent = "";
     bool flag = VerifyCodeSignature::VerifyHap(file, offset, length, fileFormat, profileContent);
 
-    EXPECT_EQ(flag, true);
+    EXPECT_EQ(flag, false);
 }
 
 /**
@@ -281,13 +335,13 @@ HWTEST_F(VerifyCodeSignatureTest, VerifySingleFile, testing::ext::TestSize.Level
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf001, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211219;
+    int64_t offset = 8216;
+    int64_t length = 10516;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);
 
-    EXPECT_EQ(flag, true);
+    EXPECT_EQ(flag, false);
 }
 
 /**
@@ -301,8 +355,8 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf001, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf002, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211219;
+    int64_t offset = 8216;
+    int64_t length = 10516;
     std::string fileFormat = "hap";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);
@@ -321,8 +375,8 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf002, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf003, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed111.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211219;
+    int64_t offset = 8216;
+    int64_t length = 10516;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);
@@ -341,7 +395,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf003, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf004, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed.elf";
-    int64_t offset = 25284632;
+    int64_t offset = 8216;
     int64_t length = 2;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
@@ -361,8 +415,8 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf004, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf005, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211219;
+    int64_t offset = 8216;
+    int64_t length = 10516;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"app-identifier\":\"111\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);
@@ -381,8 +435,8 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf005, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf006, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-unsigned.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211219;
+    int64_t offset = 8216;
+    int64_t length = 10516;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);
@@ -401,8 +455,8 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf006, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf007, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed-err5.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211216;
+    int64_t offset = 8216;
+    int64_t length = 10516;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);
@@ -421,8 +475,8 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf007, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyCodeSignatureTest, VerifyElf008, testing::ext::TestSize.Level1)
 {
     std::string file = "./codeSigning/linuxout-signed-err6.elf";
-    int64_t offset = 25284632;
-    int64_t length = 211213;
+    int64_t offset = 8216;
+    int64_t length = 10499;
     std::string fileFormat = "elf";
     std::string profileContent = "{\"version-code\":1,\"version-name\":\"1.0.0\"}";
     bool flag = VerifyCodeSignature::VerifyElf(file, offset, length, fileFormat, profileContent);

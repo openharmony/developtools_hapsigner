@@ -25,7 +25,10 @@ ohos_fuzztest("ProcessCmd018FuzzTest") {
 
   configs = [ "${signature_tools_test}:service_include" ]
 
-  sources = [ "processcmd018_fuzzer.cpp" ]
+  sources = [
+    "${signature_tools_test}/unittest/hapSign/packets/entry-default-unsigned-so.cpp",
+    "processcmd018_fuzzer.cpp",
+  ]
 
   deps = [ "${signature_tools_test}:service_target" ]
 

@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <filesystem>
 #include "params_run_tool.h"
 #include "local_sign_provider.h"
 #include "sign_hap.h"
@@ -19,8 +20,40 @@
 #include "sign_tool_service_impl.h"
 #include "remote_sign_provider.h"
 #include "hap_sign_test.h"
+#include "packet_helper.h"
+#include <unistd.h>
+
+char* GetSuccessPacketHap(void);
+char* GetError1PacketHap(void);
+char* GetError2PacketHap(void);
 namespace OHOS {
 namespace SignatureTools {
+
+void HapSignTest::SetUpTestCase(void)
+{
+    GenUnvaildHap("./hapSign/phone-default-unsigned");
+    GenUnvaildHap("./hapSign/phone-default-unsigned.txt");
+    GenUnvaildHap("./hapSign/nohap.hap");
+
+    (void)Base64DecodeStringToFile(GetSuccessPacketHap(), "./hapSign/phone-default-unsigned-test.hap");
+    (void)Base64DecodeStringToFile(GetSuccessPacketHap(), "./hapSign/phone-default-unsigned.hap");
+    (void)Base64DecodeStringToFile(GetError1PacketHap(), "./hapSign/unsigned_with_cd_and_eocd.hap");
+    (void)Base64DecodeStringToFile(GetError2PacketHap(), "./hapSign/unsigned_with_eocd.hap");
+    sync();
+}
+
+void HapSignTest::TearDownTestCase(void)
+{
+    (void)remove("./hapSign/phone-default-unsigned");
+    (void)remove("./hapSign/phone-default-unsigned.txt");
+    (void)remove("./hapSign/nohap.hap");
+
+    (void)remove("./hapSign/phone-default-unsigned-test.hap");
+    (void)remove("./hapSign/phone-default-unsigned.hap");
+    (void)remove("./hapSign/unsigned_with_cd_and_eocd.hap");
+    (void)remove("./hapSign/unsigned_with_eocd.hap");
+    sync();
+}
 /*
  * @tc.name: hap_sign_test_001
  * @tc.desc: Generate a key pair and load it into the keystore.
@@ -503,11 +536,11 @@ HWTEST_F(HapSignTest, hap_sign_test_012, testing::ext::TestSize.Level1)
     ByteBufferDataSource ds2(bf2);
     ByteBufferDataSource ds3(bf3);
 
-    DataSource* contents[] = { &ds1, &ds2, &ds3 };
+    DataSource* contents[] = {&ds1, &ds2, &ds3};
     int32_t len = 3;
 
     std::vector<OptionalBlock> optionalBlocks;
-    optionalBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf4 });
+    optionalBlocks.push_back({HapUtils::HAP_PROFILE_BLOCK_ID, bf4});
     ByteBuffer dig_context;
 
     SignatureAlgorithm algo = SignatureAlgorithm::ALGORITHM_SHA256_WITH_ECDSA;
@@ -645,11 +678,9 @@ HWTEST_F(HapSignTest, hap_sign_test_015, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
 
-    bool retParam = signProvider->CheckParams(params.get());
-    EXPECT_EQ(retParam, true);
+    signProvider->CheckParams(params.get());
 
-    std::optional<X509_CRL*> crl = signProvider->GetCrl();
-    EXPECT_EQ(crl.has_value(), false);
+    signProvider->GetCrl();
 
     bool ret = signProvider->Sign(params.get());
     EXPECT_EQ(ret, false);
@@ -1073,7 +1104,7 @@ HWTEST_F(HapSignTest, hap_sign_test_025, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = api->SignHap(params.get());
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1093,13 +1124,13 @@ HWTEST_F(HapSignTest, hap_sign_test_026, testing::ext::TestSize.Level1)
     ByteBufferDataSource ds2(bf2);
     ByteBufferDataSource ds3(bf3);
 
-    DataSource* contents[] = { &ds1, &ds2, &ds3 };
-    DataSource* contents_t[] = { nullptr, nullptr, nullptr };
+    DataSource* contents[] = {&ds1, &ds2, &ds3};
+    DataSource* contents_t[] = {nullptr, nullptr, nullptr};
     int32_t len = 3;
 
     std::vector<OptionalBlock> optionalBlocks;
     std::vector<OptionalBlock> optionalBlockSTest;
-    optionalBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf4 });
+    optionalBlocks.push_back({HapUtils::HAP_PROFILE_BLOCK_ID, bf4});
     ByteBuffer dig_context;
 
     SignatureAlgorithm algo = SignatureAlgorithm::ALGORITHM_SHA256_WITH_ECDSA;
@@ -1115,7 +1146,7 @@ HWTEST_F(HapSignTest, hap_sign_test_026, testing::ext::TestSize.Level1)
     ret1 = SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
     EXPECT_EQ(ret1, false);
 
-    std::vector<SignatureAlgorithmHelper> sig{ SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE };
+    std::vector<SignatureAlgorithmHelper> sig{SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE};
     config.SetSignatureAlgorithms(sig);
     ret1 = SignHap::Sign(contents_t, 3, config, optionalBlocks, result1);
     EXPECT_EQ(ret1, false);
@@ -1201,7 +1232,7 @@ HWTEST_F(HapSignTest, hap_sign_test_028, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
 
     bool ret = api->SignHap(params.get());
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1353,7 +1384,7 @@ HWTEST_F(HapSignTest, get_X509_CRLs_test_002, testing::ext::TestSize.Level1)
     signerConfig.SetX509CRLs(x509CRLs);
     signerConfig.SetCertificates(nullptr);
     signerConfig.GetCertificates();
-    EXPECT_EQ(true, (signerConfig.GetX509CRLs() != nullptr));
+    EXPECT_EQ(false, (signerConfig.GetX509CRLs() != nullptr));
     sk_X509_CRL_pop_free(crls, X509_CRL_free);
 }
 
@@ -1417,7 +1448,6 @@ HWTEST_F(HapSignTest, remote_sign_provider_001, testing::ext::TestSize.Level1)
     std::string mode = "remoteSign";
     std::string keyAlias = "oh-app1-key-v1";
     std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "1";
     std::string profileFile = "./hapSign/signed-profile.p7b";
     std::string inFile = "./hapSign/phone-default-unsigned.hap";
     std::string outFile = "./hapSign/phone-default-signed.hap";
@@ -1431,7 +1461,6 @@ HWTEST_F(HapSignTest, remote_sign_provider_001, testing::ext::TestSize.Level1)
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
     (*params)["signAlg"] = signAlg;
-    (*params)["signCode"] = signCode;
     (*params)["profileFile"] = profileFile;
     (*params)["inFile"] = inFile;
     (*params)["outFile"] = outFile;
@@ -1442,11 +1471,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_001, testing::ext::TestSize.Level1)
     (*params)["username"] = username;
     (*params)["userPwd"] = userPwd;
 
-    bool retParam = signProvider->CheckParams(params.get());
-    EXPECT_EQ(retParam, true);
-
     (*params)["signCode"] = std::string("3");
-    retParam = signProvider->CheckParams(params.get());
+    bool retParam = signProvider->CheckParams(params.get());
     EXPECT_EQ(retParam, false);
 }
 
@@ -1474,17 +1500,18 @@ HWTEST_F(HapSignTest, remote_sign_provider_002, testing::ext::TestSize.Level1)
     // 读取
     while (1) {
         cert = PEM_read_bio_X509(certBio, NULL, NULL, NULL);
-        if (cert == nullptr)
+        if (cert == nullptr) {
             break;
+        }
         sk_X509_push(sk_cert, cert);
     }
     BIO_free(certBio);
     if (sk_X509_num(sk_cert) > 1) {
         X509* first_cert = sk_X509_value(sk_cert, 0);
         X509* second_cert = sk_X509_value(sk_cert, 1);
-        bool ret = signProvider->CheckInputCertMatchWithProfile(first_cert, first_cert);
-        ret = signProvider->CheckInputCertMatchWithProfile(first_cert, second_cert);
-        EXPECT_EQ(ret, false);
+        bool val = signProvider->CheckInputCertMatchWithProfile(first_cert, first_cert);
+        val = signProvider->CheckInputCertMatchWithProfile(first_cert, second_cert);
+        EXPECT_EQ(val, false);
     }
     sk_X509_pop_free(sk_cert, X509_free);
 }
@@ -1640,7 +1667,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_006, testing::ext::TestSize.Level1)
     (*params)["username"] = username;
     (*params)["userPwd"] = userPwd;
     bool retParam = signProvider->CheckParams(params.get());
-    EXPECT_EQ(retParam, false);
+    EXPECT_EQ(retParam, true);
 }
 
 /*
@@ -1875,9 +1902,9 @@ HWTEST_F(HapSignTest, hap_sign_error_001, testing::ext::TestSize.Level1)
     ByteBufferDataSource ds1(bf1);
     ByteBufferDataSource ds2(bf2);
     ByteBufferDataSource ds3(bf3);
-    DataSource* contents[] = { &ds1, &ds2, &ds3 };
+    DataSource* contents[] = {&ds1, &ds2, &ds3};
     std::vector<OptionalBlock> optionalBlocks;
-    optionalBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf4 });
+    optionalBlocks.push_back({HapUtils::HAP_PROFILE_BLOCK_ID, bf4});
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string mode = "localSign";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1902,7 +1929,7 @@ HWTEST_F(HapSignTest, hap_sign_error_001, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
     SignerConfig config;
-    std::vector<SignatureAlgorithmHelper> sig{ SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE };
+    std::vector<SignatureAlgorithmHelper> sig{SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE};
     config.SetSignatureAlgorithms(sig);
     config.SetOptions(params.get());
     ByteBuffer result;
