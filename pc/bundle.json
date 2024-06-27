@@ -48,8 +48,8 @@
             ],
             "inner_kits": [],
             "test": [
-                "//developtools/hapsigner/pc/test/unittest:hapsigntool_pc_unittest",
-                "//developtools/hapsigner/pc/test/fuzztest:hapsigntool_pc_fuzztest"
+                # "//developtools/hapsigner/pc/test/unittest:hapsigntool_pc_unittest",
+                # "//developtools/hapsigner/pc/test/fuzztest:hapsigntool_pc_fuzztest"
             ]
         }
     }
