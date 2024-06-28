@@ -53,6 +53,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -378,18 +379,23 @@ public class CodeSigning {
      */
     private List<Pair<String, SignInfo>> signFilesFromJar(List<String> entryNames, JarFile hap, String ownerID)
         throws IOException, FsVerityDigestException, CodeSignException {
-        List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
-        for (String name : entryNames) {
+        List<Pair<String, SignInfo>> nativeLibInfoList = entryNames.stream().parallel().map(name -> {
             LOGGER.debug("Sign entry name = {}", name);
             JarEntry inEntry = hap.getJarEntry(name);
             try (InputStream inputStream = hap.getInputStream(inEntry)) {
                 long fileSize = inEntry.getSize();
                 // We don't store merkle tree in code signing of native libs
                 // Therefore, the second value of pair returned is ignored
-                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, fileSize,
-                        false, 0, ownerID);
-                nativeLibInfoList.add(Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst()));
+                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, fileSize, false, 0,
+                    ownerID);
+                return Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst());
+            } catch (FsVerityDigestException | CodeSignException | IOException e) {
+                LOGGER.error("Sign lib error, entry name = {}, msg : {}", name, e.getMessage());
             }
+            return null;
+        }).collect(Collectors.toList());
+        if (nativeLibInfoList.contains(null)) {
+            throw new CodeSignException("Sign lib error");
         }
         return nativeLibInfoList;
     }
