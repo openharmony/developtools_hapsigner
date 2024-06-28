@@ -267,16 +267,45 @@ public class CodeSigning {
                 if ("public".equals(type)) {
                     hnpOwnerId = HapUtils.getPublicHnpOwnerId(profileContent);
                 }
-                signHnpLibs(inputJar, entry, hnpOwnerId, nativeLibInfoList);
+                nativeLibInfoList.addAll(signHnpLibs(inputJar, entry, hnpOwnerId));
             }
         }
         return nativeLibInfoList;
     }
 
-    private void signHnpLibs(JarFile inputJar, JarEntry hnpEntry, String ownerID,
-        List<Pair<String, SignInfo>> nativeLibInfoList) throws IOException, FsVerityDigestException, CodeSignException {
-        // hnp file
-        Map<String, Long> jarEntries = new HashMap<>();
+    private List<Pair<String, SignInfo>> signHnpLibs(JarFile inputJar, JarEntry hnpEntry, String ownerID)
+        throws IOException, CodeSignException {
+        Map<String, Long> elfEntries = getNativeEntriesFromHnp(inputJar, hnpEntry);
+        List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.entrySet().stream().parallel().map(elf -> {
+            try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+                ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
+                java.util.zip.ZipEntry libEntry = null;
+                while ((libEntry = hnpInputStream.getNextEntry()) != null) {
+                    if (elf.getKey().equals(libEntry.getName())) {
+                        long fileSize = elf.getValue();
+                        // We don't store merkle tree in code signing of native libs
+                        // Therefore, the second value of pair returned is ignored
+                        Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(hnpInputStream, fileSize,
+                            false, 0, ownerID);
+                        return (Pair.create(hnpEntry.getName() + "!/" + libEntry.getName(),
+                            pairSignInfoAndMerkleTreeBytes.getFirst()));
+                    }
+                    hnpInputStream.closeEntry();
+                }
+            } catch (IOException | FsVerityDigestException | CodeSignException e) {
+                LOGGER.error("Sign hnp lib error, entry name = {}, msg : {}",
+                    (hnpEntry.getName() + "!/" + elf.getKey()), e.getMessage());
+            }
+            return null;
+        }).collect(Collectors.toList());
+        if (nativeLibInfoList.contains(null)) {
+            throw new CodeSignException("Sign hnp lib error");
+        }
+        return nativeLibInfoList;
+    }
+
+    private Map<String, Long> getNativeEntriesFromHnp(JarFile inputJar, JarEntry hnpEntry) throws IOException {
+        Map<String, Long> elfEntries = new HashMap<>();
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
             ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
             java.util.zip.ZipEntry libEntry = null;
@@ -293,31 +322,11 @@ public class CodeSigning {
                 do {
                     readLen = hnpInputStream.read(tmp, 0, 4096);
                 } while (readLen > 0);
-                jarEntries.put(libEntry.getName(), libEntry.getSize());
+                elfEntries.put(libEntry.getName(), libEntry.getSize());
                 hnpInputStream.closeEntry();
             }
         }
-        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
-            ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
-            java.util.zip.ZipEntry libEntry = null;
-            while ((libEntry = hnpInputStream.getNextEntry()) != null) {
-                if (jarEntries.isEmpty()) {
-                    hnpInputStream.closeEntry();
-                    break;
-                }
-                if (jarEntries.containsKey(libEntry.getName())) {
-                    long fileSize = jarEntries.get(libEntry.getName());
-                    // We don't store merkle tree in code signing of native libs
-                    // Therefore, the second value of pair returned is ignored
-                    Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(hnpInputStream, fileSize, false, 0,
-                        ownerID);
-                    nativeLibInfoList.add(Pair.create(hnpEntry.getName() + "!/" + libEntry.getName(),
-                        pairSignInfoAndMerkleTreeBytes.getFirst()));
-                    jarEntries.remove(libEntry.getName());
-                }
-                hnpInputStream.closeEntry();
-            }
-        }
+        return elfEntries;
     }
 
     /**
@@ -373,12 +382,10 @@ public class CodeSigning {
      * @param hap        input hap
      * @param ownerID    app-id in signature to identify
      * @return sign info and merkle tree of each file
-     * @throws IOException             io error
-     * @throws FsVerityDigestException computing FsVerity digest error
      * @throws CodeSignException       sign error
      */
     private List<Pair<String, SignInfo>> signFilesFromJar(List<String> entryNames, JarFile hap, String ownerID)
-        throws IOException, FsVerityDigestException, CodeSignException {
+        throws CodeSignException {
         List<Pair<String, SignInfo>> nativeLibInfoList = entryNames.stream().parallel().map(name -> {
             LOGGER.debug("Sign entry name = {}", name);
             JarEntry inEntry = hap.getJarEntry(name);
