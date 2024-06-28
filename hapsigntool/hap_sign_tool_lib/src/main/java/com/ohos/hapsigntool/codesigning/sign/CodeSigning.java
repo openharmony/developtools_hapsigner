@@ -27,10 +27,10 @@ import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptor;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptorWithSign;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
-import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.ProfileException;
+import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
@@ -245,7 +245,7 @@ public class CodeSigning {
     }
 
     private List<Pair<String, SignInfo>> signNativeHnps(File input, String profileContent, String ownerID)
-        throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
+        throws IOException, CodeSignException, ProfileException {
         List<Pair<String, SignInfo>> nativeLibInfoList = new ArrayList<>();
         try (JarFile inputJar = new JarFile(input, false)) {
             Map<String, String> hnpTypeMap = HapUtils.getHnpsFromJson(inputJar);
@@ -275,7 +275,7 @@ public class CodeSigning {
 
     private List<Pair<String, SignInfo>> signHnpLibs(JarFile inputJar, JarEntry hnpEntry, String ownerID)
         throws IOException, CodeSignException {
-        Map<String, Long> elfEntries = getNativeEntriesFromHnp(inputJar, hnpEntry);
+        Map<String, Long> elfEntries = getElfEntriesFromHnp(inputJar, hnpEntry);
         List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.entrySet().stream().parallel().map(elf -> {
             try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
                 ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
@@ -304,7 +304,7 @@ public class CodeSigning {
         return nativeLibInfoList;
     }
 
-    private Map<String, Long> getNativeEntriesFromHnp(JarFile inputJar, JarEntry hnpEntry) throws IOException {
+    private Map<String, Long> getElfEntriesFromHnp(JarFile inputJar, JarEntry hnpEntry) throws IOException {
         Map<String, Long> elfEntries = new HashMap<>();
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
             ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
