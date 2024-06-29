@@ -870,17 +870,19 @@ public class CmdUnitTest {
         throws IOException {
         File unsignedHap = File.createTempFile("unsigned-", bundleSuffix, new File("test"));
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(unsignedHap))) {
-            fillZipEntryFile(abc, ".abc", out);
-            if (".hqf".equals(bundleSuffix)) {
-                fillZipEntryFile(so, ".so.diff", out);
+            for (int i = 0; i < 10; i++) {
+                fillZipEntryFile(abc, ".abc", out);
+                if (".hqf".equals(bundleSuffix)) {
+                    fillZipEntryFile(so, ".so.diff", out);
+                }
+                fillZipEntryFile(so, ".solib", out);
+                fillZipEntryFile(so, ".so", out);
+                fillZipEntryFile(so, ".so.111", out);
+                fillZipEntryFile(so, ".so.111.111", out);
+                fillZipEntryFile(so, ".so.111.111.111", out);
+                fillZipEntryFile(an, ".an", out);
+                fillZipEntryFile(otherFile, ".json", out);
             }
-            fillZipEntryFile(so, ".solib", out);
-            fillZipEntryFile(so, ".so", out);
-            fillZipEntryFile(so, ".so.111", out);
-            fillZipEntryFile(so, ".so.111.111", out);
-            fillZipEntryFile(so, ".so.111.111.111", out);
-            fillZipEntryFile(an, ".an", out);
-            fillZipEntryFile(otherFile, ".json", out);
         }
         return unsignedHap;
     }
