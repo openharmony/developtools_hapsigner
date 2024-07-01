@@ -87,14 +87,9 @@ private:
     void ResePwdLenvariable();
 
 private:
-    static constexpr int SECONDS = 60;
-    static constexpr int MINUTES = 60;
-    static constexpr int HOURS = 24;
-    static constexpr int DAYS = 30;
-    static constexpr int NID_PBE_CBC = 149;
-    static constexpr int NID_TRIPLEDES_CBC = 146;
-    static constexpr int PATH_SIZE = 100;
-
+    const int NID_PBE_CBC = 149;
+    const int NID_TRIPLEDES_CBC = 146;
+    
     bool passWordStatus;
     int keyStorePwdLen;
     int keyPairPwdLen;

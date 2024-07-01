@@ -159,10 +159,9 @@ bool SignProvider::Sign(Options* options)
     int ret = GetX509Certificates(options, &publicCerts);
     if (ret != RET_OK) {
         sk_X509_pop_free(publicCerts, X509_free);
-        PrintErrorNumberMsg("SIGNHAP_ERROR", ret, "get X509 Certificates failed");
+        SIGNATURE_TOOLS_LOGE("SIGNHAP_ERROR get X509 Certificates failed");
         return false;
     }
-    // todo 错误判断
     if (!CheckCompatibleVersion()) {
         sk_X509_pop_free(publicCerts, X509_free);
         return PrintErrorLog("[SignHap] check Compatible Version failed!!", COMMAND_PARAM_ERROR);
@@ -172,8 +171,7 @@ bool SignProvider::Sign(Options* options)
         return PrintErrorLog("SignHap] create Signer Configs failed", COMMAND_PARAM_ERROR);
     std::string inputFilePath = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
     std::string suffix = FileUtils::GetSuffix(inputFilePath);
-    if (suffix == "")
-        return PrintErrorLog("[SignHap] hap format error pleass check!!", COMMAND_PARAM_ERROR);
+    if (suffix == "") return PrintErrorLog("[SignHap] hap format error pleass check!!", COMMAND_PARAM_ERROR);
     auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(
         inputFilePath,
         signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE),
@@ -190,7 +188,6 @@ bool SignProvider::Sign(Options* options)
     DataSource* contents[] = {dataSrcContents.beforeCentralDir,
         dataSrcContents.centralDir, dataSrcContents.endOfCentralDir
     };
-    //// 追加代码签名块
     if (!AppendCodeSignBlock(&signerConfig, tmpOutputFilePath, suffix, dataSrcContents.cDOffset, *zip))
         return PrintErrorLog("[SignCode] AppendCodeSignBlock failed", SIGN_ERROR, tmpOutputFilePath);
     ByteBuffer signingBlock;
@@ -225,12 +222,6 @@ bool SignProvider::SignElf(Options* options)
     }
 
     std::string inputFilePath = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
-    std::string suffix = FileUtils::GetSuffix(inputFilePath);
-    if (suffix == "") {
-        sk_X509_pop_free(publicCerts, X509_free);
-        SIGNATURE_TOOLS_LOGE("[SignElf] elf format error pleass check!!");
-        return false;
-    }
 
     auto [inputStream, tmpOutput, tmpOutputFilePath] =
         PrepareIOStreams(inputFilePath,
@@ -411,22 +402,24 @@ int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)** X509Vec
     int ret = RET_OK;
     // 1.check the parameters
     if (!CheckParams(options)) {
-        SIGNATURE_TOOLS_LOGE("[SignProvider] Check Params failed please check");
+        PrintErrorNumberMsg("SIGN_PROVIDER", COMMAND_ERROR, "Check Params failed please check");
         return COMMAND_ERROR;
     }
     // 2.get x509 verify certificate
     ret = GetPublicCerts(options, X509Vec);
     if (ret != RET_OK) {
+        PrintErrorNumberMsg("SIGN_PROVIDER", ret, "Get Public Certs please check");
         return ret;
     }
     // 3. load optionalBlocks
     ret = LoadOptionalBlocks();
     if (ret != RET_OK) {
+        PrintErrorNumberMsg("SIGN_PROVIDER", ret, "Load Optional Blocks please check");
         return ret;
     }
     // 4. check Profile Valid
     if ((ret = CheckProfileValid(*X509Vec)) < 0) {
-        SIGNATURE_TOOLS_LOGE("invalid profile!");
+        PrintErrorNumberMsg("SIGN_PROVIDER", ret, "profile check error");
         sk_X509_pop_free(*X509Vec, X509_free);
         *X509Vec = nullptr;
         return ret;
@@ -711,8 +704,10 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
     bool isProfileWithoutSign = (ParamConstants::DISABLE_SIGN_CODE == ite->second);
     if (!isProfileWithoutSign) {
         PKCS7Data p7Data;
-        if (p7Data.Parse(profile) < 0)
+        if (p7Data.Parse(profile) < 0) {
+            SIGNATURE_TOOLS_LOGE("Parse profile error.");
             return PARSE_ERROR;
+        }
         if (p7Data.Verify() < 0) {
             SIGNATURE_TOOLS_LOGE("Verify profile pkcs7 failed! Profile is invalid.");
             return VERIFY_ERROR;
@@ -732,6 +727,7 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
         return PARSE_ERROR;
     }
     if (CheckProfileInfo(info, inputCerts) < 0) {
+        SIGNATURE_TOOLS_LOGE("Check Profile Info");
         return RET_FAILED;
     }
     return 0;
@@ -749,7 +745,7 @@ int SignProvider::CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inpu
         return NOT_SUPPORT_ERROR;
     }
     if (sk_X509_num(inputCerts) > 0 && !CheckInputCertMatchWithProfile(sk_X509_value(inputCerts, 0),
-        certInProfile)) {
+                                                                       certInProfile)) {
         X509_free(certInProfile);
         SIGNATURE_TOOLS_LOGE("input certificates do not match with profile!");
         return RET_FAILED;

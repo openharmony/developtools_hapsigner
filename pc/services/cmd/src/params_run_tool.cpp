@@ -16,6 +16,7 @@
 #include "params_run_tool.h"
 #include <unistd.h>
 #include <memory>
+#include <filesystem>
 
 #include "constant.h"
 
@@ -50,8 +51,34 @@ ParamsRunTool::ParamsRunTool()
     InformList.push_back("zip");
 }
 
+// 保持当前工作目录为可执行程序目录，不受其他程序调用而影响
+static int KeepCurrentWorkdir()
+{
+    std::filesystem::path programPath;
+    std::string programDir;
+    try {
+        programPath = std::filesystem::read_symlink("/proc/self/exe");
+        programDir = programPath.parent_path().string();
+    }
+    catch (std::exception& e) {
+        printf("get workdir error: %s", e.what());
+        return RET_FAILED;
+    }
+    if (chdir(programDir.c_str()) < 0) {
+
+        printf("change workdir error");
+        return RET_FAILED;
+    }
+    return RET_OK;
+}
+
 bool ParamsRunTool::ProcessCmd(char** args, size_t size)
 {
+    if (KeepCurrentWorkdir() < 0) {
+        printf("can't set current work directory as program directory!");
+        SIGNATURE_TOOLS_LOGE("can't set current work directory as program directory!");
+        return false;
+    }
     if (size < CmdUtil::ARGS_MIN_LEN) {
         args[1] = const_cast<char*>("");
     }

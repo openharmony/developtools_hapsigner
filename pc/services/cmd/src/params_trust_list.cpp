@@ -17,13 +17,14 @@
 #include "constant.h"
 #include "params.h"
 #include "string_utils.h"
-
 namespace OHOS {
 namespace SignatureTools {
 std::vector<std::string> ParamsTrustlist::commands;
 std::unordered_map<std::string, std::vector<std::string>> ParamsTrustlist::trustMap;
 const std::string ParamsTrustlist::options = " [options]:";
-extern std::string GetCurrentHelpTxtPath();
+
+std::string GetCurrentHelpTxtPath();
+
 ParamsTrustlist::ParamsTrustlist()
 {
     commands.push_back(Params::GENERATE_KEYPAIR + options);

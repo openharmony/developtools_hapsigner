@@ -12,9 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cert_tools.h"
 #include <cassert>
 #include <string>
+#include <unordered_map>
+#include <openssl/x509.h>  
+#include <openssl/x509v3.h> 
+#include <openssl/conf.h> 
+
+#include "cert_tools.h"
 #include "openssl/ec.h"
 #include "openssl/obj_mac.h"
 #include "openssl/asn1.h"
@@ -25,6 +30,30 @@
 
 namespace OHOS {
 namespace SignatureTools {
+
+static std::unordered_map<std::string, long> externDic{
+    {"digitalSignature", X509v3_KU_DIGITAL_SIGNATURE},
+    {"nonRepudiation", X509v3_KU_NON_REPUDIATION},
+    {"keyEncipherment", X509v3_KU_KEY_ENCIPHERMENT},
+    {"dataEncipherment", X509v3_KU_DATA_ENCIPHERMENT},
+    {"keyAgreement", X509v3_KU_KEY_AGREEMENT},
+    {"certificateSignature", X509v3_KU_KEY_CERT_SIGN},
+    {"crlSignature", X509v3_KU_CRL_SIGN},
+    {"encipherOnly", X509v3_KU_ENCIPHER_ONLY},
+    {"decipherOnly", X509v3_KU_DECIPHER_ONLY},
+
+};
+
+static std::unordered_map<std::string, std::string> externKey{
+    {"serverAuthentication", "1.3.6.1.5.5.7.3.1"},
+    {"clientAuthentication",  "1.3.6.1.5.5.7.3.2"},
+    {"codeSignature",  "1.3.6.1.5.5.7.3.3"},
+    {"emailProtection",  "1.3.6.1.5.5.7.3.4"},
+    {"smartCardLogin",  "1.3.6.1.5.5.7.3.5"},
+    {"timestamp",  "1.3.6.1.5.5.7.3.8"},
+    {"ocspSignature",  "1.3.6.1.5.5.7.3.9"},
+   
+};
 
 bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
 {
@@ -147,6 +176,8 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
         goto err;
     }
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
+              !SetKeyIdentifierExt(cert)||
+              !SetExpandedInfExtOne(cert, options)||
               !SignForSubCert(cert, subcsr, rootcsr, keyPair, options));
     if (result) {
         goto err;
@@ -192,18 +223,14 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     if (result) {
         goto err;
     }
-    if (validity != 0) {
-        if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
-            goto err;
-        }
-    } else {
-        if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, DEFAULT_VALIDITY)) {
-            goto err;
-        }
+    if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity)) {
+        goto err;
     }
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
               !SetSubjectForCert(certReq, cert) ||
-              !SetCertPublickKey(cert, certReq));
+              !SetCertPublickKey(cert, certReq)||
+              !SetKeyIdentifierExt(cert)||
+              !SetExpandedInfExtOne(cert, options));
     if (result) {
         goto err;
     }
@@ -248,34 +275,61 @@ err:
     return nullptr;
 }
 
-bool CertTools::SetExpandedInfExtOne(X509* cert, Options* options,
-                                     std::string critical, X509_EXTENSION* ext)
+bool CertTools::SetExpandedInfExtOne(X509* cert, Options* options)
 {
-    bool keyUsageCritical = options->GetBool(Options::KEY_USAGE_CRITICAL);
-    if (keyUsageCritical) {
-        ext = X509V3_EXT_conf(NULL, NULL, "keyUsage",
-                              (critical + "," + options->GetString(Options::KEY_USAGE)).c_str());
-    } else {
-        ext = X509V3_EXT_conf(NULL, NULL, "keyUsage", (options->GetString(Options::KEY_USAGE)).c_str());
+    std::string keyUsage = options->GetString(Options::KEY_USAGE);
+    ASN1_INTEGER* keyUsageInt = ASN1_INTEGER_new();
+    long key_usage = 0;
+    if (keyUsage.empty()){
+        key_usage = X509v3_KU_KEY_CERT_SIGN | X509v3_KU_CRL_SIGN;
+        if (keyUsageInt == NULL || !ASN1_INTEGER_set(keyUsageInt, key_usage)) {
+            SIGNATURE_TOOLS_LOGE("failed to set asn1_integer");
+            ASN1_INTEGER_free(keyUsageInt);
+            return false;
+        }
+        if (!X509_add1_ext_i2d(cert, NID_key_usage, keyUsageInt, 0, X509V3_ADD_DEFAULT)) {
+            SIGNATURE_TOOLS_LOGE("failed to add ext");
+            ASN1_INTEGER_free(keyUsageInt);
+            return false;
+        }
+
+    }else{
+        std::vector<std::string> vecs = StringUtils::SplitString(keyUsage.c_str(), ',');
+        for (auto vec : vecs){
+            key_usage |= externDic[vec];
+        }
+        if (keyUsageInt == NULL || !ASN1_INTEGER_set(keyUsageInt, key_usage)) {
+            SIGNATURE_TOOLS_LOGE("failed to set asn1_integer");
+            ASN1_INTEGER_free(keyUsageInt);
+            return false;
+        }
+        if (!X509_add1_ext_i2d(cert, NID_key_usage, keyUsageInt, 0, X509V3_ADD_DEFAULT)) {
+            SIGNATURE_TOOLS_LOGE("failed to add ext");
+            ASN1_INTEGER_free(keyUsageInt);
+            return false;
+        }
     }
-    X509_add_ext(cert, ext, -1);
-    X509_EXTENSION_free(ext);
+    ASN1_INTEGER_free(keyUsageInt);
     return true;
 }
 
 bool CertTools::SetExpandedInfExtTwo(X509* cert, Options* options,
                                      std::string critical, X509_EXTENSION* ext)
 {
-    bool extKeyUsageCritical = options->GetBool(Options::EXT_KEY_USAGE_CRITICAL);
     if (!options->GetString(Options::EXT_KEY_USAGE).empty()) {
-        if (extKeyUsageCritical) {
-            ext = X509V3_EXT_conf(NULL, NULL, "extKeyUsage",
-                                  (critical + "," + options->GetString(Options::EXT_KEY_USAGE)).c_str());
-        } else {
-            ext = X509V3_EXT_conf(NULL, NULL, "extKeyUsage", (options->GetString(Options::EXT_KEY_USAGE)).c_str());
+        ext = X509V3_EXT_conf(NULL, NULL, NID_EXT_KEYUSAGE_CONST.c_str(),
+        externKey[options->GetString(Options::EXT_KEY_USAGE)].c_str());
+        if (!ext) {
+            SIGNATURE_TOOLS_LOGE("failed to set extension");
+            X509_EXTENSION_free(ext);
+            return false;
         }
-    }
-    X509_add_ext(cert, ext, -1);
+        if (!X509_add_ext(cert, ext, -1)) {
+            SIGNATURE_TOOLS_LOGE("failed to add extension");
+            X509_EXTENSION_free(ext);
+            return false;
+        }
+    }  
     X509_EXTENSION_free(ext);
     return true;
 }
@@ -310,12 +364,11 @@ bool CertTools::SetExpandedInfExtThree(X509* cert, Options* options,
 
 bool CertTools::SetExpandedInformation(X509* cert, Options* options)
 {
-    X509_EXTENSION* ext1 = nullptr;
     X509_EXTENSION* ext2 = nullptr;
     X509_EXTENSION* ext3 = nullptr;
     std::string critical = "critical";
     bool result = false;
-    result = (!SetExpandedInfExtOne(cert, options, critical, ext1) ||
+    result = (!SetExpandedInfExtOne(cert, options) ||
               !SetExpandedInfExtTwo(cert, options, critical, ext2) ||
               !SetExpandedInfExtThree(cert, options, critical, ext3));
     if (result) {
@@ -369,20 +422,16 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
     X509* cert = X509_new();
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
-              !SetCertSerialNum(cert, serialNumber));
+              !SetCertSerialNum(cert, serialNumber)||
+              !SetKeyIdentifierExt(cert));
     if (result) {
         goto err;
     }
     validity = options->GetInt(Options::VALIDITY);
-    if (validity != 0) {
-        if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
-            goto err;
-        }
-    } else {
-        if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, DEFAULT_VALIDITY)) {
-            goto err;
-        }
+    if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity)) {
+        goto err;
     }
+
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
               !SetCertPublickKey(cert, certReq) ||
               !SetExpandedInformation(cert, options) ||
@@ -695,14 +744,8 @@ bool CertTools::SignCert(X509* cert, EVP_PKEY* privateKey, std::string signAlg)
 
 bool CertTools::SetCertValidity(X509* cert, int validity)
 {
-    if (validity != 0) {
-        if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity * DEFAULT_TIME)) {
-            return false;
-        }
-    } else {
-        if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, DEFAULT_VALIDITY)) {
-            return false;
-        }
+    if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity)) {
+        return false;
     }
     return true;
 }

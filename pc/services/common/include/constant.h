@@ -24,18 +24,17 @@ namespace SignatureTools {
 const char APP_SIGNING_CAPABILITY[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
 const char PROFILE_SIGNING_CAPABILITY[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x01};
 
-const long DEFAULT_VALIDITY = 31536000;
 const long DEFAULT_START_VALIDITY = 0;
-const long DEFAULT_TIME = 86400;
+const long ONE_DAY_TIME = 86400;
 const long DEFAULT_CERT_VERSION = 2;
-const long DEFAULT_CERT_SERIALNUM = 1;
 
-const int  NIST_P_256 = 256;
-const int  NIST_P_384 = 384;
-const int  DEFAULT_VALIDITY_DAYS = 365;
-const int  INVALIDCHAR = 3;
-const int  DEFAULT_BASIC_CONSTRAINTS_PATH_LEN = 0;
-const int  RANDOM_SERIAL_NUMBER_LENGTH = 32;
+const int NIST_P_256 = 256;
+const int NIST_P_384 = 384;
+const int DEFAULT_VALIDITY_DAYS = 3650;
+const int INVALIDCHAR = 3;
+const int DEFAULT_BASIC_CONSTRAINTS_PATH_LEN = 0;
+const int RANDOM_SERIAL_NUMBER_LENGTH = 32;
+const int DEFAULT_CUSTOM_VALIDITY_DAYS = 1095;
 
 const bool DEFAULT_KEY_USAGE_CRITICAL = true;
 const bool DEFAULT_EXT_KEY_USAGE_CRITICAL = false;
