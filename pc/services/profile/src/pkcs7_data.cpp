@@ -212,8 +212,8 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
     this->sigAlg = sigAlg;
     certs = signer->GetCertificates();
     if (sk_X509_num(certs) < MIN_CERTS_NUM) {
+        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "Error certChain count\n");
         SIGNATURE_TOOLS_LOGE("Error certChain count");
-        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "Error certChain count");
         result = INVALIDPARAM_ERROR;
         goto err;
     }

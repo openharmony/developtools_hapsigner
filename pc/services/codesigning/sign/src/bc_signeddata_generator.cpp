@@ -49,15 +49,13 @@ int BCSignedDataGenerator::GenerateSignedData(const std::string& content,
     }
     result = GetSigAlg(signerConfig, sigAlg);
     if (result < 0) {
-        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR,
                             "get sigAlg failed");
         return INVALIDPARAM_ERROR;
     }
     result = PackageSignedData(content, signer, sigAlg, ret);
     if (result < 0) {
-        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
-                            "PackageSignedData error!");
-        return SIGN_ERROR;
+        return result;
     }
     return result;
 }

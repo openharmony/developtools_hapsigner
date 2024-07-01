@@ -24,6 +24,40 @@ namespace OHOS {
 namespace SignatureTools {
 const std::regex INTEGER_PATTERN = std::regex("\\d{1,10}");
 
+static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
+{
+    int defualtValidity = 0;
+    Options* options = param->GetOptions();
+    if (options->count(Options::VALIDITY)) { // int 类型
+        int validity = 0;
+        std::string val = options->GetString(Options::VALIDITY);
+        for (char x : val) {
+            if (!isdigit(x)) {
+                PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid validity");
+                return false;
+            }
+        }
+        try {
+            validity = stoi(val);
+        }
+        catch (std::exception& e) {
+            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid validity");
+            return false;
+        }
+        validity *= ONE_DAY_TIME;
+        (*options)[Options::VALIDITY] = validity;
+    } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_APP_CERT ||
+               param->GetMethod() == GENERATE_PROFILE_CERT) {
+        defualtValidity = DEFAULT_VALIDITY_DAYS * ONE_DAY_TIME;
+        (*options)[Options::VALIDITY] = defualtValidity;
+    } else if (param->GetMethod() == GENERATE_CERT) {
+        defualtValidity = DEFAULT_CUSTOM_VALIDITY_DAYS * ONE_DAY_TIME;
+        (*options)[Options::VALIDITY] = defualtValidity;
+    }
+    return true;
+
+}
+
 static bool UpdateParamForVariantInt(ParamsSharedPtr param)
 {
     Options* options = param->GetOptions();
@@ -53,27 +87,8 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
     } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS_PATH_LEN] = DEFAULT_BASIC_CONSTRAINTS_PATH_LEN;
     }
-
-    if (options->count(Options::VALIDITY)) { // int 类型
-        int validity = 0;
-        std::string val = options->GetString(Options::VALIDITY);
-        for (char x : val) {
-            if (!isdigit(x)) {
-                PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid validity");
-                return false;
-            }
-        }
-        try {
-            validity = stoi(val);
-        }
-        catch (std::exception& e) {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid validity");
-            return false;
-        }
-        (*options)[Options::VALIDITY] = validity;
-    } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_APP_CERT ||
-               param->GetMethod() == GENERATE_PROFILE_CERT || param->GetMethod() == GENERATE_CERT) {
-        (*options)[Options::VALIDITY] = DEFAULT_VALIDITY_DAYS;
+    if (!UpdateParamForVariantCertInt(param)) {
+        return false;
     }
     return true;
 }

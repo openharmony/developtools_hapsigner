@@ -48,12 +48,12 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
     result = BCSignedDataGenerator::GetSigAlg(signerConfig, sigAlg);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("get sigAlg failed");
-        return INVALIDPARAM_ERROR;
+        return result;
     }
     result = PackagePKCS7(content, signer, sigAlg, ret);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("PackageSignedData error!");
-        return SIGN_ERROR;
+        return result;
     }
     return result;
 }

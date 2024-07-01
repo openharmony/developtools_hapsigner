@@ -137,7 +137,6 @@ public:
     static bool IsRunnableFile(const std::string& name);
     static int64_t GetFileLen(const std::string& file);
     static void DelDir(const std::string& file);
-    static void MkDir(const std::string& dirname);
 };
 } // namespace SignatureTools
 } // namespace OHOS

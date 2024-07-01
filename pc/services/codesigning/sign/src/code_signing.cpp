@@ -392,6 +392,8 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
                                 "No certificates configured for sign.");
             return false;
         }
+    } else {
+        return false;
     }
     std::unique_ptr<BCSignedDataGenerator> bcSignedDataGenerator =
         std::make_unique<BCSignedDataGenerator>();

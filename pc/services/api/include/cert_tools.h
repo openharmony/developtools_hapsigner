@@ -45,8 +45,7 @@ public:
     static bool SetSubjectForCert(X509_REQ* certReq, X509* cert);
     static bool SignForSubCert(X509* cert, X509_REQ* csr, X509_REQ* caReq,
                                EVP_PKEY* ca_prikey, Options* options);
-    static bool SetExpandedInfExtOne(X509* cert, Options* options,
-                                     std::string critical, X509_EXTENSION* ext);
+    static bool SetExpandedInfExtOne(X509* cert, Options* options);
     static bool SetExpandedInfExtTwo(X509* cert, Options* options,
                                      std::string critical, X509_EXTENSION* ext);
     static bool SetExpandedInfExtThree(X509* cert, Options* options,
