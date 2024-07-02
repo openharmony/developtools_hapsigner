@@ -95,7 +95,8 @@ public class SignerConfig {
         if (isInputCertChainNotEmpty() || signer == null) {
             return certificates;
         }
-        return signer.getCertificates();
+        certificates = signer.getCertificates();
+        return certificates;
     }
 
     /**
@@ -116,7 +117,8 @@ public class SignerConfig {
         if (isInputCertChainNotEmpty() || isInputCrlNotEmpty() || signer == null) {
             return x509CRLs;
         }
-        return signer.getCrls();
+        x509CRLs = signer.getCrls();
+        return x509CRLs;
     }
 
     /**
