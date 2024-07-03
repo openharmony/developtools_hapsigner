@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<configuration ver="2.0">
+  <target name="hapsigntool_pc_unittest" timeout="3000">
+      <preparer>
+        <option name="push" value="./resource/generateKeyPair/VerifyResult.json -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/app-profile.p7b -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/app-release1.pem -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/app-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/OpenHarmony.p12 -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/profile.json -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/rootPrikey.pem -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/rootPubkey.pem -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="./resource/generateKeyPair/OpenHarmonyDamage.p12 -> /data/test/generateKeyPair/" src="res" />
+
+        <option name="push" value="./resource/hapVerify/verify_err.p7b -> /data/test/hapVerify/" src="res" />
+        <option name="push" value="./resource/hapVerify/verify_test.p7b -> /data/test/hapVerify/" src="res" />
+        
+        <option name="push" value="./hapVerify/packets/test.txt -> /data/test/hapVerify/" src="res" />
+        <option name="push" value="./hapVerify/packets/test1.txt -> /data/test/hapVerify/" src="res" />
+        <option name="push" value="./hapVerify/packets/test2.txt -> /data/test/hapVerify/" src="res" />
+        <option name="push" value="./hapVerify/packets/test3.txt -> /data/test/hapVerify/" src="res" />
+        <option name="push" value="./hapVerify/packets/test4.txt -> /data/test/hapVerify/" src="res" />
+        <option name="push" value="./hapVerify/packets/test5.txt -> /data/test/hapVerify/" src="res" />
+
+        <option name="push" value="./resource/generateCsr/ohtest.p12 -> /data/test/generateCsr/" src="res"/>
+
+        <option name="push" value="./resource/generateCA/profile-sign-srv-ca1.cer -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/profile-sign-srv-ca1test.cer -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/root-ca1.cer -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/root-ca1test.cer -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/app-sign-srv-ca1.cer -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/ohtest.p12 -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/apptest.p12 -> /data/test/generateCA/" src="res" />
+        <option name="push" value="./resource/generateCA/OpenHarmony.p12 -> /data/test/generateCA/" src="res" />
+
+        <option name="push" value="./resource/hapSign/app-release1.pem -> /data/test/hapSign/" src="res"/>
+        <option name="push" value="./resource/hapSign/signed-profile.p7b -> /data/test/hapSign/" src="res"/>
+        <option name="push" value="./resource/hapSign/ohtest.p12 -> /data/test/hapSign/" src="res"/>
+        <option name="push" value="./resource/hapSign/app1-profile1.p7b -> /data/test/hapSign/" src="res"/>
+
+        <option name="push" value="./resource/hapSign/ohtest.jks -> /data/test/hapSign/" src="res"/>
+
+        <option name="push" value="./resource/signProfile/app-release1.pem -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/ohtest.p12 -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/profile-release1.pem -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/profile.json -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/signed-profile.p7b -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/VerifyResult.json -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/profile-release1-reverse.pem -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/profile-release1-cert.pem -> /data/test/signProfile/" src="res"/>
+        <option name="push" value="./resource/signProfile/profile-release1-invalid_cert_chain.pem -> /data/test/signProfile/" src="res"/>
+
+        <option name="push" value="./resource/codeSigning/app-release1.pem -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/app-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/ohtest.jks -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/ohtest.p12 -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/profile-release1.pem -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/profile-sign-srv-ca1.cer -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/root-ca1.cer -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/rootPrikey.pem -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/rootPubkey.pem -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/signed-profile.p7b -> /data/test/codeSigning/" src="res"/>
+        <option name="push" value="./resource/codeSigning/sub.csr -> /data/test/codeSigning/" src="res"/>
+        
+        <option name="push" value="./resource/remoteSigner/libremote_signer.z.so -> /data/test/remoteSigner" src="res"/>
+        <option name="push" value="./resource/remoteSigner/libremote_signer_without_create.z.so -> /data/test/remoteSigner" src="res"/>
+        <option name="push" value="./resource/remoteSigner/app-release1.pem -> /data/test/remoteSigner" src="res"/>
+        <option name="push" value="./resource/remoteSigner/OpenHarmony.p12 -> /data/test/remoteSigner" src="res"/>
+        <option name="push" value="./resource/remoteSigner/signed-profile.p7b -> /data/test/remoteSigner" src="res"/>
+
+        <option name="push" value="./resource/elfVerify/readonly.cer -> /data/test/elfVerify" src="res"/>
+
+        <option name="push" value="./resource/help.txt -> /data/test" src="res"/>
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
+</configuration>
+
