@@ -44,9 +44,9 @@ std::pair<std::string, std::string>& UnzipHandleParam::GetPairResult()
     return pairResult;
 }
 
-std::vector<std::pair<std::string, SignInfo>>& UnzipHandleParam::GetRet()
+std::vector<std::pair<std::string, SignInfo>>* UnzipHandleParam::GetRet()
 {
-    return ret;
+    return &ret;
 }
 
 std::string& UnzipHandleParam::GetOwnerID()
