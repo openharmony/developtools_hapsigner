@@ -35,6 +35,7 @@ void MerkleTreeBuilder::TransInputStreamToHashData(std::istream& inputStream,
 {
     if (size == 0 || static_cast<long long>(size) > INPUTSTREAM_MAX_SIZE) {
         SIGNATURE_TOOLS_LOGE("invalid input stream size");
+        CheckCalculateHashResult = false;
         return;
     }
     std::vector<std::vector<int8_t>> hashes = GetDataHashes(inputStream, size);
@@ -69,6 +70,7 @@ std::vector<std::vector<int8_t>> MerkleTreeBuilder::GetDataHashes(std::istream& 
             inputStream.read((buffer.data()), len);
             if (inputStream.fail() && !inputStream.eof()) {
                 PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "Error occurred while reading data");
+                CheckCalculateHashResult = false;
                 return std::vector<std::vector<int8_t>>();
             }
             num = inputStream.gcount();
@@ -82,6 +84,8 @@ std::vector<std::vector<int8_t>> MerkleTreeBuilder::GetDataHashes(std::istream& 
         }
         if (offset != readSize) {
             PrintErrorNumberMsg("READ_FILE_ERROR", IO_ERROR, "Error reading buffer from input");
+            CheckCalculateHashResult = false;
+            return std::vector<std::vector<int8_t>>();
         }
         byteBuffer->Flip();
         int readChunkIndex = (int)(GetFullChunkSize(MAX_READ_SIZE, CHUNK_SIZE, i));
@@ -184,6 +188,7 @@ void MerkleTreeBuilder::TransInputDataToHashData(ByteBuffer* inputBuffer,
 
 OHOS::SignatureTools::MerkleTreeBuilder::MerkleTreeBuilder() :mPools(new Uscript::ThreadPool(POOL_SIZE))
 {
+    CheckCalculateHashResult = true;
 }
 
 MerkleTree* MerkleTreeBuilder::GenerateMerkleTree(std::istream& inputStream, long size,
@@ -196,7 +201,11 @@ MerkleTree* MerkleTreeBuilder::GenerateMerkleTree(std::istream& inputStream, lon
         (ByteBuffer(offsetArrays[offsetArrays.size() - 1]));
     GenerateHashDataByInputData(inputStream, size, allHashBuffer.get(), offsetArrays, digestSize);
     GenerateHashDataByHashData(allHashBuffer.get(), offsetArrays, digestSize);
-    return GetMerkleTree(allHashBuffer.get(), size, fsVerityHashAlgorithm);
+   
+    if(CheckCalculateHashResult) {
+        return GetMerkleTree(allHashBuffer.get(), size, fsVerityHashAlgorithm);
+    }
+    return nullptr;
 }
 
 void MerkleTreeBuilder::GenerateHashDataByInputData(std::istream& inputStream, long size, ByteBuffer* outputBuffer,
@@ -259,8 +268,8 @@ MerkleTree* MerkleTreeBuilder::GetMerkleTree(ByteBuffer* dataBuffer, long inputD
             fsVerityHashPageBuffer = nullptr;
         }
     }
-    MerkleTree* merkleTree = (new MerkleTree(rootHash, tree, fsVerityHashAlgorithm));
-    return merkleTree;
+    
+    return new MerkleTree(rootHash, tree, fsVerityHashAlgorithm);
 }
 
 void MerkleTreeBuilder::DataRoundupChunkSize(ByteBuffer* data, long originalDataSize, int digestSize)

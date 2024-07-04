@@ -57,10 +57,10 @@ void CentralDirectory::SetCentralDirectoryValues(ByteBuffer& bf, CentralDirector
 {
     int16_t centralDirectoryInt16Value;
     bf.GetInt16(centralDirectoryInt16Value);
-    cd->SetVersionExtra(centralDirectoryInt16Value);
+    cd->SetVersion(centralDirectoryInt16Value);
 
     bf.GetInt16(centralDirectoryInt16Value);
-    cd->SetVersion(centralDirectoryInt16Value);
+    cd->SetVersionExtra(centralDirectoryInt16Value);
 
     bf.GetInt16(centralDirectoryInt16Value);
     cd->SetFlag(centralDirectoryInt16Value);

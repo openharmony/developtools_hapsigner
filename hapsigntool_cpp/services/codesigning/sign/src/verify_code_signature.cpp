@@ -30,7 +30,7 @@ bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t le
     CodeSignBlock csb;
     bool generateFlag = GenerateCodeSignBlock(file, offset, length, csb);
     if (!generateFlag) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "VerifyHap GenerateCodeSignBlock failed");
+        SIGNATURE_TOOLS_LOGE("VerifyHap GenerateCodeSignBlock failed, file: %{public}s", file.c_str());
         return false;
     }
     // 2) verify hap

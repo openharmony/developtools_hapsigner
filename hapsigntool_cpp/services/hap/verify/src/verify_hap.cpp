@@ -227,14 +227,14 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
         std::string profileArray_(profileArray.GetBufferPtr(), profileArray.GetCapacity());
         std::string profileContent;
         if (GetProfileContent(profileArray_, profileContent) < 0) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "get profile content failed.");
+            SIGNATURE_TOOLS_LOGE("get profile content failed, file: %{public}s", hapFilePath.c_str());
             return false;
         }
         std::string suffix = fileNameArray[fileNameArray.size() - 1];
         bool isCodeSign = VerifyCodeSignature::VerifyHap(hapFilePath, blockOffset, blockLength,
                                                          suffix, profileContent);
         if (!isCodeSign) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "verify codesign failed.");
+            SIGNATURE_TOOLS_LOGE("verify codesign failed, file: %{public}s", hapFilePath.c_str());
             return false;
         }
         SIGNATURE_TOOLS_LOGI("verify codesign success.");

@@ -356,7 +356,7 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
 }
 
 int KeyStoreHelper::WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath,
-                                char* storePwd, std::string alias, char* keyPwd)
+                                  char* storePwd, std::string alias, char* keyPwd)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -598,11 +598,11 @@ void KeyStoreHelper::SetNidMac(int& nid_key, int& iter, int& mac_iter)
     if (!nid_key) {
         nid_key = NID_TRIPLEDES_CBC;
     }
-    
+
     if (!iter) {
         iter = PKCS12_DEFAULT_ITER;
     }
-    
+
     if (!mac_iter) {
         mac_iter = 1;
     }

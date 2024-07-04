@@ -30,7 +30,7 @@ const int FileUtils::NUM_THREE = 3;
 const int FileUtils::NUM_FOUR = 4;
 
 const std::unordered_map<std::string, std::regex> FileUtils::SUFFIX_REGEX_MAP = {
-{std::string("so"), std::regex("\\.so(\\.[0-9]*){0,3}$")} };
+{std::string("so"), std::regex("\\.so(\\.[0-9]*){0,3}$")}};
 
 bool FileUtils::IsEmpty(std::string cs)
 {
@@ -69,7 +69,7 @@ int FileUtils::Write(const std::string& content, const std::string& output)
     std::ofstream outFile(output, std::ios::binary);
     bool flag = (outFile.rdstate() != 0);
     if (flag) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "open output file: "+ output+" failed");
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "open output file: " + output + " failed");
         return IO_ERROR;
     }
     outFile.write(&content[0], content.size());
@@ -242,21 +242,21 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
     std::future<void> readTask;
     std::vector<std::future<void>> writeTasks;
     int result = RET_OK;
-    auto writeFunc = [&result](std::ofstream& outStream, char* data, int dataSize) {
+    auto writeFunc = [&result] (std::ofstream& outStream, char* data, int dataSize) {
         outStream.write(data, dataSize);
-        if(!outStream.good()) {
+        if (!outStream.good()) {
             result = IO_ERROR;
             delete[] data;
             return;
         }
         delete[] data;
         };
-    auto readFunc = [&output, &writeFunc, &writeTasks, &result](std::ifstream& in, int dataSize) {
+    auto readFunc = [&output, &writeFunc, &writeTasks, &result] (std::ifstream& in, int dataSize) {
         while (in) {
             char* buf = new (std::nothrow)char[FILE_BUFFER_BLOCK];
-            if(buf == NULL) {
-               result = RET_FAILED;
-               return;
+            if (buf == NULL) {
+                result = RET_FAILED;
+                return;
             }
             int min = std::min(dataSize, FILE_BUFFER_BLOCK);
             in.read(buf, min);
@@ -269,8 +269,7 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
         // After the file is written, datasize must be 0, so the if condition will never hold
         if (dataSize != 0) {
             SIGNATURE_TOOLS_LOGE("write error!");
-            result=IO_ERROR;
-            assert(0);
+            result = IO_ERROR;
             return;
         }
         };

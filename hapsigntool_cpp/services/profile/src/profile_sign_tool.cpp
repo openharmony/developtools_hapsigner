@@ -30,7 +30,7 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
     int result = RET_OK;
     if (signerFactory == NULL) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
-		                    "signerFactory is NULL, create signerFactor failed");
+                            "signerFactory is NULL, create signerFactor failed");
         return INVALIDPARAM_ERROR;
     }
     std::shared_ptr<Signer> signer(signerFactory->GetSigner(adapter));

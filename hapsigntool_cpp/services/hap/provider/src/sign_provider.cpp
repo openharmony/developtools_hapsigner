@@ -30,16 +30,16 @@
 using namespace nlohmann;
 namespace OHOS {
 namespace SignatureTools {
-    std::vector<std::string> SignProvider::VALID_SIGN_ALG_NAME = {
-        ParamConstants::HAP_SIG_ALGORITHM_SHA256_ECDSA,
-        ParamConstants::HAP_SIG_ALGORITHM_SHA384_ECDSA,
-        ParamConstants::HAP_SIG_ALGORITHM_SHA512_ECDSA
-    };
-    std::vector<std::string> SignProvider::PARAMETERS_NEED_ESCAPE = {
-        ParamConstants::PARAM_REMOTE_CODE,
-        ParamConstants::PARAM_LOCAL_JKS_KEYSTORE_CODE,
-        ParamConstants::PARAM_LOCAL_JKS_KEYALIAS_CODE
-    };
+std::vector<std::string> SignProvider::VALID_SIGN_ALG_NAME = {
+    ParamConstants::HAP_SIG_ALGORITHM_SHA256_ECDSA,
+    ParamConstants::HAP_SIG_ALGORITHM_SHA384_ECDSA,
+    ParamConstants::HAP_SIG_ALGORITHM_SHA512_ECDSA
+};
+std::vector<std::string> SignProvider::PARAMETERS_NEED_ESCAPE = {
+    ParamConstants::PARAM_REMOTE_CODE,
+    ParamConstants::PARAM_LOCAL_JKS_KEYSTORE_CODE,
+    ParamConstants::PARAM_LOCAL_JKS_KEYALIAS_CODE
+};
 
 bool SignProvider::PrintErrorLog(const std::string& log, const int& errorCode, std::string path)
 {
@@ -244,7 +244,7 @@ bool SignProvider::Sign(Options* options)
 
     ByteBuffer signingBlock;
     if (!SignHap::Sign(contents, sizeof(contents) / sizeof(contents[0]), signerConfig, optionalBlocks,
-        signingBlock)) {
+                       signingBlock)) {
         return PrintErrorLog("[SignHap] SignHap Sign failed.", SIGN_ERROR, tmpOutputFilePath);
     }
 
@@ -256,7 +256,7 @@ bool SignProvider::Sign(Options* options)
     }
 
     if (!OutputSignedFile(outputHap.get(), dataSrcContents.cDOffset, signingBlock, dataSrcContents.centralDir,
-        dataSrcContents.eocdPair.first)) {
+                          dataSrcContents.eocdPair.first)) {
         return PrintErrorLog("[SignHap] write output signed file failed.", ZIP_ERROR, tmpOutputFilePath);
     }
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
@@ -506,7 +506,7 @@ int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X50
     X509* cert = nullptr;
     *ret = sk_X509_new(nullptr);
     if (*ret == nullptr) {
-        PrintErrorNumberMsg("RET_FAILED", RET_FAILED , "get CertList FromFile [sk_X509_new] failed");
+        PrintErrorNumberMsg("RET_FAILED", RET_FAILED, "get CertList FromFile [sk_X509_new] failed");
         return RET_FAILED;
     }
     BIO* certBio = BIO_new_file(certsFile.c_str(), "rb");
@@ -572,7 +572,7 @@ bool SignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_BASIC_COMPATIBLE_VERSION);
     paramFileds.emplace_back(ParamConstants::PARAM_SIGN_CODE);
     paramFileds.emplace_back(ParamConstants::PARAM_IN_FORM);
-    
+
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
     for (auto it = options->begin(); it != options->end(); it++) {
         if (paramSet.find(it->first) != paramSet.end()) {
@@ -754,7 +754,7 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
         this->signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
     if (ite == this->signParams.end()) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
-		                    "find PARAM_BASIC_PROFILE_SIGNED failed");
+                            "find PARAM_BASIC_PROFILE_SIGNED failed");
         return INVALIDPARAM_ERROR;
     }
     bool isProfileWithoutSign = (ParamConstants::DISABLE_SIGN_CODE == ite->second);
