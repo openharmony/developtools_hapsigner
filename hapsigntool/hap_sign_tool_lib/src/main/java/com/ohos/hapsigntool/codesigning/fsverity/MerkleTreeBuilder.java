@@ -89,36 +89,43 @@ public class MerkleTreeBuilder implements AutoCloseable {
         byte[][] hashes = new byte[chunks][];
         long readOffset = 0L;
         Phaser tasks = new Phaser(1);
-        for (int i = 0; i < count; i++) {
-            long readLimit = Math.min(readOffset + MAX_READ_SIZE, size);
-            int readSize = (int) (readLimit - readOffset);
-            int fullChunkSize = (int) getFullChunkSize(readSize, CHUNK_SIZE, CHUNK_SIZE);
+        synchronized (MerkleTreeBuilder.class) {
+            for (int i = 0; i < count; i++) {
+                long readLimit = Math.min(readOffset + MAX_READ_SIZE, size);
+                int readSize = (int) (readLimit - readOffset);
+                int fullChunkSize = (int) getFullChunkSize(readSize, CHUNK_SIZE, CHUNK_SIZE);
 
-            ByteBuffer byteBuffer = ByteBuffer.allocate(fullChunkSize);
-            byte[] buffer = new byte[CHUNK_SIZE];
-            int num;
-            int offset = 0;
-            int len = CHUNK_SIZE;
-            while ((num = inputStream.read(buffer, 0, len)) > 0) {
-                byteBuffer.put(buffer, 0, num);
-                offset += num;
-                len = Math.min(CHUNK_SIZE, readSize - offset);
-                if (len <= 0 || offset == readSize) {
-                    break;
+                ByteBuffer byteBuffer = ByteBuffer.allocate(fullChunkSize);
+                int offset = readIs(inputStream, byteBuffer, readSize);
+                if (offset != readSize) {
+                    throw new IOException("IOException read buffer from input errorLHJ.");
                 }
+                byteBuffer.flip();
+                int readChunkIndex = (int) getFullChunkSize(MAX_READ_SIZE, CHUNK_SIZE, i);
+                runHashTask(hashes, tasks, byteBuffer, readChunkIndex);
+                readOffset += readSize;
             }
-            if (offset != readSize) {
-                throw new IOException("IOException read buffer from input errorLHJ.");
-            }
-            byteBuffer.flip();
-            int readChunkIndex = (int) getFullChunkSize(MAX_READ_SIZE, CHUNK_SIZE, i);
-            runHashTask(hashes, tasks, byteBuffer, readChunkIndex);
-            readOffset += readSize;
         }
         tasks.arriveAndAwaitAdvance();
         for (byte[] hash : hashes) {
             outputBuffer.put(hash, 0, hash.length);
         }
+    }
+
+    private int readIs (InputStream inputStream, ByteBuffer byteBuffer, int readSize) throws IOException {
+        byte[] buffer = new byte[CHUNK_SIZE];
+        int num;
+        int offset = 0;
+        int len = CHUNK_SIZE;
+        while ((num = inputStream.read(buffer, 0, len)) > 0) {
+            byteBuffer.put(buffer, 0, num);
+            offset += num;
+            len = Math.min(CHUNK_SIZE, readSize - offset);
+            if (len <= 0 || offset == readSize) {
+                break;
+            }
+        }
+        return offset;
     }
 
     /**

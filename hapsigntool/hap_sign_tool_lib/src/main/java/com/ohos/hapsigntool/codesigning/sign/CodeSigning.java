@@ -458,17 +458,21 @@ public class CodeSigning {
     }
 
     private byte[] generateSignature(byte[] signedData, String ownerID) throws CodeSignException {
-        SignerConfig copiedConfig = signConfig.copy();
+        SignerConfig copiedConfig = signConfig;
         // signConfig is created by SignerFactory
         if ((copiedConfig.getSigner() instanceof LocalSigner)) {
             if (copiedConfig.getCertificates().isEmpty()) {
                 throw new CodeSignException("No certificates configured for sign");
             }
+            BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
+            bcSignedDataGenerator.setOwnerID(ownerID);
+            return bcSignedDataGenerator.generateSignedData(signedData, copiedConfig);
+        } else {
+            copiedConfig = signConfig.copy();
+            BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
+            bcSignedDataGenerator.setOwnerID(ownerID);
+            return bcSignedDataGenerator.generateSignedData(signedData, copiedConfig);
         }
-
-        BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
-        bcSignedDataGenerator.setOwnerID(ownerID);
-        return bcSignedDataGenerator.generateSignedData(signedData, copiedConfig);
     }
 
     /**
