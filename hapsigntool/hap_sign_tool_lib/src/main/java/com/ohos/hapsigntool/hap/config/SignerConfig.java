@@ -95,8 +95,7 @@ public class SignerConfig {
         if (isInputCertChainNotEmpty() || signer == null) {
             return certificates;
         }
-        certificates = signer.getCertificates();
-        return certificates;
+        return signer.getCertificates();
     }
 
     /**
@@ -117,8 +116,7 @@ public class SignerConfig {
         if (isInputCertChainNotEmpty() || isInputCrlNotEmpty() || signer == null) {
             return x509CRLs;
         }
-        x509CRLs = signer.getCrls();
-        return x509CRLs;
+        return signer.getCrls();
     }
 
     /**
@@ -202,5 +200,22 @@ public class SignerConfig {
 
     private boolean isInputCrlNotEmpty() {
         return x509CRLs != null && !x509CRLs.isEmpty();
+    }
+
+    /**
+     * create a copy of this object
+     *
+     * @return a copy of this object
+     */
+    public SignerConfig copy() {
+        SignerConfig signerConfig = new SignerConfig();
+        signerConfig.fillParameters(signParamMap);
+        signerConfig.setCertificates(certificates);
+        signerConfig.setOptions(options);
+        signerConfig.setSignatureAlgorithms(signatureAlgorithms);
+        signerConfig.setCompatibleVersion(compatibleVersion);
+        signerConfig.setX509CRLs(x509CRLs);
+        signerConfig.getSigner();
+        return signerConfig;
     }
 }
