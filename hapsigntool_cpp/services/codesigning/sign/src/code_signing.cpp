@@ -218,12 +218,12 @@ bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
         SIGNATURE_TOOLS_LOGE("%{public}s native libs handle failed", input.c_str());
         return false;
     }
-    std::vector<std::pair<std::string, SignInfo>> nativeLibInfoList = param.GetRet();
-    if (nativeLibInfoList.empty()) {
+    std::vector<std::pair<std::string, SignInfo>> *nativeLibInfoList = param.GetRet();
+    if (nativeLibInfoList->empty()) {
         SIGNATURE_TOOLS_LOGI("No native libs.");
         return true;
     }
-    this->codeSignBlock.GetSoInfoSegment().SetSoInfoList(nativeLibInfoList);
+    this->codeSignBlock.GetSoInfoSegment().SetSoInfoList(*nativeLibInfoList);
     return true;
 }
 
@@ -304,7 +304,7 @@ bool CodeSigning::HandleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalIn
             unzGoToNextFile(zFile);
             return false;
         }
-        bool handleFlag = DoNativeLibSignOrVerify(fileName, sb, param, readFileSize);
+        bool handleFlag = DoNativeLibSignOrVerify(std::string(fileName), sb, param, readFileSize);
         if (!handleFlag) {
             SIGNATURE_TOOLS_LOGE("%{public}s native libs handle failed", fileName);
             return false;
@@ -327,8 +327,8 @@ bool CodeSigning::DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& 
         if (!signFileFlag) {
             return false;
         }
-        std::vector<std::pair<std::string, SignInfo>> ret = param.GetRet();
-        ret.push_back(std::make_pair(fileName, pairSignInfoAndMerkleTreeBytes.first));
+        std::vector<std::pair<std::string, SignInfo>> *ret = param.GetRet();
+        ret->push_back(std::make_pair(fileName, pairSignInfoAndMerkleTreeBytes.first));
     } else {
         CodeSignBlock csb = param.GetCodeSignBlock();
         for (int j = 0; j < csb.GetSoInfoSegment().GetSectionNum(); j++) {

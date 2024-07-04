@@ -31,7 +31,7 @@ void MerkleTreeBuilder::SetAlgorithm(const std::string& algorithm)
 }
 
 void MerkleTreeBuilder::TransInputStreamToHashData(std::istream& inputStream,
-    long size, ByteBuffer* outputBuffer, int bufStartIdx)
+                                                   long size, ByteBuffer* outputBuffer, int bufStartIdx)
 {
     if (size == 0 || static_cast<long long>(size) > INPUTSTREAM_MAX_SIZE) {
         SIGNATURE_TOOLS_LOGE("invalid input stream size");
@@ -90,7 +90,7 @@ std::vector<std::vector<int8_t>> MerkleTreeBuilder::GetDataHashes(std::istream& 
         byteBuffer->Flip();
         int readChunkIndex = (int)(GetFullChunkSize(MAX_READ_SIZE, CHUNK_SIZE, i));
         thread_results.push_back(mPools->Enqueue(&MerkleTreeBuilder::RunHashTask, this, std::ref(hashes),
-            byteBuffer, readChunkIndex, 0));
+                                                 byteBuffer, readChunkIndex, 0));
         readOffset += readSize;
     }
     for (auto& thread_result : thread_results) {
@@ -135,7 +135,7 @@ std::vector<long> MerkleTreeBuilder::GetLevelSize(long dataSize, int digestSize)
 }
 
 void MerkleTreeBuilder::RunHashTask(std::vector<std::vector<int8_t>>& hashes,
-    ByteBuffer* buffer, int readChunkIndex, int bufStartIdx)
+                                    ByteBuffer* buffer, int readChunkIndex, int bufStartIdx)
 {
     int offset = 0;
 
@@ -160,8 +160,8 @@ void MerkleTreeBuilder::RunHashTask(std::vector<std::vector<int8_t>>& hashes,
     }
 }
 
-void MerkleTreeBuilder::TransInputDataToHashData(ByteBuffer* inputBuffer,
-    ByteBuffer* outputBuffer, int64_t inputStartIdx, int64_t outputStartIdx)
+void MerkleTreeBuilder::TransInputDataToHashData(ByteBuffer* inputBuffer, ByteBuffer* outputBuffer,
+                                                 int64_t inputStartIdx, int64_t outputStartIdx)
 {
     long size = inputBuffer->GetCapacity();
     int chunks = (int)GetChunkCount(size, CHUNK_SIZE);
@@ -192,7 +192,7 @@ OHOS::SignatureTools::MerkleTreeBuilder::MerkleTreeBuilder() :mPools(new Uscript
 }
 
 MerkleTree* MerkleTreeBuilder::GenerateMerkleTree(std::istream& inputStream, long size,
-    const FsVerityHashAlgorithm& fsVerityHashAlgorithm)
+                                                  const FsVerityHashAlgorithm& fsVerityHashAlgorithm)
 {
     SetAlgorithm(fsVerityHashAlgorithm.GetHashAlgorithm());
     int digestSize = fsVerityHashAlgorithm.GetOutputByteSize();
@@ -201,15 +201,15 @@ MerkleTree* MerkleTreeBuilder::GenerateMerkleTree(std::istream& inputStream, lon
         (ByteBuffer(offsetArrays[offsetArrays.size() - 1]));
     GenerateHashDataByInputData(inputStream, size, allHashBuffer.get(), offsetArrays, digestSize);
     GenerateHashDataByHashData(allHashBuffer.get(), offsetArrays, digestSize);
-   
-    if(CheckCalculateHashResult) {
+
+    if (CheckCalculateHashResult) {
         return GetMerkleTree(allHashBuffer.get(), size, fsVerityHashAlgorithm);
     }
     return nullptr;
 }
 
 void MerkleTreeBuilder::GenerateHashDataByInputData(std::istream& inputStream, long size, ByteBuffer* outputBuffer,
-    std::vector<int64_t>& offsetArrays, int digestSize)
+                                                    std::vector<int64_t>& offsetArrays, int digestSize)
 {
     int64_t inputDataOffsetBegin = offsetArrays[offsetArrays.size() - 2];
     int64_t inputDataOffsetEnd = offsetArrays[offsetArrays.size() - 1];
@@ -220,7 +220,7 @@ void MerkleTreeBuilder::GenerateHashDataByInputData(std::istream& inputStream, l
 }
 
 void MerkleTreeBuilder::GenerateHashDataByHashData(ByteBuffer* buffer,
-    std::vector<int64_t>& offsetArrays, int digestSize)
+                                                   std::vector<int64_t>& offsetArrays, int digestSize)
 {
     for (int i = offsetArrays.size() - 3; i >= 0; i--) {
         int64_t generateOffset = offsetArrays[i];
@@ -237,7 +237,7 @@ void MerkleTreeBuilder::GenerateHashDataByHashData(ByteBuffer* buffer,
 }
 
 MerkleTree* MerkleTreeBuilder::GetMerkleTree(ByteBuffer* dataBuffer, long inputDataSize,
-    FsVerityHashAlgorithm fsVerityHashAlgorithm)
+                                             FsVerityHashAlgorithm fsVerityHashAlgorithm)
 {
     int digestSize = fsVerityHashAlgorithm.GetOutputByteSize();
     dataBuffer->Flip();
@@ -268,7 +268,7 @@ MerkleTree* MerkleTreeBuilder::GetMerkleTree(ByteBuffer* dataBuffer, long inputD
             fsVerityHashPageBuffer = nullptr;
         }
     }
-    
+
     return new MerkleTree(rootHash, tree, fsVerityHashAlgorithm);
 }
 
