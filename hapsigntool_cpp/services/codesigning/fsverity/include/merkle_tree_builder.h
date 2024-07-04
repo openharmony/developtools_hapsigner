@@ -62,6 +62,7 @@ private:
     static const long MAX_READ_SIZE;
     static const int MAX_PROCESSORS;
     static const int BLOCKINGQUEUE;
+    bool CheckCalculateHashResult;
     const int POOL_SIZE = std::min(MAX_PROCESSORS, static_cast<int>(std::thread::hardware_concurrency()));
     std::string mAlgorithm = "SHA-256";
     std::shared_ptr<Uscript::ThreadPool> mPools;

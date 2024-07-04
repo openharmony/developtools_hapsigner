@@ -128,7 +128,10 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
 {
     std::unique_ptr<FsVerityGenerator> fsVerityGenerator =
         std::make_unique<FsVerityGenerator>();
-    fsVerityGenerator->GenerateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
+    if (!fsVerityGenerator->GenerateFsVerityDigest(inputStream, fileSize, fsvTreeOffset)) {
+        SIGNATURE_TOOLS_LOGE("SignFile GenerateFsVerityDigest Fail");
+        return false;
+    }
     std::vector<int8_t> fsVerityDigest = fsVerityGenerator->GetFsVerityDigest();
     std::vector<int8_t> signature;
     bool generateSignatureFlag = GenerateSignature(fsVerityDigest, ownerID, signature);

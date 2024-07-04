@@ -14,7 +14,7 @@
  */
 #include <filesystem>
 #include <fstream>
-#include <unistd.h> 
+#include <unistd.h>
 #include "packet_helper.h"
 
 namespace OHOS {
@@ -45,7 +45,6 @@ int Base64DecodeStringToFile(const char* base64Str, const char* outfile)
         return 1;
     }
     BIO_write(mem, base64Str, strlen(base64Str));
-
     b64 = BIO_new(BIO_f_base64());
     if (!b64) {
         SIGNATURE_TOOLS_LOGE("Unable to create base64 BIO");
@@ -61,22 +60,27 @@ int Base64DecodeStringToFile(const char* base64Str, const char* outfile)
         return 1;
     }
     while ((bytesRead = BIO_read(b64, buf, sizeof(buf))) > 0) {
-        fwrite(buf, 1, bytesRead, fp);
+        if (fwrite(buf, 1, bytesRead, fp) == 0) {
+            return 1;
+        }
     }
-    fflush(fp);
-    int fd_no = fileno(fp); 
-    if (fd_no == -1) {  
+    if (fflush(fp) == EOF) {
+        return 1;
+    }
+    int fdNo = fileno(fp);
+    if (fdNo == -1) {
         SIGNATURE_TOOLS_LOGE("fileno Base64DecodeStringToFile");
         fclose(fp);
         BIO_free_all(b64);
         return 1;
     }
-    if (fsync(fd_no) == -1) {
+    if (fsync(fdNo) == -1) {
         SIGNATURE_TOOLS_LOGE("fsync Base64DecodeStringToFile");
     }
-    fclose(fp);
+    if (fclose(fp) == EOF) {
+        return 1;
+    }
     BIO_free_all(b64);
     return 0;
-}
 }
 }

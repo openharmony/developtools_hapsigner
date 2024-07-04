@@ -52,7 +52,7 @@ static std::unordered_map<std::string, std::string> externKey{
     {"smartCardLogin",  "1.3.6.1.5.5.7.3.5"},
     {"timestamp",  "1.3.6.1.5.5.7.3.8"},
     {"ocspSignature",  "1.3.6.1.5.5.7.3.9"},
-   
+
 };
 
 bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
@@ -176,8 +176,8 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
         goto err;
     }
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
-              !SetKeyIdentifierExt(cert)||
-              !SetKeyUsage(cert, options)||
+              !SetKeyIdentifierExt(cert) ||
+              !SetKeyUsage(cert, options) ||
               !SignForSubCert(cert, subcsr, rootcsr, keyPair, options));
     if (result) {
         goto err;
@@ -228,8 +228,8 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     }
     result = (!SetBisicConstraintsPatchLen(options, cert) ||
               !SetSubjectForCert(certReq, cert) ||
-              !SetCertPublickKey(cert, certReq)||
-              !SetKeyIdentifierExt(cert)||
+              !SetCertPublickKey(cert, certReq) ||
+              !SetKeyIdentifierExt(cert) ||
               !SetKeyUsage(cert, options));
     if (result) {
         goto err;
@@ -317,7 +317,7 @@ bool CertTools::SetkeyUsageExt(X509* cert, Options* options)
     X509_EXTENSION* ext = nullptr;
     if (!options->GetString(Options::EXT_KEY_USAGE).empty()) {
         ext = X509V3_EXT_conf(NULL, NULL, NID_EXT_KEYUSAGE_CONST.c_str(),
-        externKey[options->GetString(Options::EXT_KEY_USAGE)].c_str());
+                              externKey[options->GetString(Options::EXT_KEY_USAGE)].c_str());
         if (!ext) {
             SIGNATURE_TOOLS_LOGE("failed to set extension");
             X509_EXTENSION_free(ext);
@@ -389,7 +389,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
     X509* cert = X509_new();
     result = (!SerialNumberBuilder(&serialNumber) ||
               !SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
-              !SetCertSerialNum(cert, serialNumber)||
+              !SetCertSerialNum(cert, serialNumber) ||
               !SetKeyIdentifierExt(cert));
     if (result) {
         goto err;
@@ -695,7 +695,7 @@ bool CertTools::SignCert(X509* cert, EVP_PKEY* privateKey, std::string signAlg)
     const EVP_MD* alg = nullptr;
     if (signAlg == SIGN_ALG_SHA256) {
         /* in openssl this func return value is stack variable, so we not need to release it */
-        alg = EVP_sha256();  
+        alg = EVP_sha256();
     }
     if (signAlg == SIGN_ALG_SHA384) {
         alg = EVP_sha384();

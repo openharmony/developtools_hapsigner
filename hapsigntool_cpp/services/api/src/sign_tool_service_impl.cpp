@@ -89,7 +89,7 @@ bool SignToolServiceImpl::GenerateRootCertToFile(Options* options, EVP_PKEY* roo
     if (!X509CertVerify(cert, rootKey)) {
         goto err;
     }
-   
+
     if (!OutputModeOfCert(cert, options)) {
         goto err;
     }
@@ -169,7 +169,7 @@ int SignToolServiceImpl::HandleIsserKeyAliasNotEmpty(Options* options)
 {
     std::string iksFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
     if (!FileUtils::IsEmpty(iksFile)) {
-        if (!FileUtils::ValidFileType(iksFile, { "p12", "jks" })) {
+        if (!FileUtils::ValidFileType(iksFile, {"p12", "jks"})) {
             SIGNATURE_TOOLS_LOGE("issuer keystore file type is inconsistent!");
             return RET_FAILED;
         }
@@ -384,11 +384,11 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
             break;
         }
 
-        adapter->AppAndProfileAssetsRealse({ issueKeyPair, keyPair }, { csr }, {}); // realse heap memory
+        adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {}); // realse heap memory
         return GetAndOutPutCert(*adapter, x509Certificate); // output cert to file
     } while (0);
 
-    adapter->AppAndProfileAssetsRealse({ issueKeyPair, keyPair }, { csr }, { x509Certificate });
+    adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {x509Certificate});
     return false;
 }
 
@@ -424,11 +424,11 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
         if (!X509CertVerify(x509Certificate, issueKeyPair)) {
             break;
         }
-        adapter->AppAndProfileAssetsRealse({ issueKeyPair, keyPair }, { csr }, {}); // realse assets
+        adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {}); // realse assets
         return GetAndOutPutCert(*adapter, x509Certificate); // output cert to file
     } while (0);
 
-    adapter->AppAndProfileAssetsRealse({ issueKeyPair, keyPair }, { csr }, { x509Certificate });
+    adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {x509Certificate});
     return false;
 }
 

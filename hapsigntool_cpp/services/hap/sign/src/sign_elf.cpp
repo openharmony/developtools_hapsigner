@@ -168,7 +168,7 @@ bool SignElf::WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::o
 {
     for (auto signBlockData : signBlockList) {
         bool checkWriteByteToOutFileFlag = FileUtils::WriteByteToOutFile(signBlockData.GetBlockHead(),
-            fileOutputStream);
+                                                                         fileOutputStream);
         if (!checkWriteByteToOutFileFlag) {
             SIGNATURE_TOOLS_LOGE("[SignElf] write data to file error");
             return false;
@@ -183,11 +183,12 @@ bool SignElf::WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::o
             std::ifstream InputSignFileStream(signBlockData.GetSignFile(), std::ios::binary);
             bool checkFileFlag = !InputSignFileStream.is_open();
             if (checkFileFlag) {
-                PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] open file: " + signBlockData.GetSignFile() + "failed");
+                PrintErrorNumberMsg("IO_ERROR", IO_ERROR,
+                                    "[SignElf] open file: " + signBlockData.GetSignFile() + "failed");
                 return false;
             }
             int result = FileUtils::WriteInputToOutPut(InputSignFileStream, fileOutputStream,
-                (long)signBlockData.GetLen());
+                                                       (long)signBlockData.GetLen());
             isSuccess = (result == 0 ? true : false);
         }
         if (!isSuccess) {

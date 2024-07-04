@@ -28,7 +28,7 @@ MerkleTree* FsVerityGenerator::GenerateMerkleTree(std::istream& inputStream, lon
     return builder->GenerateMerkleTree(inputStream, size, fsVerityHashAlgorithm);
 }
 
-void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset)
+bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset)
 {
     std::vector<int8_t> emptyVector;
     MerkleTree* merkleTree = nullptr;
@@ -36,6 +36,9 @@ void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
         merkleTree = new MerkleTree(emptyVector, emptyVector, FS_SHA256);
     } else {
         merkleTree = GenerateMerkleTree(inputStream, size, FS_SHA256);
+    }
+    if (nullptr == merkleTree) {
+        return false;
     }
     int flags = fsvTreeOffset == 0 ? 0 : FsVerityDescriptor::FLAG_STORE_MERKLE_TREE_OFFSET;
     std::shared_ptr<MerkleTree> merkleTree_ptr(merkleTree);
@@ -64,6 +67,7 @@ void FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
     fsVerityDigest = FsVerityDigest::GetFsVerityDigest(FS_SHA256.GetId(), digest);
     treeBytes = merkleTree_ptr->tree;
     rootHash = merkleTree_ptr->rootHash;
+    return true;
 }
 } // namespace SignatureTools
 } // namespace OHOS

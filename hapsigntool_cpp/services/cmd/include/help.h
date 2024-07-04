@@ -16,11 +16,10 @@
 #define HELP_H
 
 #include <string>
-/* 
- * this file use to create help.txt content and 
- * it is divided into 12 strings according 
- * to the functional module 
- * */
+ /* this file use to create help.txt content and
+  * it is divided into 12 strings according
+  * to the functional module
+  */
 namespace OHOS {
 namespace SignatureTools {
 
@@ -38,7 +37,7 @@ const std::string KEYPAIR_HELP_TXT = R"(
         -keystoreFile : keystore file, required fields, JKS or P12 format;
         -keystorePwd : keystore password, optional fields;
         -extCfgFile : Extend Profile, optional fields;
- 
+
     EXAMPLE:
         generate-keypair -keyAlias "oh-app1-key-v1" -keyPwd ****** -keyAlg ECC -keySize NIST-P-256
 -keystoreFile "/home/app-keypair.jks" -keystorePwd ******
@@ -154,7 +153,7 @@ const std::string APP_CERT_HELP_TXT = R"(
         generate-app-cert -keyAlias "oh-app1-key-v1" -issuerKeyAlias "oh-app-sign-debug-srv-ca-key-v1" -validity 365
 -issuer "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Application Debug Signature Service CA" -keyPwd ******
 -signAlg SHA256withECDSA -keystoreFile  "/home/app-keypair.jks" -outFile "/home/app-debug-cert.cer" -outForm cert
--subject "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=App1 Debug" -keystorePwd ****** 
+-subject "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=App1 Debug" -keystorePwd ******
         generate-app-cert -keyAlias "oh-app1-key-v1" -issuerKeyAlias "oh-app-sign-release-srv-ca-key-v1" -validity 365
 -issuer "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Application Release Signature Service CA" -keyPwd ******
 -signAlg SHA256withECDSA -rootCaCertFile "/home/root-ca.cer" -subCaCertFile "/home/sub-app-sign-srv-ca.cer"
@@ -186,12 +185,12 @@ const std::string PROFILE_CERT_HELP_TXT = R"(
     EXAMPLE:
         generate-profile-cert -keyAlias "oh-profile-key-v1" -issuerKeyAlias "oh-profile-sign-debug-srv-ca-key-v1"
 -keyPwd ****** -issuerKeyPwd ****** -keystoreFile "/home/profile-keypair.jks" -keystorePwd ****** -validity 365
--issuer "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Provision Profile Debug Signature Service CA" 
+-issuer "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Provision Profile Debug Signature Service CA"
 -subject "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Provision Profile Debug" -signAlg SHA256withECDSA
 -outFile "/home/provision-profile-debug.cer" -outForm cert
         generate-profile-cert -keyAlias "oh-profile-key-v1" -issuerKeyAlias "oh-profile-sign-release-srv-ca-key-v1"
 -keyPwd ****** -issuerKeyPwd ****** -keystoreFile  "/home/profile-keypair.jks" -keystorePwd ****** -validity 365
--issuer "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Provision Profile Release Signature Service CA"   
+-issuer "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Provision Profile Release Signature Service CA"
 -subject "C=CN, O=OpenHarmony, OU=OpenHarmony Community, CN=Provision Profile Release" -signAlg SHA256withECDSA
 -rootCaCertFile "/home/root-ca.cer" -subCaCertFile "/home/sub-profile-sign-srv-ca.cer"  -outForm certChain
 -outFile "/home/provision-profile-release.cer"
@@ -296,9 +295,9 @@ COMMANDS :
 )";
 /* help.txt all content */
 const std::string HELP_TXT = HELP_TXT_HEADER + KEYPAIR_HELP_TXT + CSR_HELP_TXT + CERT_HELP_TXT
-                        + CA_CERT_HELP_TXT + APP_CERT_HELP_TXT + PROFILE_CERT_HELP_TXT
-                        + SIGN_PROFILE_HELP_TXT + VERIFY_PROFILE_HELP_TXT + SIGN_APP_HELP_TXT
-                        + VERIFY_APP_HELP_TXT + HELP_END_TXT;
++ CA_CERT_HELP_TXT + APP_CERT_HELP_TXT + PROFILE_CERT_HELP_TXT
++ SIGN_PROFILE_HELP_TXT + VERIFY_PROFILE_HELP_TXT + SIGN_APP_HELP_TXT
++ VERIFY_APP_HELP_TXT + HELP_END_TXT;
 }
 }
 #endif

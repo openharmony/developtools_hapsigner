@@ -36,10 +36,10 @@
 #include "signer.h"
 #include "verify_cert_openssl_utils.h"
 
-/* compare cert is equal in std::unordered_set<X509*> for SortX509Stack */
+ /* compare cert is equal in std::unordered_set<X509*> for SortX509Stack */
 template<>
 struct std::equal_to<X509*> {
-    bool operator() (X509* cert1, X509* cert2) const 
+    bool operator() (X509* cert1, X509* cert2) const
     {
         ASN1_INTEGER* serial1 = X509_get_serialNumber(cert1);
         ASN1_INTEGER* serial2 = X509_get_serialNumber(cert2);
@@ -81,12 +81,12 @@ public:
     int Parse(const std::string& p7bBytes);
     int Parse(const std::vector<signed char>& p7bBytes);
     /* When verifying the signature, you don't need to enter content by default, if the data is separated
-     * (content is not in pkcs7, you need to pass in the original data for verification) 
+     * (content is not in pkcs7, you need to pass in the original data for verification)
      */
     int Verify(const std::string& content = "")const;
     /* get original raw content*/
     int GetContent(std::string& content) const;
-    
+
     /* In C++, the certificate chain order is forward, and Java is reversed,
     which is historically the result of correcting the certificate chain order */
     static int SortX509Stack(STACK_OF(X509)* certs);

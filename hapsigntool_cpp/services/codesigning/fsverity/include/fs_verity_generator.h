@@ -30,7 +30,7 @@ class FsVerityGenerator {
 public:
     MerkleTree* GenerateMerkleTree(std::istream& inputStream, long size,
                                     const FsVerityHashAlgorithm& fsVerityHashAlgorithm);
-    void GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset);
+    bool GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset);
     std::vector<int8_t> GetFsVerityDigest()
     {
         return fsVerityDigest;

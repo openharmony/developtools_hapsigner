@@ -238,21 +238,19 @@ static AppProvisionVerifyResult CheckProfileValidType(ProfileInfo& info)
 {
     if (info.type == ProvisionType::DEBUG) {
         if (ReturnIfStringIsEmpty(info.bundleInfo.developmentCertificate,
-            "Tag development-certificate is empty.") != PROVISION_OK) {
+                                  "Tag development-certificate is empty.") != PROVISION_OK) {
             return PROVISION_INVALID;
         }
-    }
-    else if (info.type == ProvisionType::RELEASE) {
+    } else if (info.type == ProvisionType::RELEASE) {
         if (ReturnIfIntIsNonPositive(info.distributionType,
-            "Tag app-distribution-type is empty.") != PROVISION_OK) {
+                                     "Tag app-distribution-type is empty.") != PROVISION_OK) {
             return PROVISION_INVALID;
         }
         if (ReturnIfStringIsEmpty(info.bundleInfo.distributionCertificate,
-            "Tag distribution-certificate is empty.") != PROVISION_OK) {
+                                  "Tag distribution-certificate is empty.") != PROVISION_OK) {
             return PROVISION_INVALID;
         }
-    }
-    else {
+    } else {
         PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, "Require build type must be debug or release");
         return PROVISION_INVALID;
     }
@@ -281,7 +279,7 @@ AppProvisionVerifyResult ParseProvision(const string& appProvision, ProfileInfo&
     if (result != PROVISION_OK) {
         return PROVISION_INVALID;
     }
-    
+
     if (CheckProfileValidType(info) != PROVISION_OK) {
         return PROVISION_INVALID;
     }
