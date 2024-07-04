@@ -19,7 +19,7 @@
 namespace OHOS {
 namespace SignatureTools {
 
-int CheckDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs)
+int g_CheckDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs)
 {
     if (nameString.size() == 0) {
         return FORMAT_ERROR;
@@ -51,7 +51,7 @@ X509_NAME* BuildDN(std::string nameString, X509_REQ* req)
     oss << "Format error, must be \"X=xx,XX=xxx,...\". "
         "Subject does not support either of key-value that contains commas or equal signs. "
         "Please check: \"" << nameString << "\"";
-    int ret = CheckDn(nameString, pairs);
+    int ret = g_CheckDn(nameString, pairs);
     if (ret == FORMAT_ERROR) {
         PrintErrorNumberMsg("FORMAT_ERROR", FORMAT_ERROR,
                             oss.str().c_str());

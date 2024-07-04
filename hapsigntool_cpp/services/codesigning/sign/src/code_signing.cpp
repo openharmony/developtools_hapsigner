@@ -412,11 +412,14 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
                                     std::vector<int8_t>& ret)
 {
     if (signConfig->GetSigner() != nullptr) {
-        if (signConfig->GetSigner()->GetCertificates() == nullptr) {
+        STACK_OF(X509)* certs = NULL;
+        certs = signConfig->GetSigner()->GetCertificates();
+        if (certs == nullptr) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                                 "No certificates configured for sign.");
             return false;
         }
+        sk_X509_pop_free(certs, X509_free);
     } else {
         return false;
     }

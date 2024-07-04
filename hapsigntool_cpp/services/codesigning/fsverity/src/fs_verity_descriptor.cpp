@@ -63,7 +63,7 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
         return builder->Build();
     }
     int8_t reserve[FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET];
-    bf->GetByte(reserve,sizeof(reserve));
+    bf->GetByte(reserve, sizeof(reserve));
     int8_t inCsVersion;
     bf->GetInt8(inCsVersion);
     builder->SetSalt(inSalt).SetFlags(inFlags).SetMerkleTreeOffset(inTreeOffset).SetCsVersion(inCsVersion);

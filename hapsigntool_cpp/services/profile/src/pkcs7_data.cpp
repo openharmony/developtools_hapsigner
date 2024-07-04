@@ -214,11 +214,6 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
     this->signer = signer;
     this->sigAlg = sigAlg;
     certs = signer->GetCertificates();
-    if (sk_X509_num(certs) < MIN_CERTS_NUM) {
-        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "cert num in signer less than 2,sign failed");
-        result = INVALIDPARAM_ERROR;
-        goto err;
-    }
     if (SortX509Stack(certs) < 0) {
         result = RET_FAILED;
         goto err;
@@ -335,7 +330,8 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
     return RET_OK;
 }
 
-static X509* FindSubCertThenEraseItFromSets(X509* cert, std::unordered_set<X509*>& x509Sets) {
+static X509* FindSubCertThenEraseItFromSets(X509* cert, std::unordered_set<X509*>& x509Sets)
+{
     X509* ret = NULL;
     for (X509* c : x509Sets) {
         X509_NAME* name1 = X509_get_subject_name(cert);
@@ -662,49 +658,51 @@ int PKCS7Data::Pkcs7DataFinalSignAttr(STACK_OF(PKCS7_SIGNER_INFO)* si_sk, BIO* b
         return 0;
     }
 
-    if (si_sk != NULL) {
-        for (int i = 0; i < sk_PKCS7_SIGNER_INFO_num(si_sk); i++) {
-            PKCS7_SIGNER_INFO* si = sk_PKCS7_SIGNER_INFO_value(si_sk, i);
+    if (si_sk == NULL) {
+        goto err;
+    }
+    for (int i = 0; i < sk_PKCS7_SIGNER_INFO_num(si_sk); i++) {
+        PKCS7_SIGNER_INFO* si = sk_PKCS7_SIGNER_INFO_value(si_sk, i);
 
-            int j = OBJ_obj2nid(si->digest_alg->algorithm);
+        int j = OBJ_obj2nid(si->digest_alg->algorithm);
 
-            btmp = bio;
+        btmp = bio;
 
-            btmp = PKCS7_find_digest(&mdc, btmp, j);
+        btmp = PKCS7_find_digest(&mdc, btmp, j);
 
-            /*
-            * We now have the EVP_MD_CTX, lets do the signing.
-            */
-            if (btmp == NULL || !EVP_MD_CTX_copy_ex(ctx_tmp, mdc)) {
+        /*
+        * We now have the EVP_MD_CTX, lets do the signing.
+        */
+        if (btmp == NULL || !EVP_MD_CTX_copy_ex(ctx_tmp, mdc)) {
+            goto err;
+        }
+
+        sk = si->auth_attr;
+
+        /*
+        * If there are attributes, we add the digest attribute and only
+        * sign the attributes
+        */
+        if (sk_X509_ATTRIBUTE_num(sk) > 0) {
+            if (!DoPkcs7SignedAttrib(si, ctx_tmp)) {
+                goto err;
+            }
+        }
+        else {
+            unsigned char* abuf = NULL;
+            unsigned int abuflen = 0;
+            abuflen = EVP_PKEY_size(si->pkey);
+            abuf = reinterpret_cast<unsigned char*>(OPENSSL_malloc(abuflen));
+            if (abuf == NULL) {
                 goto err;
             }
 
-            sk = si->auth_attr;
-
-            /*
-            * If there are attributes, we add the digest attribute and only
-            * sign the attributes
-            */
-            if (sk_X509_ATTRIBUTE_num(sk) > 0) {
-                if (!DoPkcs7SignedAttrib(si, ctx_tmp)) {
-                    goto err;
-                }
-            } else {
-                unsigned char* abuf = NULL;
-                unsigned int abuflen = 0;
-                abuflen = EVP_PKEY_size(si->pkey);
-                abuf = reinterpret_cast<unsigned char*>(OPENSSL_malloc(abuflen));
-                if (abuf == NULL) {
-                    goto err;
-                }
-
-                if (!EVP_SignFinal(ctx_tmp, abuf, &abuflen, si->pkey)) {
-                    OPENSSL_free(abuf);
-                    PKCS7err(PKCS7_F_PKCS7_DATAFINAL, ERR_R_EVP_LIB);
-                    goto err;
-                }
-                ASN1_STRING_set0(si->enc_digest, abuf, abuflen);
+            if (!EVP_SignFinal(ctx_tmp, abuf, &abuflen, si->pkey)) {
+                OPENSSL_free(abuf);
+                PKCS7err(PKCS7_F_PKCS7_DATAFINAL, ERR_R_EVP_LIB);
+                goto err;
             }
+            ASN1_STRING_set0(si->enc_digest, abuf, abuflen);
         }
     }
     ret = 1;

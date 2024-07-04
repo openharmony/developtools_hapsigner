@@ -221,7 +221,7 @@ void KeyStoreHelper::SetPwdLenKeyStatus(char* pass, char* keyPass)
 *                        the "STACK_OF(PKCS7)" structure to get the public key and the private key by alias.
 **/
 int KeyStoreHelper::FindKeyPair(PKCS12* p12, const std::string& alias, char* keyPass,
-                                     char* pass, EVP_PKEY** keyPiar, const std::string& keyStorePath)
+                                char* pass, EVP_PKEY** keyPiar, const std::string& keyStorePath)
 {
     EVP_PKEY* publickey = nullptr;
     STACK_OF(PKCS7)* safes = nullptr;
@@ -356,7 +356,7 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
 }
 
 int KeyStoreHelper::WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath,
-                          char* storePwd, std::string alias, char* keyPwd)
+                                char* storePwd, std::string alias, char* keyPwd)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -475,11 +475,9 @@ int KeyStoreHelper::Pkcs12PasswordParse(PKCS12* p12, const char* pass, const std
     if (pass == NULL || *pass == '\0') {
         if (!PKCS12_mac_present(p12) || PKCS12_verify_mac(p12, NULL, 0)) {
             pass = NULL;
-        }
-        else if (PKCS12_verify_mac(p12, "", 0)) {
+        } else if (PKCS12_verify_mac(p12, "", 0)) {
             pass = "";
-        }
-        else {
+        } else {
             goto err;
         }
     } else if (!PKCS12_verify_mac(p12, pass, -1)) {

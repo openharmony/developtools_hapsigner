@@ -72,8 +72,7 @@ bool CmsUtils::CheckOwnerID(const std::string& signature, const std::string& pro
             }
         }
         if (ownerID.empty()) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-			                    "app-identifier in profile is null, in signature exist");
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "app-identifier in profile is null,in signature exist");
             PKCS7_free(p7);
             return false;
         }

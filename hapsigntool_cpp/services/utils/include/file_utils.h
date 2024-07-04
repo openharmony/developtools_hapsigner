@@ -45,7 +45,7 @@ public:
     static bool IsValidFile(std::string file);
     /**
 * write content to output file
-* @param content data to write 
+* @param content data to write
 * @param output  path
 * @return 0:success
 */

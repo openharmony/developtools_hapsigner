@@ -217,8 +217,8 @@ bool SignProvider::Sign(Options* options)
     // Since CheckParmaAndInitConfig has already validated all parameters, it is possible to directly use at
     std::string inputFilePath = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
     auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(
-        inputFilePath, 
-        signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE),isPathOverlap);
+        inputFilePath,
+        signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE), isPathOverlap);
 
     if (!inputStream || !tmpOutput) {
         return PrintErrorLog("[signHap] Prepare IO Streams failed", IO_ERROR);
@@ -506,7 +506,7 @@ int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X50
     X509* cert = nullptr;
     *ret = sk_X509_new(nullptr);
     if (*ret == nullptr) {
-        PrintErrorNumberMsg("RET_FAILED", RET_FAILED ,"get CertList FromFile [sk_X509_new] failed");
+        PrintErrorNumberMsg("RET_FAILED", RET_FAILED , "get CertList FromFile [sk_X509_new] failed");
         return RET_FAILED;
     }
     BIO* certBio = BIO_new_file(certsFile.c_str(), "rb");

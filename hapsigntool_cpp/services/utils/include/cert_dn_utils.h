@@ -46,7 +46,7 @@ X509_NAME* BuildDN(std::string nameString, X509_REQ* req);
 *
 * @param nameString subject or issuer
 */
-int CheckDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs);
+int g_CheckDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs);
 } // namespace SignatureTools
 } // namespace OHOS
 #endif // SIGNATRUETOOLS_CERTUTILS_H

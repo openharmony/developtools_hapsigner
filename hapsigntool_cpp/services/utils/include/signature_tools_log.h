@@ -38,7 +38,7 @@ static constexpr OHOS::HiviewDFX::HiLogLabel SIGNATURE_MGR_LABEL = { LOG_CORE, L
 
 /*
 * Function: Print the error code and error message to the terminal.
-* Parametric Description:
+* Parametric Description: command, code, details
 * command: Error code variable name as a string.
 * code: Error code.
 * details: Error description information.
@@ -57,7 +57,7 @@ inline void PrintErrorNumberMsg(const std::string& command, const int code, cons
 
 /*
 * Function: Print a prompt to the terminal.
-* Parametric Description:
+* Parametric Description: message
 * message: Prompt Description Information.
 **/
 inline void PrintMsg(const std::string& message)
