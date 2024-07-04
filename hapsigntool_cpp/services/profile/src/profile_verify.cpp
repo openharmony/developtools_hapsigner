@@ -281,7 +281,7 @@ AppProvisionVerifyResult ParseProvision(const string& appProvision, ProfileInfo&
     if (result != PROVISION_OK) {
         return PROVISION_INVALID;
     }
-   
+    
     if (CheckProfileValidType(info) != PROVISION_OK) {
         return PROVISION_INVALID;
     }

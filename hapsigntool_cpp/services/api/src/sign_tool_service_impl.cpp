@@ -157,8 +157,7 @@ int SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
                 goto err;
             }
         }
-       
-    } 
+    }
     return RET_OK;
 err:
     PrintErrorNumberMsg("WRITE_FILE_ERROR", IO_ERROR,

@@ -47,6 +47,7 @@ private:
                                         std::map<std::string, std::string> signParams);
     static bool WriteSignedElf(std::string inputFile,
                                 std::list<SignBlockData>& signBlockList, std::string outputFile);
+    static bool WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::ofstream& fileOutputStream);
     static bool GenerateSignBlockHead(std::list<SignBlockData>& signDataList);
     static SignBlockData GenerateProfileSignByte(std::string profileFile, std::string profileSigned);
     static bool GenerateCodeSignByte(SignerConfig& signerConfig, std::map<std::string, std::string> signParams,

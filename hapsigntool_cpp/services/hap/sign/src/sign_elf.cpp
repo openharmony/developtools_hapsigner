@@ -152,19 +152,31 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
         fileInputStream.read(buffer, sizeof(buffer));
         fileOutputStream.write(buffer, fileInputStream.gcount());
     }
+    bool writeFlag = WriteSignBlockData(signBlockList, fileOutputStream);
+    if (!writeFlag) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] write signBlockList to file error");
+        fileInputStream.close();
+        fileOutputStream.close();
+        return false;
+    }
+    fileInputStream.close();
+    fileOutputStream.close();
+    return true;
+}
+
+bool SignElf::WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::ofstream& fileOutputStream)
+{
     for (auto signBlockData : signBlockList) {
         bool checkWriteByteToOutFileFlag = FileUtils::WriteByteToOutFile(signBlockData.GetBlockHead(),
-                                                                         fileOutputStream);
+            fileOutputStream);
         if (!checkWriteByteToOutFileFlag) {
             SIGNATURE_TOOLS_LOGE("[SignElf] write data to file error");
-            fileInputStream.close();
-            fileOutputStream.close();
             return false;
         }
     }
     for (auto signBlockData : signBlockList) {
         bool isSuccess;
-        checkFlag = signBlockData.GetByte();
+        bool checkFlag = signBlockData.GetByte();
         if (checkFlag) {
             isSuccess = FileUtils::WriteByteToOutFile(signBlockData.GetSignData(), fileOutputStream);
         } else {
@@ -175,18 +187,14 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
                 return false;
             }
             int result = FileUtils::WriteInputToOutPut(InputSignFileStream, fileOutputStream,
-                                                       (long)signBlockData.GetLen());
+                (long)signBlockData.GetLen());
             isSuccess = (result == 0 ? true : false);
         }
         if (!isSuccess) {
             PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "write data to file error");
-            fileInputStream.close();
-            fileOutputStream.close();
             return false;
         }
     }
-    fileInputStream.close();
-    fileOutputStream.close();
     return true;
 }
 

@@ -241,13 +241,23 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
     static Uscript::ThreadPool writePool(1);
     std::future<void> readTask;
     std::vector<std::future<void>> writeTasks;
-    auto writeFunc = [](std::ofstream& outStream, char* data, int dataSize) {
+    int result = RET_OK;
+    auto writeFunc = [&result](std::ofstream& outStream, char* data, int dataSize) {
         outStream.write(data, dataSize);
+        if(!outStream.good()) {
+            result = IO_ERROR;
+            delete[] data;
+            return;
+        }
         delete[] data;
         };
-    auto readFunc = [&output, &writeFunc, &writeTasks](std::ifstream& in, int dataSize) {
+    auto readFunc = [&output, &writeFunc, &writeTasks, &result](std::ifstream& in, int dataSize) {
         while (in) {
-            char* buf = new char[FILE_BUFFER_BLOCK];
+            char* buf = new (std::nothrow)char[FILE_BUFFER_BLOCK];
+            if(buf == NULL) {
+               result = RET_FAILED;
+               return;
+            }
             int min = std::min(dataSize, FILE_BUFFER_BLOCK);
             in.read(buf, min);
             dataSize -= in.gcount();
@@ -259,6 +269,9 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
         // After the file is written, datasize must be 0, so the if condition will never hold
         if (dataSize != 0) {
             SIGNATURE_TOOLS_LOGE("write error!");
+            result=IO_ERROR;
+            assert(0);
+            return;
         }
         };
     readTask = readPool.Enqueue(readFunc, std::ref(input), length);
@@ -266,7 +279,7 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
     for (std::future<void>& task : writeTasks) {
         task.wait();
     }
-    return RET_OK;
+    return result;
 }
 
 bool FileUtils::WriteInputToOutPut(const std::string& input, const std::string& output)

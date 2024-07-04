@@ -55,7 +55,6 @@ static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
         (*options)[Options::VALIDITY] = defualtValidity;
     }
     return true;
-
 }
 
 static bool UpdateParamForVariantInt(ParamsSharedPtr param)

@@ -15,9 +15,9 @@
 #include <cassert>
 #include <string>
 #include <unordered_map>
-#include <openssl/x509.h>  
-#include <openssl/x509v3.h> 
-#include <openssl/conf.h> 
+#include <openssl/x509.h>
+#include <openssl/x509v3.h>
+#include <openssl/conf.h>
 
 #include "cert_tools.h"
 #include "openssl/ec.h"
@@ -280,7 +280,7 @@ bool CertTools::SetKeyUsage(X509* cert, Options* options)
     std::string keyUsage = options->GetString(Options::KEY_USAGE);
     ASN1_INTEGER* keyUsageInt = ASN1_INTEGER_new();
     long key_usage = 0;
-    if (keyUsage.empty()){
+    if (keyUsage.empty()) {
         key_usage = X509v3_KU_KEY_CERT_SIGN | X509v3_KU_CRL_SIGN;
         if (keyUsageInt == NULL || !ASN1_INTEGER_set(keyUsageInt, key_usage)) {
             SIGNATURE_TOOLS_LOGE("failed to set asn1_integer");
@@ -292,10 +292,9 @@ bool CertTools::SetKeyUsage(X509* cert, Options* options)
             ASN1_INTEGER_free(keyUsageInt);
             return false;
         }
-
-    }else{
+    } else {
         std::vector<std::string> vecs = StringUtils::SplitString(keyUsage.c_str(), ',');
-        for (auto vec : vecs){
+        for (auto vec : vecs) {
             key_usage |= externDic[vec];
         }
         if (keyUsageInt == NULL || !ASN1_INTEGER_set(keyUsageInt, key_usage)) {
@@ -329,7 +328,7 @@ bool CertTools::SetkeyUsageExt(X509* cert, Options* options)
             X509_EXTENSION_free(ext);
             return false;
         }
-    }  
+    }
     X509_EXTENSION_free(ext);
     return true;
 }
@@ -695,7 +694,7 @@ bool CertTools::SignCert(X509* cert, EVP_PKEY* privateKey, std::string signAlg)
 {
     const EVP_MD* alg = nullptr;
     if (signAlg == SIGN_ALG_SHA256) {
-        /* in openssl this func return value is stack variable, so we not need to release it*/
+        /* in openssl this func return value is stack variable, so we not need to release it */
         alg = EVP_sha256();  
     }
     if (signAlg == SIGN_ALG_SHA384) {
