@@ -205,7 +205,7 @@ void NativeLibInfoSegment::GenerateList()
     // adjust file name and sign info offset base on segment start
     int fileNameOffsetBase = MAGIC_LENGTH_SECNUM_BYTES + signedFilePosList.size() * SIGNED_FILE_POS_SIZE;
     int signInfoOffsetBase = fileNameOffsetBase + this->fileNameListBlockSize;
-    for (SignedFilePos pos : this->signedFilePosList) {
+    for (SignedFilePos &pos : this->signedFilePosList) {
         pos.IncreaseFileNameOffset(fileNameOffsetBase);
         pos.IncreaseSignInfoOffset(signInfoOffsetBase + this->zeroPadding.size());
     }
