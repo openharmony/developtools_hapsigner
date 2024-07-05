@@ -64,7 +64,7 @@ public class SignerFactory {
             }
             LOGGER.warn("load remote signer failed, use default implementation");
             return new RemoteSigner(adapter.getOptions());
-        }5
+        }
         KeyPair keyPair = adapter.getAliasKey(false);
         adapter.releasePwd();
         return new LocalSigner(keyPair.getPrivate(), adapter.getSignCertChain());
