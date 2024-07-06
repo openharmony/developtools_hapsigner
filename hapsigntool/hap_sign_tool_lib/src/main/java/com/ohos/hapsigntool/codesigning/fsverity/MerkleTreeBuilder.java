@@ -96,8 +96,8 @@ public class MerkleTreeBuilder implements AutoCloseable {
                 int fullChunkSize = (int) getFullChunkSize(readSize, CHUNK_SIZE, CHUNK_SIZE);
 
                 ByteBuffer byteBuffer = ByteBuffer.allocate(fullChunkSize);
-                int offset = readIs(inputStream, byteBuffer, readSize);
-                if (offset != readSize) {
+                int readDataLen = readIs(inputStream, byteBuffer, readSize);
+                if (readDataLen != readSize) {
                     throw new IOException("IOException read buffer from input errorLHJ.");
                 }
                 byteBuffer.flip();
@@ -115,17 +115,17 @@ public class MerkleTreeBuilder implements AutoCloseable {
     private int readIs (InputStream inputStream, ByteBuffer byteBuffer, int readSize) throws IOException {
         byte[] buffer = new byte[CHUNK_SIZE];
         int num;
-        int offset = 0;
+        int readDataLen = 0;
         int len = CHUNK_SIZE;
         while ((num = inputStream.read(buffer, 0, len)) > 0) {
             byteBuffer.put(buffer, 0, num);
-            offset += num;
-            len = Math.min(CHUNK_SIZE, readSize - offset);
-            if (len <= 0 || offset == readSize) {
+            readDataLen += num;
+            len = Math.min(CHUNK_SIZE, readSize - readDataLen);
+            if (len <= 0 || readDataLen == readSize) {
                 break;
             }
         }
-        return offset;
+        return readDataLen;
     }
 
     /**
