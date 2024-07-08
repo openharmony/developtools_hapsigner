@@ -121,9 +121,9 @@ private:
 private:
     /* For ease of reading, the following interface will be as consistent as possible with the OpenSSL
     library interface style, and the return value is 1 success and 0 failure */
-    int Pkcs7SignerInfoSign(PKCS7_SIGNER_INFO* si);
+    int Pkcs7SignAttr(PKCS7_SIGNER_INFO* si);
 
-    int DoPkcs7SignedAttrib(PKCS7_SIGNER_INFO* si, EVP_MD_CTX* mctx);
+    int Pkcs7AddTimeDigestAndSignAttr(PKCS7_SIGNER_INFO* si, EVP_MD_CTX* mctx);
 
     int Pkcs7DataFinalSignAttr(STACK_OF(PKCS7_SIGNER_INFO)* si_sk, BIO* bio);
 

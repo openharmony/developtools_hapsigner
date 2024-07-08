@@ -408,7 +408,7 @@ bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
         }
     }
     if (!readKey) {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Param key-value must in pairs");
+        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "No matched value found in cmd");
         return false;
     }
     if (!UpdateParam(param)) {
