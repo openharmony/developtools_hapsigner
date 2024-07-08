@@ -69,17 +69,17 @@ STACK_OF(X509)* LocalSigner::GetCertificates() const
 }
 std::string LocalSigner::GetSignature(const std::string& data, const std::string& signAlg) const
 {
-    EVP_MD_CTX* md_ctx = NULL;
-    EVP_PKEY_CTX* pkey_ctx = NULL;
-    unsigned char* sigret = NULL;
-    const EVP_MD* md = NULL;
-    size_t siglen;
+    EVP_MD_CTX* hashCtx = NULL;
+    EVP_PKEY_CTX* privateKeyCtx = NULL;
+    unsigned char* sigResult = NULL;
+    const EVP_MD* hash = NULL;
+    size_t sigLen;
     std::string ret;
 
     if (signAlg == SIGN_ALG_SHA256) {
-        md = EVP_sha256();
+        hash = EVP_sha256();
     } else if (signAlg == SIGN_ALG_SHA384) {
-        md = EVP_sha384();
+        hash = EVP_sha384();
     } else {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             signAlg + "is invalid sigAlg, please use SHA256WithECDSA/SHA384WithECDSA, sign failed");
@@ -87,20 +87,20 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
     }
 
     // calculate signature value
-    bool result = !(md_ctx = EVP_MD_CTX_new())                                          ||
-                  (EVP_DigestSignInit(md_ctx, &pkey_ctx, md, NULL, this->keyPair) <= 0) ||
-                  (EVP_DigestSignUpdate(md_ctx, data.data(), data.size()) <= 0)         ||
-                  (EVP_DigestSignFinal(md_ctx, NULL, &siglen) <= 0)                     ||
-                  !(sigret = reinterpret_cast<unsigned char*>(OPENSSL_malloc(siglen)))  ||
-                  (EVP_DigestSignFinal(md_ctx, sigret, &siglen) <= 0);
+    bool result = !(hashCtx = EVP_MD_CTX_new())                                          ||
+                  (EVP_DigestSignInit(hashCtx, &privateKeyCtx, hash, NULL, this->keyPair) <= 0) ||
+                  (EVP_DigestSignUpdate(hashCtx, data.data(), data.size()) <= 0)         ||
+                  (EVP_DigestSignFinal(hashCtx, NULL, &sigLen) <= 0)                     ||
+                  !(sigResult = reinterpret_cast<unsigned char*>(OPENSSL_malloc(sigLen)))  ||
+                  (EVP_DigestSignFinal(hashCtx, sigResult, &sigLen) <= 0);
     if (result) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "compute signature value failed");
         goto err;
     }
-    ret.assign(reinterpret_cast<const char*>(sigret), siglen);
+    ret.assign(reinterpret_cast<const char*>(sigResult), sigLen);
 err:
-    OPENSSL_free(sigret);
-    EVP_MD_CTX_free(md_ctx);
+    OPENSSL_free(sigResult);
+    EVP_MD_CTX_free(hashCtx);
     return ret;
 }
 } // namespace SignatureTools

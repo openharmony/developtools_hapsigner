@@ -18,6 +18,10 @@
 #include <vector>
 #include <regex>
 #include <cassert>
+#include <sys/statfs.h>
+#include <cstdlib>
+#include <iostream>  
+
 #include "thread_pool.h"
 #include "signature_tools_log.h"
 
@@ -110,7 +114,7 @@ public:
 
     static int WriteInputToOutPut(std::ifstream& input, std::ofstream& output, size_t length);
     static bool WriteInputToOutPut(const std::string& input, const std::string& output);
-
+    static bool IsSpaceEnough(const std::string &filePath, const int64_t requiredSpace);
     /**
 * Write byte array data to output file.
 *

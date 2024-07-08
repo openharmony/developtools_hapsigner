@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "sign_elf.h"
 #include "string_utils.h"
 #include "code_signing.h"
@@ -59,15 +58,22 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
     ;
 }
 
-bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
+bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& tmpFile)
 {
-    auto now = std::chrono::system_clock::now();
-    auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
-    std::string tmp = "tmpFile" + std::to_string(timestamp);
-    std::ofstream output(tmp);
+    auto now = std::chrono::high_resolution_clock::now();
+    auto duration = now.time_since_epoch();
+    auto timestamp = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    tmpFile = "tmpFile" + std::to_string(timestamp);
+    std::ofstream output(tmpFile);
+    bool checkSpaceFlag = FileUtils::IsSpaceEnough(std::string("./"), FileUtils::GetFileLen(inputFile));
+    if (!checkSpaceFlag) {
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] The available space of the current directory: "
+                            + std::string(std::getenv("PWD")) + " is insufficient. Please check");
+        return false;
+    }
     bool checkoutputFlag = output.is_open();
     if (!checkoutputFlag) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] open file: " + tmp + "failed");
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] open file: " + tmpFile + "failed");
         return false;
     }
     std::ifstream input(inputFile);
@@ -82,7 +88,7 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
     while ((bytesRead = input.read(buffer, sizeof(buffer)).gcount()) > 0) {
         output.write(buffer, bytesRead);
         if (!output) {
-            PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] write data to " + tmp + "failed");
+            PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] write data to " + tmpFile + "failed");
             return false;
         }
         output_length += bytesRead;
@@ -90,7 +96,6 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& ret)
     int64_t addLength = PAGE_SIZE - (output_length % PAGE_SIZE);
     std::vector<char> bytes(addLength, 0);
     output.write(bytes.data(), addLength);
-    ret = tmp;
     return true;
 }
 

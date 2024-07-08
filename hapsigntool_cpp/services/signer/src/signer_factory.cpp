@@ -30,10 +30,12 @@ std::shared_ptr<Signer> SignerFactory::GetSigner(LocalizationAdapter& adapter)co
         return NULL;
     }
     adapter.ResetPwd();
-    std::shared_ptr<Signer> signer = std::make_shared<LocalSigner>(keyPair, adapter.GetSignCertChain());
+    STACK_OF(X509)*certs = adapter.GetSignCertChain();
+    std::shared_ptr<Signer> signer = std::make_shared<LocalSigner>(keyPair, certs);
     if (signer == NULL) {
         SIGNATURE_TOOLS_LOGE("signer is NULL, create LocalSigner failed");
         EVP_PKEY_free(keyPair);
+        sk_X509_pop_free(certs, X509_free);
         return NULL;
     }
     return signer;

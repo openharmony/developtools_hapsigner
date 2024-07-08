@@ -40,6 +40,19 @@ bool FileUtils::IsEmpty(std::string cs)
     return false;
 }
 
+bool FileUtils::IsSpaceEnough(const std::string &filePath, const int64_t requiredSpace)
+{
+    uint64_t freeSpace = 0;
+    struct statfs diskStatfs;
+    int ret = statfs(filePath.c_str(), &diskStatfs);
+    if (ret >= 0) {
+        freeSpace = (uint64_t)diskStatfs.f_bsize * (uint64_t)diskStatfs.f_bavail;
+    } else {
+        SIGNATURE_TOOLS_LOGE("statfs fail, error code = %{public}d", ret);
+    }
+    return freeSpace >= static_cast<uint64_t>(requiredSpace);
+}
+
 std::string FileUtils::GetSuffix(std::string filePath)
 {
     if (filePath.empty()) {
