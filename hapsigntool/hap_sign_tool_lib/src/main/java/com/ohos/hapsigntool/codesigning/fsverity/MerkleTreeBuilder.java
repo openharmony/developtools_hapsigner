@@ -112,7 +112,7 @@ public class MerkleTreeBuilder implements AutoCloseable {
         }
     }
 
-    private int readIs (InputStream inputStream, ByteBuffer byteBuffer, int readSize) throws IOException {
+    private int readIs(InputStream inputStream, ByteBuffer byteBuffer, int readSize) throws IOException {
         byte[] buffer = new byte[CHUNK_SIZE];
         int num;
         int readDataLen = 0;
