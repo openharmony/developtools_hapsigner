@@ -82,11 +82,8 @@ public class SignerFactory {
             File classLocation = getClassLocation();
             plugin = new File(classLocation, signerPlugin);
         }
-
-        try {
-            LOGGER.info("try to find plugin by path {}", plugin.getCanonicalPath());
-        } catch (IOException e) {
-            LOGGER.warn("can not find signerPlugin by param signerPlugin = {}", signerPlugin);
+        if (!plugin.exists() || !plugin.isFile()) {
+            LOGGER.warn("can not find signerPlugin or not a file by param signerPlugin = {}", signerPlugin);
             return Optional.empty();
         }
         Optional<URL> url = fileToUrl(plugin);
