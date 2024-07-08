@@ -78,7 +78,7 @@ void KeyStoreHelper::KeyPairFree(EC_GROUP* group, EC_KEY* pkey, const std::strin
 }
 
 void KeyStoreHelper::KeyPairFree(BIGNUM* bnSerial, X509_NAME* issuerName, X509_NAME* subjectName,
-                                ASN1_INTEGER* ai, const std::string& Message)
+                                 ASN1_INTEGER* ai, const std::string& Message)
 {
     if (!Message.empty()) {
         SIGNATURE_TOOLS_LOGE("%{public}s", Message.c_str());
@@ -155,7 +155,7 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     ASN1_INTEGER* ai = BN_to_ASN1_INTEGER(bnSerial, NULL);
     if (ai == NULL || issuerName == NULL) {
         this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                        "Failed to initialize the x509 structure.");
+                          "Failed to initialize the x509 structure.");
         return false;
     }
 
@@ -166,7 +166,7 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
         || !X509_NAME_add_entry_by_txt(issuerName, "O", MBSTRING_ASC, (unsigned char*)"My Company", -1, -1, 0)
         || !X509_NAME_add_entry_by_txt(issuerName, "CN", MBSTRING_ASC, (unsigned char*)"My Issuer", -1, -1, 0)) {
         this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                        "Failed to initialize the x509 structure.X509_NAME type");
+                          "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
@@ -174,21 +174,21 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     subjectName = X509_NAME_dup(issuerName);
     if (subjectName == NULL) {
         this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                        "Failed to initialize the x509 structure.X509_NAME type");
+                          "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
     X509_set_subject_name(&cert, subjectName);
     if (!X509_set_pubkey(&cert, &evpPkey)) {
         this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                        "Failed to initialize the x509 structure.X509_NAME type");
+                          "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
     X509_set_version(&cert, DEFAULT_CERT_VERSION);
     if (!X509_sign(&cert, &evpPkey, md)) {
         this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                        "Failed to initialize the x509 structure.X509_NAME type");
+                          "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
@@ -356,7 +356,7 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
 }
 
 int KeyStoreHelper::WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath,
-                                char* keyStorePwd, std::string alias, char* keyPwd)
+                                  char* keyStorePwd, std::string alias, char* keyPwd)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -400,7 +400,7 @@ int KeyStoreHelper::WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath,
 *                         and a PKCS7 structure corresponds to a key pair.
 **/
 int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath, char* keyStorePwd,
-                                char* keyPwd, const std::string& charsAlias, EVP_PKEY* evpPkey, X509* cert)
+                                 char* keyPwd, const std::string& charsAlias, EVP_PKEY* evpPkey, X509* cert)
 {
     STACK_OF(PKCS7)* safes = nullptr;
     PKCS12* acceptP12 = nullptr;
@@ -435,7 +435,7 @@ int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath
 }
 
 int KeyStoreHelper::ReadKeyStore(std::string& keyStorePath, char* keyStorePwd, const std::string& alias,
-                                char* keyPwd, EVP_PKEY** evpPkey)
+                                 char* keyPwd, EVP_PKEY** evpPkey)
 {
     X509* cert = nullptr;
     PKCS12* p12 = nullptr;
@@ -546,8 +546,8 @@ EVP_PKEY* KeyStoreHelper::GenerateKeyPair(const std::string& algorithm, int keyS
 }
 
 PKCS12* KeyStoreHelper::CreatePKCS12(const char* keyStorePwd, const char* keyPwd, const char* name, EVP_PKEY* pkey,
-                                    X509* cert, int keyNid, int certNid, int iter,
-                                    int macStatus, int keyType, STACK_OF(PKCS7)** safes)
+                                     X509* cert, int keyNid, int certNid, int iter,
+                                     int macStatus, int keyType, STACK_OF(PKCS7)** safes)
 {
     PKCS12* p12 = NULL;
     STACK_OF(PKCS12_SAFEBAG)* bags = NULL;
@@ -609,9 +609,9 @@ void KeyStoreHelper::SetNidMac(int& nidKey, int& iter, int& macStatus)
 }
 
 int KeyStoreHelper::SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
-                                unsigned char* keyId, unsigned int keyIdLen,
-                                const char* name, STACK_OF(PKCS7)** safes,
-                                int certNid, int iter, const char* keyStorePwd)
+                                  unsigned char* keyId, unsigned int keyIdLen,
+                                  const char* name, STACK_OF(PKCS7)** safes,
+                                  int certNid, int iter, const char* keyStorePwd)
 {
     if (cert) {
         bag = PKCS12_add_cert(&bags, cert);
@@ -638,8 +638,8 @@ err:
 }
 
 int KeyStoreHelper::SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
-                                const char* name, STACK_OF(PKCS7)** safes, int iter, const char* keyPwd,
-                                int keyType, int keyNid, unsigned char* keyId, unsigned int keyIdLen)
+                                  const char* name, STACK_OF(PKCS7)** safes, int iter, const char* keyPwd,
+                                  int keyType, int keyNid, unsigned char* keyId, unsigned int keyIdLen)
 {
     if (pkey) {
         bag = PKCS12_add_key(&bags, pkey, keyType, iter, keyNid, keyPwd);
@@ -751,7 +751,7 @@ bool KeyStoreHelper::SetX509Alias(int len, X509* x509, unsigned char* data)
 }
 
 int KeyStoreHelper::ParsePkcs12Safebags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass,
-                            int passlen, STACK_OF(X509)* ocerts)
+                                        int passlen, STACK_OF(X509)* ocerts)
 {
     int i;
     for (i = 0; i < sk_PKCS12_SAFEBAG_num(bags); i++) {
