@@ -183,7 +183,7 @@ int PKCS7Data::GetContent(std::string& originalRawData) const
         BIO_free_all(oriBio);
         return INVALIDPARAM_ERROR;
     }
-    char buf[BUFFER_SIZE]{ 0 };
+    char buf[BUFFER_SIZE]{0};
     size_t readBytes = 0;
     while (BIO_read_ex(oriBio, buf, sizeof(buf), &readBytes) == 1) {
         originalRawData.append(buf, readBytes);
@@ -277,10 +277,10 @@ std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
         return "";
     }
     /* Print local time */
-    char buf[128] = { 0 };
+    char buf[128] = {0};
     if (sprintf_s(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
-        local_time->tm_year + YEAR1900, local_time->tm_mon + 1, local_time->tm_mday,
-        local_time->tm_hour, local_time->tm_min, local_time->tm_sec) == -1) {
+                  local_time->tm_year + YEAR1900, local_time->tm_mon + 1, local_time->tm_mday,
+                  local_time->tm_hour, local_time->tm_min, local_time->tm_sec) == -1) {
         return "";
     }
     return std::string(buf, strlen(buf));
@@ -524,7 +524,7 @@ int PKCS7Data::Pkcs7SignAttr(PKCS7_SIGNER_INFO* info)
     int sigLen = 0;
 
     attrLen = ASN1_item_i2d((ASN1_VALUE*)info->auth_attr, &attrBuf,
-                         ASN1_ITEM_rptr(PKCS7_ATTR_SIGN));
+                            ASN1_ITEM_rptr(PKCS7_ATTR_SIGN));
     if (!attrBuf) {
         OPENSSL_free(attrBuf);
         return 0;
@@ -586,11 +586,7 @@ int PKCS7Data::Pkcs7AddTimeDigestAndSignAttr(PKCS7_SIGNER_INFO* info, EVP_MD_CTX
 
 static BIO* PKCS7SearchDigest(EVP_MD_CTX** pHash, BIO* io, int numberID)
 {
-    while (true) {
-        io = BIO_find_type(io, BIO_TYPE_MD);
-        if (io == NULL) {
-            return NULL;
-        }
+    while ((io = BIO_find_type(io, BIO_TYPE_MD))) {
         BIO_get_md_ctx(io, pHash);
         if (*pHash == NULL) {
             return NULL;
@@ -604,7 +600,7 @@ static BIO* PKCS7SearchDigest(EVP_MD_CTX** pHash, BIO* io, int numberID)
 }
 
 static int PKCS7DataFinalCheck(PKCS7* pkcs7, BIO* bio,
-                                  STACK_OF(PKCS7_SIGNER_INFO)** psk, ASN1_OCTET_STRING** pos)
+                               STACK_OF(PKCS7_SIGNER_INFO)** psk, ASN1_OCTET_STRING** pos)
 {
     int id = 0;
 
@@ -661,8 +657,7 @@ int PKCS7Data::Pkcs7DataFinalSignAttr(STACK_OF(PKCS7_SIGNER_INFO)* infoStack, BI
             if (!Pkcs7AddTimeDigestAndSignAttr(info, ctxTmp)) {
                 goto err;
             }
-        }
-        else {
+        } else {
             goto err;
         }
     }
@@ -747,7 +742,7 @@ static int Pkcs7SetSignerInfo(PKCS7_SIGNER_INFO* info, X509* cert, const EVP_MD*
 
     ASN1_INTEGER_free(info->issuer_and_serial->serial);
     if (!(info->issuer_and_serial->serial =
-        ASN1_INTEGER_dup(X509_get_serialNumber(cert)))) {
+          ASN1_INTEGER_dup(X509_get_serialNumber(cert)))) {
         return 0;
     }
 
