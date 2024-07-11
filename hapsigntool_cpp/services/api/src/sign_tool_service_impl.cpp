@@ -332,7 +332,7 @@ bool SignToolServiceImpl::OutputString(std::string content, std::string file)
 bool SignToolServiceImpl::X509CertVerify(X509* cert, EVP_PKEY* privateKey)
 {
     if (!X509_verify(cert, privateKey)) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "private key verify  cert failed!");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "private key verify cert failed!");
         return false;
     }
     return true;
@@ -422,7 +422,7 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
                                                  PROFILE_SIGNING_CAPABILITY,
                                                  sizeof(PROFILE_SIGNING_CAPABILITY)); // get profile x509 cert
     if (!x509Certificate) {
-        PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate app cert failed");
+        PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate profile cert failed");
         goto err;
     }
     if (!X509CertVerify(x509Certificate, issueKeyPair)) {
@@ -448,31 +448,30 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
     X509* rootCaCert = nullptr;
     std::vector<X509*> certificates;
     if (adapter.IsOutFormChain()) {
-        certificates.emplace_back(cert); // add root cert
-        // add sub and ca cert
+        certificates.emplace_back(cert); // add entity cert
         successflag = (!(subCaCert = adapter.GetSubCaCertFile()) ||
                        !(rootCaCert = adapter.GetCaCertFile()));
         if (successflag) {
             return false;
         }
-        certificates.emplace_back(subCaCert);
-        certificates.emplace_back(rootCaCert);
+        certificates.emplace_back(subCaCert); // add sub ca cert
+        certificates.emplace_back(rootCaCert); // add root ca cert 
 
-        if (outFile.empty()) { // print certchain to cmd
-            successflag = PrintX509CertChainFromMemory(certificates);
+        if (outFile.empty()) {
+            successflag = PrintX509CertChainFromMemory(certificates); // print certchain to cmd
             adapter.AppAndProfileAssetsRealse({}, {}, {certificates[1], certificates[2]});
             return successflag;
         }
-        successflag = OutPutCertChain(certificates, adapter.GetOutFile());
+        successflag = OutPutCertChain(certificates, adapter.GetOutFile()); // out put certchain to file
         adapter.AppAndProfileAssetsRealse({}, {}, {certificates[1], certificates[2]});
         return successflag;
     }
 
-    if (outFile.empty()) { // print cert to cmd
-        successflag = PrintX509CertFromMemory(cert);
+    if (outFile.empty()) {
+        successflag = PrintX509CertFromMemory(cert); // print cert to cmd
         return successflag;
     }
-    successflag = OutPutCert(cert, adapter.GetOutFile());
+    successflag = OutPutCert(cert, adapter.GetOutFile()); // out put cert to file
     return successflag;
 }
 
@@ -558,7 +557,7 @@ bool SignToolServiceImpl::OutPutCertChain(std::vector<X509*>& certs, const std::
     SIGNATURE_TOOLS_LOGD("outPutPath = %{public}s", outPutPath.c_str());
     BIO* bio = nullptr;
     if (!(bio = BIO_new_file(outPutPath.c_str(), "wb"))) {
-        SIGNATURE_TOOLS_LOGE("failed to open file");
+        SIGNATURE_TOOLS_LOGE("failed to open file %{public}s", outPutPath.c_str());
         goto err;
     }
     for (auto cert : certs) {
@@ -577,10 +576,9 @@ err:
 
 bool SignToolServiceImpl::OutPutCert(X509* cert, const std::string& outPutPath)
 {
-    SIGNATURE_TOOLS_LOGE("outPutPath = %{public}s", outPutPath.c_str());
     BIO* bio = BIO_new_file(outPutPath.c_str(), "wb");
     if (!bio) {
-        SIGNATURE_TOOLS_LOGE("failed to open file");
+        SIGNATURE_TOOLS_LOGE("failed to open file: %{public}s", outPutPath.c_str());
         goto err;
     }
     if (!PEM_write_bio_X509(bio, cert)) {
@@ -653,7 +651,7 @@ bool SignToolServiceImpl::PrintX509CertChainFromMemory(std::vector<X509*> certs)
             PrintMsg(std::string(bptr->data, bptr->length));
         } else {
             VerifyHapOpensslUtils::GetOpensslErrorMessage();
-            PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "print x509 cert falied");
+            PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "print x509 cert chain falied");
             BIO_free(bio);
             return false;
         }

@@ -34,8 +34,7 @@ std::vector<std::string> ParamsRunTool::InformList = {
 };
 
 static std::unordered_map <std::string,
-                           std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD
-{
+                           std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD {
     {SIGN_APP, ParamsRunTool::RunSignApp},
     {SIGN_PROFILE, ParamsRunTool::RunSignProfile},
     {VERIFY_APP, ParamsRunTool::RunVerifyApp},
@@ -43,8 +42,7 @@ static std::unordered_map <std::string,
 };
 
 static std::unordered_map <std::string,
-                           std::function<bool(Options* params, SignToolServiceImpl& api)>> GENERATOR_RUN_METHOD
-{
+                           std::function<bool(Options* params, SignToolServiceImpl& api)>> GENERATOR_RUN_METHOD {
     {GENERATE_KEYPAIR, ParamsRunTool::RunKeypair},
     {GENERATE_CSR, ParamsRunTool::RunCsr},
     {GENERATE_CA, ParamsRunTool::RunCa},
