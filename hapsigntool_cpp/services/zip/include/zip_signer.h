@@ -37,12 +37,13 @@ public:
 
     ZipSigner()
     {
+        m_endOfCentralDirectory = nullptr;
     }
 
     ~ZipSigner()
     {
-        delete endOfCentralDirectory;
-        for (ZipEntry* zipEntry : zipEntries) {
+        delete m_endOfCentralDirectory;
+        for (ZipEntry* zipEntry : m_zipEntries) {
             delete zipEntry;
         }
     }
@@ -90,18 +91,6 @@ public:
     void SetEndOfCentralDirectory(EndOfCentralDirectory* endOfCentralDirectory);
 
 private:
-    std::vector<ZipEntry*> zipEntries;
-
-    int64_t signingOffset = 0;
-
-    std::string signingBlock;
-
-    int64_t cDOffset = 0;
-
-    int64_t eOCDOffset = 0;
-
-    EndOfCentralDirectory* endOfCentralDirectory;
-
     EndOfCentralDirectory* GetZipEndOfCentralDirectory(std::ifstream& input);
 
     bool GetZipCentralDirectory(std::ifstream& input);
@@ -114,6 +103,18 @@ private:
     void Sort();
 
     void ResetOffset();
+
+    std::vector<ZipEntry*> m_zipEntries;
+
+    int64_t m_signingOffset = 0;
+
+    std::string m_signingBlock;
+
+    int64_t m_cDOffset = 0;
+
+    int64_t m_eOCDOffset = 0;
+
+    EndOfCentralDirectory* m_endOfCentralDirectory;
 };
 } // namespace SignatureTools
 } // namespace OHOS

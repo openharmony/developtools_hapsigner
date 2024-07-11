@@ -18,6 +18,7 @@
 #include <openssl/bio.h>
 #include <openssl/x509.h>
 #include <cstdio>
+#include <cinttypes>
 #include <filesystem>
 
 #include "nlohmann/json.hpp"
@@ -178,7 +179,7 @@ bool SignProvider::InitDataSourceContents(RandomAccessFile& outputHap, DataSourc
         return false;
     }
 
-    SIGNATURE_TOOLS_LOGI("Central Directory Offset is %{public}lld.", dataSrcContents.cDOffset);
+    SIGNATURE_TOOLS_LOGI("Central Directory Offset is %{public}" PRId64, dataSrcContents.cDOffset);
 
     // get beforeCentralDir
     dataSrcContents.beforeCentralDir = outputHapIn->Slice(0, dataSrcContents.cDOffset);
@@ -204,7 +205,6 @@ bool SignProvider::InitDataSourceContents(RandomAccessFile& outputHap, DataSourc
     }
     return true;
 }
-
 
 bool SignProvider::Sign(Options* options)
 {
@@ -248,8 +248,8 @@ bool SignProvider::Sign(Options* options)
         return PrintErrorLog("[SignHap] SignHap Sign failed.", SIGN_ERROR, tmpOutputFilePath);
     }
 
-    long long newCentralDirectoryOffset = dataSrcContents.cDOffset + signingBlock.GetCapacity();
-    SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %{public}lld.", newCentralDirectoryOffset);
+    int64_t newCentralDirectoryOffset = dataSrcContents.cDOffset + signingBlock.GetCapacity();
+    SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %{public}" PRId64, newCentralDirectoryOffset);
     dataSrcContents.eocdPair.first.SetPosition(0);
     if (!ZipUtils::SetCentralDirectoryOffset(dataSrcContents.eocdPair.first, newCentralDirectoryOffset)) {
         return PrintErrorLog("[SignHap] Set Central Directory Offset.", ZIP_ERROR, tmpOutputFilePath);
@@ -341,7 +341,7 @@ bool SignProvider::SignBin(Options* options)
 }
 
 bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
-                                       const std::string& suffix, long long centralDirectoryOffset, ZipSigner& zip)
+                                       const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip)
 {
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CodeSigning::ENABLE_SIGN_CODE_VALUE) {
         SIGNATURE_TOOLS_LOGI("start code signing.");
@@ -351,7 +351,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
             return true;
         }
         // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
-        long long codeSignOffset = centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2 + 1));
+        int64_t codeSignOffset = centralDirectoryOffset + ((4 + 4 + 4) * (optionalBlocks.size() + 2 + 1));
         // create CodeSigning Object
         CodeSigning codeSigning(signerConfig);
         std::vector<int8_t> codeSignArray;
@@ -376,11 +376,11 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
 }
 
 bool SignProvider::CreateSignerConfigs(STACK_OF(X509)* certificates, const std::optional<X509_CRL*>& crl,
-                                       Options* options, SignerConfig& in_out)
+                                       Options* options, SignerConfig& inOut)
 {
-    in_out.FillParameters(signParams);
-    in_out.SetCertificates(certificates);
-    in_out.SetOptions(options);
+    inOut.FillParameters(signParams);
+    inOut.SetCertificates(certificates);
+    inOut.SetOptions(options);
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     SignatureAlgorithmHelper alg;
     // Since CheckParmaAndInitConfig has already validated all parameters, it is possible to directly use at
@@ -390,7 +390,7 @@ bool SignProvider::CreateSignerConfigs(STACK_OF(X509)* certificates, const std::
         return false;
     }
     signatureAlgorithms.push_back(alg);
-    in_out.SetSignatureAlgorithms(signatureAlgorithms);
+    inOut.SetSignatureAlgorithms(signatureAlgorithms);
     if (crl.has_value()) {
         SIGNATURE_TOOLS_LOGE("not support crl");
         return false;
@@ -554,7 +554,6 @@ bool SignProvider::CopyFileAndAlignment(std::ifstream& input, std::ofstream& tmp
     return true;
 }
 
-// YJR
 bool SignProvider::CheckParams(Options* options)
 {
     std::vector<std::string> paramFileds;
@@ -738,7 +737,7 @@ std::string SignProvider::GetCertificateCN(X509* cert)const
 std::string SignProvider::FindProfileFromOptionalBlocks()const
 {
     std::string profile;
-    for (const OptionalBlock& optionalBlock : this->optionalBlocks) {
+    for (const OptionalBlock& optionalBlock : optionalBlocks) {
         if (optionalBlock.optionalType == HapUtils::HAP_PROFILE_BLOCK_ID) {
             profile = std::string(optionalBlock.optionalBlockValue.GetBufferPtr(),
                                   optionalBlock.optionalBlockValue.GetCapacity());
@@ -751,8 +750,8 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
 {
     std::string profile = FindProfileFromOptionalBlocks();
     std::map<std::string, std::string>::const_iterator ite =
-        this->signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
-    if (ite == this->signParams.end()) {
+        signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
+    if (ite == signParams.end()) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                             "find PARAM_BASIC_PROFILE_SIGNED failed");
         return INVALIDPARAM_ERROR;
@@ -768,17 +767,17 @@ int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
             SIGNATURE_TOOLS_LOGE("Verify profile pkcs7 failed! Profile is invalid.");
             return VERIFY_ERROR;
         }
-        this->profileContent.clear();
-        if (p7Data.GetContent(this->profileContent) < 0) {
+        profileContent.clear();
+        if (p7Data.GetContent(profileContent) < 0) {
             SIGNATURE_TOOLS_LOGE("get content data failed");
             return  INVALIDPARAM_ERROR;
         }
     } else {
-        this->profileContent = profile;
+        profileContent = profile;
     }
 
     ProfileInfo info;
-    if (ParseProvision(this->profileContent, info) != PROVISION_OK) {
+    if (ParseProvision(profileContent, info) != PROVISION_OK) {
         SIGNATURE_TOOLS_LOGE("parse provision error");
         return PARSE_ERROR;
     }

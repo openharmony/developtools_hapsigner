@@ -34,34 +34,35 @@ class MerkleTreeBuilder {
 public:
     MerkleTreeBuilder();
     MerkleTree* GenerateMerkleTree(std::istream& inputStream, long size,
-        const FsVerityHashAlgorithm& fsVerityHashAlgorithm);
+                                   const FsVerityHashAlgorithm& fsVerityHashAlgorithm);
 
 private:
-    void SetAlgorithm(const std::string& algorithm);
-    void TransInputStreamToHashData(std::istream& inputStream, long size,
-        ByteBuffer* outputBuffer, int bufStartIdx);
-    std::vector<std::vector<int8_t>> GetDataHashes(std::istream& inputStream, long size);
-    static ByteBuffer* Slice(ByteBuffer* buffer, int begin, int end);
-    static std::vector<int64_t> GetOffsetArrays(long dataSize, int digestSize);
-    static std::vector<long> GetLevelSize(long dataSize, int digestSize);
-    void RunHashTask(std::vector<std::vector<int8_t>>& hashes, ByteBuffer* buffer,
-        int readChunkIndex, int bufStartIdx);
-    void TransInputDataToHashData(ByteBuffer* inputBuffer, ByteBuffer* outputBuffer,
-        int64_t bufStartIdx, int64_t outputStartIdx);
-    void GenerateHashDataByInputData(std::istream& inputStream, long size, ByteBuffer* outputBuffer,
-        std::vector<int64_t>& offsetArrays, int digestSize);
-    void GenerateHashDataByHashData(ByteBuffer* buffer, std::vector<int64_t>& offsetArrays, int digestSize);
-    MerkleTree* GetMerkleTree(ByteBuffer* dataBuffer, long inputDataSize,
-        FsVerityHashAlgorithm fsVerityHashAlgorithm);
-    void DataRoundupChunkSize(ByteBuffer* data, long originalDataSize, int digestSize);
-    static long GetChunkCount(long dataSize, long divisor);
-    static long GetFullChunkSize(long dataSize, long divisor, long multiplier);
     static const int FSVERITY_HASH_PAGE_SIZE;
-    static const long long INPUTSTREAM_MAX_SIZE;
+    static const int64_t INPUTSTREAM_MAX_SIZE;
     static const int CHUNK_SIZE;
     static const long MAX_READ_SIZE;
     static const int MAX_PROCESSORS;
     static const int BLOCKINGQUEUE;
+    static ByteBuffer* Slice(ByteBuffer* buffer, int begin, int end);
+    static std::vector<int64_t> GetOffsetArrays(long dataSize, int digestSize);
+    static std::vector<long> GetLevelSize(long dataSize, int digestSize);
+    static long GetChunkCount(long dataSize, long divisor);
+    static long GetFullChunkSize(long dataSize, long divisor, long multiplier);
+    void SetAlgorithm(const std::string& algorithm);
+    void TransInputStreamToHashData(std::istream& inputStream, long size,
+                                    ByteBuffer* outputBuffer, int bufStartIdx);
+    std::vector<std::vector<int8_t>> GetDataHashes(std::istream& inputStream, long size);
+
+    void RunHashTask(std::vector<std::vector<int8_t>>& hashes, ByteBuffer* buffer,
+                     int readChunkIndex, int bufStartIdx);
+    void TransInputDataToHashData(ByteBuffer* inputBuffer, ByteBuffer* outputBuffer,
+                                  int64_t bufStartIdx, int64_t outputStartIdx);
+    void GenerateHashDataByInputData(std::istream& inputStream, long size, ByteBuffer* outputBuffer,
+                                     std::vector<int64_t>& offsetArrays, int digestSize);
+    void GenerateHashDataByHashData(ByteBuffer* buffer, std::vector<int64_t>& offsetArrays, int digestSize);
+    MerkleTree* GetMerkleTree(ByteBuffer* dataBuffer, long inputDataSize,
+                              FsVerityHashAlgorithm fsVerityHashAlgorithm);
+    void DataRoundupChunkSize(ByteBuffer* data, long originalDataSize, int digestSize);
     bool CheckCalculateHashResult;
     const int POOL_SIZE = std::min(MAX_PROCESSORS, static_cast<int>(std::thread::hardware_concurrency()));
     std::string mAlgorithm = "SHA-256";

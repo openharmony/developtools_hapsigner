@@ -36,33 +36,42 @@ public:
     ~LocalizationAdapter() = default;
 
     int IsAliasExist(const std::string& alias);
-    EVP_PKEY* GetAliasKey(bool autoCreate);
-    void ResetPwd();
-    void SetIssuerKeyStoreFile(bool issuerKeyStoreFile);
     int GetKeyPair(bool autoCreate, EVP_PKEY** keyPair);
-    STACK_OF(X509*) GetSignCertChain();
-    EVP_PKEY* GetIssureKeyByAlias();
-    bool IsOutFormChain();
-    X509* GetSubCaCertFile();
     int IssuerKeyStoreFile(EVP_PKEY** keyPair, bool autoCreate);
     int KeyStoreFile(EVP_PKEY** keyPair, bool autoCreate);
-    const std::string GetSignAlg() const;
-    X509* GetCaCertFile();
-    std::vector<X509*> GetCertsFromFile(std::string& certPath, const std::string& logTitle);
-    const std::string GetOutFile();
-    const std::string GetInFile();
-    Options* options;
-    std::unique_ptr<KeyStoreHelper> keyStoreHelper;
-    bool IsRemoteSigner();
-    Options* GetOptions();
+
+    void ResetPwd();
+    void SetIssuerKeyStoreFile(bool issuerKeyStoreFile);
     void AppAndProfileAssetsRealse(std::initializer_list<EVP_PKEY*> keys,
                                    std::initializer_list<X509_REQ*> reqs,
                                    std::initializer_list<X509*> certs);
+
+    bool IsOutFormChain();
+    bool IsRemoteSigner();
+
+    const std::string GetSignAlg() const;
+    const std::string GetOutFile();
+    const std::string GetInFile();
+    
+    Options* GetOptions();
+    EVP_PKEY* GetAliasKey(bool autoCreate);
+    EVP_PKEY* GetIssureKeyByAlias();
+    X509* GetSubCaCertFile();
+    X509* GetCaCertFile();
+    STACK_OF(X509*) GetSignCertChain();
+    std::vector<X509*> GetCertsFromFile(std::string& certPath, const std::string& logTitle);
+
 private:
     void ResetChars(char* chars);
-    bool isIssuerKeyStoreFile;
+
+public:   
+    Options* options;
+    std::unique_ptr<KeyStoreHelper> keyStoreHelper;
+
+private:
     static constexpr int MIN_CERT_CHAIN_SIZE = 2;
     static constexpr int MAX_CERT_CHAIN_SIZE = 3;
+    bool isIssuerKeyStoreFile;
 };
 } // namespace SignatureTools
 } // namespace OHOS

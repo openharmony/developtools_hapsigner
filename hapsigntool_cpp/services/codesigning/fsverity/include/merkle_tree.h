@@ -24,8 +24,10 @@ namespace SignatureTools {
 class MerkleTree {
 public:
     MerkleTree(const std::vector<int8_t>& rootHash, const std::vector<int8_t>& tree,
-        const SignatureTools::FsVerityHashAlgorithm& fsVerityHashAlgorithm) : rootHash(rootHash),
-        tree(tree), fsVerityHashAlgorithm(fsVerityHashAlgorithm)
+               const SignatureTools::FsVerityHashAlgorithm& fsVerityHashAlgorithm)
+        : rootHash(rootHash),
+        tree(tree),
+        fsVerityHashAlgorithm(fsVerityHashAlgorithm)
     {
     }
     std::vector<int8_t> rootHash;

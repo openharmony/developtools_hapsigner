@@ -23,13 +23,14 @@ namespace SignatureTools {
 
 class DataSource {
 public:
+    virtual bool HasRemaining() const = 0;
+    virtual int64_t Remaining() const = 0;
+    virtual void Reset() = 0;
+    virtual bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) = 0;
+
     virtual ~DataSource()
     {
     }
-    virtual bool HasRemaining() const = 0;
-    virtual long long Remaining() const = 0;
-    virtual void Reset() = 0;
-    virtual bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

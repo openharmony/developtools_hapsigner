@@ -24,17 +24,17 @@ namespace SignatureTools {
 const char APP_SIGNING_CAPABILITY[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x00};
 const char PROFILE_SIGNING_CAPABILITY[] = {0x30, 0x06, 0x02, 0x01, 0x01, 0x0A, 0x01, 0x01};
 
-const long DEFAULT_START_VALIDITY = 0;
-const long ONE_DAY_TIME = 86400;
-const long DEFAULT_CERT_VERSION = 2;
+constexpr long DEFAULT_START_VALIDITY = 0;
+constexpr long ONE_DAY_TIME = 86400;
+constexpr long DEFAULT_CERT_VERSION = 2;
 
-const int NIST_P_256 = 256;
-const int NIST_P_384 = 384;
-const int DEFAULT_VALIDITY_DAYS = 3650;
-const int INVALIDCHAR = 3;
-const int DEFAULT_BASIC_CONSTRAINTS_PATH_LEN = 0;
-const int RANDOM_SERIAL_NUMBER_LENGTH = 32;
-const int DEFAULT_CUSTOM_VALIDITY_DAYS = 1095;
+constexpr int NIST_P_256 = 256;
+constexpr int NIST_P_384 = 384;
+constexpr int DEFAULT_VALIDITY_DAYS = 3650;
+constexpr int INVALIDCHAR = 3;
+constexpr int DEFAULT_BASIC_CONSTRAINTS_PATH_LEN = 0;
+constexpr int RANDOM_SERIAL_NUMBER_LENGTH = 32;
+constexpr int DEFAULT_CUSTOM_VALIDITY_DAYS = 1095;
 
 const bool DEFAULT_KEY_USAGE_CRITICAL = true;
 const bool DEFAULT_EXT_KEY_USAGE_CRITICAL = false;
@@ -61,21 +61,26 @@ const std::string ZIP = "zip";
 const std::string ELF = "elf";
 const std::string BIN = "bin";
 const std::string REMOTE_SIGN = "remoteSign";
-const std::string SIGN_APP = "sign-app";
-const std::string SIGN_PROFILE = "sign-profile";
-const std::string GENERATE_CA = "generate-ca";
-const std::string GENERATE_APP_CERT = "generate-app-cert";
-const std::string GENERATE_PROFILE_CERT = "generate-profile-cert";
-const std::string GENERATE_CERT = "generate-cert";
-const std::string VERIFY_APP = "verify-app";
 const std::string OUT_FORM_CERT = "cert";
 const std::string OUT_FORM_CERT_CHAIN = "certChain";
 const std::string DEBUG_STR = "debug";
 const std::string DEBUG_LIB_ID = "DEBUG_LIB_ID";
 
-const int32_t ONE_DAY_HOUR = 24;
-const int32_t ONE_DAY_MINUTE = 60;
-const int32_t ONE_DAY_SECOND = 60;
+//Corresponding to each functional module
+const std::string GENERATE_KEYPAIR = "generate-keypair";
+const std::string GENERATE_CSR = "generate-csr";
+const std::string GENERATE_CA = "generate-ca";
+const std::string GENERATE_CERT = "generate-cert";
+const std::string GENERATE_APP_CERT = "generate-app-cert";
+const std::string GENERATE_PROFILE_CERT = "generate-profile-cert";
+const std::string SIGN_APP = "sign-app";
+const std::string SIGN_PROFILE = "sign-profile";
+const std::string VERIFY_APP = "verify-app";
+const std::string VERIFY_PROFILE = "verify-profile";
+
+constexpr int32_t ONE_DAY_HOUR = 24;
+constexpr int32_t ONE_DAY_MINUTE = 60;
+constexpr int32_t ONE_DAY_SECOND = 60;
 
 static constexpr int YEAR1900 = 1900;
 static constexpr int MIN_CERTS_NUM = 2;

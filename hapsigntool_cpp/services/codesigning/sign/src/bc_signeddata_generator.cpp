@@ -62,7 +62,7 @@ int BCSignedDataGenerator::GenerateSignedData(const std::string& content,
 
 void BCSignedDataGenerator::SetOwnerId(const std::string& ownerID)
 {
-    this->ownerID = ownerID;
+    m_ownerID = ownerID;
 }
 
 int BCSignedDataGenerator::PackageSignedData(const std::string& content,
@@ -72,8 +72,8 @@ int BCSignedDataGenerator::PackageSignedData(const std::string& content,
     int result = RET_OK;
     PKCS7Data p7Data(PKCS7_DETACHED_FLAGS);
     std::vector<PKCS7Attr> attrs;
-    if (ownerID.empty() == false) {
-        if (AddOwnerID(attrs, this->ownerID) < 0) {
+    if (m_ownerID.empty() == false) {
+        if (AddOwnerID(attrs, m_ownerID) < 0) {
             PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
                                 "create ownerIDOid failed");
             return INVALIDPARAM_ERROR;
@@ -107,9 +107,9 @@ int BCSignedDataGenerator::GetSigAlg(SignerConfig* signerConfig, std::string& si
         return INVALIDPARAM_ERROR;
     }
     SignatureAlgorithmHelper signatureAlg = sigs[0];
-    if (signatureAlg.id == SignatureAlgorithmId::ECDSA_WITH_SHA256) {
+    if (signatureAlg.m_id == SignatureAlgorithmId::ECDSA_WITH_SHA256) {
         sigAlg = SIGN_ALG_SHA256;
-    } else if (signatureAlg.id == SignatureAlgorithmId::ECDSA_WITH_SHA384) {
+    } else if (signatureAlg.m_id == SignatureAlgorithmId::ECDSA_WITH_SHA384) {
         sigAlg = SIGN_ALG_SHA384;
     } else {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,

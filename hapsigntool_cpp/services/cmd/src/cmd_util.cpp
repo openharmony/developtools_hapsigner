@@ -62,13 +62,13 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
     Options* options = param->GetOptions();
     // general
     if (options->count(Options::KEY_SIZE)) {
-        std::string key_size = options->GetString(Options::KEY_SIZE);
-        if (key_size == "NIST-P-256") {
+        std::string keySize = options->GetString(Options::KEY_SIZE);
+        if (keySize == "NIST-P-256") {
             (*options)[Options::KEY_SIZE] = NIST_P_256;
-        } else if (key_size == "NIST-P-384") {
+        } else if (keySize == "NIST-P-384") {
             (*options)[Options::KEY_SIZE] = NIST_P_384;
         } else {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "KeySize '" + key_size + "' is incorrect");
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "KeySize '" + keySize + "' is incorrect");
             return false;
         }
     }
@@ -205,7 +205,7 @@ static bool outFilePath(Options* options)
     std::initializer_list<std::string> outFileKeys = {
         Options::OUT_FILE, Options::KEY_STORE_FILE,
         Options::ISSUER_KEY_STORE_FILE,
-        Options::OUT_PROFILE, Options::OUT_CERT_CHAIN };
+        Options::OUT_PROFILE, Options::OUT_CERT_CHAIN};
 
     // check path directory is exists
     for (auto& key : outFileKeys) {
@@ -237,7 +237,7 @@ static bool UpdateParamForCheckFile(ParamsSharedPtr param)
         Options::CA_CERT_FILE,
         Options::PROFILE_CERT_FILE,
         Options::APP_CERT_FILE,
-        Options::PROFILE_FILE };
+        Options::PROFILE_FILE};
     for (auto& key : inFileKeys) {
         if (options->count(key) &&
             !FileUtils::IsValidFile(options->GetString(key))) {
@@ -306,11 +306,11 @@ static bool UpdateParamForOutform(ParamsSharedPtr param)
 static bool UpdateParamForCheckRemoteSignProfile(ParamsSharedPtr param)
 {
     Options* options = param->GetOptions();
-    std::set<std::string> signProfileRemoteParams{ ParamConstants::PARAM_REMOTE_SERVER,
+    std::set<std::string> signProfileRemoteParams{ParamConstants::PARAM_REMOTE_SERVER,
                                                    ParamConstants::PARAM_REMOTE_USERNAME,
                                                    ParamConstants::PARAM_REMOTE_USERPWD,
                                                    ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE,
-                                                   ParamConstants::PARAM_REMOTE_SIGNERPLUGIN };
+                                                   ParamConstants::PARAM_REMOTE_SIGNERPLUGIN};
 
     if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) &&
         options->GetString(Options::MODE) == REMOTE_SIGN) {
@@ -375,20 +375,19 @@ int CmdUtil::GetCommandParameterKey(char strChar, std::string& strChars, std::ve
     return RET_OK;
 }
 
-bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
+bool CmdUtil::Convert2Params(char** args, size_t size, const ParamsSharedPtr& param)
 {
     param->SetMethod(args[1]);
     std::string keyStandBy = "";
     bool readKey = true;
-    ParamsTrustlist params_trust_list;
-    std::vector<std::string> trustList = params_trust_list.GetTrustList(args[1]);
+    ParamsTrustList* paramsTrust = ParamsTrustList::GetInstance();
+    std::vector<std::string> trustList = paramsTrust->GetTrustList(args[1]);
     if (trustList.empty()) {
         return false;
     }
-    size_t i = 2;
     char strChar;
     std::string strChars;
-    for (; i < size; i++) {
+    for (size_t i = 2; i < size; i++) {
         if (readKey) {
             strChar = args[i][0];
             strChars = args[i];
@@ -417,7 +416,7 @@ bool CmdUtil::Convert2Params(char** args, size_t size, ParamsSharedPtr param)
     return true;
 }
 
-bool CmdUtil::JudgeEndSignAlgType(std::string signAlg)
+bool CmdUtil::JudgeEndSignAlgType(const std::string& signAlg)
 {
     if (signAlg != SIGN_ALG_SHA256 && signAlg != SIGN_ALG_SHA384) {
         PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR,
@@ -436,10 +435,10 @@ bool CmdUtil::ValidAndPutParam(ParamsSharedPtr params, const std::string& key, c
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "The command-line argument key cannot be empty");
         result = false;
     } else if (strlen(value) == 0) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Command -" + std::string(value) + " cannot be empty!");
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "The command-line argument value cannot be empty");
         result = false;
     } else if (params->GetOptions()->count(key)) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "duplicate param '" + key + "'. stop processing!");
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "duplicate param '" + key + "'. stop processing");
         result = false;
     } else if (key.length() >= str.length() && key.substr(key.length() - INVALIDCHAR) == str) {
         params->GetOptions()->emplace(key, value);
@@ -451,7 +450,7 @@ bool CmdUtil::ValidAndPutParam(ParamsSharedPtr params, const std::string& key, c
     return result;
 }
 
-bool CmdUtil::JudgeAlgType(std::string keyAlg)
+bool CmdUtil::JudgeAlgType(const std::string& keyAlg)
 {
     if (keyAlg != "ECC") {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "KeyAlg params is incorrect");
@@ -460,7 +459,7 @@ bool CmdUtil::JudgeAlgType(std::string keyAlg)
     return true;
 }
 
-bool CmdUtil::JudgeSize(int size)
+bool CmdUtil::JudgeSize(const int size)
 {
     if (size != NIST_P_256 && size != NIST_P_384) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Keysize params is incorrect");
@@ -469,7 +468,7 @@ bool CmdUtil::JudgeSize(int size)
     return true;
 }
 
-bool CmdUtil::JudgeSignAlgType(std::string signAlg)
+bool CmdUtil::JudgeSignAlgType(const std::string& signAlg)
 {
     if (signAlg != SIGN_ALG_SHA256 && signAlg != SIGN_ALG_SHA384) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "SignAlg params is incorrect");
@@ -483,7 +482,7 @@ bool CmdUtil::JudgeSignAlgType(std::string signAlg)
  * @tc.desc: Pass more than one parameter,but it needs to be in the parameter list.
  * @tc.type: FUNC
  */
-bool CmdUtil::VerifyTypes(std::string inputType)
+bool CmdUtil::VerifyTypes(const std::string& inputType)
 {
     if (inputType.size() == 0) {
         return false;
@@ -513,7 +512,7 @@ bool CmdUtil::VerifyTypes(std::string inputType)
  * @tc.desc: Pass one parameter,but it needs to be in the parameter list.
  * @tc.type: FUNC
  */
-bool CmdUtil::VerifyType(std::string inputType)
+bool CmdUtil::VerifyType(const std::string& inputType)
 {
     std::set<std::string> sets;
     sets.insert("clientAuthentication");
@@ -531,7 +530,7 @@ bool CmdUtil::VerifyType(std::string inputType)
     return true;
 }
 
-bool CmdUtil::VerifyType(std::string inputtype, std::string supportTypes)
+bool CmdUtil::VerifyType(const std::string& inputtype, const std::string& supportTypes)
 {
     std::string firstStr = supportTypes.substr(0, supportTypes.find_last_of(","));
     std::string secondStr = supportTypes.substr(supportTypes.find_first_of(",") + 1,

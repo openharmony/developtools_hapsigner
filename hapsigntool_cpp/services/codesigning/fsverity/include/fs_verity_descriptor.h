@@ -55,8 +55,8 @@ public:
     }
 
     static FsVerityDescriptor FromByteArray(std::vector<int8_t>& bytes);
-    std::vector<int8_t> ToByteArray();
-    std::vector<int8_t> GetByteForGenerateDigest();
+    void ToByteArray(std::vector<int8_t> &ret);
+    void GetByteForGenerateDigest(std::vector<int8_t>& ret);
     
     FsVerityDescriptor(Builder& builder)
     {

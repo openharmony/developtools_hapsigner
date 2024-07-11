@@ -52,13 +52,13 @@ public:
 private:
     static constexpr int MAX_READ_BLOCK_SIZE = 1024 * 1024;
 
+    bool CheckBoundValid(int64_t offset, int64_t size, int64_t sourceSize);
+
     RandomAccessFile& file;
 
     const int64_t startIndex;
 
     const int64_t size;
-
-    bool CheckBoundValid(int64_t offset, int64_t size, int64_t sourceSize);
 };
 } // namespace SignatureTools
 } // namespace OHOS

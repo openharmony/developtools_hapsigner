@@ -26,20 +26,20 @@ namespace SignatureTools {
 
 class SegmentHeader {
 public:
-    SegmentHeader();
-    SegmentHeader(int32_t type, int32_t segmentSize);
-    SegmentHeader(int32_t type, int32_t segmentOffset,
-                  int32_t segmentSize);
     static const int32_t SEGMENT_HEADER_LENGTH = 12;
     static const int32_t CSB_FSVERITY_INFO_SEG = 0x1;
     static const int32_t CSB_HAP_META_SEG = 0x2;
     static const int32_t CSB_NATIVE_LIB_INFO_SEG = 0x3;
+    SegmentHeader();
+    SegmentHeader(int32_t type, int32_t segmentSize);
+    SegmentHeader(int32_t type, int32_t segmentOffset,
+                  int32_t segmentSize);
+    static std::unique_ptr<SegmentHeader> FromByteArray(std::vector<int8_t> bytes);
     int32_t GetType();
     void SetSegmentOffset(int32_t offset);
     int32_t GetSegmentOffset();
     int32_t GetSegmentSize();
-    std::vector<int8_t> ToByteArray();
-    static std::unique_ptr<SegmentHeader> FromByteArray(std::vector<int8_t> bytes);
+    void ToByteArray(std::vector<int8_t> &ret);
 
 private:
     int32_t type;

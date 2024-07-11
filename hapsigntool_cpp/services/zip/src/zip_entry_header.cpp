@@ -63,43 +63,43 @@ ZipEntryHeader* ZipEntryHeader::GetZipEntryHeader(const std::string& bytes)
 void ZipEntryHeader::ReadFileName(const std::string& bytes)
 {
     ByteBuffer bf(bytes.c_str(), bytes.size());
-    if (fileNameLength > 0) {
-        std::string nameBytes(fileNameLength, 0);
-        bf.GetData(&nameBytes[0], fileNameLength);
-        this->fileName = nameBytes;
+    if (m_fileNameLength > 0) {
+        std::string nameBytes(m_fileNameLength, 0);
+        bf.GetData(&nameBytes[0], m_fileNameLength);
+        m_fileName = nameBytes;
     }
 }
 
 void ZipEntryHeader::ReadExtra(const std::string& bytes)
 {
     ByteBuffer bf(bytes.c_str(), bytes.size());
-    if (extraLength > 0) {
-        std::string extra(extraLength, 0);
-        bf.GetData(&extra[0], extraLength);
-        this->extraData = extra;
+    if (m_extraLength > 0) {
+        std::string extra(m_extraLength, 0);
+        bf.GetData(&extra[0], m_extraLength);
+        m_extraData = extra;
     }
 }
 
 std::string ZipEntryHeader::ToBytes()
 {
-    ByteBuffer bf(length);
+    ByteBuffer bf(m_length);
 
     bf.PutInt32(SIGNATURE);
-    bf.PutInt16(version);
-    bf.PutInt16(flag);
-    bf.PutInt16(method);
-    bf.PutInt16(lastTime);
-    bf.PutInt16(lastDate);
-    bf.PutInt32(crc32);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, compressedSize);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, unCompressedSize);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, fileNameLength);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, extraLength);
-    if (fileNameLength > 0) {
-        bf.PutData(fileName.c_str(), fileName.size());
+    bf.PutInt16(m_version);
+    bf.PutInt16(m_flag);
+    bf.PutInt16(m_method);
+    bf.PutInt16(m_lastTime);
+    bf.PutInt16(m_lastDate);
+    bf.PutInt32(m_crc32);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_compressedSize);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_unCompressedSize);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_fileNameLength);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_extraLength);
+    if (m_fileNameLength > 0) {
+        bf.PutData(m_fileName.c_str(), m_fileName.size());
     }
-    if (extraLength > 0) {
-        bf.PutData(extraData.c_str(), extraData.size());
+    if (m_extraLength > 0) {
+        bf.PutData(m_extraData.c_str(), m_extraData.size());
     }
 
     return bf.ToString();
@@ -117,132 +117,132 @@ int ZipEntryHeader::GetSIGNATURE()
 
 short ZipEntryHeader::GetVersion()
 {
-    return version;
+    return m_version;
 }
 
 void ZipEntryHeader::SetVersion(short version)
 {
-    this->version = version;
+    m_version = version;
 }
 
 short ZipEntryHeader::GetFlag()
 {
-    return flag;
+    return m_flag;
 }
 
 void ZipEntryHeader::SetFlag(short flag)
 {
-    this->flag = flag;
+    m_flag = flag;
 }
 
 short ZipEntryHeader::GetMethod()
 {
-    return method;
+    return m_method;
 }
 
 void ZipEntryHeader::SetMethod(short method)
 {
-    this->method = method;
+    m_method = method;
 }
 
 short ZipEntryHeader::GetLastTime()
 {
-    return lastTime;
+    return m_lastTime;
 }
 
 void ZipEntryHeader::SetLastTime(short lastTime)
 {
-    this->lastTime = lastTime;
+    m_lastTime = lastTime;
 }
 
 short ZipEntryHeader::GetLastDate()
 {
-    return lastDate;
+    return m_lastDate;
 }
 
 void ZipEntryHeader::SetLastDate(short lastDate)
 {
-    this->lastDate = lastDate;
+    m_lastDate = lastDate;
 }
 
 int ZipEntryHeader::GetCrc32()
 {
-    return crc32;
+    return m_crc32;
 }
 
 void ZipEntryHeader::SetCrc32(int crc32)
 {
-    this->crc32 = crc32;
+    m_crc32 = crc32;
 }
 
 int64_t ZipEntryHeader::GetCompressedSize()
 {
-    return compressedSize;
+    return m_compressedSize;
 }
 
 void ZipEntryHeader::SetCompressedSize(int64_t compressedSize)
 {
-    this->compressedSize = compressedSize;
+    m_compressedSize = compressedSize;
 }
 
 int64_t ZipEntryHeader::GetUnCompressedSize()
 {
-    return unCompressedSize;
+    return m_unCompressedSize;
 }
 
 void ZipEntryHeader::SetUnCompressedSize(int64_t unCompressedSize)
 {
-    this->unCompressedSize = unCompressedSize;
+    m_unCompressedSize = unCompressedSize;
 }
 
 int ZipEntryHeader::GetFileNameLength()
 {
-    return fileNameLength;
+    return m_fileNameLength;
 }
 
 void ZipEntryHeader::SetFileNameLength(int fileNameLength)
 {
-    this->fileNameLength = fileNameLength;
+    m_fileNameLength = fileNameLength;
 }
 
 int ZipEntryHeader::GetExtraLength()
 {
-    return extraLength;
+    return m_extraLength;
 }
 
 void ZipEntryHeader::SetExtraLength(int extraLength)
 {
-    this->extraLength = extraLength;
+    m_extraLength = extraLength;
 }
 
 std::string ZipEntryHeader::GetFileName() const
 {
-    return fileName;
+    return m_fileName;
 }
 
 void ZipEntryHeader::SetFileName(const std::string& fileName)
 {
-    this->fileName = fileName;
+    m_fileName = fileName;
 }
 
 std::string ZipEntryHeader::GetExtraData() const
 {
-    return extraData;
+    return m_extraData;
 }
 
 void ZipEntryHeader::SetExtraData(const std::string& extraData)
 {
-    this->extraData = extraData;
+    m_extraData = extraData;
 }
 
 int ZipEntryHeader::GetLength()
 {
-    return length;
+    return m_length;
 }
 
 void ZipEntryHeader::SetLength(int length)
 {
-    this->length = length;
+    m_length = length;
 }
 } // namespace SignatureTools
 } // namespace OHOS

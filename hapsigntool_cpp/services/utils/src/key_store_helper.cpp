@@ -22,43 +22,43 @@ namespace OHOS {
 namespace SignatureTools {
 KeyStoreHelper::KeyStoreHelper()
 {
-    this->passWordStatus = true;
-    this->keyPairPwdLen = 0;
-    this->keyStorePwdLen = 0;
-    this->publicKeyStatus = RET_FAILED;
-    this->privateKeyStatus = RET_FAILED;
+    passWordStatus = true;
+    keyPairPwdLen = 0;
+    keyStorePwdLen = 0;
+    publicKeyStatus = RET_FAILED;
+    privateKeyStatus = RET_FAILED;
 }
 
 void KeyStoreHelper::SetPassWordStatus(bool status)
 {
-    this->passWordStatus = status;
+    passWordStatus = status;
 }
 
 void KeyStoreHelper::SetIsRegen(bool autoCreate)
 {
-    this->isRegen = autoCreate;
+    isRegen = autoCreate;
 }
 
 bool KeyStoreHelper::GetPassWordStatus()
 {
-    return this->passWordStatus;
+    return passWordStatus;
 }
 
 void KeyStoreHelper::ResetKeyStatusvariable()
 {
-    this->publicKeyStatus = RET_FAILED;
-    this->privateKeyStatus = RET_FAILED;
+    publicKeyStatus = RET_FAILED;
+    privateKeyStatus = RET_FAILED;
 }
 
 void KeyStoreHelper::ResePwdLenvariable()
 {
-    this->keyPairPwdLen = 0;
-    this->keyStorePwdLen = 0;
+    keyPairPwdLen = 0;
+    keyStorePwdLen = 0;
 }
 
 void KeyStoreHelper::PrintAliasExistErrorMsg(const std::string& alias, const std::string& keyStorePath)
 {
-    if (!this->isRegen) {
+    if (!isRegen) {
         PrintErrorNumberMsg("KEY_ALIAS_ERROR", KEY_ALIAS_ERROR, "keyAlias: '"
                             + alias + "' is not exist in" + keyStorePath);
     }
@@ -154,8 +154,8 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     X509_NAME* subjectName = nullptr;
     ASN1_INTEGER* ai = BN_to_ASN1_INTEGER(bnSerial, NULL);
     if (ai == NULL || issuerName == NULL) {
-        this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                          "Failed to initialize the x509 structure.");
+        KeyPairFree(bnSerial, issuerName, subjectName, ai,
+                    "Failed to initialize the x509 structure.");
         return false;
     }
 
@@ -165,48 +165,48 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     if (!X509_NAME_add_entry_by_txt(issuerName, "C", MBSTRING_ASC, (unsigned char*)"US", -1, -1, 0)
         || !X509_NAME_add_entry_by_txt(issuerName, "O", MBSTRING_ASC, (unsigned char*)"My Company", -1, -1, 0)
         || !X509_NAME_add_entry_by_txt(issuerName, "CN", MBSTRING_ASC, (unsigned char*)"My Issuer", -1, -1, 0)) {
-        this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                          "Failed to initialize the x509 structure.X509_NAME type");
+        KeyPairFree(bnSerial, issuerName, subjectName, ai,
+                    "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
     X509_set_issuer_name(&cert, issuerName);
     subjectName = X509_NAME_dup(issuerName);
     if (subjectName == NULL) {
-        this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                          "Failed to initialize the x509 structure.X509_NAME type");
+        KeyPairFree(bnSerial, issuerName, subjectName, ai,
+                    "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
     X509_set_subject_name(&cert, subjectName);
     if (!X509_set_pubkey(&cert, &evpPkey)) {
-        this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                          "Failed to initialize the x509 structure.X509_NAME type");
+        KeyPairFree(bnSerial, issuerName, subjectName, ai,
+                    "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
     X509_set_version(&cert, DEFAULT_CERT_VERSION);
     if (!X509_sign(&cert, &evpPkey, md)) {
-        this->KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                          "Failed to initialize the x509 structure.X509_NAME type");
+        KeyPairFree(bnSerial, issuerName, subjectName, ai,
+                    "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
 
-    this->KeyPairFree(bnSerial, issuerName, subjectName, ai, "");
+    KeyPairFree(bnSerial, issuerName, subjectName, ai, "");
     return true;
 }
 
 void KeyStoreHelper::SetPwdLenKeyStatus(char* pass, char* keyPass)
 {
-    this->ResePwdLenvariable();
-    this->ResetKeyStatusvariable();
+    ResePwdLenvariable();
+    ResetKeyStatusvariable();
 
     if (pass != nullptr) {
-        this->keyStorePwdLen = strlen(pass);
+        keyStorePwdLen = strlen(pass);
     }
 
     if (keyPass != nullptr) {
-        this->keyPairPwdLen = strlen(keyPass);
+        keyPairPwdLen = strlen(keyPass);
     }
 }
 
@@ -227,7 +227,7 @@ int KeyStoreHelper::FindKeyPair(PKCS12* p12, const std::string& alias, char* key
     STACK_OF(PKCS7)* safes = nullptr;
     PKCS7* safe = nullptr;
 
-    this->SetPwdLenKeyStatus(keyStorePwd, keyPwd);
+    SetPwdLenKeyStatus(keyStorePwd, keyPwd);
 
     if ((safes = PKCS12_unpack_authsafes(p12)) == NULL) {
         sk_PKCS7_pop_free(safes, PKCS7_free);
@@ -235,42 +235,42 @@ int KeyStoreHelper::FindKeyPair(PKCS12* p12, const std::string& alias, char* key
     }
 
     for (int n = 0; n < sk_PKCS7_num(safes); n++) {
-        if ((this->publicKeyStatus == RET_OK) && (this->privateKeyStatus == RET_OK)) {
+        if ((publicKeyStatus == RET_OK) && (privateKeyStatus == RET_OK)) {
             break;
         }
 
         safe = sk_PKCS7_value(safes, n);
         if (OBJ_obj2nid(safe->type) == NID_pkcs7_encrypted) {
-            if (this->publicKeyStatus != RET_OK) {
-                this->publicKeyStatus = this->GetPublicKey(safe, alias, keyStorePwd, this->keyStorePwdLen, &publickey);
+            if (publicKeyStatus != RET_OK) {
+                publicKeyStatus = GetPublicKey(safe, alias, keyStorePwd, keyStorePwdLen, &publickey);
             }
 
-            if (!this->GetPassWordStatus()) {
-                this->KeyPairFree(safes, publickey);
+            if (!GetPassWordStatus()) {
+                KeyPairFree(safes, publickey);
                 return RET_FAILED;
             }
-        } else if (OBJ_obj2nid(safe->type) == NID_pkcs7_data && this->privateKeyStatus != RET_OK) {
-            this->privateKeyStatus = this->GetPrivateKey(safe, alias, keyPwd, this->keyPairPwdLen, keyPiar);
-            if (!this->GetPassWordStatus()) {
-                this->KeyPairFree(safes, publickey);
+        } else if (OBJ_obj2nid(safe->type) == NID_pkcs7_data && privateKeyStatus != RET_OK) {
+            privateKeyStatus = GetPrivateKey(safe, alias, keyPwd, keyPairPwdLen, keyPiar);
+            if (!GetPassWordStatus()) {
+                KeyPairFree(safes, publickey);
                 return RET_FAILED;
             }
         }
     }
 
-    if (((this->publicKeyStatus == RET_OK) && (this->privateKeyStatus == RET_OK))
+    if (((publicKeyStatus == RET_OK) && (privateKeyStatus == RET_OK))
         && (publickey != nullptr) && (*keyPiar != nullptr)) {
         if (EVP_PKEY_copy_parameters(*keyPiar, publickey) != 1) {
-            this->KeyPairFree(safes, publickey);
+            KeyPairFree(safes, publickey);
             SIGNATURE_TOOLS_LOGE("publickey and privatekey set EVP_PKEY struct failed");
             return RET_FAILED;
         }
 
-        this->KeyPairFree(safes, publickey);
+        KeyPairFree(safes, publickey);
         return RET_OK;
     }
     PrintAliasExistErrorMsg(alias, keyStorePath);
-    this->KeyPairFree(safes, publickey);
+    KeyPairFree(safes, publickey);
     return RET_FAILED;
 }
 
@@ -289,7 +289,7 @@ int KeyStoreHelper::GetPublicKey(PKCS7* safe, const std::string& alias, char* pa
         return RET_FAILED;
     }
 
-    if (this->ParsePkcs12Safebags(bags, pass, passlen, ocerts) == RET_FAILED) {
+    if (ParsePkcs12Safebags(bags, pass, passlen, ocerts) == RET_FAILED) {
         PrintErrorNumberMsg("KEY_PASSWORD_ERROR", KEY_PASSWORD_ERROR, "'" + alias + "' keypair password error");
         KeyPairFree(ocerts, bags, name);
         SetPassWordStatus(false);
@@ -338,7 +338,7 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
             PrintErrorNumberMsg("KEY_PASSWORD_ERROR", KEY_PASSWORD_ERROR, "'" + alias
                                 + "' keypair password error");
             KeyPairFree(bags, p8, name);
-            this->SetPassWordStatus(false);
+            SetPassWordStatus(false);
             return RET_FAILED;
         }
         *keyPiar = EVP_PKCS82PKEY(p8);
@@ -367,7 +367,7 @@ int KeyStoreHelper::WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath,
         return RET_FAILED;
     }
 
-    if (!this->InitX509(*cert, *evpPkey)) {
+    if (!InitX509(*cert, *evpPkey)) {
         KeyPairFree(cert, p12, bioOut, "initialize x509 structure failed");
         return RET_FAILED;
     }
@@ -444,23 +444,23 @@ int KeyStoreHelper::ReadKeyStore(std::string& keyStorePath, char* keyStorePwd, c
     bioOut = BIO_new_file(keyStorePath.c_str(), "rb");
     if (bioOut == nullptr) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        this->KeyPairFree(cert, p12, bioOut, "Open file: '" + keyStorePath + "' failed");
+        KeyPairFree(cert, p12, bioOut, "Open file: '" + keyStorePath + "' failed");
         return RET_FAILED;
     }
 
     p12 = d2i_PKCS12_bio(bioOut, NULL);
-    if (this->Pkcs12PasswordParse(p12, keyStorePwd, keyStorePath) == RET_FAILED) {
-        this->KeyPairFree(cert, p12, bioOut, "");
-        this->SetPassWordStatus(false);
+    if (Pkcs12PasswordParse(p12, keyStorePwd, keyStorePath) == RET_FAILED) {
+        KeyPairFree(cert, p12, bioOut, "");
+        SetPassWordStatus(false);
         return RET_FAILED;
     }
-    int status = this->FindKeyPair(p12, alias, keyPwd, keyStorePwd, evpPkey, keyStorePath);
+    int status = FindKeyPair(p12, alias, keyPwd, keyStorePwd, evpPkey, keyStorePath);
     if (status == RET_FAILED) {
-        this->KeyPairFree(cert, p12, bioOut, "");
+        KeyPairFree(cert, p12, bioOut, "");
         return RET_FAILED;
     }
 
-    this->KeyPairFree(cert, p12, bioOut, "");
+    KeyPairFree(cert, p12, bioOut, "");
     return RET_OK;
 }
 
@@ -519,29 +519,29 @@ EVP_PKEY* KeyStoreHelper::GenerateKeyPair(const std::string& algorithm, int keyS
         group = EC_GROUP_new_by_curve_name(NID_secp384r1);
     } else {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        this->KeyPairFree(group, keyPair, "Algorithm length error");
+        KeyPairFree(group, keyPair, "Algorithm length error");
         return nullptr;
     }
     if (!group) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        this->KeyPairFree(group, keyPair, "Elliptic curve encryption using P256 or P384 failed");
+        KeyPairFree(group, keyPair, "Elliptic curve encryption using P256 or P384 failed");
         return nullptr;
     }
 
     EC_KEY_set_group(keyPair, group);
     if (EC_KEY_generate_key(keyPair) != 1) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        this->KeyPairFree(group, keyPair, "Description Failed to generate an elliptic curve key pair");
+        KeyPairFree(group, keyPair, "Description Failed to generate an elliptic curve key pair");
         return nullptr;
     }
     if (EC_KEY_check_key(keyPair) != 1) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
-        this->KeyPairFree(group, keyPair, "Description Failed to generate an elliptic curve key pair");
+        KeyPairFree(group, keyPair, "Description Failed to generate an elliptic curve key pair");
         return nullptr;
     }
     EVP_PKEY* pkey = EVP_PKEY_new();
     EVP_PKEY_set1_EC_KEY(pkey, keyPair);
-    this->KeyPairFree(group, keyPair, "");
+    KeyPairFree(group, keyPair, "");
     return pkey;
 }
 
@@ -558,7 +558,7 @@ PKCS12* KeyStoreHelper::CreatePKCS12(const char* keyStorePwd, const char* keyPwd
     if (!certNid) {
         certNid = NID_PBE_CBC;
     }
-    this->SetNidMac(keyNid, iter, macStatus);
+    SetNidMac(keyNid, iter, macStatus);
     if (!pkey && !cert) {
         PKCS12err(PKCS12_F_PKCS12_CREATE, PKCS12_R_INVALID_NULL_ARGUMENT);
         return NULL;
@@ -647,11 +647,11 @@ int KeyStoreHelper::SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(
             return RET_FAILED;
         }
 
-        if (this->GetAttrNid(bag, pkey, NID_ms_csp_name) == RET_FAILED) {
+        if (GetAttrNid(bag, pkey, NID_ms_csp_name) == RET_FAILED) {
             goto err;
         }
 
-        if (this->GetAttrNid(bag, pkey, NID_LocalKeySet) == RET_FAILED) {
+        if (GetAttrNid(bag, pkey, NID_LocalKeySet) == RET_FAILED) {
             goto err;
         }
 
@@ -755,7 +755,7 @@ int KeyStoreHelper::ParsePkcs12Safebags(const STACK_OF(PKCS12_SAFEBAG)* bags, co
 {
     int i;
     for (i = 0; i < sk_PKCS12_SAFEBAG_num(bags); i++) {
-        if (this->ParsePkcs12Safebag(sk_PKCS12_SAFEBAG_value(bags, i), pass, passlen, ocerts) == RET_FAILED)
+        if (ParsePkcs12Safebag(sk_PKCS12_SAFEBAG_value(bags, i), pass, passlen, ocerts) == RET_FAILED)
             return RET_FAILED;
     }
     return RET_OK;

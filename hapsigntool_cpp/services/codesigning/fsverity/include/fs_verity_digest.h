@@ -25,7 +25,7 @@ namespace OHOS {
 namespace SignatureTools {
 class FsVerityDigest {
 public:
-    static std::vector<int8_t> GetFsVerityDigest(int8_t algoID, std::vector<int8_t>& digest);
+    static void GetFsVerityDigest(int8_t algoID, std::vector<int8_t>& digest, std::vector<int8_t>& ret);
 
 private:
     static const std::string FSVERITY_DIGEST_MAGIC;

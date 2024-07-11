@@ -33,10 +33,10 @@ public:
     int64_t GetOffset();
 
 private:
-    int32_t type = 0;
-    int32_t length = 0;
-    std::vector<int8_t> value;
-    int64_t offset = 0;
+    int32_t m_type = 0;
+    int32_t m_length = 0;
+    std::vector<int8_t> m_value;
+    int64_t m_offset = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

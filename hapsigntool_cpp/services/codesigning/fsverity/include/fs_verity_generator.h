@@ -29,7 +29,7 @@ namespace SignatureTools {
 class FsVerityGenerator {
 public:
     MerkleTree* GenerateMerkleTree(std::istream& inputStream, long size,
-                                    const FsVerityHashAlgorithm& fsVerityHashAlgorithm);
+                                   const FsVerityHashAlgorithm& fsVerityHashAlgorithm);
     bool GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset);
     std::vector<int8_t> GetFsVerityDigest()
     {
@@ -58,7 +58,7 @@ public:
             
     int GetSaltSize()
     {
-        return (this->salt).empty() ? 0 : (this->salt).size();
+        return salt.empty() ? 0 : salt.size();
     }
             
     static uint8_t GetFsVerityHashAlgorithm()

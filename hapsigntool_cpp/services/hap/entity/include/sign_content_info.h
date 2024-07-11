@@ -29,12 +29,12 @@ public:
 
 public:
     static const int CONTENT_HEAD_SIZE = 8;
-    char type;
-    char tag;
-    short algId;
-    int length;
-    std::vector<int8_t> hash;
-    int contentHashLen;
+    char m_type;
+    char m_tag;
+    short m_algId;
+    int m_length;
+    std::vector<int8_t> m_hash;
+    int m_contentHashLen;
 };
 
 class SignContentInfo {
@@ -47,10 +47,10 @@ public:
     std::vector<int8_t> GetByteContent();
 
 private:
-    std::string version;
-    short size;
-    short numOfBlocks;
-    std::list<SignContentHash> hashData;
+    std::string m_version;
+    short m_size;
+    short m_numOfBlocks;
+    std::list<SignContentHash> m_hashData;
 };
 } // namespace SignatureTools
 } // namespace OHOS

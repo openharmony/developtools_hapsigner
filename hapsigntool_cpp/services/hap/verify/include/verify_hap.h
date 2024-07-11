@@ -29,6 +29,18 @@ namespace OHOS {
 namespace SignatureTools {
 class VerifyHap {
 public:
+    static const int32_t HEX_PRINT_LENGTH;
+    static const int32_t DIGEST_BLOCK_LEN_OFFSET;
+    static const int32_t DIGEST_ALGORITHM_OFFSET;
+    static const int32_t DIGEST_LEN_OFFSET;
+    static const int32_t DIGEST_OFFSET_IN_CONTENT;
+    static const std::string HAP_APP_PATTERN;
+    static const std::string HQF_APP_PATTERN;
+    static const std::string HSP_APP_PATTERN;
+    static const std::string APP_APP_PATTERN;
+    static const int OFFSET_ZERO = 0;
+    static const int OFFSET_FOUR = 4;
+    static const int OFFSET_EIGHT = 8;
     int32_t Verify(const std::string& filePath, HapVerifyResult& hapVerifyV1Result, Options* options);
 
     DLL_EXPORT bool CheckFilePath(const std::string& filePath, std::string& standardFilePath);
@@ -59,18 +71,6 @@ public:
                              ProfileInfo& provisionInfo);
     void SetOrganization(ProfileInfo& provisionInfo);
     bool NeedParseJson(const ByteBuffer& buffer);
-    static const int32_t HEX_PRINT_LENGTH;
-    static const int32_t DIGEST_BLOCK_LEN_OFFSET;
-    static const int32_t DIGEST_ALGORITHM_OFFSET;
-    static const int32_t DIGEST_LEN_OFFSET;
-    static const int32_t DIGEST_OFFSET_IN_CONTENT;
-    static const std::string HAP_APP_PATTERN;
-    static const std::string HQF_APP_PATTERN;
-    static const std::string HSP_APP_PATTERN;
-    static const std::string APP_APP_PATTERN;
-    static const int OFFSET_ZERO = 0;
-    static const int OFFSET_FOUR = 4;
-    static const int OFFSET_EIGHT = 8;
 };
 } // namespace SignatureTools
 } // namespace OHOS

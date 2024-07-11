@@ -20,40 +20,42 @@ const ContentDigestAlgorithm ContentDigestAlgorithm::SHA384("SHA-384", 384 / 8);
 const ContentDigestAlgorithm ContentDigestAlgorithm::SHA512("SHA-512", 512 / 8);
 
 ContentDigestAlgorithm::ContentDigestAlgorithm()
-    : digestAlgorithm(""),
-    digestOutputByteSize(0)
+    : m_digestAlgorithm(""),
+    m_digestOutputByteSize(0)
+{
+}
+
+ContentDigestAlgorithm::ContentDigestAlgorithm(const std::string& digestAlgorithm,
+                                               const int digestOutputByteSize)
+    : m_digestAlgorithm(digestAlgorithm), m_digestOutputByteSize(digestOutputByteSize)
 {
 }
 
 ContentDigestAlgorithm::ContentDigestAlgorithm(const ContentDigestAlgorithm& other)
-    : digestAlgorithm(other.digestAlgorithm),
-    digestOutputByteSize(other.digestOutputByteSize)
+    : m_digestAlgorithm(other.m_digestAlgorithm),
+    m_digestOutputByteSize(other.m_digestOutputByteSize)
 {
 }
 
 ContentDigestAlgorithm& ContentDigestAlgorithm::operator=(const ContentDigestAlgorithm& other)
 {
     if (this != &other) {
-        digestAlgorithm = other.digestAlgorithm;
-        digestOutputByteSize = other.digestOutputByteSize;
+        m_digestAlgorithm = other.m_digestAlgorithm;
+        m_digestOutputByteSize = other.m_digestOutputByteSize;
     }
     return *this;
 }
 
-ContentDigestAlgorithm::ContentDigestAlgorithm(const std::string& digestAlgorithm,
-                                               const int digestOutputByteSize)
-    : digestAlgorithm(digestAlgorithm), digestOutputByteSize(digestOutputByteSize)
-{
-}
+
 
 std::string ContentDigestAlgorithm::GetDigestAlgorithm()
 {
-    return digestAlgorithm;
+    return m_digestAlgorithm;
 }
 
 int ContentDigestAlgorithm::GetDigestOutputByteSize()
 {
-    return digestOutputByteSize;
+    return m_digestOutputByteSize;
 }
 } // namespace SignatureTools
 } // namespace OHOS

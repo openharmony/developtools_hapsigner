@@ -28,15 +28,15 @@ int ZipEntry::Alignment(int alignNum)
         return -1;
     }
     int padding = CalZeroPaddingLengthForEntryExtra();
-    int remainder = (zipEntryData->GetZipEntryHeader()->GetLength() +
-        fileEntryInCentralDirectory->GetOffset()) % alignNum;
+    int remainder = (m_zipEntryData->GetZipEntryHeader()->GetLength() +
+        m_fileEntryInCentralDirectory->GetOffset()) % alignNum;
     if (remainder == 0) {
         return padding;
     }
     int add = alignNum - remainder;
-    int newExtraLength = zipEntryData->GetZipEntryHeader()->GetExtraLength() + add;
+    int newExtraLength = m_zipEntryData->GetZipEntryHeader()->GetExtraLength() + add;
     if (newExtraLength > UnsignedDecimalUtil::MAX_UNSIGNED_SHORT_VALUE) {
-        SIGNATURE_TOOLS_LOGE("can not align %{public}s", zipEntryData->GetZipEntryHeader()->GetFileName().c_str());
+        SIGNATURE_TOOLS_LOGE("can not align %{public}s", m_zipEntryData->GetZipEntryHeader()->GetFileName().c_str());
         return -1;
     }
     SetEntryHeaderNewExtraLength(newExtraLength);
@@ -47,8 +47,8 @@ int ZipEntry::Alignment(int alignNum)
 
 int ZipEntry::CalZeroPaddingLengthForEntryExtra()
 {
-    int entryExtraLen = zipEntryData->GetZipEntryHeader()->GetExtraLength();
-    int cdExtraLen = fileEntryInCentralDirectory->GetExtraLength();
+    int entryExtraLen = m_zipEntryData->GetZipEntryHeader()->GetExtraLength();
+    int cdExtraLen = m_fileEntryInCentralDirectory->GetExtraLength();
     if (cdExtraLen > entryExtraLen) {
         if (!SetEntryHeaderNewExtraLength(cdExtraLen)) {
             return -1;
@@ -66,23 +66,23 @@ int ZipEntry::CalZeroPaddingLengthForEntryExtra()
 
 bool ZipEntry::SetCenterDirectoryNewExtraLength(int newLength)
 {
-    const std::string oldExtraData = fileEntryInCentralDirectory->GetExtraData();
+    const std::string oldExtraData = m_fileEntryInCentralDirectory->GetExtraData();
     std::string newCDExtra;
     if (!GetAlignmentNewExtra(newLength, oldExtraData, newCDExtra)) {
         return false;
     }
-    fileEntryInCentralDirectory->SetExtraData(newCDExtra);
-    fileEntryInCentralDirectory->SetExtraLength(newLength);
-    fileEntryInCentralDirectory->SetLength(CentralDirectory::CD_LENGTH +
-        fileEntryInCentralDirectory->GetFileNameLength() +
-        fileEntryInCentralDirectory->GetExtraLength() +
-        fileEntryInCentralDirectory->GetCommentLength());
+    m_fileEntryInCentralDirectory->SetExtraData(newCDExtra);
+    m_fileEntryInCentralDirectory->SetExtraLength(newLength);
+    m_fileEntryInCentralDirectory->SetLength(CentralDirectory::CD_LENGTH +
+        m_fileEntryInCentralDirectory->GetFileNameLength() +
+        m_fileEntryInCentralDirectory->GetExtraLength() +
+        m_fileEntryInCentralDirectory->GetCommentLength());
     return true;
 }
 
 bool ZipEntry::SetEntryHeaderNewExtraLength(int newLength)
 {
-    ZipEntryHeader* zipEntryHeader = zipEntryData->GetZipEntryHeader();
+    ZipEntryHeader* zipEntryHeader = m_zipEntryData->GetZipEntryHeader();
     const std::string oldExtraData = zipEntryHeader->GetExtraData();
     std::string alignmentNewExtra;
     if (!GetAlignmentNewExtra(newLength, oldExtraData, alignmentNewExtra)) {
@@ -92,9 +92,9 @@ bool ZipEntry::SetEntryHeaderNewExtraLength(int newLength)
     zipEntryHeader->SetExtraLength(newLength);
     zipEntryHeader->SetLength(ZipEntryHeader::HEADER_LENGTH +
         zipEntryHeader->GetExtraLength() + zipEntryHeader->GetFileNameLength());
-    zipEntryData->SetLength(zipEntryHeader->GetLength() +
-        zipEntryData->GetFileSize() +
-        (zipEntryData->GetDataDescriptor() == nullptr ? 0 : DataDescriptor::DES_LENGTH));
+    m_zipEntryData->SetLength(zipEntryHeader->GetLength() +
+        m_zipEntryData->GetFileSize() +
+        (m_zipEntryData->GetDataDescriptor() == nullptr ? 0 : DataDescriptor::DES_LENGTH));
     return true;
 }
 
@@ -105,7 +105,7 @@ bool ZipEntry::GetAlignmentNewExtra(int newLength, const std::string& old, std::
         return true;
     }
     if (newLength < (int)old.size()) {
-        SIGNATURE_TOOLS_LOGE("can not align %{public}s", zipEntryData->GetZipEntryHeader()->GetFileName().c_str());
+        SIGNATURE_TOOLS_LOGE("can not align %{public}s", m_zipEntryData->GetZipEntryHeader()->GetFileName().c_str());
         return false;
     }
 
@@ -116,22 +116,22 @@ bool ZipEntry::GetAlignmentNewExtra(int newLength, const std::string& old, std::
 
 ZipEntryData* ZipEntry::GetZipEntryData()
 {
-    return zipEntryData;
+    return m_zipEntryData;
 }
 
 void ZipEntry::SetZipEntryData(ZipEntryData* zipEntryData)
 {
-    this->zipEntryData = zipEntryData;
+    m_zipEntryData = zipEntryData;
 }
 
 CentralDirectory* ZipEntry::GetCentralDirectory()
 {
-    return fileEntryInCentralDirectory;
+    return m_fileEntryInCentralDirectory;
 }
 
 void ZipEntry::SetCentralDirectory(CentralDirectory* centralDirectory)
 {
-    this->fileEntryInCentralDirectory = centralDirectory;
+    m_fileEntryInCentralDirectory = centralDirectory;
 }
 } // namespace SignatureTools
 } // namespace OHOS

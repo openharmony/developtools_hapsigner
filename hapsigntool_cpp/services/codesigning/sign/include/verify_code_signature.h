@@ -34,29 +34,30 @@ namespace SignatureTools {
 class VerifyCodeSignature {
 public:
     static bool VerifyHap(std::string file, int64_t offset, int64_t length,
-        std::string fileFormat, std::string profileContent);
+                          std::string fileFormat, std::string profileContent);
     static bool VerifyElf(std::string file, int64_t offset, int64_t length,
-        std::string fileFormat, std::string profileContent);
+                          std::string fileFormat, std::string profileContent);
     static bool VerifyNativeLib(CodeSignBlock& csb, std::string& file, unzFile& zFile,
-        std::pair<std::string, std::string>& pairResult);
+                                std::pair<std::string, std::string>& pairResult);
     static bool VerifyCodeSign(std::string file, std::pair<std::string,
-        std::string>& pairResult, CodeSignBlock& csb);
+                               std::string>& pairResult, CodeSignBlock& csb);
     static bool VerifySingleFile(std::istream& input, int64_t length, std::vector<int8_t> signature,
-        int64_t merkleTreeOffset, std::vector<int8_t> inMerkleTreeBytes);
+                                 int64_t merkleTreeOffset, std::vector<int8_t> inMerkleTreeBytes);
     static bool AreVectorsEqual(const std::vector<int8_t>& vec1, const std::vector<int8_t>& vec2);
 
 private:
     static bool GenerateCodeSignBlock(const std::string& file, int64_t offset, int64_t length,
-        CodeSignBlock& csb);
+                                      CodeSignBlock& csb);
     static bool ParsegmentHead(CodeSignBlock& csb,
-        std::ifstream& signedHap,
-        std::vector<char>& merkleTreeBytes,
-        int32_t& fileReadOffset);
+                               std::ifstream& signedHap,
+                               std::vector<char>& merkleTreeBytes,
+                               int32_t& fileReadOffset);
     static bool ParseMerkleTree(CodeSignBlock& csb, int32_t readOffset, std::ifstream& signedHap,
-        int64_t computedTreeOffset);
+                                int64_t computedTreeOffset);
     static int64_t GetAlignmentAddr(int64_t alignment, int64_t input);
-    static std::pair<std::vector<int8_t>, std::vector<int8_t>> GenerateFsVerityDigest(
-        std::istream& inputStream, int64_t size, int64_t merkleTreeOffset);
+    static std::pair<std::vector<int8_t>, std::vector<int8_t>> GenerateFsVerityDigest(std::istream& inputStream,
+                                                                                      int64_t size,
+                                                                                      int64_t merkleTreeOffset);
 };
 } // namespace SignatureTools
 } // namespace OHOS

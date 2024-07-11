@@ -35,7 +35,7 @@ RandomAccessFileOutput::RandomAccessFileOutput(RandomAccessFile* file, int64_t s
         SIGNATURE_TOOLS_LOGE("invalide start position: %{public}" PRId64, startPosition);
         return;
     }
-    this->position = startPosition;
+    position = startPosition;
 }
 
 bool RandomAccessFileOutput::Write(ByteBuffer& buffer)

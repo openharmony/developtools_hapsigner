@@ -22,8 +22,8 @@ const int32_t Extension::EXTENSION_HEADER_SIZE = 8;
 
 Extension::Extension()
 {
-    this->type = 0;
-    this->size = 0;
+    type = 0;
+    size = 0;
 }
 
 Extension::Extension(int32_t type, int32_t size)
@@ -46,17 +46,16 @@ bool Extension::IsType(int32_t type)
     return this->type == type;
 }
 
-std::vector<int8_t> Extension::ToByteArray()
+void Extension::ToByteArray(std::vector<int8_t>& ret)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
         (ByteBuffer(Extension::EXTENSION_HEADER_SIZE));
-    bf->PutInt32(this->type);
-    bf->PutInt32(this->size);
+    bf->PutInt32(type);
+    bf->PutInt32(size);
     bf->Flip();
     char dataArr[Extension::EXTENSION_HEADER_SIZE] = { 0 };
     bf->GetData(dataArr, Extension::EXTENSION_HEADER_SIZE);
-    std::vector<int8_t> ret(dataArr, dataArr + Extension::EXTENSION_HEADER_SIZE);
-    return ret;
+    ret = std::vector<int8_t>(dataArr, dataArr + Extension::EXTENSION_HEADER_SIZE);
 }
 
 }

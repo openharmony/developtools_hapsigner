@@ -31,48 +31,38 @@ public:
     ~KeyStoreHelper() = default;
     int WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath, char* keyStorePwd,
                     std::string alias, char* keyPwd);
-
     int ReadKeyStore(std::string& keyStorePath, char* keyStorePwd, const std::string& alias,
                     char* keyPwd, EVP_PKEY** evpPkey);
-
-    bool IsKeyStoreFileExist(std::string& keyStorePath);
-
     int GetPublicKey(PKCS7* safe, const std::string& alias, char* pass, int passlen, EVP_PKEY** publickey);
     int GetPrivateKey(PKCS7* safe, const std::string& alias, char* pass, int passlen, EVP_PKEY** keyPiar);
     int SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags, unsigned char* keyId,
                     unsigned int keyIdLen, const char* name, STACK_OF(PKCS7)** safes,
                     int certNid, int iter, const char* keyStorePwd);
-
     int SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
                     const char* name, STACK_OF(PKCS7)** safes, int iter, const char* keyPwd,
                     int keyType, int keyNid, unsigned char* keyId, unsigned int keyIdLen);
-
-    bool InitX509(X509& cert, EVP_PKEY& evpPkey);
-
-    void SetNidMac(int& nidKey, int& iter, int& macStatus);
-
-    EVP_PKEY* GenerateKeyPair(const std::string& algorithm, int keySize);
-
     int GetAttrNid(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid);
-
     int FindKeyPair(PKCS12* p12, const std::string& alias, char* keyPwd, char* keyStorePwd,
                     EVP_PKEY** keyPiar, const std::string& keyStorePath);
-
     int ParsePkcs12Safebag(PKCS12_SAFEBAG* bag, const char* pass, int passlen, STACK_OF(X509)* ocerts);
-
     int ParsePkcs12Safebags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass,
                             int passlen, STACK_OF(X509)* ocerts);
-
-    bool SetX509Alias(int len, X509* x509, unsigned char* data);
     int Pkcs12PasswordParse(PKCS12* p12, const char* keyStorePwd, const std::string& keyStoreFile);
     int CreatePKCS12(PKCS12** p12, const std::string& charsStorePath, char* keyStorePwd,
                     char* keyPwd, const std::string& charsAlias, EVP_PKEY* evpPkey, X509* cert);
-    PKCS12* CreatePKCS12(const char* keyStorePwd, const char* keyPwd, const char* name, EVP_PKEY* pkey, X509* cert,
-                        int keyNid, int certNid, int iter, int macStatus, int keyType, STACK_OF(PKCS7)** safes);
 
+    bool InitX509(X509& cert, EVP_PKEY& evpPkey);
+    bool IsKeyStoreFileExist(std::string& keyStorePath);
+    bool SetX509Alias(int len, X509* x509, unsigned char* data);
     bool GetPassWordStatus();
+
+    void SetNidMac(int& nidKey, int& iter, int& macStatus);
     void SetPassWordStatus(bool status);
     void SetIsRegen(bool autoCreate);
+
+    EVP_PKEY* GenerateKeyPair(const std::string& algorithm, int keySize);
+    PKCS12* CreatePKCS12(const char* keyStorePwd, const char* keyPwd, const char* name, EVP_PKEY* pkey, X509* cert,
+                        int keyNid, int certNid, int iter, int macStatus, int keyType, STACK_OF(PKCS7)** safes);
 
 private:
     void KeyPairFree(EC_GROUP* group, EC_KEY* pkey, const std::string& Message);
@@ -93,6 +83,7 @@ private:
     
     bool passWordStatus;
     bool isRegen;
+
     int keyStorePwdLen;
     int keyPairPwdLen;
     int publicKeyStatus;

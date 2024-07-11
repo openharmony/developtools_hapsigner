@@ -24,15 +24,15 @@ namespace OHOS {
 namespace SignatureTools {
 class FsVerityDescriptorWithSign {
 public:
-    static const int32_t INTEGER_BYTES;
+    static constexpr int32_t INTEGER_BYTES = 4;
 
 public:
     FsVerityDescriptorWithSign();
-    FsVerityDescriptorWithSign(FsVerityDescriptor fsVerityDescriptor, std::vector<int8_t> signature);
+    FsVerityDescriptorWithSign(FsVerityDescriptor fsVerityDescriptor, std::vector<int8_t> &signature);
     FsVerityDescriptorWithSign(int32_t type, int32_t length, FsVerityDescriptor fsVerityDescriptor,
-        std::vector<int8_t> signature);
+                               std::vector<int8_t> &signature);
     int32_t Size();
-    std::vector<int8_t> ToByteArray();
+    void ToByteArray(std::vector<int8_t> &ret);
     FsVerityDescriptor GetFsVerityDescriptor();
     std::vector<int8_t> GetSignature();
 

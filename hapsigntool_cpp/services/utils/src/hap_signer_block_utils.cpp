@@ -14,6 +14,7 @@
  */
 
 #include "hap_signer_block_utils.h"
+#include <cinttypes>
 #include <climits>
 #include <vector>
 
@@ -28,13 +29,13 @@
 
 namespace OHOS {
 namespace SignatureTools {
-const long long HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW_OLD = 2334950737560224072LL;
-const long long HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_HIGH_OLD = 3617552046287187010LL;
-const long long HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW = 7451613641622775868LL;
-const long long HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_HIGH = 4497797983070462062LL;
+const int64_t HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW_OLD = 2334950737560224072LL;
+const int64_t HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_HIGH_OLD = 3617552046287187010LL;
+const int64_t HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW = 7451613641622775868LL;
+const int64_t HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_HIGH = 4497797983070462062LL;
 
 /* 1MB = 1024 * 1024 Bytes */
-const long long HapSignerBlockUtils::CHUNK_SIZE = 1048576LL;
+const int64_t HapSignerBlockUtils::CHUNK_SIZE = 1048576LL;
 
 const int32_t HapSignerBlockUtils::HAP_SIG_BLOCK_MIN_SIZE = 32;
 const int32_t HapSignerBlockUtils::ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH = 32;
@@ -56,7 +57,7 @@ const char HapSignerBlockUtils::ZIP_SECOND_LEVEL_CHUNK_PREFIX = 0xa5;
  */
 bool HapSignerBlockUtils::FindHapSignature(RandomAccessFile& hapFile, SignatureInfo& signInfo)
 {
-    std::pair<ByteBuffer, long long> eocdAndOffsetInFile;
+    std::pair<ByteBuffer, int64_t> eocdAndOffsetInFile;
     if (!FindEocdInHap(hapFile, eocdAndOffsetInFile)) {
         SIGNATURE_TOOLS_LOGE("find EoCD failed");
         return false;
@@ -77,7 +78,7 @@ bool HapSignerBlockUtils::FindHapSignature(RandomAccessFile& hapFile, SignatureI
     return true;
 }
 
-bool HapSignerBlockUtils::FindEocdInHap(RandomAccessFile& hapFile, std::pair<ByteBuffer, long long>& eocd)
+bool HapSignerBlockUtils::FindEocdInHap(RandomAccessFile& hapFile, std::pair<ByteBuffer, int64_t>& eocd)
 {
     /*
      * EoCD has an optional comment block. Most hap packages do not contain this block.
@@ -96,25 +97,25 @@ bool HapSignerBlockUtils::FindEocdInHap(RandomAccessFile& hapFile, std::pair<Byt
 }
 
 bool HapSignerBlockUtils::FindEocdInHap(RandomAccessFile& hapFile, unsigned short maxCommentSize,
-                                        std::pair<ByteBuffer, long long>& eocd)
+                                        std::pair<ByteBuffer, int64_t>& eocd)
 {
-    long long fileLength = hapFile.GetLength();
+    int64_t fileLength = hapFile.GetLength();
     /* check whether has enough space for EoCD in the file. */
     if (fileLength < ZIP_EOCD_SEG_MIN_SIZE) {
-        SIGNATURE_TOOLS_LOGE("file length %{public}lld is too smaller", fileLength);
+        SIGNATURE_TOOLS_LOGE("file length %{public}" PRId64 " is too smaller", fileLength);
         return false;
     }
 
     int32_t searchRange = static_cast<int>(maxCommentSize) + ZIP_EOCD_SEG_MIN_SIZE;
-    if (fileLength < static_cast<long long>(searchRange)) {
+    if (fileLength < static_cast<int64_t>(searchRange)) {
         searchRange = static_cast<int>(fileLength);
     }
 
     ByteBuffer searchEocdBuffer(searchRange);
-    long long searchRangeOffset = fileLength - searchEocdBuffer.GetCapacity();
-    long long ret = hapFile.ReadFileFullyFromOffset(searchEocdBuffer, searchRangeOffset);
+    int64_t searchRangeOffset = fileLength - searchEocdBuffer.GetCapacity();
+    int64_t ret = hapFile.ReadFileFullyFromOffset(searchEocdBuffer, searchRangeOffset);
     if (ret < 0) {
-        SIGNATURE_TOOLS_LOGE("read data from hap file error: %{public}lld", ret);
+        SIGNATURE_TOOLS_LOGE("read data from hap file error: %{public}" PRId64, ret);
         return false;
     }
 
@@ -173,8 +174,8 @@ bool HapSignerBlockUtils::FindEocdInSearchBuffer(ByteBuffer& searchBuffer, int& 
     return false;
 }
 
-bool HapSignerBlockUtils::GetCentralDirectoryOffset(ByteBuffer& eocd, long long eocdOffset,
-                                                    long long& centralDirectoryOffset)
+bool HapSignerBlockUtils::GetCentralDirectoryOffset(ByteBuffer& eocd, int64_t eocdOffset,
+                                                    int64_t& centralDirectoryOffset)
 {
     uint32_t offsetValue;
     uint32_t sizeValue;
@@ -184,17 +185,18 @@ bool HapSignerBlockUtils::GetCentralDirectoryOffset(ByteBuffer& eocd, long long 
         return false;
     }
 
-    centralDirectoryOffset = static_cast<long long>(offsetValue);
+    centralDirectoryOffset = static_cast<int64_t>(offsetValue);
     if (centralDirectoryOffset > eocdOffset) {
-        SIGNATURE_TOOLS_LOGE("centralDirOffset %{public}lld is larger than eocdOffset %{public}lld",
+        SIGNATURE_TOOLS_LOGE("centralDirOffset %{public}" PRId64 " is larger than eocdOffset %{public}" PRId64,
                              centralDirectoryOffset, eocdOffset);
         return false;
     }
 
-    long long centralDirectorySize = static_cast<long long>(sizeValue);
+    int64_t centralDirectorySize = static_cast<int64_t>(sizeValue);
     if (centralDirectoryOffset + centralDirectorySize != eocdOffset) {
-        SIGNATURE_TOOLS_LOGE("centralDirOffset %{public}lld add centralDirSize %{public}lld is not equal to "
-                             "eocdOffset %{public}lld", centralDirectoryOffset, centralDirectorySize, eocdOffset);
+        SIGNATURE_TOOLS_LOGE("centralDirOffset %{public}" PRId64 " add centralDirSize %{public}" PRId64 " is"
+                             " not equal to eocdOffset %{public}" PRId64, centralDirectoryOffset,
+                             centralDirectorySize, eocdOffset);
         return false;
     }
     return true;
@@ -211,21 +213,21 @@ bool HapSignerBlockUtils::GetCentralDirectorySize(ByteBuffer& eocd, long& centra
     return true;
 }
 
-bool HapSignerBlockUtils::SetUnsignedInt32(ByteBuffer& buffer, int32_t offset, long long value)
+bool HapSignerBlockUtils::SetUnsignedInt32(ByteBuffer& buffer, int32_t offset, int64_t value)
 {
-    if ((value < 0) || (value > static_cast<long long>(UINT_MAX))) {
-        SIGNATURE_TOOLS_LOGE("uint32 value of out range: %{public}lld", value);
+    if ((value < 0) || (value > static_cast<int64_t>(UINT_MAX))) {
+        SIGNATURE_TOOLS_LOGE("uint32 value of out range: %{public}" PRId64, value);
         return false;
     }
     buffer.PutInt32(offset, static_cast<int>(value));
     return true;
 }
 
-bool HapSignerBlockUtils::FindHapSigningBlock(RandomAccessFile& hapFile, long long centralDirOffset,
+bool HapSignerBlockUtils::FindHapSigningBlock(RandomAccessFile& hapFile, int64_t centralDirOffset,
                                               SignatureInfo& signInfo)
 {
     if (centralDirOffset < HAP_SIG_BLOCK_MIN_SIZE) {
-        SIGNATURE_TOOLS_LOGE("HAP too small for HAP Signing Block: %{public}lld", centralDirOffset);
+        SIGNATURE_TOOLS_LOGE("HAP too small for HAP Signing Block: %{public}" PRId64, centralDirOffset);
         return false;
     }
     /*
@@ -236,10 +238,10 @@ bool HapSignerBlockUtils::FindHapSigningBlock(RandomAccessFile& hapFile, long lo
      * int32: version
      */
     ByteBuffer hapBlockHead(ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH);
-    long long ret = hapFile.ReadFileFullyFromOffset(hapBlockHead,
-                                                    centralDirOffset - hapBlockHead.GetCapacity());
+    int64_t ret = hapFile.ReadFileFullyFromOffset(hapBlockHead,
+                                                  centralDirOffset - hapBlockHead.GetCapacity());
     if (ret < 0) {
-        SIGNATURE_TOOLS_LOGE("read hapBlockHead error: %{public}lld", ret);
+        SIGNATURE_TOOLS_LOGE("read hapBlockHead error: %{public}" PRId64, ret);
         return false;
     }
     HapSignBlockHead hapSignBlockHead;
@@ -254,10 +256,10 @@ bool HapSignerBlockUtils::FindHapSigningBlock(RandomAccessFile& hapFile, long lo
     }
 
     signInfo.version = hapSignBlockHead.version;
-    long long blockArrayLen = hapSignBlockHead.hapSignBlockSize - ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH;
-    long long hapSignBlockOffset = centralDirOffset - hapSignBlockHead.hapSignBlockSize;
+    int64_t blockArrayLen = hapSignBlockHead.hapSignBlockSize - ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH;
+    int64_t hapSignBlockOffset = centralDirOffset - hapSignBlockHead.hapSignBlockSize;
     if (hapSignBlockOffset < 0) {
-        SIGNATURE_TOOLS_LOGE("HAP Signing Block offset out of range %{public}lld", hapSignBlockOffset);
+        SIGNATURE_TOOLS_LOGE("HAP Signing Block offset out of range %{public}" PRId64, hapSignBlockOffset);
         return false;
     }
     signInfo.hapSigningBlockOffset = hapSignBlockOffset;
@@ -267,22 +269,22 @@ bool HapSignerBlockUtils::FindHapSigningBlock(RandomAccessFile& hapFile, long lo
 
 bool HapSignerBlockUtils::CheckSignBlockHead(const HapSignBlockHead& hapSignBlockHead)
 {
-    long long magic_low = HAP_SIG_BLOCK_MAGIC_LOW;
-    long long magic_high = HAP_SIG_BLOCK_MAGIC_HIGH;
+    int64_t magicLow = HAP_SIG_BLOCK_MAGIC_LOW;
+    int64_t magicHigh = HAP_SIG_BLOCK_MAGIC_HIGH;
     if (hapSignBlockHead.version < VERSION_FOR_NEW_MAGIC_NUM) {
-        magic_low = HAP_SIG_BLOCK_MAGIC_LOW_OLD;
-        magic_high = HAP_SIG_BLOCK_MAGIC_HIGH_OLD;
+        magicLow = HAP_SIG_BLOCK_MAGIC_LOW_OLD;
+        magicHigh = HAP_SIG_BLOCK_MAGIC_HIGH_OLD;
     }
 
-    if ((hapSignBlockHead.hapSignBlockMagicLo != magic_low) ||
-        (hapSignBlockHead.hapSignBlockMagicHi != magic_high)) {
+    if ((hapSignBlockHead.hapSignBlockMagicLo != magicLow) ||
+        (hapSignBlockHead.hapSignBlockMagicHi != magicHigh)) {
         SIGNATURE_TOOLS_LOGE("No HAP Signing Block before ZIP Central Directory");
         return false;
     }
 
     if ((hapSignBlockHead.hapSignBlockSize < ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH) ||
         (hapSignBlockHead.hapSignBlockSize > MAX_HAP_SIGN_BLOCK_SIZE)) {
-        SIGNATURE_TOOLS_LOGE("HAP Signing Block size out of range %{public}lld",
+        SIGNATURE_TOOLS_LOGE("HAP Signing Block size out of range %{public}" PRId64,
                              hapSignBlockHead.hapSignBlockSize);
         return false;
     }
@@ -329,18 +331,19 @@ bool HapSignerBlockUtils::ParseSubSignBlockHead(HapSubSignBlockHead& subSignBloc
  */
 bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
                                                  int32_t blockCount,
-                                                 long long blockArrayLen,
-                                                 long long hapSignBlockOffset,
+                                                 int64_t blockArrayLen,
+                                                 int64_t hapSignBlockOffset,
                                                  SignatureInfo& signInfo)
 {
-    long long offsetMax = hapSignBlockOffset + blockArrayLen;
-    long long readLen = 0;
-    long long readHeadOffset = hapSignBlockOffset;
+    int64_t offsetMax = hapSignBlockOffset + blockArrayLen;
+    int64_t readLen = 0;
+    int64_t readHeadOffset = hapSignBlockOffset;
     for (int32_t i = 0; i < blockCount; i++) {
         ByteBuffer hapBlockHead(ZIP_CD_SIZE_OFFSET_IN_EOCD);
-        long long ret = hapFile.ReadFileFullyFromOffset(hapBlockHead, readHeadOffset);
-        if (ret < 0)
+        int64_t ret = hapFile.ReadFileFullyFromOffset(hapBlockHead, readHeadOffset);
+        if (ret < 0) {
             return false;
+        }
         HapSubSignBlockHead subSignBlockHead;
         if (!ParseSubSignBlockHead(subSignBlockHead, hapBlockHead)) {
             SIGNATURE_TOOLS_LOGE("ParseSubSignBlockHead failed");
@@ -354,8 +357,8 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
             return false;
         }
 
-        long long headOffset = static_cast<long long>(subSignBlockHead.offset);
-        long long headLength = static_cast<long long>(subSignBlockHead.length);
+        int64_t headOffset = static_cast<int64_t>(subSignBlockHead.offset);
+        int64_t headLength = static_cast<int64_t>(subSignBlockHead.length);
         /* check subSignBlockHead */
         if ((offsetMax - headOffset) < hapSignBlockOffset) {
             SIGNATURE_TOOLS_LOGE("Find %{public}dst subblock data offset error", i);
@@ -366,11 +369,11 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
             return false;
         }
 
-        long long dataOffset = hapSignBlockOffset + headOffset;
+        int64_t dataOffset = hapSignBlockOffset + headOffset;
         ByteBuffer signBuffer(subSignBlockHead.length);
         ret = hapFile.ReadFileFullyFromOffset(signBuffer, dataOffset);
         if (ret < 0) {
-            SIGNATURE_TOOLS_LOGE("read %{public}dst subblock error: %{public}lld", i, ret);
+            SIGNATURE_TOOLS_LOGE("read %{public}dst subblock error: %{public}" PRId64, i, ret);
             return false;
         }
         readLen += headLength;
@@ -383,7 +386,8 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
 
     /* size of block must be equal to the sum of all subblocks length */
     if (readLen != blockArrayLen) {
-        SIGNATURE_TOOLS_LOGE("Len:%{public}lld not equal blockArrayLen:%{public}lld", readLen, blockArrayLen);
+        SIGNATURE_TOOLS_LOGE("Len: %{public}" PRId64 " is not equal blockArrayLen: %{public}" PRId64,
+                             readLen, blockArrayLen);
         return false;
     }
     return true;
@@ -443,11 +447,11 @@ bool HapSignerBlockUtils::VerifyHapIntegrity(
         return false;
     }
 
-    long long centralDirSize = signInfo.hapEocdOffset - signInfo.hapCentralDirOffset;
+    int64_t centralDirSize = signInfo.hapEocdOffset - signInfo.hapCentralDirOffset;
     FileDataSource contentsZip(hapFile, 0, signInfo.hapSigningBlockOffset, 0);
     FileDataSource centralDir(hapFile, signInfo.hapCentralDirOffset, centralDirSize, 0);
     ByteBufferDataSource eocd(signInfo.hapEocd);
-    DataSource* content[ZIP_BLOCKS_NUM_NEED_DIGEST] = { &contentsZip, &centralDir, &eocd };
+    DataSource* content[ZIP_BLOCKS_NUM_NEED_DIGEST] = {&contentsZip, &centralDir, &eocd};
     int32_t nId = VerifyHapOpensslUtils::GetDigestAlgorithmId(digestInfo.digestAlgorithm);
     DigestParameter digestParam = GetDigestParameter(nId);
     ByteBuffer chunkDigest;
@@ -534,7 +538,7 @@ bool HapSignerBlockUtils::ComputeDigestsForEachChunk(const DigestParameter& dige
     int32_t chunkIndex = 0;
     unsigned char out[EVP_MAX_MD_SIZE];
     unsigned char chunkContentPrefix[ZIP_CHUNK_DIGEST_PRIFIX_LEN] = {
-    (unsigned char)ZIP_SECOND_LEVEL_CHUNK_PREFIX, 0, 0, 0, 0 };
+    (unsigned char)ZIP_SECOND_LEVEL_CHUNK_PREFIX, 0, 0, 0, 0};
 
     int32_t offset = ZIP_CHUNK_DIGEST_PRIFIX_LEN;
     for (int32_t i = 0; i < len; i++) {
@@ -574,14 +578,14 @@ DigestParameter HapSignerBlockUtils::GetDigestParameter(int32_t nId)
     return digestParam;
 }
 
-int32_t HapSignerBlockUtils::GetChunkCount(long long inputSize, long long chunkSize)
+int32_t HapSignerBlockUtils::GetChunkCount(int64_t inputSize, int64_t chunkSize)
 {
     if (chunkSize <= 0 || inputSize > LLONG_MAX - chunkSize) {
         return 0;
     }
     if (chunkSize == 0)
         return 0;
-    long long res = (inputSize + chunkSize - 1) / chunkSize;
+    int64_t res = (inputSize + chunkSize - 1) / chunkSize;
     if (res > INT_MAX || res < 0) {
         return 0;
     }
@@ -593,7 +597,7 @@ bool HapSignerBlockUtils::InitDigestPrefix(const DigestParameter& digestParam,
                                            int32_t chunkLen)
 {
     if (memcpy_s((chunkContentPrefix + 1), ZIP_CHUNK_DIGEST_PRIFIX_LEN - 1,
-        (&chunkLen), sizeof(chunkLen)) != EOK) {
+                 (&chunkLen), sizeof(chunkLen)) != EOK) {
         SIGNATURE_TOOLS_LOGE("memcpy_s failed");
         return false;
     }
@@ -610,13 +614,13 @@ bool HapSignerBlockUtils::InitDigestPrefix(const DigestParameter& digestParam,
     return true;
 }
 
-long long HapSignerBlockUtils::CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo)
+int64_t HapSignerBlockUtils::CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo)
 {
     std::ofstream hapFile(pathFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     if (!hapFile.is_open()) {
         return 0;
     }
-    char block[TEST_FILE_BLOCK_LENGTH] = { 0 };
+    char block[TEST_FILE_BLOCK_LENGTH] = {0};
     /* input contents of ZIP entries */
     hapFile.seekp(0, std::ios_base::beg);
     hapFile.write(block, sizeof(block));
@@ -633,10 +637,10 @@ long long HapSignerBlockUtils::CreatTestZipFile(const std::string& pathFile, Sig
     }
     int32_t blockCount = TEST_FILE_BLOCK_COUNT;
     hapFile.write(reinterpret_cast<char*>(&blockCount), sizeof(blockCount));
-    long long signBlockSize = (sizeof(HapSubSignBlockHead) + sizeof(block)) * TEST_FILE_BLOCK_COUNT +
+    int64_t signBlockSize = (sizeof(HapSubSignBlockHead) + sizeof(block)) * TEST_FILE_BLOCK_COUNT +
         HapSignerBlockUtils::ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH;
     hapFile.write(reinterpret_cast<char*>(&signBlockSize), sizeof(signBlockSize));
-    long long magic = HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW_OLD;
+    int64_t magic = HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW_OLD;
     hapFile.write(reinterpret_cast<char*>(&magic), sizeof(magic));
     magic = HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_HIGH_OLD;
     hapFile.write(reinterpret_cast<char*>(&magic), sizeof(magic));
@@ -659,7 +663,7 @@ long long HapSignerBlockUtils::CreatTestZipFile(const std::string& pathFile, Sig
     signInfo.hapEocdOffset = centralDirOffset + centralDirLen;
     signInfo.hapSignatureBlock.SetCapacity(TEST_FILE_BLOCK_LENGTH);
     signInfo.hapSignatureBlock.PutData(0, block, sizeof(block));
-    long long sumLen = signInfo.hapEocdOffset + sizeof(zidEocdSign) + sizeof(centralDirLen) +
+    int64_t sumLen = signInfo.hapEocdOffset + sizeof(zidEocdSign) + sizeof(centralDirLen) +
         sizeof(centralDirOffset) + sizeof(magic) + sizeof(eocdCommentLen);
     return sumLen;
 }

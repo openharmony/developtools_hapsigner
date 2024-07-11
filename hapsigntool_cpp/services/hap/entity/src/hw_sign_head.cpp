@@ -31,7 +31,7 @@ const int HwSignHead::NUM_OF_BLOCK = 2;
 const int HwSignHead::RESERVE_LENGTH = 4;
 const int32_t HwSignHead::ELF_BLOCK_LEN = 12;
 const int32_t HwSignHead::BIN_BLOCK_LEN = 8;
-std::vector<int8_t> HwSignHead::reserve = std::vector<int8_t>(HwSignHead::RESERVE_LENGTH, 0);
+std::vector<int8_t> HwSignHead::m_reserve = std::vector<int8_t>(HwSignHead::RESERVE_LENGTH, 0);
 
 HwSignHead::HwSignHead()
 {
@@ -62,7 +62,7 @@ std::vector<int8_t> HwSignHead::GetSignHead(int subBlockSize)
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertIntToByteArray failed.");
         return std::vector<int8_t>();
     }
-    start = ByteArrayUtils::InsertCharToByteArray(signHead, start, std::string(reserve.begin(), reserve.end()));
+    start = ByteArrayUtils::InsertCharToByteArray(signHead, start, std::string(m_reserve.begin(), m_reserve.end()));
     if (start < 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertCharToByteArray failed.");
         return std::vector<int8_t>();
@@ -81,7 +81,7 @@ std::vector<int8_t> HwSignHead::GetSignHeadLittleEndian(int subBlockSize, int su
     }
     bf.PutInt32(subBlockSize);
     bf.PutInt32(subBlockNum);
-    for (char c : HwSignHead::reserve) {
+    for (char c : HwSignHead::m_reserve) {
         bf.PutByte(c);
     }
     int8_t ret[HwSignHead::SIGN_HEAD_LEN];

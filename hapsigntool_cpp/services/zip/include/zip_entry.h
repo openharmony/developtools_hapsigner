@@ -23,10 +23,16 @@ namespace OHOS {
 namespace SignatureTools {
 class ZipEntry {
 public:
+    ZipEntry()
+    {
+        m_zipEntryData = nullptr;
+        m_fileEntryInCentralDirectory = nullptr;
+    }
+
     ~ZipEntry()
     {
-        delete zipEntryData;
-        delete fileEntryInCentralDirectory;
+        delete m_zipEntryData;
+        delete m_fileEntryInCentralDirectory;
     }
 
     ZipEntryData* GetZipEntryData();
@@ -40,10 +46,6 @@ public:
     int Alignment(int alignNum);
 
 private:
-    ZipEntryData* zipEntryData;
-
-    CentralDirectory* fileEntryInCentralDirectory;
-
     int CalZeroPaddingLengthForEntryExtra();
 
     bool SetCenterDirectoryNewExtraLength(int newLength);
@@ -51,6 +53,10 @@ private:
     bool SetEntryHeaderNewExtraLength(int newLength);
 
     bool GetAlignmentNewExtra(int newLength, const std::string& old, std::string& res);
+
+    ZipEntryData* m_zipEntryData;
+
+    CentralDirectory* m_fileEntryInCentralDirectory;
 };
 } // namespace SignatureTools
 } // namespace OHOS

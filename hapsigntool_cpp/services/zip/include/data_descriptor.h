@@ -57,13 +57,13 @@ public:
 
 private:
     /* 4 bytes */
-    int crc32 = 0;
+    int m_crc32 = 0;
 
     /* 8 bytes */
-    int64_t compressedSize = 0;
+    int64_t m_compressedSize = 0;
 
     /* 8 bytes */
-    int64_t unCompressedSize = 0;
+    int64_t m_unCompressedSize = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

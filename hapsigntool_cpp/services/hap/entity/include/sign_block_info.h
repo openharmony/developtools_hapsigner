@@ -37,10 +37,10 @@ public:
     bool GetNeedGenerateDigest();
 
 private:
-    std::unordered_map<signed char, SigningBlock> signBlockMap;
-    std::vector<int8_t> fileDigest;
-    std::vector<int8_t> rawDigest;
-    bool needGenerateDigest;
+    std::unordered_map<signed char, SigningBlock> m_signBlockMap;
+    std::vector<int8_t> m_fileDigest;
+    std::vector<int8_t> m_rawDigest;
+    bool m_needGenerateDigest;
 };
 } // namespace SignatureTools
 } // namespace OHOS

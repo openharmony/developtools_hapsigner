@@ -17,18 +17,6 @@
 
 namespace OHOS {
 namespace SignatureTools {
-
-const std::string Params::GENERATE_APP_CERT = "generate-app-cert";
-const std::string Params::GENERATE_CA = "generate-ca";
-const std::string Params::GENERATE_CERT = "generate-cert";
-const std::string Params::GENERATE_CSR = "generate-csr";
-const std::string Params::GENERATE_KEYPAIR = "generate-keypair";
-const std::string Params::GENERATE_PROFILE_CERT = "generate-profile-cert";
-const std::string Params::SIGN_APP = "sign-app";
-const std::string Params::SIGN_PROFILE = "sign-profile";
-const std::string Params::VERIFY_APP = "verify-app";
-const std::string Params::VERIFY_PROFILE = "verify-profile";
-
 std::string Params::GetMethod()
 {
     return method;

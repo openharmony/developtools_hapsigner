@@ -19,7 +19,7 @@
 using namespace OHOS::SignatureTools;
 using namespace OHOS::SignatureTools::Uscript;
 const int MerkleTreeBuilder::FSVERITY_HASH_PAGE_SIZE = 4096;
-const long long MerkleTreeBuilder::INPUTSTREAM_MAX_SIZE = 4503599627370496L;
+const int64_t MerkleTreeBuilder::INPUTSTREAM_MAX_SIZE = 4503599627370496L;
 const int MerkleTreeBuilder::CHUNK_SIZE = 4096;
 const long MerkleTreeBuilder::MAX_READ_SIZE = 4194304L;
 const int MerkleTreeBuilder::MAX_PROCESSORS = 32;
@@ -27,13 +27,13 @@ const int MerkleTreeBuilder::BLOCKINGQUEUE = 4;
 
 void MerkleTreeBuilder::SetAlgorithm(const std::string& algorithm)
 {
-    this->mAlgorithm = algorithm;
+    mAlgorithm = algorithm;
 }
 
 void MerkleTreeBuilder::TransInputStreamToHashData(std::istream& inputStream,
                                                    long size, ByteBuffer* outputBuffer, int bufStartIdx)
 {
-    if (size == 0 || static_cast<long long>(size) > INPUTSTREAM_MAX_SIZE) {
+    if (size == 0 || static_cast<int64_t>(size) > INPUTSTREAM_MAX_SIZE) {
         SIGNATURE_TOOLS_LOGE("invalid input stream size");
         CheckCalculateHashResult = false;
         return;

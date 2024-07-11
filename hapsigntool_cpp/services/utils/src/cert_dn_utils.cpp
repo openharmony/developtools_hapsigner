@@ -25,7 +25,7 @@ int g_CheckDn(std::string nameString, std::vector<pair<std::string, std::string>
         return FORMAT_ERROR;
     }
     std::vector<std::string> tokens = StringUtils::SplitString(nameString.c_str(), ',');
-    for (std::string pair : tokens) {
+    for (std::string &pair : tokens) {
         if (StringUtils::Trim(pair).size() == 0) {
             return FORMAT_ERROR;
         }
@@ -42,7 +42,6 @@ int g_CheckDn(std::string nameString, std::vector<pair<std::string, std::string>
     }
     return 0;
 }
-// DAIRAN
 
 X509_NAME* BuildDN(std::string nameString, X509_REQ* req)
 {

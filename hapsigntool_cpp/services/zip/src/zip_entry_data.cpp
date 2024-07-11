@@ -24,7 +24,7 @@ namespace OHOS {
 namespace SignatureTools {
 ZipEntryHeader* ZipEntryData::GetZipEntryHeader()
 {
-    return zipEntryHeader;
+    return m_zipEntryHeader;
 }
 
 ZipEntryData* ZipEntryData::GetZipEntry(std::ifstream& input, int64_t entryOffset, int64_t fileSize)
@@ -99,47 +99,47 @@ bool ZipEntryData::ReadEntryFileNameAndExtraByOffset(std::ifstream& input, ZipEn
 
 void ZipEntryData::SetZipEntryHeader(ZipEntryHeader* zipEntryHeader)
 {
-    this->zipEntryHeader = zipEntryHeader;
+    m_zipEntryHeader = zipEntryHeader;
 }
 
 DataDescriptor* ZipEntryData::GetDataDescriptor()
 {
-    return dataDescriptor;
+    return m_dataDescriptor;
 }
 
 void ZipEntryData::SetDataDescriptor(DataDescriptor* dataDescriptor)
 {
-    this->dataDescriptor = dataDescriptor;
+    m_dataDescriptor = dataDescriptor;
 }
 
 int64_t ZipEntryData::GetFileOffset()
 {
-    return fileOffset;
+    return m_fileOffset;
 }
 
 void ZipEntryData::SetFileOffset(int64_t fileOffset)
 {
-    this->fileOffset = fileOffset;
+    m_fileOffset = fileOffset;
 }
 
 int64_t ZipEntryData::GetFileSize()
 {
-    return fileSize;
+    return m_fileSize;
 }
 
 void ZipEntryData::SetFileSize(int64_t fileSize)
 {
-    this->fileSize = fileSize;
+    m_fileSize = fileSize;
 }
 
 int64_t ZipEntryData::GetLength()
 {
-    return length;
+    return m_length;
 }
 
 void ZipEntryData::SetLength(int64_t length)
 {
-    this->length = length;
+    m_length = length;
 }
 } // namespace SignatureTools
 } // namespace OHOS

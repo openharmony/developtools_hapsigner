@@ -17,23 +17,23 @@
 
 namespace OHOS {
 namespace SignatureTools {
-const int32_t FsVerityDescriptorWithSign::INTEGER_BYTES = 4;
 
 FsVerityDescriptorWithSign::FsVerityDescriptorWithSign()
-{}
+{
+}
 
 FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(FsVerityDescriptor fsVerityDescriptor,
-    std::vector<int8_t> signature)
+    std::vector<int8_t> &signature)
 {
     this->fsVerityDescriptor = fsVerityDescriptor;
     if (!signature.empty()) {
         this->signature = signature;
     }
-    this->length = FsVerityDescriptor::DESCRIPTOR_SIZE + this->signature.size();
+    length = FsVerityDescriptor::DESCRIPTOR_SIZE + this->signature.size();
 }
 
 FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(int32_t type, int32_t length,
-    FsVerityDescriptor fsVerityDescriptor, std::vector<int8_t> signature)
+    FsVerityDescriptor fsVerityDescriptor, std::vector<int8_t> &signature)
 {
     this->type = type;
     this->length = length;
@@ -43,21 +43,22 @@ FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(int32_t type, int32_t len
 
 int32_t FsVerityDescriptorWithSign::Size()
 {
-    int tmp_variable = 2;
-    return INTEGER_BYTES * tmp_variable + FsVerityDescriptor::DESCRIPTOR_SIZE + this->signature.size();
+    int tmpVariable = 2;
+    return INTEGER_BYTES * tmpVariable + FsVerityDescriptor::DESCRIPTOR_SIZE + signature.size();
 }
 
-std::vector<int8_t> FsVerityDescriptorWithSign::ToByteArray()
+void FsVerityDescriptorWithSign::ToByteArray(std::vector<int8_t>& ret)
 {
     std::shared_ptr<ByteBuffer> buffer = std::make_shared<ByteBuffer>(Size());
-    buffer->PutInt32(this->type);
-    buffer->PutInt32(this->length);
-    std::vector<int8_t> fsArr = this->fsVerityDescriptor.ToByteArray();
+    buffer->PutInt32(type);
+    buffer->PutInt32(length);
+    std::vector<int8_t> fsArr;
+    fsVerityDescriptor.ToByteArray(fsArr);
     buffer->PutData(fsArr.data(), fsArr.size());
-    buffer->PutData(this->signature.data(), this->signature.size());
+    buffer->PutData(signature.data(), signature.size());
     buffer->Flip();
-    std::vector<int8_t> ret(buffer->GetBufferPtr(), buffer->GetBufferPtr() + buffer->GetLimit());
-    return ret;
+    ret = std::vector<int8_t>(buffer->GetBufferPtr(), buffer->GetBufferPtr() + buffer->GetLimit());
+    return;
 }
 
 FsVerityDescriptor FsVerityDescriptorWithSign::GetFsVerityDescriptor()

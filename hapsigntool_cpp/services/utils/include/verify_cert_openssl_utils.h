@@ -29,6 +29,7 @@ using CertSign = std::unordered_map<X509*, bool>;
 
 class VerifyCertOpensslUtils {
 public:
+    VerifyCertOpensslUtils() = delete;
     DLL_EXPORT static X509* GetX509CertFromPemString(const std::string& pemString);
     DLL_EXPORT static X509* GetX509CertFromBase64String(const std::string& base64String);
     DLL_EXPORT static X509_CRL* GetX509CrlFromDerBuffer(const ByteBuffer& crlBuffer,
@@ -39,7 +40,7 @@ public:
     DLL_EXPORT static bool CertVerify(X509* cert, const X509* issuerCert);
     DLL_EXPORT static bool GetSubjectFromX509(const X509* cert, std::string& subject);
     DLL_EXPORT static bool GetIssuerFromX509(const X509* cert, std::string& issuer);
-    DLL_EXPORT static bool GetSerialNumberFromX509(const X509* cert, long long& certNumber);
+    DLL_EXPORT static bool GetSerialNumberFromX509(const X509* cert, int64_t& certNumber);
     DLL_EXPORT static bool GetIssuerFromX509Crl(const X509_CRL* crl, std::string& issuer);
     DLL_EXPORT static bool VerifyCertChainPeriodOfValidity(CertChain& certsChain,
                                                            const ASN1_TYPE* signTime);

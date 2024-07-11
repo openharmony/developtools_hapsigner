@@ -26,21 +26,21 @@ namespace SignatureTools {
 
 class MerkleTreeExtension : public Extension {
 public:
+    static constexpr int32_t MERKLE_TREE_INLINED = 0x1;
+    static constexpr int32_t MERKLE_TREE_EXTENSION_DATA_SIZE = 80;
     MerkleTreeExtension();
     MerkleTreeExtension(int64_t merkleTreeSize, int64_t merkleTreeOffset, std::vector<int8_t> rootHash);
     virtual ~MerkleTreeExtension();
+    static MerkleTreeExtension* FromByteArray(std::vector<int8_t>& bytes);
     virtual int32_t GetSize();
-    virtual std::vector<int8_t> ToByteArray();
+    virtual void ToByteArray(std::vector<int8_t>& ret);
     int64_t GetMerkleTreeSize();
     int64_t GetMerkleTreeOffset();
     void SetMerkleTreeOffset(int64_t offset);
-    static MerkleTreeExtension* FromByteArray(std::vector<int8_t> bytes);
-    static const int32_t MERKLE_TREE_INLINED;
-    static const int32_t MERKLE_TREE_EXTENSION_DATA_SIZE;
 
 private:
-    static const int32_t ROOT_HASH_SIZE;
-    static const int32_t PAGE_SIZE_4K;
+    static constexpr int32_t ROOT_HASH_SIZE = 64;
+    static constexpr int32_t PAGE_SIZE_4K = 4096;
     int64_t merkleTreeSize;
     int64_t merkleTreeOffset;
     std::vector<int8_t> rootHash;

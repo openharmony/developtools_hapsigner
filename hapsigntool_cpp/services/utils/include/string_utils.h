@@ -28,6 +28,7 @@ namespace OHOS {
 namespace SignatureTools {
 class StringUtils {
 public:
+    StringUtils() = delete;
     static bool IsEmpty(const std::string& cs);
     static bool ContainsCase(std::vector<std::string> strs, const std::string& str);
     static bool CaseCompare(const std::string& str1, const std::string& str2);

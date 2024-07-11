@@ -96,7 +96,7 @@ std::vector<int8_t> SignBin::GenerateFileDigest(const std::string& outputFile,
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignHap] get Signature Algorithm failed.");
         return std::vector<int8_t>();
     }
-    std::string alg = signatureAlgorithmClass.contentDigestAlgorithm.GetDigestAlgorithm();
+    std::string alg = signatureAlgorithmClass.m_contentDigestAlgorithm.GetDigestAlgorithm();
     std::vector<int8_t> data = HashUtils::GetFileDigest(outputFile, alg);
     if (data.empty()) {
         SIGNATURE_TOOLS_LOGE("GetFileDigest failed.");

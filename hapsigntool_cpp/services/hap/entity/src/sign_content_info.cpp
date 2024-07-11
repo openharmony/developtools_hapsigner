@@ -22,65 +22,65 @@ namespace SignatureTools {
     
 SignContentHash::SignContentHash(char type, char tag, short algId, int length, std::vector<int8_t> hash)
 {
-    this->type = type;
-    this->tag = tag;
-    this->algId = algId;
-    this->length = length;
-    this->hash = hash;
-    this->contentHashLen = CONTENT_HEAD_SIZE + this->hash.size();
+    m_type = type;
+    m_tag = tag;
+    m_algId = algId;
+    m_length = length;
+    m_hash = hash;
+    m_contentHashLen = CONTENT_HEAD_SIZE + hash.size();
 }
 
 SignContentInfo::SignContentInfo()
 {
-    version = "1000";
-    this->size = SignContentHash::CONTENT_HEAD_SIZE;
-    numOfBlocks = 0;
+    m_version = "1000";
+    m_size = SignContentHash::CONTENT_HEAD_SIZE;
+    m_numOfBlocks = 0;
 }
 
 void SignContentInfo::AddContentHashData(char type, char tag, short algId, int length, std::vector<int8_t> hash)
 {
     SignContentHash signInfo(type, tag, algId, length, hash);
-    this->AddHashData(signInfo);
+    AddHashData(signInfo);
 }
 
 void SignContentInfo::AddHashData(SignContentHash signInfo)
 {
-    this->hashData.push_back(signInfo);
-    ++numOfBlocks;
-    this->size += signInfo.contentHashLen;
+    m_hashData.push_back(signInfo);
+    ++m_numOfBlocks;
+    m_size += signInfo.m_contentHashLen;
 }
 
 std::vector<int8_t> SignContentInfo::GetByteContent()
 {
-    std::vector<int8_t> ret(this->size, 0);
+    std::vector<int8_t> ret(m_size, 0);
     int index = 0;
 
-    index = ByteArrayUtils::InsertCharToByteArray(ret, index, this->version);
+    index = ByteArrayUtils::InsertCharToByteArray(ret, index, m_version);
     if (index < 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertCharToByteArray failed.");
         return std::vector<int8_t>();
     }
 
-    index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, size);
+    index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, m_size);
     if (index < 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
         return std::vector<int8_t>();
     }
 
-    index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, numOfBlocks);
+    index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, m_numOfBlocks);
     if (index < 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
         return std::vector<int8_t>();
     }
 
-    for (const auto& tmp : hashData) {
-        ret[index] = tmp.type;
+    for (const auto& tmp : m_hashData) {
+        ret[index] = tmp.m_type;
         index++;
-        ret[index] = tmp.tag;
+        ret[index] = tmp.m_tag;
         index++;
-        index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, tmp.algId);
-        index = ByteArrayUtils::InsertIntToByteArray(ret, index, tmp.length);
-        index = ByteArrayUtils::InsertByteToByteArray(ret, index, tmp.hash, tmp.hash.size());
+        index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, tmp.m_algId);
+        index = ByteArrayUtils::InsertIntToByteArray(ret, index, tmp.m_length);
+        index = ByteArrayUtils::InsertByteToByteArray(ret, index, tmp.m_hash, tmp.m_hash.size());
         if (index < 0) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
             return std::vector<int8_t>();

@@ -34,7 +34,7 @@ std::shared_ptr<T> make_shared_array(size_t size)
         SIGNATURE_TOOLS_LOGE("new size failed");
         return NULL;
     }
-    return std::shared_ptr<T>(buffer, [](T* p) { delete[] p; });
+    return std::shared_ptr<T>(buffer, [] (T* p) { delete[] p; });
 }
 
 ByteBuffer::ByteBuffer() : buffer(nullptr), position(0), limit(0), capacity(0)
@@ -49,7 +49,7 @@ ByteBuffer::ByteBuffer(int32_t bufferCapacity) : buffer(nullptr), position(0), l
 ByteBuffer::ByteBuffer(const char* arr, int32_t length) : buffer(nullptr), position(0), limit(0), capacity(0)
 {
     Init(length);
-    this->PutData(0, arr, length);
+    PutData(0, arr, length);
 }
 
 ByteBuffer::ByteBuffer(const ByteBuffer& other) : buffer(nullptr), position(0), limit(0), capacity(0)
@@ -74,7 +74,9 @@ void ByteBuffer::Init(int32_t bufferCapacity)
     if (bufferCapacity > 0) {
         buffer = make_shared_array<char>(bufferCapacity);
         if (buffer != nullptr) {
-            memset_s(buffer.get(), bufferCapacity, 0, bufferCapacity);
+            if (memset_s(buffer.get(), bufferCapacity, 0, bufferCapacity) != EOK) {
+                SIGNATURE_TOOLS_LOGE("memcpy_s failed");
+            }
             limit = bufferCapacity;
             capacity = bufferCapacity;
         }
@@ -112,32 +114,32 @@ bool ByteBuffer::CheckInputForGettingData(int32_t index, int32_t dataLen)
         SIGNATURE_TOOLS_LOGE("invalid index %d", index);
         return false;
     }
-    long long getDataLast = static_cast<long long>(position) + static_cast<long long>(index) +
-        static_cast<long long>(dataLen);
-    if (getDataLast > static_cast<long long>(limit)) {
-        SIGNATURE_TOOLS_LOGE("position %d, index  %d, limit %d", position, index, limit);
+    int64_t getDataLast = static_cast<int64_t>(position) + static_cast<int64_t>(index) +
+        static_cast<int64_t>(dataLen);
+    if (getDataLast > static_cast<int64_t>(limit)) {
+        SIGNATURE_TOOLS_LOGE("position: %{public}d, index: %{public}d, limit: %{public}d", position, index, limit);
         return false;
     }
     return true;
 }
 
-bool ByteBuffer::GetInt64(long long& value)
+bool ByteBuffer::GetInt64(int64_t& value)
 {
     if (!GetInt64(0, value)) {
         SIGNATURE_TOOLS_LOGE("GetInt64 failed");
         return false;
     }
-    position += sizeof(long long);
+    position += sizeof(int64_t);
     return true;
 }
 
-bool ByteBuffer::GetInt64(int32_t index, long long& value)
+bool ByteBuffer::GetInt64(int32_t index, int64_t& value)
 {
-    if (!CheckInputForGettingData(index, sizeof(long long))) {
+    if (!CheckInputForGettingData(index, sizeof(int64_t))) {
         SIGNATURE_TOOLS_LOGE("Failed to get Int64");
         return false;
     }
-    if (memcpy_s(&value, sizeof(value), (buffer.get() + position + index), sizeof(long long)) != EOK) {
+    if (memcpy_s(&value, sizeof(value), (buffer.get() + position + index), sizeof(int64_t)) != EOK) {
         SIGNATURE_TOOLS_LOGE("memcpy_s failed");
         return false;
     }
@@ -294,7 +296,7 @@ bool ByteBuffer::GetInt8(int32_t index, int8_t& value)
 
 void ByteBuffer::PutInt64(int64_t value)
 {
-    if (limit - position >= static_cast<int64_t>(sizeof(value))) {
+    if ((limit - position) >= static_cast<int64_t>(sizeof(value))) {
         if (memcpy_s(buffer.get() + position, limit - position, &value, sizeof(value)) != EOK) {
             SIGNATURE_TOOLS_LOGE("memcpy_s failed");
         } else {
@@ -350,12 +352,12 @@ void ByteBuffer::PutData(int32_t offset, const int8_t data[], int32_t len)
 
 void ByteBuffer::PutData(int32_t offset, const char data[], int32_t len, int32_t type)
 {
-    static int offset_add = 0;
+    static int offsetAdd = 0;
     if (buffer != nullptr && data != nullptr && offset >= 0 && len > 0 && (limit - offset) >= len) {
-        if (memcpy_s((buffer.get() + offset_add), (limit - offset_add), data, len) != EOK) {
+        if (memcpy_s((buffer.get() + offsetAdd), (limit - offsetAdd), data, len) != EOK) {
             SIGNATURE_TOOLS_LOGE("memcpy_s failed");
         }
-        offset_add += offset;
+        offsetAdd += offset;
     }
 }
 
@@ -395,7 +397,9 @@ void ByteBuffer::PutUInt8(uint8_t value)
 void ByteBuffer::ClearData()
 {
     if (buffer != nullptr && position < capacity) {
-        memset_s(buffer.get() + position, capacity - position, 0, capacity - position);
+        if (memset_s(buffer.get() + position, capacity - position, 0, capacity - position) != EOK) {
+            SIGNATURE_TOOLS_LOGE("memcpy_s failed");
+        }
     }
 }
 
@@ -412,7 +416,7 @@ void ByteBuffer::PutByte(char value)
 
 void ByteBuffer::Put(const ByteBuffer& byteBuffer)
 {
-    this->PutData(byteBuffer.GetBufferPtr(), byteBuffer.Remaining());
+    PutData(byteBuffer.GetBufferPtr(), byteBuffer.Remaining());
 }
 
 void ByteBuffer::PutData(const char data[], int32_t len)
@@ -512,10 +516,10 @@ ByteBuffer& ByteBuffer::Slice()
 ByteBuffer* ByteBuffer::Duplicate()
 {
     ByteBuffer* newBuffer = new ByteBuffer();
-    newBuffer->buffer = this->buffer;
-    newBuffer->limit = this->limit;
-    newBuffer->capacity = this->capacity;
-    newBuffer->position = this->position;
+    newBuffer->buffer = buffer;
+    newBuffer->limit = limit;
+    newBuffer->capacity = capacity;
+    newBuffer->position = position;
     return newBuffer;
 }
 
@@ -608,7 +612,7 @@ void ByteBuffer::SetCapacity(int32_t cap)
 
 std::string ByteBuffer::ToString()
 {
-    return std::string(this->GetBufferPtr(), this->GetCapacity());
+    return std::string(GetBufferPtr(), GetCapacity());
 }
 
 } // namespace SignatureTools

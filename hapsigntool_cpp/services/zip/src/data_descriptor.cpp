@@ -49,9 +49,9 @@ std::string DataDescriptor::ToBytes()
 {
     ByteBuffer bf(DES_LENGTH);
     bf.PutInt32(SIGNATURE);
-    bf.PutInt32(crc32);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, compressedSize);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, unCompressedSize);
+    bf.PutInt32(m_crc32);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_compressedSize);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_unCompressedSize);
 
     return bf.ToString();
 }
@@ -68,32 +68,32 @@ int DataDescriptor::GetSIGNATURE()
 
 int DataDescriptor::GetCrc32()
 {
-    return crc32;
+    return m_crc32;
 }
 
 void DataDescriptor::SetCrc32(int crc32)
 {
-    this->crc32 = crc32;
+    m_crc32 = crc32;
 }
 
 int64_t DataDescriptor::GetCompressedSize()
 {
-    return compressedSize;
+    return m_compressedSize;
 }
 
 void DataDescriptor::SetCompressedSize(int64_t compressedSize)
 {
-    this->compressedSize = compressedSize;
+    m_compressedSize = compressedSize;
 }
 
 int64_t DataDescriptor::GetUnCompressedSize()
 {
-    return unCompressedSize;
+    return m_unCompressedSize;
 }
 
 void DataDescriptor::SetUnCompressedSize(int64_t unCompressedSize)
 {
-    this->unCompressedSize = unCompressedSize;
+    m_unCompressedSize = unCompressedSize;
 }
 } // namespace SignatureTools
 } // namespace OHOS

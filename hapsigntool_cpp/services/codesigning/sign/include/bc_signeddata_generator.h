@@ -38,21 +38,21 @@ public:
     * @ret signed data.
     * @return 0:success <0:error
     */
+    static int GetSigAlg(SignerConfig* signerConfig, std::string& sigAlg);
     int GenerateSignedData(const std::string& content, SignerConfig* signerConfig, std::string& ret)override;
     void SetOwnerId(const std::string& ownerID);
-    static int GetSigAlg(SignerConfig* signerConfig, std::string& sigAlg);
 
 private:
-    int PackageSignedData(const std::string& content, std::shared_ptr<Signer> signer,
-                          const std::string& sigAlg, std::string& ret);
     // @return 0(NID_undef) >0: success(new NID)
     static int CreateNIDFromOID(const std::string& oid, const std::string& shortName,
                                 const std::string& longName);
+    int PackageSignedData(const std::string& content, std::shared_ptr<Signer> signer,
+                          const std::string& sigAlg, std::string& ret);
     // @return 0:success <0 :error
     int AddOwnerID(std::vector<PKCS7Attr>& attrs, const std::string& ownerID);
 
 private:
-    std::string ownerID;
+    std::string m_ownerID;
 };
 } // namespace SignatureTools
 } // namespace OHOS

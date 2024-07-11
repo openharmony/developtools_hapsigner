@@ -28,7 +28,7 @@
 
 namespace OHOS {
 namespace SignatureTools {
-    
+
 const int8_t VerifyElf::SIGNATURE_BLOCK = 0;
 const int8_t VerifyElf::PROFILE_NOSIGNED_BLOCK = 1;
 const int8_t VerifyElf::PROFILE_SIGNED_BLOCK = 2;
@@ -94,7 +94,7 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
     if (findFlag) {
         SigningBlock codesign = signBlockInfo.GetSignBlockMap().find(CODESIGNING_BLOCK_TYPE)->second;
         bool verifyElfFlag = VerifyCodeSignature::VerifyElf(elfFile, codesign.GetOffset(), codesign.GetLength(),
-            ELF_FILE_TYPE, profileJson);
+                                                            ELF_FILE_TYPE, profileJson);
         if (!verifyElfFlag) {
             SIGNATURE_TOOLS_LOGE("code signing failed on verify elf %{public}s", elfFile.c_str());
             return false;
@@ -104,7 +104,7 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
 }
 
 bool VerifyElf::VerifyP7b(std::unordered_map<signed char, SigningBlock>& signBlockMap,
-    Options* options, Pkcs7Context& pkcs7Context, HapVerifyResult& verifyResult, std::string& profileJson)
+                          Options* options, Pkcs7Context& pkcs7Context, HapVerifyResult& verifyResult, std::string& profileJson)
 {
     if (signBlockMap.find(PROFILE_NOSIGNED_BLOCK) != signBlockMap.end()) {
         // verify unsigned profile

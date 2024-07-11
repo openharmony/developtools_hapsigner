@@ -47,9 +47,9 @@ Options* SignerConfig::GetOptions() const
     return options;
 }
 
-void SignerConfig::SetOptions(Options* options)
+void SignerConfig::SetOptions(Options* optionsParam)
 {
-    this->options = options;
+    options = optionsParam;
 }
 
 STACK_OF(X509)* SignerConfig::GetCertificates() const
@@ -60,9 +60,9 @@ STACK_OF(X509)* SignerConfig::GetCertificates() const
     return signer->GetCertificates();
 }
 
-void SignerConfig::SetCertificates(STACK_OF(X509)* _certificates)
+void SignerConfig::SetCertificates(STACK_OF(X509)* certificatesParam)
 {
-    certificates = _certificates;
+    certificates = certificatesParam;
 }
 
 STACK_OF(X509_CRL)* SignerConfig::GetX509CRLs() const
@@ -75,7 +75,7 @@ STACK_OF(X509_CRL)* SignerConfig::GetX509CRLs() const
 
 void SignerConfig::SetX509CRLs(STACK_OF(X509_CRL)* crls)
 {
-    this->x509CRLs = crls;
+    x509CRLs = crls;
 }
 
 std::vector<SignatureAlgorithmHelper> SignerConfig::GetSignatureAlgorithms() const
@@ -83,9 +83,9 @@ std::vector<SignatureAlgorithmHelper> SignerConfig::GetSignatureAlgorithms() con
     return signatureAlgorithms;
 }
 
-void SignerConfig::SetSignatureAlgorithms(const std::vector<SignatureAlgorithmHelper>& _signatureAlgorithms)
+void SignerConfig::SetSignatureAlgorithms(const std::vector<SignatureAlgorithmHelper>& signatureAlgorithmsParam)
 {
-    this->signatureAlgorithms = _signatureAlgorithms;
+    signatureAlgorithms = signatureAlgorithmsParam;
 }
 
 const std::map<std::string, std::string>& SignerConfig::GetSignParamMap() const
@@ -95,7 +95,7 @@ const std::map<std::string, std::string>& SignerConfig::GetSignParamMap() const
 
 void SignerConfig::FillParameters(const std::map<std::string, std::string>& params)
 {
-    this->signParamMap = params;
+    signParamMap = params;
 }
 
 std::shared_ptr<Signer> SignerConfig::GetSigner()
@@ -113,9 +113,9 @@ int SignerConfig::GetCompatibleVersion() const
     return compatibleVersion;
 }
 
-void SignerConfig::SetCompatibleVersion(int _compatibleVersion)
+void SignerConfig::SetCompatibleVersion(int compatibleVersionParam)
 {
-    this->compatibleVersion = _compatibleVersion;
+    compatibleVersion = compatibleVersionParam;
 }
 
 bool SignerConfig::IsInputCertChainNotEmpty() const

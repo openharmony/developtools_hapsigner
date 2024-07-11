@@ -111,7 +111,7 @@ bool Options::Equals(const std::string key1, const std::string& key2)
     return  false;
 }
 
-bool Options::Required(std::initializer_list<std::string> keys)
+bool Options::Required(const std::initializer_list<std::string> keys)
 {
     for (auto& key : keys) {
         if (!this->IsEmpty(key) && !(this->find(key) != this->end())) {

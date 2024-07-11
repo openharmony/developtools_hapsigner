@@ -41,7 +41,7 @@ int32_t SegmentHeader::GetType()
 
 void SegmentHeader::SetSegmentOffset(int32_t offset)
 {
-    this->segmentOffset = offset;
+    segmentOffset = offset;
 }
 
 int32_t SegmentHeader::GetSegmentOffset()
@@ -54,15 +54,15 @@ int32_t SegmentHeader::GetSegmentSize()
     return segmentSize;
 }
 
-std::vector<int8_t> SegmentHeader::ToByteArray()
+void SegmentHeader::ToByteArray(std::vector<int8_t> &ret)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(SEGMENT_HEADER_LENGTH));
     bf->PutInt32(type);
     bf->PutInt32(segmentOffset);
     bf->PutInt32(segmentSize);
     bf->Flip();
-    std::vector<int8_t> ret(bf->GetBufferPtr(), bf->GetBufferPtr() + bf.get()->GetLimit());
-    return ret;
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf.get()->GetLimit());
+    return;
 }
 
 std::unique_ptr<SegmentHeader> SegmentHeader::FromByteArray(std::vector<int8_t> bytes)

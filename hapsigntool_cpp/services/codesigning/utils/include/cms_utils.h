@@ -27,11 +27,11 @@ namespace SignatureTools {
 class CmsUtils {
 public:
     static bool VerifySignDataWithUnsignedDataDigest(const std::vector<int8_t>& unsignedDataDigest,
-        const std::vector<int8_t>& signedData);
+                                                     const std::vector<int8_t>& signedData);
     static bool CheckOwnerID(const std::string& signature, const std::string& profileOwnerID,
-        const std::string& profileType);
+                             const std::string& profileType);
     static int CreateNIDFromOID(const std::string& oid, const std::string& shortName,
-        const std::string& longName);
+                                const std::string& longName);
 private:
     CmsUtils();
 };

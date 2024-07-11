@@ -32,19 +32,22 @@ enum class SignatureAlgorithmId {
 
 class SignatureAlgorithmHelper {
 public:
-    SignatureAlgorithmHelper();
-    SignatureAlgorithmHelper(const SignatureAlgorithmHelper& other);
-    SignatureAlgorithmHelper& operator=(const SignatureAlgorithmHelper& other);
-    ~SignatureAlgorithmHelper();
-    static const SignatureAlgorithmHelper* FindById(SignatureAlgorithmId id);
-    SignatureAlgorithmHelper(SignatureAlgorithmId id_, std::string keyAlg_, ContentDigestAlgorithm digestAlg_,
-                             std::pair<std::string, void*> sigParams_);
-    SignatureAlgorithmId id;
-    std::string keyAlgorithm;
-    ContentDigestAlgorithm contentDigestAlgorithm;
-    std::pair<std::string, void*> signatureAlgAndParams;
     static const SignatureAlgorithmHelper ECDSA_WITH_SHA256_INSTANCE;
     static const SignatureAlgorithmHelper ECDSA_WITH_SHA384_INSTANCE;
+
+    SignatureAlgorithmHelper();
+    SignatureAlgorithmHelper(const SignatureAlgorithmHelper& other);
+    SignatureAlgorithmHelper(SignatureAlgorithmId id_, std::string keyAlg_, ContentDigestAlgorithm digestAlg_,
+                             std::pair<std::string, void*> sigParams_);
+    SignatureAlgorithmHelper& operator=(const SignatureAlgorithmHelper& other);
+    ~SignatureAlgorithmHelper();
+
+    static const SignatureAlgorithmHelper* FindById(SignatureAlgorithmId id);
+
+    SignatureAlgorithmId m_id;
+    std::string m_keyAlgorithm;
+    ContentDigestAlgorithm m_contentDigestAlgorithm;
+    std::pair<std::string, void*> m_signatureAlgAndParams;
 };
 } // namespace SignatureTools
 } // namespace OHOS

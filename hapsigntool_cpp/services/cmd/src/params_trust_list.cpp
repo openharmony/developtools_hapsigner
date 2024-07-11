@@ -21,25 +21,36 @@
 
 namespace OHOS {
 namespace SignatureTools {
-std::vector<std::string> ParamsTrustlist::commands;
-std::unordered_map<std::string, std::vector<std::string>> ParamsTrustlist::trustMap;
-const std::string ParamsTrustlist::options = "[options]:";
+const std::string options = "[options]:";
+std::unique_ptr<ParamsTrustList> ParamsTrustList::paramTrustListInstance = nullptr;
+std::mutex ParamsTrustList::mtx;
 
-ParamsTrustlist::ParamsTrustlist()
+const std::vector<std::string> commands = {
+    GENERATE_KEYPAIR + options,
+    GENERATE_CSR + options,
+    GENERATE_CERT + options,
+    GENERATE_CA + options,
+    GENERATE_APP_CERT + options,
+    GENERATE_PROFILE_CERT + options,
+    SIGN_PROFILE + options,
+    VERIFY_PROFILE + options,
+    SIGN_APP + options,
+    VERIFY_APP + options
+};
+
+ParamsTrustList* ParamsTrustList::GetInstance()
 {
-    commands.push_back(Params::GENERATE_KEYPAIR + options);
-    commands.push_back(Params::GENERATE_CSR + options);
-    commands.push_back(Params::GENERATE_CERT + options);
-    commands.push_back(Params::GENERATE_CA + options);
-    commands.push_back(Params::GENERATE_APP_CERT + options);
-    commands.push_back(Params::GENERATE_PROFILE_CERT + options);
-    commands.push_back(Params::SIGN_PROFILE + options);
-    commands.push_back(Params::VERIFY_PROFILE + options);
-    commands.push_back(Params::SIGN_APP + options);
-    commands.push_back(Params::VERIFY_APP + options);
+    if (!paramTrustListInstance) {
+        std::lock_guard<std::mutex> lock(mtx);
+        if (!paramTrustListInstance) {
+            paramTrustListInstance = std::make_unique<ParamsTrustList>();
+        }
+    }
+
+    return paramTrustListInstance.get();
 }
 
-void ParamsTrustlist::PutTrustMap(const std::string& cmdStandBy, const std::string& param)
+void ParamsTrustList::PutTrustMap(const std::string& cmdStandBy, const std::string& param)
 {
     if (param.at(0) == '-') {
         size_t pos = param.find(':');
@@ -55,7 +66,7 @@ void ParamsTrustlist::PutTrustMap(const std::string& cmdStandBy, const std::stri
     }
 }
 
-void ParamsTrustlist::ReadHelpParam(std::istringstream& fd)
+void ParamsTrustList::ReadHelpParam(std::istringstream& fd)
 {
     std::string str;
     std::string cmdStandBy;
@@ -78,20 +89,20 @@ void ParamsTrustlist::ReadHelpParam(std::istringstream& fd)
     }
 }
 
-void ParamsTrustlist::GenerateTrustlist()
+void ParamsTrustList::GenerateTrustList()
 {
     std::istringstream iss(HELP_TXT);
     ReadHelpParam(iss);
 }
 
-std::vector<std::string> ParamsTrustlist::GetTrustList(const std::string& commond)
+std::vector<std::string> ParamsTrustList::GetTrustList(const std::string& command)
 {
-    std::string keyParam = commond + options;
-    GenerateTrustlist();
+    std::string keyParam = command + options;
+    GenerateTrustList();
     if (trustMap.find(keyParam) != trustMap.end()) {
         return trustMap[keyParam];
     } else {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupport command:" + commond);
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupport command:" + command);
         trustMap[keyParam].clear();
         return trustMap[keyParam];
     }

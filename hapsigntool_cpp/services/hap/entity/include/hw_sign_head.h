@@ -37,7 +37,7 @@ public:
 private:
     static const int NUM_OF_BLOCK;
     static const int RESERVE_LENGTH;
-    static std::vector<int8_t> reserve;
+    static std::vector<int8_t> m_reserve;
 };
 } // namespace SignatureTools
 } // namespace OHOS

@@ -32,30 +32,30 @@ bool SignHap::Sign(DataSource* contents[], int32_t len, SignerConfig& config,
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Signature Algorithms is empty");
         return false;
     }
-    SignatureAlgorithm algo = static_cast<SignatureAlgorithm>(algoClass[0].id);
+    SignatureAlgorithm algo = static_cast<SignatureAlgorithm>(algoClass[0].m_id);
     SIGNATURE_TOOLS_LOGI("[SignHap] Signature Algorithm  is %d", algo);
     int32_t nId = VerifyHapOpensslUtils::GetDigestAlgorithmId(algo);
     DigestParameter digestParam = HapSignerBlockUtils::GetDigestParameter(nId);
-    ByteBuffer dig_context;
+    ByteBuffer digContext;
     std::vector<std::pair<int32_t, ByteBuffer>> nidAndcontentDigestsVec;
     // 1:Summarize corresponding content and optionalBlock
-    if (!ComputeDigests(digestParam, contents, CONTENT_NUBER, optionalBlocks, dig_context)) {
+    if (!ComputeDigests(digestParam, contents, CONTENT_NUBER, optionalBlocks, digContext)) {
         SIGNATURE_TOOLS_LOGE("[SignHap] compute Digests failed");
         return false;
     }
-    SIGNATURE_TOOLS_LOGI("[SignHap] ComputeDigests %{public}d", dig_context.GetCapacity());
+    SIGNATURE_TOOLS_LOGI("[SignHap] ComputeDigests %{public}d", digContext.GetCapacity());
     // 2:Encoding Summary Information
-    ByteBuffer dig_message;
-    std::pair<int32_t, ByteBuffer> nidAndcontentDigests = std::make_pair(algo, dig_context);
+    ByteBuffer digMessage;
+    std::pair<int32_t, ByteBuffer> nidAndcontentDigests = std::make_pair(algo, digContext);
     nidAndcontentDigestsVec.push_back(nidAndcontentDigests);
-    EncodeListOfPairsToByteArray(digestParam, nidAndcontentDigestsVec, dig_message);
+    EncodeListOfPairsToByteArray(digestParam, nidAndcontentDigestsVec, digMessage);
 
-    SIGNATURE_TOOLS_LOGI("[SignHap] EncodeListOfPairsToByteArray %{public}d", dig_message.GetCapacity());
+    SIGNATURE_TOOLS_LOGI("[SignHap] EncodeListOfPairsToByteArray %{public}d", digMessage.GetCapacity());
     // 3:Encrypt the encoded summary information.
     std::shared_ptr<Pkcs7Generator> pkcs7Generator = std::make_shared<BCPkcs7Generator>();
-    std::string dig_message_data(dig_message.GetBufferPtr(), dig_message.GetCapacity());
+    std::string digMessageData(digMessage.GetBufferPtr(), digMessage.GetCapacity());
     std::string ret;
-    if (pkcs7Generator->GenerateSignedData(dig_message_data, &config, ret) != 0) {
+    if (pkcs7Generator->GenerateSignedData(digMessageData, &config, ret) != 0) {
         SIGNATURE_TOOLS_LOGE("[SignHap] Generate Signed Data failed");
         return false;
     }

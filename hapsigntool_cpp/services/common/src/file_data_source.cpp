@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace SignatureTools {
 FileDataSource::FileDataSource(RandomAccessFile& hapFile,
-                               long long offset, long long size, long long position)
+                               int64_t offset, int64_t size, int64_t position)
     : DataSource(), hapFileRandomAccess(hapFile), fileOffset(offset), sourceSize(size), sourcePosition(position)
 {
 }
@@ -32,7 +32,7 @@ bool FileDataSource::HasRemaining() const
     return sourcePosition < sourceSize;
 }
 
-long long FileDataSource::Remaining() const
+int64_t FileDataSource::Remaining() const
 {
     return sourceSize - sourcePosition;
 }

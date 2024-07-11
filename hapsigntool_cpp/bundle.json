@@ -48,7 +48,6 @@
             ],
             "inner_kits": [],
             "test": [
-                "//developtools/hapsigner/hapsigntool_cpp/test/unittest:hapsigntool_pc_unittest"
             ]
         }
     }

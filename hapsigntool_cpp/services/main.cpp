@@ -19,8 +19,7 @@ using namespace OHOS::SignatureTools;
 int main(int argc, char** argv)
 {
     // prepare modes vector by macro DEFINE_MODE which subscribe UPDATER_MAIN_PRE_EVENT event
-    std::unique_ptr<ParamsRunTool> paramsRunToolPtr = std::make_unique<ParamsRunTool>();
-    bool isSuccess = paramsRunToolPtr->ProcessCmd(argv, argc);
+    bool isSuccess = ParamsRunTool::ProcessCmd(argv, argc);
     if (isSuccess) {
         return 0;
     } else {

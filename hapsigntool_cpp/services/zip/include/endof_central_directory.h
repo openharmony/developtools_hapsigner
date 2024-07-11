@@ -95,30 +95,30 @@ public:
 
 private:
     /* 4 bytes */
-    int diskNum = 0;
+    int m_diskNum = 0;
 
     /* 4 bytes */
-    int cDStartDiskNum = 0;
+    int m_cDStartDiskNum = 0;
 
     /* 4 bytes */
-    int thisDiskCDNum = 0;
+    int m_thisDiskCDNum = 0;
 
     /* 4 bytes */
-    int cDTotal = 0;
+    int m_cDTotal = 0;
 
     /* 8 bytes */
-    int64_t cDSize = 0;
+    int64_t m_cDSize = 0;
 
     /* 8 bytes */
-    int64_t offset = 0;
+    int64_t m_offset = 0;
 
     /* 4 bytes */
-    int commentLength = 0;
+    int m_commentLength = 0;
 
     /* n bytes */
-    std::string comment;
+    std::string m_comment;
 
-    int length = 0;
+    int m_length = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

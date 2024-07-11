@@ -27,22 +27,30 @@ const std::string ParamsRunTool::VERSION = "1.0.0";
 const std::string ParamsRunTool::LOCAL_SIGN = "localSign";
 const std::string ParamsRunTool::REMOTE_SIGN = "remoteSign";
 
-std::vector<std::string> ParamsRunTool::InformList;
-enum class MapNum {
-    NUM_1 = 1,
-    NUM_2,
-    NUM_3,
-    NUM_4,
-    NUM_5,
-    NUM_6
+std::vector<std::string> ParamsRunTool::InformList = {
+    "bin",
+    "elf",
+    "zip"
 };
 
-ParamsRunTool::ParamsRunTool()
+static std::unordered_map <std::string, std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD
 {
-    InformList.push_back("bin");
-    InformList.push_back("elf");
-    InformList.push_back("zip");
-}
+    {SIGN_APP, ParamsRunTool::RunSignApp},
+    {SIGN_PROFILE, ParamsRunTool::RunSignProfile},
+    {VERIFY_APP, ParamsRunTool::RunVerifyApp},
+    {VERIFY_PROFILE, ParamsRunTool::RunVerifyProfile}
+};
+
+static std::unordered_map <std::string, std::function<bool(Options* params, SignToolServiceImpl& api)>> GENERATOR_RUN_METHOD
+{
+    {GENERATE_KEYPAIR, ParamsRunTool::RunKeypair},
+    {GENERATE_CSR, ParamsRunTool::RunCsr},
+    {GENERATE_CA, ParamsRunTool::RunCa},
+    {GENERATE_APP_CERT, ParamsRunTool::RunAppCert},
+    {GENERATE_PROFILE_CERT, ParamsRunTool::RunProfileCert},
+    {GENERATE_CERT, ParamsRunTool::RunCert},
+};
+
 
 bool ParamsRunTool::ProcessCmd(char** args, size_t size)
 {
@@ -59,22 +67,21 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
         Version();
         return true;
     } else {
-        std::shared_ptr<SignToolServiceImpl> service_api = std::make_shared<SignToolServiceImpl>();
-        CmdUtil cmdUtil;
+        std::shared_ptr<SignToolServiceImpl> serviceApi = std::make_shared<SignToolServiceImpl>();
         ParamsSharedPtr param = std::make_shared<Params>();
-        if (!cmdUtil.Convert2Params(args, size, param)) {
+        if (!CmdUtil::Convert2Params(args, size, param)) {
             PrintMsg(param->GetMethod() + " failed");
             return false;
         }
         PrintMsg("Start " + param->GetMethod());
-        SIGNATURE_TOOLS_LOGI("%{public}s run start time  ", param->GetMethod().c_str());
-        if (!DispatchParams(param, *service_api.get())) {
-            SIGNATURE_TOOLS_LOGI("%{public}s run end time  ", param->GetMethod().c_str());
+        SIGNATURE_TOOLS_LOGD("%{public}s run start time  ", param->GetMethod().c_str());
+        if (!DispatchParams(param, *serviceApi.get())) {
+            SIGNATURE_TOOLS_LOGD("%{public}s run end time  ", param->GetMethod().c_str());
             PrintMsg(param->GetMethod() + " failed");
             return false;
         }
         PrintMsg(param->GetMethod() + " success");
-        SIGNATURE_TOOLS_LOGI("%{public}s run end time  ", param->GetMethod().c_str());
+        SIGNATURE_TOOLS_LOGD("%{public}s run end time  ", param->GetMethod().c_str());
     }
     return true;
 }
@@ -82,34 +89,12 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
 bool ParamsRunTool::CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& api)
 {
     bool isSuccess = false;
-    std::map<std::string, MapNum> map;
-    map.insert(std::make_pair(Params::GENERATE_KEYPAIR, MapNum::NUM_1));
-    map.insert(std::make_pair(Params::GENERATE_CSR, MapNum::NUM_2));
-    map.insert(std::make_pair(Params::GENERATE_CA, MapNum::NUM_3));
-    map.insert(std::make_pair(Params::GENERATE_APP_CERT, MapNum::NUM_4));
-    map.insert(std::make_pair(Params::GENERATE_PROFILE_CERT, MapNum::NUM_5));
-    map.insert(std::make_pair(Params::GENERATE_CERT, MapNum::NUM_6));
-    switch (map[params->GetMethod()]) {
-        case MapNum::NUM_1:
-            isSuccess = ParamsRunTool::RunKeypair(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_2:
-            isSuccess = ParamsRunTool::RunCsr(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_3:
-            isSuccess = ParamsRunTool::RunCa(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_4:
-            isSuccess = ParamsRunTool::RunAppCert(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_5:
-            isSuccess = ParamsRunTool::RunProfileCert(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_6:
-            isSuccess = ParamsRunTool::RunCert(params->GetOptions(), api);
-            break;
-        default:
-            break;
+    std::string method = params->GetMethod();
+    if (GENERATOR_RUN_METHOD.count(method) == 0) {
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupported method: "+method);
+        return false;
+    } else {
+        isSuccess=GENERATOR_RUN_METHOD[method](params->GetOptions(), api);
     }
     return isSuccess;
 }
@@ -177,27 +162,12 @@ bool ParamsRunTool::CheckProfile(Options& params)
 bool ParamsRunTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& api)
 {
     bool isSuccess = false;
-    std::map<std::string, MapNum> map;
-    map.insert(std::make_pair(Params::SIGN_APP, MapNum::NUM_1));
-    map.insert(std::make_pair(Params::SIGN_PROFILE, MapNum::NUM_2));
-    map.insert(std::make_pair(Params::VERIFY_APP, MapNum::NUM_3));
-    map.insert(std::make_pair(Params::VERIFY_PROFILE, MapNum::NUM_4));
-    switch (map[params->GetMethod()]) {
-        case MapNum::NUM_1:
-            isSuccess = ParamsRunTool::RunSignApp(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_2:
-            isSuccess = ParamsRunTool::RunSignProfile(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_3:
-            isSuccess = ParamsRunTool::RunVerifyApp(params->GetOptions(), api);
-            break;
-        case MapNum::NUM_4:
-            isSuccess = ParamsRunTool::RunVerifyProfile(params->GetOptions(), api);
-            break;
-        default:
-            isSuccess = ParamsRunTool::CallGenerators(params, api);
-            break;
+    std::string method = params->GetMethod();
+    if (DISPATCH_RUN_METHOD.count(method) == 0) {
+        isSuccess = ParamsRunTool::CallGenerators(params, api);
+    }
+    else {
+        isSuccess = DISPATCH_RUN_METHOD[method](params->GetOptions(), api);
     }
     return isSuccess;
 }

@@ -33,21 +33,20 @@ namespace OHOS {
 namespace SignatureTools {
 class CmdUtil final {
 public:
-    CmdUtil() = default;
-    bool Convert2Params(char** args, size_t size, ParamsSharedPtr param);
-    static bool JudgeAlgType(std::string keyAlg);
-    static bool JudgeSize(int size);
-    static bool JudgeSignAlgType(std::string signAlg);
-    static bool JudgeEndSignAlgType(std::string signAlg);
-    static bool VerifyType(std::string inputType);
-    static bool VerifyTypes(std::string inputType);
-    static bool VerifyType(std::string inputtype, std::string supportTypes);
+    static bool Convert2Params(char** args, size_t size, const ParamsSharedPtr& param);
+    static bool JudgeAlgType(const std::string& keyAlg);
+    static bool JudgeSize(const int size);
+    static bool JudgeSignAlgType(const std::string& signAlg);
+    static bool JudgeEndSignAlgType(const std::string& signAlg);
+    static bool VerifyType(const std::string& inputType);
+    static bool VerifyTypes(const std::string& inputType);
+    static bool VerifyType(const std::string& inputtype, const std::string& supportTypes);
     static constexpr int ARGS_MIN_LEN = 2;
 
 private:
-    int GetCommandParameterKey(char strChar, std::string& strChars,
+    static int GetCommandParameterKey(char strChar, std::string& strChars,
                                std::vector<std::string>& trustList, std::string& keyStandBy);
-    bool ValidAndPutParam(ParamsSharedPtr params, const std::string& key, char* value);
+    static bool ValidAndPutParam(ParamsSharedPtr params, const std::string& key, char* value);
     static const std::regex INTEGER_PATTERN;
 };
 } // namespace SignatureTools

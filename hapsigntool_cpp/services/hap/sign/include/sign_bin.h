@@ -24,20 +24,20 @@ class SignBin {
 public:
     static bool Sign(SignerConfig& signerConfig, const std::map<std::string, std::string>& signParams);
     static std::vector<int8_t> GenerateFileDigest(const std::string& outputFile,
-                                                    const std::string& signAlg);
+                                                  const std::string& signAlg);
 
 private:
     static bool WriteBlockDataToFile(const std::string& inputFile, const std::string& outputFile,
-                                        const std::string& profileFile, const std::string& profileSigned);
+                                     const std::string& profileFile, const std::string& profileSigned);
     static bool WriteSignDataToOutputFile(SignerConfig& SignerConfig, const std::string& outputFile,
-                                            const std::string& signAlg);
+                                          const std::string& signAlg);
     static bool WriteSignHeadDataToOutputFile(const std::string& inputFile, const std::string& outputFile);
     static bool CheckBinAndProfileLengthIsValid(int64_t binFileLen, int64_t profileDataLen);
     static bool IsLongOverflowInteger(int64_t num);
     static bool IsLongOverflowShort(int64_t num);
     static bool WriteSignedBin(const std::string& inputFile, const std::string& proBlockByte,
-                                const std::string& signBlockByte, const std::string& profileFile,
-                                const std::string& outputFile);
+                               const std::string& signBlockByte, const std::string& profileFile,
+                               const std::string& outputFile);
 };
 } // namespace SignatureTools
 } // namespace OHOS

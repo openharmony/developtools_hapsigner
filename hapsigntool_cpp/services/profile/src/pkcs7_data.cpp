@@ -105,14 +105,14 @@ static int VerifySignature(PKCS7* pkcs7, BIO* p7bio)
     return RET_OK;
 }
 
-PKCS7Data::PKCS7Data(int flags) : p7(nullptr), flags(flags)
+PKCS7Data::PKCS7Data(int flags) : m_p7(nullptr), m_flags(flags)
 {
 }
 
 PKCS7Data::~PKCS7Data()
 {
-    PKCS7_free(p7);
-    this->p7 = NULL;
+    PKCS7_free(m_p7);
+    m_p7 = NULL;
 }
 
 int PKCS7Data::Sign(const std::string& content, std::shared_ptr<Signer> signer,
@@ -124,7 +124,7 @@ int PKCS7Data::Sign(const std::string& content, std::shared_ptr<Signer> signer,
     }
 
     /* serialization */
-    if ((result = I2dPkcs7Str(p7, ret)) < 0) {
+    if ((result = I2dPkcs7Str(m_p7, ret)) < 0) {
         goto err;
     }
     /* release resources */
@@ -148,13 +148,13 @@ int PKCS7Data::Parse(const std::vector<signed char>& p7bBytes)
 int PKCS7Data::Parse(const unsigned char** in, long len)
 {
     /* If p7 has been initialized, it will be released */
-    if (p7) {
-        PKCS7_free(p7);
-        p7 = NULL;
+    if (m_p7) {
+        PKCS7_free(m_p7);
+        m_p7 = NULL;
     }
     /* Deserialize */
-    p7 = d2i_PKCS7(NULL, in, len);
-    if (p7 == NULL) {
+    m_p7 = d2i_PKCS7(NULL, in, len);
+    if (m_p7 == NULL) {
         PrintErrorNumberMsg("PARSE_ERROR", PARSE_ERROR, "invalid p7b data, parse failed");
         return PARSE_ERROR;
     }
@@ -169,7 +169,7 @@ int PKCS7Data::Verify(const std::string& content) const
     }
     if (VerifyCertChain() < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "cert Chain verify failed");
-        PrintCertChainSub(p7->d.sign->cert);
+        PrintCertChainSub(m_p7->d.sign->cert);
         return VERIFY_ERROR;
     }
     return RET_OK;
@@ -177,7 +177,7 @@ int PKCS7Data::Verify(const std::string& content) const
 
 int PKCS7Data::GetContent(std::string& originalRawData) const
 {
-    BIO* oriBio = PKCS7_dataDecode(p7, NULL, NULL, NULL);
+    BIO* oriBio = PKCS7_dataDecode(m_p7, NULL, NULL, NULL);
     if (oriBio == NULL) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "pkcs7 get content data failed!");
         BIO_free_all(oriBio);
@@ -211,8 +211,8 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
         result = INVALIDPARAM_ERROR;
         goto err;
     }
-    this->signer = signer;
-    this->sigAlg = sigAlg;
+    m_signer = signer;
+    m_sigAlg = sigAlg;
     certs = signer->GetCertificates();
     if (SortX509Stack(certs) < 0) {
         result = RET_FAILED;
@@ -230,13 +230,13 @@ int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> sig
     }
     /* Extract the entity certificate from the certificate chain */
     cert = sk_X509_delete(certs, 0);
-    this->p7 = Pkcs7Sign(cert, certs, md, content, this->flags, attrs);
-    if (this->p7 == NULL) {
+    m_p7 = Pkcs7Sign(cert, certs, md, content, m_flags, attrs);
+    if (m_p7 == NULL) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", SIGN_ERROR, "p7 is NULL, pkcs7 sign failed");
         result = SIGN_ERROR;
         goto err;
     }
-    PKCS7AddCrls(p7, signer->GetCrls());
+    PKCS7AddCrls(m_p7, signer->GetCrls());
 
 err:
     sk_X509_pop_free(certs, X509_free);
@@ -259,28 +259,28 @@ void PKCS7Data::PrintCertChainSub(const STACK_OF(X509)* certs)
     }
 }
 
-std::string PKCS7Data::GetASN1Time(const ASN1_TIME* asn1_tm)
+std::string PKCS7Data::GetASN1Time(const ASN1_TIME* tm)
 {
-    if (asn1_tm == NULL) {
+    if (tm == NULL) {
         return "";
     }
     /* Convert the ASN1_TIME structure to a standard tm structure. */
-    struct tm tm_time;
-    ASN1_TIME_to_tm(asn1_tm, &tm_time);
+    struct tm time;
+    ASN1_TIME_to_tm(tm, &time);
     /* Convert to local time(considering the time zone) */
-    time_t t = mktime(&tm_time);
+    time_t t = mktime(&time);
     if (t < 0) {
         return "";
     }
-    struct tm* local_time = localtime(&t);
-    if (local_time == nullptr) {
+    struct tm* localTime = localtime(&t);
+    if (localTime == nullptr) {
         return "";
     }
     /* Print local time */
     char buf[128] = {0};
     if (sprintf_s(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
-                  local_time->tm_year + YEAR1900, local_time->tm_mon + 1, local_time->tm_mday,
-                  local_time->tm_hour, local_time->tm_min, local_time->tm_sec) == -1) {
+                  localTime->tm_year + YEAR1900, localTime->tm_mon + 1, localTime->tm_mday,
+                  localTime->tm_hour, localTime->tm_min, localTime->tm_sec) == -1) {
         return "";
     }
     return std::string(buf, strlen(buf));
@@ -316,17 +316,17 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "signtime is NULL");
         return INVALIDPARAM_ERROR;
     }
-    ASN1_TIME* asn1_tm = ASN1_TIME_new();
-    ASN1_TIME_set_string(asn1_tm, (reinterpret_cast<const char*>(signTime->value.asn1_string->data)));
+    ASN1_TIME* tm = ASN1_TIME_new();
+    ASN1_TIME_set_string(tm, (reinterpret_cast<const char*>(signTime->value.asn1_string->data)));
     if (ASN1_TIME_compare(notBefore, signTime->value.asn1_string) > 0 ||
         ASN1_TIME_compare(notAfter, signTime->value.asn1_string) < 0) {
         SIGNATURE_TOOLS_LOGE("sign time invalid, signTime: %{public}s, notBefore: %{public}s, "
-                             "notAfter: %{public}s", GetASN1Time(asn1_tm).c_str(),
+                             "notAfter: %{public}s", GetASN1Time(tm).c_str(),
                              GetASN1Time(notBefore).c_str(), GetASN1Time(notAfter).c_str());
-        ASN1_TIME_free(asn1_tm);
+        ASN1_TIME_free(tm);
         return RET_FAILED;
     }
-    ASN1_TIME_free(asn1_tm);
+    ASN1_TIME_free(tm);
     return RET_OK;
 }
 
@@ -398,7 +398,7 @@ err:
 int PKCS7Data::VerifySign(const std::string& content)const
 {
     BIO* inBio = NULL;
-    if (this->flags & PKCS7_DETACHED) {
+    if (m_flags & PKCS7_DETACHED) {
         inBio = BIO_new_mem_buf(reinterpret_cast<const void*>(content.c_str()),
                                 static_cast<int>(content.size()));
         if (inBio == NULL) {
@@ -407,7 +407,7 @@ int PKCS7Data::VerifySign(const std::string& content)const
             return VERIFY_ERROR;
         }
     }
-    if (PKCS7_verify(p7, NULL, NULL, inBio, NULL, this->flags) != 1) {
+    if (PKCS7_verify(m_p7, NULL, NULL, inBio, NULL, m_flags) != 1) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "pkcs7 verify signature failed");
         BIO_free(inBio);
         return VERIFY_ERROR;
@@ -419,13 +419,13 @@ int PKCS7Data::VerifySign(const std::string& content)const
 int PKCS7Data::VerifyCertChain()const
 {
     /* Validate the certificate chain */
-    STACK_OF(PKCS7_SIGNER_INFO)* skSignerInfo = PKCS7_get_signer_info(p7);
+    STACK_OF(PKCS7_SIGNER_INFO)* skSignerInfo = PKCS7_get_signer_info(m_p7);
     int signerCount = sk_PKCS7_SIGNER_INFO_num(skSignerInfo);
     int c = signerCount;
     STACK_OF(X509)* certs = NULL;
     int result = RET_FAILED;
     /* Original certificate chain */
-    STACK_OF(X509)* certChain = p7->d.sign->cert;
+    STACK_OF(X509)* certChain = m_p7->d.sign->cert;
     /* Copy of the certificate chain, with the entity certificate removed later */
     certs = sk_X509_dup(certChain);
     if (SortX509Stack(certs) < 0) {
@@ -438,7 +438,7 @@ int PKCS7Data::VerifyCertChain()const
     }
     for (int i = 0; i < signerCount; i++) {
         PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(skSignerInfo, i);
-        if ((result = VerifySignerInfoCertchain(p7, signerInfo, certs, certChain)) < 0) {
+        if ((result = VerifySignerInfoCertchain(m_p7, signerInfo, certs, certChain)) < 0) {
             SIGNATURE_TOOLS_LOGE("verify certchain failed");
             goto err;
         }
@@ -531,7 +531,7 @@ int PKCS7Data::Pkcs7SignAttr(PKCS7_SIGNER_INFO* info)
     }
 
     data.assign(reinterpret_cast<const char*>(attrBuf), attrLen);
-    signature = signer->GetSignature(data, this->sigAlg);
+    signature = m_signer->GetSignature(data, m_sigAlg);
     if (signature.empty()) {
         OPENSSL_free(attrBuf);
         return 0;

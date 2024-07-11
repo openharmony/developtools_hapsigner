@@ -24,37 +24,37 @@ SignBlockInfo::SignBlockInfo()
 
 SignBlockInfo::SignBlockInfo(bool needGenerateDigest)
 {
-    this->needGenerateDigest = needGenerateDigest;
+    m_needGenerateDigest = needGenerateDigest;
 }
 
 std::unordered_map<signed char, SigningBlock>& SignBlockInfo::GetSignBlockMap()
 {
-    return signBlockMap;
+    return m_signBlockMap;
 }
 
 std::vector<int8_t> SignBlockInfo::GetFileDigest()
 {
-    return fileDigest;
+    return m_fileDigest;
 }
 
 void SignBlockInfo::SetFileDigest(std::vector<int8_t> fileDigest)
 {
-    this->fileDigest = fileDigest;
+    m_fileDigest = fileDigest;
 }
 
 std::vector<int8_t> SignBlockInfo::GetRawDigest()
 {
-    return rawDigest;
+    return m_rawDigest;
 }
 
 void SignBlockInfo::SetRawDigest(std::vector<int8_t> rawDigest)
 {
-    this->rawDigest = rawDigest;
+    m_rawDigest = rawDigest;
 }
 
 bool SignBlockInfo::GetNeedGenerateDigest()
 {
-    return needGenerateDigest;
+    return m_needGenerateDigest;
 }
 
 } // namespace SignatureTools

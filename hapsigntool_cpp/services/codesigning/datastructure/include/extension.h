@@ -26,13 +26,13 @@ namespace SignatureTools {
 
 class Extension {
 public:
+    static const int32_t EXTENSION_HEADER_SIZE;
     Extension();
     Extension(int32_t type, int32_t size);
     virtual ~Extension();
     virtual int32_t GetSize();
-    virtual std::vector<int8_t> ToByteArray();
+    virtual void ToByteArray(std::vector<int8_t>& ret);
     bool IsType(int32_t type);
-    static const int32_t EXTENSION_HEADER_SIZE;
 
 private:
     int32_t type;
