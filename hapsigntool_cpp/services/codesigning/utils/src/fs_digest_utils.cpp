@@ -48,7 +48,7 @@ std::string DigestUtils::Result(DigestUtils::Type type)
         char* res = new char[len * temporaryVariableFirst + 1];
         for (unsigned int i = 0; i < len; i++) {
             snprintf_s(&res[i * temporaryVariableFirst], temporaryVariableSecond,
-                        temporaryVariableFirst, "%02x", md[i]);
+                       temporaryVariableFirst, "%02x", md[i]);
         }
         std::string st{res, len * temporaryVariableFirst};
         delete[]md;

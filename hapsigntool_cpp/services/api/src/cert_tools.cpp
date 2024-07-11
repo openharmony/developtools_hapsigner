@@ -518,18 +518,21 @@ bool CertTools::SetCertSerialNum(X509* cert)
         goto err;
     }
     if (!BN_bin2bn(serialNumberValue, sizeof(serialNumberValue), bignum)) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
         goto err;
     }
     if (BN_is_negative(bignum)) {
-        BN_set_negative(bignum, 0);
+        BN_set_negative(bignum, 0); // Replace negative numbers with positive ones
     }
     if (!BN_to_ASN1_INTEGER(bignum, X509_get_serialNumber(cert))) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
         goto err;
     }
     BN_CTX_free(ctx);
     BN_free(bignum);
     return true;
 err:
+    SIGNATURE_TOOLS_LOGE("set x509 cert serial number failed");
     BN_CTX_free(ctx);
     BN_free(bignum);
     return false;

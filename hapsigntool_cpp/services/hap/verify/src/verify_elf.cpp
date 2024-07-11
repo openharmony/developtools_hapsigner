@@ -104,7 +104,7 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
 }
 
 bool VerifyElf::VerifyP7b(std::unordered_map<signed char, SigningBlock>& signBlockMap,
-                          Options* options, Pkcs7Context& pkcs7Context, 
+                          Options* options, Pkcs7Context& pkcs7Context,
                           HapVerifyResult& verifyResult, std::string& profileJson)
 {
     if (signBlockMap.find(PROFILE_NOSIGNED_BLOCK) != signBlockMap.end()) {
