@@ -20,32 +20,32 @@ namespace SignatureTools {
 
 SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value)
 {
-    this->type = type;
-    this->length = value.size();
-    this->value = value;
+    m_type = type;
+    m_length = value.size();
+    m_value = value;
 }
 
 SigningBlock::SigningBlock(int32_t type, std::vector<int8_t> value, int64_t offset)
 {
-    this->type = type;
-    this->length = value.size();
-    this->value = value;
-    this->offset = offset;
+    m_type = type;
+    m_length = value.size();
+    m_value = value;
+    m_offset = offset;
 }
 
 int32_t SigningBlock::GetLength()
 {
-    return length;
+    return m_length;
 }
 
 std::vector<int8_t> SigningBlock::GetValue()
 {
-    return value;
+    return m_value;
 }
 
 int64_t SigningBlock::GetOffset()
 {
-    return offset;
+    return m_offset;
 }
 
 } // namespace SignatureTools

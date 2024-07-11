@@ -49,11 +49,11 @@ private:
     /**
     * key pair.
     */
-    EVP_PKEY* keyPair;
+    EVP_PKEY* m_keyPair;
     /**
     * certchain.
     */
-    STACK_OF(X509)* certificates;
+    STACK_OF(X509)* m_certificates;
 };
 } // namespace SignatureTools
 } // namespace OHOS

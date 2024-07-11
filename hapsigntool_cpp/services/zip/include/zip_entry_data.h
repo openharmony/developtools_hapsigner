@@ -32,10 +32,16 @@ public:
     /* data descriptor has or not flag mask */
     static constexpr short NOT_HAS_DATA_DESCRIPTOR_FLAG = 0;
 
+    ZipEntryData()
+    {
+        m_zipEntryHeader = nullptr;
+        m_dataDescriptor = nullptr;
+    }
+
     ~ZipEntryData()
     {
-        delete zipEntryHeader;
-        delete dataDescriptor;
+        delete m_zipEntryHeader;
+        delete m_dataDescriptor;
     }
 
     ZipEntryHeader* GetZipEntryHeader();
@@ -70,19 +76,19 @@ public:
     void SetLength(int64_t length);
 
 private:
-    ZipEntryHeader* zipEntryHeader;
-
-    int64_t fileOffset = 0;
-
-    int64_t fileSize = 0;
-
-    DataDescriptor* dataDescriptor;
-
-    int64_t length = 0;
-
     static bool ReadEntryFileNameAndExtraByOffset(std::ifstream& input,
                                                   ZipEntryHeader* entryHeader,
                                                   int64_t& offset);
+
+    ZipEntryHeader* m_zipEntryHeader;
+
+    int64_t m_fileOffset = 0;
+
+    int64_t m_fileSize = 0;
+
+    DataDescriptor* m_dataDescriptor;
+
+    int64_t m_length = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

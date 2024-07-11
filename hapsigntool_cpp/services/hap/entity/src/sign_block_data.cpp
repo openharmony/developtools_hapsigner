@@ -20,53 +20,53 @@ namespace SignatureTools {
 
 SignBlockData::SignBlockData(std::vector<int8_t>& signData, char type)
 {
-    this->signData = signData;
-    this->type = type;
-    this->len = signData.size();
-    this->isByte = true;
+    m_signData = signData;
+    m_type = type;
+    m_len = signData.size();
+    m_isByte = true;
 }
 
 SignBlockData::SignBlockData(std::string& signFile, char type)
 {
-    this->signFile = signFile;
-    this->type = type;
-    this->len = FileUtils::GetFileLen(signFile);
-    this->isByte = false;
+    m_signFile = signFile;
+    m_type = type;
+    m_len = FileUtils::GetFileLen(signFile);
+    m_isByte = false;
 }
 
 char SignBlockData::GetType()
 {
-    return type;
+    return m_type;
 }
 
 std::vector<int8_t> SignBlockData::GetBlockHead()
 {
-    return blockHead;
+    return m_blockHead;
 }
 
 void SignBlockData::SetBlockHead(std::vector<int8_t>& blockHead)
 {
-    this->blockHead = blockHead;
+    m_blockHead = blockHead;
 }
 
 std::vector<int8_t> SignBlockData::GetSignData()
 {
-    return signData;
+    return m_signData;
 }
 
 std::string SignBlockData::GetSignFile()
 {
-    return signFile;
+    return m_signFile;
 }
 
 long SignBlockData::GetLen()
 {
-    return len;
+    return m_len;
 }
 
 bool SignBlockData::GetByte()
 {
-    return isByte;
+    return m_isByte;
 }
 
 } // namespace SignatureTools

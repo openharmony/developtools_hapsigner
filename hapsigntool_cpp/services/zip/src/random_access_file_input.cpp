@@ -51,7 +51,7 @@ int64_t RandomAccessFileInput::Size()
 
 bool RandomAccessFileInput::CopyTo(int64_t offset, int size, ByteBuffer& buffer)
 {
-    int64_t srcSize = this->Size();
+    int64_t srcSize = Size();
     if (!CheckBoundValid(offset, size, srcSize)) {
         return false;
     }
@@ -103,7 +103,7 @@ ByteBuffer RandomAccessFileInput::CreateByteBuffer(int64_t offset, int size)
 
 DataSource* RandomAccessFileInput::Slice(int64_t offset, int64_t size)
 {
-    int64_t srcSize = this->Size();
+    int64_t srcSize = Size();
     if (!CheckBoundValid(offset, size, srcSize)) {
         return nullptr;
     }

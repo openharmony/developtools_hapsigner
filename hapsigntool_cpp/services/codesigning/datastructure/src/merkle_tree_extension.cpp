@@ -17,16 +17,11 @@
 namespace OHOS {
 namespace SignatureTools {
 
-const int32_t MerkleTreeExtension::MERKLE_TREE_INLINED = 0x1;
-const int32_t MerkleTreeExtension::MERKLE_TREE_EXTENSION_DATA_SIZE = 80;
-const int32_t MerkleTreeExtension::ROOT_HASH_SIZE = 64;
-const int32_t MerkleTreeExtension::PAGE_SIZE_4K = 4096;
-
 MerkleTreeExtension::MerkleTreeExtension()
     : Extension(MERKLE_TREE_INLINED, MERKLE_TREE_EXTENSION_DATA_SIZE)
 {
-    this->merkleTreeSize = 0;
-    this->merkleTreeOffset = 0;
+    merkleTreeSize = 0;
+    merkleTreeOffset = 0;
 }
 
 MerkleTreeExtension::MerkleTreeExtension(int64_t merkleTreeSize, int64_t merkleTreeOffset, std::vector<int8_t> rootHash)
@@ -58,34 +53,34 @@ int64_t MerkleTreeExtension::GetMerkleTreeOffset()
 
 void MerkleTreeExtension::SetMerkleTreeOffset(int64_t offset)
 {
-    this->merkleTreeOffset = offset;
+    merkleTreeOffset = offset;
 }
 
-std::vector<int8_t> MerkleTreeExtension::ToByteArray()
+void MerkleTreeExtension::ToByteArray(std::vector<int8_t>& ret)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(
         Extension::EXTENSION_HEADER_SIZE + MERKLE_TREE_EXTENSION_DATA_SIZE));
-    std::vector<int8_t> extByteArr = Extension::ToByteArray();
+    std::vector<int8_t> extByteArr;
+    Extension::ToByteArray(extByteArr);
     bf->PutData(extByteArr.data(), extByteArr.size());
-    bf->PutInt64(this->merkleTreeSize);
-    bf->PutInt64(this->merkleTreeOffset);
-    bf->PutData(this->rootHash.data(), this->rootHash.size());
-    std::vector<int8_t> ret(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetCapacity());
-    return ret;
+    bf->PutInt64(merkleTreeSize);
+    bf->PutInt64(merkleTreeOffset);
+    bf->PutData(rootHash.data(), rootHash.size());
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetCapacity());
 }
 
-MerkleTreeExtension* MerkleTreeExtension::FromByteArray(std::vector<int8_t> bytes)
+MerkleTreeExtension* MerkleTreeExtension::FromByteArray(std::vector<int8_t>& bytes)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
-    long long inMerkleTreeSize = 0;
+    int64_t inMerkleTreeSize = 0;
     bf->GetInt64(inMerkleTreeSize);
     if (inMerkleTreeSize % PAGE_SIZE_4K != 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "merkleTreeSize is not a multiple of 4096");
         return nullptr;
     }
-    long long inMerkleTreeOffset = 0;
+    int64_t inMerkleTreeOffset = 0;
     bf->GetInt64(inMerkleTreeOffset);
     if (inMerkleTreeOffset % PAGE_SIZE_4K != 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "merkleTreeOffset is not a aligned to 4096");

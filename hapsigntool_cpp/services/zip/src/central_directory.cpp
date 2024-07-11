@@ -96,33 +96,33 @@ void CentralDirectory::SetCentralDirectoryValues(ByteBuffer& bf, CentralDirector
 
 std::string CentralDirectory::ToBytes()
 {
-    ByteBuffer bf(length);
+    ByteBuffer bf(m_length);
 
     bf.PutInt32(SIGNATURE);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, version);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, versionExtra);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, flag);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, method);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, lastTime);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, lastDate);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, crc32);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, compressedSize);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, unCompressedSize);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, fileNameLength);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, extraLength);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, commentLength);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, diskNumStart);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, internalFile);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, externalFile);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, offset);
-    if (fileNameLength > 0) {
-        bf.PutData(fileName.c_str(), fileName.size());
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_version);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_versionExtra);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_flag);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_method);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_lastTime);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_lastDate);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_crc32);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_compressedSize);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_unCompressedSize);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_fileNameLength);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_extraLength);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_commentLength);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_diskNumStart);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_internalFile);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_externalFile);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_offset);
+    if (m_fileNameLength > 0) {
+        bf.PutData(m_fileName.c_str(), m_fileName.size());
     }
-    if (extraLength > 0) {
-        bf.PutData(extraData.c_str(), extraData.size());
+    if (m_extraLength > 0) {
+        bf.PutData(m_extraData.c_str(), m_extraData.size());
     }
-    if (commentLength > 0) {
-        bf.PutData(extraData.c_str(), extraData.size());
+    if (m_commentLength > 0) {
+        bf.PutData(m_extraData.c_str(), m_extraData.size());
     }
 
     return bf.ToString();
@@ -140,202 +140,202 @@ int CentralDirectory::GetSIGNATURE()
 
 short CentralDirectory::GetVersion()
 {
-    return version;
+    return m_version;
 }
 
 void CentralDirectory::SetVersion(short version)
 {
-    this->version = version;
+    m_version = version;
 }
 
 short CentralDirectory::GetVersionExtra()
 {
-    return versionExtra;
+    return m_versionExtra;
 }
 
 void CentralDirectory::SetVersionExtra(short versionExtra)
 {
-    this->versionExtra = versionExtra;
+    m_versionExtra = versionExtra;
 }
 
 short CentralDirectory::GetFlag()
 {
-    return flag;
+    return m_flag;
 }
 
 void CentralDirectory::SetFlag(short flag)
 {
-    this->flag = flag;
+    m_flag = flag;
 }
 
 short CentralDirectory::GetMethod()
 {
-    return method;
+    return m_method;
 }
 
 void CentralDirectory::SetMethod(short method)
 {
-    this->method = method;
+    m_method = method;
 }
 
 short CentralDirectory::GetLastTime()
 {
-    return lastTime;
+    return m_lastTime;
 }
 
 void CentralDirectory::SetLastTime(short lastTime)
 {
-    this->lastTime = lastTime;
+    m_lastTime = lastTime;
 }
 
 short CentralDirectory::GetLastDate()
 {
-    return lastDate;
+    return m_lastDate;
 }
 
 void CentralDirectory::SetLastDate(short lastDate)
 {
-    this->lastDate = lastDate;
+    m_lastDate = lastDate;
 }
 
 int CentralDirectory::GetCrc32()
 {
-    return crc32;
+    return m_crc32;
 }
 
 void CentralDirectory::SetCrc32(int crc32)
 {
-    this->crc32 = crc32;
+    m_crc32 = crc32;
 }
 
 int64_t CentralDirectory::GetCompressedSize()
 {
-    return compressedSize;
+    return m_compressedSize;
 }
 
 void CentralDirectory::SetCompressedSize(int64_t compressedSize)
 {
-    this->compressedSize = compressedSize;
+    m_compressedSize = compressedSize;
 }
 
 int64_t CentralDirectory::GetUnCompressedSize()
 {
-    return unCompressedSize;
+    return m_unCompressedSize;
 }
 
 void CentralDirectory::SetUnCompressedSize(int64_t unCompressedSize)
 {
-    this->unCompressedSize = unCompressedSize;
+    m_unCompressedSize = unCompressedSize;
 }
 
 int CentralDirectory::GetFileNameLength()
 {
-    return fileNameLength;
+    return m_fileNameLength;
 }
 
 void CentralDirectory::SetFileNameLength(int fileNameLength)
 {
-    this->fileNameLength = fileNameLength;
+    m_fileNameLength = fileNameLength;
 }
 
 int CentralDirectory::GetExtraLength()
 {
-    return extraLength;
+    return m_extraLength;
 }
 
 void CentralDirectory::SetExtraLength(int extraLength)
 {
-    this->extraLength = extraLength;
+    m_extraLength = extraLength;
 }
 
 int CentralDirectory::GetCommentLength()
 {
-    return commentLength;
+    return m_commentLength;
 }
 
 void CentralDirectory::SetCommentLength(int commentLength)
 {
-    this->commentLength = commentLength;
+    m_commentLength = commentLength;
 }
 
 int CentralDirectory::GetDiskNumStart()
 {
-    return diskNumStart;
+    return m_diskNumStart;
 }
 
 void CentralDirectory::SetDiskNumStart(int diskNumStart)
 {
-    this->diskNumStart = diskNumStart;
+    m_diskNumStart = diskNumStart;
 }
 
 short CentralDirectory::GetInternalFile()
 {
-    return internalFile;
+    return m_internalFile;
 }
 
 void CentralDirectory::SetInternalFile(short internalFile)
 {
-    this->internalFile = internalFile;
+    m_internalFile = internalFile;
 }
 
 int CentralDirectory::GetExternalFile()
 {
-    return externalFile;
+    return m_externalFile;
 }
 
 void CentralDirectory::SetExternalFile(int externalFile)
 {
-    this->externalFile = externalFile;
+    m_externalFile = externalFile;
 }
 
 int64_t CentralDirectory::GetOffset()
 {
-    return offset;
+    return m_offset;
 }
 
 void CentralDirectory::SetOffset(int64_t offset)
 {
-    this->offset = offset;
+    m_offset = offset;
 }
 
 std::string CentralDirectory::GetFileName()
 {
-    return fileName;
+    return m_fileName;
 }
 
 void CentralDirectory::SetFileName(const std::string& fileName)
 {
-    this->fileName = fileName;
+    m_fileName = fileName;
 }
 
 std::string CentralDirectory::GetExtraData() const
 {
-    return extraData;
+    return m_extraData;
 }
 
 void CentralDirectory::SetExtraData(const std::string& extraData)
 {
-    this->extraData = extraData;
+    m_extraData = extraData;
 }
 
 std::string CentralDirectory::GetComment()
 {
-    return comment;
+    return m_comment;
 }
 
 void CentralDirectory::SetComment(const std::string& comment)
 {
-    this->comment = comment;
+    m_comment = comment;
 }
 
 int CentralDirectory::GetLength()
 {
-    return length;
+    return m_length;
 }
 
 void CentralDirectory::SetLength(int length)
 {
-    this->length = length;
+    m_length = length;
 }
 } // namespace SignatureTools
 } // namespace OHOS

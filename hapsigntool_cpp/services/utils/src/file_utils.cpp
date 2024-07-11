@@ -40,7 +40,7 @@ bool FileUtils::IsEmpty(std::string cs)
     return false;
 }
 
-bool FileUtils::IsSpaceEnough(const std::string &filePath, const int64_t requiredSpace)
+bool FileUtils::IsSpaceEnough(const std::string& filePath, const int64_t requiredSpace)
 {
     uint64_t freeSpace = 0;
     struct statfs diskStatfs;
@@ -58,15 +58,15 @@ std::string FileUtils::GetSuffix(std::string filePath)
     if (filePath.empty()) {
         return "";
     }
-    size_t last_dot_position = filePath.rfind(".");
-    bool positionFlag = (last_dot_position == std::string::npos) || (last_dot_position == filePath.size() - 1);
+    size_t lastDotPosition = filePath.rfind(".");
+    bool positionFlag = (lastDotPosition == std::string::npos) || (lastDotPosition == filePath.size() - 1);
     if (positionFlag) {
         return "";
     }
-    return filePath.substr(last_dot_position + 1);
+    return filePath.substr(lastDotPosition + 1);
 }
 
-bool FileUtils::ValidFileType(const std::string& filePath, std::initializer_list<std::string> types)
+bool FileUtils::ValidFileType(const std::string& filePath, const std::initializer_list<std::string> types)
 {
     std::string suffix = GetSuffix(filePath);
     bool flag = suffix.empty() || (StringUtils::ContainsCase(types, suffix) == false);

@@ -42,6 +42,7 @@ enum SignatureAlgorithm {
 
 class VerifyHapOpensslUtils {
 public:
+    VerifyHapOpensslUtils() = delete;
     DLL_EXPORT static bool ParsePkcs7Package(const unsigned char packageData[],
                                              uint32_t packageLen, Pkcs7Context& pkcs7Context);
     DLL_EXPORT static bool GetCertChains(PKCS7* p7, Pkcs7Context& pkcs7Context);

@@ -36,6 +36,7 @@ enum class HashAlgs {
 
 class HashUtils {
 public:
+    HashUtils() = delete;
     static int GetHashAlgsId(const std::string& algMethod);
     static std::vector<signed char> GetFileDigest(const std::string& inputFile, const std::string& algName);
     static std::string GetHashAlgName(int algId);

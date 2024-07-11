@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "verify_cert_openssl_utils.h"
+#include <cinttypes>
 #include <cmath>
 #include <fstream>
 
@@ -242,7 +243,7 @@ void VerifyCertOpensslUtils::WriteX509CrlToStream(std::ofstream& crlFile, X509_C
         return;
     }
     int32_t totalLen = 0;
-    long long posStart = crlFile.tellp();
+    int64_t posStart = crlFile.tellp();
     crlFile.seekp(posStart + sizeof(totalLen));
     char buf[OPENSSL_READ_CRL_LEN_EACH_TIME];
     int32_t readLen = BIO_read(derBio, buf, sizeof(buf));
@@ -253,7 +254,7 @@ void VerifyCertOpensslUtils::WriteX509CrlToStream(std::ofstream& crlFile, X509_C
         readLen = BIO_read(derBio, buf, sizeof(buf));
     }
     BIO_free_all(derBio);
-    long long posEnd = crlFile.tellp();
+    int64_t posEnd = crlFile.tellp();
     crlFile.seekp(posStart);
     /* write crl data len */
     crlFile.write(reinterpret_cast<char*>(&totalLen), sizeof(totalLen));
@@ -490,7 +491,7 @@ bool VerifyCertOpensslUtils::GetIssuerFromX509(const X509* cert, std::string& is
     return true;
 }
 
-bool VerifyCertOpensslUtils::GetSerialNumberFromX509(const X509* cert, long long& certNumber)
+bool VerifyCertOpensslUtils::GetSerialNumberFromX509(const X509* cert, int64_t& certNumber)
 {
     if (cert == nullptr) {
         SIGNATURE_TOOLS_LOGE("cert is nullptr");
@@ -498,7 +499,7 @@ bool VerifyCertOpensslUtils::GetSerialNumberFromX509(const X509* cert, long long
     }
     const ASN1_INTEGER* certSN = X509_get0_serialNumber(cert);
     certNumber = ASN1_INTEGER_get(certSN);
-    SIGNATURE_TOOLS_LOGD("cert number = %{public}lld", certNumber);
+    SIGNATURE_TOOLS_LOGD("cert number = %{public}" PRId64, certNumber);
     return true;
 }
 

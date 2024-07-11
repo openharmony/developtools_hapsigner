@@ -61,8 +61,8 @@ public:
     DLL_EXPORT ByteBuffer(const ByteBuffer& other);
     DLL_EXPORT ~ByteBuffer();
     DLL_EXPORT ByteBuffer& operator=(const ByteBuffer& other);
-    DLL_EXPORT bool GetInt64(long long& value);
-    DLL_EXPORT bool GetInt64(int32_t index, long long& value);
+    DLL_EXPORT bool GetInt64(int64_t& value);
+    DLL_EXPORT bool GetInt64(int32_t index, int64_t& value);
     DLL_EXPORT bool GetUInt32(uint32_t& value);
     DLL_EXPORT bool GetUInt32(int32_t index, uint32_t& value);
     DLL_EXPORT bool GetInt32(int32_t& value);

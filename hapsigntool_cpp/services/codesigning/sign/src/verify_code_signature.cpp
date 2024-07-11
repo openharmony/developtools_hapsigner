@@ -68,7 +68,7 @@ bool VerifyCodeSignature::VerifyElf(std::string file, int64_t offset, int64_t le
     }
     // 2) verify file data
     int32_t paddingSize = ElfSignBlock::ComputeMerkleTreePaddingLength(offset);
-    std::vector<int8_t> merkleTreeWithPadding = elfSignBlock.GetMerkleTreeWithPadding();
+    std::vector<int8_t> &merkleTreeWithPadding = elfSignBlock.GetMerkleTreeWithPadding();
     std::vector<int8_t> merkleTree;
     merkleTree.insert(merkleTree.end(), merkleTreeWithPadding.begin() + paddingSize, merkleTreeWithPadding.end());
     std::ifstream elf(file, std::ios::binary);

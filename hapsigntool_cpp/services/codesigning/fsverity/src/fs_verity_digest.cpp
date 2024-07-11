@@ -21,11 +21,14 @@ namespace SignatureTools {
 const std::string FsVerityDigest::FSVERITY_DIGEST_MAGIC = "FSVerity";
 const int FsVerityDigest::DIGEST_HEADER_SIZE = 12;
 
-std::vector<int8_t> FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector<int8_t>& digest)
+void FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector<int8_t>& digest,
+                                                      std::vector<int8_t> &ret)
 {
     const int size = DIGEST_HEADER_SIZE + digest.size();
-    if (size <= 0)
-        return std::vector<int8_t>();
+    if (size <= 0) {
+        ret = std::vector<int8_t>();
+        return;
+    }
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(size));
     buffer->PutData(FSVERITY_DIGEST_MAGIC.c_str(), (int32_t)FSVERITY_DIGEST_MAGIC.length());
     buffer->PutInt16(algoID);
@@ -35,11 +38,12 @@ std::vector<int8_t> FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector
     char dataArr[size];
     if (memset_s(dataArr, sizeof(dataArr), 0, sizeof(dataArr)) != RET_OK) {
         SIGNATURE_TOOLS_LOGE("memcpy_s failed");
-        return std::vector<int8_t>();
+        ret = std::vector<int8_t>();
+        return;
     }
     buffer->GetData(dataArr, size);
-    std::vector<int8_t> ret(dataArr, dataArr + size);
-    return ret;
+    ret = std::vector<int8_t>(dataArr, dataArr + size);
+    return;
 }
 } // namespace SignatureTools
 } // namespace OHOS

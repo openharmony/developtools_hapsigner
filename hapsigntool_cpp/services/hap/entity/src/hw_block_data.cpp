@@ -20,28 +20,28 @@ namespace SignatureTools {
 
 HwBlockData::HwBlockData(int32_t blockNum, int64_t blockStart)
 {
-    this->blockNum = blockNum;
-    this->blockStart = blockStart;
+    m_blockNum = blockNum;
+    m_blockStart = blockStart;
 }
 
 int32_t HwBlockData::GetBlockNum()
 {
-    return blockNum;
+    return m_blockNum;
 }
 
 void HwBlockData::SetBlockNum(int32_t blockNum)
 {
-    this->blockNum = blockNum;
+    m_blockNum = blockNum;
 }
 
 int64_t HwBlockData::GetBlockStart()
 {
-    return blockStart;
+    return m_blockStart;
 }
 
 void HwBlockData::SetBlockStart(int64_t blockStart)
 {
-    this->blockStart = blockStart;
+    m_blockStart = blockStart;
 }
 
 } // namespace SignatureTools

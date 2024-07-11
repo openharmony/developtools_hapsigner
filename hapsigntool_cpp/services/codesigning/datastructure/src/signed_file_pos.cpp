@@ -50,15 +50,15 @@ int32_t SignedFilePos::GetSignInfoSize()
 
 void SignedFilePos::IncreaseFileNameOffset(int32_t incOffset)
 {
-    this->fileNameOffset += incOffset;
+    fileNameOffset += incOffset;
 }
 
 void SignedFilePos::IncreaseSignInfoOffset(int32_t incOffset)
 {
-    this->signInfoOffset += incOffset;
+    signInfoOffset += incOffset;
 }
 
-SignedFilePos SignedFilePos::FromByteArray(std::vector<int8_t> bytes)
+SignedFilePos SignedFilePos::FromByteArray(std::vector<int8_t> &bytes)
 {
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(0, bytes.data(), bytes.size());

@@ -36,43 +36,47 @@ namespace OHOS {
 namespace SignatureTools {
 class CodeSigning {
 public:
-    CodeSigning(SignerConfig* signConfig);
-    CodeSigning();
     static const std::vector<std::string> SUPPORT_FILE_FORM;
     static const std::string HAP_SIGNATURE_ENTRY_NAME;
     static const std::string ENABLE_SIGN_CODE_VALUE;
     static const std::string SUPPORT_BIN_FILE_FORM;
-    bool GetCodeSignBlock(const std::string input, int64_t offset,
-        std::string inForm, std::string profileContent, ZipSigner& zip, std::vector<int8_t>& ret);
+    static const std::string LIBS_PATH_PREFIX;
+    CodeSigning(SignerConfig* signConfig);
+    CodeSigning();
+
     bool SignFile(std::istream& inputStream,
-        int64_t fileSize, bool storeTree, int64_t fsvTreeOffset, std::string ownerID,
-        std::pair<SignInfo, std::vector<int8_t>>& ret);
+                  int64_t fileSize, bool storeTree,
+                  int64_t fsvTreeOffset, std::string ownerID,
+                  std::pair<SignInfo, std::vector<int8_t>>& ret);
+    bool GetCodeSignBlock(const std::string input, int64_t offset,
+                          std::string inForm, std::string profileContent,
+                          ZipSigner& zip, std::vector<int8_t>& ret);
     bool GetElfCodeSignBlock(std::string input, int64_t offset,
-        std::string inForm, std::string profileContent, std::vector<int8_t> &codesignData);
+                             std::string inForm, std::string profileContent,
+                             std::vector<int8_t> &codesignData);
 
 public:
     const std::string NATIVE_LIB_AN_SUFFIX = ".an";
     const std::string NATIVE_LIB_SO_SUFFIX = ".so";
-    int64_t timestamp = 0;
-    std::vector<std::string> extractedNativeLibSuffixs;
-    SignerConfig* signConfig;
-    CodeSignBlock codeSignBlock;
+    static bool IsNativeFile(std::string& input);
     int64_t ComputeDataSize(ZipSigner& zip);
     int64_t GetTimestamp();
     bool SignNativeLibs(std::string input, std::string ownerID);
     void UpdateCodeSignBlock();
     bool GetNativeEntriesFromHap(std::string& packageName, UnzipHandleParam& param);
-    static bool IsNativeFile(std::string& input);
     bool GenerateSignature(std::vector<int8_t>& signedData, const std::string&,
-        std::vector<int8_t>&);
+                           std::vector<int8_t>&);
+    int64_t m_timestamp = 0;
+    std::vector<std::string> m_extractedNativeLibSuffixs;
+    SignerConfig* m_signConfig;
+    CodeSignBlock m_codeSignBlock;
 
 private:
-    bool HandleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalInfo,
-        UnzipHandleParam& param);
-    bool DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& sb,
-        UnzipHandleParam& param, int readFileSize);
     static bool CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo, char fileName[], size_t* nameLen);
     static bool CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen);
+    bool HandleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalInfo, UnzipHandleParam& param);
+    bool DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& sb,
+                                 UnzipHandleParam& param, int readFileSize);
 };
 } // namespace SignatureTools
 } // namespace OHOS

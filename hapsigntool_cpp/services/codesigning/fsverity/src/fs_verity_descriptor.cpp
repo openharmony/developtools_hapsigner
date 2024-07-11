@@ -43,7 +43,7 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     bf->GetInt8(inSaltSize);
     int32_t inSignSize;
     bf->GetInt32(inSignSize);
-    long long inDataSize;
+    int64_t inDataSize;
     bf->GetInt64(inDataSize);
     char inRootHashArr[FsVerityDescriptor::ROOT_HASH_FILED_SIZE];
     bf->GetData(inRootHashArr, FsVerityDescriptor::ROOT_HASH_FILED_SIZE);
@@ -55,7 +55,7 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     int32_t inFlags;
     bf->GetInt32(inFlags);
     bf->SetPosition(bf->GetPosition() + RESERVED_SIZE_AFTER_FLAGS);
-    long long inTreeOffset;
+    int64_t inTreeOffset;
     bf->GetInt64(inTreeOffset);
     if (inTreeOffset % PAGE_SIZE_4K != 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
@@ -70,17 +70,18 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     return builder->Build();
 }
 
-std::vector<int8_t> FsVerityDescriptor::ToByteArray()
+void FsVerityDescriptor::ToByteArray(std::vector<int8_t> &ret)
 {
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
     buffer->PutByte(VERSION);
     buffer->PutByte(hashAlgorithm);
     buffer->PutByte(log2BlockSize);
-    if (this->saltSize > SALT_SIZE) {
+    if (saltSize > SALT_SIZE) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Salt is too long");
-        return std::vector<int8_t>();
+        ret = std::vector<int8_t>();
+        return;
     }
-    buffer->PutByte(this->saltSize);
+    buffer->PutByte(saltSize);
     buffer->PutInt32(signSize);
     buffer->PutInt64(fileSize);
     WriteBytesWithSize(buffer.get(), rawRootHash, ROOT_HASH_FILED_SIZE);
@@ -94,21 +95,22 @@ std::vector<int8_t> FsVerityDescriptor::ToByteArray()
     buffer->Flip();
     char dataArr[DESCRIPTOR_SIZE] = { 0 };
     buffer->GetData(dataArr, DESCRIPTOR_SIZE);
-    std::vector<int8_t> ret(dataArr, dataArr + DESCRIPTOR_SIZE);
-    return ret;
+    ret = std::vector<int8_t>(dataArr, dataArr + DESCRIPTOR_SIZE);
+    return;
 }
 
-std::vector<int8_t> FsVerityDescriptor::GetByteForGenerateDigest()
+void FsVerityDescriptor::GetByteForGenerateDigest(std::vector<int8_t> &ret)
 {
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
     buffer->PutByte(CODE_SIGN_VERSION);
     buffer->PutByte(hashAlgorithm);
     buffer->PutByte(log2BlockSize);
-    if (this->saltSize > SALT_SIZE) {
+    if (saltSize > SALT_SIZE) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Salt is too long");
-        return std::vector<int8_t>();
+        ret = std::vector<int8_t>();
+        return;
     }
-    buffer->PutByte(this->saltSize);
+    buffer->PutByte(saltSize);
     buffer->PutInt32(0);
     buffer->PutInt64(fileSize);
     WriteBytesWithSize(buffer.get(), rawRootHash, ROOT_HASH_FILED_SIZE);
@@ -120,8 +122,8 @@ std::vector<int8_t> FsVerityDescriptor::GetByteForGenerateDigest()
     buffer->Flip();
     char dataArr[DESCRIPTOR_SIZE] = { 0 };
     buffer->GetData(dataArr, DESCRIPTOR_SIZE);
-    std::vector<int8_t> ret(dataArr, dataArr + DESCRIPTOR_SIZE);
-    return ret;
+    ret = std::vector<int8_t>(dataArr, dataArr + DESCRIPTOR_SIZE);
+    return;
 }
 
 void FsVerityDescriptor::WriteBytesWithSize(ByteBuffer* buffer, std::vector<int8_t>& src, int size)

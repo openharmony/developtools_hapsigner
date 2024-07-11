@@ -24,16 +24,18 @@ public:
     static const ContentDigestAlgorithm SHA256;
     static const ContentDigestAlgorithm SHA384;
     static const ContentDigestAlgorithm SHA512;
+
+    ContentDigestAlgorithm();
+    ContentDigestAlgorithm(const ContentDigestAlgorithm& other);
     ContentDigestAlgorithm(const std::string& digestAlgorithm, const int digestOutputByteSize);
     ContentDigestAlgorithm& operator=(const ContentDigestAlgorithm& other);
-    ContentDigestAlgorithm(const ContentDigestAlgorithm& other);
-    ContentDigestAlgorithm();
+
     std::string GetDigestAlgorithm();
     int GetDigestOutputByteSize();
     
 private:
-    std::string digestAlgorithm;
-    int digestOutputByteSize;
+    std::string m_digestAlgorithm;
+    int m_digestOutputByteSize;
 };
 } // namespace SignatureTools
 } // namespace OHOS

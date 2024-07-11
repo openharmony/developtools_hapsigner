@@ -28,7 +28,7 @@ public:
     DLL_EXPORT ByteBufferDataSource(ByteBuffer& hapBuffer);
     DLL_EXPORT ~ByteBufferDataSource();
     bool HasRemaining() const override;
-    long long Remaining() const override;
+    int64_t Remaining() const override;
     void Reset() override;
     bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) override;
     ByteBuffer& GetByteBuffer()

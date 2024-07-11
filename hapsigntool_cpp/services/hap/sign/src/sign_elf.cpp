@@ -25,11 +25,9 @@ namespace OHOS {
 namespace SignatureTools {
 
 int SignElf::blockNum = 0;
-const int SignElf::PAGE_SIZE = 4096;
-const int SignElf::FILE_BUFFER_BLOCK = 16384;
 const std::string SignElf::CODESIGN_OFF = "0";
 
-bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string> signParams)
+bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string>& signParams)
 {
     std::string inputFile = signParams.at(ParamConstants::PARAM_BASIC_INPUT_FILE);
     std::string tmpFile;
@@ -62,8 +60,8 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& tmpFile)
 {
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = now.time_since_epoch();
-    auto timestamp = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
-    tmpFile = "tmpFile" + std::to_string(timestamp);
+    auto timeStamp = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    tmpFile = "tmpFile" + std::to_string(timeStamp);
     std::ofstream output(tmpFile);
     bool checkSpaceFlag = FileUtils::IsSpaceEnough(std::string("./"), FileUtils::GetFileLen(inputFile));
     if (!checkSpaceFlag) {
@@ -71,29 +69,29 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& tmpFile)
                             + std::string(std::getenv("PWD")) + " is insufficient. Please check");
         return false;
     }
-    bool checkoutputFlag = output.is_open();
-    if (!checkoutputFlag) {
+    bool checkOutputFlag = output.is_open();
+    if (!checkOutputFlag) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] open file: " + tmpFile + "failed");
         return false;
     }
     std::ifstream input(inputFile);
-    bool checkinputFlag = input.is_open();
-    if (!checkinputFlag) {
+    bool checkInputFlag = input.is_open();
+    if (!checkInputFlag) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] open file: " + inputFile + "failed");
         return false;
     }
     char buffer[FILE_BUFFER_BLOCK];
     std::streamsize bytesRead;
-    int64_t output_length = 0;
+    int64_t outputLength = 0;
     while ((bytesRead = input.read(buffer, sizeof(buffer)).gcount()) > 0) {
         output.write(buffer, bytesRead);
         if (!output) {
             PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "[SignElf] write data to " + tmpFile + "failed");
             return false;
         }
-        output_length += bytesRead;
+        outputLength += bytesRead;
     }
-    int64_t addLength = PAGE_SIZE - (output_length % PAGE_SIZE);
+    int64_t addLength = PAGE_SIZE - (outputLength % PAGE_SIZE);
     std::vector<char> bytes(addLength, 0);
     output.write(bytes.data(), addLength);
     return true;
@@ -103,7 +101,7 @@ bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
                                    std::string inputFile, std::string outputFile, std::string profileSigned,
                                    std::map<std::string, std::string> signParams)
 {
-    std::string profiliFile = signParams.at(ParamConstants::PARAM_BASIC_PROFILE);
+    std::string proFile = signParams.at(ParamConstants::PARAM_BASIC_PROFILE);
     std::list<SignBlockData> signDataList;
     int64_t binFileLen = FileUtils::GetFileLen(inputFile);
     bool checkFlag = binFileLen < 0 || IsLongOverflowInteger(binFileLen);
@@ -113,7 +111,7 @@ bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
     }
     bool checkIsEmptyFlag = StringUtils::IsEmpty(signParams.at(ParamConstants::PARAM_BASIC_PROFILE));
     if (!checkIsEmptyFlag) {
-        signDataList.push_front(GenerateProfileSignByte(profiliFile, profileSigned));
+        signDataList.push_front(GenerateProfileSignByte(proFile, profileSigned));
     }
     blockNum = signDataList.size() + 1;
     SignBlockData* codeSign = nullptr;
@@ -171,7 +169,7 @@ bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& si
 
 bool SignElf::WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::ofstream& fileOutputStream)
 {
-    for (auto signBlockData : signBlockList) {
+    for (auto& signBlockData : signBlockList) {
         bool checkWriteByteToOutFileFlag = FileUtils::WriteByteToOutFile(signBlockData.GetBlockHead(),
                                                                          fileOutputStream);
         if (!checkWriteByteToOutFileFlag) {
@@ -179,7 +177,7 @@ bool SignElf::WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::o
             return false;
         }
     }
-    for (auto signBlockData : signBlockList) {
+    for (auto& signBlockData : signBlockList) {
         bool isSuccess;
         bool checkFlag = signBlockData.GetByte();
         if (checkFlag) {

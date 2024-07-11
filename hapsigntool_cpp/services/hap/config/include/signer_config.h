@@ -31,18 +31,18 @@ public:
     SignerConfig();
     ~SignerConfig();
     Options* GetOptions() const;
-    void SetOptions(Options* options);
+    void SetOptions(Options* optionsParam);
     STACK_OF(X509)* GetCertificates() const;
-    void SetCertificates(STACK_OF(X509)* certificates);
+    void SetCertificates(STACK_OF(X509)* certificatesParam);
     STACK_OF(X509_CRL)* GetX509CRLs() const;
     void SetX509CRLs(STACK_OF(X509_CRL)* crls);
     std::vector<SignatureAlgorithmHelper> GetSignatureAlgorithms() const;
-    void SetSignatureAlgorithms(const std::vector<SignatureAlgorithmHelper>& signatureAlgorithms);
+    void SetSignatureAlgorithms(const std::vector<SignatureAlgorithmHelper>& signatureAlgorithmsParam);
     const std::map<std::string, std::string>& GetSignParamMap() const;
     void FillParameters(const std::map<std::string, std::string>& params);
     std::shared_ptr<Signer> GetSigner();
     int GetCompatibleVersion() const;
-    void SetCompatibleVersion(int compatibleVersion);
+    void SetCompatibleVersion(int compatibleVersionParam);
 
 private:
     bool IsInputCertChainNotEmpty() const;

@@ -34,12 +34,12 @@ public:
                         signed char log2BlockSize, std::vector<int8_t> reserved);
     virtual ~FsVerityInfoSegment();
     virtual int Size();
-    virtual std::vector<int8_t> ToByteArray();
-    static FsVerityInfoSegment FromByteArray(std::vector<int8_t> bytes);
+    virtual std::shared_ptr<ByteBuffer> ToByteArray();
+    static FsVerityInfoSegment FromByteArray(std::vector<int8_t> &bytes);
 
 private:
-    static const int MAGIC;
-    static const int RESERVED_BYTE_ARRAY_LENGTH;
+    static constexpr int MAGIC = static_cast<int>((0x1E38 << 16) + (0x31AB));;
+    static constexpr int RESERVED_BYTE_ARRAY_LENGTH = 57;
     int magic = MAGIC;
     signed char hashAlgorithm = 0;
     signed char version = 0;

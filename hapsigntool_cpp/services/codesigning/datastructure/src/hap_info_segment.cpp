@@ -17,15 +17,11 @@
 namespace OHOS {
 namespace SignatureTools {
 
-const int32_t HapInfoSegment::MAGIC_NUM_BYTES = 4;
-const int32_t HapInfoSegment::CHUNK_SIZE = 4096;
-const int32_t HapInfoSegment::MAGIC_NUM = (0xC1B5 << 16) + 0xCC66;
-
 HapInfoSegment::HapInfoSegment()
 {
     std::vector<int8_t> emptyVector;
-    this->magic = HapInfoSegment::MAGIC_NUM;
-    this->signInfo = SignInfo(0, 0, 0, emptyVector, emptyVector);
+    magic = HapInfoSegment::MAGIC_NUM;
+    signInfo = SignInfo(0, 0, 0, emptyVector, emptyVector);
 }
 
 HapInfoSegment::HapInfoSegment(int32_t magic, SignInfo signInfo)
@@ -49,15 +45,16 @@ int32_t HapInfoSegment::GetSize()
     return HapInfoSegment::MAGIC_NUM_BYTES + signInfo.GetSize();
 }
 
-std::vector<int8_t> HapInfoSegment::ToByteArray()
+void HapInfoSegment::ToByteArray(std::vector<int8_t> &ret)
 {
-    std::vector<int8_t> hapSignInfoByteArray = this->signInfo.ToByteArray();
+    std::vector<int8_t> hapSignInfoByteArray;
+    signInfo.ToByteArray(hapSignInfoByteArray);
     std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
         (ByteBuffer(HapInfoSegment::MAGIC_NUM_BYTES + hapSignInfoByteArray.size()));
     bf->PutInt32(magic);
     bf->PutData(hapSignInfoByteArray.data(), hapSignInfoByteArray.size());
-    std::vector<int8_t> ret(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
-    return ret;
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
+    return;
 }
 
 HapInfoSegment HapInfoSegment::FromByteArray(std::vector<int8_t> bytes)

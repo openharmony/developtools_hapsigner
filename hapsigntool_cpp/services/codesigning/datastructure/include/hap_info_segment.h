@@ -33,13 +33,13 @@ public:
     void SetSignInfo(SignInfo signInfo);
     SignInfo& GetSignInfo();
     int32_t GetSize();
-    std::vector<int8_t> ToByteArray();
+    void ToByteArray(std::vector<int8_t>& ret);
     static HapInfoSegment FromByteArray(std::vector<int8_t> bytes);
 
 private:
-    static const int32_t MAGIC_NUM_BYTES;
-    static const int32_t MAGIC_NUM;
-    static const int32_t CHUNK_SIZE;
+    static const int32_t MAGIC_NUM_BYTES = 4;
+    static const int32_t MAGIC_NUM = (0xC1B5 << 16) + 0xCC66;
+    static const int32_t CHUNK_SIZE = 4096;
     int32_t magic;
     SignInfo signInfo;
 };

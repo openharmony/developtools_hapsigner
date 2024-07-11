@@ -16,7 +16,7 @@
 #ifndef SIGNATRUETOOLS_HAP_SIGN_TOOL_H
 #define SIGNATRUETOOLS_HAP_SIGN_TOOL_H
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -30,7 +30,7 @@ namespace OHOS {
 namespace SignatureTools {
 class ParamsRunTool final {
 public:
-    ParamsRunTool();
+    ParamsRunTool() = delete;
     static bool ProcessCmd(char** args, size_t size);
     static bool DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& api);
     static bool CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& api);

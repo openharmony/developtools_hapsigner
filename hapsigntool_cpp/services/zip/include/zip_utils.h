@@ -26,6 +26,7 @@ namespace OHOS {
 namespace SignatureTools {
 class ZipUtils {
 public:
+    ZipUtils() = delete;
     /**
      * set offset value of Central Directory to End of Central Directory Record.
      *

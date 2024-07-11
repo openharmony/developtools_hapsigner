@@ -24,9 +24,9 @@ namespace SignatureTools {
 class DigestParameter {
 public:
     DLL_EXPORT DigestParameter();
-    DLL_EXPORT ~DigestParameter();
     DLL_EXPORT DigestParameter(const DigestParameter& other);
     DLL_EXPORT DigestParameter& operator = (const DigestParameter& other);
+    DLL_EXPORT ~DigestParameter();
 
 public:
     int32_t digestOutputSizeBytes;

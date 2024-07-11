@@ -34,9 +34,10 @@ public:
     std::string GetString(const std::string key, std::string checkStr);
     int GetInt(const std::string key);
     bool Equals(const std::string key1, const std::string& key2);
-    bool Required(std::initializer_list<std::string> keys);
+    bool Required(const std::initializer_list<std::string> keys);
     bool IsEmpty(std::string cs);
     bool GetBool(const std::string key);
+    
 public:
     /* Key alias parameter name. */
     static const std::string KEY_ALIAS;

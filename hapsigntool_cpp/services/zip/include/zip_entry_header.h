@@ -120,42 +120,42 @@ public:
 
 private:
     /* 2 bytes */
-    short version = 0;
+    short m_version = 0;
 
     /* 2 bytes */
-    short flag = 0;
+    short m_flag = 0;
 
     /* 2 bytes */
-    short method = 0;
+    short m_method = 0;
 
     /* 2 bytes */
-    short lastTime = 0;
+    short m_lastTime = 0;
 
     /* 2 bytes */
-    short lastDate = 0;
+    short m_lastDate = 0;
 
     /* 4 bytes */
-    int crc32 = 0;
+    int m_crc32 = 0;
 
     /* 8 bytes */
-    int64_t compressedSize = 0;
+    int64_t m_compressedSize = 0;
 
     /* 8 bytes */
-    int64_t unCompressedSize = 0;
+    int64_t m_unCompressedSize = 0;
 
     /* 4 bytes */
-    int fileNameLength = 0;
+    int m_fileNameLength = 0;
 
     /* 4 bytes */
-    int extraLength = 0;
+    int m_extraLength = 0;
 
     /* n bytes */
-    std::string fileName;
+    std::string m_fileName;
 
     /* n bytes */
-    std::string extraData;
+    std::string m_extraData;
 
-    int length = 0;
+    int m_length = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

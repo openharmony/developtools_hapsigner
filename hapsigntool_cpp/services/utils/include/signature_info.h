@@ -24,9 +24,9 @@ namespace OHOS {
 namespace SignatureTools {
 struct SignatureInfo {
     ByteBuffer hapSignatureBlock;
-    long long hapSigningBlockOffset;
-    long long hapCentralDirOffset;
-    long long hapEocdOffset;
+    int64_t hapSigningBlockOffset;
+    int64_t hapCentralDirOffset;
+    int64_t hapEocdOffset;
     ByteBuffer hapEocd;
     std::vector<OptionalBlock> optionBlocks;
     int32_t version = 0;

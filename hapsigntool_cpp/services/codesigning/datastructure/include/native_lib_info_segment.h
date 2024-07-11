@@ -27,30 +27,30 @@ namespace SignatureTools {
 
 class NativeLibInfoSegment {
 public:
+    static const int32_t MAGIC_LENGTH_SECNUM_BYTES = 12;
+    static const int32_t SIGNED_FILE_POS_SIZE = 16;
+    static const int32_t MAGIC_NUM = (0x0ED2 << 16) + 0xE720;
+    static const int32_t ALIGNMENT_FOR_SIGNINFO = 4;
     NativeLibInfoSegment();
-    void SetSoInfoList(std::vector<std::pair<std::string, SignInfo>> soInfoList);
-    int32_t GetSectionNum();
-    std::vector<std::string> GetFileNameList();
-    std::vector<SignInfo> GetSignInfoList();
-    int32_t Size();
-    std::vector<int8_t> ToByteArray();
-    static NativeLibInfoSegment FromByteArray(std::vector<int8_t> bytes);
-
-public:
     NativeLibInfoSegment(int32_t magic,
                          int32_t segmentSize,
                          int32_t sectionNum,
                          std::vector<SignedFilePos> signedFilePosList,
                          std::vector<std::string> fileNameList,
                          std::vector<SignInfo> signInfoList,
-                         std::vector<int8_t> zeroPadding
-    );
-    static const int32_t MAGIC_LENGTH_SECNUM_BYTES = 12;
-    static const int32_t SIGNED_FILE_POS_SIZE = 16;
-    static const int32_t MAGIC_NUM = (0x0ED2 << 16) + 0xE720;
-    static const int32_t ALIGNMENT_FOR_SIGNINFO = 4;
+                         std::vector<int8_t> zeroPadding);
+    static NativeLibInfoSegment FromByteArray(std::vector<int8_t> &bytes);
+    void SetSoInfoList(std::vector<std::pair<std::string, SignInfo>> &soInfoList);
+    int32_t GetSectionNum();
+    std::vector<std::string> GetFileNameList();
+    std::vector<SignInfo> GetSignInfoList();
+    int32_t Size();
+    void ToByteArray(std::vector<int8_t> &ret);
 
 private:
+    static bool CheckBuffer(ByteBuffer* bf, int32_t& inMagic,
+        int32_t& inSegmentSize, int32_t& inSectionNum);
+    void GenerateList();
     int32_t magic;
     int32_t segmentSize;
     int32_t sectionNum;
@@ -61,9 +61,6 @@ private:
     std::vector<int8_t> zeroPadding;
     int32_t fileNameListBlockSize;
     int32_t signInfoListBlockSize;
-    void GenerateList();
-    static bool CheckBuffer(ByteBuffer* bf, int32_t& inMagic,
-        int32_t& inSegmentSize, int32_t& inSectionNum);
 };
 } // namespace SignatureTools
 } // namespace OHOS

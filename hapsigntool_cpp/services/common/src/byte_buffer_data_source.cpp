@@ -32,9 +32,9 @@ bool ByteBufferDataSource::HasRemaining() const
     return bytebuffer.HasRemaining();
 }
 
-long long ByteBufferDataSource::Remaining() const
+int64_t ByteBufferDataSource::Remaining() const
 {
-    return static_cast<long long>(bytebuffer.Remaining());
+    return static_cast<int64_t>(bytebuffer.Remaining());
 }
 
 void ByteBufferDataSource::Reset()

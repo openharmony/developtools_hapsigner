@@ -30,8 +30,8 @@ public:
     void SetBlockStart(int64_t blockStart);
 
 private:
-    int32_t blockNum;
-    int64_t blockStart;
+    int32_t m_blockNum;
+    int64_t m_blockStart;
 };
 } // namespace SignatureTools
 } // namespace OHOS

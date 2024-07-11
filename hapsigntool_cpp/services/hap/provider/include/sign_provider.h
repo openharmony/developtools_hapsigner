@@ -62,17 +62,31 @@ namespace OHOS {
 namespace SignatureTools {
 class SignProvider {
 public:
+    SignProvider() = default;
+    virtual ~SignProvider() = default;
     bool Sign(Options* options);
-
     bool SignElf(Options* options);
     bool SignBin(Options* options);
     virtual std::optional<X509_CRL*> GetCrl();
     virtual bool CheckParams(Options* options);
     virtual bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const;
-    SignProvider() = default;
-    virtual ~SignProvider() = default;
 
 protected:
+    struct DataSourceContents {
+        DataSource* beforeCentralDir = nullptr;
+        ByteBufferDataSource* centralDir = nullptr;
+        ByteBufferDataSource* endOfCentralDir = nullptr;
+        ByteBuffer cDByteBuffer;
+        std::pair<ByteBuffer, int64_t> eocdPair;
+        int64_t cDOffset = 0LL;
+        ~DataSourceContents()
+        {
+            delete beforeCentralDir;
+            delete centralDir;
+            delete endOfCentralDir;
+        }
+    };
+
     void CheckSignAlignment();
     X509* GetCertificate(const std::string& certificate)const;
     std::string GetCertificateCN(X509* cert)const;
@@ -84,20 +98,6 @@ protected:
     bool CheckCompatibleVersion();
     std::vector<OptionalBlock> optionalBlocks;
     std::map<std::string, std::string> signParams = std::map<std::string, std::string>();
-    struct DataSourceContents {
-        DataSource* beforeCentralDir = nullptr;
-        ByteBufferDataSource* centralDir = nullptr;
-        ByteBufferDataSource* endOfCentralDir = nullptr;
-        ByteBuffer cDByteBuffer;
-        std::pair<ByteBuffer, long long> eocdPair;
-        long long cDOffset = 0LL;
-        ~DataSourceContents()
-        {
-            delete beforeCentralDir;
-            delete centralDir;
-            delete endOfCentralDir;
-        }
-    };
 
 private:
     int CheckParmaAndInitConfig(SignerConfig& config, Options* options, std::string& suffix);
@@ -130,7 +130,7 @@ private:
     int GetCertListFromFile(const std::string& certsFile, STACK_OF(X509)** ret);
 
     bool AppendCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
-                             const std::string& suffix, long long centralDirectoryOffset, ZipSigner& zip);
+                             const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip);
     bool OutputSignedFile(RandomAccessFile* outputHap, long centralDirectoryOffset,
                           ByteBuffer& signingBlock, ByteBufferDataSource* centralDirectory, ByteBuffer& eocdBuffer);
 
@@ -139,7 +139,7 @@ private:
 private:
     static std::vector<std::string> VALID_SIGN_ALG_NAME;
     static std::vector<std::string> PARAMETERS_NEED_ESCAPE;
-    static constexpr long long TIMESTAMP = 1230768000000LL;
+    static constexpr int64_t TIMESTAMP = 1230768000000LL;
     static constexpr int COMPRESSION_MODE = 9;
     static constexpr int FOUR_BYTE = 4;
     std::string profileContent;

@@ -31,6 +31,8 @@ namespace SignatureTools {
 
 class CodeSignBlock {
 public:
+    static constexpr long PAGE_SIZE_4K = 4096;
+    static constexpr int SEGMENT_HEADER_COUNT = 3;
     CodeSignBlock();
     virtual ~CodeSignBlock();
     void AddOneMerkleTree(const std::string& key, std::vector<int8_t>& merkleTree);
@@ -47,14 +49,10 @@ public:
     void SetHapInfoSegment(HapInfoSegment& hapSeg);
     NativeLibInfoSegment& GetSoInfoSegment();
     void SetSoInfoSegment(NativeLibInfoSegment soSeg);
-    std::vector<int8_t> ToByteArray();
+    std::shared_ptr<ByteBuffer> ToByteArray();
     void ComputeSegmentOffset();
-    long long ComputeMerkleTreeOffset(long long codeSignBlockOffset);
-    std::vector<int8_t> GenerateCodeSignBlockByte(long long fsvTreeOffset);
-
-public:
-    static const long PAGE_SIZE_4K;
-    static const int SEGMENT_HEADER_COUNT;
+    int64_t ComputeMerkleTreeOffset(int64_t codeSignBlockOffset);
+    std::shared_ptr<ByteBuffer> GenerateCodeSignBlockByte(int64_t fsvTreeOffset);
 
 private:
     CodeSignBlockHeader codeSignBlockHeader;

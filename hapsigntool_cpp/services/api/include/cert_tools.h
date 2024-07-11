@@ -26,9 +26,6 @@ namespace SignatureTools {
 
 class CertTools {
 public:
-    CertTools() = default;
-    ~CertTools() = default;
-
     static X509* GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, Options* options);
     static X509* GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* options);
     static X509* GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* options);
@@ -44,13 +41,13 @@ public:
     static bool SetBisicConstraintsPatchLen(Options* options, X509* cert);
     static bool SetSubjectForCert(X509_REQ* certReq, X509* cert);
     static bool SignForSubCert(X509* cert, X509_REQ* csr, X509_REQ* caReq,
-                               EVP_PKEY* ca_prikey, Options* options);
+                               EVP_PKEY* caPrikey, Options* options);
     static bool SetKeyUsage(X509* cert, Options* options);
     static bool SetkeyUsageExt(X509* cert, Options* options);
     static bool SetCertValidity(X509* cert, int validity);
-    static bool SerialNumberBuilder(long* serialNum);
+    static bool SerialNumberBuilder(uint8_t* serialNum, int length);
     static bool SetCertVersion(X509* cert, int versionNum);
-    static bool SetCertSerialNum(X509* cert, long serialNum);
+    static bool SetCertSerialNum(X509* cert);
     static bool SetCertIssuerName(X509* cert, X509_NAME* issuer);
     static bool SetCertSubjectName(X509* cert, X509_REQ* subjectCsr);
     static bool SetCertValidityStartAndEnd(X509* cert, long vilidityStart, long vilidityEnd);
@@ -59,11 +56,14 @@ public:
     static bool SetkeyUsageExt(X509* cert);
     static bool SetKeyUsageEndExt(X509* cert);
     static bool SetKeyIdentifierExt(X509* cert);
+    static bool SetAuthorizeKeyIdentifierExt(X509* cert);
     static bool SetSignCapacityExt(X509* cert, const char signCapacity[], int capacityLen);
     static bool SignCert(X509* cert, EVP_PKEY* privateKey, std::string signAlg);
     static bool SetExpandedInformation(X509* cert, Options* options);
     static bool SetPubkeyAndSignCert(X509* cert, X509_REQ* issuercsr,
                                      X509_REQ* certReq, EVP_PKEY* keyPair, Options* options);
+    CertTools() = default;
+    ~CertTools() = default;
 };
 } // namespace SignatureTools
 } // namespace OHOS

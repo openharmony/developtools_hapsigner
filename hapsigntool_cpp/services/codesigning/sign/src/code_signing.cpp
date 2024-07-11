@@ -12,11 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "code_signing.h"
+
+#include <algorithm>
+
 #include "elf_sign_block.h"
 #include "fs_verity_descriptor.h"
 #include "fs_verity_descriptor_with_sign.h"
 #include "verify_code_signature.h"
+#include "code_signing.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -26,6 +29,7 @@ const std::vector<std::string> CodeSigning::SUPPORT_FILE_FORM = { "hap", "hsp", 
 const std::string CodeSigning::HAP_SIGNATURE_ENTRY_NAME = "Hap";
 const std::string CodeSigning::ENABLE_SIGN_CODE_VALUE = "1";
 const std::string CodeSigning::SUPPORT_BIN_FILE_FORM = "elf";
+const std::string CodeSigning::LIBS_PATH_PREFIX = "libs/";
 
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
@@ -33,7 +37,7 @@ const int8_t LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
 
 CodeSigning::CodeSigning(SignerConfig* signConfig)
 {
-    this->signConfig = signConfig;
+    m_signConfig = signConfig;
 }
 
 CodeSigning::CodeSigning()
@@ -55,13 +59,13 @@ bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
     if (dataSize < 0) {
         return false;
     }
-    timestamp = GetTimestamp();
-    int64_t fsvTreeOffset = this->codeSignBlock.ComputeMerkleTreeOffset(offset);
+    m_timestamp = GetTimestamp();
+    int64_t fsvTreeOffset = m_codeSignBlock.ComputeMerkleTreeOffset(offset);
     std::unique_ptr<FsVerityInfoSegment> fsVerityInfoSegment =
         std::make_unique<FsVerityInfoSegment>((signed char)FsVerityDescriptor::VERSION,
                                               (signed char)FsVerityGenerator::GetFsVerityHashAlgorithm(),
                                               (signed char)FsVerityGenerator::GetLog2BlockSize());
-    this->codeSignBlock.SetFsVerityInfoSegment(*(fsVerityInfoSegment.get()));
+    m_codeSignBlock.SetFsVerityInfoSegment(*(fsVerityInfoSegment.get()));
     SIGNATURE_TOOLS_LOGI("Sign hap.");
     std::string ownerID = HapUtils::GetAppIdentifier(profileContent);
     std::ifstream inputStream;
@@ -80,12 +84,13 @@ bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
         return false;
     }
     inputStream.close();
-    this->codeSignBlock.GetHapInfoSegment().SetSignInfo(hapSignInfoAndMerkleTreeBytesPair.first);
-    this->codeSignBlock.AddOneMerkleTree(HAP_SIGNATURE_ENTRY_NAME,
-                                         hapSignInfoAndMerkleTreeBytesPair.second);
+    m_codeSignBlock.GetHapInfoSegment().SetSignInfo(hapSignInfoAndMerkleTreeBytesPair.first);
+    m_codeSignBlock.AddOneMerkleTree(HAP_SIGNATURE_ENTRY_NAME,
+                                     hapSignInfoAndMerkleTreeBytesPair.second);
     SignNativeLibs(input, ownerID);
     UpdateCodeSignBlock();
-    ret = this->codeSignBlock.GenerateCodeSignBlockByte(fsvTreeOffset);
+    std::shared_ptr<ByteBuffer> bf = m_codeSignBlock.GenerateCodeSignBlockByte(fsvTreeOffset);
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
     SIGNATURE_TOOLS_LOGI("Sign successfully.");
     return true;
 }
@@ -119,8 +124,8 @@ int64_t CodeSigning::ComputeDataSize(ZipSigner& zip)
 int64_t CodeSigning::GetTimestamp()
 {
     auto now = std::chrono::system_clock::now();
-    auto now_seconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
-    return now_seconds.time_since_epoch().count();
+    auto nowSeconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
+    return nowSeconds.time_since_epoch().count();
 }
 
 bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool storeTree,
@@ -143,8 +148,9 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
     if (storeTree) {
         flags = SignInfo::FLAG_MERKLE_TREE_INCLUDED;
     }
-    SignInfo signInfo(fsVerityGenerator->GetSaltSize(), flags, fileSize,
-                      fsVerityGenerator->GetSalt(), signature);
+    int saltSize = fsVerityGenerator->GetSaltSize();
+    std::vector<int8_t> salt = fsVerityGenerator->GetSalt();
+    SignInfo signInfo(saltSize, flags, fileSize, salt, signature);
     // if store merkle tree in sign info
     if (storeTree) {
         int merkleTreeSize = fsVerityGenerator->GetTreeBytes().empty() ? 0
@@ -200,16 +206,17 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
         FsVerityDescriptorWithSign(FsVerityDescriptor(fsdbuilder), signature);
     std::vector<int8_t> treeBytes = fsVerityGenerator->GetTreeBytes();
     ElfSignBlock signBlock = ElfSignBlock(paddingSize, treeBytes, fsVerityDescriptorWithSign);
-    codesignData = signBlock.ToByteArray();
+    std::shared_ptr<ByteBuffer> bf = signBlock.ToByteArray();
+    codesignData = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetLimit());
     return true;
 }
 
 bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
 {
     // 'an' libs are always signed
-    extractedNativeLibSuffixs.push_back(NATIVE_LIB_AN_SUFFIX);
+    m_extractedNativeLibSuffixs.push_back(NATIVE_LIB_AN_SUFFIX);
     // 'so' libs are always signed
-    extractedNativeLibSuffixs.push_back(NATIVE_LIB_SO_SUFFIX);
+    m_extractedNativeLibSuffixs.push_back(NATIVE_LIB_SO_SUFFIX);
     // sign native files
     std::vector<std::pair<std::string, SignInfo>> ret;
     UnzipHandleParam param(ret, ownerID, true);
@@ -223,20 +230,20 @@ bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
         SIGNATURE_TOOLS_LOGI("No native libs.");
         return true;
     }
-    this->codeSignBlock.GetSoInfoSegment().SetSoInfoList(*nativeLibInfoList);
+    m_codeSignBlock.GetSoInfoSegment().SetSoInfoList(*nativeLibInfoList);
     return true;
 }
 
 void CodeSigning::UpdateCodeSignBlock()
 {
     // construct segment header list
-    this->codeSignBlock.SetSegmentHeaders();
+    m_codeSignBlock.SetSegmentHeaders();
     // Compute and set segment number
-    this->codeSignBlock.SetSegmentNum();
+    m_codeSignBlock.SetSegmentNum();
     // update code sign block header flag
-    this->codeSignBlock.SetCodeSignBlockFlag();
+    m_codeSignBlock.SetCodeSignBlockFlag();
     // compute segment offset
-    this->codeSignBlock.ComputeSegmentOffset();
+    m_codeSignBlock.ComputeSegmentOffset();
 }
 
 bool CodeSigning::GetNativeEntriesFromHap(std::string& packageName, UnzipHandleParam& param)
@@ -331,6 +338,13 @@ bool CodeSigning::DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& 
         ret->push_back(std::make_pair(fileName, pairSignInfoAndMerkleTreeBytes.first));
     } else {
         CodeSignBlock csb = param.GetCodeSignBlock();
+        std::vector<std::string> fileNames = csb.GetSoInfoSegment().GetFileNameList();
+        bool isContainFileName = std::find(fileNames.begin(), fileNames.end(), fileName) != fileNames.end();
+        if (!isContainFileName) {
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                "verify signed file position failed, file: " + fileName);
+            return false;
+        }
         for (int j = 0; j < csb.GetSoInfoSegment().GetSectionNum(); j++) {
             SignInfo signInfo = csb.GetSoInfoSegment().GetSignInfoList()[j];
             std::string entryName = csb.GetSoInfoSegment().GetFileNameList()[j];
@@ -408,15 +422,23 @@ bool CodeSigning::IsNativeFile(std::string& input)
         return false;
     }
     std::string suffix = input.substr(dotPos + 1);
-    return suffix == "an" || suffix == "so";
+    if (suffix == "an") {
+        return true;
+    }
+    std::string libDir = input.substr(0, LIBS_PATH_PREFIX.size());
+    int ret = LIBS_PATH_PREFIX.compare(libDir);
+    if (ret == 0) {
+        return true;
+    }
+    return false;
 }
 
 bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::string& ownerID,
                                     std::vector<int8_t>& ret)
 {
-    if (signConfig->GetSigner() != nullptr) {
+    if (m_signConfig->GetSigner() != nullptr) {
         STACK_OF(X509)* certs = NULL;
-        certs = signConfig->GetSigner()->GetCertificates();
+        certs = m_signConfig->GetSigner()->GetCertificates();
         if (certs == nullptr) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                                 "No certificates configured for sign.");
@@ -438,7 +460,7 @@ bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Generate verity digest is null");
         return false;
     }
-    bool generateSignedDataFlag = bcSignedDataGenerator->GenerateSignedData(signed_data, signConfig, ret_str);
+    bool generateSignedDataFlag = bcSignedDataGenerator->GenerateSignedData(signed_data, m_signConfig, ret_str);
     if (generateSignedDataFlag) {
         SIGNATURE_TOOLS_LOGE("Generate signedData failed");
         return false;

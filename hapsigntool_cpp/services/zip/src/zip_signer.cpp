@@ -29,13 +29,13 @@ bool ZipSigner::Init(std::ifstream& inputFile)
     }
 
     /* 1. get eocd data */
-    endOfCentralDirectory = GetZipEndOfCentralDirectory(inputFile);
-    if (!endOfCentralDirectory) {
+    m_endOfCentralDirectory = GetZipEndOfCentralDirectory(inputFile);
+    if (!m_endOfCentralDirectory) {
         SIGNATURE_TOOLS_LOGE("get eocd data failed.");
         return false;
     }
 
-    cDOffset = endOfCentralDirectory->GetOffset();
+    m_cDOffset = m_endOfCentralDirectory->GetOffset();
 
     /* 2. use eocd's cd offset, get cd data */
     if (!GetZipCentralDirectory(inputFile)) {
@@ -49,13 +49,13 @@ bool ZipSigner::Init(std::ifstream& inputFile)
         return false;
     }
 
-    ZipEntry* endEntry = zipEntries[zipEntries.size() - 1];
+    ZipEntry* endEntry = m_zipEntries[m_zipEntries.size() - 1];
     CentralDirectory* endCD = endEntry->GetCentralDirectory();
     ZipEntryData* endEntryData = endEntry->GetZipEntryData();
-    signingOffset = endCD->GetOffset() + endEntryData->GetLength();
+    m_signingOffset = endCD->GetOffset() + endEntryData->GetLength();
 
     /* 4. file all data - eocd - cd - entry = sign block */
-    signingBlock = GetSigningBlock(inputFile);
+    m_signingBlock = GetSigningBlock(inputFile);
 
     return true;
 }
@@ -75,10 +75,10 @@ EndOfCentralDirectory* ZipSigner::GetZipEndOfCentralDirectory(std::ifstream& inp
 
     /* try to read EOCD without comment */
     int eocdLength = EndOfCentralDirectory::EOCD_LENGTH;
-    eOCDOffset = fileSize - eocdLength;
+    m_eOCDOffset = fileSize - eocdLength;
 
     std::string retStr;
-    int ret = FileUtils::ReadFileByOffsetAndLength(input, eOCDOffset, eocdLength, retStr);
+    int ret = FileUtils::ReadFileByOffsetAndLength(input, m_eOCDOffset, eocdLength, retStr);
     if (0 != ret) {
         SIGNATURE_TOOLS_LOGE("read eocd without comment failed in file");
         return nullptr;
@@ -92,10 +92,10 @@ EndOfCentralDirectory* ZipSigner::GetZipEndOfCentralDirectory(std::ifstream& inp
     /* try to search EOCD with comment */
     int64_t eocdMaxLength = std::min(static_cast<int64_t>(EndOfCentralDirectory::EOCD_LENGTH + MAX_COMMENT_LENGTH),
         fileSize);
-    eOCDOffset = static_cast<int64_t>(input.tellg()) - eocdMaxLength;
+    m_eOCDOffset = static_cast<int64_t>(input.tellg()) - eocdMaxLength;
 
     retStr.clear();
-    ret = FileUtils::ReadFileByOffsetAndLength(input, eOCDOffset, eocdMaxLength, retStr);
+    ret = FileUtils::ReadFileByOffsetAndLength(input, m_eOCDOffset, eocdMaxLength, retStr);
     if (0 != ret) {
         SIGNATURE_TOOLS_LOGE("read eocd with comment failed in file");
         return nullptr;
@@ -104,7 +104,7 @@ EndOfCentralDirectory* ZipSigner::GetZipEndOfCentralDirectory(std::ifstream& inp
     for (int start = 0; start < eocdMaxLength; start++) {
         eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(retStr, start);
         if (eocdByBytes) {
-            eOCDOffset += start;
+            m_eOCDOffset += start;
             return eocdByBytes.value();
         }
     }
@@ -117,12 +117,12 @@ bool ZipSigner::GetZipCentralDirectory(std::ifstream& input)
 {
     input.seekg(0, std::ios::beg);
 
-    int cDtotal = endOfCentralDirectory->GetcDTotal();
-    zipEntries.reserve(cDtotal);
+    int cDtotal = m_endOfCentralDirectory->GetcDTotal();
+    m_zipEntries.reserve(cDtotal);
     /* read full central directory bytes */
     std::string retStr;
 
-    int ret = FileUtils::ReadFileByOffsetAndLength(input, cDOffset, endOfCentralDirectory->GetcDSize(), retStr);
+    int ret = FileUtils::ReadFileByOffsetAndLength(input, m_cDOffset, m_endOfCentralDirectory->GetcDSize(), retStr);
     if (0 != ret) {
         SIGNATURE_TOOLS_LOGE("read full central directory failed in file");
         return false;
@@ -144,11 +144,11 @@ bool ZipSigner::GetZipCentralDirectory(std::ifstream& input)
         }
         ZipEntry* entry = new ZipEntry();
         entry->SetCentralDirectory(cd);
-        zipEntries.emplace_back(entry);
+        m_zipEntries.emplace_back(entry);
         offset += cd->GetLength();
     }
 
-    if (offset + cDOffset != eOCDOffset) {
+    if (offset + m_cDOffset != m_eOCDOffset) {
         SIGNATURE_TOOLS_LOGE("cd end offset not equals to eocd offset, maybe this is a zip64 file");
         return false;
     }
@@ -157,7 +157,7 @@ bool ZipSigner::GetZipCentralDirectory(std::ifstream& input)
 
 std::string ZipSigner::GetSigningBlock(std::ifstream& file)
 {
-    int64_t size = cDOffset - signingOffset;
+    int64_t size = m_cDOffset - m_signingOffset;
     if (size < 0) {
         SIGNATURE_TOOLS_LOGE("signing offset in front of entry end");
         return "";
@@ -167,7 +167,7 @@ std::string ZipSigner::GetSigningBlock(std::ifstream& file)
     }
 
     std::string retStr;
-    int ret = FileUtils::ReadFileByOffsetAndLength(file, signingOffset, size, retStr);
+    int ret = FileUtils::ReadFileByOffsetAndLength(file, m_signingOffset, size, retStr);
     if (0 != ret) {
         SIGNATURE_TOOLS_LOGE("read signing block failed in file");
         return "";
@@ -178,7 +178,7 @@ std::string ZipSigner::GetSigningBlock(std::ifstream& file)
 bool ZipSigner::GetZipEntries(std::ifstream& input)
 {
     /* use central directory data, find entry data */
-    for (auto entry : zipEntries) {
+    for (auto entry : m_zipEntries) {
         CentralDirectory* cd = entry->GetCentralDirectory();
         int64_t offset = cd->GetOffset();
         int64_t unCompressedSize = cd->GetUnCompressedSize();
@@ -189,7 +189,7 @@ bool ZipSigner::GetZipEntries(std::ifstream& input)
         if (!zipEntryData) {
             return false;
         }
-        if (cDOffset - offset < zipEntryData->GetLength()) {
+        if (m_cDOffset - offset < zipEntryData->GetLength()) {
             SIGNATURE_TOOLS_LOGE("cd offset in front of entry end");
             return false;
         }
@@ -210,7 +210,7 @@ bool ZipSigner::ToFile(std::ifstream& input, std::ofstream& output)
         return false;
     }
 
-    for (const auto& entry : zipEntries) {
+    for (const auto& entry : m_zipEntries) {
         ZipEntryData* zipEntryData = entry->GetZipEntryData();
         std::string zipEntryHeaderStr = zipEntryData->GetZipEntryHeader()->ToBytes();
         if (!FileUtils::WriteByteToOutFile(zipEntryHeaderStr, output)) {
@@ -233,20 +233,20 @@ bool ZipSigner::ToFile(std::ifstream& input, std::ofstream& output)
         }
     }
 
-    if (!signingBlock.empty()) {
-        if (!FileUtils::WriteByteToOutFile(signingBlock, output)) {
+    if (!m_signingBlock.empty()) {
+        if (!FileUtils::WriteByteToOutFile(m_signingBlock, output)) {
             return false;
         }
     }
 
-    for (const auto& entry : zipEntries) {
+    for (const auto& entry : m_zipEntries) {
         CentralDirectory* cd = entry->GetCentralDirectory();
         if (!FileUtils::WriteByteToOutFile(cd->ToBytes(), output)) {
             return false;
         }
     }
 
-    if (!FileUtils::WriteByteToOutFile(endOfCentralDirectory->ToBytes(), output)) {
+    if (!FileUtils::WriteByteToOutFile(m_endOfCentralDirectory->ToBytes(), output)) {
         return false;
     }
 
@@ -258,7 +258,7 @@ void ZipSigner::Alignment(int alignment)
 {
     Sort();
     bool isFirstUnRunnableFile = true;
-    for (const auto& entry : zipEntries) {
+    for (const auto& entry : m_zipEntries) {
         ZipEntryData* zipEntryData = entry->GetZipEntryData();
         short method = zipEntryData->GetZipEntryHeader()->GetMethod();
         if (method != FILE_UNCOMPRESS_METHOD_FLAG && !isFirstUnRunnableFile) {
@@ -287,14 +287,14 @@ void ZipSigner::Alignment(int alignment)
 
 void ZipSigner::RemoveSignBlock()
 {
-    signingBlock = std::string();
+    m_signingBlock = std::string();
     ResetOffset();
 }
 
 void ZipSigner::Sort()
 {
     /* sort uncompress file (so, abc, an) - other uncompress file - compress file */
-    std::sort(zipEntries.begin(), zipEntries.end(), [&](ZipEntry* entry1, ZipEntry* entry2) {
+    std::sort(m_zipEntries.begin(), m_zipEntries.end(), [&](ZipEntry* entry1, ZipEntry* entry2) {
         short entry1Method = entry1->GetZipEntryData()->GetZipEntryHeader()->GetMethod();
         short entry2Method = entry2->GetZipEntryData()->GetZipEntryHeader()->GetMethod();
         std::string entry1FileName = entry1->GetZipEntryData()->GetZipEntryHeader()->GetFileName();
@@ -323,79 +323,79 @@ void ZipSigner::ResetOffset()
 {
     int64_t offset = 0LL;
     int64_t cdLength = 0LL;
-    for (const auto& entry : zipEntries) {
+    for (const auto& entry : m_zipEntries) {
         entry->GetCentralDirectory()->SetOffset(offset);
         offset += entry->GetZipEntryData()->GetLength();
         cdLength += entry->GetCentralDirectory()->GetLength();
     }
-    if (!signingBlock.empty()) {
-        offset += signingBlock.size();
+    if (!m_signingBlock.empty()) {
+        offset += m_signingBlock.size();
     }
-    cDOffset = offset;
-    endOfCentralDirectory->SetOffset(offset);
-    endOfCentralDirectory->SetcDSize(cdLength);
+    m_cDOffset = offset;
+    m_endOfCentralDirectory->SetOffset(offset);
+    m_endOfCentralDirectory->SetcDSize(cdLength);
     offset += cdLength;
-    eOCDOffset = offset;
+    m_eOCDOffset = offset;
 }
 
 std::vector<ZipEntry*>& ZipSigner::GetZipEntries()
 {
-    return zipEntries;
+    return m_zipEntries;
 }
 
 void ZipSigner::SetZipEntries(const std::vector<ZipEntry*>& zipEntries)
 {
-    this->zipEntries = zipEntries;
+    m_zipEntries = zipEntries;
 }
 
 int64_t ZipSigner::GetSigningOffset()
 {
-    return signingOffset;
+    return m_signingOffset;
 }
 
 void ZipSigner::SetSigningOffset(int64_t signingOffset)
 {
-    this->signingOffset = signingOffset;
+    m_signingOffset = signingOffset;
 }
 
 std::string ZipSigner::GetSigningBlock()
 {
-    return signingBlock;
+    return m_signingBlock;
 }
 
 void ZipSigner::SetSigningBlock(const std::string& signingBlock)
 {
-    this->signingBlock = signingBlock;
+    m_signingBlock = signingBlock;
 }
 
 int64_t ZipSigner::GetCDOffset()
 {
-    return cDOffset;
+    return m_cDOffset;
 }
 
 void ZipSigner::SetCDOffset(int64_t cDOffset)
 {
-    this->cDOffset = cDOffset;
+    m_cDOffset = cDOffset;
 }
 
 int64_t ZipSigner::GetEOCDOffset()
 {
-    return eOCDOffset;
+    return m_eOCDOffset;
 }
 
 void ZipSigner::SetEOCDOffset(int64_t eOCDOffset)
 {
-    this->eOCDOffset = eOCDOffset;
+    m_eOCDOffset = eOCDOffset;
 }
 
 EndOfCentralDirectory* ZipSigner::GetEndOfCentralDirectory()
 {
-    return endOfCentralDirectory;
+    return m_endOfCentralDirectory;
 }
 
 void ZipSigner::SetEndOfCentralDirectory(EndOfCentralDirectory* endOfCentralDirectory)
 {
-    this->endOfCentralDirectory = endOfCentralDirectory;
+    m_endOfCentralDirectory = endOfCentralDirectory;
 }
 } // namespace SignatureTools
 } // namespace OHOS

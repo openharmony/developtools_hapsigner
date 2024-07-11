@@ -29,16 +29,16 @@ LocalizationAdapter::LocalizationAdapter(Options* options)
 
 int LocalizationAdapter::IsAliasExist(const std::string& alias)
 {
-    std::string keyStoreFile = this->options->GetString(Options::KEY_STORE_FILE);
-    if (!this->keyStoreHelper->IsKeyStoreFileExist(keyStoreFile)) {
+    std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
+    if (!keyStoreHelper->IsKeyStoreFileExist(keyStoreFile)) {
         return RET_FAILED;
     }
 
     EVP_PKEY* keyPair = nullptr;
-    char* keyStorePwd = this->options->GetChars(Options::KEY_STORE_RIGHTS);
-    char* keyPwd = this->options->GetChars(Options::KEY_RIGHTS);
-    this->keyStoreHelper->SetIsRegen(true);
-    int status = this->keyStoreHelper->ReadKeyStore(keyStoreFile, keyStorePwd, alias, keyPwd, &keyPair);
+    char* keyStorePwd = options->GetChars(Options::KEY_STORE_RIGHTS);
+    char* keyPwd = options->GetChars(Options::KEY_RIGHTS);
+    keyStoreHelper->SetIsRegen(true);
+    int status = keyStoreHelper->ReadKeyStore(keyStoreFile, keyStorePwd, alias, keyPwd, &keyPair);
     EVP_PKEY_free(keyPair);
     if (status == RET_OK) {
         return RET_OK;
@@ -49,19 +49,19 @@ int LocalizationAdapter::IsAliasExist(const std::string& alias)
 
 void LocalizationAdapter::ResetPwd()
 {
-    char* keyRights = this->options->GetChars(Options::KEY_RIGHTS);
+    char* keyRights = options->GetChars(Options::KEY_RIGHTS);
     if (keyRights != nullptr) {
         ResetChars(keyRights);
     }
-    char* keyStoreRights = this->options->GetChars(Options::KEY_STORE_RIGHTS);
+    char* keyStoreRights = options->GetChars(Options::KEY_STORE_RIGHTS);
     if (keyStoreRights != nullptr) {
         ResetChars(keyStoreRights);
     }
-    char* issuerKeyRights = this->options->GetChars(Options::ISSUER_KEY_RIGHTS);
+    char* issuerKeyRights = options->GetChars(Options::ISSUER_KEY_RIGHTS);
     if (issuerKeyRights != nullptr) {
         ResetChars(issuerKeyRights);
     }
-    char* issuerKeyStoreRights = this->options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS);
+    char* issuerKeyStoreRights = options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS);
     if (issuerKeyStoreRights != nullptr) {
         ResetChars(issuerKeyStoreRights);
     }
@@ -80,11 +80,11 @@ void LocalizationAdapter::ResetChars(char* chars)
 EVP_PKEY* LocalizationAdapter::GetAliasKey(bool autoCreate)
 {
     EVP_PKEY* keyPair = nullptr;
-    if (this->keyStoreHelper == nullptr) {
-        this->keyStoreHelper = std::make_unique<KeyStoreHelper>();
+    if (keyStoreHelper == nullptr) {
+        keyStoreHelper = std::make_unique<KeyStoreHelper>();
     }
 
-    int status = this->GetKeyPair(autoCreate, &keyPair);
+    int status = GetKeyPair(autoCreate, &keyPair);
     if (status == RET_FAILED) {
         EVP_PKEY_free(keyPair);
         return nullptr;
@@ -95,49 +95,42 @@ EVP_PKEY* LocalizationAdapter::GetAliasKey(bool autoCreate)
 
 int LocalizationAdapter::GetKeyPair(bool autoCreate, EVP_PKEY** keyPair)
 {
-    this->keyStoreHelper->SetPassWordStatus(true);
-    this->keyStoreHelper->SetIsRegen(autoCreate);
+    keyStoreHelper->SetPassWordStatus(true);
+    keyStoreHelper->SetIsRegen(autoCreate);
 
     int status = RET_FAILED;
-    if (this->isIssuerKeyStoreFile) {
-        status = this->IssuerKeyStoreFile(keyPair, autoCreate);
+    if (isIssuerKeyStoreFile) {
+        status = IssuerKeyStoreFile(keyPair, autoCreate);
     } else {
-        status = this->KeyStoreFile(keyPair, autoCreate);
+        status = KeyStoreFile(keyPair, autoCreate);
     }
-    this->isIssuerKeyStoreFile = false;
+    isIssuerKeyStoreFile = false;
     return status;
 }
 
 int LocalizationAdapter::KeyStoreFile(EVP_PKEY** keyPair, bool autoCreate)
 {
     std::string keyStorePath = "";
-    keyStorePath = this->options->GetString(Options::KEY_STORE_FILE);
-    char* keyStorePwd = this->options->GetChars(Options::KEY_STORE_RIGHTS);
-    char* keyPwd = this->options->GetChars(Options::KEY_RIGHTS);
-    std::string keyAlias = this->options->GetString(Options::KEY_ALIAS);
-    bool fileStatus = this->keyStoreHelper->IsKeyStoreFileExist(keyStorePath);
+    keyStorePath = options->GetString(Options::KEY_STORE_FILE);
+    char* keyStorePwd = options->GetChars(Options::KEY_STORE_RIGHTS);
+    char* keyPwd = options->GetChars(Options::KEY_RIGHTS);
+    std::string keyAlias = options->GetString(Options::KEY_ALIAS);
+    bool fileStatus = keyStoreHelper->IsKeyStoreFileExist(keyStorePath);
     if (fileStatus) {
-        int status = this->keyStoreHelper->ReadKeyStore(keyStorePath, keyStorePwd, keyAlias, keyPwd, keyPair);
+        int status = keyStoreHelper->ReadKeyStore(keyStorePath, keyStorePwd, keyAlias, keyPwd, keyPair);
         if (status == RET_OK) {
             return RET_OK;
         } else {
-            if (!this->keyStoreHelper->GetPassWordStatus()) {
+            if (!keyStoreHelper->GetPassWordStatus()) {
                 autoCreate = false;
             }
         }
     }
     if (autoCreate) {
-        std::string keyAlg = this->options->GetString(Options::KEY_ALG);
-        int keySize = this->options->GetInt(Options::KEY_SIZE);
-        *keyPair = this->keyStoreHelper->GenerateKeyPair(keyAlg, keySize);
-        char* keyStorePwd = this->options->GetChars(Options::KEY_STORE_RIGHTS);
-        char* keyPwd = this->options->GetChars(Options::KEY_RIGHTS);
-        std::string keyAlias = this->options->GetString(Options::KEY_ALIAS);
-        if (keyAlias.empty()) {
-            SIGNATURE_TOOLS_LOGE("Key alias cannot be empty");
-            return RET_FAILED;
-        }
-        int status = this->keyStoreHelper->WriteKeyStore(*keyPair, keyStorePath, keyStorePwd, keyAlias, keyPwd);
+        std::string keyAlg = options->GetString(Options::KEY_ALG);
+        int keySize = options->GetInt(Options::KEY_SIZE);
+        *keyPair = keyStoreHelper->GenerateKeyPair(keyAlg, keySize);
+        int status = keyStoreHelper->WriteKeyStore(*keyPair, keyStorePath, keyStorePwd, keyAlias, keyPwd);
         if (status == RET_OK) {
             PrintMsg("Remind: generate new keypair ,the keyalias is " + keyAlias + " !");
             return RET_OK;
@@ -149,23 +142,23 @@ int LocalizationAdapter::KeyStoreFile(EVP_PKEY** keyPair, bool autoCreate)
 
 int LocalizationAdapter::IssuerKeyStoreFile(EVP_PKEY** keyPair, bool autoCreate)
 {
-    std::string keyStore = this->options->GetString(Options::ISSUER_KEY_STORE_FILE);
-    char* keyStorePwd = this->options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS);
-    std::string keyAlias = this->options->GetString(Options::ISSUER_KEY_ALIAS);
-    char* keyPwd = this->options->GetChars(Options::ISSUER_KEY_RIGHTS);
+    std::string keyStore = options->GetString(Options::ISSUER_KEY_STORE_FILE);
+    char* keyStorePwd = options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS);
+    std::string keyAlias = options->GetString(Options::ISSUER_KEY_ALIAS);
+    char* keyPwd = options->GetChars(Options::ISSUER_KEY_RIGHTS);
 
     if (keyStore.empty()) {
-        keyStore = this->options->GetString(Options::KEY_STORE_FILE);
-        keyStorePwd = this->options->GetChars(Options::KEY_STORE_RIGHTS);
+        keyStore = options->GetString(Options::KEY_STORE_FILE);
+        keyStorePwd = options->GetChars(Options::KEY_STORE_RIGHTS);
     }
 
-    bool fileStatus = this->keyStoreHelper->IsKeyStoreFileExist(keyStore);
+    bool fileStatus = keyStoreHelper->IsKeyStoreFileExist(keyStore);
     if (fileStatus) {
-        int status = this->keyStoreHelper->ReadKeyStore(keyStore, keyStorePwd, keyAlias, keyPwd, keyPair);
+        int status = keyStoreHelper->ReadKeyStore(keyStore, keyStorePwd, keyAlias, keyPwd, keyPair);
         if (status == RET_OK) {
             return RET_OK;
         } else {
-            if (!this->keyStoreHelper->GetPassWordStatus()) {
+            if (!keyStoreHelper->GetPassWordStatus()) {
                 autoCreate = false;
             }
         }
@@ -177,11 +170,11 @@ int LocalizationAdapter::IssuerKeyStoreFile(EVP_PKEY** keyPair, bool autoCreate)
     }
 
     if (autoCreate) {
-        std::string keyAlg = this->options->GetString(Options::KEY_ALG);
-        int keySize = this->options->GetInt(Options::KEY_SIZE);
-        *keyPair = this->keyStoreHelper->GenerateKeyPair(keyAlg, keySize);
+        std::string keyAlg = options->GetString(Options::KEY_ALG);
+        int keySize = options->GetInt(Options::KEY_SIZE);
+        *keyPair = keyStoreHelper->GenerateKeyPair(keyAlg, keySize);
         if (keyStore.empty()) {
-            return this->keyStoreHelper->WriteKeyStore(*keyPair, keyStore, keyStorePwd, keyAlias, keyPwd);
+            return keyStoreHelper->WriteKeyStore(*keyPair, keyStore, keyStorePwd, keyAlias, keyPwd);
         }
     }
 
@@ -205,7 +198,7 @@ STACK_OF(X509)* LocalizationAdapter::GetSignCertChain()
         SIGNATURE_TOOLS_LOGE("sk_X509_new failed");
         return  NULL;
     }
-    std::vector<X509*> certs = this->GetCertsFromFile(certPath, Options::PROFILE_CERT_FILE);
+    std::vector<X509*> certs = GetCertsFromFile(certPath, Options::PROFILE_CERT_FILE);
     for (int i = 0; i < static_cast<int>(certs.size()); i++) {
         sk_X509_push(certificates, certs[i]);
     }
@@ -218,24 +211,16 @@ err:
     sk_X509_pop_free(certificates, X509_free);
     return NULL;
 }
-/********************************************************************************
-* Explain
-*
-* Author: yuanbin
-* time:2024/04/19
-*
-* Funs performance:Get caCert and subCaCert for generate certchain(.pem).
-* get issuerKey Pair to store in CertTools
-*********************************************************************************/
+
 EVP_PKEY* LocalizationAdapter::GetIssureKeyByAlias()
 {
-    return this->GetAliasKey(false);
+    return GetAliasKey(false);
 }
 
 bool LocalizationAdapter::IsOutFormChain()
 {
     std::string checkStr = "certChain";
-    std::string outForm = this->options->GetString(Options::OUT_FORM, checkStr);
+    std::string outForm = options->GetString(Options::OUT_FORM, checkStr);
     if (outForm.compare("certChain") == 0) {
         return true;
     } else {
@@ -245,7 +230,7 @@ bool LocalizationAdapter::IsOutFormChain()
 
 X509* LocalizationAdapter::GetSubCaCertFile()
 {
-    std::string certPath = this->options->GetString(Options::SUB_CA_CERT_FILE);
+    std::string certPath = options->GetString(Options::SUB_CA_CERT_FILE);
     return GetCertsFromFile(certPath, Options::SUB_CA_CERT_FILE).at(0);
 }
 
@@ -256,13 +241,13 @@ const std::string LocalizationAdapter::GetSignAlg() const
 
 X509* LocalizationAdapter::GetCaCertFile()
 {
-    std::string certPath = this->options->GetString(Options::CA_CERT_FILE);
+    std::string certPath = options->GetString(Options::CA_CERT_FILE);
     return GetCertsFromFile(certPath, Options::CA_CERT_FILE).at(0);
 }
 
 const std::string LocalizationAdapter::GetOutFile()
 {
-    return this->options->GetString(Options::OUT_FILE);
+    return options->GetString(Options::OUT_FILE);
 }
 
 std::vector<X509*> LocalizationAdapter::GetCertsFromFile(std::string& certPath, const std::string& logTitle)
@@ -291,14 +276,14 @@ std::vector<X509*> LocalizationAdapter::GetCertsFromFile(std::string& certPath, 
 
 const std::string LocalizationAdapter::GetInFile()
 {
-    return this->options->GetString(Options::IN_FILE);
+    return options->GetString(Options::IN_FILE);
 }
 
 bool LocalizationAdapter::IsRemoteSigner()
 {
     std::string defMode = "localSign";
     std::string destMode = "remoteSign";
-    std::string mode = this->options->GetString(Options::MODE, defMode);
+    std::string mode = options->GetString(Options::MODE, defMode);
     return StringUtils::CaseCompare(mode, destMode);
 }
 

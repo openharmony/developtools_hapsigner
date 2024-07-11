@@ -31,13 +31,13 @@ public:
                   int32_t fileNameSize,
                   int32_t signInfoOffset,
                   int32_t signInfoSize);
+    static SignedFilePos FromByteArray(std::vector<int8_t> &bytes);
     int32_t GetFileNameOffset();
     int32_t GetFileNameSize();
     int32_t GetSignInfoOffset();
     int32_t GetSignInfoSize();
     void IncreaseFileNameOffset(int32_t incOffset);
     void IncreaseSignInfoOffset(int32_t incOffset);
-    static SignedFilePos FromByteArray(std::vector<int8_t> bytes);
 
 private:
     int32_t fileNameOffset;

@@ -119,66 +119,66 @@ public:
     void SetLength(int length);
 
 private:
-    /* 2 bytes */
-    short version = 0;
-
-    /* 2 bytes */
-    short versionExtra = 0;
-
-    /* 2 bytes */
-    short flag = 0;
-
-    /* 2 bytes */
-    short method = 0;
-
-    /* 2 bytes */
-    short lastTime = 0;
-
-    /* 2 bytes */
-    short lastDate = 0;
-
-    /* 4 bytes */
-    int crc32 = 0;
-
-    /* 8 bytes */
-    int64_t compressedSize = 0;
-
-    /* 8 bytes */
-    int64_t unCompressedSize = 0;
-
-    /* 4 bytes */
-    int fileNameLength = 0;
-
-    /* 4 bytes */
-    int extraLength = 0;
-
-    /* 4 bytes */
-    int commentLength = 0;
-
-    /* 4 bytes */
-    int diskNumStart = 0;
-
-    /* 2 bytes */
-    short internalFile = 0;
-
-    /* 4 bytes */
-    int externalFile = 0;
-
-    /* 8 bytes */
-    int64_t offset = 0;
-
-    /* n bytes */
-    std::string fileName;
-
-    /* n bytes */
-    std::string extraData;
-
-    /* n bytes */
-    std::string comment;
-
-    int length = 0;
-
     static void SetCentralDirectoryValues(ByteBuffer& bf, CentralDirectory* cd);
+
+    /* 2 bytes */
+    short m_version = 0;
+
+    /* 2 bytes */
+    short m_versionExtra = 0;
+
+    /* 2 bytes */
+    short m_flag = 0;
+
+    /* 2 bytes */
+    short m_method = 0;
+
+    /* 2 bytes */
+    short m_lastTime = 0;
+
+    /* 2 bytes */
+    short m_lastDate = 0;
+
+    /* 4 bytes */
+    int m_crc32 = 0;
+
+    /* 8 bytes */
+    int64_t m_compressedSize = 0;
+
+    /* 8 bytes */
+    int64_t m_unCompressedSize = 0;
+
+    /* 4 bytes */
+    int m_fileNameLength = 0;
+
+    /* 4 bytes */
+    int m_extraLength = 0;
+
+    /* 4 bytes */
+    int m_commentLength = 0;
+
+    /* 4 bytes */
+    int m_diskNumStart = 0;
+
+    /* 2 bytes */
+    short m_internalFile = 0;
+
+    /* 4 bytes */
+    int m_externalFile = 0;
+
+    /* 8 bytes */
+    int64_t m_offset = 0;
+
+    /* n bytes */
+    std::string m_fileName;
+
+    /* n bytes */
+    std::string m_extraData;
+
+    /* n bytes */
+    std::string m_comment;
+
+    int m_length = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

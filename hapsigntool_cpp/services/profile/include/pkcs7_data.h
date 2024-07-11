@@ -60,6 +60,9 @@ struct PKCS7Attr {
 };
 
 class PKCS7Data {
+private:
+    static constexpr int BUFFER_SIZE = 4096;
+
 public:
     PKCS7Data(int flags = PKCS7_NODETACHED_FLAGS);
     PKCS7Data(const PKCS7Data& pkcs7) = delete;
@@ -92,7 +95,7 @@ public:
     static int SortX509Stack(STACK_OF(X509)* certs);
     /* Subject information for printing the certificate chain */
     static void PrintCertChainSub(const STACK_OF(X509)* certs);
-    static std::string GetASN1Time(const ASN1_TIME* asn1_tm);
+    static std::string GetASN1Time(const ASN1_TIME* tm);
     /* Compare the two, first certificate issuers with the second certificate subject info */
     static bool X509NameCompare(const X509* cert, const X509* issuerCert);
     /* check pkcs7 sign time in certchain valid period */
@@ -135,11 +138,10 @@ private:
                      const std::string& content, int flags, const std::vector<PKCS7Attr>& attrs);
 
 private:
-    PKCS7* p7 = NULL;
-    int flags;
-    static constexpr int BUFFER_SIZE = 4096;
-    std::shared_ptr<Signer> signer; // tmp
-    std::string sigAlg; // tmp
+    PKCS7* m_p7 = NULL;
+    int m_flags;
+    std::shared_ptr<Signer> m_signer; // tmp
+    std::string m_sigAlg; // tmp
 };
 } // namespace SignatureTools
 } // namespace OHOS

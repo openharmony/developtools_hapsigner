@@ -24,18 +24,18 @@ namespace SignatureTools {
 
 class FileDataSource : public DataSource {
 public:
-    FileDataSource(RandomAccessFile& hapFile, long long offset, long long size, long long position);
+    FileDataSource(RandomAccessFile& hapFile, int64_t offset, int64_t size, int64_t position);
     ~FileDataSource();
     bool HasRemaining() const override;
-    long long Remaining() const override;
+    int64_t Remaining() const override;
     void Reset() override;
     bool ReadDataAndDigestUpdate(const DigestParameter& digestParam, int32_t chunkSize) override;
 
 private:
     RandomAccessFile& hapFileRandomAccess;
-    long long fileOffset;
-    long long sourceSize;
-    long long sourcePosition;
+    int64_t fileOffset;
+    int64_t sourceSize;
+    int64_t sourcePosition;
 };
 } // namespace SignatureTools
 } // namespace OHOS

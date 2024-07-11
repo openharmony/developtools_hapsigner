@@ -25,19 +25,19 @@ namespace SignatureTools {
 
 class ElfSignBlock {
 public:
-    static const int32_t PAGE_SIZE_4K;
-    static const int32_t MERKLE_TREE_INLINED;
+    static constexpr int32_t PAGE_SIZE_4K = 4096;
+    static constexpr int32_t MERKLE_TREE_INLINED = 0x2;
 
 public:
     ElfSignBlock();
-    ElfSignBlock(int32_t paddingSize, std::vector<int8_t> merkleTreeData,
-                 FsVerityDescriptorWithSign descriptorWithSign);
+    ElfSignBlock(int32_t paddingSize, std::vector<int8_t> &merkleTreeData,
+                 FsVerityDescriptorWithSign &descriptorWithSign);
     int32_t Size();
-    std::vector<int8_t> GetMerkleTreeWithPadding();
+    std::vector<int8_t>& GetMerkleTreeWithPadding();
     int64_t GetDataSize();
     int64_t GetTreeOffset();
     std::vector<int8_t> GetSignature();
-    std::vector<int8_t> ToByteArray();
+    std::shared_ptr<ByteBuffer> ToByteArray();
     static bool FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock);
     static int32_t ComputeMerkleTreePaddingLength(int64_t signBlockOffset);
 

@@ -19,9 +19,9 @@ namespace SignatureTools {
 
 CodeSignBlockHeader::CodeSignBlockHeader()
 {
-    this->magic = MAGIC_NUM;
-    this->version = CODE_SIGNING_VERSION;
-    this->reserved = std::vector<int8_t>(RESERVED_BYTE_ARRAY_LENGTH);
+    magic = MAGIC_NUM;
+    version = CODE_SIGNING_VERSION;
+    reserved = std::vector<int8_t>(RESERVED_BYTE_ARRAY_LENGTH);
 }
 
 CodeSignBlockHeader::CodeSignBlockHeader(Builder* builder)
@@ -40,7 +40,7 @@ CodeSignBlockHeader::~CodeSignBlockHeader()
 
 void CodeSignBlockHeader::SetSegmentNum(int num)
 {
-    this->segmentNum = num;
+    segmentNum = num;
 }
 
 int CodeSignBlockHeader::GetSegmentNum()
@@ -48,9 +48,9 @@ int CodeSignBlockHeader::GetSegmentNum()
     return segmentNum;
 }
 
-void CodeSignBlockHeader::SetBlockSize(long long size)
+void CodeSignBlockHeader::SetBlockSize(int64_t size)
 {
-    this->blockSize = static_cast<int>(size);
+    blockSize = static_cast<int>(size);
 }
 
 int CodeSignBlockHeader::GetBlockSize()
@@ -63,7 +63,7 @@ void CodeSignBlockHeader::SetFlags(int flags)
     this->flags = flags;
 }
 
-std::vector<int8_t> CodeSignBlockHeader::ToByteArray()
+void CodeSignBlockHeader::ToByteArray(std::vector<int8_t>& ret)
 {
     ByteBuffer bf(Size());
     bf.PutInt64(magic);
@@ -72,8 +72,7 @@ std::vector<int8_t> CodeSignBlockHeader::ToByteArray()
     bf.PutInt32(segmentNum);
     bf.PutInt32(flags);
     bf.PutData((const char*)reserved.data(), reserved.size());
-    std::vector<int8_t> ret(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetPosition());
-    return ret;
+    ret = std::vector<int8_t>(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetPosition());
 }
 
 CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(std::vector<signed char>& bytes)
@@ -85,7 +84,7 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(std::vector<signed char>
     ByteBuffer bf(bytes.size());
     bf.PutData((const char*)bytes.data(), bytes.size());
     bf.Flip();
-    long long inMagic;
+    int64_t inMagic;
     bf.GetInt64(inMagic);
     if (inMagic != MAGIC_NUM) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid magic num of CodeSignBlockHeader.");
@@ -126,7 +125,7 @@ int CodeSignBlockHeader::Size()
     return MAGIC_BYTE_ARRAY_LENGTH + MAGIC_BYTE_LENGTH * MAGIC_BYTE_LENGTH + RESERVED_BYTE_ARRAY_LENGTH;
 }
 
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetMagic(long long magic)
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetMagic(int64_t magic)
 {
     this->magic = magic;
     return this;

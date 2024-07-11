@@ -52,7 +52,8 @@ bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
         .SetRawRootHash(merkleTree_ptr->rootHash)
         .SetFlags(flags)
         .SetMerkleTreeOffset(fsvTreeOffset);
-    std::vector<int8_t> fsVerityDescriptor = builder->Build().GetByteForGenerateDigest();
+    std::vector<int8_t> fsVerityDescriptor;
+    builder->Build().GetByteForGenerateDigest(fsVerityDescriptor);
     std::vector<int8_t> digest;
     DigestUtils digestUtils(HASH_SHA256);
     std::stringstream ss;
@@ -64,7 +65,7 @@ bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
     for (int i = 0; i < result.size(); i++) {
         digest.push_back(result[i]);
     }
-    fsVerityDigest = FsVerityDigest::GetFsVerityDigest(FS_SHA256.GetId(), digest);
+    FsVerityDigest::GetFsVerityDigest(FS_SHA256.GetId(), digest, fsVerityDigest);
     treeBytes = merkleTree_ptr->tree;
     rootHash = merkleTree_ptr->rootHash;
     return true;

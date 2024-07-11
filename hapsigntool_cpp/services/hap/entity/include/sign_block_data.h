@@ -37,12 +37,12 @@ public:
     bool GetByte();
 
 private:
-    char type;
-    long len;
-    bool isByte;
-    std::vector<int8_t> blockHead;
-    std::vector<int8_t> signData;
-    std::string signFile;
+    char m_type;
+    long m_len;
+    bool m_isByte;
+    std::vector<int8_t> m_blockHead;
+    std::vector<int8_t> m_signData;
+    std::string m_signFile;
 };
 } // namespace SignatureTools
 } // namespace OHOS

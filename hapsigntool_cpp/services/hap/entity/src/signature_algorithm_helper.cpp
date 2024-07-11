@@ -16,28 +16,43 @@
 
 namespace OHOS {
 namespace SignatureTools {
-SignatureAlgorithmHelper::SignatureAlgorithmHelper() : id(SignatureAlgorithmId::ECDSA_WITH_SHA256),
-    keyAlgorithm(""),
-    contentDigestAlgorithm(ContentDigestAlgorithm::SHA256),
-    signatureAlgAndParams("", nullptr)
+const SignatureAlgorithmHelper SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE{
+    SignatureAlgorithmId::ECDSA_WITH_SHA256, "EC", ContentDigestAlgorithm::SHA256,
+    {"SHA256withECDSA", nullptr} };
+
+const SignatureAlgorithmHelper SignatureAlgorithmHelper::ECDSA_WITH_SHA384_INSTANCE{
+    SignatureAlgorithmId::ECDSA_WITH_SHA384, "EC", ContentDigestAlgorithm::SHA384,
+    {"SHA384withECDSA", nullptr} };
+
+SignatureAlgorithmHelper::SignatureAlgorithmHelper() : m_id(SignatureAlgorithmId::ECDSA_WITH_SHA256),
+    m_keyAlgorithm(""),
+    m_contentDigestAlgorithm(ContentDigestAlgorithm::SHA256),
+    m_signatureAlgAndParams("", nullptr)
 {
 }
 
-SignatureAlgorithmHelper::SignatureAlgorithmHelper(const SignatureAlgorithmHelper& other) : id(other.id),
-    keyAlgorithm(other.keyAlgorithm),
-    contentDigestAlgorithm(other.contentDigestAlgorithm),
-    signatureAlgAndParams(other.signatureAlgAndParams.first, nullptr)
+SignatureAlgorithmHelper::SignatureAlgorithmHelper(const SignatureAlgorithmHelper& other) : m_id(other.m_id),
+    m_keyAlgorithm(other.m_keyAlgorithm),
+    m_contentDigestAlgorithm(other.m_contentDigestAlgorithm),
+    m_signatureAlgAndParams(other.m_signatureAlgAndParams.first, nullptr)
+{
+}
+
+SignatureAlgorithmHelper::SignatureAlgorithmHelper(SignatureAlgorithmId id_, std::string keyAlg_,
+                                                   ContentDigestAlgorithm digestAlg_,
+                                                   std::pair<std::string, void*> sigParams_)
+    : m_id(id_), m_keyAlgorithm(keyAlg_), m_contentDigestAlgorithm(digestAlg_), m_signatureAlgAndParams(sigParams_)
 {
 }
 
 SignatureAlgorithmHelper& SignatureAlgorithmHelper::operator=(const SignatureAlgorithmHelper& other)
 {
     if (this != &other) {
-        id = other.id;
-        keyAlgorithm = other.keyAlgorithm;
-        contentDigestAlgorithm = other.contentDigestAlgorithm;
-        signatureAlgAndParams.first = other.signatureAlgAndParams.first;
-        signatureAlgAndParams.second = other.signatureAlgAndParams.second;
+        m_id = other.m_id;
+        m_keyAlgorithm = other.m_keyAlgorithm;
+        m_contentDigestAlgorithm = other.m_contentDigestAlgorithm;
+        m_signatureAlgAndParams.first = other.m_signatureAlgAndParams.first;
+        m_signatureAlgAndParams.second = other.m_signatureAlgAndParams.second;
     }
     return *this;
 }
@@ -52,20 +67,5 @@ const SignatureAlgorithmHelper* SignatureAlgorithmHelper::FindById(SignatureAlgo
     if (id == SignatureAlgorithmId::ECDSA_WITH_SHA384) return &ECDSA_WITH_SHA384_INSTANCE;
     return nullptr;
 }
-
-SignatureAlgorithmHelper::SignatureAlgorithmHelper(SignatureAlgorithmId id_, std::string keyAlg_,
-                                                   ContentDigestAlgorithm digestAlg_,
-                                                   std::pair<std::string, void*> sigParams_)
-    : id(id_), keyAlgorithm(keyAlg_), contentDigestAlgorithm(digestAlg_), signatureAlgAndParams(sigParams_)
-{
-}
-
-const SignatureAlgorithmHelper SignatureAlgorithmHelper::ECDSA_WITH_SHA256_INSTANCE{
-    SignatureAlgorithmId::ECDSA_WITH_SHA256, "EC", ContentDigestAlgorithm::SHA256,
-    {"SHA256withECDSA", nullptr} };
-
-const SignatureAlgorithmHelper SignatureAlgorithmHelper::ECDSA_WITH_SHA384_INSTANCE{
-    SignatureAlgorithmId::ECDSA_WITH_SHA384, "EC", ContentDigestAlgorithm::SHA384,
-    {"SHA384withECDSA", nullptr} };
 } // namespace SignatureTools
 } // namespace OHOS

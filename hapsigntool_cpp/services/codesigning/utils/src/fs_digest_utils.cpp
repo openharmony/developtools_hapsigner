@@ -42,19 +42,19 @@ std::string DigestUtils::Result(DigestUtils::Type type)
     if (ret < 1) {
         printf("Failed to Calculate Hash Relsult\n");
     }
-    int temporaryVariable_1 = 2;
-    int temporaryVariable_2 = 3;
+    int temporaryVariableFirst = 2;
+    int temporaryVariableSecond = 3;
     if (type == Type::HEX) {
-        char* res = new char[len * temporaryVariable_1 + 1];
+        char* res = new char[len * temporaryVariableFirst + 1];
         for (unsigned int i = 0; i < len; i++) {
-            snprintf_s(&res[i * temporaryVariable_1], temporaryVariable_2, temporaryVariable_1, "%02x", md[i]);
+            snprintf_s(&res[i * temporaryVariableFirst], temporaryVariableSecond, temporaryVariableFirst, "%02x", md[i]);
         }
-        std::string st{ res, len * temporaryVariable_1 };
+        std::string st{res, len * temporaryVariableFirst};
         delete[]md;
         delete[]res;
         return st;
     }
-    std::string st{ reinterpret_cast<char*>(md), len };
+    std::string st{reinterpret_cast<char*>(md), len};
     delete[]md;
     return st;
 }

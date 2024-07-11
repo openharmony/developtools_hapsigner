@@ -31,31 +31,23 @@ namespace OHOS {
 namespace SignatureTools {
 class Params {
 public:
-    virtual ~Params() = default;
+    static std::unordered_set<std::string> InitParamField(const std::vector<std::string>& paramFields);
+    static bool GetSignatureAlgorithm(const std::string& signatureAlgorithm, SignatureAlgorithmHelper& out);
     Params() = default;
+    virtual ~Params() = default;
     virtual std::string GetMethod();
     virtual void SetMethod(const std::string& method);
     virtual Options* GetOptions();
-    static std::unordered_set<std::string> InitParamField(const std::vector<std::string>& paramFields);
-    static bool GetSignatureAlgorithm(const std::string& signatureAlgorithm, SignatureAlgorithmHelper& out);
 
-public:
-    static const std::string GENERATE_APP_CERT;
-    static const std::string GENERATE_CA;
-    static const std::string GENERATE_CERT;
-    static const std::string GENERATE_CSR;
-    static const std::string GENERATE_KEYPAIR;
-    static const std::string GENERATE_PROFILE_CERT;
-    static const std::string SIGN_APP;
-    static const std::string SIGN_PROFILE;
-    static const std::string VERIFY_APP;
-    static const std::string VERIFY_PROFILE;
+private:
+    std::shared_ptr<Options> options = std::make_shared<Options>();
 
 private:
     std::string method;
-    std::shared_ptr<Options> options = std::make_shared<Options>();
 };
+
 using ParamsSharedPtr = std::shared_ptr<Params>;
+
 } // namespace SignatureTools
 } // namespace OHOS
 #endif // SIGNATRUETOOLS_PARAMS_H

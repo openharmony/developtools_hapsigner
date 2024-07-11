@@ -73,18 +73,18 @@ std::optional<EndOfCentralDirectory*> EndOfCentralDirectory::GetEOCDByBytes(cons
 
 std::string EndOfCentralDirectory::ToBytes()
 {
-    ByteBuffer bf(length);
+    ByteBuffer bf(m_length);
 
     bf.PutInt32(SIGNATURE);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, diskNum);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, cDStartDiskNum);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, thisDiskCDNum);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, cDTotal);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, cDSize);
-    UnsignedDecimalUtil::SetUnsignedInt(bf, offset);
-    UnsignedDecimalUtil::SetUnsignedShort(bf, commentLength);
-    if (commentLength > 0) {
-        bf.PutData(comment.data(), comment.size());
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_diskNum);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_cDStartDiskNum);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_thisDiskCDNum);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_cDTotal);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_cDSize);
+    UnsignedDecimalUtil::SetUnsignedInt(bf, m_offset);
+    UnsignedDecimalUtil::SetUnsignedShort(bf, m_commentLength);
+    if (m_commentLength > 0) {
+        bf.PutData(m_comment.data(), m_comment.size());
     }
 
     return bf.ToString();
@@ -102,92 +102,92 @@ int EndOfCentralDirectory::GetSIGNATURE()
 
 int EndOfCentralDirectory::GetDiskNum()
 {
-    return diskNum;
+    return m_diskNum;
 }
 
 void EndOfCentralDirectory::SetDiskNum(int diskNum)
 {
-    this->diskNum = diskNum;
+    m_diskNum = diskNum;
 }
 
 int EndOfCentralDirectory::GetcDStartDiskNum()
 {
-    return cDStartDiskNum;
+    return m_cDStartDiskNum;
 }
 
 void EndOfCentralDirectory::SetcDStartDiskNum(int cDStartDiskNum)
 {
-    this->cDStartDiskNum = cDStartDiskNum;
+    m_cDStartDiskNum = cDStartDiskNum;
 }
 
 int EndOfCentralDirectory::GetThisDiskCDNum()
 {
-    return thisDiskCDNum;
+    return m_thisDiskCDNum;
 }
 
 void EndOfCentralDirectory::SetThisDiskCDNum(int thisDiskCDNum)
 {
-    this->thisDiskCDNum = thisDiskCDNum;
+    m_thisDiskCDNum = thisDiskCDNum;
 }
 
 int EndOfCentralDirectory::GetcDTotal()
 {
-    return cDTotal;
+    return m_cDTotal;
 }
 
 void EndOfCentralDirectory::SetcDTotal(int cDTotal)
 {
-    this->cDTotal = cDTotal;
+    m_cDTotal = cDTotal;
 }
 
 int64_t EndOfCentralDirectory::GetcDSize()
 {
-    return cDSize;
+    return m_cDSize;
 }
 
 void EndOfCentralDirectory::SetcDSize(int64_t cDSize)
 {
-    this->cDSize = cDSize;
+    m_cDSize = cDSize;
 }
 
 int64_t EndOfCentralDirectory::GetOffset()
 {
-    return offset;
+    return m_offset;
 }
 
 void EndOfCentralDirectory::SetOffset(int64_t offset)
 {
-    this->offset = offset;
+    m_offset = offset;
 }
 
 int EndOfCentralDirectory::GetCommentLength()
 {
-    return commentLength;
+    return m_commentLength;
 }
 
 void EndOfCentralDirectory::SetCommentLength(int commentLength)
 {
-    this->commentLength = commentLength;
+    m_commentLength = commentLength;
 }
 
 std::string EndOfCentralDirectory::GetComment()
 {
-    return comment;
+    return m_comment;
 }
 
 void EndOfCentralDirectory::SetComment(const std::string& comment)
 {
-    this->comment = comment;
+    m_comment = comment;
 }
 
 int EndOfCentralDirectory::GetLength()
 {
-    return length;
+    return m_length;
 }
 
 void EndOfCentralDirectory::SetLength(int length)
 {
-    this->length = length;
+    m_length = length;
 }
 } // namespace SignatureTools
 } // namespace OHOS

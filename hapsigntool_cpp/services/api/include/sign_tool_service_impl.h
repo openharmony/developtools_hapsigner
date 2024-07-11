@@ -27,6 +27,8 @@ namespace SignatureTools {
 
 class SignToolServiceImpl : public ServiceApi {
 public:
+    static int GetProvisionContent(const std::string& input, std::string& ret);
+    
     SignToolServiceImpl() = default;
     virtual ~SignToolServiceImpl() = default;
 
@@ -45,8 +47,7 @@ public:
     bool SignHap(Options* options)override;
     bool VerifyProfile(Options* options)override;
     bool OutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
-    bool OutPutCert(X509* certs, const std::string& outPutPath);
-    static int GetProvisionContent(const std::string& input, std::string& ret);
+    bool OutPutCert(X509* cert, const std::string& outPutPath);
     bool PrintX509CertFromMemory(X509* cert);
     bool PrintX509CertChainFromMemory(std::vector<X509*> certs);
     bool VerifyHapSigner(Options* option)override;

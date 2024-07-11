@@ -96,7 +96,7 @@ bool SignToolServiceImpl::GenerateRootCertToFile(Options* options, EVP_PKEY* roo
     result = true;
 err:
     if (result == false)
-        SIGNATURE_TOOLS_LOGE("generate root cert failed!\n");
+        SIGNATURE_TOOLS_LOGE("generate root cert failed!");
     X509_free(cert);
     X509_REQ_free(csr);
     return result;
@@ -129,7 +129,7 @@ bool SignToolServiceImpl::GenerateSubCertToFile(Options* options, EVP_PKEY* root
     result = true;
 err:
     if (result == false)
-        SIGNATURE_TOOLS_LOGE("generate sub cert failed!\n");
+        SIGNATURE_TOOLS_LOGE("generate sub cert failed!");
     X509_free(cert);
     X509_REQ_free(csr);
     return result;
@@ -230,7 +230,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
     result = true;
 err:
     if (result == false)
-        SIGNATURE_TOOLS_LOGE("generate cert failed!\n");
+        SIGNATURE_TOOLS_LOGE("generate cert failed!");
     X509_free(cert);
     X509_REQ_free(csr);
     EVP_PKEY_free(rootKeyPair);
@@ -284,12 +284,14 @@ bool SignToolServiceImpl::GenerateCsr(Options* options)
         PrintErrorNumberMsg("INVALIDPARAM_ERROR",
                             INVALIDPARAM_ERROR,
                             "Please check if signalg has been specified which is required.");
+        EVP_PKEY_free(keyPair);
         return false;
     }
     if (subject.empty()) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR",
                             INVALIDPARAM_ERROR,
                             "Please check if subject has been specified which is required.");
+        EVP_PKEY_free(keyPair);
         return false;
     }
     csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
@@ -359,35 +361,37 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
     X509* x509Certificate = nullptr;
     std::string signAlg = adapter->options->GetString(Options::SIGN_ALG);
     std::string subject = adapter->options->GetString(Options::SUBJECT);
-    do {
-        if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
-            break;
-        }
-        adapter->SetIssuerKeyStoreFile(true);
-        if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
-            break;
-        }
-        adapter->ResetPwd(); // clean pwd for safety
-        csr = GetCsr(keyPair, signAlg, subject);
-        if (!csr) { // get CSR request
-            break;
-        }
-        x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
-                                                     APP_SIGNING_CAPABILITY,
-                                                     sizeof(PROFILE_SIGNING_CAPABILITY)); // get app x509 cert
-        if (!x509Certificate) {
-            PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate app cert failed");
-            break;
-        }
 
-        if (!X509CertVerify(x509Certificate, issueKeyPair)) {
-            break;
-        }
+    if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
+        goto err;
+    }
+    adapter->SetIssuerKeyStoreFile(true);
+    if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
+        goto err;
+    }
+    adapter->ResetPwd(); // clean pwd for safety
+    csr = GetCsr(keyPair, signAlg, subject);
+    if (!csr) { // get CSR request
+        goto err;
+    }
+    x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
+                                                APP_SIGNING_CAPABILITY,
+                                                sizeof(APP_SIGNING_CAPABILITY)); // get app x509 cert
+    if (!x509Certificate) {
+        PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate app cert failed");
+        goto err;
+    }
+    if (!X509CertVerify(x509Certificate, issueKeyPair)) {
+        goto err;
+    }
+    if (!GetAndOutPutCert(*adapter, x509Certificate)) {
+        goto err;
+    }
 
-        adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {}); // realse heap memory
-        return GetAndOutPutCert(*adapter, x509Certificate); // output cert to file
-    } while (0);
-
+    adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {x509Certificate}); // realse heap memory
+    return true;
+    
+err:
     adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {x509Certificate});
     return false;
 }
@@ -401,33 +405,37 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
     X509* x509Certificate = nullptr;
     std::string signAlg = adapter->options->GetString(Options::SIGN_ALG);
     std::string subject = adapter->options->GetString(Options::SUBJECT);
+    
+    if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
+        goto err;
+    }
+    adapter->SetIssuerKeyStoreFile(true);
+    if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
+        goto err;
+    }
+    adapter->ResetPwd(); // clean pwd for safety
+    csr = GetCsr(keyPair, signAlg, subject);
+    if (!csr) { // get CSR request
+        goto err;
+    }
+    x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
+                                                PROFILE_SIGNING_CAPABILITY,
+                                                sizeof(PROFILE_SIGNING_CAPABILITY)); // get profile x509 cert
+    if (!x509Certificate) {
+        PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate app cert failed");
+        goto err;
+    }
+    if (!X509CertVerify(x509Certificate, issueKeyPair)) {
+        goto err;
+    }
+    if (!GetAndOutPutCert(*adapter, x509Certificate)) { // output cert to file
+        goto err;
+    } 
 
-    do {
-        if (!(keyPair = adapter->GetAliasKey(false))) { // get keypair
-            break;
-        }
-        adapter->SetIssuerKeyStoreFile(true);
-        if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
-            break;
-        }
-        adapter->ResetPwd(); // clean pwd for safety
-        if (!(csr = GetCsr(keyPair, signAlg, subject))) { // get CSR request
-            break;
-        }
-        x509Certificate = CertTools::GenerateEndCert(csr, issueKeyPair, *adapter,
-                                                     PROFILE_SIGNING_CAPABILITY,
-                                                     sizeof(PROFILE_SIGNING_CAPABILITY)); // get profile x509 cert
-        if (!x509Certificate) {
-            SIGNATURE_TOOLS_LOGE("failed generate x509 cert");
-            break;
-        }
-        if (!X509CertVerify(x509Certificate, issueKeyPair)) {
-            break;
-        }
-        adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {}); // realse assets
-        return GetAndOutPutCert(*adapter, x509Certificate); // output cert to file
-    } while (0);
-
+    adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {x509Certificate}); // realse heap memory
+    return true;
+    
+err:
     adapter->AppAndProfileAssetsRealse({issueKeyPair, keyPair}, {csr}, {x509Certificate});
     return false;
 }
@@ -452,21 +460,20 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
 
         if (outFile.empty()) { // print certchain to cmd
             successflag = PrintX509CertChainFromMemory(certificates);
-            for (auto cert : certificates) {
-                X509_free(cert);
-            }
+            adapter.AppAndProfileAssetsRealse({}, {}, {certificates[1], certificates[2]});
             return successflag;
         }
-
-        return OutPutCertChain(certificates, adapter.GetOutFile());
-    }
-    if (outFile.empty()) { // print cert to cmd
-        successflag = PrintX509CertFromMemory(cert);
-        X509_free(cert);
+        successflag = OutPutCertChain(certificates, adapter.GetOutFile());
+        adapter.AppAndProfileAssetsRealse({}, {}, {certificates[1], certificates[2]});
         return successflag;
     }
 
-    return OutPutCert(cert, adapter.GetOutFile());
+    if (outFile.empty()) { // print cert to cmd
+        successflag = PrintX509CertFromMemory(cert);
+        return successflag;
+    }
+    successflag = OutPutCert(cert, adapter.GetOutFile());
+    return successflag;
 }
 
 bool SignToolServiceImpl::SignProfile(Options* options)
@@ -477,15 +484,15 @@ bool SignToolServiceImpl::SignProfile(Options* options)
     std::string provisionContent;
     std::string p7b;
     if (SignToolServiceImpl::GetProvisionContent(inFile, provisionContent) < 0) {
-        SIGNATURE_TOOLS_LOGE("getProvisionContent failed\n");
+        SIGNATURE_TOOLS_LOGE("getProvisionContent failed");
         return false;
     }
     if (ProfileSignTool::GenerateP7b(adapter, provisionContent, p7b) < 0) {
-        SIGNATURE_TOOLS_LOGE("generate P7b data failed\n");
+        SIGNATURE_TOOLS_LOGE("generate P7b data failed");
         return false;
     }
     if (FileUtils::Write(p7b, outFile) < 0) {
-        SIGNATURE_TOOLS_LOGE("write p7b data failed\n");
+        SIGNATURE_TOOLS_LOGE("write p7b data failed");
         return false;
     }
     return true;
@@ -519,22 +526,22 @@ bool SignToolServiceImpl::VerifyProfile(Options* options)
     LocalizationAdapter adapter(options);
     std::string p7b;
     if (FileUtils::ReadFile(adapter.GetInFile(), p7b) < 0) {
-        SIGNATURE_TOOLS_LOGE("read p7b data error\n");
+        SIGNATURE_TOOLS_LOGE("read p7b data error");
         return false;
     }
     PKCS7Data p7Data;
     if (p7Data.Parse(p7b) < 0) {
-        SIGNATURE_TOOLS_LOGE("verify profile failed\n");
+        SIGNATURE_TOOLS_LOGE("verify profile failed");
         return false;
     }
     if (p7Data.Verify() < 0) {
-        SIGNATURE_TOOLS_LOGE("verify profile failed\n");
+        SIGNATURE_TOOLS_LOGE("verify profile failed");
         return false;
     }
     const std::string outFile = adapter.GetOutFile();
     std::string originalData;
     if (p7Data.GetContent(originalData) < 0) {
-        SIGNATURE_TOOLS_LOGE("get content failed\n");
+        SIGNATURE_TOOLS_LOGE("get content failed");
         return false;
     }
     if (outFile.empty()) {
@@ -561,20 +568,14 @@ bool SignToolServiceImpl::OutPutCertChain(std::vector<X509*>& certs, const std::
         }
     }
     BIO_free(bio);
-    for (auto cert : certs) {
-        X509_free(cert);
-    }
     return true;
 err:
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
     BIO_free(bio);
-    for (auto& cert : certs) {
-        X509_free(cert);
-    }
     return false;
 }
 
-bool SignToolServiceImpl::OutPutCert(X509* certs, const std::string& outPutPath)
+bool SignToolServiceImpl::OutPutCert(X509* cert, const std::string& outPutPath)
 {
     SIGNATURE_TOOLS_LOGE("outPutPath = %{public}s", outPutPath.c_str());
     BIO* bio = BIO_new_file(outPutPath.c_str(), "wb");
@@ -582,16 +583,14 @@ bool SignToolServiceImpl::OutPutCert(X509* certs, const std::string& outPutPath)
         SIGNATURE_TOOLS_LOGE("failed to open file");
         goto err;
     }
-    if (!PEM_write_bio_X509(bio, certs)) {
+    if (!PEM_write_bio_X509(bio, cert)) {
         SIGNATURE_TOOLS_LOGE("failed to write cert to file!");
         goto err;
     }
-    X509_free(certs);
     BIO_free(bio);
     return true;
 err:
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
-    X509_free(certs);
     BIO_free(bio);
     return false;
 }
@@ -600,7 +599,7 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
 {
     std::string bytes;
     if (FileUtils::ReadFile(input, bytes) < 0) {
-        SIGNATURE_TOOLS_LOGE("provision read faild!\n");
+        SIGNATURE_TOOLS_LOGE("provision read faild!");
         return IO_ERROR;
     }
     nlohmann::json obj = nlohmann::json::parse(bytes);
@@ -613,7 +612,7 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
     ProfileInfo provision;
     AppProvisionVerifyResult result = ParseProvision(ret, provision);
     if (result != PROVISION_OK) {
-        SIGNATURE_TOOLS_LOGE("invalid provision\n");
+        SIGNATURE_TOOLS_LOGE("invalid provision");
         return INVALIDPARAM_ERROR;
     }
     return 0;

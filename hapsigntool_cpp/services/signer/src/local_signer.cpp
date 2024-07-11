@@ -27,27 +27,27 @@ namespace SignatureTools {
 * @param keyPair   Private key to sign
 * @param certificates Cert chain to sign
 */
-LocalSigner::LocalSigner(EVP_PKEY* keyPair, STACK_OF(X509)* certificates) :keyPair(keyPair),
-certificates(certificates)
+LocalSigner::LocalSigner(EVP_PKEY* keyPair, STACK_OF(X509)* certificates) :m_keyPair(keyPair),
+m_certificates(certificates)
 {
-    bool check = this->keyPair == NULL ||
-                 PKCS7Data::SortX509Stack(this->certificates) < 0 ||
-                 X509_check_private_key(sk_X509_value(this->certificates, 0), this->keyPair) != 1;
+    bool check = m_keyPair == NULL ||
+                 PKCS7Data::SortX509Stack(m_certificates) < 0 ||
+                 X509_check_private_key(sk_X509_value(m_certificates, 0), m_keyPair) != 1;
     if (check) {
         SIGNATURE_TOOLS_LOGW("Warning: invalid local signer!\n");
-        sk_X509_pop_free(this->certificates, X509_free);
-        this->certificates = NULL;
+        sk_X509_pop_free(m_certificates, X509_free);
+        m_certificates = NULL;
     }
 }
 LocalSigner::~LocalSigner()
 {
-    if (this->keyPair) {
-        EVP_PKEY_free(this->keyPair);
-        this->keyPair = NULL;
+    if (m_keyPair) {
+        EVP_PKEY_free(m_keyPair);
+        m_keyPair = NULL;
     }
-    if (this->certificates) {
-        sk_X509_pop_free(certificates, X509_free);
-        this->certificates = NULL;
+    if (m_certificates) {
+        sk_X509_pop_free(m_certificates, X509_free);
+        m_certificates = NULL;
     }
 }
 STACK_OF(X509_CRL)* LocalSigner::GetCrls() const
@@ -62,10 +62,10 @@ static X509* X509Dup(const X509* x509)
 
 STACK_OF(X509)* LocalSigner::GetCertificates() const
 {
-    if (this->certificates == NULL) {
-        return this->certificates;
+    if (m_certificates == NULL) {
+        return m_certificates;
     }
-    return sk_X509_deep_copy(this->certificates, X509Dup, X509_free);
+    return sk_X509_deep_copy(m_certificates, X509Dup, X509_free);
 }
 std::string LocalSigner::GetSignature(const std::string& data, const std::string& signAlg) const
 {
@@ -88,7 +88,7 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
 
     // calculate signature value
     bool result = !(hashCtx = EVP_MD_CTX_new())                                          ||
-                  (EVP_DigestSignInit(hashCtx, &privateKeyCtx, hash, NULL, this->keyPair) <= 0) ||
+                  (EVP_DigestSignInit(hashCtx, &privateKeyCtx, hash, NULL, m_keyPair) <= 0) ||
                   (EVP_DigestSignUpdate(hashCtx, data.data(), data.size()) <= 0)         ||
                   (EVP_DigestSignFinal(hashCtx, NULL, &sigLen) <= 0)                     ||
                   !(sigResult = reinterpret_cast<unsigned char*>(OPENSSL_malloc(sigLen)))  ||

@@ -25,7 +25,7 @@ bool StringUtils::IsEmpty(const std::string& cs)
     return cs.empty();
 }
 
-bool StringUtils::ContainsCase(std::vector<std::string> strs, const std::string& str)
+bool StringUtils::ContainsCase(const std::vector<std::string> strs, const std::string& str)
 {
     for (const std::string& val : strs) {
         if (val == str)
@@ -50,11 +50,11 @@ std::vector<std::string> StringUtils::SplitString(const std::string& str, char d
 }
 std::string StringUtils::Trim(const std::string& str)
 {
-    size_t startpos = str.find_first_not_of("     \n\r\f\v");
+    size_t startpos = str.find_first_not_of(" \n\r\f\v");
     if (std::string::npos == startpos) {
         return "";
     }
-    size_t endpos = str.find_last_not_of("     \n\r\f\v");
+    size_t endpos = str.find_last_not_of(" \n\r\f\v");
     return str.substr(startpos, endpos - startpos + 1);
 }
 std::string StringUtils::FormatLoading(std::string& dealStr)

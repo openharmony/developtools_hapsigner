@@ -37,14 +37,14 @@ public:
         virtual ~HapSignBlockInfo()
         {
         }
-        HapSignBlockInfo(long long offset, int version, ByteBuffer contentByteBuffer);
+        HapSignBlockInfo(int64_t offset, int version, ByteBuffer contentByteBuffer);
 
         virtual int GetVersion();
         virtual ByteBuffer GetContent();
-        virtual long long GetOffset();
+        virtual int64_t GetOffset();
 
     private:
-        const long long offset;
+        const int64_t offset;
         const int version;
         ByteBuffer const content;
     };
@@ -63,10 +63,10 @@ public:
     static constexpr int BLOCK_NUMBER = 1;
     static constexpr int HAP_SIGN_SCHEME_V2_BLOCK_VERSION = 2;
     static constexpr int HAP_SIGN_SCHEME_V3_BLOCK_VERSION = 3;
-    static constexpr long long HAP_SIG_BLOCK_MAGIC_LO_V2 = 0x2067695320504148LL;
-    static constexpr long long HAP_SIG_BLOCK_MAGIC_HI_V2 = 0x3234206b636f6c42LL;
-    static constexpr long long HAP_SIG_BLOCK_MAGIC_LO_V3 = 0x676973207061683cLL;
-    static constexpr long long HAP_SIG_BLOCK_MAGIC_HI_V3 = 0x3e6b636f6c62206eLL;
+    static constexpr int64_t HAP_SIG_BLOCK_MAGIC_LO_V2 = 0x2067695320504148LL;
+    static constexpr int64_t HAP_SIG_BLOCK_MAGIC_HI_V2 = 0x3234206b636f6c42LL;
+    static constexpr int64_t HAP_SIG_BLOCK_MAGIC_LO_V3 = 0x676973207061683cLL;
+    static constexpr int64_t HAP_SIG_BLOCK_MAGIC_HI_V3 = 0x3e6b636f6c62206eLL;
     static constexpr int HAP_SIG_BLOCK_HEADER_SIZE = 32;
     static constexpr int HAP_SIG_BLOCK_MIN_SIZE = HAP_SIG_BLOCK_HEADER_SIZE;
     static constexpr int BLOCK_SIZE = 8;

@@ -41,9 +41,9 @@ enum HapBlobType {
 struct HapSignBlockHead {
     int32_t version = 0;
     int32_t blockCount = 0;
-    long long hapSignBlockSize;
-    long long hapSignBlockMagicLo;
-    long long hapSignBlockMagicHi;
+    int64_t hapSignBlockSize;
+    int64_t hapSignBlockMagicLo;
+    int64_t hapSignBlockMagicHi;
 };
 
 struct HapSubSignBlockHead {
@@ -54,19 +54,13 @@ struct HapSubSignBlockHead {
 
 class HapSignerBlockUtils {
 public:
-    DLL_EXPORT static bool FindHapSignature(RandomAccessFile& hapFile, SignatureInfo& signInfo);
-    DLL_EXPORT static bool GetOptionalBlockIndex(std::vector<OptionalBlock>& optionBlocks,
-                                                 int32_t type, int& index);
-    DLL_EXPORT static bool VerifyHapIntegrity(Pkcs7Context& digestInfo, RandomAccessFile& hapFile,
-                                              SignatureInfo& signInfo);
-    DLL_EXPORT static long long CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo);
-    DLL_EXPORT static const long long HAP_SIG_BLOCK_MAGIC_HIGH_OLD;
-    DLL_EXPORT static const long long HAP_SIG_BLOCK_MAGIC_LOW_OLD;
-    DLL_EXPORT static const long long HAP_SIG_BLOCK_MAGIC_HIGH;
-    DLL_EXPORT static const long long HAP_SIG_BLOCK_MAGIC_LOW;
+    DLL_EXPORT static const int64_t HAP_SIG_BLOCK_MAGIC_HIGH_OLD;
+    DLL_EXPORT static const int64_t HAP_SIG_BLOCK_MAGIC_LOW_OLD;
+    DLL_EXPORT static const int64_t HAP_SIG_BLOCK_MAGIC_HIGH;
+    DLL_EXPORT static const int64_t HAP_SIG_BLOCK_MAGIC_LOW;
     DLL_EXPORT static const int32_t ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH;
     DLL_EXPORT static const int32_t ZIP_EOCD_SEGMENT_FLAG;
-    static const long long CHUNK_SIZE;
+    static const int64_t CHUNK_SIZE;
     static const int32_t HAP_SIG_BLOCK_MIN_SIZE;
     static const int32_t ZIP_EOCD_SEG_MIN_SIZE;
     static const int32_t ZIP_EOCD_COMMENT_LENGTH_OFFSET;
@@ -76,36 +70,45 @@ public:
     static const char ZIP_FIRST_LEVEL_CHUNK_PREFIX;
     static const char ZIP_SECOND_LEVEL_CHUNK_PREFIX;
     /* the specifications of hap sign block */
-    static constexpr long long MAX_HAP_SIGN_BLOCK_SIZE = 1024 * 1024 * 1024LL; // 1024MB
+    static constexpr int64_t MAX_HAP_SIGN_BLOCK_SIZE = 1024 * 1024 * 1024LL; // 1024MB
     static constexpr int32_t MAX_BLOCK_COUNT = 10;
     static constexpr int32_t VERSION_FOR_NEW_MAGIC_NUM = 3;
     static constexpr int32_t TEST_FILE_BLOCK_LENGTH = 50;
     static constexpr int32_t TEST_FILE_BLOCK_COUNT = 3;
 
-    DLL_EXPORT static bool FindEocdInHap(RandomAccessFile& hapFile, std::pair<ByteBuffer, long long>& eocd);
+    HapSignerBlockUtils() = delete;
+    DLL_EXPORT static bool FindHapSignature(RandomAccessFile& hapFile, SignatureInfo& signInfo);
+    DLL_EXPORT static bool GetOptionalBlockIndex(std::vector<OptionalBlock>& optionBlocks,
+                                                 int32_t type, int& index);
+    DLL_EXPORT static bool VerifyHapIntegrity(Pkcs7Context& digestInfo, RandomAccessFile& hapFile,
+                                              SignatureInfo& signInfo);
+    DLL_EXPORT static int64_t CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo);
+
+
+    DLL_EXPORT static bool FindEocdInHap(RandomAccessFile& hapFile, std::pair<ByteBuffer, int64_t>& eocd);
     DLL_EXPORT static bool FindEocdInHap(RandomAccessFile& hapFile, unsigned short maxCommentSize,
-                                         std::pair<ByteBuffer, long long>& eocd);
+                                         std::pair<ByteBuffer, int64_t>& eocd);
     DLL_EXPORT static bool FindEocdInSearchBuffer(ByteBuffer& zipContents, int& offset);
-    DLL_EXPORT static bool GetCentralDirectoryOffset(ByteBuffer& eocd, long long eocdOffset,
-                                                     long long& centralDirectoryOffset);
+    DLL_EXPORT static bool GetCentralDirectoryOffset(ByteBuffer& eocd, int64_t eocdOffset,
+                                                     int64_t& centralDirectoryOffset);
     DLL_EXPORT static bool GetCentralDirectorySize(ByteBuffer& eocd, long& centralDirectorySize);
-    static bool FindHapSigningBlock(RandomAccessFile& hapFile, long long centralDirOffset,
+    static bool FindHapSigningBlock(RandomAccessFile& hapFile, int64_t centralDirOffset,
                                     SignatureInfo& signInfo);
     static bool FindHapSubSigningBlock(RandomAccessFile& hapFile,
                                        int32_t blockCount,
-                                       long long blockArrayLen,
-                                       long long hapSignBlockOffset,
+                                       int64_t blockArrayLen,
+                                       int64_t hapSignBlockOffset,
                                        SignatureInfo& signInfo);
     DLL_EXPORT static bool ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
                                                       const ByteBuffer& subBlock, uint32_t type);
-    DLL_EXPORT static bool SetUnsignedInt32(ByteBuffer& buffer, int32_t offset, long long value);
+    DLL_EXPORT static bool SetUnsignedInt32(ByteBuffer& buffer, int32_t offset, int64_t value);
     DLL_EXPORT static bool ComputeDigestsWithOptionalBlock(const DigestParameter& digestParam,
                                                            const std::vector<OptionalBlock>& optionalBlocks,
                                                            const ByteBuffer& chunkDigest,
                                                            ByteBuffer& finalDigest);
     static bool ComputeDigestsForEachChunk(const DigestParameter& digestParam, DataSource* contents[],
                                            int32_t len, ByteBuffer& result);
-    static int32_t GetChunkCount(long long inputSize, long long chunkSize);
+    static int32_t GetChunkCount(int64_t inputSize, int64_t chunkSize);
     static bool InitDigestPrefix(const DigestParameter& digestParam,
                                  unsigned char(&chunkContentPrefix)[ZIP_CHUNK_DIGEST_PRIFIX_LEN],
                                  int32_t chunkLen);
