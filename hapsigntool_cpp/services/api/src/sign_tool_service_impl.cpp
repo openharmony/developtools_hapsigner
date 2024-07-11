@@ -455,7 +455,7 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
             return false;
         }
         certificates.emplace_back(subCaCert); // add sub ca cert
-        certificates.emplace_back(rootCaCert); // add root ca cert 
+        certificates.emplace_back(rootCaCert); // add root ca cert
 
         if (outFile.empty()) {
             successflag = PrintX509CertChainFromMemory(certificates); // print certchain to cmd
