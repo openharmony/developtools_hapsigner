@@ -165,8 +165,7 @@ bool ParamsRunTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& 
     std::string method = params->GetMethod();
     if (DISPATCH_RUN_METHOD.count(method) == 0) {
         isSuccess = ParamsRunTool::CallGenerators(params, api);
-    }
-    else {
+    } else {
         isSuccess = DISPATCH_RUN_METHOD[method](params->GetOptions(), api);
     }
     return isSuccess;
