@@ -197,7 +197,7 @@ MerkleTree* MerkleTreeBuilder::GenerateMerkleTree(std::istream& inputStream, lon
     SetAlgorithm(fsVerityHashAlgorithm.GetHashAlgorithm());
     int digestSize = fsVerityHashAlgorithm.GetOutputByteSize();
     std::vector<int64_t> offsetArrays = GetOffsetArrays(size, digestSize);
-    std::shared_ptr<ByteBuffer> allHashBuffer = std::make_shared<ByteBuffer>
+    std::unique_ptr<ByteBuffer> allHashBuffer = std::make_unique<ByteBuffer>
         (ByteBuffer(offsetArrays[offsetArrays.size() - 1]));
     GenerateHashDataByInputData(inputStream, size, allHashBuffer.get(), offsetArrays, digestSize);
     GenerateHashDataByHashData(allHashBuffer.get(), offsetArrays, digestSize);

@@ -46,8 +46,6 @@ ContentDigestAlgorithm& ContentDigestAlgorithm::operator=(const ContentDigestAlg
     return *this;
 }
 
-
-
 std::string ContentDigestAlgorithm::GetDigestAlgorithm()
 {
     return m_digestAlgorithm;

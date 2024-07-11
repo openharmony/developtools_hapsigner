@@ -43,7 +43,7 @@ bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
     int flags = fsvTreeOffset == 0 ? 0 : FsVerityDescriptor::FLAG_STORE_MERKLE_TREE_OFFSET;
     std::shared_ptr<MerkleTree> merkleTree_ptr(merkleTree);
     // sign size is 0, cs version is 0
-    std::shared_ptr<FsVerityDescriptor::Builder> builder = std::make_shared<FsVerityDescriptor::Builder>();
+    std::unique_ptr<FsVerityDescriptor::Builder> builder = std::make_unique<FsVerityDescriptor::Builder>();
     builder->SetFileSize(size)
         .SetHashAlgorithm(FS_SHA256.GetId())
         .SetLog2BlockSize(LOG_2_OF_FSVERITY_HASH_PAGE_SIZE)

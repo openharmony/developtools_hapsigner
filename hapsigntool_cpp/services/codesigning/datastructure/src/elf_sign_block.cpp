@@ -63,21 +63,21 @@ std::vector<int8_t> ElfSignBlock::GetSignature()
     return descriptorWithSign.GetSignature();
 }
 
-std::shared_ptr<ByteBuffer> ElfSignBlock::ToByteArray()
+void ElfSignBlock::ToByteArray(std::vector<int8_t>& ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(Size());
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(Size());
     bf->PutInt32(type);
     bf->PutInt32(merkleTreeWithPadding.size());
     bf->PutData(merkleTreeWithPadding.data(), merkleTreeWithPadding.size());
     std::vector<int8_t> descriptorWithSignArr;
     descriptorWithSign.ToByteArray(descriptorWithSignArr);
     bf->PutData(descriptorWithSignArr.data(), descriptorWithSignArr.size());
-    return bf;
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetLimit());
 }
 
 bool ElfSignBlock::FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(bytes.size());
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(bytes.size());
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inTreeType = 0;

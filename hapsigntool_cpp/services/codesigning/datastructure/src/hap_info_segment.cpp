@@ -49,7 +49,7 @@ void HapInfoSegment::ToByteArray(std::vector<int8_t> &ret)
 {
     std::vector<int8_t> hapSignInfoByteArray;
     signInfo.ToByteArray(hapSignInfoByteArray);
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>
         (ByteBuffer(HapInfoSegment::MAGIC_NUM_BYTES + hapSignInfoByteArray.size()));
     bf->PutInt32(magic);
     bf->PutData(hapSignInfoByteArray.data(), hapSignInfoByteArray.size());
@@ -59,7 +59,7 @@ void HapInfoSegment::ToByteArray(std::vector<int8_t> &ret)
 
 HapInfoSegment HapInfoSegment::FromByteArray(std::vector<int8_t> bytes)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inMagic = 0;

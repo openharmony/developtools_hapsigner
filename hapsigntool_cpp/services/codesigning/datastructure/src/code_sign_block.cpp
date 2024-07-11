@@ -120,9 +120,9 @@ void CodeSignBlock::SetSoInfoSegment(NativeLibInfoSegment soSeg)
     nativeLibInfoSegment = soSeg;
 }
 
-std::shared_ptr<ByteBuffer> CodeSignBlock::ToByteArray()
+void CodeSignBlock::ToByteArray(std::vector<int8_t>& ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>
         (ByteBuffer(codeSignBlockHeader.GetBlockSize()));
     std::vector<int8_t> codeSignBlockHeaderVec;
     codeSignBlockHeader.ToByteArray(codeSignBlockHeaderVec);
@@ -135,10 +135,8 @@ std::shared_ptr<ByteBuffer> CodeSignBlock::ToByteArray()
     bf->PutData(zeroPadding.data(), zeroPadding.size());
     // Hap merkle tree
     bf->PutData(merkleTreeMap["Hap"].data(), merkleTreeMap["Hap"].size());
-    std::shared_ptr<ByteBuffer> fsVerityInfoSegmentPtr = fsVerityInfoSegment.ToByteArray();
-    std::vector<int8_t> fsVerityInfoSegmentVec = std::vector<int8_t>(fsVerityInfoSegmentPtr->GetBufferPtr(),
-                                                                     fsVerityInfoSegmentPtr->GetBufferPtr()
-                                                                     + fsVerityInfoSegmentPtr->GetPosition());
+    std::vector<int8_t> fsVerityInfoSegmentVec;
+    fsVerityInfoSegment.ToByteArray(fsVerityInfoSegmentVec);
     bf->PutData(fsVerityInfoSegmentVec.data(), fsVerityInfoSegmentVec.size());
     std::vector<int8_t> hapInfoSegmentVec;
     hapInfoSegment.ToByteArray(hapInfoSegmentVec);
@@ -147,7 +145,7 @@ std::shared_ptr<ByteBuffer> CodeSignBlock::ToByteArray()
     nativeLibInfoSegment.ToByteArray(nativeLibInfoSegmentVec);
     bf->PutData(nativeLibInfoSegmentVec.data(), nativeLibInfoSegmentVec.size());
     
-    return bf;
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
 }
 
 void CodeSignBlock::ComputeSegmentOffset()
@@ -176,7 +174,7 @@ int64_t CodeSignBlock::ComputeMerkleTreeOffset(int64_t codeSignBlockOffset)
     return codeSignBlockOffset + sizeWithoutMerkleTree + zeroPadding.size();
 }
 
-std::shared_ptr<ByteBuffer> CodeSignBlock::GenerateCodeSignBlockByte(int64_t fsvTreeOffset)
+void CodeSignBlock::GenerateCodeSignBlockByte(int64_t fsvTreeOffset, std::vector<int8_t>& ret)
 {
     // 1) compute overall block size without merkle tree
     int64_t csbSize = CodeSignBlockHeader::Size()
@@ -193,7 +191,7 @@ std::shared_ptr<ByteBuffer> CodeSignBlock::GenerateCodeSignBlockByte(int64_t fsv
     }
     codeSignBlockHeader.SetBlockSize(csbSize);
     // 2) generate byte array of complete code sign block
-    return ToByteArray();
+    ToByteArray(ret);
 }
 
 }

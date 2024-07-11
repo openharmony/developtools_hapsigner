@@ -34,7 +34,7 @@ public:
                         signed char log2BlockSize, std::vector<int8_t> reserved);
     virtual ~FsVerityInfoSegment();
     virtual int Size();
-    virtual std::shared_ptr<ByteBuffer> ToByteArray();
+    virtual void ToByteArray(std::vector<int8_t>& ret);
     static FsVerityInfoSegment FromByteArray(std::vector<int8_t> &bytes);
 
 private:

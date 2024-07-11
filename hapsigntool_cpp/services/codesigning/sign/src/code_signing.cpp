@@ -89,8 +89,7 @@ bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
                                      hapSignInfoAndMerkleTreeBytesPair.second);
     SignNativeLibs(input, ownerID);
     UpdateCodeSignBlock();
-    std::shared_ptr<ByteBuffer> bf = m_codeSignBlock.GenerateCodeSignBlockByte(fsvTreeOffset);
-    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
+    m_codeSignBlock.GenerateCodeSignBlockByte(fsvTreeOffset, ret);
     SIGNATURE_TOOLS_LOGI("Sign successfully.");
     return true;
 }
@@ -178,7 +177,7 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
     }
     std::streamsize fileSize = inputstream.tellg();
     inputstream.seekg(0, std::ios::beg);
-    std::shared_ptr<FsVerityGenerator> fsVerityGenerator = std::make_shared<FsVerityGenerator>();
+    std::unique_ptr<FsVerityGenerator> fsVerityGenerator = std::make_unique<FsVerityGenerator>();
     fsVerityGenerator->GenerateFsVerityDigest(inputstream, fileSize, fsvTreeOffset);
     std::vector<int8_t> fsVerityDigest = fsVerityGenerator->GetFsVerityDigest();
     std::string ownerID = profileContent.empty() ? "DEBUF_LIB_ID" : HapUtils::GetAppIdentifier(profileContent);
@@ -206,8 +205,7 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
         FsVerityDescriptorWithSign(FsVerityDescriptor(fsdbuilder), signature);
     std::vector<int8_t> treeBytes = fsVerityGenerator->GetTreeBytes();
     ElfSignBlock signBlock = ElfSignBlock(paddingSize, treeBytes, fsVerityDescriptorWithSign);
-    std::shared_ptr<ByteBuffer> bf = signBlock.ToByteArray();
-    codesignData = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetLimit());
+    signBlock.ToByteArray(codesignData);
     return true;
 }
 

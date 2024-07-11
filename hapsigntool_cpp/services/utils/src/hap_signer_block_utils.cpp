@@ -371,8 +371,7 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
 
         int64_t dataOffset = hapSignBlockOffset + headOffset;
         ByteBuffer signBuffer(subSignBlockHead.length);
-        ret = hapFile.ReadFileFullyFromOffset(signBuffer, dataOffset);
-        if (ret < 0) {
+        if ((ret = hapFile.ReadFileFullyFromOffset(signBuffer, dataOffset)) < 0) {
             SIGNATURE_TOOLS_LOGE("read %{public}dst subblock error: %{public}" PRId64, i, ret);
             return false;
         }

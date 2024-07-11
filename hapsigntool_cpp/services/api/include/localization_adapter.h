@@ -64,7 +64,7 @@ public:
 private:
     void ResetChars(char* chars);
 
-public:   
+public:
     Options* options;
     std::unique_ptr<KeyStoreHelper> keyStoreHelper;
 

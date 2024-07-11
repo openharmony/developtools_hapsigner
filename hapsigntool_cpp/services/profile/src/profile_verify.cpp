@@ -216,19 +216,19 @@ void from_json(const json& obj, ProfileInfo& out)
     GetStringIfExist(obj, KEY_APP_SERVICE_CAPABILITIES, out.appServiceCapabilities);
 }
 
-AppProvisionVerifyResult ReturnIfStringIsEmpty(const std::string& str, const std::string& msg)
+AppProvisionVerifyResult ReturnIfStringIsEmpty(const std::string& str, const std::string& errMsg)
 {
     if (str.empty()) {
-        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, msg);
+        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, errMsg);
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
 }
 
-AppProvisionVerifyResult ReturnIfIntIsNonPositive(int num, const std::string& msg)
+AppProvisionVerifyResult ReturnIfIntIsNonPositive(int num, const std::string& errMsg)
 {
     if (num <= 0) {
-        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, msg);
+        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, errMsg);
         return PROVISION_INVALID;
     }
     return PROVISION_OK;

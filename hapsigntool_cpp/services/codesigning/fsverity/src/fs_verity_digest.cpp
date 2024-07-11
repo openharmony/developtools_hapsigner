@@ -22,7 +22,7 @@ const std::string FsVerityDigest::FSVERITY_DIGEST_MAGIC = "FSVerity";
 const int FsVerityDigest::DIGEST_HEADER_SIZE = 12;
 
 void FsVerityDigest::GetFsVerityDigest(int8_t algoID, std::vector<int8_t>& digest,
-                                                      std::vector<int8_t> &ret)
+                                       std::vector<int8_t> &ret)
 {
     const int size = DIGEST_HEADER_SIZE + digest.size();
     if (size <= 0) {

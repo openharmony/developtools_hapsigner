@@ -37,7 +37,7 @@ public:
     int64_t GetDataSize();
     int64_t GetTreeOffset();
     std::vector<int8_t> GetSignature();
-    std::shared_ptr<ByteBuffer> ToByteArray();
+    void ToByteArray(std::vector<int8_t>& ret);
     static bool FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock);
     static int32_t ComputeMerkleTreePaddingLength(int64_t signBlockOffset);
 

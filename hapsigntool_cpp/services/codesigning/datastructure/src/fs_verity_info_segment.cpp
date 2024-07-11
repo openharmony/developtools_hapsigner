@@ -51,15 +51,15 @@ int FsVerityInfoSegment::Size()
     return FS_VERITY_INFO_SEGMENT_SIZE;
 }
 
-std::shared_ptr<ByteBuffer> FsVerityInfoSegment::ToByteArray()
+void FsVerityInfoSegment::ToByteArray(std::vector<int8_t>& ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(FS_VERITY_INFO_SEGMENT_SIZE);
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(FS_VERITY_INFO_SEGMENT_SIZE);
     bf->PutInt32(magic);
     bf->PutByte(version);
     bf->PutByte(hashAlgorithm);
     bf->PutByte(log2BlockSize);
     bf->PutData(reserved.data(), reserved.size());
-    return bf;
+    ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
 }
 
 FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(std::vector<int8_t> &bytes)

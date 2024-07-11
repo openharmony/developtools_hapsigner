@@ -521,11 +521,11 @@ bool CertTools::SetCertSerialNum(X509* cert)
         goto err;
     }
     if (BN_is_negative(bignum)) {
-	    BN_set_negative(bignum, 0);
+        BN_set_negative(bignum, 0);
     }
     if (!BN_to_ASN1_INTEGER(bignum, X509_get_serialNumber(cert))) {
         goto err;
-    } 
+    }
     BN_CTX_free(ctx);
     BN_free(bignum);
     return true;
@@ -672,8 +672,8 @@ bool CertTools::SetKeyIdentifierExt(X509* cert)
 bool CertTools::SetAuthorizeKeyIdentifierExt(X509* cert)
 {
     unsigned char key_id[] = { 0x73, 0x3a, 0x81, 0x87, 0x8f, 0x95, 0xc1, 0x94,
-                      0xcf, 0xef, 0xab, 0x6f, 0x7f, 0x01, 0x52, 0x86,
-                      0xa3, 0xc2, 0x01, 0xc2 };
+                               0xcf, 0xef, 0xab, 0x6f, 0x7f, 0x01, 0x52, 0x86,
+                               0xa3, 0xc2, 0x01, 0xc2 };
     unsigned int key_id_len = sizeof(key_id);
     X509_EXTENSION* ext = nullptr;
     AUTHORITY_KEYID* akid = AUTHORITY_KEYID_new();
