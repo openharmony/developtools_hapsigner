@@ -168,7 +168,7 @@ int64_t SignInfo::GetDataSize()
 
 void SignInfo::ToByteArray(std::vector<int8_t> &ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(GetSize()));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(GetSize()));
     std::vector<int8_t> empt(GetSize());
     bf->PutData(empt.data(), empt.size());
     bf->Clear();
@@ -221,7 +221,7 @@ std::vector<MerkleTreeExtension*> SignInfo::ParseMerkleTreeExtension(ByteBuffer*
 
 SignInfo SignInfo::FromByteArray(std::vector<int8_t> bytes)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inSaltSize = 0;

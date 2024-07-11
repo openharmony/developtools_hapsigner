@@ -49,10 +49,10 @@ public:
     void SetHapInfoSegment(HapInfoSegment& hapSeg);
     NativeLibInfoSegment& GetSoInfoSegment();
     void SetSoInfoSegment(NativeLibInfoSegment soSeg);
-    std::shared_ptr<ByteBuffer> ToByteArray();
+    void ToByteArray(std::vector<int8_t>& ret);
     void ComputeSegmentOffset();
     int64_t ComputeMerkleTreeOffset(int64_t codeSignBlockOffset);
-    std::shared_ptr<ByteBuffer> GenerateCodeSignBlockByte(int64_t fsvTreeOffset);
+    void GenerateCodeSignBlockByte(int64_t fsvTreeOffset, std::vector<int8_t>& ret);
 
 private:
     CodeSignBlockHeader codeSignBlockHeader;

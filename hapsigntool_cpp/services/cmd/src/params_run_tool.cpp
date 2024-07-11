@@ -33,7 +33,8 @@ std::vector<std::string> ParamsRunTool::InformList = {
     "zip"
 };
 
-static std::unordered_map <std::string, std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD
+static std::unordered_map <std::string,
+                           std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD
 {
     {SIGN_APP, ParamsRunTool::RunSignApp},
     {SIGN_PROFILE, ParamsRunTool::RunSignProfile},
@@ -41,7 +42,8 @@ static std::unordered_map <std::string, std::function<bool(Options* params, Sign
     {VERIFY_PROFILE, ParamsRunTool::RunVerifyProfile}
 };
 
-static std::unordered_map <std::string, std::function<bool(Options* params, SignToolServiceImpl& api)>> GENERATOR_RUN_METHOD
+static std::unordered_map <std::string,
+                           std::function<bool(Options* params, SignToolServiceImpl& api)>> GENERATOR_RUN_METHOD
 {
     {GENERATE_KEYPAIR, ParamsRunTool::RunKeypair},
     {GENERATE_CSR, ParamsRunTool::RunCsr},

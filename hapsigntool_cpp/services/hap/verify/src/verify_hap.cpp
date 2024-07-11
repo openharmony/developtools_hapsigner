@@ -105,7 +105,7 @@ bool VerifyHap::CheckFilePath(const std::string& filePath, std::string& standard
 {
     char path[PATH_MAX] = { 0x00 };
     if (filePath.size() > PATH_MAX || realpath(filePath.c_str(), path) == nullptr) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, filePath + " is not a standard path");
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, filePath + " is not exist");
         return false;
     }
     standardFilePath = std::string(path);

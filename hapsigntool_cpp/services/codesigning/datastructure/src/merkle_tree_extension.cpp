@@ -58,7 +58,7 @@ void MerkleTreeExtension::SetMerkleTreeOffset(int64_t offset)
 
 void MerkleTreeExtension::ToByteArray(std::vector<int8_t>& ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(
         Extension::EXTENSION_HEADER_SIZE + MERKLE_TREE_EXTENSION_DATA_SIZE));
     std::vector<int8_t> extByteArr;
     Extension::ToByteArray(extByteArr);
@@ -71,7 +71,7 @@ void MerkleTreeExtension::ToByteArray(std::vector<int8_t>& ret)
 
 MerkleTreeExtension* MerkleTreeExtension::FromByteArray(std::vector<int8_t>& bytes)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int64_t inMerkleTreeSize = 0;

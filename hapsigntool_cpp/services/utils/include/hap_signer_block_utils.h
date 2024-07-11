@@ -84,7 +84,6 @@ public:
                                               SignatureInfo& signInfo);
     DLL_EXPORT static int64_t CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo);
 
-
     DLL_EXPORT static bool FindEocdInHap(RandomAccessFile& hapFile, std::pair<ByteBuffer, int64_t>& eocd);
     DLL_EXPORT static bool FindEocdInHap(RandomAccessFile& hapFile, unsigned short maxCommentSize,
                                          std::pair<ByteBuffer, int64_t>& eocd);

@@ -48,7 +48,7 @@ bool Extension::IsType(int32_t type)
 
 void Extension::ToByteArray(std::vector<int8_t>& ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>
         (ByteBuffer(Extension::EXTENSION_HEADER_SIZE));
     bf->PutInt32(type);
     bf->PutInt32(size);

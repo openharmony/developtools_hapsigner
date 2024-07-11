@@ -81,7 +81,7 @@ int32_t NativeLibInfoSegment::Size()
 
 void NativeLibInfoSegment::ToByteArray(std::vector<int8_t> &ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(Size()));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(Size()));
     std::vector<int8_t> empt(Size());
     bf->PutData(empt.data(), empt.size());
     bf->Clear();
@@ -109,7 +109,7 @@ void NativeLibInfoSegment::ToByteArray(std::vector<int8_t> &ret)
 
 NativeLibInfoSegment NativeLibInfoSegment::FromByteArray(std::vector<int8_t> &bytes)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(bytes.size()));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inMagic = 0;

@@ -26,7 +26,7 @@ namespace OHOS {
 namespace SignatureTools {
 class FsVerityDescriptor {
 public:
-    static const uint8_t VERSION = 1;
+    static constexpr uint8_t VERSION = 1;
     static const int PAGE_SIZE_4K = 4096;
     static const int FLAG_STORE_MERKLE_TREE_OFFSET = 0x1;
     static const int FS_VERITY_DESCRIPTOR_TYPE = 0x1;

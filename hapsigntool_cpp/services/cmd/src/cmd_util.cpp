@@ -241,7 +241,6 @@ static bool UpdateParamForCheckFile(ParamsSharedPtr param)
     for (auto& key : inFileKeys) {
         if (options->count(key) &&
             !FileUtils::IsValidFile(options->GetString(key))) {
-            PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, options->GetString(key) + " Not exist");
             return false;
         }
     }

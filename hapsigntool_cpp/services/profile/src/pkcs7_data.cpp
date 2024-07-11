@@ -140,7 +140,7 @@ int PKCS7Data::Parse(const std::string& p7bBytes)
     const unsigned char* data = reinterpret_cast<const unsigned char*>(&p7bBytes[0]);
     return Parse(&data, static_cast<long>(p7bBytes.size()));
 }
-int PKCS7Data::Parse(const std::vector<signed char>& p7bBytes)
+int PKCS7Data::Parse(const std::vector<int8_t>& p7bBytes)
 {
     const unsigned char* data = reinterpret_cast<const unsigned char*>(&p7bBytes[0]);
     return Parse(&data, static_cast<long>(p7bBytes.size()));
@@ -398,7 +398,7 @@ err:
 int PKCS7Data::VerifySign(const std::string& content)const
 {
     BIO* inBio = NULL;
-    if (m_flags & PKCS7_DETACHED) {
+    if ((m_flags & PKCS7_DETACHED)) {
         inBio = BIO_new_mem_buf(reinterpret_cast<const void*>(content.c_str()),
                                 static_cast<int>(content.size()));
         if (inBio == NULL) {

@@ -104,7 +104,8 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
 }
 
 bool VerifyElf::VerifyP7b(std::unordered_map<signed char, SigningBlock>& signBlockMap,
-                          Options* options, Pkcs7Context& pkcs7Context, HapVerifyResult& verifyResult, std::string& profileJson)
+                          Options* options, Pkcs7Context& pkcs7Context, 
+                          HapVerifyResult& verifyResult, std::string& profileJson)
 {
     if (signBlockMap.find(PROFILE_NOSIGNED_BLOCK) != signBlockMap.end()) {
         // verify unsigned profile
@@ -202,7 +203,7 @@ bool VerifyElf::GenerateFileDigest(std::vector<int8_t>& fileBytes, SignBlockInfo
 {
     // get algId
     std::vector<int8_t> rawDigest = signBlockInfo.GetRawDigest();
-    std::shared_ptr<ByteBuffer> digBuffer = std::make_shared<ByteBuffer>(rawDigest.size());
+    std::unique_ptr<ByteBuffer> digBuffer = std::make_unique<ByteBuffer>(rawDigest.size());
     digBuffer->PutData(rawDigest.data(), rawDigest.size());
     digBuffer->Flip();
     int32_t algOffset = 10;
@@ -245,12 +246,12 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
         std::reverse(blockSizeByte.begin(), blockSizeByte.end());
         std::reverse(blockNumByte.begin(), blockNumByte.end());
     }
-    std::shared_ptr<ByteBuffer> blockNumBf = std::make_shared<ByteBuffer>(blockNumByte.size());
+    std::unique_ptr<ByteBuffer> blockNumBf = std::make_unique<ByteBuffer>(blockNumByte.size());
     blockNumBf->PutData(blockNumByte.data(), blockNumByte.size());
     blockNumBf->Flip();
     int32_t blockNum = 0;
     blockNumBf->GetInt32(blockNum);
-    std::shared_ptr<ByteBuffer> blockSizeBf = std::make_shared<ByteBuffer>(blockSizeByte.size());
+    std::unique_ptr<ByteBuffer> blockSizeBf = std::make_unique<ByteBuffer>(blockSizeByte.size());
     blockSizeBf->PutData(blockSizeByte.data(), blockSizeByte.size());
     blockSizeBf->Flip();
     int32_t blockSize = 0;
@@ -298,7 +299,7 @@ void VerifyElf::GetElfSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlock
     int64_t offset = hwBlockData.GetBlockStart();
     for (int i = 0; i < hwBlockData.GetBlockNum(); i++) {
         std::vector<int8_t> blockByte(bytes.begin() + offset, bytes.begin() + offset + headBlockLen);
-        std::shared_ptr<ByteBuffer> blockBuffer = std::make_shared<ByteBuffer>(blockByte.size());
+        std::unique_ptr<ByteBuffer> blockBuffer = std::make_unique<ByteBuffer>(blockByte.size());
         blockBuffer->PutData(blockByte.data(), blockByte.size());
         blockBuffer->Flip();
         signed char type = 0;
@@ -326,7 +327,7 @@ void VerifyElf::GetBinSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlock
     int32_t offset = hwBlockData.GetBlockStart();
     for (int i = 0; i < hwBlockData.GetBlockNum(); i++) {
         std::vector<int8_t> blockByte(bytes.begin() + offset, bytes.begin() + offset + headBlockLen);
-        std::shared_ptr<ByteBuffer> blockBuffer = std::make_shared<ByteBuffer>(blockByte.size());
+        std::unique_ptr<ByteBuffer> blockBuffer = std::make_unique<ByteBuffer>(blockByte.size());
         blockBuffer->PutData(blockByte.data(), blockByte.size());
         blockBuffer->Flip();
         signed char type = 0;

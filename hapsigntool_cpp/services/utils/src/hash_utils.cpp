@@ -28,9 +28,6 @@ namespace SignatureTools {
 int HashUtils::GetHashAlgsId(const std::string& algMethod)
 {
     int result = static_cast<int>(HashAlgs::USE_NONE);
-    if (0 == algMethod.compare("SHA-224")) {
-        result = static_cast<int>(HashAlgs::USE_SHA224);
-    }
     if (0 == algMethod.compare("SHA-256")) {
         result = static_cast<int>(HashAlgs::USE_SHA256);
     }
@@ -45,9 +42,6 @@ int HashUtils::GetHashAlgsId(const std::string& algMethod)
 
 std::string HashUtils::GetHashAlgName(int algId)
 {
-    if (static_cast<int>(HashAlgs::USE_SHA224) == algId) {
-        return "SHA-224";
-    }
     if (static_cast<int>(HashAlgs::USE_SHA256) == algId) {
         return "SHA-256";
     }

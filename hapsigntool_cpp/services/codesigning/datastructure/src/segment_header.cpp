@@ -56,7 +56,7 @@ int32_t SegmentHeader::GetSegmentSize()
 
 void SegmentHeader::ToByteArray(std::vector<int8_t> &ret)
 {
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(SEGMENT_HEADER_LENGTH));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(SEGMENT_HEADER_LENGTH));
     bf->PutInt32(type);
     bf->PutInt32(segmentOffset);
     bf->PutInt32(segmentSize);
@@ -71,7 +71,7 @@ std::unique_ptr<SegmentHeader> SegmentHeader::FromByteArray(std::vector<int8_t> 
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid size of SegmentHeader");
         return std::unique_ptr<SegmentHeader>();
     }
-    std::shared_ptr<ByteBuffer> bf = std::make_shared<ByteBuffer>(ByteBuffer(SEGMENT_HEADER_LENGTH));
+    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(SEGMENT_HEADER_LENGTH));
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inType = 0;

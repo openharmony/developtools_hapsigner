@@ -76,13 +76,11 @@ public:
     * @param attrs   It is only used when you need to add an ownerID, and you don't need to process it by default
     * @return        0 :success <0 :error
     */
-    int Sign(const std::string& content,
-             std::shared_ptr<Signer> signer,
-             const std::string& sigAlg,
-             std::string& ret, std::vector<PKCS7Attr> attrs = std::vector<PKCS7Attr>());
+    int Sign(const std::string& content, std::shared_ptr<Signer> signer, const std::string& sigAlg, std::string& ret,
+             std::vector<PKCS7Attr> attrs = std::vector<PKCS7Attr>());
     /* d2i deserialize */
     int Parse(const std::string& p7bBytes);
-    int Parse(const std::vector<signed char>& p7bBytes);
+    int Parse(const std::vector<int8_t>& p7bBytes);
     /* When verifying the signature, you don't need to enter content by default, if the data is separated
      * (content is not in pkcs7, you need to pass in the original data for verification)
      */

@@ -49,7 +49,7 @@ int32_t FsVerityDescriptorWithSign::Size()
 
 void FsVerityDescriptorWithSign::ToByteArray(std::vector<int8_t>& ret)
 {
-    std::shared_ptr<ByteBuffer> buffer = std::make_shared<ByteBuffer>(Size());
+    std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(Size());
     buffer->PutInt32(type);
     buffer->PutInt32(length);
     std::vector<int8_t> fsArr;
