@@ -225,7 +225,7 @@ bool LocalizationAdapter::IsOutFormChain()
     if (outForm.compare(OUT_FORM_CERT_CHAIN) == 0) {
         return true;
     }
-    return false;  
+    return false;
 }
 
 X509* LocalizationAdapter::GetSubCaCertFile()
