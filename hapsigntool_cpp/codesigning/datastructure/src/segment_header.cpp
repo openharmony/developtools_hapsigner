@@ -88,7 +88,7 @@ std::unique_ptr<SegmentHeader> SegmentHeader::FromByteArray(std::vector<int8_t> 
     bf->GetInt32(inSegmentSize);
     if (inSegmentSize < 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-		"The signed package has the wrong segmentsize in the SegmentHeader");
+		    "The signed package has the wrong segmentsize in the SegmentHeader");
         return std::unique_ptr<SegmentHeader>();
     }
     return std::make_unique<SegmentHeader>(inType, inSegmentOffset, inSegmentSize);
