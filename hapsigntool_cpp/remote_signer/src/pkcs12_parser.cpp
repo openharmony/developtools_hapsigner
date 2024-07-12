@@ -24,7 +24,8 @@ PKCS12Parser::PKCS12Parser(const std::string& storePath)
     this->p12=Init(storePath);
 }
 
-PKCS12Parser::~PKCS12Parser() {
+PKCS12Parser::~PKCS12Parser()
+{
     PKCS12_free(this->p12);
     this->p12 = NULL;
 }
@@ -93,8 +94,8 @@ err:
     return false;
 }
 
-bool PKCS12Parser::ParseSafeBags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass, int passLen, EVP_PKEY** outPkey,
-                               STACK_OF(X509)* outCerts)
+bool PKCS12Parser::ParseSafeBags(const STACK_OF(PKCS12_SAFEBAG)* bags, const char* pass, int passLen,
+                                 EVP_PKEY** outPkey, STACK_OF(X509)* outCerts)
 {
     int safeBagNums = sk_PKCS12_SAFEBAG_num(bags);
     for (int i = 0; i < safeBagNums; i++) {
@@ -106,10 +107,9 @@ bool PKCS12Parser::ParseSafeBags(const STACK_OF(PKCS12_SAFEBAG)* bags, const cha
     return true;
 }
 
-bool PKCS12Parser::ParsePkcs12(const char* storePassword, const char* keyPassword, EVP_PKEY** outPrivateKey, STACK_OF(X509)* outCerts)
+bool PKCS12Parser::ParsePkcs12(const char* storePassword, const char* keyPassword,
+                               EVP_PKEY** outPrivateKey, STACK_OF(X509)* outCerts)
 {
-    
-
     STACK_OF(PKCS7)* authsafes = PKCS12_unpack_authsafes(this->p12);
     if (authsafes == NULL) {
         return false;
@@ -141,8 +141,9 @@ bool PKCS12Parser::ParsePkcs12(const char* storePassword, const char* keyPasswor
     return true;
 }
 
-bool PKCS12Parser::ParsePrepare(const char* fName, const char** pstorePass, const char* keyPass, EVP_PKEY** outPrivateKey,
-                 X509** outCert, STACK_OF(X509)** outCertchain, STACK_OF(X509)** poutCerts)
+bool PKCS12Parser::ParsePrepare(const char* fName, const char** pstorePass, const char* keyPass,
+                                EVP_PKEY** outPrivateKey, X509** outCert, STACK_OF(X509)** outCertchain,
+                                STACK_OF(X509)** poutCerts)
 {
     this->friendName = fName;
 

@@ -28,7 +28,6 @@ const int FILE_NAME_SIZE = 512;
 const std::vector<std::string> CodeSigning::SUPPORT_FILE_FORM = { "hap", "hsp", "hqf" };
 const std::string CodeSigning::HAP_SIGNATURE_ENTRY_NAME = "Hap";
 const std::string CodeSigning::ENABLE_SIGN_CODE_VALUE = "1";
-const std::string CodeSigning::SUPPORT_BIN_FILE_FORM = "elf";
 const std::string CodeSigning::LIBS_PATH_PREFIX = "libs/";
 
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
@@ -114,7 +113,8 @@ uint32_t CodeSigning::ComputeDataSize(ZipSigner& zip)
         break;
     }
     if ((dataSize % CodeSignBlock::PAGE_SIZE_4K) != 0) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Invalid dataSize, the dataSize is not an integer multiple of 4096");
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+                            "Invalid dataSize, the dataSize is not an integer multiple of 4096");
         return -1;
     }
     return dataSize;

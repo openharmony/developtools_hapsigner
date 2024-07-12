@@ -39,7 +39,6 @@ public:
     static const std::vector<std::string> SUPPORT_FILE_FORM;
     static const std::string HAP_SIGNATURE_ENTRY_NAME;
     static const std::string ENABLE_SIGN_CODE_VALUE;
-    static const std::string SUPPORT_BIN_FILE_FORM;
     static const std::string LIBS_PATH_PREFIX;
     CodeSigning(SignerConfig* signConfig);
     CodeSigning();

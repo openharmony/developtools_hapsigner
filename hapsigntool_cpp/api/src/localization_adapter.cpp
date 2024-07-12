@@ -16,6 +16,7 @@
 #include <cstring>
 
 #include "localization_adapter.h"
+#include "constant.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -120,10 +121,10 @@ int LocalizationAdapter::KeyStoreFile(EVP_PKEY** keyPair, bool autoCreate)
         int status = keyStoreHelper->ReadKeyStore(keyStorePath, keyStorePwd, keyAlias, keyPwd, keyPair);
         if (status == RET_OK) {
             return RET_OK;
-        } else {
-            if (!keyStoreHelper->GetPassWordStatus()) {
+        }
+        
+        if (!keyStoreHelper->GetPassWordStatus()) {
                 autoCreate = false;
-            }
         }
     }
     if (autoCreate) {
@@ -157,10 +158,10 @@ int LocalizationAdapter::IssuerKeyStoreFile(EVP_PKEY** keyPair, bool autoCreate)
         int status = keyStoreHelper->ReadKeyStore(keyStore, keyStorePwd, keyAlias, keyPwd, keyPair);
         if (status == RET_OK) {
             return RET_OK;
-        } else {
-            if (!keyStoreHelper->GetPassWordStatus()) {
+        }
+
+        if (!keyStoreHelper->GetPassWordStatus()) {
                 autoCreate = false;
-            }
         }
     }
 
@@ -219,13 +220,12 @@ EVP_PKEY* LocalizationAdapter::GetIssureKeyByAlias()
 
 bool LocalizationAdapter::IsOutFormChain()
 {
-    std::string checkStr = "certChain";
+    std::string checkStr = OUT_FORM_CERT_CHAIN;
     std::string outForm = options->GetString(Options::OUT_FORM, checkStr);
-    if (outForm.compare("certChain") == 0) {
+    if (outForm.compare(OUT_FORM_CERT_CHAIN) == 0) {
         return true;
-    } else {
-        return false;
     }
+    return false;  
 }
 
 X509* LocalizationAdapter::GetSubCaCertFile()
@@ -281,10 +281,8 @@ const std::string LocalizationAdapter::GetInFile()
 
 bool LocalizationAdapter::IsRemoteSigner()
 {
-    std::string defMode = "localSign";
-    std::string destMode = "remoteSign";
-    std::string mode = options->GetString(Options::MODE, defMode);
-    return StringUtils::CaseCompare(mode, destMode);
+    std::string mode = options->GetString(Options::MODE, LOCAL_SIGN);
+    return StringUtils::CaseCompare(mode, REMOTE_SIGN);
 }
 
 Options* LocalizationAdapter::GetOptions()

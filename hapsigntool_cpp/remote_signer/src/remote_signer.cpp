@@ -93,8 +93,8 @@ std::string RemoteSigner::GetSignature(const std::string &data, const std::strin
     keystorePwd: 123456 (username)
     keyPwd: 123456 (userPwd) */
     EVP_PKEY* pkey = LoadPrivateKey(onlineAuthMode, keyAlias, username, userPwd);
-    if(!pkey) {
-        REMOTE_SIGNER_LOGE("LoadPrivateKey error: %s\n",onlineAuthMode.c_str());
+    if (!pkey) {
+        REMOTE_SIGNER_LOGE("LoadPrivateKey error: %s\n", onlineAuthMode.c_str());
         goto err;
     }
     if (EVP_DigestSignInit(md_ctx, &pkey_ctx, md, NULL, pkey) < 0) {

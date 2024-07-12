@@ -25,6 +25,7 @@
 #include "openssl/asn1.h"
 #include "signature_tools_log.h"
 #include "constant.h"
+#include "cmd_util.h"
 
 #define BASIC_NUMBER_TWO  2
 
@@ -74,7 +75,7 @@ bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
     return true;
 }
 
-bool CertTools::SetBisicConstraintsPatchLen(Options* options, X509* cert)
+bool CertTools::SetBisicConstraints(Options* options, X509* cert)
 {
     bool basicCon = options->GetBool(Options::BASIC_CONSTRAINTS);
     if (basicCon) {
@@ -103,6 +104,29 @@ bool CertTools::SetBisicConstraintsPatchLen(Options* options, X509* cert)
         X509_EXTENSION_free(ext);
     }
     
+    return true;
+}
+
+bool CertTools::SetBisicConstraintsPathLen(Options* options, X509* cert)
+{   
+    std::string setOptions ="CA:TRUE, pathlen:" +
+        std::to_string(options->GetInt(Options::BASIC_CONSTRAINTS_PATH_LEN));  
+    X509V3_CTX ctx;
+    X509V3_set_ctx_nodb(&ctx);
+    X509_EXTENSION* ext = X509V3_EXT_conf_nid(NULL, &ctx, NID_basic_constraints, setOptions.c_str());
+    if (!X509_EXTENSION_set_critical(ext, 1)) {
+        SIGNATURE_TOOLS_LOGE("failed to set  critical for extKeyUsage ");
+        X509_EXTENSION_free(ext);
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
+        return false;
+    }
+    if (!X509_add_ext(cert, ext, -1)) {
+        SIGNATURE_TOOLS_LOGE("X509_add_ext failed\n");
+        X509_EXTENSION_free(ext);
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
+        return false;
+    }
+    X509_EXTENSION_free(ext);
     return true;
 }
 
@@ -165,7 +189,7 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
     if (!result) {
         goto err;
     }
-    result = (!SetBisicConstraintsPatchLen(options, cert) ||
+    result = (!SetBisicConstraintsPathLen(options, cert) ||
               !SetKeyIdentifierExt(cert) ||
               !SetAuthorizeKeyIdentifierExt(cert)||
               !SetKeyUsage(cert, options) ||
@@ -215,7 +239,7 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
     if (!SetCertValidityStartAndEnd(cert, DEFAULT_START_VALIDITY, validity)) {
         goto err;
     }
-    result = (!SetBisicConstraintsPatchLen(options, cert) ||
+    result = (!SetBisicConstraintsPathLen(options, cert) ||
               !SetSubjectForCert(certReq, cert) ||
               !SetCertPublickKey(cert, certReq) ||
               !SetKeyIdentifierExt(cert) ||
@@ -390,7 +414,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
         goto err;
     }
 
-    result = (!SetBisicConstraintsPatchLen(options, cert) ||
+    result = (!SetBisicConstraints(options, cert) ||
               !SetCertPublickKey(cert, certReq) ||
               !SetExpandedInformation(cert, options) ||
               !SetPubkeyAndSignCert(cert, issuercsr, certReq, keyPair, options));

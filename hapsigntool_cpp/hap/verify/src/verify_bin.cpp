@@ -15,6 +15,7 @@
 
 #include "verify_bin.h"
 #include "verify_hap.h"
+#include "constant.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -58,7 +59,7 @@ bool VerifyBin::VerifyBinFile(const std::string& binFile, HapVerifyResult& verif
                               Options* options, Pkcs7Context& pkcs7Context)
 {
     SignBlockInfo signBlockInfo(true);
-    bool getSignBlockInfoFlag = VerifyElf::GetSignBlockInfo(binFile, signBlockInfo, VerifyElf::BIN_FILE_TYPE);
+    bool getSignBlockInfoFlag = VerifyElf::GetSignBlockInfo(binFile, signBlockInfo, BIN);
     if (!getSignBlockInfoFlag) {
         SIGNATURE_TOOLS_LOGE("get signBlockInfo failed on verify bin %s", binFile.c_str());
         return false;

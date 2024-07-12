@@ -60,11 +60,12 @@ const std::string DEFAULT_PROFILE_SIGNED_0 = "0";
 const std::string ZIP = "zip";
 const std::string ELF = "elf";
 const std::string BIN = "bin";
-const std::string REMOTE_SIGN = "remoteSign";
 const std::string OUT_FORM_CERT = "cert";
 const std::string OUT_FORM_CERT_CHAIN = "certChain";
 const std::string DEBUG_STR = "debug";
 const std::string DEBUG_LIB_ID = "DEBUG_LIB_ID";
+const std::string REMOTE_SIGN = "remoteSign";
+const std::string LOCAL_SIGN = "localSign";
 
 //Corresponding to each functional module
 const std::string GENERATE_KEYPAIR = "generate-keypair";

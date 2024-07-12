@@ -501,9 +501,9 @@ bool SignToolServiceImpl::SignHap(Options* options)
 {
     std::string mode = options->GetString(Options::MODE);
     std::shared_ptr<SignProvider> signProvider;
-    if ("localSign" == mode) {
+    if (LOCAL_SIGN == mode) {
         signProvider = std::make_shared<LocalSignProvider>();
-    } else if ("remoteSign" == mode) {
+    } else if (REMOTE_SIGN == mode) {
         signProvider = std::make_shared<RemoteSignProvider>();
     } else {
         SIGNATURE_TOOLS_LOGE("Resign mode. But not implemented yet");

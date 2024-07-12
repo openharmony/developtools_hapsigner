@@ -85,7 +85,7 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
         return ret;
     }
 
-    /* calculate signature value */ 
+    /* calculate signature value */
     bool result = !(hashCtx = EVP_MD_CTX_new())                                          ||
                   (EVP_DigestSignInit(hashCtx, &privateKeyCtx, hash, NULL, m_keyPair) <= 0) ||
                   (EVP_DigestSignUpdate(hashCtx, data.data(), data.size()) <= 0)         ||

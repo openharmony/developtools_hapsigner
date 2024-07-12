@@ -24,6 +24,22 @@ namespace OHOS {
 namespace SignatureTools {
 const std::regex INTEGER_PATTERN = std::regex("\\d{1,10}");
 
+bool CmdUtil::String2Bool(Options* options, const std::string& option)
+{
+    std::string val = options->GetString(option);
+    if (val == "1" || val == "true" || val == "TRUE") {
+        (*options)[option] = true;
+    }
+    else if (val == "0" || val == "false" || val == "FALSE") {
+        (*options)[option] = false;
+    }
+    else {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + "is not valid value for "+"-" + option);
+        return false;
+    }
+    return true;
+}
+
 static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
 {
     int defualtValidity = 0;
@@ -102,14 +118,7 @@ static bool UpdateParamForVariantBoolKeyUsage(ParamsSharedPtr param)
 
     //The bool type is used only by the "generate-cert" module
     if (options->count(Options::KEY_USAGE_CRITICAL)) {
-        std::string val = options->GetString(Options::KEY_USAGE_CRITICAL);
-        if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::KEY_USAGE_CRITICAL] = true;
-        } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::KEY_USAGE_CRITICAL] = false;
-        } else {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid keyUsageCritical value '"
-                                + val + "', Must be: 0, 1, false, true, FALSE, TRUE");
+        if (!CmdUtil::String2Bool(options, Options::KEY_USAGE_CRITICAL)) {
             return false;
         }
     } else if (param->GetMethod() == GENERATE_CERT) {
@@ -118,14 +127,7 @@ static bool UpdateParamForVariantBoolKeyUsage(ParamsSharedPtr param)
 
     //The bool type is used only by the "generate-cert" module
     if (options->count(Options::EXT_KEY_USAGE_CRITICAL)) {
-        std::string val = options->GetString(Options::EXT_KEY_USAGE_CRITICAL);
-        if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::EXT_KEY_USAGE_CRITICAL] = true;
-        } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::EXT_KEY_USAGE_CRITICAL] = false;
-        } else {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid extKeyUsageCritical value '"
-                                + val + "', Must be: 0, 1, false, true, FALSE, TRUE");
+        if (!CmdUtil::String2Bool(options, Options::EXT_KEY_USAGE_CRITICAL)) {
             return false;
         }
     } else if (param->GetMethod() == GENERATE_CERT) {
@@ -140,26 +142,17 @@ static bool UpdateParamForVariantBoolConstraints(ParamsSharedPtr param)
 
     //The bool type is used only by the "generate-cert" module
     if (options->count(Options::BASIC_CONSTRAINTS)) {
-        std::string val = options->GetString(Options::BASIC_CONSTRAINTS);
-        if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::BASIC_CONSTRAINTS] = true;
-        } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::BASIC_CONSTRAINTS] = false;
-        } 
-    } else {
+        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
+            return false;
+        }
+    }
+    else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS;
     }
 
     //The bool type is used only by the "generate-cert" module
     if (options->count(Options::BASIC_CONSTRAINTS_CRITICAL)) {
-        std::string val = options->GetString(Options::BASIC_CONSTRAINTS_CRITICAL);
-        if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::BASIC_CONSTRAINTS_CRITICAL] = true;
-        } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::BASIC_CONSTRAINTS_CRITICAL] = false;
-        } else {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basicConstraintsCritical value '"
-                                + val + "', Must be: 0, 1, false, true, FALSE, TRUE");
+        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
             return false;
         }
     } else if (param->GetMethod() == GENERATE_CERT) {
@@ -180,8 +173,8 @@ static bool UpdateParamForVariantBoolProfileSigned(ParamsSharedPtr param)
         } else if (val == "0" || val == "false" || val == "FALSE") {
             (*options)[Options::PROFILE_SIGNED] = DEFAULT_PROFILE_SIGNED_0;
         } else {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid profileSigned value '"
-                                + val + "', Must be: 0, 1, false, true, FALSE, TRUE");
+            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+			                    val + "is not valid value for "+"-" + Options::PROFILE_SIGNED);
             return false;
         }
     } else if (param->GetMethod() == SIGN_APP) {
@@ -190,14 +183,7 @@ static bool UpdateParamForVariantBoolProfileSigned(ParamsSharedPtr param)
 
     //The bool type is used only by the "generate-cert" module
     if (options->count(Options::BASIC_CONSTRAINTS_CA)) {
-        std::string val = options->GetString(Options::BASIC_CONSTRAINTS_CA);
-        if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::BASIC_CONSTRAINTS_CA] = true;
-        } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::BASIC_CONSTRAINTS_CA] = false;
-        } else {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid basicConstraintsCa value '"
-                                + val + "', Must be: 0, 1, false, true, FALSE, TRUE");
+        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
             return false;
         }
     } else if (param->GetMethod() == GENERATE_CERT) {
@@ -430,14 +416,16 @@ bool CmdUtil::ValidAndPutParam(ParamsSharedPtr params, const std::string& key, c
     std::string  str = "Pwd";
     bool result;
     if (key.empty()) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "The command-line parameter key cannot be empty");
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            "The command-line parameter key cannot be empty");
         result = false;
     } else if (strlen(value) == 0) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "The command-line parameter value cannot be empty");
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            "The command-line parameter value cannot be empty");
         result = false;
     } else if (params->GetOptions()->count(key)) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Duplicate command parameter are not allowed '"
-                            + key + "'");
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR,
+                            "Duplicate command parameter are not allowed '" + key + "'");
         result = false;
     } else if (key.length() >= str.length() && key.substr(key.length() - INVALIDCHAR) == str) {
         params->GetOptions()->emplace(key, value);

@@ -40,6 +40,7 @@ public:
     static bool VerifyType(const std::string& inputType);
     static bool VerifyTypes(const std::string& inputType);
     static bool VerifyType(const std::string& inputtype, const std::string& supportTypes);
+    static bool String2Bool(Options* options, const std::string& option);
     static constexpr int ARGS_MIN_LEN = 2;
 
 private:

@@ -24,7 +24,7 @@ namespace OHOS {
 namespace SignatureTools {
 class RemoteSigner : public Signer {
 public:
-    RemoteSigner(std::string _keyAlias, std::string _signServer, std::string _onlineAuthMode, std::string _username, 
+    RemoteSigner(std::string _keyAlias, std::string _signServer, std::string _onlineAuthMode, std::string _username,
         std::string _userPwd);
     ~RemoteSigner();
 
@@ -47,13 +47,13 @@ private:
 extern "C" {
 #endif
 
-typedef struct RemoteSignerParam_type_st {
+typedef struct RemoteSignerParamTypeSt {
     const char* data;
     size_t len;
 } RemoteSignerParamType;
 
 OHOS::SignatureTools::Signer* Create(RemoteSignerParamType keyAlias, RemoteSignerParamType signServer,
-    RemoteSignerParamType onlineAuthMode,RemoteSignerParamType username, RemoteSignerParamType userPwd);
+    RemoteSignerParamType onlineAuthMode, RemoteSignerParamType username, RemoteSignerParamType userPwd);
 
 #ifdef __cplusplus
 }

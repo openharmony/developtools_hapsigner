@@ -25,7 +25,7 @@
 namespace OHOS {
 namespace SignatureTools {
 
-typedef struct RemoteSignerParam_type_st {
+typedef struct RemoteSignerParamTypeSt {
     const char* data;
     size_t len;
 } RemoteSignerParamType;

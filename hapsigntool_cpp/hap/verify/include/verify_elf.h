@@ -35,8 +35,6 @@ public:
     static const int8_t PROFILE_SIGNED_BLOCK;
     static const int8_t KEY_ROTATION_BLOCK;
     static const int8_t CODESIGNING_BLOCK_TYPE;
-    static const std::string BIN_FILE_TYPE;
-    static const std::string ELF_FILE_TYPE;
 
 public:
     bool Verify(Options* options);

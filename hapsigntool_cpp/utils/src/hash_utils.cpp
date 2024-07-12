@@ -105,7 +105,7 @@ std::vector<int8_t> HashUtils::GetFileDigest(const std::string& inputFile, const
 }
 
 std::vector<int8_t> HashUtils::GetDigestFromBytes(const std::vector<int8_t>& fileBytes, int64_t length,
-                                                       const std::string& algName)
+                                                  const std::string& algName)
 {
     if (fileBytes.empty() || length <= 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "file bytes is empty.");
