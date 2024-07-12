@@ -29,8 +29,7 @@ bool CmdUtil::String2Bool(Options* options, const std::string& option)
     std::string val = options->GetString(option);
     if (val == "1" || val == "true" || val == "TRUE") {
         (*options)[option] = true;
-    }
-    else if (val == "0" || val == "false" || val == "FALSE") {
+    } else if (val == "0" || val == "false" || val == "FALSE") {
         (*options)[option] = false;
     } else {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + "is not valid value for "+"-" + option);
