@@ -91,16 +91,16 @@ bool CertTools::SetBisicConstraints(Options* options, X509* cert)
         X509_EXTENSION* ext = X509V3_EXT_conf_nid(NULL, &ctx, NID_basic_constraints, constraints.c_str());
         if (!X509_EXTENSION_set_critical(ext, critial)) {
             SIGNATURE_TOOLS_LOGE("failed to set  critical for extKeyUsage ");
-			X509_EXTENSION_free(ext);
-			VerifyHapOpensslUtils::GetOpensslErrorMessage();
-			return false;
+            X509_EXTENSION_free(ext);
+            VerifyHapOpensslUtils::GetOpensslErrorMessage();
+            return false;
         }
         if (!X509_add_ext(cert, ext, -1)) {
             SIGNATURE_TOOLS_LOGE("X509_add_ext failed");
             X509_EXTENSION_free(ext);
             VerifyHapOpensslUtils::GetOpensslErrorMessage();
             return false;
-        } 
+        }
         X509_EXTENSION_free(ext);
     }
     
@@ -108,9 +108,9 @@ bool CertTools::SetBisicConstraints(Options* options, X509* cert)
 }
 
 bool CertTools::SetBisicConstraintsPathLen(Options* options, X509* cert)
-{   
-    std::string setOptions ="CA:TRUE, pathlen:" +
-        std::to_string(options->GetInt(Options::BASIC_CONSTRAINTS_PATH_LEN));  
+{
+    std::string setOptions = "CA:TRUE, pathlen:" +
+        std::to_string(options->GetInt(Options::BASIC_CONSTRAINTS_PATH_LEN));
     X509V3_CTX ctx;
     X509V3_set_ctx_nodb(&ctx);
     X509_EXTENSION* ext = X509V3_EXT_conf_nid(NULL, &ctx, NID_basic_constraints, setOptions.c_str());
@@ -333,11 +333,11 @@ bool CertTools::SetkeyUsageExt(X509* cert, Options* options)
     bool keyUsageCritical = options->GetBool(Options::KEY_USAGE_CRITICAL);
     int crit = keyUsageCritical  ? 1 : 0;
     if (!options->GetString(Options::EXT_KEY_USAGE).empty()) {
-        ext = X509V3_EXT_conf(NULL, NULL, NID_EXT_KEYUSAGE_CONST.c_str() ,
+        ext = X509V3_EXT_conf(NULL, NULL, NID_EXT_KEYUSAGE_CONST.c_str(),
                               externKey[options->GetString(Options::EXT_KEY_USAGE)].c_str());
         if (!X509_EXTENSION_set_critical(ext, crit)) {
             SIGNATURE_TOOLS_LOGE("failed to set  critical for extKeyUsage ");
-			X509_EXTENSION_free(ext);
+            X509_EXTENSION_free(ext);
             return false;
         }
         if (!X509_add_ext(cert, ext, -1)) {

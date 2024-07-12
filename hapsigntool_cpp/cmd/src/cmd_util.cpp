@@ -32,8 +32,7 @@ bool CmdUtil::String2Bool(Options* options, const std::string& option)
     }
     else if (val == "0" || val == "false" || val == "FALSE") {
         (*options)[option] = false;
-    }
-    else {
+    } else {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + "is not valid value for "+"-" + option);
         return false;
     }
@@ -145,8 +144,7 @@ static bool UpdateParamForVariantBoolConstraints(ParamsSharedPtr param)
         if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
             return false;
         }
-    }
-    else if (param->GetMethod() == GENERATE_CERT) {
+    } else if (param->GetMethod() == GENERATE_CERT) {
         (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS;
     }
 
@@ -174,7 +172,7 @@ static bool UpdateParamForVariantBoolProfileSigned(ParamsSharedPtr param)
             (*options)[Options::PROFILE_SIGNED] = DEFAULT_PROFILE_SIGNED_0;
         } else {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-			                    val + "is not valid value for "+"-" + Options::PROFILE_SIGNED);
+                                val + "is not valid value for "+"-" + Options::PROFILE_SIGNED);
             return false;
         }
     } else if (param->GetMethod() == SIGN_APP) {

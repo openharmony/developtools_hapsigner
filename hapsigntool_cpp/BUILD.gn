@@ -11,12 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("signature_tools.gni")
 import("cmd/signature_tools_cmd.gni")
 import("codesigning/signature_tools_codesigning.gni")
 import("common/signature_tools_common.gni")
 import("hap/signature_tools_hap.gni")
 import("profile/signature_tools_profile.gni")
+import("signature_tools.gni")
 import("utils/signature_tools_utils.gni")
 import("zip/signature_tools_zip.gni")
 
@@ -83,9 +83,7 @@ ohos_executable("hap-sign-tool") {
   include_dirs = signature_tools_main_include
   sources = signature_tools_main_src
 
-  defines = [
-    "SIGNATURE_LOG_DEBUG",
-  ]
+  defines = [ "SIGNATURE_LOG_DEBUG" ]
 
   deps = [
     "//third_party/bzip2:libbz2",
