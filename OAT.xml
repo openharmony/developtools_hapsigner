@@ -31,9 +31,11 @@
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-				<filteritem type="filename" name="ohnull.p12"/>
+				<filteritem type="filename" name="*.p12"/>
+				<filteritem type="filename" name="*.jks"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
+				<filteritem type="filename" name="init" desc="test case unsigned file"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="">
                 <filteritem type="filename" name="pom.xml"/>
@@ -42,13 +44,18 @@
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-				<filteritem type="filename" name="ohnull.p12"/>
+				<filteritem type="filename" name="*.p12"/>
+				<filteritem type="filename" name="*.jks"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
+				<filteritem type="filename" name="init" desc="test case unsigned file"/>
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="">
                 <filteritem type="filename" name="pom.xml"/>
                 <filteritem type="filename" name="settings.xml"/>
+				<filteritem type="filename" name="*.p12"/>
+				<filteritem type="filename" name="*.jks"/>
+				<filteritem type="filename" name="init" desc="test case unsigned file"/>
             </filefilter>
             <filefilter name="readmeFileNamePolicyFilter" desc="">
             </filefilter>
@@ -61,10 +68,12 @@
 				<filteritem type="filename" name="ohtest_pass.jks" desc="Keystore used in OpenHarmony app sign of test case"/>
 				<filteritem type="filename" name="app1-unsigned.hap" desc="Keystore used in OpenHarmony app sign of test case"/>
 				<filteritem type="filename" name="entry-default-unsigned.hap" desc="unsigned hap of test case"/>
+				<filteritem type="filename" name="*.elf" desc="OpenHarmony elf test file"/>
                 <filteritem type="filename" name="*.pem" desc="OpenHarmony app sign certificates"/>
                 <filteritem type="filename" name="*.jar" desc="OpenHarmony app sign tool"/>
                 <filteritem type="filename" name="*.png" desc="readme picture"/>
-                <filteritem type="filename" name="*.elf" desc="OpenHarmony elf test file"/>
+				<filteritem type="filename" name="*.p12" desc="Keystore used in OpenHarmony app sign of test case"/>
+				<filteritem type="filename" name="*.jks" desc="Keystore used in OpenHarmony app sign of test case"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>
