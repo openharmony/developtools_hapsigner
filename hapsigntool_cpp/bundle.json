@@ -32,7 +32,6 @@
         "deps": {
             "components": [
                 "c_utils",
-                "hilog",
                 "json"
             ],
             "third_party": [
@@ -44,7 +43,7 @@
         },
         "build": {
             "sub_component": [
-                "//developtools/hapsigner/hapsigntool_cpp/services:hap-sign-tool"
+                "//developtools/hapsigner/hapsigntool_cpp:hap-sign-tool"
             ],
             "inner_kits": [],
             "test": [
