@@ -24,7 +24,8 @@ namespace OHOS {
 namespace SignatureTools {
 
 
-#define SIGNATURE_LOG(level, fmt, ...) printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define SIGNATURE_LOG(level, fmt, ...) \
+    printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) \
 
 #ifdef SIGNATURE_LOG_DEBUG
 #define SIGNATURE_TOOLS_LOGI(fmt, ...) SIGNATURE_LOG("Info", fmt, ##__VA_ARGS__)

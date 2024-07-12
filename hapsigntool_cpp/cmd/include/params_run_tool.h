@@ -54,8 +54,6 @@ public:
 
 private:
     static const std::string VERSION;
-    static const std::string LOCAL_SIGN;
-    static const std::string REMOTE_SIGN;
 };
 } // namespace SignatureTools
 } // namespace OHOS

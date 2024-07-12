@@ -12,25 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cstring>
-#include <dlfcn.h>
-#include <memory>
-#include "../include/signer.h"
-#include "remote_sign_provider.h"
-#include "signer_factory.h"
-
+#include "params_run_tool.h"
 using namespace OHOS::SignatureTools;
-
-int main()
+int main(int argc, char** argv)
 {
-    std::shared_ptr<RemoteSignProvider> signProvider = std::make_shared<RemoteSignProvider>();
-
-    SignerFactory signerFactory;
-    std::shared_ptr<Signer> remoteSigner = signerFactory.LoadRemoteSigner();
-
-    std::string signedData = remoteSigner->GetSignature("abcd", "SHA256withECDSA");
-    STACK_OF(X509_CRL)* crls = remoteSigner->GetCrls();
-    STACK_OF(X509)* certs = remoteSigner->GetCertificates();
-
-    return 0;
+    // prepare modes vector by macro DEFINE_MODE which subscribe UPDATER_MAIN_PRE_EVENT event
+    bool isSuccess = ParamsRunTool::ProcessCmd(argv, argc);
+    if (isSuccess) {
+        return 0;
+    }
+    return -1;
 }

@@ -21,7 +21,8 @@
 namespace OHOS {
 namespace SignatureTools {
 
-#define REMOTE_LOG(level, fmt, ...) printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define REMOTE_LOG(level, fmt, ...) \
+    printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) \
 
 #ifdef SIGNATURE_LOG_DEBUG
 #define REMOTE_SIGNER_LOGI(fmt, ...) REMOTE_LOG("Info", fmt, ##__VA_ARGS__)

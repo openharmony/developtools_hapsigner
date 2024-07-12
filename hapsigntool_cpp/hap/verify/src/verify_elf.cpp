@@ -16,6 +16,7 @@
 #include <fstream>
 #include <filesystem>
 
+#include "constant.h"
 #include "file_utils.h"
 #include "hw_sign_head.h"
 #include "hw_block_head.h"
@@ -34,8 +35,6 @@ const int8_t VerifyElf::PROFILE_NOSIGNED_BLOCK = 1;
 const int8_t VerifyElf::PROFILE_SIGNED_BLOCK = 2;
 const int8_t VerifyElf::KEY_ROTATION_BLOCK = 3;
 const int8_t VerifyElf::CODESIGNING_BLOCK_TYPE = 3;
-const std::string VerifyElf::BIN_FILE_TYPE = "bin";
-const std::string VerifyElf::ELF_FILE_TYPE = "elf";
 
 bool VerifyElf::Verify(Options* options)
 {
@@ -76,7 +75,7 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
                               Options* options, Pkcs7Context& pkcs7Context)
 {
     SignBlockInfo signBlockInfo(false);
-    bool getSignBlockInfoFlag = GetSignBlockInfo(elfFile, signBlockInfo, ELF_FILE_TYPE);
+    bool getSignBlockInfoFlag = GetSignBlockInfo(elfFile, signBlockInfo, ELF);
     if (!getSignBlockInfoFlag) {
         SIGNATURE_TOOLS_LOGE("get signBlockInfo failed on verify elf %s", elfFile.c_str());
         return false;
@@ -94,7 +93,7 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
     if (findFlag) {
         SigningBlock codesign = signBlockInfo.GetSignBlockMap().find(CODESIGNING_BLOCK_TYPE)->second;
         bool verifyElfFlag = VerifyCodeSignature::VerifyElf(elfFile, codesign.GetOffset(), codesign.GetLength(),
-                                                            ELF_FILE_TYPE, profileJson);
+                                                            ELF, profileJson);
         if (!verifyElfFlag) {
             SIGNATURE_TOOLS_LOGE("code signing failed on verify elf %s", elfFile.c_str());
             return false;
@@ -164,7 +163,7 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
         return false;
     }
     // get SignBlockMap
-    if (fileType == ELF_FILE_TYPE) {
+    if (fileType == ELF) {
         GetElfSignBlock(*((std::vector<int8_t>*)fileBytes), hwBlockData, signBlockInfo.GetSignBlockMap());
     } else {
         GetBinSignBlock(*((std::vector<int8_t>*)fileBytes), hwBlockData, signBlockInfo.GetSignBlockMap());
@@ -242,7 +241,7 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
     std::vector<int8_t> blockSizeByte(bytes.begin() + offset, bytes.begin() + offset + intByteLength);
     offset += intByteLength;
     std::vector<int8_t> blockNumByte(bytes.begin() + offset, bytes.begin() + offset + intByteLength);
-    if (fileType == BIN_FILE_TYPE) {
+    if (fileType == BIN) {
         std::reverse(blockSizeByte.begin(), blockSizeByte.end());
         std::reverse(blockNumByte.begin(), blockNumByte.end());
     }
@@ -257,7 +256,7 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
     int32_t blockSize = 0;
     blockSizeBf->GetInt32(blockSize);
     int64_t blockStart = 0;
-    if (fileType == BIN_FILE_TYPE) {
+    if (fileType == BIN) {
         blockStart = bytes.size() - blockSize;
     } else {
         blockStart = bytes.size() - HwSignHead::SIGN_HEAD_LEN - blockSize;
@@ -269,7 +268,7 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
 
 bool VerifyElf::CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset, const std::string fileType)
 {
-    std::string magicStr = (fileType == ELF_FILE_TYPE ? HwSignHead::ELF_MAGIC : HwSignHead::MAGIC);
+    std::string magicStr = (fileType == ELF ? HwSignHead::ELF_MAGIC : HwSignHead::MAGIC);
     offset = bytes.size() - HwSignHead::SIGN_HEAD_LEN;
     std::vector<int8_t> magicByte(bytes.begin() + offset, bytes.begin() + offset + magicStr.size());
     offset += magicStr.size();

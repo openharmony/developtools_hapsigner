@@ -14,6 +14,7 @@
  */
 #include "verify_code_signature.h"
 #include "elf_sign_block.h"
+#include "constant.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -22,7 +23,7 @@ bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t le
 {
     if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
         fileFormat) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-        SIGNATURE_TOOLS_LOGE("only support format is [hap, hqf, hsp, app]");
+        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify, file type: %s", fileFormat.c_str());
         return true;
     }
     // 1) generate CodeSignBlock
@@ -46,7 +47,7 @@ bool VerifyCodeSignature::VerifyElf(std::string file, int64_t offset, int64_t le
                                     std::string fileFormat, std::string profileContent)
 {
     std::transform(fileFormat.begin(), fileFormat.end(), fileFormat.begin(), ::tolower);
-    if (CodeSigning::SUPPORT_BIN_FILE_FORM != fileFormat) {
+    if (ELF != fileFormat) {
         SIGNATURE_TOOLS_LOGI("Not elf file, skip code signing verify, file type: %s", fileFormat.c_str());
         return true;
     }

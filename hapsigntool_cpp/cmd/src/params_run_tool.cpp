@@ -24,8 +24,6 @@
 namespace OHOS {
 namespace SignatureTools {
 const std::string ParamsRunTool::VERSION = "1.0.0";
-const std::string ParamsRunTool::LOCAL_SIGN = "localSign";
-const std::string ParamsRunTool::REMOTE_SIGN = "remoteSign";
 
 std::vector<std::string> ParamsRunTool::InformList = {
     "bin",
@@ -91,7 +89,7 @@ bool ParamsRunTool::CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& 
     bool isSuccess = false;
     std::string method = params->GetMethod();
     if (GENERATOR_RUN_METHOD.count(method) == 0) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupported method: "+method);
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupported method: " + method);
         return false;
     } else {
         isSuccess=GENERATOR_RUN_METHOD[method](params->GetOptions(), api);
@@ -105,14 +103,12 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         return false;
     }
     std::string mode = params->GetString(Options::MODE);
-    std::string remote = "remoteResign";
-    if (!StringUtils::CaseCompare(mode, ParamsRunTool::LOCAL_SIGN) &&
-        !StringUtils::CaseCompare(mode, ParamsRunTool::REMOTE_SIGN) &&
-        !StringUtils::CaseCompare(mode, remote)) {
+    if (!StringUtils::CaseCompare(mode, LOCAL_SIGN) &&
+        !StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "not support command param '" + mode + "'");
         return false;
     }
-    if (StringUtils::CaseCompare(mode, ParamsRunTool::LOCAL_SIGN)) {
+    if (StringUtils::CaseCompare(mode, LOCAL_SIGN)) {
         if (!params->Required({Options::KEY_STORE_FILE, Options::KEY_ALIAS, Options::APP_CERT_FILE})) {
             return false;
         }
@@ -328,12 +324,12 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
         return false;
     }
     std::string mode = params->GetString(Options::MODE);
-    if (!StringUtils::CaseCompare(mode, ParamsRunTool::LOCAL_SIGN) &&
-        !StringUtils::CaseCompare(mode, ParamsRunTool::REMOTE_SIGN)) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "mode params is incorrect");
+    if (!StringUtils::CaseCompare(mode, LOCAL_SIGN) &&
+        !StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "not support command param '" + mode + "'");
         return false;
     }
-    if (StringUtils::CaseCompare(mode, ParamsRunTool::LOCAL_SIGN)) {
+    if (StringUtils::CaseCompare(mode, LOCAL_SIGN)) {
         if (!params->Required({params->KEY_STORE_FILE, params->KEY_ALIAS, params->PROFILE_CERT_FILE})) {
             return false;
         }

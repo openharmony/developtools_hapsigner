@@ -338,7 +338,7 @@ bool SignProvider::SignBin(Options* options)
         return false;
     }
 
-    SIGNATURE_TOOLS_LOGE("sign bin success");
+    SIGNATURE_TOOLS_LOGI("sign bin success");
     return true;
 }
 
@@ -349,7 +349,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
         SIGNATURE_TOOLS_LOGI("start code signing.");
         if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
                       suffix) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-            SIGNATURE_TOOLS_LOGE("no need to sign code.");
+            SIGNATURE_TOOLS_LOGI("no need to sign code for %s", suffix.c_str());
             return true;
         }
         // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
