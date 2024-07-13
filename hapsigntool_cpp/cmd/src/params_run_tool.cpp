@@ -121,7 +121,7 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
     }
     std::string inForm = params->GetString(Options::INFORM, ZIP);
     if (!StringUtils::IsEmpty(inForm) && !StringUtils::ContainsCase(InformList, inForm)) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "parameter '" + inForm
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "parameter '" + inForm
                             + "' format error, Inform only support zip/elf/bin");
         return false;
     }
@@ -385,7 +385,7 @@ bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)
     }
     std::string inForm = params->GetString(Options::INFORM, ZIP);
     if (!StringUtils::ContainsCase(InformList, inForm)) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "parameter '" + inForm
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "parameter '" + inForm
                             + "' format error, Inform only support zip/elf/bin");
         return false;
     }
