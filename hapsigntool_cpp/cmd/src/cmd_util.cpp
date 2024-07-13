@@ -89,7 +89,6 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
     if (options->count(Options::BASIC_CONSTRAINTS_PATH_LEN)) {
         int basicConstraintsPathLen = 0;
         std::string val = options->GetString(Options::BASIC_CONSTRAINTS_PATH_LEN);
-
         if (!StringUtils::CheckStringToint(val, basicConstraintsPathLen)) {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid parameter '"
                                 + val + "', You should fill in the numbers");
