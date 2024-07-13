@@ -55,7 +55,8 @@ bool SignProvider::InitSigerConfig(SignerConfig& signerConfig, STACK_OF(X509)* p
         return false;
     }
     int CompatibleVersion;
-    if (!StringUtils::CheckStringToint(signParams.at(ParamConstants::PARAM_BASIC_COMPATIBLE_VERSION), CompatibleVersion)) {
+    if (!StringUtils::CheckStringToint(signParams.at(ParamConstants::PARAM_BASIC_COMPATIBLE_VERSION),
+        CompatibleVersion)) {
         SIGNATURE_TOOLS_LOGE("[SignHap] CompatibleVersion String To int failed");
         return false;
     }
