@@ -115,7 +115,6 @@ private:
 
     bool CheckSignatureAlg();
 
-    static bool CheckStringToint(const std::string& in, int& out);
     int LoadOptionalBlock(const std::string& file, int type);
     bool CheckFile(const std::string& filePath);
 

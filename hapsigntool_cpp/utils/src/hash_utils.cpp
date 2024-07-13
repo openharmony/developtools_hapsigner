@@ -98,7 +98,7 @@ std::vector<int8_t> HashUtils::GetFileDigest(const std::string& inputFile, const
         digestUtils.AddData(str);
     }
     std::string digest = digestUtils.Result(DigestUtils::Type::BINARY);
-    for (int i = 0; i < digest.size(); i++) {
+    for (std::string::size_type i = 0; i < digest.size(); i++) {
         result.push_back(digest[i]);
     }
     return result;
@@ -133,7 +133,7 @@ std::vector<int8_t> HashUtils::GetDigestFromBytes(const std::vector<int8_t>& fil
     }
     std::string digest = digestUtils.Result(DigestUtils::Type::BINARY);
     std::vector<int8_t> result;
-    for (int i = 0; i < digest.size(); i++) {
+    for (std::string::size_type i = 0; i < digest.size(); i++) {
         result.push_back(digest[i]);
     }
     return result;
@@ -145,7 +145,7 @@ std::vector<int8_t> HashUtils::GetByteDigest(const std::string& str, int count, 
     DigestUtils digestUtils(HASH_SHA256);
     digestUtils.AddData(str);
     std::string digest = digestUtils.Result(DigestUtils::Type::BINARY);
-    for (int i = 0; i < digest.size(); i++) {
+    for (std::string::size_type i = 0; i < digest.size(); i++) {
         result.push_back(digest[i]);
     }
     return result;

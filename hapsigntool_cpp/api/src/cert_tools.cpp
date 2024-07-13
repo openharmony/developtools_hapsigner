@@ -75,8 +75,44 @@ bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
     return true;
 }
 
+static bool UpdateConstraint(Options* options)
+{
+    if (options->count(Options::BASIC_CONSTRAINTS)) {
+        std::string val = options->GetString(Options::BASIC_CONSTRAINTS);
+        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
+            return false;
+        }
+    } else {
+        (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS;
+    }
+
+    if (options->count(Options::BASIC_CONSTRAINTS_CRITICAL)) {
+        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
+            return false;
+        }
+    } else {
+        (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS_CRITICAL;
+    }
+
+    if (options->count(Options::BASIC_CONSTRAINTS_CA)) {
+        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
+            return false;
+        }
+    } else {
+        (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS_CA;
+    }
+    return true;
+}
+
 bool CertTools::SetBisicConstraints(Options* options, X509* cert)
 {
+    /*Check here when the parameter is not entered through the command line */
+    if (!(options->count(Options::BASIC_CONSTRAINTS)
+        && (*options)[Options::BASIC_CONSTRAINTS].index() == BASIC_NUMBER_TWO)) {
+        if (!UpdateConstraint(options)) {
+            return false;
+        }
+    }
     bool basicCon = options->GetBool(Options::BASIC_CONSTRAINTS);
     if (basicCon) {
         bool basicConstraintsCritical = options->GetBool(Options::BASIC_CONSTRAINTS_CRITICAL);

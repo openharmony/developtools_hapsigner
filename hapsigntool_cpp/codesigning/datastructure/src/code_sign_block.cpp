@@ -154,7 +154,7 @@ void CodeSignBlock::ComputeSegmentOffset()
     int segmentOffset = CodeSignBlockHeader::Size()
         + segmentHeaderList.size() * SegmentHeader::SEGMENT_HEADER_LENGTH
         + zeroPadding.size() + GetOneMerkleTreeByFileName("Hap").size();
-    for (int i = 0; i < segmentHeaderList.size(); i++) {
+    for (std::vector<SegmentHeader>::size_type i = 0; i < segmentHeaderList.size(); i++) {
         segmentHeaderList[i].SetSegmentOffset(static_cast<int32_t>(segmentOffset));
         segmentOffset += segmentHeaderList[i].GetSegmentSize();
     }
