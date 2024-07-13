@@ -119,5 +119,14 @@ std::string StringUtils::SubjectToString(X509* cert)
     OPENSSL_free(subjectStr);
     return result;
 }
+bool StringUtils::CheckStringToint(const std::string& in, int& out)
+{
+    std::istringstream iss(in);
+    if ((iss >> out) && iss.eof()) {
+        return true;
+    }
+    SIGNATURE_TOOLS_LOGE("Cannot convert string:%s to integer", in.c_str());
+    return false;
+}
 } // namespace SignatureTools
 } // namespace OHOS

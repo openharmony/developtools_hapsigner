@@ -52,10 +52,7 @@ static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
                 return false;
             }
         }
-        try {
-            validity = stoi(val);
-        }
-        catch (std::exception& e) {
+        if (!StringUtils::CheckStringToint(val, validity)) {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid parameter '"
                                 + val + "', You should fill in the numbers");
             return false;
@@ -92,10 +89,8 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
     if (options->count(Options::BASIC_CONSTRAINTS_PATH_LEN)) {
         int basicConstraintsPathLen = 0;
         std::string val = options->GetString(Options::BASIC_CONSTRAINTS_PATH_LEN);
-        try {
-            basicConstraintsPathLen = stoi(val);
-        }
-        catch (std::exception& e) {
+
+        if (!StringUtils::CheckStringToint(val, basicConstraintsPathLen)) {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid parameter '"
                                 + val + "', You should fill in the numbers");
             return false;
