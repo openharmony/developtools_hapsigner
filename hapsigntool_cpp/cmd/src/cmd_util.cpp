@@ -193,21 +193,30 @@ static bool outFilePath(Options* options)
     // check path directory is exists
     for (auto& key : outFileKeys) {
         if (options->count(key)) {
-            std::filesystem::path pat = options->GetString(key);
+            std::string outPath = options->GetString(key);
+            outPath.erase(std::remove_if(outPath.begin(), outPath.end(), ::isspace), outPath.end());
+            if (outPath.empty()) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + key + "' output file cannot be empty");
+                return false;
+            }
+            std::filesystem::path pat = outPath;
             if (std::filesystem::is_directory(pat)) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + std::string(pat.c_str())
-                                    + "' is a directory");
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + outPath + "' is a directory");
                 return false;
             }
             std::string parentPath = pat.parent_path();
-            if (parentPath == "" || parentPath == "./") {
-                return true;
+            if (parentPath == "") {
+                parentPath = "./";
             }
-            if (!std::filesystem::exists(parentPath)) {
-                PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "output file parent directory'"
-                                    + std::string(parentPath.c_str()) + "' not exist");
+            char path[PATH_MAX] = {0x00};
+            if (parentPath.size() > PATH_MAX || realpath(parentPath.c_str(), path) == nullptr) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "output file parent directory' "
+                                    + parentPath + "' not exist");
                 return false;
             }
+            std::string charStr(path);
+            std::string fileName = pat.filename();
+            (*options)[key] = charStr + "/" + fileName;
         }
     }
     return true;
@@ -224,10 +233,28 @@ static bool UpdateParamForCheckFile(ParamsSharedPtr param)
         Options::PROFILE_CERT_FILE,
         Options::APP_CERT_FILE,
         Options::PROFILE_FILE};
+
     for (auto& key : inFileKeys) {
-        if (options->count(key) &&
-            !FileUtils::IsValidFile(options->GetString(key))) {
-            return false;
+        if (options->count(key)) {
+            char path[PATH_MAX] = {0x00};
+            std::string inFilePath = options->GetString(key);
+            inFilePath.erase(std::remove_if(inFilePath.begin(), inFilePath.end(), ::isspace), inFilePath.end());
+            if (inFilePath.empty()) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + key + "' input file cannot be empty");
+                return false;
+            }
+
+            if (inFilePath.size() > PATH_MAX || realpath(inFilePath.c_str(), path) == nullptr) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "input file '"
+                                    + inFilePath + "' not exist");
+                return false;
+            }
+            std::string charStr(path);
+            (*options)[key] = charStr;
+
+            if (!FileUtils::IsValidFile(options->GetString(key))) {
+                return false;
+            }
         }
     }
     // check path exists

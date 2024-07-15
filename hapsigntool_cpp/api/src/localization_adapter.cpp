@@ -213,7 +213,7 @@ err:
     return NULL;
 }
 
-EVP_PKEY* LocalizationAdapter::GetIssureKeyByAlias()
+EVP_PKEY* LocalizationAdapter::GetIssuerKeyByAlias()
 {
     return GetAliasKey(false);
 }
