@@ -208,7 +208,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
         goto err;
     }
     adapter->SetIssuerKeyStoreFile(true);
-    rootKeyPair = adapter->GetIssureKeyByAlias();
+    rootKeyPair = adapter->GetIssuerKeyByAlias();
     if (!rootKeyPair) {
         goto err;
     }
@@ -366,7 +366,7 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
         goto err;
     }
     adapter->SetIssuerKeyStoreFile(true);
-    if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
+    if (!(issueKeyPair = adapter->GetIssuerKeyByAlias())) { // get issuer keypair
         goto err;
     }
     adapter->ResetPwd(); // clean pwd for safety
@@ -410,7 +410,7 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
         goto err;
     }
     adapter->SetIssuerKeyStoreFile(true);
-    if (!(issueKeyPair = adapter->GetIssureKeyByAlias())) { // get issuer keypair
+    if (!(issueKeyPair = adapter->GetIssuerKeyByAlias())) { // get issuer keypair
         goto err;
     }
     adapter->ResetPwd(); // clean pwd for safety

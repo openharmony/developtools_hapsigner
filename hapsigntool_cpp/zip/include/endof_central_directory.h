@@ -19,6 +19,8 @@
 #include <optional>
 #include <string>
 
+#include "byte_buffer.h"
+
 namespace OHOS {
 namespace SignatureTools {
 /**

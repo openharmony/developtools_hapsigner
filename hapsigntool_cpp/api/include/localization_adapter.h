@@ -55,7 +55,7 @@ public:
     
     Options* GetOptions();
     EVP_PKEY* GetAliasKey(bool autoCreate);
-    EVP_PKEY* GetIssureKeyByAlias();
+    EVP_PKEY* GetIssuerKeyByAlias();
     X509* GetSubCaCertFile();
     X509* GetCaCertFile();
     STACK_OF(X509*) GetSignCertChain();
