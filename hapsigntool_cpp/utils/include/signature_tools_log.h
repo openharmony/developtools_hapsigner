@@ -17,6 +17,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 
 #include "signature_tools_errno.h"
 
@@ -50,12 +53,10 @@ namespace SignatureTools {
 **/
 inline void PrintErrorNumberMsg(const std::string& command, const int code, const std::string& details)
 {
-    time_t now = time(0);
-    if (!now) return;
-    char timebuffer[100] = { 0 };
-    struct tm* time = localtime(&now);
-    if (!time && !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", time)) return;
-    std::cerr << timebuffer << " ERROR - " << command << ", code: "
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    std::tm* localTime = std::localtime(&nowTime);
+    std::cerr << std::put_time(localTime, "%m-%d %H:%M:%S") << " ERROR - " << command << ", code: "
         << code << ". Details: " << details << std::endl;
 }
 
@@ -66,18 +67,11 @@ inline void PrintErrorNumberMsg(const std::string& command, const int code, cons
 **/
 inline void PrintMsg(const std::string& message)
 {
-    time_t now = time(0);
-    if (!now) {
-        return;
-    }
-    char timebuffer[100] = { 0 };
-    struct tm* time = localtime(&now);
-    if (!time && !strftime(timebuffer, sizeof(timebuffer), "%m-%d %H:%M:%S", time)) {
-        return;
-    }
-    std::cout << timebuffer << " INFO  - " << message << std::endl;
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    std::tm* localTime = std::localtime(&nowTime);
+    std::cout << std::put_time(localTime, "%m-%d %H:%M:%S") << " INFO  - " << message << std::endl;
 }
-
 } // namespace SignatureTools
 } // namespace OHOS
 #endif // SIGNATURETOOLS_SIGNATRUE_TOOLS_LOG_H

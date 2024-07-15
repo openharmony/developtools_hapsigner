@@ -101,7 +101,7 @@ EndOfCentralDirectory* ZipSigner::GetZipEndOfCentralDirectory(std::ifstream& inp
         return nullptr;
     }
 
-    for (int start = 0; start < eocdMaxLength; start++) {
+    for (uint64_t start = 0; start < eocdMaxLength; start++) {
         eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(retStr, start);
         if (eocdByBytes) {
             m_eOCDOffset += start;
@@ -135,7 +135,7 @@ bool ZipSigner::GetZipCentralDirectory(std::ifstream& input)
 
     ByteBuffer bf(retStr.c_str(), retStr.size());
 
-    int offset = 0;
+    std::string::size_type offset = 0;
     /* one by one format central directory */
     while (offset < retStr.size()) {
         CentralDirectory* cd = new CentralDirectory();

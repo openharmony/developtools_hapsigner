@@ -200,6 +200,9 @@ static bool outFilePath(Options* options)
                 return false;
             }
             std::string parentPath = pat.parent_path();
+            if (parentPath == "" || parentPath == "./") {
+                return true;
+            }
             if (!std::filesystem::exists(parentPath)) {
                 PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "output file parent directory'"
                                     + std::string(parentPath.c_str()) + "' not exist");
@@ -241,7 +244,7 @@ static bool UpdateParamForCheckSignAlg(ParamsSharedPtr param)
     if (options->count(Options::SIGN_ALG)) {
         std::string signAlg = options->GetString(Options::SIGN_ALG);
         if (signAlg != SIGN_ALG_SHA256 && signAlg != SIGN_ALG_SHA384) {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "'" + signAlg + "' parameter is incorrect");
+            PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "'" + signAlg + "' parameter is incorrect");
             return false;
         }
     }
@@ -257,8 +260,8 @@ static bool UpdateParamForInform(ParamsSharedPtr param)
         if (options->count(Options::INFORM)) {
             std::string inForm = options->GetString(Options::INFORM);
             if (!StringUtils::ContainsCase(ParamsRunTool::InformList, inForm)) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "parameter '" + inForm
-                                    + "' format error, Inform only support zip/elf/bin");
+                PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "parameter '"
+                                    + inForm + "' format error, Inform only support zip/elf/bin");
                 return false;
             }
         } else {
@@ -478,7 +481,7 @@ bool CmdUtil::VerifyTypes(const std::string& inputType)
     sets.insert("decipherOnly");
     for (const auto& val : vecs) {
         if (sets.count(val) == 0) {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR,
                                 "Not support command param '" + val + "'");
             return false;
         }
