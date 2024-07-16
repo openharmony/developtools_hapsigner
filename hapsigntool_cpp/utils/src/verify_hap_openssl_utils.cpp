@@ -95,11 +95,11 @@ bool VerifyHapOpensslUtils::GetCertChains(PKCS7* p7, Pkcs7Context& pkcs7Context)
             return false;
         }
         CertChain certChain;
-        pkcs7Context.certChains.push_back(certChain);
-        pkcs7Context.certChains[i].push_back(X509_dup(cert));
+        pkcs7Context.certChain.push_back(certChain);
+        pkcs7Context.certChain[i].push_back(X509_dup(cert));
         VerifyCertOpensslUtils::ClearCertVisitSign(certVisitSign);
         certVisitSign[cert] = true;
-        if (!VerifyCertChain(pkcs7Context.certChains[i], p7, signInfo, pkcs7Context, certVisitSign)) {
+        if (!VerifyCertChain(pkcs7Context.certChain[i], p7, signInfo, pkcs7Context, certVisitSign)) {
             SIGNATURE_TOOLS_LOGE("verify %dst certchain failed", i);
             return false;
         }
@@ -199,7 +199,7 @@ bool VerifyHapOpensslUtils::VerifySignInfo(STACK_OF(PKCS7_SIGNER_INFO)* signerIn
         return false;
     }
     /* GET X509 certificate */
-    X509* cert = pkcs7Context.certChains[signInfoNum][0];
+    X509* cert = pkcs7Context.certChain[signInfoNum][0];
 
     if (PKCS7_signatureVerify(p7Bio, pkcs7Context.p7, signInfo, cert) <= 0) {
         SIGNATURE_TOOLS_LOGE("PKCS7_signatureVerify %dst signInfo failed", signInfoNum);
@@ -309,7 +309,7 @@ bool VerifyHapOpensslUtils::CheckDigestParameter(const DigestParameter& digestPa
         SIGNATURE_TOOLS_LOGE("md is nullptr");
         return false;
     }
-    if (digestParameter.ptrCtx == nullptr) {
+    if (digestParameter.ctxPtr == nullptr) {
         SIGNATURE_TOOLS_LOGE("ptrCtx is nullptr");
         return false;
     }
@@ -321,7 +321,7 @@ bool VerifyHapOpensslUtils::DigestInit(const DigestParameter& digestParameter)
     if (!CheckDigestParameter(digestParameter)) {
         return false;
     }
-    if (EVP_DigestInit(digestParameter.ptrCtx, digestParameter.md) <= 0) {
+    if (EVP_DigestInit(digestParameter.ctxPtr, digestParameter.md) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestInit failed");
         return false;
@@ -340,7 +340,7 @@ bool VerifyHapOpensslUtils::DigestUpdate(const DigestParameter& digestParameter,
     if (!CheckDigestParameter(digestParameter)) {
         return false;
     }
-    if (EVP_DigestUpdate(digestParameter.ptrCtx, content, len) <= 0) {
+    if (EVP_DigestUpdate(digestParameter.ctxPtr, content, len) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate chunk failed");
         return false;
@@ -355,7 +355,7 @@ int32_t VerifyHapOpensslUtils::GetDigest(const DigestParameter& digestParameter,
     if (!CheckDigestParameter(digestParameter)) {
         return outLen;
     }
-    if (EVP_DigestFinal(digestParameter.ptrCtx, out, &outLen) <= 0) {
+    if (EVP_DigestFinal(digestParameter.ctxPtr, out, &outLen) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestFinal failed");
         outLen = 0;
@@ -374,30 +374,30 @@ int32_t VerifyHapOpensslUtils::GetDigest(const ByteBuffer& chunk,
         SIGNATURE_TOOLS_LOGE("md is nullprt");
         return outLen;
     }
-    if (digestParameter.ptrCtx == nullptr) {
+    if (digestParameter.ctxPtr == nullptr) {
         SIGNATURE_TOOLS_LOGE("ptrCtx is nullprt");
         return outLen;
     }
-    if (EVP_DigestInit(digestParameter.ptrCtx, digestParameter.md) <= 0) {
+    if (EVP_DigestInit(digestParameter.ctxPtr, digestParameter.md) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestInit failed");
         return outLen;
     }
-    if (EVP_DigestUpdate(digestParameter.ptrCtx, chunk.GetBufferPtr(), chunkLen) <= 0) {
+    if (EVP_DigestUpdate(digestParameter.ctxPtr, chunk.GetBufferPtr(), chunkLen) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate chunk failed");
         return outLen;
     }
     for (int32_t i = 0; i < static_cast<int>(optionalBlocks.size()); i++) {
         chunkLen = optionalBlocks[i].optionalBlockValue.GetCapacity();
-        if (EVP_DigestUpdate(digestParameter.ptrCtx, optionalBlocks[i].optionalBlockValue.GetBufferPtr(),
+        if (EVP_DigestUpdate(digestParameter.ctxPtr, optionalBlocks[i].optionalBlockValue.GetBufferPtr(),
             chunkLen) <= 0) {
             GetOpensslErrorMessage();
             SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate %dst optional block failed", i);
             return outLen;
         }
     }
-    if (EVP_DigestFinal(digestParameter.ptrCtx, out, &outLen) <= 0) {
+    if (EVP_DigestFinal(digestParameter.ctxPtr, out, &outLen) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestFinal failed");
         outLen = 0;

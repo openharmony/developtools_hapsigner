@@ -18,58 +18,54 @@
 namespace OHOS {
 namespace SignatureTools {
 HapVerifyResult::HapVerifyResult()
-    : version(0), publicKeys(), signatures(), pkcs7SignBlock(),
-    pkcs7ProfileBlock(), optionalBlocks(), provisionInfo()
+    : m_version(0), m_publicKeys(), m_signatures(), m_pkcs7SignBlock(),
+    m_pkcs7ProfileBlock(), m_optionalBlocks(), m_provisionInfo()
 {
-}
-
-HapVerifyResult::~HapVerifyResult()
-{
-}
-
-int32_t HapVerifyResult::GetVersion() const
-{
-    return version;
-}
-
-void HapVerifyResult::SetVersion(int32_t signatureVersion)
-{
-    version = signatureVersion;
 }
 
 void HapVerifyResult::SetPkcs7SignBlock(const ByteBuffer& pkcs7)
 {
-    pkcs7SignBlock = pkcs7;
+    m_pkcs7SignBlock = pkcs7;
 }
 
 void HapVerifyResult::SetPkcs7ProfileBlock(const ByteBuffer& pkcs7)
 {
-    pkcs7ProfileBlock = pkcs7;
+    m_pkcs7ProfileBlock = pkcs7;
 }
 
 void HapVerifyResult::SetOptionalBlocks(const std::vector<OptionalBlock>& option)
 {
-    optionalBlocks = option;
+    m_optionalBlocks = option;
+}
+
+int32_t HapVerifyResult::GetVersion() const
+{
+    return m_version;
+}
+
+void HapVerifyResult::SetVersion(int32_t signatureVersion)
+{
+    m_version = signatureVersion;
 }
 
 std::vector<std::string> HapVerifyResult::GetPublicKey() const
 {
-    return publicKeys;
+    return m_publicKeys;
 }
 
 std::vector<std::string> HapVerifyResult::GetSignature() const
 {
-    return signatures;
+    return m_signatures;
 }
 
 void HapVerifyResult::SetPublicKey(const std::vector<std::string>& inputPubkeys)
 {
-    publicKeys = inputPubkeys;
+    m_publicKeys = inputPubkeys;
 }
 
 void HapVerifyResult::SetSignature(const std::vector<std::string>& inputSignatures)
 {
-    signatures = inputSignatures;
+    m_signatures = inputSignatures;
 }
 
 int32_t HapVerifyResult::GetProperty(std::string& property) const
@@ -79,9 +75,9 @@ int32_t HapVerifyResult::GetProperty(std::string& property) const
 
 int32_t HapVerifyResult::GetBlockFromOptionalBlocks(int32_t blockType, std::string& block) const
 {
-    for (unsigned long i = 0; i < optionalBlocks.size(); i++) {
-        if (optionalBlocks[i].optionalType == blockType) {
-            const ByteBuffer& option = optionalBlocks[i].optionalBlockValue;
+    for (unsigned long i = 0; i < m_optionalBlocks.size(); i++) {
+        if (m_optionalBlocks[i].optionalType == blockType) {
+            const ByteBuffer& option = m_optionalBlocks[i].optionalBlockValue;
             block += std::string(option.GetBufferPtr(), option.GetCapacity());
             return GET_SUCCESS;
         }
@@ -91,22 +87,22 @@ int32_t HapVerifyResult::GetBlockFromOptionalBlocks(int32_t blockType, std::stri
 
 void HapVerifyResult::SetProvisionInfo(const ProfileInfo& info)
 {
-    provisionInfo = info;
+    m_provisionInfo = info;
 }
 
 ProfileInfo HapVerifyResult::GetProvisionInfo() const
 {
-    return provisionInfo;
+    return m_provisionInfo;
 }
 
 std::vector<int8_t> HapVerifyResult::GetProfile() const
 {
-    return profile;
+    return m_profile;
 }
 
 void HapVerifyResult::SetProfile(std::vector<int8_t> profile)
 {
-    this->profile = profile;
+    this->m_profile = profile;
 }
 } // namespace SignatureTools
 } // namespace OHOS

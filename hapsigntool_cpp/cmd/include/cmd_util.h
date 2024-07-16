@@ -41,6 +41,8 @@ public:
     static bool VerifyTypes(const std::string& inputType);
     static bool VerifyType(const std::string& inputtype, const std::string& supportTypes);
     static bool String2Bool(Options* options, const std::string& option);
+    static bool UpdateParamForCheckInFile(Options* options, const std::initializer_list<std::string>& inFileKeys);
+    static bool UpdateParamForCheckOutFile(Options* options, const std::initializer_list<std::string>& outFileKeys);
     static constexpr int ARGS_MIN_LEN = 2;
 
 private:

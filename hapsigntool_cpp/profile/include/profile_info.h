@@ -25,74 +25,75 @@ namespace OHOS {
 namespace SignatureTools {
 
 enum ProvisionType {
-    NONE_PROVISION_TYPE = 0,
-    RELEASE = 1,
-    DEBUG = 2
+    NONE_PROVISION_TYPE,
+    RELEASE,
+    DEBUG
 };
 enum AppDistType {
-    NONE_TYPE = 0,
-    APP_GALLERY = 1,
-    ENTERPRISE = 2,
-    OS_INTEGRATION = 3,
-    CROWDTESTING = 4,
-    ENTERPRISE_NORMAL = 5,
-    ENTERPRISE_MDM = 6,
+    NONE_TYPE,
+    APP_GALLERY,
+    ENTERPRISE,
+    OS_INTEGRATION,
+    CROWDTESTING,
+    ENTERPRISE_NORMAL,
+    ENTERPRISE_MDM
 };
-struct BundleInfo {
+typedef struct BundleInfoSt {
     std::string developerId;
-    std::string developmentCertificate;
-    std::string distributionCertificate;
-    std::string bundleName;
     std::string apl;
-    std::string appFeature;
+    std::string distributionCertificate;
+    std::string developmentCertificate;
+    std::string bundleName;
     std::string appIdentifier;
     std::vector<std::string> dataGroupIds;
-};
-struct Acls {
+    std::string appFeature;
+}BundleInfo;
+typedef struct AclsSt {
     std::vector<std::string> allowedAcls;
-};
-struct Permissions {
-    std::vector<std::string> restrictedPermissions;
+}Acls;
+typedef struct PermissionsSt {
     std::vector<std::string> restrictedCapabilities;
-};
-struct DebugInfo {
-    std::string deviceIdType;
+    std::vector<std::string> restrictedPermissions;
+}Permissions;
+typedef struct DebugInfoSt {
     std::vector<std::string> deviceIds;
-};
-struct Validity {
-    int64_t notBefore = 0;
+    std::string deviceIdType;
+}DebugInfo;
+typedef struct ValiditySt {
     int64_t notAfter = 0;
-};
-struct Metadata {
-    std::string name;
+    int64_t notBefore = 0;
+}Validity;
+typedef struct MetadataSt {
     std::string value;
     std::string resource;
-};
+    std::string name;
+}Metadata;
 struct ProfileInfo {
     DLL_EXPORT ProfileInfo();
     DLL_EXPORT ~ProfileInfo();
     DLL_EXPORT ProfileInfo(const ProfileInfo& info);
     DLL_EXPORT ProfileInfo& operator=(const ProfileInfo& info);
     int32_t versionCode = 0;
-    std::string versionName;
     std::string uuid;
-    ProvisionType type = NONE_PROVISION_TYPE;
+    std::string versionName;
     AppDistType distributionType = NONE_TYPE;
-    BundleInfo bundleInfo;
-    Acls acls;
-    Permissions permissions;
-    DebugInfo debugInfo;
+    ProvisionType type = NONE_PROVISION_TYPE;
+    BundleInfoSt bundleInfo;
+    PermissionsSt permissions;
+    AclsSt acls;
     std::string issuer;
-    std::string appId;
+    DebugInfoSt debugInfo;
     std::string fingerprint;
+    std::string appId;
     std::vector<std::string> appPrivilegeCapabilities;
-    Validity validity;
-    std::vector<Metadata> metadatas;
+    ValiditySt validity;
     int32_t profileBlockLength = 0;
-    std::unique_ptr<unsigned char[]> profileBlock;
-    std::string appServiceCapabilities;
+    std::vector<MetadataSt> metadatas;
     std::string organization;
+    std::string appServiceCapabilities;
+    std::unique_ptr<unsigned char[]> profileBlock;
 };
 } // namespace SignatureTools
 } // namespace OHOS
+
 #endif // SIGNATRUETOOLS_PROFILE_INFO_H

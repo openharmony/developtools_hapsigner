@@ -164,13 +164,13 @@ int32_t VerifyHap::Verify(RandomAccessFile& hapFile, HapVerifyResult& hapVerifyV
         return GET_DIGEST_FAIL;
     }
     std::vector<std::string> publicKeys;
-    if (!VerifyHapOpensslUtils::GetPublickeys(pkcs7Context.certChains[0], publicKeys)) {
+    if (!VerifyHapOpensslUtils::GetPublickeys(pkcs7Context.certChain[0], publicKeys)) {
         SIGNATURE_TOOLS_LOGE("Get publicKeys failed");
         return GET_PUBLICKEY_FAIL;
     }
     hapVerifyV1Result.SetPublicKey(publicKeys);
     std::vector<std::string> certSignatures;
-    if (!VerifyHapOpensslUtils::GetSignatures(pkcs7Context.certChains[0], certSignatures)) {
+    if (!VerifyHapOpensslUtils::GetSignatures(pkcs7Context.certChain[0], certSignatures)) {
         SIGNATURE_TOOLS_LOGE("Get sianatures failed");
         return GET_SIGNATURE_FAIL;
     }
@@ -179,7 +179,7 @@ int32_t VerifyHap::Verify(RandomAccessFile& hapFile, HapVerifyResult& hapVerifyV
         SIGNATURE_TOOLS_LOGE("Verify Integrity failed");
         return VERIFY_INTEGRITY_FAIL;
     }
-    if (!VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
+    if (!VerifyHap::HapOutPutCertChain(pkcs7Context.certChain[0],
         options->GetString(Options::OUT_CERT_CHAIN))) {
         SIGNATURE_TOOLS_LOGE("out put cert chain failed");
         return OUT_PUT_FILE_FAIL;
@@ -298,7 +298,7 @@ bool VerifyHap::VerifyAppSourceAndParseProfile(Pkcs7Context& pkcs7Context,
                                                bool& profileNeadWriteCrl)
 {
     std::string certSubject;
-    if (!VerifyCertOpensslUtils::GetSubjectFromX509(pkcs7Context.certChains[0][0], certSubject)) {
+    if (!VerifyCertOpensslUtils::GetSubjectFromX509(pkcs7Context.certChain[0][0], certSubject)) {
         SIGNATURE_TOOLS_LOGE("Get info of sign cert failed");
         return false;
     }
@@ -452,15 +452,15 @@ bool VerifyHap::IsAppDistributedTypeAllowInstall(const AppDistType& type,
                                                  const ProfileInfo& provisionInfo) const
 {
     switch (type) {
-        case AppDistType::NONE_TYPE:
-            return false;
+        case AppDistType::CROWDTESTING:
         case AppDistType::APP_GALLERY:
-        case AppDistType::ENTERPRISE:
-        case AppDistType::ENTERPRISE_NORMAL:
         case AppDistType::ENTERPRISE_MDM:
         case AppDistType::OS_INTEGRATION:
-        case AppDistType::CROWDTESTING:
+        case AppDistType::ENTERPRISE:
+        case AppDistType::ENTERPRISE_NORMAL:
             return true;
+        case AppDistType::NONE_TYPE:
+            return false;
         default:
             return false;
     }
@@ -556,25 +556,25 @@ int32_t VerifyHap::VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyR
         SIGNATURE_TOOLS_LOGE("verify signature failed");
         return VERIFY_APP_PKCS7_FAIL;
     }
-    std::vector<std::string> publicKeys;
-    if (!VerifyHapOpensslUtils::GetPublickeys(pkcs7Context.certChains[0], publicKeys)) {
+    std::vector<std::string> elfPublicKeys;
+    if (!VerifyHapOpensslUtils::GetPublickeys(pkcs7Context.certChain[0], elfPublicKeys)) {
         SIGNATURE_TOOLS_LOGE("Get publicKeys failed");
         return GET_PUBLICKEY_FAIL;
     }
-    hapVerifyV1Result.SetPublicKey(publicKeys);
-    std::vector<std::string> certSignatures;
-    if (!VerifyHapOpensslUtils::GetSignatures(pkcs7Context.certChains[0], certSignatures)) {
+    hapVerifyV1Result.SetPublicKey(elfPublicKeys);
+    std::vector<std::string> elfCertSignatures;
+    if (!VerifyHapOpensslUtils::GetSignatures(pkcs7Context.certChain[0], elfCertSignatures)) {
         SIGNATURE_TOOLS_LOGE("Get sianatures failed");
         return GET_SIGNATURE_FAIL;
     }
-    hapVerifyV1Result.SetSignature(certSignatures);
+    hapVerifyV1Result.SetSignature(elfCertSignatures);
     return VERIFY_SUCCESS;
 }
 
 int32_t VerifyHap::WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t> profile, Options* options)
 {
-    if (pkcs7Context.certChains.size() > 0) {
-        bool flag = VerifyHap::HapOutPutCertChain(pkcs7Context.certChains[0],
+    if (pkcs7Context.certChain.size() > 0) {
+        bool flag = VerifyHap::HapOutPutCertChain(pkcs7Context.certChain[0],
             options->GetString(Options::OUT_CERT_CHAIN));
         if (!flag) {
             SIGNATURE_TOOLS_LOGE("out put cert chain failed");

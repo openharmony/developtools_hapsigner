@@ -23,28 +23,28 @@
 
 namespace OHOS {
 namespace SignatureTools {
-enum class DevMode {
+enum class ModeDev {
     DEFAULT = 0,
     DEV,
     NON_DEV,
 };
 
-enum HapVerifyResultCode {
+enum VerifyHapResultCode {
     VERIFY_SUCCESS = 0,
     FILE_PATH_INVALID = -1,
     OPEN_FILE_ERROR = -2,
     SIGNATURE_NOT_FOUND = -3,
-    VERIFY_APP_PKCS7_FAIL = -4,
-    PROFILE_PARSE_FAIL = -5,
-    APP_SOURCE_NOT_TRUSTED = -6,
-    GET_DIGEST_FAIL = -7,
+    GET_DIGEST_FAIL = -4,
+    NO_PROFILE_BLOCK_FAIL = -5,
+    VERIFY_SIGNATURE_FAIL = -6,
+    VERIFY_SOURCE_INIT_FAIL = -7,
     VERIFY_INTEGRITY_FAIL = -8,
     FILE_SIZE_TOO_LARGE = -9,
     GET_PUBLICKEY_FAIL = -10,
-    GET_SIGNATURE_FAIL = -11,
-    NO_PROFILE_BLOCK_FAIL = -12,
-    VERIFY_SIGNATURE_FAIL = -13,
-    VERIFY_SOURCE_INIT_FAIL = -14,
+    VERIFY_APP_PKCS7_FAIL = -11,
+    PROFILE_PARSE_FAIL = -12,
+    APP_SOURCE_NOT_TRUSTED = -13,
+    GET_SIGNATURE_FAIL = -14,
     OUT_PUT_FILE_FAIL = -15,
     VERIFY_CODE_SIGN_FAIL = -16,
 };
@@ -62,7 +62,7 @@ struct OptionalBlock {
 class HapVerifyResult {
 public:
     DLL_EXPORT HapVerifyResult();
-    DLL_EXPORT ~HapVerifyResult();
+    DLL_EXPORT ~HapVerifyResult() = default;
     DLL_EXPORT int32_t GetVersion() const;
     DLL_EXPORT void SetVersion(int32_t signatureVersion);
     DLL_EXPORT void SetPkcs7SignBlock(const ByteBuffer& pkcs7);
@@ -80,14 +80,14 @@ public:
     DLL_EXPORT int32_t GetBlockFromOptionalBlocks(int32_t blockType, std::string& block) const;
 
 private:
-    int32_t version = 0;
-    std::vector<std::string> publicKeys;
-    std::vector<std::string> signatures;
-    ByteBuffer pkcs7SignBlock;
-    ByteBuffer pkcs7ProfileBlock;
-    std::vector<OptionalBlock> optionalBlocks;
-    ProfileInfo provisionInfo;
-    std::vector<int8_t> profile;
+    int32_t m_version = 0;
+    std::vector<std::string> m_publicKeys;
+    std::vector<std::string> m_signatures;
+    ByteBuffer m_pkcs7SignBlock;
+    ByteBuffer m_pkcs7ProfileBlock;
+    std::vector<OptionalBlock> m_optionalBlocks;
+    ProfileInfo m_provisionInfo;
+    std::vector<int8_t> m_profile;
 };
 } // namespace SignatureTools
 } // namespace OHOS

@@ -92,12 +92,12 @@ std::vector<int8_t> HashUtils::GetFileDigest(const std::string& inputFile, const
         return std::vector<int8_t>();
     }
 
-    DigestUtils digestUtils(HASH_SHA256);
-    for (const auto& item : hashMap) {
-        std::string str(item.second.begin(), item.second.end());
-        digestUtils.AddData(str);
+    DigestUtils fileDigestUtils(HASH_SHA256);
+    for (const auto& hashMapItem : hashMap) {
+        std::string str(hashMapItem.second.begin(), hashMapItem.second.end());
+        fileDigestUtils.AddData(str);
     }
-    std::string digest = digestUtils.Result(DigestUtils::Type::BINARY);
+    std::string digest = fileDigestUtils.Result(DigestUtils::Type::BINARY);
     for (std::string::size_type i = 0; i < digest.size(); i++) {
         result.push_back(digest[i]);
     }
