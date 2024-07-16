@@ -31,7 +31,7 @@ public:
 public:
     int32_t digestOutputSizeBytes;
     const EVP_MD* md;
-    EVP_MD_CTX* ptrCtx;
+    EVP_MD_CTX* ctxPtr;
 };
 } // namespace SignatureTools
 } // namespace OHOS

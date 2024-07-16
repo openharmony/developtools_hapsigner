@@ -34,11 +34,11 @@ struct Pkcs7Context {
     MatchingResult matchResult;
     std::string certIssuer;
     PKCS7* p7;
-    Pkcs7CertChains certChains;
+    Pkcs7CertChains certChain;
     ByteBuffer content;
     Pkcs7Context()
         : needWriteCrl(false), digestAlgorithm(0), matchResult(), certIssuer(),
-        p7(nullptr), certChains(), content()
+        p7(nullptr), certChain(), content()
     {
     }
     ~Pkcs7Context()
@@ -47,12 +47,12 @@ struct Pkcs7Context {
             PKCS7_free(p7);
             p7 = nullptr;
         }
-        for (auto certChain : certChains) {
+        for (auto certChain : certChain) {
             for (auto cert : certChain) {
                 X509_free(cert);
             }
         }
-        certChains.clear();
+        certChain.clear();
     }
 };
 } // namespace SignatureTools

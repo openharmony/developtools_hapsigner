@@ -20,6 +20,7 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+#include <sstream>
 
 #include "signature_tools_errno.h"
 
@@ -43,6 +44,19 @@ namespace SignatureTools {
 #define SIGNATURE_TOOLS_LOGF(fmt, ...) SIGNATURE_LOG("Fatal", fmt, ##__VA_ARGS__)
 #define SIGNATURE_TOOLS_LOGE(fmt, ...) SIGNATURE_LOG("Error", fmt, ##__VA_ARGS__)
 
+inline std::string GetSystemTime()
+{
+	std::string timeBuffer;
+	std::stringstream ss;
+	auto now = std::chrono::system_clock::now();
+	std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+	std::tm* localTime = std::localtime(&nowTime);
+	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+	ss << std::put_time(localTime, "%m-%d %H:%M:%S");
+	ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+	timeBuffer = ss.str();
+	return timeBuffer;
+}
 
 /*
 * Function: Print the error code and error message to the terminal.
@@ -53,10 +67,7 @@ namespace SignatureTools {
 **/
 inline void PrintErrorNumberMsg(const std::string& command, const int code, const std::string& details)
 {
-    auto now = std::chrono::system_clock::now();
-    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
-    std::tm* localTime = std::localtime(&nowTime);
-    std::cerr << std::put_time(localTime, "%m-%d %H:%M:%S") << " ERROR - " << command << ", code: "
+    std::cerr << GetSystemTime() << " ERROR - " << command << ", code: "
         << code << ". Details: " << details << std::endl;
 }
 
@@ -67,10 +78,7 @@ inline void PrintErrorNumberMsg(const std::string& command, const int code, cons
 **/
 inline void PrintMsg(const std::string& message)
 {
-    auto now = std::chrono::system_clock::now();
-    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
-    std::tm* localTime = std::localtime(&nowTime);
-    std::cout << std::put_time(localTime, "%m-%d %H:%M:%S") << " INFO  - " << message << std::endl;
+    std::cout << GetSystemTime() << " INFO  - " << message << std::endl;
 }
 } // namespace SignatureTools
 } // namespace OHOS

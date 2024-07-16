@@ -17,15 +17,15 @@
 
 namespace OHOS {
 namespace SignatureTools {
-DigestParameter::DigestParameter() : digestOutputSizeBytes(0), md(nullptr), ptrCtx(nullptr)
+DigestParameter::DigestParameter() : digestOutputSizeBytes(0), md(nullptr), ctxPtr(nullptr)
 {
 }
 
 DigestParameter::~DigestParameter()
 {
-    if (ptrCtx != nullptr) {
-        EVP_MD_CTX_destroy(ptrCtx);
-        ptrCtx = nullptr;
+    if (ctxPtr != nullptr) {
+        EVP_MD_CTX_destroy(ctxPtr);
+        ctxPtr = nullptr;
     }
     /* md points to the OpenSSL global static struct constant, no need to free. */
     md = nullptr;
@@ -35,20 +35,20 @@ DigestParameter::DigestParameter(const DigestParameter& other)
 {
     digestOutputSizeBytes = other.digestOutputSizeBytes;
     md = other.md;
-    ptrCtx = EVP_MD_CTX_create();
-    EVP_MD_CTX_copy(ptrCtx, other.ptrCtx);
+    ctxPtr = EVP_MD_CTX_create();
+    EVP_MD_CTX_copy(ctxPtr, other.ctxPtr);
 }
 
 DigestParameter& DigestParameter::operator = (const DigestParameter& other)
 {
-    if (ptrCtx != nullptr) {
-        EVP_MD_CTX_destroy(ptrCtx);
-        ptrCtx = nullptr;
+    if (ctxPtr != nullptr) {
+        EVP_MD_CTX_destroy(ctxPtr);
+        ctxPtr = nullptr;
     }
     digestOutputSizeBytes = other.digestOutputSizeBytes;
     md = other.md;
-    ptrCtx = EVP_MD_CTX_create();
-    EVP_MD_CTX_copy(ptrCtx, other.ptrCtx);
+    ctxPtr = EVP_MD_CTX_create();
+    EVP_MD_CTX_copy(ctxPtr, other.ctxPtr);
     return *this;
 }
 }

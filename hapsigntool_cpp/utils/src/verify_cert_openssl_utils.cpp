@@ -261,17 +261,17 @@ void VerifyCertOpensslUtils::WriteX509CrlToStream(std::ofstream& crlFile, X509_C
     crlFile.seekp(posEnd);
 }
 
-void VerifyCertOpensslUtils::GenerateCertSignFromCertStack(STACK_OF(X509)* certs, CertSign& certVisitSign)
+void VerifyCertOpensslUtils::GenerateCertSignFromCertStack(STACK_OF(X509)* stackCerts, CertSign& certVisitSign)
 {
-    if (certs == nullptr) {
+    if (stackCerts == nullptr) {
         return;
     }
-    for (int32_t i = 0; i < sk_X509_num(certs); i++) {
-        X509* cert = sk_X509_value(certs, i);
-        if (cert == nullptr) {
+    for (int32_t i = 0; i < sk_X509_num(stackCerts); i++) {
+        X509* x509Cert = sk_X509_value(stackCerts, i);
+        if (x509Cert == nullptr) {
             continue;
         }
-        certVisitSign[cert] = false;
+        certVisitSign[x509Cert] = false;
     }
 }
 
@@ -320,15 +320,15 @@ X509* VerifyCertOpensslUtils::FindCertOfIssuer(X509* cert, CertSign& certVisitSi
         SIGNATURE_TOOLS_LOGE("input is invalid");
         return nullptr;
     }
-    X509_NAME* signCertIssuer = X509_get_issuer_name(cert);
+    X509_NAME* signCertIssuerName = X509_get_issuer_name(cert);
     for (auto certPair : certVisitSign) {
         if (certPair.second) {
             continue;
         }
         X509* issuerCert = certPair.first;
-        X509_NAME* issuerCertSubject = X509_get_subject_name(issuerCert);
+        X509_NAME* issuerCertSubjectName = X509_get_subject_name(issuerCert);
         /* verify sign and issuer */
-        if (X509NameCompare(issuerCertSubject, signCertIssuer) &&
+        if (X509NameCompare(issuerCertSubjectName, signCertIssuerName) &&
             CertVerify(cert, issuerCert)) {
             return issuerCert;
         }
@@ -445,15 +445,15 @@ X509_CRL* VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(STACK_OF(X509_CRL)* c
     if (crls == nullptr || cert == nullptr) {
         return nullptr;
     }
-    X509_NAME* certIssuer = X509_get_issuer_name(cert);
+    X509_NAME* certIssuerName = X509_get_issuer_name(cert);
     for (int32_t i = 0; i < sk_X509_CRL_num(crls); i++) {
-        X509_CRL* crl = sk_X509_CRL_value(crls, i);
-        if (crl == nullptr) {
+        X509_CRL* x509Crl = sk_X509_CRL_value(crls, i);
+        if (x509Crl == nullptr) {
             continue;
         }
-        X509_NAME* crlIssuer = X509_CRL_get_issuer(crl);
-        if (X509NameCompare(crlIssuer, certIssuer)) {
-            return crl;
+        X509_NAME* crlIssuer = X509_CRL_get_issuer(x509Crl);
+        if (X509NameCompare(crlIssuer, certIssuerName)) {
+            return x509Crl;
         }
     }
     return nullptr;
@@ -518,20 +518,20 @@ bool VerifyCertOpensslUtils::GetIssuerFromX509Crl(const X509_CRL* crl, std::stri
     return true;
 }
 
-std::string VerifyCertOpensslUtils::GetDnToString(X509_NAME* name)
+std::string VerifyCertOpensslUtils::GetDnToString(X509_NAME* x509Name)
 {
-    if (name == nullptr) {
+    if (x509Name == nullptr) {
         return "";
     }
-    std::string countryName;
-    GetTextFromX509Name(name, NID_countryName, countryName);
+    std::string countryNameString;
+    GetTextFromX509Name(x509Name, NID_countryName, countryNameString);
     std::string organizationName;
-    GetTextFromX509Name(name, NID_organizationName, organizationName);
+    GetTextFromX509Name(x509Name, NID_organizationName, organizationName);
     std::string organizationalUnitName;
-    GetTextFromX509Name(name, NID_organizationalUnitName, organizationalUnitName);
+    GetTextFromX509Name(x509Name, NID_organizationalUnitName, organizationalUnitName);
     std::string commonName;
-    GetTextFromX509Name(name, NID_commonName, commonName);
-    return "C=" + countryName + ", O=" + organizationName + ", OU=" + organizationalUnitName +
+    GetTextFromX509Name(x509Name, NID_commonName, commonName);
+    return "C=" + countryNameString + ", O=" + organizationName + ", OU=" + organizationalUnitName +
         ", CN=" + commonName;
 }
 

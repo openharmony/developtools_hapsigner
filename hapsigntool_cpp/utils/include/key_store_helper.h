@@ -35,10 +35,10 @@ public:
                     char* keyPwd, EVP_PKEY** evpPkey);
     int GetPublicKey(PKCS7* safe, const std::string& alias, char* pass, int passlen, EVP_PKEY** publickey);
     int GetPrivateKey(PKCS7* safe, const std::string& alias, char* pass, int passlen, EVP_PKEY** keyPiar);
-    int SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags, unsigned char* keyId,
+    int SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* certBags, unsigned char* keyId,
                     unsigned int keyIdLen, const char* name, STACK_OF(PKCS7)** safes,
                     int certNid, int iter, const char* keyStorePwd);
-    int SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
+    int SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* keyBags,
                     const char* name, STACK_OF(PKCS7)** safes, int iter, const char* keyPwd,
                     int keyType, int keyNid, unsigned char* keyId, unsigned int keyIdLen);
     int GetAttrNid(PKCS12_SAFEBAG* bag, EVP_PKEY* pkey, int nid);

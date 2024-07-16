@@ -15,7 +15,6 @@
 
 #include <cinttypes>
 
-#include "byte_buffer.h"
 #include "endof_central_directory.h"
 #include "signature_tools_log.h"
 

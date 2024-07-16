@@ -61,8 +61,6 @@ public:
     DLL_EXPORT ByteBuffer(const ByteBuffer& other);
     DLL_EXPORT ~ByteBuffer();
     DLL_EXPORT ByteBuffer& operator=(const ByteBuffer& other);
-    DLL_EXPORT bool GetUInt64(uint64_t& value);
-    DLL_EXPORT bool GetUInt64(int32_t index, uint64_t& value);
     DLL_EXPORT bool GetInt64(int64_t& value);
     DLL_EXPORT bool GetInt64(int32_t index, int64_t& value);
     DLL_EXPORT bool GetUInt32(uint32_t& value);
@@ -80,7 +78,6 @@ public:
     DLL_EXPORT void PutUInt8(uint8_t value);
     DLL_EXPORT void PutUInt16(uint16_t value);
     DLL_EXPORT void PutUInt32(uint32_t value);
-    DLL_EXPORT void PutUInt64(uint64_t value);
     DLL_EXPORT void PutInt16(int16_t value);
     DLL_EXPORT void PutInt16(int32_t offset, int16_t value);
     DLL_EXPORT void PutInt32(int32_t value);

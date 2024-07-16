@@ -32,7 +32,7 @@ bool CmdUtil::String2Bool(Options* options, const std::string& option)
     } else if (val == "0" || val == "false" || val == "FALSE") {
         (*options)[option] = false;
     } else {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + "is not valid value for "+"-" + option);
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + "is not valid value for " + "-" + option);
         return false;
     }
     return true;
@@ -40,7 +40,7 @@ bool CmdUtil::String2Bool(Options* options, const std::string& option)
 
 static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
 {
-    int defualtValidity = 0;
+    int defaultValidity = 0;
     Options* options = param->GetOptions();
     if (options->count(Options::VALIDITY)) {
         int validity = 0;
@@ -61,11 +61,11 @@ static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
         (*options)[Options::VALIDITY] = validity;
     } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_APP_CERT ||
                param->GetMethod() == GENERATE_PROFILE_CERT) {
-        defualtValidity = DEFAULT_VALIDITY_DAYS * ONE_DAY_TIME;
-        (*options)[Options::VALIDITY] = defualtValidity;
+        defaultValidity = DEFAULT_VALIDITY_DAYS * ONE_DAY_TIME;
+        (*options)[Options::VALIDITY] = defaultValidity;
     } else if (param->GetMethod() == GENERATE_CERT) {
-        defualtValidity = DEFAULT_CUSTOM_VALIDITY_DAYS * ONE_DAY_TIME;
-        (*options)[Options::VALIDITY] = defualtValidity;
+        defaultValidity = DEFAULT_CUSTOM_VALIDITY_DAYS * ONE_DAY_TIME;
+        (*options)[Options::VALIDITY] = defaultValidity;
     }
     return true;
 }
@@ -183,84 +183,71 @@ static bool UpdateParamForVariantBoolProfileSigned(ParamsSharedPtr param)
     return true;
 }
 
-static bool outFilePath(Options* options)
+bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initializer_list<std::string>& outFileKeys)
 {
-    std::initializer_list<std::string> outFileKeys = {
-        Options::OUT_FILE, Options::KEY_STORE_FILE,
-        Options::ISSUER_KEY_STORE_FILE,
-        Options::OUT_PROFILE, Options::OUT_CERT_CHAIN};
-
-    // check path directory is exists
     for (auto& key : outFileKeys) {
         if (options->count(key)) {
-            std::string outPath = options->GetString(key);
-            outPath.erase(std::remove_if(outPath.begin(), outPath.end(), ::isspace), outPath.end());
-            if (outPath.empty()) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + key + "' output file cannot be empty");
-                return false;
-            }
-            std::filesystem::path pat = outPath;
-            if (std::filesystem::is_directory(pat)) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + outPath + "' is a directory");
-                return false;
-            }
-            std::string parentPath = pat.parent_path();
-            if (parentPath == "") {
+            std::string outFilePath = options->GetString(key);
+            std::filesystem::path filePath = outFilePath;
+            std::string parentPath = filePath.parent_path();
+
+            //Purpose: To prevent the user output path from passing an empty string. eg "   "
+            std::string tmpOutFilePath = outFilePath;
+            tmpOutFilePath.erase(std::remove_if(tmpOutFilePath.begin(),
+                                 tmpOutFilePath.end(), ::isspace), tmpOutFilePath.end());
+
+            if (parentPath.empty() && !tmpOutFilePath.empty()) {
                 parentPath = "./";
             }
-            char path[PATH_MAX] = {0x00};
-            if (parentPath.size() > PATH_MAX || realpath(parentPath.c_str(), path) == nullptr) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "output file parent directory' "
-                                    + parentPath + "' not exist");
+            char realFilePath[PATH_MAX + 1] = {0x00};
+            if (parentPath.size() > PATH_MAX) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + outFilePath + "' File path longer than '"
+                                    + std::to_string(PATH_MAX) + "' characters");
+            }
+            if (realpath(parentPath.c_str(), realFilePath) == nullptr) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The '" + outFilePath +
+                                    "' file does not exist or the path is invalid"
+                                    + "', parameter name '-" + key + "'");
                 return false;
             }
-            std::string charStr(path);
-            std::string fileName = pat.filename();
+            std::string charStr(realFilePath);
+            std::string fileName = filePath.filename();
+            if (fileName.empty()) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The file name cannot be empty '"
+                                    + outFilePath + "', parameter name '-" + key + "'");
+                return false;
+            }
             (*options)[key] = charStr + "/" + fileName;
         }
     }
     return true;
 }
 
-static bool UpdateParamForCheckFile(ParamsSharedPtr param)
+bool CmdUtil::UpdateParamForCheckInFile(Options* options, const std::initializer_list<std::string>& inFileKeys)
 {
-    // check file exists
-    Options* options = param->GetOptions();
-    std::initializer_list<std::string> inFileKeys = {
-        Options::IN_FILE,
-        Options::SUB_CA_CERT_FILE,
-        Options::CA_CERT_FILE,
-        Options::PROFILE_CERT_FILE,
-        Options::APP_CERT_FILE,
-        Options::PROFILE_FILE};
-
     for (auto& key : inFileKeys) {
         if (options->count(key)) {
-            char path[PATH_MAX] = {0x00};
             std::string inFilePath = options->GetString(key);
-            inFilePath.erase(std::remove_if(inFilePath.begin(), inFilePath.end(), ::isspace), inFilePath.end());
-            if (inFilePath.empty()) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + key + "' input file cannot be empty");
+            char realFilePath[PATH_MAX + 1] = {0x00};
+            if (inFilePath.size() > PATH_MAX) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + inFilePath + "' File path longer than '"
+                                    + std::to_string(PATH_MAX) + "' characters");
+            }
+            if (realpath(inFilePath.c_str(), realFilePath) == nullptr) {
+                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The '" + inFilePath +
+                                    "' file does not exist or the path is invalid"
+                                    + "', parameter name '-" + key + "'");
                 return false;
             }
-
-            if (inFilePath.size() > PATH_MAX || realpath(inFilePath.c_str(), path) == nullptr) {
-                PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "input file '"
-                                    + inFilePath + "' not exist");
-                return false;
-            }
-            std::string charStr(path);
+            std::string charStr(realFilePath);
             (*options)[key] = charStr;
 
-            if (!FileUtils::IsValidFile(options->GetString(key))) {
+            if (!FileUtils::IsValidFile(inFilePath)) {
                 return false;
             }
         }
     }
-    // check path exists
-    if (!outFilePath(options)) {
-        return false;
-    }
+
     return true;
 }
 
@@ -353,9 +340,6 @@ static bool UpdateParam(ParamsSharedPtr param)
         return false;
     }
     if (!UpdateParamForVariantBoolProfileSigned(param)) {
-        return false;
-    }
-    if (!UpdateParamForCheckFile(param)) {
         return false;
     }
     if (!UpdateParamForCheckSignAlg(param)) {
