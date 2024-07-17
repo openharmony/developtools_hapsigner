@@ -15,6 +15,8 @@
 #include <memory>
 #include <gtest/gtest.h>
 #include <fstream>
+
+#include "securec.h"
 #include "file_utils.h"
 
 namespace OHOS {
@@ -41,11 +43,11 @@ public:
 const int THREAD_NUMS = 8;
 const size_t MAX_FILE_SIZE = 1024 * 1024 * 10;
 const size_t BUFFER_SIZE = 1024 * 128;
+const int CHMOD = 0777;
 
 void CreateTestFile()
 {
-    (void)mkdir("tmp", 0777);
-    srand((unsigned)time(NULL));
+    (void)mkdir("tmp", CHMOD);
 
     for (int i = 1; i <= THREAD_NUMS; i++) {
         std::string fileName = "tmp/tmp-" + std::to_string(i) + ".txt";
@@ -56,15 +58,12 @@ void CreateTestFile()
         }
 
         char buffer[BUFFER_SIZE];
+        // The contents of the generated file are all characters '0'
+        (void)memset_s(buffer, BUFFER_SIZE, '0', BUFFER_SIZE);
+
         size_t remaining = MAX_FILE_SIZE;
         while (remaining > 0) {
             size_t min = std::min(BUFFER_SIZE, remaining);
-            for (size_t j = 0; j < min; j++) {
-            //generates a printable ASCII character (32 through 126)
-            // The ASCII code for ' ' is 32, so this generates characters between 32 and 126
-                buffer[j] = ' ' + (char)(rand() % 95);
-            }
-
             file.write(buffer, min);
             if (!file.good()) {
                 printf("write file: %s failed.\n", fileName.c_str());
@@ -113,7 +112,7 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile001, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get output stream object, outfile"
     std::vector<int8_t> bytes;
-    std::ofstream output("./utilstmp/signed-linux.out", std::ios::binary);
+    std::ofstream output("./utilstmp/signed-file.out", std::ios::binary);
     bool flag = FileUtils::WriteByteToOutFile(bytes, output);
     EXPECT_EQ(flag, false);
 }
@@ -130,7 +129,7 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile002, testing::ext::TestSize.Level1)
 {
     // outfile path is right
     std::vector<int8_t> bytes;
-    std::ofstream output("./utils/signed-linux.out", std::ios::binary);
+    std::ofstream output("./utils/signed-file.out", std::ios::binary);
     bool flag = FileUtils::WriteByteToOutFile(bytes, output);
     EXPECT_EQ(flag, false);
 }
@@ -147,7 +146,7 @@ HWTEST_F(FileUtilsTest, Write, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed get output stream"
     std::string str;
-    std::string fileName = "./utilsxxx/signed-linux.out";
+    std::string fileName = "./utilsxxx/signed-file.out";
     int result = FileUtils::Write(str, fileName);
     EXPECT_EQ(result, -103);
 }
@@ -164,7 +163,7 @@ HWTEST_F(FileUtilsTest, Read001, testing::ext::TestSize.Level1)
 {
     // go to branch "io error"
     std::string outstr;
-    std::ifstream input("./utilsxxx/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utilsxxx/unsigned-file.out", std::ios::binary);
     int result = FileUtils::Read(input, outstr);
     EXPECT_NE(result, -104);
 }
@@ -181,7 +180,7 @@ HWTEST_F(FileUtilsTest, Read002, testing::ext::TestSize.Level1)
 {
     // go to all branch
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::Read(input, outstr);
     EXPECT_NE(result, 0);
 }
@@ -198,7 +197,7 @@ HWTEST_F(FileUtilsTest, ReadFile001, testing::ext::TestSize.Level1)
 {
     // go to branch "open error"
     std::string outstr;
-    std::string fileName = "./utilsxxx/unsigned-linux.out";
+    std::string fileName = "./utilsxxx/unsigned-file.out";
     int result = FileUtils::ReadFile(fileName, outstr);
     EXPECT_NE(result, -104);
 }
@@ -215,7 +214,7 @@ HWTEST_F(FileUtilsTest, ReadFile002, testing::ext::TestSize.Level1)
 {
     // go to all branch
     std::string outstr;
-    std::string fileName = "./utils/unsigned-linux.out";
+    std::string fileName = "./utils/unsigned-file.out";
     int result = FileUtils::ReadFile(fileName, outstr);
     EXPECT_NE(result, 0);
 }
@@ -232,7 +231,7 @@ HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength001, testing::ext::TestSize.Lev
 {
     // go to branch "Size cannot be greater than Integer max value"
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::ReadFileByOffsetAndLength(input, 0, 2147483648, outstr);
     EXPECT_EQ(result, -1);
 }
@@ -249,7 +248,7 @@ HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength002, testing::ext::TestSize.Lev
 {
     // go to branch "Error readInputByOffsetAndLength"
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::ReadFileByOffsetAndLength(input, -1, 32, outstr);
     EXPECT_NE(result, 0);
 }
@@ -266,7 +265,7 @@ HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength003, testing::ext::TestSize.Lev
 {
     // go to all branch
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::ReadFileByOffsetAndLength(input, 0, 32, outstr);
     EXPECT_NE(result, 0);
 }
@@ -283,7 +282,7 @@ HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength001, testing::ext::TestSize.Le
 {
     // go to branch "Size cannot be greater than Integer max value"
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::ReadInputByOffsetAndLength(input, 0, 2147483648, outstr);
     EXPECT_EQ(result, -1);
 }
@@ -300,7 +299,7 @@ HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength002, testing::ext::TestSize.Le
 {
     // go to branch "Error seek"
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linuxxx.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
     int result = FileUtils::ReadInputByOffsetAndLength(input, 0, 32, outstr);
     EXPECT_EQ(result, -1);
 }
@@ -317,7 +316,7 @@ HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength003, testing::ext::TestSize.Le
 {
     // go to all branch
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linuxxx.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
     int result = FileUtils::ReadInputByOffsetAndLength(input, 0, 32, outstr);
     EXPECT_NE(result, 0);
 }
@@ -334,7 +333,7 @@ HWTEST_F(FileUtilsTest, ReadInputByLength001, testing::ext::TestSize.Level1)
 {
     // go to branch "Size cannot be greater than Integer max value"
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::ReadInputByLength(input, 2147483648, outstr);
     EXPECT_EQ(result, -1);
 }
@@ -351,7 +350,7 @@ HWTEST_F(FileUtilsTest, ReadInputByLength002, testing::ext::TestSize.Level1)
 {
     // go to branch "Error input"
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linuxxx.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
     int result = FileUtils::ReadInputByLength(input, 32, outstr);
     EXPECT_EQ(result, -1);
 }
@@ -367,7 +366,7 @@ HWTEST_F(FileUtilsTest, ReadInputByLength002, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, ReadInputByLength003, testing::ext::TestSize.Level1)
 {
     std::string outstr;
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     int result = FileUtils::ReadInputByLength(input, 32, outstr);
     EXPECT_NE(result, 0);
 }
@@ -383,8 +382,8 @@ HWTEST_F(FileUtilsTest, ReadInputByLength003, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile005, testing::ext::TestSize.Level1)
 {
     // go to branch "input failed"
-    std::ifstream input("./utils/unsigned-linuxxx.out", std::ios::binary);
-    std::ofstream output("./utils/signed-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
+    std::ofstream output("./utils/signed-file.out", std::ios::binary);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, 0, 32);
     EXPECT_EQ(result, false);
 }
@@ -400,8 +399,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile005, testing::ext::TestSize
 HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile006, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed get out stream"
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
-    std::ofstream output("./utilsxxx/signed-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
+    std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, 0, 32);
     EXPECT_EQ(result, false);
 }
@@ -417,8 +416,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile006, testing::ext::TestSize
 HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile007, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed seekg"
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
-    std::ofstream output("./utils/signed-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
+    std::ofstream output("./utils/signed-file.out", std::ios::binary);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, -1, 32);
     EXPECT_EQ(result, false);
 }
@@ -434,8 +433,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile007, testing::ext::TestSize
 HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile008, testing::ext::TestSize.Level1)
 {
     // go to all branch
-    std::ifstream input("./utils/unsigned-linux.out", std::ios::binary);
-    std::ofstream output("./utils/signed-linux.out", std::ios::binary);
+    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
+    std::ofstream output("./utils/signed-file.out", std::ios::binary);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, 0, 32);
     EXPECT_NE(result, true);
 }
@@ -451,8 +450,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile008, testing::ext::TestSize
 HWTEST_F(FileUtilsTest, AppendWriteFileToFile001, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get input stream object"
-    std::string inputFile = "./utils/unsigned-linuxxx.out";
-    std::string outputFile = "./utils/signed-linux.out";
+    std::string inputFile = "./utils/unsigned-filexx.out";
+    std::string outputFile = "./utils/signed-file.out";
     bool result = FileUtils::AppendWriteFileToFile(inputFile, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -468,8 +467,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileToFile001, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, AppendWriteFileToFile002, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get output stream object"
-    std::string inputFile = "./utils/unsigned-linux.out";
-    std::string outputFile = "./utilsxxx/signed-linux.out";
+    std::string inputFile = "./utils/unsigned-file.out";
+    std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::AppendWriteFileToFile(inputFile, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -485,8 +484,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileToFile002, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, AppendWriteFileToFile003, testing::ext::TestSize.Level1)
 {
     // go to all branch
-    std::string inputFile = "./utils/unsigned-linux.out";
-    std::string outputFile = "./utilsxxx/signed-linux.out";
+    std::string inputFile = "./utils/unsigned-file.out";
+    std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::AppendWriteFileToFile(inputFile, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -503,7 +502,7 @@ HWTEST_F(FileUtilsTest, AppendWriteByteToFile, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to write data to output stream"
     std::string bytes;
-    std::string outputFile = "./utilsxxx/signed-linux.out";
+    std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::AppendWriteByteToFile(bytes, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -519,8 +518,8 @@ HWTEST_F(FileUtilsTest, AppendWriteByteToFile, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, WriteInputToOutPut001, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get input stream object"
-    std::string inputFile = "./utils/unsigned-linuxxx.out";
-    std::string outputFile = "./utils/signed-linux.out";
+    std::string inputFile = "./utils/unsigned-filexx.out";
+    std::string outputFile = "./utils/signed-file.out";
     bool result = FileUtils::WriteInputToOutPut(inputFile, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -536,8 +535,8 @@ HWTEST_F(FileUtilsTest, WriteInputToOutPut001, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, WriteInputToOutPut002, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get output stream object"
-    std::string inputFile = "./utils/unsigned-linux.out";
-    std::string outputFile = "./utilsxxx/signed-linux.out";
+    std::string inputFile = "./utils/unsigned-file.out";
+    std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::WriteInputToOutPut(inputFile, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -553,8 +552,8 @@ HWTEST_F(FileUtilsTest, WriteInputToOutPut002, testing::ext::TestSize.Level1)
 HWTEST_F(FileUtilsTest, WriteInputToOutPut003, testing::ext::TestSize.Level1)
 {
     // go to all branch
-    std::string inputFile = "./utils/unsigned-linux.out";
-    std::string outputFile = "./utils/signed-linux.out";
+    std::string inputFile = "./utils/unsigned-file.out";
+    std::string outputFile = "./utils/signed-file.out";
     bool result = FileUtils::WriteInputToOutPut(inputFile, outputFile);
     EXPECT_EQ(result, false);
 }
@@ -571,7 +570,7 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile003, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get output stream object"
     std::string bytes;
-    std::ofstream output("./utilsxxx/signed-linux.out", std::ios::binary);
+    std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
     bool result = FileUtils::WriteByteToOutFile(bytes, output);
     EXPECT_EQ(result, false);
 }
@@ -588,7 +587,7 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile004, testing::ext::TestSize.Level1)
 {
     // go to branch "Failed to get output stream object"
     std::vector<int8_t> bytes;
-    std::ofstream output("./utilsxxx/signed-linux.out", std::ios::binary);
+    std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
     bool result = FileUtils::WriteByteToOutFile(bytes, output);
     EXPECT_EQ(result, false);
 }
@@ -605,7 +604,7 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile005, testing::ext::TestSize.Level1)
 {
     // go to all branch
     std::vector<int8_t> bytes;
-    std::ofstream output("./utils/signed-linux.out", std::ios::binary);
+    std::ofstream output("./utils/signed-file.out", std::ios::binary);
     bool result = FileUtils::WriteByteToOutFile(bytes, output);
     EXPECT_EQ(result, false);
 }

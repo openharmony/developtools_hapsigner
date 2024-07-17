@@ -62,7 +62,6 @@
         <option name="push" value="./hapSign/packets/unsigned_with_cd_and_eocd.txt -> /data/test/hapSign/" src="res"/>
         <option name="push" value="./hapSign/packets/unsigned_with_eocd.txt -> /data/test/hapSign/" src="res"/>
         <option name="push" value="./hapSign/packets/unsigned.txt -> /data/test/hapSign/" src="res"/>
-        <option name="push" value="./hapSign/packets/unsigned-linux.txt -> /data/test/hapSign/" src="res"/>       
 
         <option name="push" value="./resource/hapSign/ohtest.jks -> /data/test/hapSign/" src="res"/>
 
@@ -101,21 +100,15 @@
         <option name="push" value="./codeSigning/package/hap_file_type_err.txt -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./codeSigning/package/hap_native_libs_err.txt -> /data/test/codeSigning/" src="res"/>
         <option name="push" value="./codeSigning/package/entry-default-unsigned-so.txt -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./codeSigning/package/linuxout-unsigned.txt -> /data/test/codeSigning/" src="res"/>
-        <option name="push" value="./codeSigning/package/unsigned-linux.txt -> /data/test/codeSigning/" src="res"/>
-
-        <option name="push" value="./resource/remoteSigner/libremote_signer.z.so -> /data/test/remoteSigner" src="res"/>
-        <option name="push" value="./resource/remoteSigner/libremote_signer_without_create.z.so -> /data/test/remoteSigner" src="res"/>
-        <option name="push" value="./resource/remoteSigner/app-release1.pem -> /data/test/remoteSigner" src="res"/>
-        <option name="push" value="./resource/remoteSigner/OpenHarmony.p12 -> /data/test/remoteSigner" src="res"/>
-        <option name="push" value="./resource/remoteSigner/signed-profile.p7b -> /data/test/remoteSigner" src="res"/>
-        <option name="push" value="./remoteSigner/packets/whole.txt -> /data/test/remoteSigner" src="res"/>
+        <option name="push" value="./codeSigning/package/unsigned-file.txt -> /data/test/codeSigning/" src="res"/>
 
         <option name="push" value="./zip/packets/cd_only_v1.txt -> /data/test/zip" src="res"/>
         <option name="push" value="./zip/packets/cd_only_v2.txt -> /data/test/zip" src="res"/>
         <option name="push" value="./zip/packets/data_descriptor_hap.txt -> /data/test/zip" src="res"/>
-        <option name="push" value="./zip/packets/raw.txt -> /data/test/zip" src="res"/>
-        <option name="push" value="./zip/packets/whole.txt -> /data/test/zip" src="res"/>
+        <option name="push" value="./zip/packets/unsigned.txt -> /data/test/zip" src="res"/>
+        <option name="push" value="./zip/packets/signed.txt -> /data/test/zip" src="res"/>
+        <option name="push" value="./zip/packets/unsigned_random_access_file.txt -> /data/test/zip" src="res"/>
+        <option name="push" value="./zip/packets/signed_random_access_file.txt -> /data/test/zip" src="res"/>
         <option name="push" value="./zip/packets/zip_entries_wrong_v1.txt -> /data/test/zip" src="res"/>
         <option name="push" value="./zip/packets/zip_entries_wrong_v2.txt -> /data/test/zip" src="res"/>
         <option name="push" value="./zip/packets/zip_entries_wrong_v3.txt -> /data/test/zip" src="res"/>

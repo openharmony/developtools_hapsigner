@@ -33,7 +33,7 @@ public:
     {
         (void)rename("./codeSigning/entry-default-unsigned-so.txt", "./codeSigning/entry-default-unsigned-so.hap");
         (void)rename("./codeSigning/entry-default-unsigned-so.txt", "./codeSigning/entry-default-unsigned-so.elf");
-        (void)rename("./hapSign/unsigned-linux.txt", "./hapSign/unsigned-linux.hap");
+        (void)rename("./codeSigning/unsigned-file.txt", "./codeSigning/unsigned-file.hap");
     }
     static void TearDownTestCase()
     {
@@ -569,7 +569,7 @@ void SetParamsMap(std::map<std::string, std::string>& params)
     params["profileFile"] = "./hapSign/signed-profile.p7b";
     params["keystorePwd"] = "123456";
     params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/unsigned-linux.out";
+    params["inFile"] = "./codeSigning/unsigned-file.hap";
     params["profileSigned"] = "1";
     params["inForm"] = "elf";
         std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-"
@@ -604,7 +604,7 @@ void SetOptions(Options* options)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string inFile = "./codeSigning/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";

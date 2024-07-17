@@ -95,7 +95,6 @@ public:
     };
     static void TearDownTestCase()
     {
-
     };
     void SetUp()
     {

@@ -46,7 +46,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     X509_free(cert);
     CertTools certTool;
     status = certTool.SetSubjectForCert(nullptr, nullptr);
-    certRet = certTool.GenerateRootCertificate(nullptr,nullptr, &options);
+    certRet = certTool.GenerateRootCertificate(nullptr, nullptr, &options);
     status = FileUtils::WriteInputToOutPut("", "");
     FileUtils::DelDir("");
 

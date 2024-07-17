@@ -162,7 +162,6 @@ HWTEST_F(ProvisionTest, provision_test002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProvisionTest, provision_test003, testing::ext::TestSize.Level1)
 {
-    SetRdDevice(false);
     std::string provision = "{\"acls\":{\"allowed-acls\":[\"ac1\",\"ac2\"]},\"bundle-info\":{\"app-feature\":"
         "\"hos_system_app\",\"bundle-name\":\"com.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\","
         "\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"

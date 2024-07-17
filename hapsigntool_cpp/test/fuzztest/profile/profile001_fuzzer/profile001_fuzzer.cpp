@@ -106,19 +106,12 @@ bool SignProfileTest004(const uint8_t* data, size_t size)
     return true;
 }
 
-bool SignProfileTest005(const uint8_t* data, size_t size)
-{
-    SetRdDevice(static_cast<bool>(size));
-    return true;
-}
-
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
     SignProfileTest001(data, size);
     SignProfileTest002(data, size);
     SignProfileTest003(data, size);
     SignProfileTest004(data, size);
-    SignProfileTest005(data, size);
     return true;
 }
 }

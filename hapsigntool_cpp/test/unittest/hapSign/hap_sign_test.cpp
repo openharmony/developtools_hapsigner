@@ -1489,29 +1489,29 @@ HWTEST_F(HapSignTest, remote_sign_provider_002, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, false);
 
     X509* cert = nullptr;
-    STACK_OF(X509)* sk_cert = sk_X509_new(nullptr);
+    STACK_OF(X509)* skCert = sk_X509_new(nullptr);
     BIO* certBio = BIO_new_file("./hapSign/app-release1.pem", "rb");
     if (certBio == nullptr) {
-        sk_X509_pop_free(sk_cert, X509_free);
+        sk_X509_pop_free(skCert, X509_free);
         EXPECT_NE(certBio, nullptr);
     }
     // 读取
     while (1) {
-        cert = PEM_read_bio_X509(certBio, NULL, NULL, NULL);
+        cert = PEM_read_bio_X509(certBio, nullptr, nullptr, nullptr);
         if (cert == nullptr) {
             break;
         }
-        sk_X509_push(sk_cert, cert);
+        sk_X509_push(skCert, cert);
     }
     BIO_free(certBio);
-    if (sk_X509_num(sk_cert) > 1) {
-        X509* first_cert = sk_X509_value(sk_cert, 0);
-        X509* second_cert = sk_X509_value(sk_cert, 1);
-        bool val = signProvider->CheckInputCertMatchWithProfile(first_cert, first_cert);
-        val = signProvider->CheckInputCertMatchWithProfile(first_cert, second_cert);
+    if (sk_X509_num(skCert) > 1) {
+        X509* firstCert = sk_X509_value(skCert, 0);
+        X509* secondCert = sk_X509_value(skCert, 1);
+        bool val = signProvider->CheckInputCertMatchWithProfile(firstCert, firstCert);
+        val = signProvider->CheckInputCertMatchWithProfile(firstCert, secondCert);
         EXPECT_EQ(val, false);
     }
-    sk_X509_pop_free(sk_cert, X509_free);
+    sk_X509_pop_free(skCert, X509_free);
 }
 
 /*
@@ -1883,6 +1883,48 @@ HWTEST_F(HapSignTest, remote_sign_provider_012, testing::ext::TestSize.Level1)
     X509_free(cert1);
     X509_REQ_free(issuerReq);
     EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: remote_sign_provider_013
+ * @tc.desc: Test RemoteSigner interface.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(HapSignTest, remote_sign_provider_013, testing::ext::TestSize.Level1)
+{
+    std::string mode = "remoteSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string profileFile = "./hapSign/signed-profile.p7b";
+    std::string signAlg = "SHA256withECDSA";
+    std::string signCode = "1";
+    std::string compatibleVersion = "8";
+    std::string inFile = "./hapSign/phone-default-unsigned.hap";
+    std::string outFile = "./hapSign/signed.hap";
+    std::string signServer = "./hapSign/app-release1.pem";
+    std::string signerPlugin = "./hapSign/dummy.z.so";
+    std::string onlineAuthMode = "./hapSign/ohtest.p12";
+    std::string username = "123456";
+    char userPwd[] = "123456";
+
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["profileFile"] = profileFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["signCode"] = signCode;
+    (*params)["compatibleVersion"] = compatibleVersion;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signServer"] = signServer;
+    (*params)["onlineAuthMode"] = onlineAuthMode;
+    (*params)["username"] = username;
+    (*params)["userPwd"] = userPwd;
+    // the signerPlugin dummy.z.so is not exist
+    (*params)["signerPlugin"] = signerPlugin;
+
+    auto remoteSignProvider = std::make_unique<RemoteSignProvider>();
+    ASSERT_FALSE(remoteSignProvider->Sign(params.get()));
 }
 
 /*

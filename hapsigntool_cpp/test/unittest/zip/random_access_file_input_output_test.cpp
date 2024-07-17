@@ -27,8 +27,8 @@
 
 namespace OHOS {
 namespace SignatureTools {
-const std::string RAW_HAP_PATH = "./zip/raw.hap";
-const std::string WHOLE_HAP_PATH = "./zip/whole.hap";
+const std::string UNSIGNED_HAP_PATH = "./zip/unsigned_random_access_file.hap";
+const std::string SIGNED_HAP_PATH = "./zip/signed_random_access_file.hap";
 class RandomAccessFileInputOutputTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
@@ -39,8 +39,8 @@ public:
 
 void RandomAccessFileInputOutputTest::SetUpTestCase(void)
 {
-    (void)rename("./zip/raw.txt", RAW_HAP_PATH.c_str());
-    (void)rename("./zip/whole.txt", WHOLE_HAP_PATH.c_str());
+    (void)rename("./zip/unsigned_random_access_file.txt", UNSIGNED_HAP_PATH.c_str());
+    (void)rename("./zip/signed_random_access_file.txt", SIGNED_HAP_PATH.c_str());
     sync();
 }
 
@@ -65,7 +65,7 @@ void RandomAccessFileInputOutputTest::TearDown()
 HWTEST_F(RandomAccessFileInputOutputTest, InitTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    bool res = outputHap->Init(RAW_HAP_PATH);
+    bool res = outputHap->Init(UNSIGNED_HAP_PATH);
     EXPECT_EQ(res, true);
 }
 
@@ -91,7 +91,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, InitTest002, testing::ext::TestSize.Le
 HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    bool res = outputHap->Init(RAW_HAP_PATH);
+    bool res = outputHap->Init(UNSIGNED_HAP_PATH);
     EXPECT_EQ(res, true);
     ByteBuffer buffer(1);
     buffer.PutByte(1);
@@ -107,7 +107,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest001, testing::ext::Test
 HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    bool res = outputHap->Init(RAW_HAP_PATH);
+    bool res = outputHap->Init(UNSIGNED_HAP_PATH);
     EXPECT_EQ(res, true);
     ByteBuffer buffer;
     EXPECT_EQ(outputHap->WriteToFile(buffer, 0, 0), -1);
@@ -122,7 +122,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest002, testing::ext::Test
 HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest003, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    bool res = outputHap->Init(RAW_HAP_PATH);
+    bool res = outputHap->Init(UNSIGNED_HAP_PATH);
     EXPECT_EQ(res, true);
     ByteBuffer buffer(1);
     buffer.PutByte(1);
@@ -138,7 +138,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest003, testing::ext::Test
 HWTEST_F(RandomAccessFileInputOutputTest, ReadFileFullyFromOffsetTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    ASSERT_TRUE(outputHap->Init(RAW_HAP_PATH));
+    ASSERT_TRUE(outputHap->Init(UNSIGNED_HAP_PATH));
     std::string buf(1, 0);
     EXPECT_GT(outputHap->ReadFileFullyFromOffset(buf.data(), 0, 1), 0);
 }
@@ -152,7 +152,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, ReadFileFullyFromOffsetTest002, testin
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(WHOLE_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap, 1, 1);
     EXPECT_EQ(outputHapIn != nullptr, true);
 }
@@ -166,7 +166,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest001, testing:
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(WHOLE_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap, 1, -1);
     EXPECT_EQ(outputHapIn != nullptr, true);
 }
@@ -180,7 +180,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest002, testing:
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest003, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(WHOLE_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap, -1, 1);
     EXPECT_EQ(outputHapIn != nullptr, true);
 }
@@ -194,7 +194,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest003, testing:
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputSliceTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(WHOLE_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap);
     std::pair<ByteBuffer, int64_t> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
@@ -214,7 +214,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputSliceTest001, tes
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputSliceTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    ASSERT_TRUE(outputHap->Init(WHOLE_HAP_PATH));
+    ASSERT_TRUE(outputHap->Init(SIGNED_HAP_PATH));
     auto outputHapIn1 = std::make_shared<RandomAccessFileInput>(*outputHap, 0, 10);
     // step1: make the offset is less than 0
     ASSERT_EQ(outputHapIn1->Slice(-1, 10), nullptr);
@@ -253,7 +253,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputSliceTest002, tes
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputCreateByteBufferTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(WHOLE_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap);
     std::pair<ByteBuffer, int64_t> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
@@ -277,7 +277,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputCreateByteBufferT
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputCreateByteBufferTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    ASSERT_TRUE(outputHap->Init(WHOLE_HAP_PATH));
+    ASSERT_TRUE(outputHap->Init(SIGNED_HAP_PATH));
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap);
     std::pair<ByteBuffer, int64_t> eocdPair;
     ASSERT_TRUE(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair));
@@ -297,7 +297,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputCreateByteBufferT
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputWriteTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(RAW_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(UNSIGNED_HAP_PATH), true);
     std::pair<ByteBuffer, int64_t> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
     int64_t centralDirectoryOffset;
@@ -319,7 +319,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputWriteTest001, te
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputWriteTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(RAW_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(UNSIGNED_HAP_PATH), true);
     std::pair<ByteBuffer, int64_t> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
     int64_t centralDirectoryOffset;
@@ -340,7 +340,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputWriteTest002, te
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputTest001, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(RAW_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(UNSIGNED_HAP_PATH), true);
     std::shared_ptr<RandomAccessFileOutput> outputHapOut =
         std::make_shared<RandomAccessFileOutput>(outputHap.get());
     EXPECT_EQ(outputHapOut != nullptr, true);
@@ -355,7 +355,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputTest001, testing
 HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
-    EXPECT_EQ(outputHap->Init(RAW_HAP_PATH), true);
+    EXPECT_EQ(outputHap->Init(UNSIGNED_HAP_PATH), true);
     std::shared_ptr<RandomAccessFileOutput> outputHapOut =
         std::make_shared<RandomAccessFileOutput>(outputHap.get(), -1);
     EXPECT_EQ(outputHapOut != nullptr, true);

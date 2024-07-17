@@ -26,15 +26,15 @@ using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
 static constexpr int ALIGNMENT = 4;
-const char* g_rawHapFilePath = "./zip/raw.hap";
-const char* g_wholeHapFilePath = "./zip/whole.hap";
-const char* g_outHapFilePath = "./zip/signed.hap";
-const char* g_dataDescHapFilePath = "./zip/data_descriptor_hap.hap";
+const char* UNSIGNED_HAP_FILE_PATH = "./zip/unsigned.hap";
+const char* SIGNED_HAP_FILE_PATH = "./zip/signed.hap";
+const char* OUT_HAP_FILE_PATH = "./zip/output.hap";
+const char* DATA_DESC_HAP_FILE_PATH = "./zip/data_descriptor_hap.hap";
 
 void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_wholeHapFilePath, std::ios::binary);
-    std::ofstream outputFile(g_outHapFilePath, std::ios::binary | std::ios::trunc);
+    std::ifstream inputFile(SIGNED_HAP_FILE_PATH, std::ios::binary);
+    std::ofstream outputFile(OUT_HAP_FILE_PATH, std::ios::binary | std::ios::trunc);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -46,7 +46,7 @@ void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
 
 void ZipSignerInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_wholeHapFilePath, std::ios::binary);
+    std::ifstream inputFile(SIGNED_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -70,7 +70,7 @@ void ZipSignerInfoFunc(const uint8_t* data, size_t size)
 
 void ZipEntryHeaderInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_wholeHapFilePath, std::ios::binary);
+    std::ifstream inputFile(SIGNED_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -96,7 +96,7 @@ void ZipEntryHeaderInfoFunc(const uint8_t* data, size_t size)
 
 void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
+    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -127,7 +127,7 @@ void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 
 void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_dataDescHapFilePath, std::ios::binary);
+    std::ifstream inputFile(DATA_DESC_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -149,7 +149,7 @@ void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
 
 void AlignmentFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
+    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     int aliBytes = 102400;
     if (!zip->Init(inputFile)) {
@@ -163,7 +163,7 @@ void AlignmentFunc(const uint8_t* data, size_t size)
 
 void EndOfCentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(g_rawHapFilePath, std::ios::binary);
+    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -203,9 +203,9 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    (void)rename("./zip/data_descriptor_hap.txt", g_dataDescHapFilePath);
-    (void)rename("./zip/raw.txt", g_rawHapFilePath);
-    (void)rename("./zip/whole.txt", g_wholeHapFilePath);
+    (void)rename("./zip/data_descriptor_hap.txt", DATA_DESC_HAP_FILE_PATH);
+    (void)rename("./zip/unsigned.txt", UNSIGNED_HAP_FILE_PATH);
+    (void)rename("./zip/signed.txt", SIGNED_HAP_FILE_PATH);
     sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;
