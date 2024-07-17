@@ -221,7 +221,7 @@ public class VerifyCodeSignature {
                     hnpEntryNames.add(filePath[0]);
                     hnpLibSignInfoMap.put(entryName, signInfo);
                 } else {
-                    LOGGER.debug("verify lib: {}", entryName);
+                    LOGGER.info("verify lib: {}", entryName);
                     verifyHapLib(inputJar, entryName, signInfo, pairResult);
                 }
             }
@@ -271,7 +271,7 @@ public class VerifyCodeSignature {
                 if (!hnpLibSignInfoMap.containsKey(libPath)) {
                     continue;
                 }
-                LOGGER.debug("verify lib: {}", libPath);
+                LOGGER.info("verify lib: {}", libPath);
                 SignInfo signInfo = hnpLibSignInfoMap.get(libPath);
                 byte[] entrySig = signInfo.getSignature();
                 long dataSize = signInfo.getDataSize();
