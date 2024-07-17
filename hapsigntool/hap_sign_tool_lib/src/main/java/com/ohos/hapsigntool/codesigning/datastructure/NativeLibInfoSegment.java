@@ -234,6 +234,7 @@ public class NativeLibInfoSegment {
         for (SignedFilePos pos : inSignedFilePosList) {
             byte[] fileNameBuffer = new byte[pos.getFileNameSize()];
             fileNameListSize += pos.getFileNameSize();
+            bf.position(pos.getFileNameOffset());
             bf.get(fileNameBuffer);
             inFileNameList.add(new String(fileNameBuffer, StandardCharsets.UTF_8));
         }
@@ -248,6 +249,7 @@ public class NativeLibInfoSegment {
                 throw new VerifyCodeSignException("SignInfo not aligned in NativeLibInfoSegment");
             }
             byte[] signInfoBuffer = new byte[pos.getSignInfoSize()];
+            bf.position(pos.getSignInfoOffset());
             bf.get(signInfoBuffer);
             inSignInfoList.add(SignInfo.fromByteArray(signInfoBuffer));
         }
