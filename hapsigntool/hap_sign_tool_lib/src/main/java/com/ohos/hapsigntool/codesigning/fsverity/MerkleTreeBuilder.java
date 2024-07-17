@@ -306,7 +306,7 @@ public class MerkleTreeBuilder implements AutoCloseable {
         dataBuffer.flip();
         byte[] rootHash = null;
         byte[] tree = null;
-        if (inputDataSize < FSVERITY_HASH_PAGE_SIZE) {
+        if (inputDataSize <= FSVERITY_HASH_PAGE_SIZE) {
             ByteBuffer fsVerityHashPageBuffer = slice(dataBuffer, 0, digestSize);
             rootHash = new byte[digestSize];
             fsVerityHashPageBuffer.get(rootHash);
