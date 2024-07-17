@@ -370,7 +370,7 @@ HWTEST_F(GenerateCaTest, set_pubkey_and_sign_cert_test_003, testing::ext::TestSi
     X509_REQ* issuercsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
     X509* cert = nullptr;
     bool cert1 = CertTools::SetPubkeyAndSignCert(cert, issuercsr, csr, keyPair, params.get());
-    EXPECT_EQ(cert1,false);
+    EXPECT_EQ(cert1, false);
 }
 
 /**

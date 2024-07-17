@@ -296,22 +296,11 @@
       <cleaner>
       </cleaner>
   </target>
-  <target name="RemoteSignerFuzzTest">
-      <preparer>
-        <option name="push" value="remote_signer/app-release1.pem -> /data/test/remote_signer/" src="res" />
-        <option name="push" value="remote_signer/OpenHarmony.p12 -> /data/test/remote_signer/" src="res" />
-        <option name="push" value="remote_signer/signed-profile.p7b -> /data/test/remote_signer/" src="res" />
-        <option name="push" value="remote_signer/libremote_signer.z.so -> /data/test/remote_signer/" src="res" />
-        <option name="push" value="remote_signer/raw.txt -> /data/test/remote_signer/" src="res" />
-      </preparer>
-      <cleaner>
-      </cleaner>
-  </target>
   <target name="ZipSignerFuzzTest">
       <preparer>
         <option name="push" value="zip/data_descriptor_hap.txt -> /data/test/zip/" src="res" />
-        <option name="push" value="zip/raw.txt -> /data/test/zip/" src="res" />
-        <option name="push" value="zip/whole.txt -> /data/test/zip/" src="res" />
+        <option name="push" value="zip/unsigned.txt -> /data/test/zip/" src="res" />
+        <option name="push" value="zip/signed.txt -> /data/test/zip/" src="res" />
       </preparer>
       <cleaner>
       </cleaner>

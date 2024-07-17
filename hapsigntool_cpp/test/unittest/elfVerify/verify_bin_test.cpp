@@ -60,11 +60,11 @@ static const std::map<std::string, std::string> PARAMS = { {"keyPwd", "123456"},
                                                            {"signCode", "1"},
                                                            {"compatibleVersion", "9"},
                                                            {"keystorePwd", "123456"},
-                                                           {"outFile", "./elfVerify/linuxout-signed.bin"},
+                                                           {"outFile", "./elfVerify/bin_signed_package.bin"},
                                                            {"profileSigned", "1"},
                                                            {"profileFile", "./hapSign/signed-profile.p7b"},
                                                            {"keystoreFile", "./hapSign/ohtest.jks"},
-                                                           {"inFile", "./elfVerify/linuxout-unsigned.bin"} };
+                                                           {"inFile", "./elfVerify/bin_unsigned_package.bin"} };
 
 /**
  * @tc.name: Verify001

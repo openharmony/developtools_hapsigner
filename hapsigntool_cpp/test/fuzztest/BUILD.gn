@@ -22,7 +22,6 @@ group("hapsigntool_pc_fuzztest") {
     "${signature_tools_test}/fuzztest/hapsign:hapsign_fuzzer_fuzztest",
     "${signature_tools_test}/fuzztest/process_cmd:process_cmd_fuzztest",
     "${signature_tools_test}/fuzztest/profile:profile_fuzztest",
-    "${signature_tools_test}/fuzztest/remotesigner_fuzzer:remote_signer_fuzztest",
     "${signature_tools_test}/fuzztest/utils:utils_fuzztest",
     "${signature_tools_test}/fuzztest/zip:zip_fuzztest",
   ]

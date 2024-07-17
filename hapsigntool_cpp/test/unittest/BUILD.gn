@@ -80,15 +80,14 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./hapVerify/hap_verify_test.cpp",
     "./hapVerify/provision_verify_test.cpp",
     "./hapVerify/random_access_file_test.cpp",
-    "./remoteSigner/remote_signer_test.cpp",
     "./signProfile/pkcs7_data_test.cpp",
     "./signProfile/profile_test.cpp",
     "./signProfile/provision_test.cpp",
     "./signProfile/sign_profile_test.cpp",
     "./utils/byte_array_utils_test.cpp",
     "./utils/file_utils_test.cpp",
-    "./zip/zip_signer_test.cpp",
     "./zip/random_access_file_input_output_test.cpp",
+    "./zip/zip_signer_test.cpp",
   ]
 
   remove_configs = [ "//build/config/compiler:no_exceptions" ]

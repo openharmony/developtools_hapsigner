@@ -1810,7 +1810,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_016, testing::ext::TestSize.Level1)
     (*params)["keystorePwd"] = keystorePwd;
     (*params)["signAlg"] = signAlg;
     (*params)["subject"] = subject;
-    (*params)["issuer"] = issuer;   
+    (*params)["issuer"] = issuer;
     (*params)["issuerkeyAlias"] = issuerkeyAlias;
     (*params)["keyUsage"] = keyUsage;
     (*params)["basicConstraints"] = basicConstraints;

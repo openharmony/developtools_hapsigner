@@ -35,7 +35,6 @@ public:
 void BCSignedDataGeneratorTest::SetUpTestCase(void)
 {
     (void)rename("./codeSigning/entry-default-unsigned-so.txt", "./codeSigning/entry-default-unsigned-so.hap");
-
 }
 
 void BCSignedDataGeneratorTest::TearDownTestCase(void)

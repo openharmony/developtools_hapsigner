@@ -16,9 +16,9 @@ import("../codesigning/signature_tools_codesigning.gni")
 import("../common/signature_tools_common.gni")
 import("../hap/signature_tools_hap.gni")
 import("../profile/signature_tools_profile.gni")
+import("../signature_tools.gni")
 import("../utils/signature_tools_utils.gni")
 import("../zip/signature_tools_zip.gni")
-import("../signature_tools.gni")
 
 import("//build/ohos.gni")
 

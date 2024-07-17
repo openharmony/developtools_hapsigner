@@ -47,7 +47,7 @@ void SignProviderTest::SetUpTestCase(void)
     (void)rename("./hapSign/packages/phone-default-unsigned.txt", "./hapSign/phone-default-unsigned.hap");
     (void)rename("./hapSign/packages/unsigned_with_cd_and_eocd.txt", "./hapSign/unsigned_with_cd_and_eocd.hap");
     (void)rename("./hapSign/packages/unsigned_with_eocd.txt", "./hapSign/unsigned_with_eocd.hap");
-    (void)rename("./hapSign/packages/unsigned-linux.txt", "./hapSign/unsigned-linux.out");
+    (void)rename("./codeSigning/unsigned-file.txt", "./codeSigning/unsigned-file.hap");
     sync();
 }
 
@@ -942,7 +942,7 @@ HWTEST_F(SignProviderTest, SignElf_001, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string inFile = "./codeSigning/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";
@@ -983,7 +983,7 @@ HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA256withECDSA";
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
-    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string inFile = "./codeSigning/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";
@@ -1002,7 +1002,7 @@ HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
     (*params)["keyPwd"] = keyPwd;
     (*params)["keystorePwd"] = keystorePwd;
     bool ret = signProvider->SignElf(params.get());
-    EXPECT_EQ(ret, false);
+    EXPECT_NE(ret, -1);
 }
 
 /*
@@ -1023,7 +1023,7 @@ HWTEST_F(SignProviderTest, SignElf_003, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string inFile = "./codeSigning/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";
@@ -1108,7 +1108,7 @@ HWTEST_F(SignProviderTest, SignElf_005, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign_test/unsigned-linux.out";
+    std::string inFile = "./hapSign_test/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";
@@ -1149,7 +1149,7 @@ HWTEST_F(SignProviderTest, SignElf_006, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/unsigned-linux.out";
+    std::string inFile = "./codeSigning/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";

@@ -28,11 +28,11 @@ using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
 
-const char* g_rawHapFilePath = "./zip/raw.hap";
+const char* UNSIGNED_HAP_FILE_PATH = "./zip/unsigned.hap";
 void RandomAccessFileReadFileFunc(const uint8_t* data, size_t size)
 {
     auto outputHap = std::make_shared<RandomAccessFile>();
-    if (!outputHap->Init(g_rawHapFilePath)) {
+    if (!outputHap->Init(UNSIGNED_HAP_FILE_PATH)) {
         return;
     }
     std::string buf(1, 0);
@@ -42,7 +42,7 @@ void RandomAccessFileReadFileFunc(const uint8_t* data, size_t size)
 void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 {
     RandomAccessFile file;
-    if (!file.Init(g_rawHapFilePath)) {
+    if (!file.Init(UNSIGNED_HAP_FILE_PATH)) {
         return;
     }
     int64_t fileLength = file.GetLength();
@@ -53,7 +53,7 @@ void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 void RandomAccessFileOutputConstructor(const uint8_t* data, size_t size)
 {
     RandomAccessFile file;
-    if (!file.Init(g_rawHapFilePath)) {
+    if (!file.Init(UNSIGNED_HAP_FILE_PATH)) {
         return;
     }
     RandomAccessFileOutput fileOutput(&file);
@@ -76,7 +76,7 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    (void)rename("./zip/raw.txt", g_rawHapFilePath);
+    (void)rename("./zip/unsigned.txt", UNSIGNED_HAP_FILE_PATH);
     sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;

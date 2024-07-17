@@ -1519,8 +1519,7 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_one_test_001, testing::ext::TestSiz
  * @tc.require: SR000H63TL
  */
 HWTEST_F(GenerateCaTest, set_expandedInf_ext_one_test_002, testing::ext::TestSize.Level1)
-{
-    
+{    
     std::shared_ptr<Options> params = std::make_shared<Options>();
     X509* cert = X509_new();
     bool keyUsageCritical = false;

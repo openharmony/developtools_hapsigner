@@ -25,7 +25,7 @@ class SignElfTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
-        (void)rename("./hapSign/unsigned-linux.txt", "./hapSign/unsigned-linux.hap");
+        (void)rename("./codeSigning/unsigned-file.txt", "./codeSigning/unsigned-file.hap");
     };
     static void TearDownTestCase()
     {
@@ -51,7 +51,7 @@ void SetParamsMap(std::map<std::string, std::string>& params)
     params["profileFile"] = "./hapSign/signed-profile.p7b";
     params["keystorePwd"] = "123456";
     params["keystoreFile"] = "./hapSign/ohtest.jks";
-    params["inFile"] = "./hapSign/unsigned-linux.hap";
+    params["inFile"] = "./codeSigning/unsigned-file.hap";
     params["profileSigned"] = "1";
     params["inForm"] = "elf";
     std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-"
@@ -86,7 +86,7 @@ void SetOptions(Options* options)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string inFile = "./hapSign/unsigned-linux.hap";
+    std::string inFile = "./codeSigning/unsigned-file.hap";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/entry-default-signed.elf";
     std::string inForm = "elf";
@@ -158,7 +158,7 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
 
     std::map<std::string, std::string> params;
     SetParamsMap(params);
-    params["inFile"] = "./hapSign/unsigned-linux-no.out";
+    params["inFile"] = "./hapSign/unsigned-file-no.out";
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
@@ -171,7 +171,7 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
     SetOptions(options.get());
-    (*options)["inFile"] = "./hapSign/unsigned-linux-no.out";
+    (*options)["inFile"] = "./hapSign/unsigned-file-no.out";
     signerConfig.SetOptions(options.get());
 
     signerConfig.GetSigner();
