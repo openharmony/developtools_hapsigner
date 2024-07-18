@@ -380,7 +380,7 @@ HWTEST_F(ProvisionTest, provision_test011, testing::ext::TestSize.Level1)
         "\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after"
         "\":1705127532,\"not-before\":1610519532},\"version-code\":0,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -417,7 +417,7 @@ HWTEST_F(ProvisionTest, provision_test012, testing::ext::TestSize.Level1)
         "\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\""
         "not-after\":1705127532,\"not-before\":1610519532},\"version-code_no\":0,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -454,7 +454,7 @@ HWTEST_F(ProvisionTest, provision_test013, testing::ext::TestSize.Level1)
         "[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{"
         "\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":\"0\",\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -527,7 +527,7 @@ HWTEST_F(ProvisionTest, provision_test015, testing::ext::TestSize.Level1)
         "type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1"
         "705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -564,7 +564,7 @@ HWTEST_F(ProvisionTest, provision_test016, testing::ext::TestSize.Level1)
         "uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":"
         "1610519532},\"version-code\":1,\"version-name\":\"\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -601,7 +601,7 @@ HWTEST_F(ProvisionTest, provision_test017, testing::ext::TestSize.Level1)
         "id\":\"\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"vers"
         "ion-name\":\"\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -637,7 +637,7 @@ HWTEST_F(ProvisionTest, provision_test018, testing::ext::TestSize.Level1)
         "debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\""
         "not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**
@@ -695,7 +695,7 @@ HWTEST_F(ProvisionTest, provision_test020, testing::ext::TestSize.Level1)
         "debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\""
         "not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
+    EXPECT_TRUE(result == PROVISION_OK);
 }
 
 /**

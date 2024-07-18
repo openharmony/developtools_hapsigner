@@ -59,7 +59,7 @@ void CreateTestFile()
 
         char buffer[BUFFER_SIZE];
         // The contents of the generated file are all characters '0'
-        (void)memset_s(buffer, BUFFER_SIZE, '0', BUFFER_SIZE);
+        (void)memset_s(buffer, sizeof(buffer), '0', sizeof(buffer));
 
         size_t remaining = MAX_FILE_SIZE;
         while (remaining > 0) {
