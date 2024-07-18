@@ -32,8 +32,8 @@ class ParamsRunTool final {
 public:
     ParamsRunTool() = delete;
     static bool ProcessCmd(char** args, size_t size);
-    static bool DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& api);
-    static bool CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& api);
+    static bool DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api);
+    static bool CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api);
     static bool RunKeypair(Options* params, SignToolServiceImpl& api);
     static bool RunCa(Options* params, SignToolServiceImpl& api);
     static bool RunCert(Options* params, SignToolServiceImpl& api);

@@ -859,6 +859,29 @@ err:
     return nullptr;
 }
 
+bool CertTools::PrintCertChainToCmd(std::vector<X509*>& certChain)
+{
+    BIO* outFd = BIO_new_fp(stdout, BIO_NOCLOSE);
+    if (!outFd) {
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "The stdout stream may have errors");
+        return false;
+    }
+    uint64_t format = XN_FLAG_SEP_COMMA_PLUS; // Print according to RFC2253
+    uint64_t content = X509_FLAG_NO_EXTENSIONS | X509_FLAG_NO_ATTRIBUTES | X509_FLAG_NO_HEADER | X509_FLAG_NO_SIGDUMP;
+    int num = 0;
+    for (auto& cert : certChain) {
+        PrintMsg("+++++++++++++++++++++++++++++++++certificate #" + std::to_string(num) + "+++++++++++++++++++++++++++++++++++++");
+        if (!X509_print_ex(outFd, cert, format, content)) {
+            VerifyHapOpensslUtils::GetOpensslErrorMessage();
+            SIGNATURE_TOOLS_LOGE("print x509 cert to cmd failed");
+            BIO_free(outFd);
+            return false;
+        }
+        ++num;
+    }
+    BIO_free(outFd);
+    return true;
+}
 } // namespace SignatureTools
 } // namespace OHOS
 

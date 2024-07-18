@@ -20,7 +20,6 @@
 #include <memory>
 
 #include "hap_utils.h"
-#include "hap_verify_result.h"
 #include "signer_config.h"
 #include "hap_signer_block_utils.h"
 #include "securec.h"

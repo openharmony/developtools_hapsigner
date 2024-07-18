@@ -21,7 +21,6 @@
 #include "export_define.h"
 #include "byte_buffer.h"
 #include "random_access_file.h"
-#include "hap_verify_result.h"
 #include "digest_parameter.h"
 #include "pkcs7_context.h"
 #include "signature_info.h"

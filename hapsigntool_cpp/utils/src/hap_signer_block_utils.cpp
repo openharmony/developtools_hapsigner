@@ -18,6 +18,7 @@
 #include <climits>
 #include <vector>
 
+#include "signature_info.h"
 #include "algorithm"
 #include "openssl/evp.h"
 #include "securec.h"
@@ -470,6 +471,9 @@ bool HapSignerBlockUtils::VerifyHapIntegrity(
         SIGNATURE_TOOLS_LOGE("digest of contents verify failed, alg %d", nId);
         return false;
     }
+    PrintMsg(std::string("Digest verify result: ") + "success" + ", DigestAlgorithm: "
+             + VerifyHapOpensslUtils::GetDigestAlgorithmString(digestInfo.digestAlgorithm));
+
     return true;
 }
 

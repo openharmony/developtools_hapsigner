@@ -32,22 +32,11 @@ public:
     VerifyCertOpensslUtils() = delete;
     DLL_EXPORT static bool VerifyCrl(CertChain& certsChain, STACK_OF(X509_CRL)* crls,
                                     Pkcs7Context& pkcs7Context);
-    DLL_EXPORT static bool CompareX509Cert(const X509* certA, const std::string& base64Cert);
-    DLL_EXPORT static void WriteX509CrlToStream(std::ofstream& crlFile, X509_CRL* crl);
-    DLL_EXPORT static bool GetPublickeyBase64FromPemCert(const std::string& certStr, std::string& publicKey);
-    DLL_EXPORT static bool GetFingerprintBase64FromPemCert(const std::string& certStr,
-                                                            std::string& fingerprint);
+
     DLL_EXPORT static bool X509NameCompare(const X509_NAME* a, const X509_NAME* b);
-    DLL_EXPORT static bool GetPublickeyBase64(const X509* cert, std::string& publicKey);
-    DLL_EXPORT static int32_t CalculateLenAfterBase64Encode(int32_t len);
-    DLL_EXPORT static bool GetOrganizationFromPemCert(const std::string& certStr, std::string& organization);
     DLL_EXPORT static X509* FindCertOfIssuer(X509* cert, CertSign& certVisitSign);
     DLL_EXPORT static std::string GetDnToString(X509_NAME* name);
     DLL_EXPORT static void GetTextFromX509Name(X509_NAME* name, int32_t nId, std::string& text);
-    DLL_EXPORT static X509* GetX509CertFromPemString(const std::string& pemString);
-    DLL_EXPORT static X509* GetX509CertFromBase64String(const std::string& base64String);
-    DLL_EXPORT static X509_CRL* GetX509CrlFromDerBuffer(const ByteBuffer& crlBuffer,
-                                                        int32_t offset, int32_t len);
     DLL_EXPORT static X509_CRL* GetCrlBySignedCertIssuer(STACK_OF(X509_CRL)* crls, const X509* cert);
     DLL_EXPORT static bool CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
                                                     const ASN1_TIME* notBefore, const ASN1_TIME* notAfter);
@@ -59,11 +48,8 @@ public:
     DLL_EXPORT static bool CheckAsn1TypeIsValid(const ASN1_TYPE* asn1Type);
     DLL_EXPORT static bool GetSubjectFromX509(const X509* cert, std::string& subject);
     DLL_EXPORT static bool GetIssuerFromX509(const X509* cert, std::string& issuer);
-    DLL_EXPORT static bool GetSerialNumberFromX509(const X509* cert, int64_t& certNumber);
-    DLL_EXPORT static bool GetIssuerFromX509Crl(const X509_CRL* crl, std::string& issuer);
     DLL_EXPORT static bool VerifyCertChainPeriodOfValidity(CertChain& certsChain,
                                                             const ASN1_TYPE* signTime);
-
 private:
     static const int32_t OPENSSL_READ_CRL_LEN_EACH_TIME;
     static const int32_t BASE64_ENCODE_LEN_OF_EACH_GROUP_DATA;

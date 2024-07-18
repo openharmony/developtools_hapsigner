@@ -53,7 +53,7 @@ public:
       * @return 0:success <0:error
       */
     static int SignProfile(const std::string& content,
-                           std::shared_ptr<Signer> signer, const std::string& sigAlg, std::string& ret);
+                           const std::shared_ptr<Signer>& signer, const std::string& sigAlg, std::string& ret);
 };
 } // namespace SignatureTools
 } // namespace OHOS

@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace SignatureTools {
 
-UnzipHandleParam::UnzipHandleParam(CodeSignBlock& csb, std::pair<std::string, std::string>& pairResult,
+UnzipHandleParam::UnzipHandleParam(const CodeSignBlock& csb, const std::pair<std::string, std::string>& pairResult,
     bool isSign)
 {
     this->csb = csb;
@@ -27,7 +27,7 @@ UnzipHandleParam::UnzipHandleParam(CodeSignBlock& csb, std::pair<std::string, st
 }
 
 UnzipHandleParam::UnzipHandleParam(std::vector<std::pair<std::string, SignInfo>>& ret,
-    std::string& ownerID, bool isSign)
+    const std::string& ownerID, bool isSign)
 {
     this->ret = ret;
     this->ownerID = ownerID;
@@ -44,9 +44,9 @@ std::pair<std::string, std::string>& UnzipHandleParam::GetPairResult()
     return pairResult;
 }
 
-std::vector<std::pair<std::string, SignInfo>>* UnzipHandleParam::GetRet()
+std::vector<std::pair<std::string, SignInfo>>& UnzipHandleParam::GetRet()
 {
-    return &ret;
+    return ret;
 }
 
 std::string& UnzipHandleParam::GetOwnerID()

@@ -36,7 +36,7 @@ public:
     std::vector<int8_t>& GetMerkleTreeWithPadding();
     int64_t GetDataSize();
     int64_t GetTreeOffset();
-    std::vector<int8_t> GetSignature();
+    std::vector<int8_t>& GetSignature();
     void ToByteArray(std::vector<int8_t>& ret);
     static bool FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSignBlock);
     static int32_t ComputeMerkleTreePaddingLength(int64_t signBlockOffset);

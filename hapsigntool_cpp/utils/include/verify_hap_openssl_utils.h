@@ -17,16 +17,16 @@
 #include <string>
 #include <vector>
 
+#include "pkcs7_context.h"
+#include "signature_info.h"
 #include "export_define.h"
 #include "byte_buffer.h"
-#include "hap_verify_result.h"
 #include "openssl/evp.h"
 #include "openssl/ossl_typ.h"
 #include "openssl/pkcs7.h"
 #include "openssl/safestack.h"
 #include "digest_parameter.h"
 #include "verify_cert_openssl_utils.h"
-#include "pkcs7_context.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -46,11 +46,10 @@ public:
     DLL_EXPORT static bool ParsePkcs7Package(const unsigned char packageData[],
                                              uint32_t packageLen, Pkcs7Context& pkcs7Context);
     DLL_EXPORT static bool GetCertChains(PKCS7* p7, Pkcs7Context& pkcs7Context);
+
+    DLL_EXPORT static bool GetCrlStack(PKCS7* p7, STACK_OF(X509_CRL)* x509Crl);
     DLL_EXPORT static bool VerifyPkcs7(Pkcs7Context& pkcs7Context);
-    DLL_EXPORT static bool GetPublickeys(const CertChain& signCertChain,
-                                         std::vector<std::string>& SignatureVec);
-    DLL_EXPORT static bool GetSignatures(const CertChain& signCertChain,
-                                         std::vector<std::string>& SignatureVec);
+
     static int32_t GetDigest(const ByteBuffer& chunk, const std::vector<OptionalBlock>& optionalBlocks,
                              const DigestParameter& digestParameter, unsigned char(&out)[EVP_MAX_MD_SIZE]);
     static bool DigestInit(const DigestParameter& digestParameter);
@@ -59,15 +58,13 @@ public:
     static int32_t GetDigest(const DigestParameter& digestParameter, unsigned char(&out)[EVP_MAX_MD_SIZE]);
     static int32_t GetDigestAlgorithmOutputSizeBytes(int32_t nId);
     DLL_EXPORT static int32_t GetDigestAlgorithmId(int32_t signAlgorithm);
+    static std::string GetDigestAlgorithmString(int32_t signAlgorithm);
     static void GetOpensslErrorMessage();
 
 private:
     DLL_EXPORT static bool VerifyPkcs7SignedData(Pkcs7Context& pkcs7Context);
     DLL_EXPORT static bool VerifySignInfo(STACK_OF(PKCS7_SIGNER_INFO)* signerInfoStack,
                                           BIO* p7Bio, int32_t signInfoNum, Pkcs7Context& pkcs7Context);
-    DLL_EXPORT static bool GetPublickeyFromCertificate(const X509* ptrX509,
-                                                       std::vector<std::string>& publicKeyVec);
-    DLL_EXPORT static bool GetDerCert(X509* ptrX509, std::vector<std::string>& SignatureVec);
     static bool VerifyCertChain(CertChain& certsChain, PKCS7* p7, PKCS7_SIGNER_INFO* signInfo,
                                 Pkcs7Context& pkcs7Context, CertSign& certVisitSign);
     static bool GetContentInfo(const PKCS7* p7ContentInfo, ByteBuffer& content);

@@ -37,12 +37,12 @@ public:
 
     SignatureAlgorithmHelper();
     SignatureAlgorithmHelper(const SignatureAlgorithmHelper& other);
-    SignatureAlgorithmHelper(SignatureAlgorithmId id_, std::string keyAlg_, ContentDigestAlgorithm digestAlg_,
-                             std::pair<std::string, void*> sigParams_);
+    SignatureAlgorithmHelper(const SignatureAlgorithmId &id_, const std::string &keyAlg_, const ContentDigestAlgorithm& digestAlg_,
+                             const std::pair<std::string, void*>& sigParams_);
     SignatureAlgorithmHelper& operator=(const SignatureAlgorithmHelper& other);
     ~SignatureAlgorithmHelper();
 
-    static const SignatureAlgorithmHelper* FindById(SignatureAlgorithmId id);
+    static const SignatureAlgorithmHelper* FindById(const SignatureAlgorithmId id);
 
     SignatureAlgorithmId m_id;
     std::string m_keyAlgorithm;

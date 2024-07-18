@@ -38,7 +38,7 @@ public:
     virtual ~BCPkcs7Generator();
     int GenerateSignedData(const std::string& content, SignerConfig* signerConfig, std::string& ret) override;
 private:
-    int PackagePKCS7(const std::string& content, std::shared_ptr<Signer> signer,
+    int PackagePKCS7(const std::string& content, const std::shared_ptr<Signer>& signer,
                      const std::string& sigAlg, std::string& ret);
 };
 } // namespace SignatureTools

@@ -25,13 +25,13 @@ namespace OHOS {
 namespace SignatureTools {
 class SignBlockData {
 public:
-    SignBlockData(std::vector<int8_t>& signData, char type);
-    SignBlockData(std::string &signFile, char type);
+    SignBlockData(const std::vector<int8_t>& signData, const char type);
+    SignBlockData(const std::string &signFile, const char type);
 
     char GetType();
-    std::vector<int8_t> GetBlockHead();
-    void SetBlockHead(std::vector<int8_t> &blockHead);
-    std::vector<int8_t> GetSignData();
+    std::vector<int8_t>& GetBlockHead();
+    void SetBlockHead(const std::vector<int8_t>& blockHead);
+    std::vector<int8_t>& GetSignData();
     std::string GetSignFile();
     long GetLen();
     bool GetByte();

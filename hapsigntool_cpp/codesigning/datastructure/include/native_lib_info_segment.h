@@ -35,15 +35,15 @@ public:
     NativeLibInfoSegment(int32_t magic,
                          int32_t segmentSize,
                          int32_t sectionNum,
-                         std::vector<SignedFilePos> signedFilePosList,
-                         std::vector<std::string> fileNameList,
-                         std::vector<SignInfo> signInfoList,
-                         std::vector<int8_t> zeroPadding);
-    static NativeLibInfoSegment FromByteArray(std::vector<int8_t> &bytes);
-    void SetSoInfoList(std::vector<std::pair<std::string, SignInfo>> &soInfoList);
+                         const std::vector<SignedFilePos>& signedFilePosList,
+                         const std::vector<std::string>& fileNameList,
+                         const std::vector<SignInfo>& signInfoList,
+                         const std::vector<int8_t>& zeroPadding);
+    static NativeLibInfoSegment FromByteArray(std::vector<int8_t>& bytes);
+    void SetSoInfoList(const std::vector<std::pair<std::string, SignInfo>>& soInfoList);
     int32_t GetSectionNum();
-    std::vector<std::string> GetFileNameList();
-    std::vector<SignInfo> GetSignInfoList();
+    std::vector<std::string>& GetFileNameList();
+    std::vector<SignInfo>& GetSignInfoList();
     int32_t Size();
     void ToByteArray(std::vector<int8_t> &ret);
 

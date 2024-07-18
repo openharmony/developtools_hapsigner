@@ -32,7 +32,6 @@
 #include "options.h"
 #include "signature_tools_errno.h"
 #include "hap_utils.h"
-#include "hap_verify_result.h"
 #include "hap_signer_block_utils.h"
 #include "sign_hap.h"
 #include "signature_tools_log.h"
@@ -62,6 +61,7 @@ public:
     bool Sign(Options* options);
     bool SignElf(Options* options);
     bool SignBin(Options* options);
+    bool SetSignParams(Options* options, std::unordered_set<std::string>& paramSet);
     virtual std::optional<X509_CRL*> GetCrl();
     virtual bool CheckParams(Options* options);
     virtual bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const;
@@ -100,13 +100,13 @@ private:
     fileIOTuple PrepareIOStreams(const std::string& inputPath, const std::string& outputPath, bool& ret);
 
     bool InitZipOutput(std::shared_ptr<RandomAccessFile> outputHap, std::shared_ptr<ZipSigner> zip,
-                       std::shared_ptr<std::ifstream>, std::shared_ptr<std::ofstream>tmpOutput, std::string path);
+                       std::shared_ptr<std::ifstream>, std::shared_ptr<std::ofstream>tmpOutput, const std::string& path);
 
     bool PrintErrorLog(const std::string& log, const int& errorCode, std::string path = "");
 
     bool InitSigerConfig(SignerConfig& signerConfig, STACK_OF(X509)* publicCerts, Options* options);
 
-    bool DoAfterSign(bool isPathOverlap, std::string tmpOutputFile, std::string inputFilePath);
+    bool DoAfterSign(bool isPathOverlap,const std::string& tmpOutputFile, const std::string& inputFilePath);
 
     bool CreateSignerConfigs(STACK_OF(X509)* certificates, const std::optional<X509_CRL*>& crl,
                              Options* options, SignerConfig&);

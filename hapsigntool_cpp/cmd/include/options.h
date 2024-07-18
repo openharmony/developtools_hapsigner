@@ -29,14 +29,14 @@ class Options : public std::unordered_map<std::string, std::variant<std::string,
 public:
     Options() = default;
     ~Options() = default;
-    char* GetChars(const std::string key);
-    std::string GetString(const std::string key);
-    std::string GetString(const std::string key, std::string checkStr);
-    int GetInt(const std::string key);
-    bool Equals(const std::string key1, const std::string& key2);
-    bool Required(const std::initializer_list<std::string> keys);
-    bool IsEmpty(std::string cs);
-    bool GetBool(const std::string key);
+    char* GetChars(const std::string& key);
+    std::string GetString(const std::string& key);
+    std::string GetString(const std::string& key, const std::string& checkStr);
+    int GetInt(const std::string& key);
+    bool Equals(const std::string& argf, const std::string& args);
+    bool Required(const std::initializer_list<std::string>& keys);
+    bool IsEmpty(const std::string& cs);
+    bool GetBool(const std::string& key);
     
 public:
     /* Key alias parameter name. */

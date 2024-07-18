@@ -54,24 +54,24 @@ bool VerifyElf::Verify(Options* options)
         return false;
     }
     // verify elf
-    HapVerifyResult verifyResult;
+    std::vector<int8_t> profileVec;
     Pkcs7Context pkcs7Context;
-    bool verifyElfFileFlag = VerifyElfFile(filePath, verifyResult, options, pkcs7Context);
+    bool verifyElfFileFlag = VerifyElfFile(filePath, profileVec, options, pkcs7Context);
     if (!verifyElfFileFlag) {
         SIGNATURE_TOOLS_LOGE("verify elf file %s failed!", filePath.c_str());
         return false;
     }
     // write certificate and p7b file
-    VerifyHap hapVerifyV2;
-    int32_t writeVerifyOutputFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, verifyResult.GetProfile(), options);
-    if (writeVerifyOutputFlag != VERIFY_SUCCESS) {
+    VerifyHap hapVerify(false);
+    int32_t writeVerifyOutputFlag = hapVerify.WriteVerifyOutput(pkcs7Context, profileVec, options);
+    if (writeVerifyOutputFlag != RET_OK) {
         SIGNATURE_TOOLS_LOGE("write elf output failed on verify elf!");
         return false;
     }
     return true;
 }
 
-bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verifyResult,
+bool VerifyElf::VerifyElfFile(const std::string& elfFile, std::vector<int8_t>& profileVec,
                               Options* options, Pkcs7Context& pkcs7Context)
 {
     SignBlockInfo signBlockInfo(false);
@@ -82,7 +82,7 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
     }
     // verify profile
     std::string profileJson;
-    bool verifyP7b = VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context, verifyResult, profileJson);
+    bool verifyP7b = VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context, profileVec, profileJson);
     if (!verifyP7b) {
         SIGNATURE_TOOLS_LOGE("verify profile failed on verify elf %s", elfFile.c_str());
         return false;
@@ -104,31 +104,33 @@ bool VerifyElf::VerifyElfFile(const std::string& elfFile, HapVerifyResult& verif
 
 bool VerifyElf::VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap,
                           Options* options, Pkcs7Context& pkcs7Context,
-                          HapVerifyResult& verifyResult, std::string& profileJson)
+                          std::vector<int8_t>& profileVec, std::string& profileJson)
 {
     if (signBlockMap.find(PROFILE_NOSIGNED_BLOCK) != signBlockMap.end()) {
         // verify unsigned profile
-        std::vector<int8_t> profileByte = signBlockMap.find(PROFILE_NOSIGNED_BLOCK)->second.GetValue();
+        std::vector<int8_t>& profileByte = signBlockMap.find(PROFILE_NOSIGNED_BLOCK)->second.GetValue();
         std::string fromByteStr(profileByte.begin(), profileByte.end());
         profileJson = fromByteStr;
-        verifyResult.SetProfile(profileByte);
+        profileVec = profileByte;
         SIGNATURE_TOOLS_LOGW("profile is not signed.");
     } else if (signBlockMap.find(PROFILE_SIGNED_BLOCK) != signBlockMap.end()) {
         // verify signed profile
         SigningBlock profileSign = signBlockMap.find(PROFILE_SIGNED_BLOCK)->second;
-        std::vector<int8_t> profileByte = profileSign.GetValue();
+        std::vector<int8_t>& profileByte = profileSign.GetValue();
         bool getRawContentFlag = GetRawContent(profileByte, profileJson);
         if (!getRawContentFlag) {
             SIGNATURE_TOOLS_LOGE("get profile content failed on verify elf!");
             return false;
         }
-        VerifyHap hapVerifyV2;
-        int32_t resultCode = hapVerifyV2.VerifyElfProfile(profileByte, verifyResult, options, pkcs7Context);
-        if (resultCode != VERIFY_SUCCESS) {
+        VerifyHap hapVerify(false);
+        std::unique_ptr<ByteBuffer> profileBuffer =
+            std::make_unique<ByteBuffer>((char*)profileByte.data(), profileByte.size());
+        bool resultFlag = hapVerify.VerifyAppPkcs7(pkcs7Context, *profileBuffer);
+        if (!resultFlag) {
             SIGNATURE_TOOLS_LOGE("verify elf profile failed on verify elf!");
             return false;
         }
-        verifyResult.SetProfile(profileByte);
+        profileVec = profileByte;
         SIGNATURE_TOOLS_LOGI("verify profile success.");
     } else {
         SIGNATURE_TOOLS_LOGW("can not found profile sign block.");
@@ -171,7 +173,7 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
     // get bin file digest
     bool needGenerateDigest = signBlockInfo.GetNeedGenerateDigest();
     if (needGenerateDigest) {
-        std::vector<int8_t> signatrue = signBlockInfo.GetSignBlockMap().find(0)->second.GetValue();
+        std::vector<int8_t>& signatrue = signBlockInfo.GetSignBlockMap().find(0)->second.GetValue();
         bool getFileDigest = GetFileDigest(*((std::vector<int8_t>*)fileBytes), signatrue, signBlockInfo);
         if (!getFileDigest) {
             SIGNATURE_TOOLS_LOGE("getFileDigest failed on verify bin file %s", file.c_str());
@@ -201,7 +203,7 @@ bool VerifyElf::GetFileDigest(std::vector<int8_t>& fileBytes, std::vector<int8_t
 bool VerifyElf::GenerateFileDigest(std::vector<int8_t>& fileBytes, SignBlockInfo& signBlockInfo)
 {
     // get algId
-    std::vector<int8_t> rawDigest = signBlockInfo.GetRawDigest();
+    std::vector<int8_t>& rawDigest = signBlockInfo.GetRawDigest();
     std::unique_ptr<ByteBuffer> digBuffer = std::make_unique<ByteBuffer>(rawDigest.size());
     digBuffer->PutData(rawDigest.data(), rawDigest.size());
     digBuffer->Flip();

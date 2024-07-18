@@ -73,7 +73,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
         }
         PrintMsg("Start " + param->GetMethod());
         SIGNATURE_TOOLS_LOGD("%s run start time  ", param->GetMethod().c_str());
-        if (!DispatchParams(param, *serviceApi.get())) {
+        if (!DispatchParams(param, *serviceApi)) {
             SIGNATURE_TOOLS_LOGD("%s run end time  ", param->GetMethod().c_str());
             PrintMsg(param->GetMethod() + " failed");
             return false;
@@ -84,7 +84,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
     return true;
 }
 
-bool ParamsRunTool::CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& api)
+bool ParamsRunTool::CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api)
 {
     bool isSuccess = false;
     std::string method = params->GetMethod();
@@ -166,7 +166,7 @@ bool ParamsRunTool::CheckProfile(Options& params)
     return true;
 }
 
-bool ParamsRunTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& api)
+bool ParamsRunTool::DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api)
 {
     bool isSuccess = false;
     std::string method = params->GetMethod();
@@ -246,40 +246,40 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::CheckEndCertArguments(Options& params)
 {
-    if (!params.Required({params.KEY_ALIAS, params.ISSUER, params.ISSUER_KEY_ALIAS,
-                        params.SUBJECT, params.SIGN_ALG, params.KEY_STORE_FILE})) {
+    if (!params.Required({Options::KEY_ALIAS, Options::ISSUER, Options::ISSUER_KEY_ALIAS,
+                        Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
-    std::string signAlg = params.GetString(params.SIGN_ALG);
+    std::string signAlg = params.GetString(Options::SIGN_ALG);
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
         return false;
     }
-    std::string outForm = params.GetString(params.OUT_FORM);
+    std::string outForm = params.GetString(Options::OUT_FORM);
     if (!outForm.empty()) {
         if (!CmdUtil::VerifyType(outForm, Options::OUT_FORM_SCOPE)) {
             return false;
         }
     }
     if (!outForm.empty() && "certChain" == outForm) {
-        if (!params.Required({params.SUB_CA_CERT_FILE, params.CA_CERT_FILE})) {
+        if (!params.Required({Options::SUB_CA_CERT_FILE, Options::CA_CERT_FILE})) {
             return false;
         }
-        if (!FileUtils::ValidFileType(params.GetString(params.SUB_CA_CERT_FILE), {"cer"}) ||
-            !FileUtils::ValidFileType(params.GetString(params.CA_CERT_FILE), {"cer"})) {
+        if (!FileUtils::ValidFileType(params.GetString(Options::SUB_CA_CERT_FILE), {"cer"}) ||
+            !FileUtils::ValidFileType(params.GetString(Options::CA_CERT_FILE), {"cer"})) {
             return false;
         }
     }
-    std::string keyStoreFile = params.GetString(params.KEY_STORE_FILE);
+    std::string keyStoreFile = params.GetString(Options::KEY_STORE_FILE);
     if (!FileUtils::ValidFileType(keyStoreFile, {"p12", "jks"})) {
         return false;
     }
-    if (params.find(params.ISSUER_KEY_STORE_FILE) != params.end()) {
-        std::string issuerKeyStoreFile = params.GetString(params.ISSUER_KEY_STORE_FILE);
+    if (params.find(Options::ISSUER_KEY_STORE_FILE) != params.end()) {
+        std::string issuerKeyStoreFile = params.GetString(Options::ISSUER_KEY_STORE_FILE);
         if (!FileUtils::ValidFileType(issuerKeyStoreFile, {"p12", "jks"})) {
             return false;
         }
     }
-    std::string outFile = params.GetString(params.OUT_FILE);
+    std::string outFile = params.GetString(Options::OUT_FILE);
     if (!outFile.empty()) {
         if (!FileUtils::ValidFileType(outFile, {"cer", "pem"})) {
             return false;
