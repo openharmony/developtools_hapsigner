@@ -25,9 +25,7 @@ ohos_fuzztest("ProcessCmd019FuzzTest") {
 
   configs = [ "${signature_tools_test}:service_include" ]
 
-  sources = [
-    "processcmd019_fuzzer.cpp",
-  ]
+  sources = [ "processcmd019_fuzzer.cpp" ]
 
   deps = [ "${signature_tools_test}:service_target" ]
 

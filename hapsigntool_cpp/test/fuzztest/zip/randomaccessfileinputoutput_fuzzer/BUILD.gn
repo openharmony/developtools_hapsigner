@@ -25,9 +25,7 @@ ohos_fuzztest("RandomAccessFileInputOutputFuzzTest") {
 
   configs = [ "${signature_tools_test}:service_include" ]
 
-  sources = [
-    "randomaccessfileinputoutput_fuzzer.cpp",
-  ]
+  sources = [ "randomaccessfileinputoutput_fuzzer.cpp" ]
 
   deps = [ "${signature_tools_test}:service_target" ]
 
