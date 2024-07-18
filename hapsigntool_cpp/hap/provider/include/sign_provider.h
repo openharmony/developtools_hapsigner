@@ -106,7 +106,7 @@ private:
 
     bool InitSigerConfig(SignerConfig& signerConfig, STACK_OF(X509)* publicCerts, Options* options);
 
-    bool DoAfterSign(bool isPathOverlap,const std::string& tmpOutputFile, const std::string& inputFilePath);
+    bool DoAfterSign(bool isPathOverlap, const std::string& tmpOutputFile, const std::string& inputFilePath);
 
     bool CreateSignerConfigs(STACK_OF(X509)* certificates, const std::optional<X509_CRL*>& crl,
                              Options* options, SignerConfig&);

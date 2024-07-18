@@ -78,18 +78,19 @@ bool VerifyHap::HapOutPutPkcs7(PKCS7* p7, const std::string& outPutPath)
 }
 
 bool VerifyHap::outputOptionalBlocks(const std::string& outputProfileFile, const std::string& outputProofFile,
-                             const std::string& outputPropertyFile, const std::vector<OptionalBlock>& optionBlocks)
+                                     const std::string& outputPropertyFile,
+                                     const std::vector<OptionalBlock>& optionBlocks)
 {
     for (auto& optionBlock : optionBlocks) {
         if (optionBlock.optionalType == HapUtils::HAP_PROFILE_BLOCK_ID) {
             if (!writeOptionalBytesToFile(optionBlock, outputProfileFile)) {
                 return false;
             }
-        } else if(optionBlock.optionalType == HapUtils::HAP_PROPERTY_BLOCK_ID) {
+        } else if (optionBlock.optionalType == HapUtils::HAP_PROPERTY_BLOCK_ID) {
             if (!writeOptionalBytesToFile(optionBlock, outputPropertyFile)) {
                 return false;
             }
-        } else if(optionBlock.optionalType == HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID) {
+        } else if (optionBlock.optionalType == HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID) {
             if (!writeOptionalBytesToFile(optionBlock, outputPropertyFile)) {
                 return false;
             }

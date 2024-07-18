@@ -185,7 +185,8 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
         return false;
     }
 
-    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE, Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE})) {
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE, Options::KEY_STORE_FILE,
+                                             Options::ISSUER_KEY_STORE_FILE})) {
         return false;
     }
 

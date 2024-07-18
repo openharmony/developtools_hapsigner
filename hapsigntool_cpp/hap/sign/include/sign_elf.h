@@ -54,7 +54,8 @@ private:
     static bool GenerateCodeSignByte(SignerConfig& signerConfig, const std::map<std::string, std::string> &signParams,
                                      const std::string &inputFile, const int blockNum,
                                      const long binFileLen, SignBlockData** codeSign);
-    static bool WriteSignHeadDataToOutputFile(const std::string &inputFile, const std::string &outputFile, const int blockNum);
+    static bool WriteSignHeadDataToOutputFile(const std::string &inputFile, const std::string &outputFile,
+                                              const int blockNum);
     static bool IsLongOverflowInteger(const int64_t num);
     static bool IsLongOverflowShort(const int64_t num);
 };

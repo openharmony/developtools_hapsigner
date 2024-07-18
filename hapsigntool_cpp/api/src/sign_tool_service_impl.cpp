@@ -375,8 +375,8 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
         goto err;
     }
     x509CertificatePtr = CertTools::GenerateEndCert(csrPtr, issuerKeyPairPtr, *adapter,
-                                                 APP_SIGNING_CAPABILITY,
-                                                 sizeof(APP_SIGNING_CAPABILITY)); // get app x509 cert
+                                                    APP_SIGNING_CAPABILITY,
+                                                    sizeof(APP_SIGNING_CAPABILITY)); // get app x509 cert
     if (!x509CertificatePtr) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "generate app cert failed");
         goto err;

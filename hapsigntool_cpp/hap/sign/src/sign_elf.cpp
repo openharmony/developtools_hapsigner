@@ -143,7 +143,8 @@ bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
     return WriteSignedElf(inputFile, signDataList, outputFile);
 }
 
-bool SignElf::WriteSignedElf(const std::string &inputFile, std::list<SignBlockData>& signBlockList, std::string &outputFile)
+bool SignElf::WriteSignedElf(const std::string &inputFile, std::list<SignBlockData>& signBlockList,
+                             std::string &outputFile)
 {
     std::ifstream fileInputStream(inputFile, std::ios::binary);
     std::ofstream fileOutputStream(outputFile, std::ios::binary);
@@ -240,7 +241,8 @@ SignBlockData SignElf::GenerateProfileSignByte(std::string profileFile, std::str
 }
 
 bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::map<std::string, std::string> &signParams,
-                                   const std::string &inputFile, const int blockNum, const long binFileLen, SignBlockData** codeSign)
+                                   const std::string &inputFile, const int blockNum, const long binFileLen,
+                                   SignBlockData** codeSign)
 {
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CODESIGN_OFF) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] check pamams signCode = 0 error.");

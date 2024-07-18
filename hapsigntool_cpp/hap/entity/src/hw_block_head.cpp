@@ -45,7 +45,8 @@ std::string HwBlockHead::GetBlockHead(const char type, const char tag, const sho
     return std::string(tmpVec.begin(), tmpVec.end());
 }
 
-std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(const char type, const char tag, const int length, const int offset)
+std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(const char type, const char tag,
+                                                          const int length, const int offset)
 {
     ByteBuffer bf = ByteBuffer(HwBlockHead::ELF_BLOCK_LEN);
     bf.PutByte(type);

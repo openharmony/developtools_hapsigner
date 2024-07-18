@@ -27,6 +27,10 @@
 namespace OHOS {
 namespace SignatureTools {
 
+static const char POINT = '.';
+static const char PLACEHOLDER = '0';
+static const int PLACEHOLDERLEN = 3;
+static const int SCALE = 1000;
 
 #define SIGNATURE_LOG(level, fmt, ...) \
     printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) \
@@ -46,16 +50,16 @@ namespace SignatureTools {
 
 inline std::string GetSystemTime()
 {
-	std::string timeBuffer;
-	std::stringstream ss;
-	auto now = std::chrono::system_clock::now();
-	std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
-	std::tm* localTime = std::localtime(&nowTime);
-	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-	ss << std::put_time(localTime, "%m-%d %H:%M:%S");
-	ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
-	timeBuffer = ss.str();
-	return timeBuffer;
+    std::string timeBuffer;
+    std::stringstream ss;
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    std::tm* localTime = std::localtime(&nowTime);
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % SCALE;
+    ss << std::put_time(localTime, "%m-%d %H:%M:%S");
+    ss << POINT << std::setfill(PLACEHOLDER) << std::setw(PLACEHOLDERLEN) << ms.count();
+    timeBuffer = ss.str();
+    return timeBuffer;
 }
 
 /*
