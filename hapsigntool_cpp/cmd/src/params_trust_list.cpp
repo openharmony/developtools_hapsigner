@@ -22,8 +22,6 @@
 namespace OHOS {
 namespace SignatureTools {
 const std::string options = "[options]:";
-std::unique_ptr<ParamsTrustList> ParamsTrustList::paramTrustListInstance = nullptr;
-std::mutex ParamsTrustList::mtx;
 
 const std::vector<std::string> commands = {
     GENERATE_KEYPAIR + options,
@@ -38,16 +36,10 @@ const std::vector<std::string> commands = {
     VERIFY_APP + options
 };
 
-ParamsTrustList* ParamsTrustList::GetInstance()
+ParamsTrustList ParamsTrustList::GetInstance()
 {
-    if (!paramTrustListInstance) {
-        std::lock_guard<std::mutex> lock(mtx);
-        if (!paramTrustListInstance) {
-            paramTrustListInstance = std::make_unique<ParamsTrustList>();
-        }
-    }
-
-    return paramTrustListInstance.get();
+    static ParamsTrustList instance;
+    return instance;
 }
 
 void ParamsTrustList::PutTrustMap(const std::string& cmdStandBy, const std::string& param)

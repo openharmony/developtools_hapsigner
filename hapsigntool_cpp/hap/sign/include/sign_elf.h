@@ -41,22 +41,22 @@ private:
     static constexpr int FILE_BUFFER_BLOCK = 16384;
     static const std::string CODESIGN_OFF;
 
-    static bool AlignFileBy4kBytes(std::string& inputFile, std::string& tmp);
+    static bool AlignFileBy4kBytes(const std::string& inputFile, std::string& tmp);
     static bool WriteBlockDataToFile(SignerConfig& signerConfig,
-                                     std::string inputFile, std::string outputFile,
-                                     std::string profileSigned,
-                                     std::map<std::string, std::string> signParams);
-    static bool WriteSignedElf(std::string inputFile,
-                               std::list<SignBlockData>& signBlockList, std::string outputFile);
+                                     const std::string& inputFile, std::string& outputFile,
+                                     const std::string &profileSigned,
+                                     const std::map<std::string, std::string>& signParams);
+    static bool WriteSignedElf(const std::string &inputFile,
+                               std::list<SignBlockData>& signBlockList, std::string &outputFile);
     static bool WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::ofstream& fileOutputStream);
     static bool GenerateSignBlockHead(std::list<SignBlockData>& signDataList);
     static SignBlockData GenerateProfileSignByte(std::string profileFile, std::string profileSigned);
-    static bool GenerateCodeSignByte(SignerConfig& signerConfig, std::map<std::string, std::string> signParams,
-                                     std::string inputFile, int blockNum,
-                                     long binFileLen, SignBlockData** codeSign);
-    static bool WriteSignHeadDataToOutputFile(std::string inputFile, std::string outputFile, int blockNum);
-    static bool IsLongOverflowInteger(int64_t num);
-    static bool IsLongOverflowShort(int64_t num);
+    static bool GenerateCodeSignByte(SignerConfig& signerConfig, const std::map<std::string, std::string> &signParams,
+                                     const std::string &inputFile, const int blockNum,
+                                     const long binFileLen, SignBlockData** codeSign);
+    static bool WriteSignHeadDataToOutputFile(const std::string &inputFile, const std::string &outputFile, const int blockNum);
+    static bool IsLongOverflowInteger(const int64_t num);
+    static bool IsLongOverflowShort(const int64_t num);
 };
 } // namespace SignatureTools
 } // namespace OHOS

@@ -28,7 +28,6 @@ RemoteSignProvider::~RemoteSignProvider()
 
 bool RemoteSignProvider::CheckParams(Options* options)
 {
-    bool flag = false;
     if (!SignProvider::CheckParams(options)) {
         SIGNATURE_TOOLS_LOGE("SignProvider::Parameter check failed !");
         return false;
@@ -40,23 +39,11 @@ bool RemoteSignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE);
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_SIGNERPLUGIN);
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
-    for (auto it = options->begin(); it != options->end(); it++) {
-        flag = (paramSet.find(it->first) != paramSet.end());
-        if (flag) {
-            size_t size = it->first.size();
-            std::string str = it->first.substr(size - 3);
-            if (str == "Pwd") {
-                std::string strPwd = options->GetChars(it->first);
-                strPwd = "";
-                signParams.insert(std::make_pair(it->first, strPwd));
-            } else {
-                signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
-            }
-        }
+    if (!this->SetSignParams(options, paramSet)) {
+        return false;
     }
     for (const auto& param : paramFileds) {
-        flag = (signParams.find(param) == signParams.end());
-        if (flag) {
+        if (signParams.find(param) == signParams.end()) {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                                 "Missing parameter:" + param);
             return false;

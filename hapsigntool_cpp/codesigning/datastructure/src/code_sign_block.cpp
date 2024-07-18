@@ -26,7 +26,7 @@ CodeSignBlock::~CodeSignBlock()
 {
 }
 
-void CodeSignBlock::AddOneMerkleTree(const std::string& key, std::vector<int8_t>& merkleTree)
+void CodeSignBlock::AddOneMerkleTree(const std::string& key, const std::vector<int8_t>& merkleTree)
 {
     if (key.empty()) {
         return;
@@ -62,7 +62,7 @@ void CodeSignBlock::SetSegmentNum()
     codeSignBlockHeader.SetSegmentNum(static_cast<int>(segmentHeaderList.size()));
 }
 
-void CodeSignBlock::AddToSegmentList(SegmentHeader sh)
+void CodeSignBlock::AddToSegmentList(const SegmentHeader& sh)
 {
     segmentHeaderList.push_back(sh);
 }
@@ -90,12 +90,12 @@ CodeSignBlockHeader& CodeSignBlock::GetCodeSignBlockHeader()
     return codeSignBlockHeader;
 }
 
-void CodeSignBlock::SetCodeSignBlockHeader(CodeSignBlockHeader& csbHeader)
+void CodeSignBlock::SetCodeSignBlockHeader(const CodeSignBlockHeader& csbHeader)
 {
     codeSignBlockHeader = csbHeader;
 }
 
-void CodeSignBlock::SetFsVerityInfoSegment(FsVerityInfoSegment& fsVeritySeg)
+void CodeSignBlock::SetFsVerityInfoSegment(const FsVerityInfoSegment& fsVeritySeg)
 {
     fsVerityInfoSegment = fsVeritySeg;
 }
@@ -105,7 +105,7 @@ HapInfoSegment& CodeSignBlock::GetHapInfoSegment()
     return hapInfoSegment;
 }
 
-void CodeSignBlock::SetHapInfoSegment(HapInfoSegment& hapSeg)
+void CodeSignBlock::SetHapInfoSegment(const HapInfoSegment& hapSeg)
 {
     hapInfoSegment = hapSeg;
 }
@@ -115,7 +115,7 @@ NativeLibInfoSegment& CodeSignBlock::GetSoInfoSegment()
     return nativeLibInfoSegment;
 }
 
-void CodeSignBlock::SetSoInfoSegment(NativeLibInfoSegment soSeg)
+void CodeSignBlock::SetSoInfoSegment(const NativeLibInfoSegment& soSeg)
 {
     nativeLibInfoSegment = soSeg;
 }

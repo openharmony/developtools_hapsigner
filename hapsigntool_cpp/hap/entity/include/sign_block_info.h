@@ -30,10 +30,10 @@ public:
 
 public:
     std::unordered_map<int8_t, SigningBlock>& GetSignBlockMap();
-    std::vector<int8_t> GetFileDigest();
-    void SetFileDigest(std::vector<int8_t> fileDigest);
-    std::vector<int8_t> GetRawDigest();
-    void SetRawDigest(std::vector<int8_t> rawDigest);
+    std::vector<int8_t>& GetFileDigest();
+    void SetFileDigest(const std::vector<int8_t>& fileDigest);
+    std::vector<int8_t>& GetRawDigest();
+    void SetRawDigest(const std::vector<int8_t>& rawDigest);
     bool GetNeedGenerateDigest();
 
 private:

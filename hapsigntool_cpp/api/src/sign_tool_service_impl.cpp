@@ -664,10 +664,9 @@ bool SignToolServiceImpl::VerifyHapSigner(Options* option)
 {
     std::string inForm = option->GetString(ParamConstants::PARAM_IN_FORM);
     if (inForm == ZIP) {
-        HapVerifyResult hapVerifyResult;
-        VerifyHap hapVerifyV2;
-        int32_t ret = hapVerifyV2.Verify(option->GetString(Options::IN_FILE), hapVerifyResult, option);
-        if (ret == VERIFY_SUCCESS) {
+        VerifyHap hapVerify;
+        int32_t ret = hapVerify.Verify(option->GetString(Options::IN_FILE), option);
+        if (ret == RET_OK) {
             PrintMsg("hap verify successed!");
             return true;
         }

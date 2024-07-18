@@ -75,7 +75,7 @@ void CodeSignBlockHeader::ToByteArray(std::vector<int8_t>& ret)
     ret = std::vector<int8_t>(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetPosition());
 }
 
-CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(std::vector<int8_t>& bytes)
+CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t>& bytes)
 {
     if (bytes.size() != Size()) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
@@ -161,7 +161,7 @@ CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetFlags(int flags)
     return this;
 }
 
-CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetReserved(std::vector<int8_t>& reserved)
+CodeSignBlockHeader::Builder* CodeSignBlockHeader::Builder::SetReserved(const std::vector<int8_t>& reserved)
 {
     this->reserved = reserved;
     return this;

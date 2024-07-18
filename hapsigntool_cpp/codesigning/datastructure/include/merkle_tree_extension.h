@@ -29,7 +29,7 @@ public:
     static constexpr int32_t MERKLE_TREE_INLINED = 0x1;
     static constexpr int32_t MERKLE_TREE_EXTENSION_DATA_SIZE = 80;
     MerkleTreeExtension();
-    MerkleTreeExtension(int64_t merkleTreeSize, int64_t merkleTreeOffset, std::vector<int8_t> rootHash);
+    MerkleTreeExtension(int64_t merkleTreeSize, int64_t merkleTreeOffset, const std::vector<int8_t> rootHash);
     virtual ~MerkleTreeExtension();
     static MerkleTreeExtension* FromByteArray(std::vector<int8_t>& bytes);
     virtual int32_t GetSize();

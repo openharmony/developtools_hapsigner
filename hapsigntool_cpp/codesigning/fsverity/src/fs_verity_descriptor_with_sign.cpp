@@ -66,7 +66,7 @@ FsVerityDescriptor FsVerityDescriptorWithSign::GetFsVerityDescriptor()
     return fsVerityDescriptor;
 }
 
-std::vector<int8_t> FsVerityDescriptorWithSign::GetSignature()
+std::vector<int8_t>& FsVerityDescriptorWithSign::GetSignature()
 {
     return signature;
 }

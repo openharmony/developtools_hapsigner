@@ -33,13 +33,13 @@ namespace OHOS {
 namespace SignatureTools {
 class CmdUtil final {
 public:
-    static bool Convert2Params(char** args, size_t size, const ParamsSharedPtr& param);
+    static bool Convert2Params(char** args, const size_t size, const ParamsSharedPtr& param);
     static bool JudgeAlgType(const std::string& keyAlg);
     static bool JudgeSize(const int size);
     static bool JudgeSignAlgType(const std::string& signAlg);
     static bool VerifyType(const std::string& inputType);
     static bool VerifyTypes(const std::string& inputType);
-    static bool VerifyType(const std::string& inputtype, const std::string& supportTypes);
+    static bool VerifyType(const std::string& inputType, const std::string& supportTypes);
     static bool String2Bool(Options* options, const std::string& option);
     static bool UpdateParamForCheckInFile(Options* options, const std::initializer_list<std::string>& inFileKeys);
     static bool UpdateParamForCheckOutFile(Options* options, const std::initializer_list<std::string>& outFileKeys);
@@ -48,7 +48,7 @@ public:
 private:
     static int GetCommandParameterKey(const char strChar, std::string& strChars,
                                     std::vector<std::string>& trustList, std::string& keyStandBy);
-    static bool ValidAndPutParam(ParamsSharedPtr params, const std::string& key, char* value);
+    static bool ValidAndPutParam(const ParamsSharedPtr& params, const std::string& key, char* value);
     static const std::regex INTEGER_PATTERN;
 };
 } // namespace SignatureTools

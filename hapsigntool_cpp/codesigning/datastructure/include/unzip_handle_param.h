@@ -24,11 +24,11 @@ namespace OHOS {
 namespace SignatureTools {
 class UnzipHandleParam {
 public:
-    UnzipHandleParam(CodeSignBlock& csb, std::pair<std::string, std::string>& pairResult, bool isSign);
-    UnzipHandleParam(std::vector<std::pair<std::string, SignInfo>>& ret, std::string& ownerID, bool isSign);
+    UnzipHandleParam(const CodeSignBlock& csb, const std::pair<std::string, std::string>& pairResult, bool isSign);
+    UnzipHandleParam(std::vector<std::pair<std::string, SignInfo>>& ret, const std::string& ownerID, bool isSign);
     CodeSignBlock& GetCodeSignBlock();
     std::pair<std::string, std::string>& GetPairResult();
-    std::vector<std::pair<std::string, SignInfo>>* GetRet();
+    std::vector<std::pair<std::string, SignInfo>>& GetRet();
     std::string& GetOwnerID();
     bool IsSign();
 

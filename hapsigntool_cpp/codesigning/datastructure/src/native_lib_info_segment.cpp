@@ -30,11 +30,10 @@ NativeLibInfoSegment::NativeLibInfoSegment()
 NativeLibInfoSegment::NativeLibInfoSegment(int32_t magic,
                                            int32_t segmentSize,
                                            int32_t sectionNum,
-                                           std::vector<SignedFilePos> signedFilePosList,
-                                           std::vector<std::string> fileNameList,
-                                           std::vector<SignInfo> signInfoList,
-                                           std::vector<int8_t> zeroPadding
-)
+                                           const std::vector<SignedFilePos>& signedFilePosList,
+                                           const std::vector<std::string>& fileNameList,
+                                           const std::vector<SignInfo>& signInfoList,
+                                           const std::vector<int8_t>& zeroPadding)
 {
     this->magic = magic;
     this->segmentSize = segmentSize;
@@ -47,7 +46,7 @@ NativeLibInfoSegment::NativeLibInfoSegment(int32_t magic,
     signInfoListBlockSize = 0;
 }
 
-void NativeLibInfoSegment::SetSoInfoList(std::vector<std::pair<std::string, SignInfo>> &soInfoList)
+void NativeLibInfoSegment::SetSoInfoList(const std::vector<std::pair<std::string, SignInfo>> &soInfoList)
 {
     this->soInfoList = soInfoList;
     // Once map is set, update length, sectionNum as well
@@ -61,12 +60,12 @@ int32_t NativeLibInfoSegment::GetSectionNum()
     return sectionNum;
 }
 
-std::vector<std::string> NativeLibInfoSegment::GetFileNameList()
+std::vector<std::string>& NativeLibInfoSegment::GetFileNameList()
 {
     return fileNameList;
 }
 
-std::vector<OHOS::SignatureTools::SignInfo> NativeLibInfoSegment::GetSignInfoList()
+std::vector<OHOS::SignatureTools::SignInfo>& NativeLibInfoSegment::GetSignInfoList()
 {
     return signInfoList;
 }

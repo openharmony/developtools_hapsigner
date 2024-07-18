@@ -84,7 +84,7 @@ bool VerifyCodeSignature::VerifyElf(std::string file, int64_t offset, int64_t le
     // 3) check ownerID
     if (!profileContent.empty()) {
         std::pair<std::string, std::string> pairResult = HapUtils::ParseAppIdentifier(profileContent);
-        std::vector<int8_t> signature = elfSignBlock.GetSignature();
+        std::vector<int8_t>& signature = elfSignBlock.GetSignature();
         std::string signatureStr(signature.begin(), signature.end());
         bool checkOwnerIDFlag = CmsUtils::CheckOwnerID(signatureStr, pairResult.first, pairResult.second);
         if (!checkOwnerIDFlag) {

@@ -24,8 +24,8 @@ MerkleTreeExtension::MerkleTreeExtension()
     merkleTreeOffset = 0;
 }
 
-MerkleTreeExtension::MerkleTreeExtension(int64_t merkleTreeSize, int64_t merkleTreeOffset, std::vector<int8_t> rootHash)
-    : Extension(MERKLE_TREE_INLINED, MERKLE_TREE_EXTENSION_DATA_SIZE)
+MerkleTreeExtension::MerkleTreeExtension(int64_t merkleTreeSize, int64_t merkleTreeOffset,
+    const std::vector<int8_t> rootHash) : Extension(MERKLE_TREE_INLINED, MERKLE_TREE_EXTENSION_DATA_SIZE)
 {
     this->merkleTreeSize = merkleTreeSize;
     this->merkleTreeOffset = merkleTreeOffset;

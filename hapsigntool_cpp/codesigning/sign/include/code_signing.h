@@ -45,25 +45,25 @@ public:
 
     bool SignFile(std::istream& inputStream,
                   int64_t fileSize, bool storeTree,
-                  int64_t fsvTreeOffset, std::string ownerID,
+                  int64_t fsvTreeOffset, const std::string &ownerID,
                   std::pair<SignInfo, std::vector<int8_t>>& ret);
-    bool GetCodeSignBlock(const std::string input, int64_t offset,
-                          std::string inForm, std::string profileContent,
+    bool GetCodeSignBlock(const std::string &input, int64_t offset,
+                          const std::string &inForm, const std::string &profileContent,
                           ZipSigner& zip, std::vector<int8_t>& ret);
-    bool GetElfCodeSignBlock(std::string input, int64_t offset,
-                             std::string inForm, std::string profileContent,
+    bool GetElfCodeSignBlock(const std::string &input, int64_t offset,
+                             const std::string &inForm, const std::string &profileContent,
                              std::vector<int8_t> &codesignData);
 
 public:
     const std::string NATIVE_LIB_AN_SUFFIX = ".an";
     const std::string NATIVE_LIB_SO_SUFFIX = ".so";
-    static bool IsNativeFile(std::string& input);
+    static bool IsNativeFile(const std::string& input);
     uint32_t ComputeDataSize(ZipSigner& zip);
     int64_t GetTimestamp();
-    bool SignNativeLibs(std::string input, std::string ownerID);
+    bool SignNativeLibs(const std::string &input, std::string &ownerID);
     void UpdateCodeSignBlock();
-    bool GetNativeEntriesFromHap(std::string& packageName, UnzipHandleParam& param);
-    bool GenerateSignature(std::vector<int8_t>& signedData, const std::string&,
+    bool GetNativeEntriesFromHap(const std::string& packageName, UnzipHandleParam& param);
+    bool GenerateSignature(const std::vector<int8_t>& signedData, const std::string&,
                            std::vector<int8_t>&);
     int64_t m_timestamp = 0;
     std::vector<std::string> m_extractedNativeLibSuffixs;

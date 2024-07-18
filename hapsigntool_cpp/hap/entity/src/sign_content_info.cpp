@@ -20,7 +20,8 @@
 namespace OHOS {
 namespace SignatureTools {
     
-SignContentHash::SignContentHash(char type, char tag, short algId, int length, std::vector<int8_t> hash)
+SignContentHash::SignContentHash(const char type, const char tag, const short algId,
+                                 const int length, const std::vector<int8_t> &hash)
 {
     m_type = type;
     m_tag = tag;
@@ -37,13 +38,14 @@ SignContentInfo::SignContentInfo()
     m_numOfBlocks = 0;
 }
 
-void SignContentInfo::AddContentHashData(char type, char tag, short algId, int length, std::vector<int8_t> hash)
+void SignContentInfo::AddContentHashData(const char type, const char tag, const short algId,
+                                         const int length, const std::vector<int8_t> &hash)
 {
     SignContentHash signInfo(type, tag, algId, length, hash);
     AddHashData(signInfo);
 }
 
-void SignContentInfo::AddHashData(SignContentHash signInfo)
+void SignContentInfo::AddHashData(const SignContentHash& signInfo)
 {
     m_hashData.push_back(signInfo);
     ++m_numOfBlocks;

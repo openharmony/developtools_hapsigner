@@ -32,22 +32,22 @@ std::unordered_map<int8_t, SigningBlock>& SignBlockInfo::GetSignBlockMap()
     return m_signBlockMap;
 }
 
-std::vector<int8_t> SignBlockInfo::GetFileDigest()
+std::vector<int8_t>& SignBlockInfo::GetFileDigest()
 {
     return m_fileDigest;
 }
 
-void SignBlockInfo::SetFileDigest(std::vector<int8_t> fileDigest)
+void SignBlockInfo::SetFileDigest(const std::vector<int8_t>& fileDigest)
 {
     m_fileDigest = fileDigest;
 }
 
-std::vector<int8_t> SignBlockInfo::GetRawDigest()
+std::vector<int8_t>& SignBlockInfo::GetRawDigest()
 {
     return m_rawDigest;
 }
 
-void SignBlockInfo::SetRawDigest(std::vector<int8_t> rawDigest)
+void SignBlockInfo::SetRawDigest(const std::vector<int8_t>& rawDigest)
 {
     m_rawDigest = rawDigest;
 }

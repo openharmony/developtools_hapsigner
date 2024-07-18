@@ -38,9 +38,9 @@ SignatureAlgorithmHelper::SignatureAlgorithmHelper(const SignatureAlgorithmHelpe
 {
 }
 
-SignatureAlgorithmHelper::SignatureAlgorithmHelper(SignatureAlgorithmId id_, std::string keyAlg_,
-                                                   ContentDigestAlgorithm digestAlg_,
-                                                   std::pair<std::string, void*> sigParams_)
+SignatureAlgorithmHelper::SignatureAlgorithmHelper(const SignatureAlgorithmId& id_, const std::string& keyAlg_,
+                                                   const ContentDigestAlgorithm& digestAlg_,
+                                                   const std::pair<std::string, void*>& sigParams_)
     : m_id(id_), m_keyAlgorithm(keyAlg_), m_contentDigestAlgorithm(digestAlg_), m_signatureAlgAndParams(sigParams_)
 {
 }
@@ -61,7 +61,7 @@ SignatureAlgorithmHelper::~SignatureAlgorithmHelper()
 {
 }
 
-const SignatureAlgorithmHelper* SignatureAlgorithmHelper::FindById(SignatureAlgorithmId id)
+const SignatureAlgorithmHelper* SignatureAlgorithmHelper::FindById(const SignatureAlgorithmId id)
 {
     if (id == SignatureAlgorithmId::ECDSA_WITH_SHA256) return &ECDSA_WITH_SHA256_INSTANCE;
     if (id == SignatureAlgorithmId::ECDSA_WITH_SHA384) return &ECDSA_WITH_SHA384_INSTANCE;

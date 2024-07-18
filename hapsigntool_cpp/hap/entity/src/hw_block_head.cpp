@@ -30,7 +30,7 @@ int HwBlockHead::GetElfBlockLen()
     return ELF_BLOCK_LEN;
 }
 
-std::string HwBlockHead::GetBlockHead(char type, char tag, short length, int offset)
+std::string HwBlockHead::GetBlockHead(const char type, const char tag, const short length, const int offset)
 {
     std::vector<int8_t> tmpVec;
     tmpVec.push_back(type);
@@ -45,7 +45,7 @@ std::string HwBlockHead::GetBlockHead(char type, char tag, short length, int off
     return std::string(tmpVec.begin(), tmpVec.end());
 }
 
-std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(char type, char tag, int length, int offset)
+std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(const char type, const char tag, const int length, const int offset)
 {
     ByteBuffer bf = ByteBuffer(HwBlockHead::ELF_BLOCK_LEN);
     bf.PutByte(type);

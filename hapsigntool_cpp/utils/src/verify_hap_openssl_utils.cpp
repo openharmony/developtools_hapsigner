@@ -24,6 +24,7 @@
 #include "openssl/x509.h"
 #include "openssl/pem.h"
 #include "constant.h"
+#include "signature_info.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -132,6 +133,15 @@ bool VerifyHapOpensslUtils::CheckPkcs7SignedDataIsValid(const PKCS7* p7)
     return true;
 }
 
+bool VerifyHapOpensslUtils::GetCrlStack(PKCS7* p7, STACK_OF(X509_CRL)* x509Crl)
+{
+    if (!CheckPkcs7SignedDataIsValid(p7)) {
+        return false;
+    }
+    x509Crl = p7->d.sign->crl;
+    return true;
+}
+
 bool VerifyHapOpensslUtils::VerifyPkcs7(Pkcs7Context& pkcs7Context)
 {
     if (!CheckPkcs7SignedDataIsValid(pkcs7Context.p7)) {
@@ -207,71 +217,6 @@ bool VerifyHapOpensslUtils::VerifySignInfo(STACK_OF(PKCS7_SIGNER_INFO)* signerIn
         return false;
     }
 
-    return true;
-}
-
-bool VerifyHapOpensslUtils::GetPublickeys(const CertChain& signCertChain,
-                                          std::vector<std::string>& SignatureVec)
-{
-    for (uint32_t i = 0; i < signCertChain.size(); i++) {
-        if (!GetPublickeyFromCertificate(signCertChain[i], SignatureVec)) {
-            SIGNATURE_TOOLS_LOGE("%ust Get Publickey failed", i);
-            return false;
-        }
-    }
-    return !SignatureVec.empty();
-}
-
-bool VerifyHapOpensslUtils::GetSignatures(const CertChain& signCertChain,
-                                          std::vector<std::string>& SignatureVec)
-{
-    for (uint32_t i = 0; i < signCertChain.size(); i++) {
-        if (!GetDerCert(signCertChain[i], SignatureVec)) {
-            SIGNATURE_TOOLS_LOGE("%ust GetDerCert failed", i);
-            return false;
-        }
-    }
-    return !SignatureVec.empty();
-}
-
-bool VerifyHapOpensslUtils::GetDerCert(X509* ptrX509, std::vector<std::string>& SignatureVec)
-{
-    if (ptrX509 == nullptr) {
-        return false;
-    }
-    int32_t certLen = i2d_X509(ptrX509, nullptr);
-    if (certLen <= 0) {
-        SIGNATURE_TOOLS_LOGE("certLen %d, i2d_X509 failed", certLen);
-        GetOpensslErrorMessage();
-        return false;
-    }
-    std::unique_ptr<unsigned char[]> derCertificate = std::make_unique<unsigned char[]>(certLen);
-    int32_t base64CertLen = VerifyCertOpensslUtils::CalculateLenAfterBase64Encode(certLen);
-    std::unique_ptr<unsigned char[]> base64Certificate = std::make_unique<unsigned char[]>(base64CertLen);
-    unsigned char* derCertificateBackup = derCertificate.get();
-    if (i2d_X509(ptrX509, &derCertificateBackup) <= 0) {
-        SIGNATURE_TOOLS_LOGE("i2d_X509 failed");
-        GetOpensslErrorMessage();
-        return false;
-    }
-    /* base64 encode */
-    int32_t len = EVP_EncodeBlock(base64Certificate.get(), derCertificate.get(), certLen);
-    SignatureVec.emplace_back(std::string(reinterpret_cast<char*>(base64Certificate.get()), len));
-    return true;
-}
-
-bool VerifyHapOpensslUtils::GetPublickeyFromCertificate(const X509* ptrX509,
-                                                        std::vector<std::string>& publicKeyVec)
-{
-    if (ptrX509 == nullptr) {
-        return false;
-    }
-    std::string publicKey;
-    if (!VerifyCertOpensslUtils::GetPublickeyBase64(ptrX509, publicKey)) {
-        SIGNATURE_TOOLS_LOGE("GetPublickeyBase64 Failed");
-        return false;
-    }
-    publicKeyVec.emplace_back(publicKey);
     return true;
 }
 
@@ -430,6 +375,21 @@ int32_t VerifyHapOpensslUtils::GetDigestAlgorithmId(int32_t signAlgorithm)
         default:
             SIGNATURE_TOOLS_LOGE("signAlgorithm: %d error", signAlgorithm);
             return NID_undef;
+    }
+}
+
+std::string VerifyHapOpensslUtils::GetDigestAlgorithmString(int32_t signAlgorithm)
+{
+    switch (signAlgorithm) {
+        case ALGORITHM_SHA256_WITH_ECDSA:
+            return "SHA-256";
+        case ALGORITHM_SHA384_WITH_ECDSA:
+            return "SHA-384";
+        case ALGORITHM_SHA512_WITH_ECDSA:
+            return "SHA-512";
+        default:
+            SIGNATURE_TOOLS_LOGE("signAlgorithm: %d error", signAlgorithm);
+            return "";
     }
 }
 } // namespace SignatureTools

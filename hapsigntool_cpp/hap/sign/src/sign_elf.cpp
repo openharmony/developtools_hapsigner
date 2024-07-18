@@ -58,7 +58,7 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
     ;
 }
 
-bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& tmpFile)
+bool SignElf::AlignFileBy4kBytes(const std::string& inputFile, std::string& tmpFile)
 {
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = now.time_since_epoch();
@@ -102,8 +102,8 @@ bool SignElf::AlignFileBy4kBytes(std::string& inputFile, std::string& tmpFile)
 }
 
 bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
-                                   std::string inputFile, std::string outputFile, std::string profileSigned,
-                                   std::map<std::string, std::string> signParams)
+                                   const std::string &inputFile, std::string& outputFile, const std::string& profileSigned,
+                                   const std::map<std::string, std::string>& signParams)
 {
     std::string proFile;
     if (signParams.find(ParamConstants::PARAM_BASIC_PROFILE) != signParams.end()) {
@@ -143,7 +143,7 @@ bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
     return WriteSignedElf(inputFile, signDataList, outputFile);
 }
 
-bool SignElf::WriteSignedElf(std::string inputFile, std::list<SignBlockData>& signBlockList, std::string outputFile)
+bool SignElf::WriteSignedElf(const std::string &inputFile, std::list<SignBlockData>& signBlockList, std::string &outputFile)
 {
     std::ifstream fileInputStream(inputFile, std::ios::binary);
     std::ofstream fileOutputStream(outputFile, std::ios::binary);
@@ -239,8 +239,8 @@ SignBlockData SignElf::GenerateProfileSignByte(std::string profileFile, std::str
     return SignBlockData(profileFile, isSigned);
 }
 
-bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, std::map<std::string, std::string> signParams,
-                                   std::string inputFile, int blockNum, long binFileLen, SignBlockData** codeSign)
+bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::map<std::string, std::string> &signParams,
+                                   const std::string &inputFile, const int blockNum, const long binFileLen, SignBlockData** codeSign)
 {
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CODESIGN_OFF) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "[SignElf] check pamams signCode = 0 error.");
@@ -264,7 +264,7 @@ bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, std::map<std::str
     return true;
 }
 
-bool SignElf::WriteSignHeadDataToOutputFile(std::string inputFile, std::string outputFile, int blockNum)
+bool SignElf::WriteSignHeadDataToOutputFile(const std::string& inputFile, const std::string& outputFile, const int blockNum)
 {
     int64_t size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile);
     if (IsLongOverflowInteger(size)) {
@@ -278,12 +278,12 @@ bool SignElf::WriteSignHeadDataToOutputFile(std::string inputFile, std::string o
     return FileUtils::WriteByteToOutFile(signHeadByte, fileOutputStream);
 }
 
-bool SignElf::IsLongOverflowInteger(int64_t num)
+bool SignElf::IsLongOverflowInteger(const int64_t num)
 {
     return (num - (num & 0xffffffffL)) != 0;
 }
 
-bool SignElf::IsLongOverflowShort(int64_t num)
+bool SignElf::IsLongOverflowShort(const int64_t num)
 {
     return (num - (num & 0xffffL)) != 0;
 }

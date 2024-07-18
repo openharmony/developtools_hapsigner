@@ -57,7 +57,7 @@ const std::string Options::PROOF_FILE = "outproof";
 const std::string Options::PROFILE_FILE = "profileFile";
 const std::string Options::PROFILE_SIGNED = "profileSigned";
 
-char* Options::GetChars(const std::string key)
+char* Options::GetChars(const std::string& key)
 {
     if (this->count(key) == 0) {
         return nullptr;
@@ -72,7 +72,7 @@ char* Options::GetChars(const std::string key)
     return *charsPtr;
 }
 
-std::string Options::GetString(const std::string key)
+std::string Options::GetString(const std::string& key)
 {
     if (this->count(key) == 0) {
         return "";
@@ -87,7 +87,7 @@ std::string Options::GetString(const std::string key)
     return *stringPtr;
 }
 
-std::string Options::GetString(const std::string key, std::string checkStr)
+std::string Options::GetString(const std::string& key, const std::string& checkStr)
 {
     if (this->count(key) == 0) {
         return "";
@@ -102,7 +102,7 @@ std::string Options::GetString(const std::string key, std::string checkStr)
     return *stringPtr;
 }
 
-int Options::GetInt(const std::string key)
+int Options::GetInt(const std::string& key)
 {
     if (this->count(key) == 0) {
         return 0;
@@ -117,17 +117,17 @@ int Options::GetInt(const std::string key)
     return *stringPtr;
 }
 
-bool Options::Equals(const std::string key1, const std::string& key2)
+bool Options::Equals(const std::string& argf, const std::string& args)
 {
-    std::string ksFile = GetString(key1);
-    std::string iksFile = GetString(key2);
+    std::string ksFile = GetString(argf);
+    std::string iksFile = GetString(args);
     if (ksFile == iksFile) {
         return true;
     }
     return  false;
 }
 
-bool Options::Required(const std::initializer_list<std::string> keys)
+bool Options::Required(const std::initializer_list<std::string>& keys)
 {
     for (auto& key : keys) {
         if (!this->IsEmpty(key) && !(this->find(key) != this->end())) {
@@ -138,7 +138,7 @@ bool Options::Required(const std::initializer_list<std::string> keys)
     return true;
 }
 
-bool Options::IsEmpty(std::string cs)
+bool Options::IsEmpty(const std::string& cs)
 {
     if (cs.empty()) {
         return true;
@@ -146,7 +146,7 @@ bool Options::IsEmpty(std::string cs)
     return false;
 }
 
-bool Options::GetBool(const std::string key)
+bool Options::GetBool(const std::string& key)
 {
     auto value = (*this)[key];
     bool* stringPtr = std::get_if<bool>(&value);

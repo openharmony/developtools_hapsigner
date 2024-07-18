@@ -28,7 +28,7 @@ public:
     bool Verify(Options* options);
 
 private:
-    bool VerifyBinFile(const std::string& binFile, HapVerifyResult& verifyResult,
+    bool VerifyBinFile(const std::string& binFile, std::vector<int8_t>& profileVec,
         Options* options, Pkcs7Context& pkcs7Context);
     bool VerifyBinDigest(SignBlockInfo& signBlockInfo);
 };

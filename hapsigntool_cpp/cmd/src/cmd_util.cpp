@@ -32,13 +32,14 @@ bool CmdUtil::String2Bool(Options* options, const std::string& option)
     } else if (val == "0" || val == "false" || val == "FALSE") {
         (*options)[option] = false;
     } else {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, val + "is not valid value for " + "-" + option);
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            val + "is not valid value for " + "-" + option);
         return false;
     }
     return true;
 }
 
-static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
+static bool UpdateParamForVariantCertInt(const ParamsSharedPtr& param)
 {
     int defaultValidity = 0;
     Options* options = param->GetOptions();
@@ -70,7 +71,7 @@ static bool UpdateParamForVariantCertInt(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParamForVariantInt(ParamsSharedPtr param)
+static bool UpdateParamForVariantInt(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
     // general
@@ -104,7 +105,7 @@ static bool UpdateParamForVariantInt(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParamForVariantBoolKeyUsage(ParamsSharedPtr param)
+static bool UpdateParamForVariantBoolKeyUsage(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
 
@@ -128,7 +129,7 @@ static bool UpdateParamForVariantBoolKeyUsage(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParamForVariantBoolConstraints(ParamsSharedPtr param)
+static bool UpdateParamForVariantBoolConstraints(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
 
@@ -152,7 +153,7 @@ static bool UpdateParamForVariantBoolConstraints(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParamForVariantBoolProfileSigned(ParamsSharedPtr param)
+static bool UpdateParamForVariantBoolProfileSigned(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
 
@@ -203,6 +204,7 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
             if (parentPath.size() > PATH_MAX) {
                 PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + outFilePath + "' File path longer than '"
                                     + std::to_string(PATH_MAX) + "' characters");
+                return false;
             }
             if (realpath(parentPath.c_str(), realFilePath) == nullptr) {
                 PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The '" + outFilePath +
@@ -232,6 +234,7 @@ bool CmdUtil::UpdateParamForCheckInFile(Options* options, const std::initializer
             if (inFilePath.size() > PATH_MAX) {
                 PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + inFilePath + "' File path longer than '"
                                     + std::to_string(PATH_MAX) + "' characters");
+                return false;
             }
             if (realpath(inFilePath.c_str(), realFilePath) == nullptr) {
                 PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The '" + inFilePath +
@@ -251,7 +254,7 @@ bool CmdUtil::UpdateParamForCheckInFile(Options* options, const std::initializer
     return true;
 }
 
-static bool UpdateParamForCheckSignAlg(ParamsSharedPtr param)
+static bool UpdateParamForCheckSignAlg(const ParamsSharedPtr& param)
 {
     // check signAlg
     Options* options = param->GetOptions();
@@ -265,7 +268,7 @@ static bool UpdateParamForCheckSignAlg(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParamForInform(ParamsSharedPtr param)
+static bool UpdateParamForInform(const ParamsSharedPtr& param)
 {
     // check sign_app verify_app inform
     Options* options = param->GetOptions();
@@ -285,7 +288,7 @@ static bool UpdateParamForInform(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParamForOutform(ParamsSharedPtr param)
+static bool UpdateParamForOutform(const ParamsSharedPtr& param)
 {
     // check generate_app_cert generate_profile_cert
     Options* options = param->GetOptions();
@@ -306,14 +309,14 @@ static bool UpdateParamForOutform(ParamsSharedPtr param)
 }
 
 //Check "remoteSign" additional parameters are required
-static bool UpdateParamForCheckRemoteSignProfile(ParamsSharedPtr param)
+static bool UpdateParamForCheckRemoteSignProfile(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
     std::set<std::string> signProfileRemoteParams{ParamConstants::PARAM_REMOTE_SERVER,
-                                                   ParamConstants::PARAM_REMOTE_USERNAME,
-                                                   ParamConstants::PARAM_REMOTE_USERPWD,
-                                                   ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE,
-                                                   ParamConstants::PARAM_REMOTE_SIGNERPLUGIN};
+                                                ParamConstants::PARAM_REMOTE_USERNAME,
+                                                ParamConstants::PARAM_REMOTE_USERPWD,
+                                                ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE,
+                                                ParamConstants::PARAM_REMOTE_SIGNERPLUGIN};
 
     if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) &&
         options->GetString(Options::MODE) == REMOTE_SIGN) {
@@ -328,7 +331,7 @@ static bool UpdateParamForCheckRemoteSignProfile(ParamsSharedPtr param)
     return true;
 }
 
-static bool UpdateParam(ParamsSharedPtr param)
+static bool UpdateParam(const ParamsSharedPtr& param)
 {
     if (!UpdateParamForVariantInt(param)) {
         return false;
@@ -377,12 +380,12 @@ int CmdUtil::GetCommandParameterKey(const char strChar, std::string& strChars, s
     return RET_OK;
 }
 
-bool CmdUtil::Convert2Params(char** args, size_t size, const ParamsSharedPtr& param)
+bool CmdUtil::Convert2Params(char** args, const size_t size, const ParamsSharedPtr& param)
 {
     param->SetMethod(args[1]);
     std::string keyStandBy = "";
     bool readKey = true;
-    std::vector<std::string> trustList = ParamsTrustList::GetInstance()->GetTrustList(args[1]);
+    std::vector<std::string> trustList = ParamsTrustList::GetInstance().GetTrustList(args[1]);
     if (trustList.empty()) {
         return false;
     }
@@ -416,7 +419,7 @@ bool CmdUtil::Convert2Params(char** args, size_t size, const ParamsSharedPtr& pa
     return true;
 }
 
-bool CmdUtil::ValidAndPutParam(ParamsSharedPtr params, const std::string& key, char* value)
+bool CmdUtil::ValidAndPutParam(const ParamsSharedPtr& params, const std::string& key, char* value)
 {
     std::string  str = "Pwd";
     bool result;
@@ -523,15 +526,15 @@ bool CmdUtil::VerifyType(const std::string& inputType)
     return true;
 }
 
-bool CmdUtil::VerifyType(const std::string& inputtype, const std::string& supportTypes)
+bool CmdUtil::VerifyType(const std::string& inputType, const std::string& supportTypes)
 {
     std::string firstStr = supportTypes.substr(0, supportTypes.find_last_of(","));
     std::string secondStr = supportTypes.substr(supportTypes.find_first_of(",") + 1,
                                                 supportTypes.size() - supportTypes.find_first_of(","));
-    if (inputtype == firstStr || inputtype == secondStr) {
+    if (inputType == firstStr || inputType == secondStr) {
         return true;
     }
-    PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Not support command param '" + inputtype + "'");
+    PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Not support command param '" + inputType + "'");
 
     return false;
 }

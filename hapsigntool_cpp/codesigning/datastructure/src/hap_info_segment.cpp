@@ -24,13 +24,13 @@ HapInfoSegment::HapInfoSegment()
     signInfo = SignInfo(0, 0, 0, emptyVector, emptyVector);
 }
 
-HapInfoSegment::HapInfoSegment(int32_t magic, SignInfo signInfo)
+HapInfoSegment::HapInfoSegment(int32_t magic, const SignInfo& signInfo)
 {
     this->magic = magic;
     this->signInfo = signInfo;
 }
 
-void HapInfoSegment::SetSignInfo(SignInfo signInfo)
+void HapInfoSegment::SetSignInfo(const SignInfo& signInfo)
 {
     this->signInfo = signInfo;
 }
@@ -57,7 +57,7 @@ void HapInfoSegment::ToByteArray(std::vector<int8_t> &ret)
     return;
 }
 
-HapInfoSegment HapInfoSegment::FromByteArray(std::vector<int8_t> bytes)
+HapInfoSegment HapInfoSegment::FromByteArray(std::vector<int8_t>& bytes)
 {
     std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
     bf->PutData(bytes.data(), bytes.size());
