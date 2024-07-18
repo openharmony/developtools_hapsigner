@@ -20,7 +20,8 @@ namespace SignatureTools {
 Params::Params() : options(new Options) {
 }
 
-Params::~Params() {
+Params::~Params()
+{
     if (options) {
         delete options;
         options = NULL;
