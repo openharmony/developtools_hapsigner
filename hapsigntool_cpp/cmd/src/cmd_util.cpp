@@ -195,7 +195,7 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
             //Purpose: To prevent the user output path from passing an empty string. eg "   "
             std::string tmpOutFilePath = outFilePath;
             tmpOutFilePath.erase(std::remove_if(tmpOutFilePath.begin(),
-                                 tmpOutFilePath.end(), ::isspace), tmpOutFilePath.end());
+                                tmpOutFilePath.end(), ::isspace), tmpOutFilePath.end());
 
             if (parentPath.empty() && !tmpOutFilePath.empty()) {
                 parentPath = "./";
