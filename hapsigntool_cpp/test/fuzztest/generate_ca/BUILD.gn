@@ -26,5 +26,7 @@ group("generate_ca_fuzztest") {
     "./generateca010_fuzzer:GenerateCa010FuzzTest",
     "./generateca011_fuzzer:GenerateCa011FuzzTest",
     "./generateca012_fuzzer:GenerateCa012FuzzTest",
+    "./generateca015_fuzzer:GenerateCa015FuzzTest",
+    "./generateca016_fuzzer:GenerateCa016FuzzTest",
   ]
 }

@@ -1290,6 +1290,240 @@ HWTEST_F(OptionsCmdTest, params_run_test_116, testing::ext::TestSize.Level1)
 }
 
 /*
+ * @tc.name: params_run_test_117
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_117, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteResign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/test A/abc";
+    std::string signAlg = "SHA384withECDSA";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_118
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_118, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "remoteSign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA384withECDSA";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_119
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_119, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "abc";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA384withECDSA";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_120
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_120, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA384withECDSA";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_121
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_121, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string appCertFile = "./generateKeyPair/app-profile.p7b";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["appCertFile"] = appCertFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_122
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_122, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA385withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string appCertFile = "./generateKeyPair/app-profile.p7b";
+    std::string profileFile = "./generateKeyPair/profile.json";
+    std::string inForm = "";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inForm"] = inForm;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_123
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_123, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string appCertFile = "./generateKeyPair/app-profile.p7b";
+    std::string inForm = "elf";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["inForm"] = inForm;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: params_run_test_124
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, params_run_test_124, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string appCertFile = "./generateKeyPair/app-profile.p7b";
+    std::string profileFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string profileSigned = "1";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileSigned"] = profileSigned;
+    (*params)["profileFile"] = profileFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
  * @tc.name: params_test_001
  * @tc.desc: Set the first parameter of the command.
  * @tc.type: FUNC

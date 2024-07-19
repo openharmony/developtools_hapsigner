@@ -960,5 +960,228 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_114, testing::ext::TestSize.Le
 
     EXPECT_EQ(ret, false);
 }
+
+/*
+ * @tc.name: processcmd_test_115
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_115, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA385withECDSA";
+    std::string outFile = "./generateKeyPair/signed-profile.txt";
+    std::string keyAlias = "abc";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string profileCertFile = "./generateKeyPair/OpenHarmony.p12";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["profileCertFile"] = profileCertFile;
+
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_116
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_116, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string outFile = "./generateKeyPair/signed-profile.txt";
+    std::string keyAlias = "abc";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string profileCertFile = "./generateKeyPair/OpenHarmony.p12";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["profileCertFile"] = profileCertFile;
+
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_117
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_117, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/signed-profile.p7b";
+    std::string outFile = "./generateKeyPair/abc/VerifyResult.json";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_118
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_118, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/VerifyResult.json";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_119
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_119, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/signed-profile.p7b";
+    std::string inForm = "zip";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    (*params)["inForm"] = inForm;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_120
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_120, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/abc/signed-profile.p7b";
+    std::string inForm = "zip";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    (*params)["inForm"] = inForm;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_121
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_121, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/signed-profile.p7b";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_122
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_122, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/OpenHarmony.txt";
+    std::string outProfile = "./generateKeyPair/signed-profile.p7b";
+    std::string inForm = "zip";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    (*params)["inForm"] = inForm;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_123
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdExpansionTest, processcmd_test_123, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string outProfile = "./generateKeyPair/signed-profile.txt";
+    std::string inForm = "zip";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    (*params)["inForm"] = inForm;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
 } // namespace SignatureTools
 } // namespace OHOS

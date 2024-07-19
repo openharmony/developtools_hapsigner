@@ -426,10 +426,10 @@ HWTEST_F(VerifyElfTest, VerifyP7b, testing::ext::TestSize.Level1)
     options.emplace(Options::OUT_CERT_CHAIN, std::string("./elfVerify/xx.cer"));
     options.emplace(Options::OUT_PROFILE, std::string("./elfVerify/xx.p7b"));
     Pkcs7Context pkcs7Context;
-    HapVerifyResult verifyResult;
+    std::vector<int8_t> profileVec;
     std::string profileJson;
 
-    bool flag = VerifyElf::VerifyP7b(signBlockMap, &options, pkcs7Context, verifyResult, profileJson);
+    bool flag = VerifyElf::VerifyP7b(signBlockMap, &options, pkcs7Context, profileVec, profileJson);
 
     EXPECT_EQ(flag, true);
 }
@@ -704,26 +704,6 @@ HWTEST_F(VerifyElfTest, SignBin001, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: VerifyElfProfile001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(VerifyElfTest, VerifyElfProfile001, testing::ext::TestSize.Level1)
-{
-    Options options;
-    std::vector<int8_t> profileData = { 1, 1, 1, 1, 1, 1, 1, 1 };
-    HapVerifyResult result;
-    Pkcs7Context pkcs7Context;
-    VerifyHap verifyHap;
-    int32_t flag = verifyHap.VerifyElfProfile(profileData, result, &options, pkcs7Context);
-
-    EXPECT_NE(flag, -1);
-}
-
-/**
  * @tc.name: WriteVerifyOutput001
  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
@@ -742,11 +722,13 @@ HWTEST_F(VerifyElfTest, WriteVerifyOutput001, testing::ext::TestSize.Level1)
     std::unordered_map<int8_t, SigningBlock> signBlockMap = signBlockInfo.GetSignBlockMap();
     SigningBlock profileSign = signBlockMap.find(2)->second;
     std::vector<int8_t> profileByte = profileSign.GetValue();
-    HapVerifyResult result;
+    std::vector<int8_t> profileVec;
     Pkcs7Context pkcs7Context;
     VerifyHap hapVerifyV2;
-    hapVerifyV2.VerifyElfProfile(profileByte, result, &options, pkcs7Context);
-    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, result.GetProfile(), &options);
+    std::unique_ptr<ByteBuffer> profileBuffer =
+        std::make_unique<ByteBuffer>((char*)profileByte.data(), profileByte.size());
+    hapVerifyV2.VerifyAppPkcs7(pkcs7Context, *profileBuffer);
+    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, profileVec, &options);
 
     EXPECT_NE(flag, 0);
 }
@@ -770,11 +752,13 @@ HWTEST_F(VerifyElfTest, WriteVerifyOutput002, testing::ext::TestSize.Level1)
     std::unordered_map<int8_t, SigningBlock> signBlockMap = signBlockInfo.GetSignBlockMap();
     SigningBlock profileSign = signBlockMap.find(2)->second;
     std::vector<int8_t> profileByte = profileSign.GetValue();
-    HapVerifyResult result;
+    std::vector<int8_t> profileVec;
     Pkcs7Context pkcs7Context;
     VerifyHap hapVerifyV2;
-    hapVerifyV2.VerifyElfProfile(profileByte, result, &options, pkcs7Context);
-    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, result.GetProfile(), &options);
+    std::unique_ptr<ByteBuffer> profileBuffer =
+        std::make_unique<ByteBuffer>((char*)profileByte.data(), profileByte.size());
+    hapVerifyV2.VerifyAppPkcs7(pkcs7Context, *profileBuffer);
+    int32_t flag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, profileVec, &options);
 
     EXPECT_NE(flag, 0);
 }

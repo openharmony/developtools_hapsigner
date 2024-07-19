@@ -205,6 +205,7 @@
         <option name="push" value="generate_keypair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/app1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="generate_keypair/phone-default-unsigned.txt -> /data/test/generateKeyPair/" src="res" />
+        <option name="push" value="generate_keypair/entry-default-unsigned-so.txt -> /data/test/generateKeyPair/" src="res" />
       </preparer>
       <cleaner>
       </cleaner>
@@ -301,6 +302,13 @@
         <option name="push" value="zip/data_descriptor_hap.txt -> /data/test/zip/" src="res" />
         <option name="push" value="zip/unsigned.txt -> /data/test/zip/" src="res" />
         <option name="push" value="zip/signed.txt -> /data/test/zip/" src="res" />
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
+  <target name="RandomAccessFileInputOutputFuzzTest">
+      <preparer>
+        <option name="push" value="zip/unsigned.txt -> /data/test/zip/" src="res" />
       </preparer>
       <cleaner>
       </cleaner>

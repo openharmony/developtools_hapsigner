@@ -28,13 +28,82 @@
 
 namespace OHOS {
 namespace SignatureTools {
+
+bool TestGenerateSubCert(const uint8_t* data, size_t size)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerkeyAlias = "oh-app-sign-srv-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string keyAlg = "ECC";
+    int keySize = 256;
+    std::string keystoreFile = "./generateCA/OpenHarmony.p12";
+    char keystorePwd[] = "123456";
+    std::string signAlg = "SHA256withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    char isksPwd[] = "123456";
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["issuerKeystorePwd"] = isksPwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
+    EVP_PKEY* keyPair = nullptr;
+    keyPair = adaptePtr->GetAliasKey(true);
+    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
+    CertTools::GenerateSubCert(keyPair, csr, params.get());
+    return true;
+}
+
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
-        return true;
-    }
+    bool ret = false;
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
-    return api->OutputString("hello world", "/data/test/tmp.data");
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuerkeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string keystoreFile = "./generateCA/OpenHarmony.p12";
+    std::string signAlg = "SHA256withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string keyUsage = "digitalSignature";
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
+    std::string keyUsageCritical = "true";
+    char secret[] = "123456";
+    char isksPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    char issuerkeypwd[] = "123456";
+    int validity = 365;
+    std::string outfile = "./generateCA/general.cer";
+    (*params)["keyPwd"] = secret;
+    (*params)["issuerKeystorePwd"] = isksPwd;
+    (*params)["issuerKeyPwd"] = issuerkeypwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    (*params)["keyUsageCritical"] = keyUsageCritical;
+    (*params)["validity"] = validity;
+    (*params)["outFile"] = outfile;
+    api->GenerateCert(params.get());
+    ret = api->OutputString("hello world", "./generateCA/tmp.data");
+    return ret;
 }
 }
 }
@@ -43,6 +112,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    OHOS::SignatureTools::TestGenerateSubCert(data, size);
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;
 }

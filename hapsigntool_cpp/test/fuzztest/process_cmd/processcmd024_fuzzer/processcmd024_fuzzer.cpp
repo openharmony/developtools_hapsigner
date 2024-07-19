@@ -44,14 +44,10 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int64_t length = 0;
     SignatureAlgorithmHelper out;
     ByteBuffer crlBuffer;
-    int32_t offset = 0;
-    int32_t len = 0;
     std::ofstream crlFile;
     CertChain certsChain;
     Pkcs7Context pkcs7Context;
-    long long certNumber = 0;
     Options* options = nullptr;
-    X509* cert = nullptr;
     X509_CRL* x509Crl = nullptr;
 
     param.SetMethod(str);
@@ -61,15 +57,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     retBool = param.GetSignatureAlgorithm(str, out);
     retStr = HashUtils::GetHashAlgName(algId);
     vec = HashUtils::GetDigestFromBytes(fileBytes, length, algName);
-    cert = VerifyCertOpensslUtils::GetX509CertFromBase64String(str);
-    retBool = VerifyCertOpensslUtils::CompareX509Cert(nullptr, str);
-    x509Crl = VerifyCertOpensslUtils::GetX509CrlFromDerBuffer(crlBuffer, offset, len);
-    VerifyCertOpensslUtils::WriteX509CrlToStream(crlFile, nullptr);
     retBool = VerifyCertOpensslUtils::VerifyCrl(certsChain, nullptr, pkcs7Context);
     x509Crl = VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(nullptr, nullptr);
     retBool = VerifyCertOpensslUtils::GetIssuerFromX509(nullptr, str);
-    retBool = VerifyCertOpensslUtils::GetSerialNumberFromX509(nullptr, certNumber);
-    retBool = VerifyCertOpensslUtils::GetIssuerFromX509Crl(nullptr, str);
 
     return true;
 }

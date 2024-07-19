@@ -23,7 +23,6 @@
 #include "options.h"
 #include "sign_provider.h"
 #include "local_sign_provider.h"
-#include "hap_verify_result.h"
 #include "hap_signer_block_utils.h"
 #include "remote_sign_provider.h"
 #include "verify_hap.h"
@@ -176,36 +175,13 @@ bool HapSignTest005(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-    AppDistType type = APP_GALLERY;
-    ProfileInfo provisionInfo;
-    VerifyHap verify;
-    bool ret = verify.IsAppDistributedTypeAllowInstall(type, provisionInfo);
     int capacity = 120;
-
-    HapVerifyResult hapVerifyResult;
-    hapVerifyResult.SetVersion(1);
-    hapVerifyResult.GetVersion();
-    hapVerifyResult.GetPublicKey();
-    hapVerifyResult.GetSignature();
-
     std::vector<OptionalBlock> option;
     OptionalBlock testblock;
     testblock.optionalType = PROPERTY_BLOB;
     testblock.optionalBlockValue.SetCapacity(capacity);
     option.push_back(testblock);
-    hapVerifyResult.SetOptionalBlocks(option);
-
-    std::string getProfile;
-    hapVerifyResult.GetBlockFromOptionalBlocks(PROFILE_BLOB, getProfile);
-
-    std::string getProperty;
-    hapVerifyResult.GetProperty(getProperty);
-    std::vector<int8_t> profile;
-
-    hapVerifyResult.SetProfile(profile);
-    hapVerifyResult.GetProfile();
-    hapVerifyResult.GetProvisionInfo();
-    return ret;
+    return true;
 }
 
 bool HapSignTest006(const uint8_t* data, size_t size)

@@ -60,6 +60,47 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     return ret;
 }
 
+bool RemoteSignTest(const uint8_t* data, size_t size)
+{
+    if (!data || !size) {
+        return true;
+    }
+
+    std::ofstream dummySO("./generateKeyPair/dummySO.txt", std::ios::binary);
+    dummySO << ' ';
+    dummySO.close();
+
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-mode";
+    char arg3[] = "remoteSign";
+    char arg4[] = "-keyAlias";
+    char arg5[] = "oh-app1-key-v1";
+    char arg6[] = "-profileFile";
+    char arg7[] = "./generateKeyPair/signed-profile.p7b";
+    char arg8[] = "-inFile";
+    char arg9[] = "./generateKeyPair/entry-default-unsigned-so.hap";
+    char arg10[] = "-signAlg";
+    char arg11[] = "SHA256withECDSA";
+    char arg12[] = "-outFile";
+    char arg13[] = "./generateKeyPair/entry-default-remote-signed-so.hap";
+    char arg14[] = "-signServer";
+    char arg15[] = "./generateKeyPair/app-release1.pem";
+    char arg16[] = "-signerPlugin";
+    char arg17[] = "./generateKeyPair/dummySO.txt";
+    char arg18[] = "-onlineAuthMode";
+    char arg19[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg20[] = "-username";
+    char arg21[] = "123456";
+    char arg22[] = "-userPwd";
+    char arg23[] = "123456";
+    char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
+                    arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23};
+    int argc = 24;
+    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    return ret;
+}
+
 bool SignElf(const uint8_t* data, size_t size)
 {
     if (!data || !size) {
@@ -141,10 +182,11 @@ bool SignBin(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    (void)rename("./generateKeyPair/phone-default-unsigned.txt", "./generateKeyPair/entry-default-unsigned-so.hap");
+    (void)rename("./generateKeyPair/entry-default-unsigned-so.txt", "./generateKeyPair/entry-default-unsigned-so.hap");
     sync();
     /* Run your code on data */
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
+    OHOS::SignatureTools::RemoteSignTest(data, size);
     OHOS::SignatureTools::SignElf(data, size);
     OHOS::SignatureTools::SignBin(data, size);
     return 0;
