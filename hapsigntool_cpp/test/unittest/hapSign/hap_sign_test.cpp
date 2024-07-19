@@ -1195,7 +1195,7 @@ HWTEST_F(HapSignTest, hap_sign_test_027, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
+ * @tc.name: hap_sign_test_028
  * @tc.desc: Generate a key pair and load it into the keystore.
  * @tc.type: FUNC
  * @tc.require:

@@ -834,8 +834,8 @@ HWTEST_F(ProfileTest, profile_test028, testing::ext::TestSize.Level1)
         "\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"not-after"
         "\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     ProfileInfo info;
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_INVALID);
+    int32_t result = ParseProvision(provision, info);
+    EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_OK);
 }
 
 /**

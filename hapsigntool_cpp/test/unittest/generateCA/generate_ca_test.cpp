@@ -1824,5 +1824,53 @@ HWTEST_F(GenerateCaTest, generate_cert_test_016, testing::ext::TestSize.Level1)
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
     EXPECT_EQ(cert, nullptr);
 }
+
+/**
+ * @tc.name: generate_cert_test_022
+ * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, generate_cert_test_022, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keyAlias = "alias";
+    std::string issuerkeyAlias = "oh-app1-key-v1";
+    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
+    std::string signAlg = "SHA384withECDSA";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string keyUsage = "digitalSignature";
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
+    std::string keyUsageCritical = "true";
+    char secret[] = "123456";
+    char isksPwd[] = "123456";
+    char keystorePwd[] = "123456";
+    char issuerkeypwd[] = "123456";
+    int validity = 365;
+    std::string outfile = "/data/test/generateCA/general.cer";
+    (*params)["keyPwd"] = secret;
+    (*params)["issuerKeystorePwd"] = isksPwd;
+    (*params)["issuerKeyPwd"] = issuerkeypwd;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["signAlg"] = signAlg;
+    (*params)["subject"] = subject;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerkeyAlias;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["basicConstraints"] = basicConstraints;
+    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
+    (*params)["basicConstraintsCa"] = basicConstraintsCa;
+    (*params)["keyUsageCritical"] = keyUsageCritical;
+    (*params)["validity"] = validity;
+    (*params)["outFile"] = outfile;
+    bool ret = api->GenerateCert(params.get());
+    EXPECT_EQ(ret, false);
+}
 }
 }

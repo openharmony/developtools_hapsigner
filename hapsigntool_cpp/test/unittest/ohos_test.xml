@@ -24,10 +24,9 @@
         <option name="push" value="./resource/generateKeyPair/profile1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/profile-sign-srv-ca1.cer -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/root-ca1.cer -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="./resource/generateKeyPair/rootPrikey.pem -> /data/test/generateKeyPair/" src="res" />
-        <option name="push" value="./resource/generateKeyPair/rootPubkey.pem -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/signed-profile.p7b -> /data/test/generateKeyPair/" src="res" />
         <option name="push" value="./resource/generateKeyPair/OpenHarmonyDamage.p12 -> /data/test/generateKeyPair/" src="res" />
+		<option name="push" value="./resource/generateKeyPair/OpenHarmony.txt -> /data/test/generateKeyPair/" src="res" />
 
         <option name="push" value="./resource/hapVerify/verify_err.p7b -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./resource/hapVerify/verify_test.p7b -> /data/test/hapVerify/" src="res" />

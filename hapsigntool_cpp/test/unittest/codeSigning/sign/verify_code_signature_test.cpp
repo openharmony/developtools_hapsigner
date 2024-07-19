@@ -494,9 +494,8 @@ HWTEST_F(VerifyCodeSignatureTest, CheckCodeSign001, testing::ext::TestSize.Level
     options.emplace(Options::OUT_CERT_CHAIN, std::string("./codeSigning/xx.cer"));
     options.emplace(Options::OUT_PROFILE, std::string("./codeSigning/xx.p7b"));
 
-    HapVerifyResult hapVerifyResult;
     VerifyHap hapVerifyV2;
-    int32_t ret = hapVerifyV2.Verify(options.GetString(Options::IN_FILE), hapVerifyResult, &options);
+    int32_t ret = hapVerifyV2.Verify(options.GetString(Options::IN_FILE), &options);
 
     EXPECT_NE(ret, 0);
 }

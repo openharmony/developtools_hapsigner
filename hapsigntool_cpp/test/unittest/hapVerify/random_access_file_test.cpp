@@ -21,7 +21,6 @@
 
 #include "byte_buffer.h"
 #include "random_access_file.h"
-#include "hap_verify_result.h"
 
 #include "hap_signer_block_utils.h"
 #include "hap_signer_block_utils_test.h"

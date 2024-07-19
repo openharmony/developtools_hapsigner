@@ -22,6 +22,7 @@
 #include "segment_header.h"
 #include "code_signing.h"
 #include "file_utils.h"
+#include "verify_hap.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -99,6 +100,8 @@ bool TestDatastructure(const uint8_t* data, size_t size)
     MerkleTreeExtension merkleTreeExtension;
     SegmentHeader segmentHeader;
     CodeSigning codeSigning;
+    VerifyHap verifyHap;
+    verifyHap.setIsPrintCert(true);
     return sizet != 0;
 }
 
@@ -109,6 +112,14 @@ bool TestFileUtils(const uint8_t* data, size_t size)
     bool flag = FileUtils::WriteByteToOutFile(bytes, file);
     FileUtils::DelDir(file);
     return flag;
+}
+
+bool TestNativeLibs(const uint8_t* data, size_t size)
+{
+    NativeLibInfoSegment nativeLibInfoSegment;
+    std::vector<std::pair<std::string, SignInfo>> soInfoList;
+    nativeLibInfoSegment.SetSoInfoList(soInfoList);
+    return true;
 }
 } // namespace SignatureTools
 } // namespace OHOS

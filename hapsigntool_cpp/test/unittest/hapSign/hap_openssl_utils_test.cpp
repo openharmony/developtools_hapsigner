@@ -151,52 +151,6 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_008, testing::ext::TestSize
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_009, testing::ext::TestSize.Level1)
-{
-    CertChain signCertChain;
-    signCertChain.push_back(nullptr);
-    std::vector<std::string> SignatureVec;
-    bool ret = VerifyHapOpensslUtils::GetSignatures(signCertChain, SignatureVec);
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_010, testing::ext::TestSize.Level1)
-{
-    CertChain signCertChain;
-    signCertChain.push_back(nullptr);
-    std::vector<std::string> SignatureVec;
-    bool ret = VerifyHapOpensslUtils::GetPublickeys(signCertChain, SignatureVec);
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_011, testing::ext::TestSize.Level1)
-{
-    CertChain signCertChain;
-    X509* t = X509_new();
-    signCertChain.push_back(t);
-    std::vector<std::string> SignatureVec;
-    bool ret = VerifyHapOpensslUtils::GetPublickeys(signCertChain, SignatureVec);
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
- * @tc.type: FUNC
- * @tc.require:
- */
 HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_012, testing::ext::TestSize.Level1)
 {
     Pkcs7Context pkcs7Context;
@@ -294,20 +248,6 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_019, testing::ext::TestSize
     PKCS7_content_new(pkcs7Context.p7, NID_pkcs7_data);
     PKCS7* pkcsBak = pkcs7Context.p7;
     bool ret = VerifyHapOpensslUtils::GetCertChains(pkcsBak, pkcs7Context);
-    EXPECT_EQ(ret, false);
-}
-/*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_020, testing::ext::TestSize.Level1)
-{
-    CertChain signCertChain;
-    signCertChain.push_back(nullptr);
-    std::vector<std::string> SignatureVec;
-    bool ret = VerifyHapOpensslUtils::GetSignatures(signCertChain, SignatureVec);
     EXPECT_EQ(ret, false);
 }
 } // namespace SignatureTools

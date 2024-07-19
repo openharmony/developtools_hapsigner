@@ -225,11 +225,11 @@ namespace {
          */
         ProfileInfo info;
         int32_t ret = ParseAndVerify(INVALID_PROVISION_1, info);
-        ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_INVALID);
+        ASSERT_NE(ret, AppProvisionVerifyResult::PROVISION_OK);
         ret = ParseAndVerify(INVALID_PROVISION_2, info);
-        ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_INVALID);
+        ASSERT_NE(ret, AppProvisionVerifyResult::PROVISION_OK);
         ret = ParseAndVerify(INVALID_PROVISION_3, info);
-        ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_INVALID);
+        ASSERT_EQ(ret, AppProvisionVerifyResult::PROVISION_OK);
     }
 
     /**

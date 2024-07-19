@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,9 +28,10 @@
 #include "signature_tools_log.h"
 #include "verify_hap.h"
 #include "hap_signer_block_utils.h"
-#include "hap_verify_result.h"
 #include "openssl/pem.h"
 #include "options.h"
+#include "signature_tools_errno.h"
+#include "hap_utils.h"
 
 using namespace testing::ext;
 
@@ -88,7 +88,6 @@ void VerifyHapTest::SetUpTestCase(void)
     (void)rename("./hapVerify/packet_hap_integrity_error.txt", "./hapVerify/packet_hap_integrity_error.hap");
     (void)rename("./hapVerify/packet_verify_app_error.txt", "./hapVerify/packet_verify_app_error.hap");
     (void)rename("./hapVerify/packet_get_certchain_error.txt", "./hapVerify/packet_get_certchain_error.hap");
-    (void)rename("./hapVerify/packet_get_optional_block_error.txt", "./hapVerify/packet_get_optional_block_error.hap");
     (void)rename("./hapVerify/packet_parse_profile_error.txt", "./hapVerify/packet_parse_profile_error.hap");
     (void)rename("./hapVerify/phone-default-signed.txt", "./hapVerify/phone-default-signed.hap");
     sync();
@@ -124,148 +123,6 @@ HWTEST_F(VerifyHapTest, CheckFilePathTest001, TestSize.Level1)
 }
 
 /**
- * @tc.name: Test GenerateAppId function
- * @tc.desc: The static function will return whether generate appid successfully;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, GenerateAppIdTest001, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input a null ProvisionInfo.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    ProfileInfo provisionInfo;
-    ASSERT_FALSE(v2.GenerateAppId(provisionInfo));
-}
-
-/**
- * @tc.name: Test GenerateFingerprint function
- * @tc.desc: The static function will return whether generate fingerprint successfully;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, GenerateFingerprintTest001, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input a null ProvisionInfo.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    ProfileInfo provisionInfo;
-    ASSERT_FALSE(v2.GenerateFingerprint(provisionInfo));
-}
-
-/**
- * @tc.name: Test GenerateFingerprint function
- * @tc.desc: The static function will return whether generate fingerprint successfully;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, GenerateFingerprintTest002, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input ProvisionInfo with error distributionCertificate.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    ProfileInfo provisionInfo;
-    provisionInfo.bundleInfo.distributionCertificate = ERROR_CERTIFICATE;
-    ASSERT_FALSE(v2.GenerateFingerprint(provisionInfo));
-}
-
-/**
- * @tc.name: Test GenerateFingerprint function
- * @tc.desc: The static function will return whether generate fingerprint successfully;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, GenerateFingerprintTest003, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input ProvisionInfo with error distributionCertificate.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    ProfileInfo provisionInfo;
-    provisionInfo.bundleInfo.developmentCertificate = ERROR_CERTIFICATE;
-    ASSERT_FALSE(v2.GenerateFingerprint(provisionInfo));
-}
-
-/**
- * @tc.name: Test GenerateFingerprint function
- * @tc.desc: The static function will return whether generate fingerprint successfully;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, GenerateFingerprintTest004, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input ProvisionInfo with error distributionCertificate.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    ProfileInfo provisionInfo;
-    provisionInfo.bundleInfo.distributionCertificate = TEST_CERTIFICATE;
-    ASSERT_TRUE(v2.GenerateFingerprint(provisionInfo));
-}
-
-/**
- * @tc.name: Test GenerateFingerprint function
- * @tc.desc: The static function will return whether generate fingerprint successfully;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, GenerateFingerprintTest005, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input ProvisionInfo with correct distributionCertificate.
-     * @tc.expected: step1. the return will be true.
-     */
-    VerifyHap v2;
-    ProfileInfo provisionInfo;
-    provisionInfo.bundleInfo.developmentCertificate = TEST_CERTIFICATE;
-    ASSERT_TRUE(v2.GenerateFingerprint(provisionInfo));
-}
-
-/**
- * @tc.name: Test VerifyProfileInfo function
- * @tc.desc: The static function will return result of verify profile info;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, VerifyProfileInfoTest001, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. profile match with debug and profile type is release.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    Pkcs7Context pkcs7Context;
-    Pkcs7Context profileContext;
-    ProfileInfo provisionInfo;
-    profileContext.matchResult.matchState = MATCH_WITH_PROFILE_DEBUG;
-    provisionInfo.type = ProvisionType::RELEASE;
-    ASSERT_FALSE(v2.VerifyProfileInfo(pkcs7Context, profileContext, provisionInfo));
-}
-
-/**
- * @tc.name: Test ParseAndVerifyProfileIfNeed function
- * @tc.desc: The static function will return result of ParseAndVerifyProfileIfNeed;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, ParseAndVerifyProfileIfNeedTest001, TestSize.Level1)
-{
-    /*
-     * @tc.steps: step1. input a null profile.
-     * @tc.expected: step1. the return will be false.
-     */
-    VerifyHap v2;
-    std::string profile;
-    ProfileInfo provisionInfo;
-    ASSERT_FALSE(v2.ParseAndVerifyProfileIfNeed(profile, provisionInfo, false));
-    /*
-     * @tc.steps: step1. input no need parse and verify profile.
-     * @tc.expected: step1. the return will be true.
-     */
-    ASSERT_TRUE(v2.ParseAndVerifyProfileIfNeed(profile, provisionInfo, true));
-}
-
-/**
  * @tc.name: Test GetDigestAndAlgorithm function
  * @tc.desc: The static function will return result of GetDigestAndAlgorithm;
  * @tc.type: FUNC
@@ -282,7 +139,6 @@ HWTEST_F(VerifyHapTest, GetDigestAndAlgorithmTest001, TestSize.Level1)
     ASSERT_FALSE(v2.GetDigestAndAlgorithm(digest));
 }
 
-
 /**
  * @tc.name: VerifyHapTest.Verify001
  * @tc.desc: The static function will return verify result;
@@ -294,7 +150,6 @@ HWTEST_F(VerifyHapTest, Verify001, TestSize.Level0)
         * @tc.steps: step1. input a invalid path to function of HapVerify.
         * @tc.expected: step1. the return will be FILE_PATH_INVALID.
         */
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
@@ -302,17 +157,15 @@ HWTEST_F(VerifyHapTest, Verify001, TestSize.Level0)
     std::string errorFile = "./hapVerify/signed_test.app";
 
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    OHOS::SignatureTools::VerifyHapResultCode targetResult = OHOS::SignatureTools::VERIFY_SUCCESS;
-    ASSERT_TRUE(resultCode != targetResult);
+    int32_t resultCode = verify.Verify(errorFile, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
     std::ofstream appFile;
     appFile.open(errorFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     ASSERT_TRUE(appFile.is_open());
     appFile.close();
-    resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode != targetResult);
+    resultCode = verify.Verify(errorFile, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
 }
-
 
 /**
  * @tc.name: VerifyHapTest.HapVerifyOsApp001
@@ -323,18 +176,17 @@ HWTEST_F(VerifyHapTest, HapVerifyOsApp001, TestSize.Level0)
 {
     /*
         * @tc.steps: step1. input a signed file to verify.
-        * @tc.expected: step1. the return will be VERIFY_SUCCESS.
+        * @tc.expected: step1. the return will be RET_OK.
         */
 
     std::string filePath = "./hapVerify/phone-default-signed.hap";
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
 
     VerifyHap verify;
-    int32_t ret = verify.Verify(filePath, hapVerifyResult, &options);
-    ASSERT_EQ(ret, OHOS::SignatureTools::VERIFY_SUCCESS);
+    int32_t ret = verify.Verify(filePath, &options);
+    ASSERT_EQ(ret, OHOS::SignatureTools::RET_OK);
 }
 
 /**
@@ -362,20 +214,10 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     hapFile.close();
     /*
         * @tc.steps: step1. input a signed file to verify.
-        * @tc.expected: step1. the return will be VERIFY_SUCCESS.
+        * @tc.expected: step1. the return will be RET_OK.
         */
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     VerifyHap verify;
-    ASSERT_TRUE(verify.Verify(filePath, hapVerifyResult, &options) == OHOS::SignatureTools::VERIFY_SUCCESS);
-    // /*
-    //     * @tc.steps: step2. check verify result.
-    //     * @tc.expected: step2. cert version is 1, certChains Len is 3.
-    //     */
-    OHOS::SignatureTools::ProfileInfo profile = hapVerifyResult.GetProvisionInfo();
-    std::vector<std::string> publicKeys = hapVerifyResult.GetPublicKey();
-    ASSERT_TRUE(static_cast<int>(publicKeys.size()) == TEST_CERT_CHAIN_LEN);
-    std::vector<std::string> signatures = hapVerifyResult.GetSignature();
-    ASSERT_TRUE(static_cast<int>(signatures.size()) == TEST_CERT_CHAIN_LEN);
+    ASSERT_TRUE(verify.Verify(filePath, &options) == OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step3. change comment data.
         * @tc.expected: step3. the return will be VERIFY_INTEGRITY_FAIL.
@@ -389,8 +231,7 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    OHOS::SignatureTools::HapVerifyResult verifyRet;
-    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
+    ASSERT_NE(verify.Verify(errorfilePath, &options), OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step4. change profile pkcs7 data.
         * @tc.expected: step4. the return will be APP_SOURCE_NOT_TRUSTED.
@@ -401,7 +242,7 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
+    ASSERT_NE(verify.Verify(errorfilePath, &options), OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step5. change app pkcs7 data.
         * @tc.expected: step5. the return will be VERIFY_APP_PKCS7_FAIL.
@@ -412,22 +253,20 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
+    ASSERT_NE(verify.Verify(errorfilePath, &options), OHOS::SignatureTools::RET_OK);
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify003
+ * @tc.name: VerifyHapTest.Verify004
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
-
 HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
 {
     /*
         * @tc.steps: step1. input a invalid path to function of HapVerify.
         * @tc.expected: step1. the return will be FILE_PATH_INVALID.
         */
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
@@ -444,8 +283,8 @@ HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
     hapFile.seekp(0, std::ios_base::beg);
     hapFile.write(MINIHAPFILE, TEST_MINI_HAP_FILE_LENGTH);
     hapFile.close();
-    int32_t resultCode = verify.Verify(rightFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == OHOS::SignatureTools::SIGNATURE_NOT_FOUND);
+    int32_t resultCode = verify.Verify(rightFile, &options);
+    ASSERT_NE(resultCode, OHOS::SignatureTools::RET_OK);
 
     /*
         * @tc.steps: step3. create an error hapfile and run HapVerify.
@@ -459,9 +298,8 @@ HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
     hapFile1.write(MINIHAPFILE, sizeof(MINIHAPFILE));
     hapFile1.seekp(TEST_MINI_HAP_FILE_LENGTH - sizeof(short), std::ios_base::beg);
     hapFile1.close();
-    resultCode = verify.Verify(rightFile1, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == OHOS::SignatureTools::SIGNATURE_NOT_FOUND);
-
+    resultCode = verify.Verify(rightFile1, &options);
+    ASSERT_NE(resultCode, OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step4. use an empty file to run HapVerify.
         * @tc.expected: step4. the return will be SIGNATURE_NOT_FOUND.
@@ -471,9 +309,10 @@ HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
     hapFile2.open(invalidFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     ASSERT_TRUE(hapFile2.is_open());
     hapFile2.close();
-    resultCode = verify.Verify(invalidFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == OHOS::SignatureTools::SIGNATURE_NOT_FOUND);
+    resultCode = verify.Verify(invalidFile, &options);
+    ASSERT_NE(resultCode, OHOS::SignatureTools::RET_OK);
 }
+
 /**
  * @tc.name: VerifyHapTest.Verify007
  * @tc.desc: The static function will return verify result of signed file;
@@ -487,6 +326,7 @@ HWTEST_F(VerifyHapTest, Verify007, TestSize.Level0)
     bool ret = verify.HapOutPutPkcs7(p7, outPutPath);
     EXPECT_EQ(ret, false);
 }
+
 /**
 * @tc.name: VerifyHapTest.Verify008
 * @tc.desc: The static function will return verify result of signed file;
@@ -497,9 +337,11 @@ HWTEST_F(VerifyHapTest, Verify008, TestSize.Level0)
     std::string profile = "";
     std::string ret = "111";
     VerifyHap verify;
+    verify.setIsPrintCert(true);
     int rets = verify.GetProfileContent(profile, ret);
     EXPECT_EQ(rets, -1);
 }
+
 /**
  * @tc.name: VerifyHapTest.Verify009
  * @tc.desc: The static function will return verify result of signed file;
@@ -513,6 +355,7 @@ HWTEST_F(VerifyHapTest, Verify009, TestSize.Level0)
     int rets = verify.GetProfileContent(profile, ret);
     EXPECT_EQ(rets, -1);
 }
+
 /**
  * @tc.name: VerifyHapTest.Verify010
  * @tc.desc: The static function will return verify result of signed file;
@@ -528,17 +371,6 @@ HWTEST_F(VerifyHapTest, Verify010, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify013
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, Verify013, TestSize.Level0)
-{
-    VerifyHap verify;
-    ProfileInfo provisionInfo;
-    verify.SetOrganization(provisionInfo);
-}
-/**
  * @tc.name: VerifyHapTest.Verify014
  * @tc.desc: The static function will return verify result;
  * @tc.type: FUNC
@@ -549,23 +381,19 @@ HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
         * @tc.steps: step1. input a invalid path to function of HapVerify.
         * @tc.expected: step1. the return will be FILE_PATH_INVALID.
         */
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/signed_test.app";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    OHOS::SignatureTools::VerifyHapResultCode targetResult = OHOS::SignatureTools::VERIFY_SUCCESS;
-    ASSERT_TRUE(resultCode != targetResult);
+    int32_t resultCode = verify.Verify(errorFile, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
     std::ofstream appFile;
     appFile.open(errorFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     ASSERT_TRUE(appFile.is_open());
     appFile.close();
-    resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode != targetResult);
+    resultCode = verify.Verify(errorFile, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step2. create a hapfile and run HapVerify.
         * @tc.expected: step2. the return will be SIGNATURE_NOT_FOUND.
@@ -577,8 +405,8 @@ HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
     hapFile.seekp(0, std::ios_base::beg);
     hapFile.write(MINIHAPFILE, TEST_MINI_HAP_FILE_LENGTH);
     hapFile.close();
-    resultCode = verify.Verify(rightFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == OHOS::SignatureTools::SIGNATURE_NOT_FOUND);
+    resultCode = verify.Verify(rightFile, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
 
     /*
         * @tc.steps: step3. create an error hapfile and run HapVerify.
@@ -592,9 +420,8 @@ HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
     hapFile1.write(MINIHAPFILE, sizeof(MINIHAPFILE));
     hapFile1.seekp(TEST_MINI_HAP_FILE_LENGTH - sizeof(short), std::ios_base::beg);
     hapFile1.close();
-    resultCode = verify.Verify(rightFile1, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == OHOS::SignatureTools::SIGNATURE_NOT_FOUND);
-
+    resultCode = verify.Verify(rightFile1, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step4. use an empty file to run HapVerify.
         * @tc.expected: step4. the return will be SIGNATURE_NOT_FOUND.
@@ -604,10 +431,9 @@ HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
     hapFile2.open(invalidFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
     ASSERT_TRUE(hapFile2.is_open());
     hapFile2.close();
-    resultCode = verify.Verify(invalidFile, hapVerifyResult, &options);
-    ASSERT_TRUE(resultCode == OHOS::SignatureTools::SIGNATURE_NOT_FOUND);
+    resultCode = verify.Verify(invalidFile, &options);
+    ASSERT_TRUE(resultCode != OHOS::SignatureTools::RET_OK);
 }
-
 
 /**
  * @tc.name: VerifyHapTest.Verify015
@@ -618,18 +444,16 @@ HWTEST_F(VerifyHapTest, Verify015, TestSize.Level0)
 {
     /*
         * @tc.steps: step1. input a signed file to verify.
-        * @tc.expected: step1. the return will be VERIFY_SUCCESS.
+        * @tc.expected: step1. the return will be RET_OK.
         */
-
     std::string filePath = "./hapVerify/phone-default-signed.hap";
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
 
     VerifyHap verify;
-    int32_t ret = verify.Verify(filePath, hapVerifyResult, &options);
-    ASSERT_EQ(ret, OHOS::SignatureTools::VERIFY_SUCCESS);
+    int32_t ret = verify.Verify(filePath, &options);
+    ASSERT_EQ(ret, OHOS::SignatureTools::RET_OK);
 }
 
 /**
@@ -657,20 +481,10 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     hapFile.close();
     /*
         * @tc.steps: step1. input a signed file to verify.
-        * @tc.expected: step1. the return will be VERIFY_SUCCESS.
+        * @tc.expected: step1. the return will be RET_OK.
         */
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     VerifyHap verify;
-    ASSERT_TRUE(verify.Verify(filePath, hapVerifyResult, &options) == OHOS::SignatureTools::VERIFY_SUCCESS);
-    // /*
-    //     * @tc.steps: step2. check verify result.
-    //     * @tc.expected: step2. cert version is 1, certChains Len is 3.
-    //     */
-    OHOS::SignatureTools::ProfileInfo profile = hapVerifyResult.GetProvisionInfo();
-    std::vector<std::string> publicKeys = hapVerifyResult.GetPublicKey();
-    ASSERT_TRUE(static_cast<int>(publicKeys.size()) == TEST_CERT_CHAIN_LEN);
-    std::vector<std::string> signatures = hapVerifyResult.GetSignature();
-    ASSERT_TRUE(static_cast<int>(signatures.size()) == TEST_CERT_CHAIN_LEN);
+    ASSERT_TRUE(verify.Verify(filePath, &options) == OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step3. change comment data.
         * @tc.expected: step3. the return will be VERIFY_INTEGRITY_FAIL.
@@ -684,8 +498,7 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    OHOS::SignatureTools::HapVerifyResult verifyRet;
-    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
+    ASSERT_NE(verify.Verify(errorfilePath, &options), OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step4. change profile pkcs7 data.
         * @tc.expected: step4. the return will be APP_SOURCE_NOT_TRUSTED.
@@ -696,7 +509,7 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
+    ASSERT_NE(verify.Verify(errorfilePath, &options), OHOS::SignatureTools::RET_OK);
     /*
         * @tc.steps: step5. change app pkcs7 data.
         * @tc.expected: step5. the return will be VERIFY_APP_PKCS7_FAIL.
@@ -707,7 +520,7 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
     errorFile.seekp(0, std::ios_base::beg);
     errorFile.write(errorCommentFile.GetBufferPtr(), errorCommentFile.GetCapacity());
     errorFile.close();
-    ASSERT_NE(verify.Verify(errorfilePath, verifyRet, &options), OHOS::SignatureTools::VERIFY_SUCCESS);
+    ASSERT_NE(verify.Verify(errorfilePath, &options), OHOS::SignatureTools::RET_OK);
 }
 
 /**
@@ -723,6 +536,7 @@ HWTEST_F(VerifyHapTest, Verify021, TestSize.Level0)
     bool ret = verify.HapOutPutPkcs7(p7, outPutPath);
     EXPECT_EQ(ret, false);
 }
+
 /**
 * @tc.name: VerifyHapTest.Verify022
 * @tc.desc: The static function will return verify result of signed file;
@@ -736,6 +550,7 @@ HWTEST_F(VerifyHapTest, Verify022, TestSize.Level0)
     int rets = verify.GetProfileContent(profile, ret);
     EXPECT_EQ(rets, -1);
 }
+
 /**
  * @tc.name: VerifyHapTest.Verify023
  * @tc.desc: The static function will return verify result of signed file;
@@ -749,6 +564,7 @@ HWTEST_F(VerifyHapTest, Verify023, TestSize.Level0)
     int rets = verify.GetProfileContent(profile, ret);
     EXPECT_EQ(rets, -1);
 }
+
 /**
  * @tc.name: VerifyHapTest.Verify024
  * @tc.desc: The static function will return verify result of signed file;
@@ -764,101 +580,76 @@ HWTEST_F(VerifyHapTest, Verify024, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify027
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, Verify027, TestSize.Level0)
-{
-    VerifyHap verify;
-    ProfileInfo provisionInfo;
-    verify.SetOrganization(provisionInfo);
-}
-
-/**
  * @tc.name: VerifyHapTest.VerifyHapError001
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError001, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/unvaild.hqf";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError002
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError002, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/unvaild.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError003
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError003, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/unvaild.app";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError004
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError004, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/unvaild.hsp";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError005
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError005, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
@@ -866,122 +657,64 @@ HWTEST_F(VerifyHapTest, VerifyHapError005, TestSize.Level0)
     std::string errorFile = "./hapVerify/unvaild.txt";
 
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError006
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError006, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify_nohave/certchain.pem";
     options[Options::OUT_PROFILE] = "./hapVerify_nohava/profile.p7b";
-
     std::string errorFile = "./hapVerify/phone-default-signed.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError007
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError007, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     std::shared_ptr<Options> params = std::make_shared<Options>();
-
     std::string outCertChain = "./hapVerify_nohave/certchain.pem";
     std::string outProfile = "./hapVerify/profile.p7b";
     (*params)["outCertChain"] = outCertChain;
     (*params)["outProfile"] = outProfile;
-
-
     std::string errorFile = "./hapVerify/phone-default-signed.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, params.get());
+    int32_t resultCode = verify.Verify(errorFile, params.get());
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError008
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError008, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     std::shared_ptr<Options> params = std::make_shared<Options>();
-
     std::string outCertChain = "./hapVerify/certchain.pem";
     std::string outProfile = "./hapVerify_nohave/profile.p7b";
     (*params)["outCertChain"] = outCertChain;
     (*params)["outProfile"] = outProfile;
-
-
     std::string errorFile = "./hapVerify/phone-default-signed.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, params.get());
+    int32_t resultCode = verify.Verify(errorFile, params.get());
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, VerifyHapError009, TestSize.Level0)
-{
-    Pkcs7Context pkcs7Context_t;
-    MatchingResult t;
-    t.matchState = MATCH_WITH_SIGN;
-    t.source = APP_THIRD_PARTY_PRELOAD;
-    pkcs7Context_t.matchResult = t;
-    VerifyHap verify;
-    bool ret = verify.VerifyProfileSignature(pkcs7Context_t, pkcs7Context_t);
-    EXPECT_NE(ret, true);
-}
-
-/**
- * @tc.name: VerifyHapTest.VerifyHapError001
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, VerifyHapError010, TestSize.Level0)
-{
-    AppDistType type = APP_GALLERY;
-    ProfileInfo provisionInfo;
-    VerifyHap verify;
-    bool ret = verify.IsAppDistributedTypeAllowInstall(type, provisionInfo);
-    EXPECT_EQ(ret, true);
-}
-
-/**
- * @tc.name: VerifyHapTest.VerifyHapError001
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, VerifyHapError011, TestSize.Level0)
-{
-    AppDistType type = NONE_TYPE;
-    ProfileInfo provisionInfo;
-    VerifyHap verify;
-    bool ret = verify.IsAppDistributedTypeAllowInstall(type, provisionInfo);
-    EXPECT_EQ(ret, false);
-}
-
-/**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError012
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
@@ -996,7 +729,7 @@ HWTEST_F(VerifyHapTest, VerifyHapError012, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError013
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
@@ -1011,7 +744,7 @@ HWTEST_F(VerifyHapTest, VerifyHapError013, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError014
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
@@ -1026,7 +759,7 @@ HWTEST_F(VerifyHapTest, VerifyHapError014, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError015
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
@@ -1041,91 +774,12 @@ HWTEST_F(VerifyHapTest, VerifyHapError015, TestSize.Level0)
 }
 
 /**
-* @tc.name: VerifyHapTest.VerifyHapError001
-* @tc.desc: The static function will return verify result of signed file;
-* @tc.type: FUNC
-*/
-HWTEST_F(VerifyHapTest, VerifyHapError016, TestSize.Level0)
-{
-    bool ret = false;
-    VerifyHap verify;
-    Pkcs7Context pkcs7Context;
-    MatchingResult t;
-    t.matchState = MATCH_WITH_SIGN;
-    t.source = APP_GALLARY;
-    pkcs7Context.matchResult = t;
-    ByteBuffer hapProfileBlock;
-    ProfileInfo provisionInfo;
-    verify.SetProfileBlockData(pkcs7Context, hapProfileBlock, provisionInfo);
-    EXPECT_EQ(ret, false);
-}
-
-/**
-* @tc.name: VerifyHapTest.VerifyHapError001
-* @tc.desc: The static function will return verify result of signed file;
-* @tc.type: FUNC
-*/
-HWTEST_F(VerifyHapTest, VerifyHapError017, TestSize.Level0)
-{
-    bool ret = false;
-    VerifyHap verify;
-    Pkcs7Context pkcs7Context;
-    MatchingResult t;
-    t.matchState = MATCH_WITH_SIGN;
-    t.source = APP_THIRD_PARTY_PRELOAD;
-    pkcs7Context.matchResult = t;
-    ByteBuffer hapProfileBlock;
-    ProfileInfo provisionInfo;
-    verify.SetProfileBlockData(pkcs7Context, hapProfileBlock, provisionInfo);
-    EXPECT_EQ(ret, false);
-}
-
-/**
-* @tc.name: VerifyHapTest.VerifyHapError001
-* @tc.desc: The static function will return verify result of signed file;
-* @tc.type: FUNC
-*/
-HWTEST_F(VerifyHapTest, VerifyHapError018, TestSize.Level0)
-{
-    bool ret = false;
-    VerifyHap verify;
-    Pkcs7Context pkcs7Context;
-    MatchingResult t;
-    t.matchState = MATCH_WITH_SIGN;
-    t.source = APP_THIRD_PARTY_PRELOAD;
-    pkcs7Context.matchResult = t;
-    ByteBuffer hapProfileBlock;
-    ProfileInfo provisionInfo;
-    verify.SetProfileBlockData(pkcs7Context, hapProfileBlock, provisionInfo);
-    EXPECT_EQ(ret, false);
-}
-
-/**
- * @tc.name: VerifyHapTest.VerifyHapError001
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, VerifyHapError019, TestSize.Level0)
-{
-    bool ret = false;
-    VerifyHap verify;
-    Pkcs7Context pkcs7Context;
-    Pkcs7Context profileContext;
-    ProfileInfo provisionInfo;
-    provisionInfo.type = ProvisionType::RELEASE;
-    provisionInfo.distributionType = APP_GALLERY;
-    ret = verify.VerifyProfileInfo(pkcs7Context, profileContext, provisionInfo);
-    EXPECT_EQ(ret, true);
-}
-
-/**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError024
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError024, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
@@ -1133,103 +787,106 @@ HWTEST_F(VerifyHapTest, VerifyHapError024, TestSize.Level0)
     std::string errorFile = "./hapVerify/packet_diget_algo_error.hap";
 
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError025
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError025, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/packet_hap_integrity_error.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError026
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError026, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/packet_verify_app_error.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError027
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError027, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/packet_get_certchain_error.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
+    int32_t resultCode = verify.Verify(errorFile, &options);
     EXPECT_NE(resultCode, 0);
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
- * @tc.desc: The static function will return verify result of signed file;
- * @tc.type: FUNC
- */
-HWTEST_F(VerifyHapTest, VerifyHapError028, TestSize.Level0)
-{
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
-    Options options;
-    options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
-    options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
-    std::string errorFile = "./hapVerify/packet_get_optional_block_error.hap";
-
-    VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    EXPECT_NE(resultCode, 0);
-}
-
-/**
- * @tc.name: VerifyHapTest.VerifyHapError001
+ * @tc.name: VerifyHapTest.VerifyHapError029
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError029, TestSize.Level0)
 {
-    OHOS::SignatureTools::HapVerifyResult hapVerifyResult;
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
     options[Options::OUT_PROFILE] = "./hapVerify/profile.p7b";
-
     std::string errorFile = "./hapVerify/packet_parse_profile_error.hap";
-
     VerifyHap verify;
-    int32_t resultCode = verify.Verify(errorFile, hapVerifyResult, &options);
-    EXPECT_NE(resultCode, 0);
+    int32_t resultCode = verify.Verify(errorFile, &options);
+    EXPECT_EQ(resultCode, 0);
+}
+
+/**
+ * @tc.name: VerifyHapTest.VerifyHapError030
+ * @tc.desc: The static function will return verify result of signed file;
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError030, TestSize.Level0)
+{
+    std::string outputProfileFile = "./hapVerify/outputProfileFile.txt";
+    std::string outputProofFile = "./hapVerify/outputProfileFile.txt";
+    std::string outputPropertyFile = "./hapVerify/outputProfileFile.txt";
+    std::string errorfile = "";
+    ByteBuffer bf1("123456789", 9);
+    ByteBuffer bf2("123456789", 9);
+    ByteBuffer bf3("123456789", 9);
+    ByteBuffer bf4("123456789", 9);
+    std::vector<OptionalBlock> optionBlocks;
+    optionBlocks.push_back({HapUtils::HAP_PROFILE_BLOCK_ID, bf1});
+    optionBlocks.push_back({HapUtils::HAP_PROPERTY_BLOCK_ID, bf2});
+    optionBlocks.push_back({HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID, bf3});
+    VerifyHap verify;
+    bool resultCode = verify.outputOptionalBlocks(outputProfileFile, outputProofFile, outputPropertyFile, optionBlocks);
+    EXPECT_EQ(resultCode, true);
+    
+    optionBlocks.push_back({HapUtils::HAP_CODE_SIGN_BLOCK_ID, bf4});
+    resultCode = verify.outputOptionalBlocks(outputProfileFile, outputProofFile, outputPropertyFile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
+    resultCode = verify.outputOptionalBlocks(errorfile, outputProofFile, outputPropertyFile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
+    resultCode = verify.outputOptionalBlocks(outputProfileFile, errorfile, outputPropertyFile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
+    resultCode = verify.outputOptionalBlocks(outputProfileFile, outputProofFile, errorfile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
 }
 }
 }

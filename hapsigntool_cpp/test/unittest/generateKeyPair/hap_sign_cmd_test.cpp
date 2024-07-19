@@ -70,7 +70,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_053, testing::ext::TestSize.Leve
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/app-release1.pem";
-    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.txt";
+    std::string subCaCertFile = "./generateKeyPair/OpenHarmony.txt";
     std::string outForm = "certChain";
     std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
@@ -453,7 +453,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_066, testing::ext::TestSize.Leve
 
     std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string outProfile = "./generateKeyPair/app-profile.txt";
+    std::string outProfile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["inFile"] = inFile;
     (*params)["outCertChain"] = outCertChain;
@@ -1601,6 +1601,379 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Leve
     (*params)["inForm"] = inform;
 
     bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+* @tc.name: hap_sign_tool_test_093
+* @tc.desc: Generate the root certificate entry check.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_093, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-root-ca-key-v1";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outFile = "./generateKeyPair/abc/rootca";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_094
+ * @tc.desc: Generate a universal certificate entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_094, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string keyUsage = "digitalSignature";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outFile = "./generateKeyPair/abc/general.cer";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_095
+ * @tc.desc: Generate a universal certificate entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_095, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string keyUsage = "digitalSignature";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/general.cer";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["keyUsage"] = keyUsage;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_096
+ * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_096, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outForm = "certChain";
+    std::string subCaCertFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string rootCaCertFile = "./generateKeyPair/OpenHarmony.txt";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outForm"] = outForm;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
+
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_097
+ * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_097, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outForm = "certChain";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string rootCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outForm"] = outForm;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
+
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_098
+ * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_098, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outForm = "certChain";
+    std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string rootCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
+    std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmony.txt";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outForm"] = outForm;
+    (*params)["subCaCertFile"] = subCaCertFile;
+    (*params)["rootCaCertFile"] = rootCaCertFile;
+    (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
+
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+* @tc.name: hap_sign_tool_test_099
+* @tc.desc: Generate an app debug certificate for entry checks.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_099, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keystoreFile = "./generateKeyPair/abc/OpenHarmony.txt";
+    (*params)["keystoreFile"] = keystoreFile;
+    bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+* @tc.name: hap_sign_tool_test_100
+* @tc.desc: Generate an app debug certificate for entry checks.
+* @tc.type: FUNC
+* @tc.require:
+*/
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_100, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string outFile = "./generateKeyPair/abc/OpenHarmony.txt";
+    (*params)["outFile"] = outFile;
+    bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_101
+ * @tc.desc: Generate a csr entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_101, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA256withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outFile = "./generateKeyPair/abc/oh-app1-key-v1.csr";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunCsr(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_102
+ * @tc.desc: Generate a csr entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_102, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA256withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/oh-app1-key-v1.csr";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunCsr(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_103
+ * @tc.desc: Generate a csr entry check.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_103, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA256withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunCsr(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_104
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_104, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string outFile = "./generateKeyPair/abc/signed-profile.txt";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: hap_sign_tool_test_105
+ * @tc.desc: Generate profile signature entry checks.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_105, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string outFile = "./generateKeyPair/signed-profile.txt";
+    std::string keyAlias = "abc";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string profileCertFile = "./generateKeyPair/OpenHarmony.p12";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["profileCertFile"] = profileCertFile;
+
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
     EXPECT_EQ(ret, false);
 }
 } // namespace SignatureTools

@@ -1925,7 +1925,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_056, testing::ext::TestSize.Level1)
 
     std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string outProfile = "./generateKeyPair/app-profile.txt";
+    std::string outProfile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["inFile"] = inFile;
     (*params)["outCertChain"] = outCertChain;
