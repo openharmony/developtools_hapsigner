@@ -570,19 +570,9 @@ bool SignProvider::SetSignParams(Options* options, std::unordered_set<std::strin
             std::string str = it->first.substr(size - 3);
             if (str != "Pwd") {
                 this->signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
-                continue;
             }
-
-            char* passWord = options->GetChars(it->first);
-            if (passWord == nullptr) {
-                SIGNATURE_TOOLS_LOGE("Get password error");
-                return false;
-            }
-            std::string strPwd = passWord;
-            this->signParams.insert(std::make_pair(it->first, strPwd));
         }
     }
-
     return true;
 }
 
