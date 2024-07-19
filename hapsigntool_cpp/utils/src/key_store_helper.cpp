@@ -608,13 +608,13 @@ void KeyStoreHelper::SetNidMac(int& nidKey, int& iter, int& macStatus)
     }
 }
 
-int KeyStoreHelper::SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
+int KeyStoreHelper::SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* certBags,
                                   unsigned char* keyId, unsigned int keyIdLen,
                                   const char* name, STACK_OF(PKCS7)** safes,
                                   int certNid, int iter, const char* keyStorePwd)
 {
     if (cert) {
-        bag = PKCS12_add_cert(&bags, cert);
+        bag = PKCS12_add_cert(&certBags, cert);
         if (name && !PKCS12_add_friendlyname(bag, name, -1)) {
             goto err;
         }
@@ -624,25 +624,25 @@ int KeyStoreHelper::SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS
         }
     }
 
-    if (bags && !PKCS12_add_safe(safes, bags, certNid, iter, keyStorePwd)) {
+    if (certBags && !PKCS12_add_safe(safes, certBags, certNid, iter, keyStorePwd)) {
         goto err;
     }
 
-    sk_PKCS12_SAFEBAG_pop_free(bags, PKCS12_SAFEBAG_free);
-    bags = NULL;
+    sk_PKCS12_SAFEBAG_pop_free(certBags, PKCS12_SAFEBAG_free);
+    certBags = nullptr;
     return RET_OK;
 err:
-    sk_PKCS12_SAFEBAG_pop_free(bags, PKCS12_SAFEBAG_free);
-    bags = NULL;
+    sk_PKCS12_SAFEBAG_pop_free(certBags, PKCS12_SAFEBAG_free);
+    certBags = nullptr;
     return RET_FAILED;
 }
 
-int KeyStoreHelper::SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* bags,
+int KeyStoreHelper::SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(PKCS12_SAFEBAG)* keyBags,
                                   const char* name, STACK_OF(PKCS7)** safes, int iter, const char* keyPwd,
                                   int keyType, int keyNid, unsigned char* keyId, unsigned int keyIdLen)
 {
     if (pkey) {
-        bag = PKCS12_add_key(&bags, pkey, keyType, iter, keyNid, keyPwd);
+        bag = PKCS12_add_key(&keyBags, pkey, keyType, iter, keyNid, keyPwd);
         if (!bag) {
             return RET_FAILED;
         }
@@ -663,16 +663,16 @@ int KeyStoreHelper::SetPkeyPkcs12(EVP_PKEY* pkey, PKCS12_SAFEBAG* bag, STACK_OF(
             goto err;
         }
     }
-    if (bags && !PKCS12_add_safe(safes, bags, -1, 0, NULL)) {
+    if (keyBags && !PKCS12_add_safe(safes, keyBags, -1, 0, NULL)) {
         goto err;
     }
 
-    sk_PKCS12_SAFEBAG_pop_free(bags, PKCS12_SAFEBAG_free);
-    bags = NULL;
+    sk_PKCS12_SAFEBAG_pop_free(keyBags, PKCS12_SAFEBAG_free);
+    keyBags = nullptr;
     return RET_OK;
 err:
-    sk_PKCS12_SAFEBAG_pop_free(bags, PKCS12_SAFEBAG_free);
-    bags = NULL;
+    sk_PKCS12_SAFEBAG_pop_free(keyBags, PKCS12_SAFEBAG_free);
+    keyBags = nullptr;
     return RET_FAILED;
 }
 

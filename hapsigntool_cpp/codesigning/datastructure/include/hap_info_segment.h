@@ -29,12 +29,12 @@ namespace SignatureTools {
 class HapInfoSegment {
 public:
     HapInfoSegment();
-    HapInfoSegment(int32_t magic, SignInfo signInfo);
-    void SetSignInfo(SignInfo signInfo);
+    HapInfoSegment(int32_t magic, const SignInfo& signInfo);
+    void SetSignInfo(const SignInfo& signInfo);
     SignInfo& GetSignInfo();
     int32_t GetSize();
     void ToByteArray(std::vector<int8_t>& ret);
-    static HapInfoSegment FromByteArray(std::vector<int8_t> bytes);
+    static HapInfoSegment FromByteArray(std::vector<int8_t>& bytes);
 
 private:
     static const int32_t MAGIC_NUM_BYTES = 4;

@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace SignatureTools {
 
-HwBlockData::HwBlockData(int32_t blockNum, int64_t blockStart)
+HwBlockData::HwBlockData(const int32_t blockNum, const int64_t blockStart)
 {
     m_blockNum = blockNum;
     m_blockStart = blockStart;
@@ -29,7 +29,7 @@ int32_t HwBlockData::GetBlockNum()
     return m_blockNum;
 }
 
-void HwBlockData::SetBlockNum(int32_t blockNum)
+void HwBlockData::SetBlockNum(const int32_t blockNum)
 {
     m_blockNum = blockNum;
 }
@@ -39,7 +39,7 @@ int64_t HwBlockData::GetBlockStart()
     return m_blockStart;
 }
 
-void HwBlockData::SetBlockStart(int64_t blockStart)
+void HwBlockData::SetBlockStart(const int64_t blockStart)
 {
     m_blockStart = blockStart;
 }

@@ -65,7 +65,7 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
 * @param ret signed data
 * @return 0:success <0:error
 */
-int ProfileSignTool::SignProfile(const std::string& content, std::shared_ptr<Signer> signer,
+int ProfileSignTool::SignProfile(const std::string& content, const std::shared_ptr<Signer>& signer,
                                  const std::string& sigAlg, std::string& ret)
 {
     PKCS7Data p7Data;

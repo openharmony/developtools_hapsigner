@@ -73,7 +73,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
         }
         PrintMsg("Start " + param->GetMethod());
         SIGNATURE_TOOLS_LOGD("%s run start time  ", param->GetMethod().c_str());
-        if (!DispatchParams(param, *serviceApi.get())) {
+        if (!DispatchParams(param, *serviceApi)) {
             SIGNATURE_TOOLS_LOGD("%s run end time  ", param->GetMethod().c_str());
             PrintMsg(param->GetMethod() + " failed");
             return false;
@@ -84,7 +84,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
     return true;
 }
 
-bool ParamsRunTool::CallGenerators(ParamsSharedPtr params, SignToolServiceImpl& api)
+bool ParamsRunTool::CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api)
 {
     bool isSuccess = false;
     std::string method = params->GetMethod();
@@ -102,6 +102,17 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
     if (!params->Required({Options::MODE, Options::IN_FILE, Options::OUT_FILE, Options::SIGN_ALG})) {
         return false;
     }
+
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::IN_FILE, Options::APP_CERT_FILE,
+                                            Options::PROFILE_FILE, Options::KEY_STORE_FILE,
+                                            ParamConstants::PARAM_REMOTE_SIGNERPLUGIN})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     std::string mode = params->GetString(Options::MODE);
     if (!StringUtils::CaseCompare(mode, LOCAL_SIGN) &&
         !StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
@@ -155,7 +166,7 @@ bool ParamsRunTool::CheckProfile(Options& params)
     return true;
 }
 
-bool ParamsRunTool::DispatchParams(ParamsSharedPtr params, SignToolServiceImpl& api)
+bool ParamsRunTool::DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api)
 {
     bool isSuccess = false;
     std::string method = params->GetMethod();
@@ -173,12 +184,18 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
         Options::KEY_SIZE, Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE, Options::KEY_STORE_FILE,
+                                             Options::ISSUER_KEY_STORE_FILE})) {
+        return false;
+    }
+
     std::string keyAlg = params->GetString(Options::KEY_ALG);
     if (!CmdUtil::JudgeAlgType(keyAlg)) {
         return false;
     }
-    int size = params->GetInt(Options::KEY_SIZE);
-    if (!CmdUtil::JudgeSize(size)) {
+    int keySize = params->GetInt(Options::KEY_SIZE);
+    if (!CmdUtil::JudgeSize(keySize)) {
         return false;
     }
     std::string signAlg = params->GetString(Options::SIGN_ALG);
@@ -199,6 +216,15 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
         Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
+
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     std::string keyusage = params->GetString(Options::KEY_USAGE);
     if (!CmdUtil::VerifyTypes(keyusage)) {
         return false;
@@ -221,40 +247,40 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::CheckEndCertArguments(Options& params)
 {
-    if (!params.Required({params.KEY_ALIAS, params.ISSUER, params.ISSUER_KEY_ALIAS,
-                        params.SUBJECT, params.SIGN_ALG, params.KEY_STORE_FILE})) {
+    if (!params.Required({Options::KEY_ALIAS, Options::ISSUER, Options::ISSUER_KEY_ALIAS,
+                        Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
-    std::string signAlg = params.GetString(params.SIGN_ALG);
+    std::string signAlg = params.GetString(Options::SIGN_ALG);
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
         return false;
     }
-    std::string outForm = params.GetString(params.OUT_FORM);
+    std::string outForm = params.GetString(Options::OUT_FORM);
     if (!outForm.empty()) {
         if (!CmdUtil::VerifyType(outForm, Options::OUT_FORM_SCOPE)) {
             return false;
         }
     }
     if (!outForm.empty() && "certChain" == outForm) {
-        if (!params.Required({params.SUB_CA_CERT_FILE, params.CA_CERT_FILE})) {
+        if (!params.Required({Options::SUB_CA_CERT_FILE, Options::CA_CERT_FILE})) {
             return false;
         }
-        if (!FileUtils::ValidFileType(params.GetString(params.SUB_CA_CERT_FILE), {"cer"}) ||
-            !FileUtils::ValidFileType(params.GetString(params.CA_CERT_FILE), {"cer"})) {
+        if (!FileUtils::ValidFileType(params.GetString(Options::SUB_CA_CERT_FILE), {"cer"}) ||
+            !FileUtils::ValidFileType(params.GetString(Options::CA_CERT_FILE), {"cer"})) {
             return false;
         }
     }
-    std::string keyStoreFile = params.GetString(params.KEY_STORE_FILE);
+    std::string keyStoreFile = params.GetString(Options::KEY_STORE_FILE);
     if (!FileUtils::ValidFileType(keyStoreFile, {"p12", "jks"})) {
         return false;
     }
-    if (params.find(params.ISSUER_KEY_STORE_FILE) != params.end()) {
-        std::string issuerKeyStoreFile = params.GetString(params.ISSUER_KEY_STORE_FILE);
+    if (params.find(Options::ISSUER_KEY_STORE_FILE) != params.end()) {
+        std::string issuerKeyStoreFile = params.GetString(Options::ISSUER_KEY_STORE_FILE);
         if (!FileUtils::ValidFileType(issuerKeyStoreFile, {"p12", "jks"})) {
             return false;
         }
     }
-    std::string outFile = params.GetString(params.OUT_FILE);
+    std::string outFile = params.GetString(Options::OUT_FILE);
     if (!outFile.empty()) {
         if (!FileUtils::ValidFileType(outFile, {"cer", "pem"})) {
             return false;
@@ -265,6 +291,15 @@ bool ParamsRunTool::CheckEndCertArguments(Options& params)
 
 bool ParamsRunTool::RunAppCert(Options* params, SignToolServiceImpl& api)
 {
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE,
+                                            Options::CA_CERT_FILE, Options::SUB_CA_CERT_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     if (!ParamsRunTool::CheckEndCertArguments(*params)) {
         return false;
     }
@@ -273,6 +308,15 @@ bool ParamsRunTool::RunAppCert(Options* params, SignToolServiceImpl& api)
 
 bool ParamsRunTool::RunProfileCert(Options* params, SignToolServiceImpl& api)
 {
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE,
+                                            Options::CA_CERT_FILE, Options::SUB_CA_CERT_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     if (!ParamsRunTool::CheckEndCertArguments(*params)) {
         return false;
     }
@@ -284,12 +328,17 @@ bool ParamsRunTool::RunKeypair(Options* params, SignToolServiceImpl& api)
     if (!params->Required({Options::KEY_ALIAS, Options::KEY_ALG, Options::KEY_SIZE, Options::KEY_STORE_FILE})) {
         return false;
     }
-    std::string keyAlg = params->GetString(Options::KEY_ALG);
-    if (!CmdUtil::JudgeAlgType(keyAlg)) {
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::KEY_STORE_FILE})) {
         return false;
     }
-    int size = params->GetInt(Options::KEY_SIZE);
-    if (!CmdUtil::JudgeSize(size)) {
+
+    std::string keyAlgorithm = params->GetString(Options::KEY_ALG);
+    if (!CmdUtil::JudgeAlgType(keyAlgorithm)) {
+        return false;
+    }
+    int keyAlgorithmSize = params->GetInt(Options::KEY_SIZE);
+    if (!CmdUtil::JudgeSize(keyAlgorithmSize)) {
         return false;
     }
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
@@ -303,6 +352,14 @@ bool ParamsRunTool::RunCsr(Options* params, SignToolServiceImpl& api)
     if (!params->Required({Options::KEY_ALIAS, Options::SUBJECT, Options::SIGN_ALG, Options::KEY_STORE_FILE})) {
         return false;
     }
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::KEY_STORE_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     std::string signAlg = params->GetString(Options::SIGN_ALG);
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
         return false;
@@ -323,6 +380,16 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
     if (!params->Required({params->MODE, params->SIGN_ALG, params->OUT_FILE, params->IN_FILE})) {
         return false;
     }
+
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::KEY_STORE_FILE, Options::PROFILE_CERT_FILE,
+                                            Options::IN_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     std::string mode = params->GetString(Options::MODE);
     if (!StringUtils::CaseCompare(mode, LOCAL_SIGN) &&
         !StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
@@ -355,6 +422,14 @@ bool ParamsRunTool::RunVerifyProfile(Options* params, SignToolServiceImpl& api)
         return false;
     }
 
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::IN_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
     if (!FileUtils::ValidFileType(params->GetString(Options::IN_FILE), {"p7b"})) {
         return false;
     }
@@ -383,6 +458,15 @@ bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)
     if (!params->Required({Options::IN_FILE, Options::OUT_CERT_CHAIN, Options::OUT_PROFILE})) {
         return false;
     }
+
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::IN_FILE})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_CERT_CHAIN, Options::OUT_PROFILE})) {
+        return false;
+    }
+
     std::string inForm = params->GetString(Options::INFORM, ZIP);
     if (!StringUtils::ContainsCase(InformList, inForm)) {
         PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "parameter '" + inForm

@@ -38,24 +38,24 @@ bool VerifyBin::Verify(Options* options)
         return false;
     }
     // verify bin
-    HapVerifyResult verifyResult;
+    std::vector<int8_t> profileVec;
     Pkcs7Context pkcs7Context;
-    bool verifyBinFileFLag = VerifyBinFile(filePath, verifyResult, options, pkcs7Context);
+    bool verifyBinFileFLag = VerifyBinFile(filePath, profileVec, options, pkcs7Context);
     if (!verifyBinFileFLag) {
         SIGNATURE_TOOLS_LOGE("verify bin file %s failed!", filePath.c_str());
         return false;
     }
     // write certificate and p7b file
-    VerifyHap hapVerifyV2;
-    int32_t writeFlag = hapVerifyV2.WriteVerifyOutput(pkcs7Context, verifyResult.GetProfile(), options);
-    if (writeFlag != VERIFY_SUCCESS) {
+    VerifyHap hapVerify(false);
+    int32_t writeFlag = hapVerify.WriteVerifyOutput(pkcs7Context, profileVec, options);
+    if (writeFlag != RET_OK) {
         SIGNATURE_TOOLS_LOGE("write elf output failed on verify bin!");
         return false;
     }
     return true;
 }
 
-bool VerifyBin::VerifyBinFile(const std::string& binFile, HapVerifyResult& verifyResult,
+bool VerifyBin::VerifyBinFile(const std::string& binFile, std::vector<int8_t>& profileVec,
                               Options* options, Pkcs7Context& pkcs7Context)
 {
     SignBlockInfo signBlockInfo(true);
@@ -67,7 +67,7 @@ bool VerifyBin::VerifyBinFile(const std::string& binFile, HapVerifyResult& verif
     // verify profile
     std::string profileJson;
     bool verifyP7bFlag = VerifyElf::VerifyP7b(signBlockInfo.GetSignBlockMap(), options, pkcs7Context,
-        verifyResult, profileJson);
+        profileVec, profileJson);
     if (!verifyP7bFlag) {
         SIGNATURE_TOOLS_LOGE("verify profile failed on verify bin %s", binFile.c_str());
         return false;
@@ -83,8 +83,8 @@ bool VerifyBin::VerifyBinFile(const std::string& binFile, HapVerifyResult& verif
 
 bool VerifyBin::VerifyBinDigest(SignBlockInfo& signBlockInfo)
 {
-    std::vector<int8_t> rawDigest = signBlockInfo.GetRawDigest();
-    std::vector<int8_t> generatedDig = signBlockInfo.GetFileDigest();
+    std::vector<int8_t>& rawDigest = signBlockInfo.GetRawDigest();
+    std::vector<int8_t>& generatedDig = signBlockInfo.GetFileDigest();
     bool isEqual = rawDigest.empty() || generatedDig.empty() ||
         !std::equal(rawDigest.begin(), rawDigest.end(), generatedDig.begin());
     if (isEqual) {

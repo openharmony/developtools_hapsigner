@@ -65,8 +65,7 @@ void BCSignedDataGenerator::SetOwnerId(const std::string& ownerID)
     m_ownerID = ownerID;
 }
 
-int BCSignedDataGenerator::PackageSignedData(const std::string& content,
-                                             std::shared_ptr<Signer> signer,
+int BCSignedDataGenerator::PackageSignedData(const std::string& content, const std::shared_ptr<Signer>& signer,
                                              const std::string& sigAlg, std::string& ret)
 {
     int result = RET_OK;

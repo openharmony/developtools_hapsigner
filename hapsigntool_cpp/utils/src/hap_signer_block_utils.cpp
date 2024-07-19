@@ -18,6 +18,7 @@
 #include <climits>
 #include <vector>
 
+#include "signature_info.h"
 #include "algorithm"
 #include "openssl/evp.h"
 #include "securec.h"
@@ -156,20 +157,20 @@ bool HapSignerBlockUtils::FindEocdInSearchBuffer(ByteBuffer& searchBuffer, int& 
         return false;
     }
 
-    int32_t currentOffset = searchBufferSize - ZIP_EOCD_SEG_MIN_SIZE;
-    while (currentOffset >= 0) {
+    int32_t calcCurrentOffset = searchBufferSize - ZIP_EOCD_SEG_MIN_SIZE;
+    while (calcCurrentOffset >= 0) {
         int32_t hapEocdSegmentFlag;
-        if (searchBuffer.GetInt32(currentOffset, hapEocdSegmentFlag) &&
+        if (searchBuffer.GetInt32(calcCurrentOffset, hapEocdSegmentFlag) &&
             (hapEocdSegmentFlag == ZIP_EOCD_SEGMENT_FLAG)) {
             unsigned short commentLength;
-            int32_t expectedCommentLength = searchBufferSize - ZIP_EOCD_SEG_MIN_SIZE - currentOffset;
-            if (searchBuffer.GetUInt16(currentOffset + ZIP_EOCD_COMMENT_LENGTH_OFFSET, commentLength) &&
+            int32_t expectedCommentLength = searchBufferSize - ZIP_EOCD_SEG_MIN_SIZE - calcCurrentOffset;
+            if (searchBuffer.GetUInt16(calcCurrentOffset + ZIP_EOCD_COMMENT_LENGTH_OFFSET, commentLength) &&
                 static_cast<int>(commentLength) == expectedCommentLength) {
-                offset = currentOffset;
+                offset = calcCurrentOffset;
                 return true;
             }
         }
-        currentOffset--;
+        calcCurrentOffset--;
     }
     return false;
 }
@@ -411,10 +412,10 @@ bool HapSignerBlockUtils::ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
         case PROOF_ROTATION_BLOB:
         case PROPERTY_BLOB:
             {
-                OptionalBlock optionalBlock;
-                optionalBlock.optionalType = static_cast<int>(type);
-                optionalBlock.optionalBlockValue = subBlock;
-                signInfo.optionBlocks.push_back(optionalBlock);
+                OptionalBlock optionalBlockObject;
+                optionalBlockObject.optionalType = static_cast<int>(type);
+                optionalBlockObject.optionalBlockValue = subBlock;
+                signInfo.optionBlocks.push_back(optionalBlockObject);
                 ret = true;
                 break;
             }
@@ -470,6 +471,9 @@ bool HapSignerBlockUtils::VerifyHapIntegrity(
         SIGNATURE_TOOLS_LOGE("digest of contents verify failed, alg %d", nId);
         return false;
     }
+    PrintMsg(std::string("Digest verify result: ") + "success" + ", DigestAlgorithm: "
+             + VerifyHapOpensslUtils::GetDigestAlgorithmString(digestInfo.digestAlgorithm));
+
     return true;
 }
 
@@ -536,32 +540,32 @@ bool HapSignerBlockUtils::ComputeDigestsForEachChunk(const DigestParameter& dige
     result.PutInt32(1, chunkCount);
 
     int32_t chunkIndex = 0;
-    unsigned char out[EVP_MAX_MD_SIZE];
-    unsigned char chunkContentPrefix[ZIP_CHUNK_DIGEST_PRIFIX_LEN] = {
+    unsigned char outBlock[EVP_MAX_MD_SIZE];
+    unsigned char zipChunkContentPrefix[ZIP_CHUNK_DIGEST_PRIFIX_LEN] = {
     (unsigned char)ZIP_SECOND_LEVEL_CHUNK_PREFIX, 0, 0, 0, 0};
 
-    int32_t offset = ZIP_CHUNK_DIGEST_PRIFIX_LEN;
+    int32_t zipOffset = ZIP_CHUNK_DIGEST_PRIFIX_LEN;
     for (int32_t i = 0; i < len; i++) {
         while (contents[i]->HasRemaining()) {
-            int32_t chunkSize = std::min(contents[i]->Remaining(), CHUNK_SIZE);
-            if (!InitDigestPrefix(digestParam, chunkContentPrefix, chunkSize)) {
+            int32_t digestChunkSize = std::min(contents[i]->Remaining(), CHUNK_SIZE);
+            if (!InitDigestPrefix(digestParam, zipChunkContentPrefix, digestChunkSize)) {
                 SIGNATURE_TOOLS_LOGE("InitDigestPrefix failed");
                 return false;
             }
 
-            if (!contents[i]->ReadDataAndDigestUpdate(digestParam, chunkSize)) {
+            if (!contents[i]->ReadDataAndDigestUpdate(digestParam, digestChunkSize)) {
                 SIGNATURE_TOOLS_LOGE("Copy Partial Buffer failed, count: %d", chunkIndex);
                 return false;
             }
 
-            int32_t digestLen = VerifyHapOpensslUtils::GetDigest(digestParam, out);
+            int32_t digestLen = VerifyHapOpensslUtils::GetDigest(digestParam, outBlock);
             if (digestLen != digestParam.digestOutputSizeBytes) {
                 SIGNATURE_TOOLS_LOGE("GetDigest failed len: %d digestSizeBytes: %d",
                                      digestLen, digestParam.digestOutputSizeBytes);
                 return false;
             }
-            result.PutData(offset, reinterpret_cast<char*>(out), digestParam.digestOutputSizeBytes);
-            offset += digestLen;
+            result.PutData(zipOffset, reinterpret_cast<char*>(outBlock), digestParam.digestOutputSizeBytes);
+            zipOffset += digestLen;
             chunkIndex++;
         }
     }
@@ -573,8 +577,8 @@ DigestParameter HapSignerBlockUtils::GetDigestParameter(int32_t nId)
     DigestParameter digestParam;
     digestParam.digestOutputSizeBytes = VerifyHapOpensslUtils::GetDigestAlgorithmOutputSizeBytes(nId);
     digestParam.md = EVP_get_digestbynid(nId);
-    digestParam.ptrCtx = EVP_MD_CTX_create();
-    EVP_MD_CTX_init(digestParam.ptrCtx);
+    digestParam.ctxPtr = EVP_MD_CTX_create();
+    EVP_MD_CTX_init(digestParam.ctxPtr);
     return digestParam;
 }
 
@@ -616,49 +620,49 @@ bool HapSignerBlockUtils::InitDigestPrefix(const DigestParameter& digestParam,
 
 int64_t HapSignerBlockUtils::CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo)
 {
-    std::ofstream hapFile(pathFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
-    if (!hapFile.is_open()) {
+    std::ofstream hapFileInfo(pathFile.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
+    if (!hapFileInfo.is_open()) {
         return 0;
     }
     char block[TEST_FILE_BLOCK_LENGTH] = {0};
     /* input contents of ZIP entries */
-    hapFile.seekp(0, std::ios_base::beg);
-    hapFile.write(block, sizeof(block));
+    hapFileInfo.seekp(0, std::ios_base::beg);
+    hapFileInfo.write(block, sizeof(block));
     /* input sign block */
     HapSubSignBlockHead signBlob;
     HapSubSignBlockHead profileBlob;
     HapSubSignBlockHead propertyBlob;
     CreateHapSubSignBlockHead(signBlob, profileBlob, propertyBlob);
-    hapFile.write(reinterpret_cast<char*>(&signBlob), sizeof(signBlob));
-    hapFile.write(reinterpret_cast<char*>(&profileBlob), sizeof(profileBlob));
-    hapFile.write(reinterpret_cast<char*>(&propertyBlob), sizeof(propertyBlob));
+    hapFileInfo.write(reinterpret_cast<char*>(&signBlob), sizeof(signBlob));
+    hapFileInfo.write(reinterpret_cast<char*>(&profileBlob), sizeof(profileBlob));
+    hapFileInfo.write(reinterpret_cast<char*>(&propertyBlob), sizeof(propertyBlob));
     for (int32_t i = 0; i < TEST_FILE_BLOCK_COUNT; i++) {
-        hapFile.write(block, sizeof(block));
+        hapFileInfo.write(block, sizeof(block));
     }
     int32_t blockCount = TEST_FILE_BLOCK_COUNT;
-    hapFile.write(reinterpret_cast<char*>(&blockCount), sizeof(blockCount));
+    hapFileInfo.write(reinterpret_cast<char*>(&blockCount), sizeof(blockCount));
     int64_t signBlockSize = (sizeof(HapSubSignBlockHead) + sizeof(block)) * TEST_FILE_BLOCK_COUNT +
         HapSignerBlockUtils::ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH;
-    hapFile.write(reinterpret_cast<char*>(&signBlockSize), sizeof(signBlockSize));
+    hapFileInfo.write(reinterpret_cast<char*>(&signBlockSize), sizeof(signBlockSize));
     int64_t magic = HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_LOW_OLD;
-    hapFile.write(reinterpret_cast<char*>(&magic), sizeof(magic));
+    hapFileInfo.write(reinterpret_cast<char*>(&magic), sizeof(magic));
     magic = HapSignerBlockUtils::HAP_SIG_BLOCK_MAGIC_HIGH_OLD;
-    hapFile.write(reinterpret_cast<char*>(&magic), sizeof(magic));
+    hapFileInfo.write(reinterpret_cast<char*>(&magic), sizeof(magic));
     int32_t version = 1;
-    hapFile.write(reinterpret_cast<char*>(&version), sizeof(version));
+    hapFileInfo.write(reinterpret_cast<char*>(&version), sizeof(version));
     /* input central direction */
-    hapFile.write(block, sizeof(block));
+    hapFileInfo.write(block, sizeof(block));
     /* input end of central direction */
     int32_t zidEocdSign = HapSignerBlockUtils::ZIP_EOCD_SEGMENT_FLAG;
-    hapFile.write(reinterpret_cast<char*>(&zidEocdSign), sizeof(zidEocdSign));
-    hapFile.write(reinterpret_cast<char*>(&magic), sizeof(magic));
+    hapFileInfo.write(reinterpret_cast<char*>(&zidEocdSign), sizeof(zidEocdSign));
+    hapFileInfo.write(reinterpret_cast<char*>(&magic), sizeof(magic));
     uint32_t centralDirLen = sizeof(block);
-    hapFile.write(reinterpret_cast<char*>(&centralDirLen), sizeof(centralDirLen));
+    hapFileInfo.write(reinterpret_cast<char*>(&centralDirLen), sizeof(centralDirLen));
     uint32_t centralDirOffset = TEST_FILE_BLOCK_LENGTH + signBlockSize;
-    hapFile.write(reinterpret_cast<char*>(&centralDirOffset), sizeof(centralDirOffset));
+    hapFileInfo.write(reinterpret_cast<char*>(&centralDirOffset), sizeof(centralDirOffset));
     short eocdCommentLen = 0;
-    hapFile.write(reinterpret_cast<char*>(&eocdCommentLen), sizeof(eocdCommentLen));
-    hapFile.close();
+    hapFileInfo.write(reinterpret_cast<char*>(&eocdCommentLen), sizeof(eocdCommentLen));
+    hapFileInfo.close();
     signInfo.hapCentralDirOffset = centralDirOffset;
     signInfo.hapEocdOffset = centralDirOffset + centralDirLen;
     signInfo.hapSignatureBlock.SetCapacity(TEST_FILE_BLOCK_LENGTH);
@@ -675,12 +679,12 @@ void HapSignerBlockUtils::CreateHapSubSignBlockHead(HapSubSignBlockHead& signBlo
     signBlob.type = HAP_SIGN_BLOB;
     signBlob.length = TEST_FILE_BLOCK_LENGTH;
     signBlob.offset = sizeof(HapSubSignBlockHead) * TEST_FILE_BLOCK_COUNT;
-    profileBlob.type = PROFILE_BLOB;
-    profileBlob.length = TEST_FILE_BLOCK_LENGTH;
-    profileBlob.offset = signBlob.offset + signBlob.length;
     propertyBlob.type = PROPERTY_BLOB;
     propertyBlob.length = TEST_FILE_BLOCK_LENGTH;
     propertyBlob.offset = profileBlob.offset + profileBlob.length;
+    profileBlob.type = PROFILE_BLOB;
+    profileBlob.length = TEST_FILE_BLOCK_LENGTH;
+    profileBlob.offset = signBlob.offset + signBlob.length;
 }
 } // namespace SignatureTools
 } // namespace OHOS

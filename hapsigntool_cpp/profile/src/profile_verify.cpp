@@ -65,7 +65,7 @@ const string KEY_PACKAGE_NAME = "package-name";
 const string KEY_PACKAGE_CERT = "package-cert";
 const string KEY_APP_IDENTIFIER = "app-identifier";
 const string GENERIC_BUNDLE_NAME = ".*";
-const int32_t VERSION_CODE_TWO = 2;
+
 inline void GetStringIfExist(const json& obj, const string& key, string& out)
 {
     if (obj.find(key.c_str()) != obj.end() && obj[key.c_str()].is_string()) {
@@ -109,7 +109,7 @@ const std::map<std::string, int32_t> distTypeMap = {
     {VALUE_DIST_TYPE_OS_INTEGRATION, AppDistType::OS_INTEGRATION},
     {VALUE_DIST_TYPE_CROWDTESTING, AppDistType::CROWDTESTING}
 };
-static bool g_isRdDevice = false;
+
 void ParseType(const json& obj, ProfileInfo& out)
 {
     string type;
@@ -256,53 +256,16 @@ static AppProvisionVerifyResult CheckProfileValidType(ProfileInfo& info)
 
 AppProvisionVerifyResult ParseProvision(const string& appProvision, ProfileInfo& info)
 {
-    AppProvisionVerifyResult result = PROVISION_OK;
     if (ParseProfile(appProvision, info) != PROVISION_OK) {
-        return PROVISION_INVALID;
-    }
-    result = ReturnIfIntIsNonPositive(info.versionCode, "Tag version code is empty.");
-    if (result != PROVISION_OK) {
-        return PROVISION_INVALID;
-    }
-    result = ReturnIfStringIsEmpty(info.versionName, "Tag version name is empty.");
-    if (result != PROVISION_OK) {
-        return PROVISION_INVALID;
-    }
-    result = ReturnIfStringIsEmpty(info.uuid, "Tag uuid is empty.");
-    if (result != PROVISION_OK) {
-        return PROVISION_INVALID;
-    }
-    result = ReturnIfStringIsEmpty(info.bundleInfo.developerId, "Tag developer-id is empty.");
-    if (result != PROVISION_OK) {
         return PROVISION_INVALID;
     }
 
     if (CheckProfileValidType(info) != PROVISION_OK) {
         return PROVISION_INVALID;
     }
-
-    if (ReturnIfStringIsEmpty(info.bundleInfo.bundleName, "Tag bundle-name is empty.") != PROVISION_OK) {
-        return PROVISION_INVALID;
-    }
-    if (info.bundleInfo.bundleName == GENERIC_BUNDLE_NAME) {
-        SIGNATURE_TOOLS_LOGD("generic package name: %s, is used.",
-                             GENERIC_BUNDLE_NAME.c_str());
-    }
-    if (info.versionCode >= VERSION_CODE_TWO) {
-        if (ReturnIfStringIsEmpty(info.bundleInfo.apl, "Tag apl is empty.") != PROVISION_OK) {
-            return PROVISION_INVALID;
-        }
-    }
-    if (ReturnIfStringIsEmpty(info.bundleInfo.appFeature, "Tag app-feature is empty.") != PROVISION_OK) {
-        return PROVISION_INVALID;
-    }
     return PROVISION_OK;
 }
 
-void SetRdDevice(bool isRdDevice)
-{
-    g_isRdDevice = isRdDevice;
-}
 AppProvisionVerifyResult ParseAndVerify(const string& appProvision, ProfileInfo& info)
 {
     SIGNATURE_TOOLS_LOGD("Enter HarmonyAppProvision Verify");

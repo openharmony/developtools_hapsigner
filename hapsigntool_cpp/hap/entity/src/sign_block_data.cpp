@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace SignatureTools {
 
-SignBlockData::SignBlockData(std::vector<int8_t>& signData, char type)
+SignBlockData::SignBlockData(const std::vector<int8_t>& signData, const char type)
 {
     m_signData = signData;
     m_type = type;
@@ -26,7 +26,7 @@ SignBlockData::SignBlockData(std::vector<int8_t>& signData, char type)
     m_isByte = true;
 }
 
-SignBlockData::SignBlockData(std::string& signFile, char type)
+SignBlockData::SignBlockData(const std::string& signFile, const char type)
 {
     m_signFile = signFile;
     m_type = type;
@@ -39,17 +39,17 @@ char SignBlockData::GetType()
     return m_type;
 }
 
-std::vector<int8_t> SignBlockData::GetBlockHead()
+std::vector<int8_t>& SignBlockData::GetBlockHead()
 {
     return m_blockHead;
 }
 
-void SignBlockData::SetBlockHead(std::vector<int8_t>& blockHead)
+void SignBlockData::SetBlockHead(const std::vector<int8_t>& blockHead)
 {
     m_blockHead = blockHead;
 }
 
-std::vector<int8_t> SignBlockData::GetSignData()
+std::vector<int8_t>& SignBlockData::GetSignData()
 {
     return m_signData;
 }

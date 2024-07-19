@@ -16,13 +16,13 @@
 #define SIGNATRUETOOLS_MATCHING_RESULT_H
 namespace OHOS {
 namespace SignatureTools {
-enum TrustedSources {
+enum SourcesTrusted {
     OTHER_TRUSTED_SOURCE = 0,
     APP_GALLARY,
     APP_SYSTEM,
     APP_THIRD_PARTY_PRELOAD,
 };
-enum MatchingStates {
+enum StatesMatching {
     DO_NOT_MATCH = 0,
     MATCH_WITH_SIGN,
     MATCH_WITH_PROFILE,
@@ -30,8 +30,8 @@ enum MatchingStates {
     MATCH_WITH_TICKET,
 };
 struct MatchingResult {
-    MatchingStates matchState;
-    TrustedSources source;
+    StatesMatching matchState;
+    SourcesTrusted source;
 };
 } // namespace SignatureTools
 } // namespace OHOS

@@ -21,5 +21,5 @@ int main(int argc, char** argv)
     if (isSuccess) {
         return 0;
     }
-    return -1;
+    return 1;
 }

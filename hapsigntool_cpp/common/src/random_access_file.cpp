@@ -70,10 +70,10 @@ int64_t RandomAccessFile::GetLength() const
 bool RandomAccessFile::CheckLittleEndian()
 {
     union LittleEndian {
-        int32_t num;
+        int32_t number;
         char ch;
     } t;
-    t.num = 1;
+    t.number = 1;
     return (t.ch == 1);
 }
 

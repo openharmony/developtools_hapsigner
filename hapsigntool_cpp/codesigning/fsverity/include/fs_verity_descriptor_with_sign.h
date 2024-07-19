@@ -34,7 +34,7 @@ public:
     int32_t Size();
     void ToByteArray(std::vector<int8_t> &ret);
     FsVerityDescriptor GetFsVerityDescriptor();
-    std::vector<int8_t> GetSignature();
+    std::vector<int8_t>& GetSignature();
 
 private:
     int32_t type = FsVerityDescriptor::FS_VERITY_DESCRIPTOR_TYPE;;

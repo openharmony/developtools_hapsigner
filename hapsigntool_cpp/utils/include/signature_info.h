@@ -16,12 +16,14 @@
 #define SIGNERTOOLS_SIGNATURE_INFO_H
 
 #include <vector>
-
 #include "byte_buffer.h"
-#include "hap_verify_result.h"
 
 namespace OHOS {
 namespace SignatureTools {
+struct OptionalBlock {
+    int32_t optionalType = 0;
+    ByteBuffer optionalBlockValue;
+};
 struct SignatureInfo {
     ByteBuffer hapSignatureBlock;
     int64_t hapSigningBlockOffset;

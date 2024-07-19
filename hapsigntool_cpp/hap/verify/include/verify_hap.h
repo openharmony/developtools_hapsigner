@@ -18,7 +18,6 @@
 
 #include "byte_buffer.h"
 #include "random_access_file.h"
-#include "hap_verify_result.h"
 #include "profile_verify.h"
 #include "verify_hap_openssl_utils.h"
 #include "signature_info.h"
@@ -41,36 +40,36 @@ public:
     static const int OFFSET_ZERO = 0;
     static const int OFFSET_FOUR = 4;
     static const int OFFSET_EIGHT = 8;
-    int32_t Verify(const std::string& filePath, HapVerifyResult& hapVerifyV1Result, Options* options);
+
+    VerifyHap();
+    VerifyHap(bool isPrintCert);
+    void setIsPrintCert(bool printCert);
+
+    bool HapOutPutPkcs7(PKCS7* p7, const std::string& outPutPath);
 
     DLL_EXPORT bool CheckFilePath(const std::string& filePath, std::string& standardFilePath);
-    static bool HapOutPutPkcs7(PKCS7* p7, const std::string& outPutPath);
-    static bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
-    int32_t VerifyElfProfile(std::vector<int8_t>& profileData, HapVerifyResult& hapVerifyV1Result,
-                             Options* options, Pkcs7Context& pkcs7Context);
-    int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t> profile, Options* options);
-    int32_t InithapVerify(RandomAccessFile& hapFile, const std::string& filePath,
-                          SignatureInfo& hapSignInfo, HapVerifyResult& hapVerifyV1Result);
-    int32_t Verify(RandomAccessFile& hapFile, HapVerifyResult& hapVerifyV1Result, Options* options,
-                   const std::string& filePath);
+
+    bool outputOptionalBlocks(const std::string& outputProfileFile, const std::string& outputProofFile,
+                                 const std::string& outputPropertyFile,
+                                 const std::vector<OptionalBlock>& optionBlocks);
+    bool writeOptionalBytesToFile(const OptionalBlock& optionalBlock, const std::string& path);
+
+    bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
+
+    int32_t Verify(const std::string& filePath, Options* options);
+
+    int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t>& profile, Options* options);
+
+    int32_t Verify(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
+
     bool CheckCodeSign(const std::string& hapFilePath, const std::vector<OptionalBlock>& optionalBlocks)const;
     static int GetProfileContent(const std::string profile, std::string& ret);
-    bool VerifyAppSourceAndParseProfile(Pkcs7Context& pkcs7Context, const ByteBuffer& hapProfileBlock,
-                                        HapVerifyResult& hapVerifyV1Result, bool& profileNeadWriteCrl);
+
     bool VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const ByteBuffer& hapSignatureBlock);
     DLL_EXPORT bool GetDigestAndAlgorithm(Pkcs7Context& digest);
-    DLL_EXPORT bool ParseAndVerifyProfileIfNeed(const std::string& profile, ProfileInfo& provisionInfo,
-                                                bool isCallParseAndVerify);
-    bool IsAppDistributedTypeAllowInstall(const AppDistType& type, const ProfileInfo& provisionInfo) const;
-    DLL_EXPORT bool VerifyProfileInfo(const Pkcs7Context& pkcs7Context, const Pkcs7Context& profileContext,
-                                      ProfileInfo& provisionInfo);
-    DLL_EXPORT bool GenerateAppId(ProfileInfo& provisionInfo);
-    DLL_EXPORT bool GenerateFingerprint(ProfileInfo& provisionInfo);
-    bool VerifyProfileSignature(const Pkcs7Context& pkcs7Context, Pkcs7Context& profileContext);
-    void SetProfileBlockData(const Pkcs7Context& pkcs7Context, const ByteBuffer& hapProfileBlock,
-                             ProfileInfo& provisionInfo);
-    void SetOrganization(ProfileInfo& provisionInfo);
-    bool NeedParseJson(const ByteBuffer& buffer);
+
+private:
+    bool isPrintCert;
 };
 } // namespace SignatureTools
 } // namespace OHOS

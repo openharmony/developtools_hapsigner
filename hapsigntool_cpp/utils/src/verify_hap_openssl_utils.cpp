@@ -24,6 +24,7 @@
 #include "openssl/x509.h"
 #include "openssl/pem.h"
 #include "constant.h"
+#include "signature_info.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -95,11 +96,11 @@ bool VerifyHapOpensslUtils::GetCertChains(PKCS7* p7, Pkcs7Context& pkcs7Context)
             return false;
         }
         CertChain certChain;
-        pkcs7Context.certChains.push_back(certChain);
-        pkcs7Context.certChains[i].push_back(X509_dup(cert));
+        pkcs7Context.certChain.push_back(certChain);
+        pkcs7Context.certChain[i].push_back(X509_dup(cert));
         VerifyCertOpensslUtils::ClearCertVisitSign(certVisitSign);
         certVisitSign[cert] = true;
-        if (!VerifyCertChain(pkcs7Context.certChains[i], p7, signInfo, pkcs7Context, certVisitSign)) {
+        if (!VerifyCertChain(pkcs7Context.certChain[i], p7, signInfo, pkcs7Context, certVisitSign)) {
             SIGNATURE_TOOLS_LOGE("verify %dst certchain failed", i);
             return false;
         }
@@ -129,6 +130,15 @@ bool VerifyHapOpensslUtils::CheckPkcs7SignedDataIsValid(const PKCS7* p7)
     if (p7 == nullptr || !PKCS7_type_is_signed(p7) || p7->d.sign == nullptr) {
         return false;
     }
+    return true;
+}
+
+bool VerifyHapOpensslUtils::GetCrlStack(PKCS7* p7, STACK_OF(X509_CRL)* x509Crl)
+{
+    if (!CheckPkcs7SignedDataIsValid(p7)) {
+        return false;
+    }
+    x509Crl = p7->d.sign->crl;
     return true;
 }
 
@@ -199,7 +209,7 @@ bool VerifyHapOpensslUtils::VerifySignInfo(STACK_OF(PKCS7_SIGNER_INFO)* signerIn
         return false;
     }
     /* GET X509 certificate */
-    X509* cert = pkcs7Context.certChains[signInfoNum][0];
+    X509* cert = pkcs7Context.certChain[signInfoNum][0];
 
     if (PKCS7_signatureVerify(p7Bio, pkcs7Context.p7, signInfo, cert) <= 0) {
         SIGNATURE_TOOLS_LOGE("PKCS7_signatureVerify %dst signInfo failed", signInfoNum);
@@ -207,71 +217,6 @@ bool VerifyHapOpensslUtils::VerifySignInfo(STACK_OF(PKCS7_SIGNER_INFO)* signerIn
         return false;
     }
 
-    return true;
-}
-
-bool VerifyHapOpensslUtils::GetPublickeys(const CertChain& signCertChain,
-                                          std::vector<std::string>& SignatureVec)
-{
-    for (uint32_t i = 0; i < signCertChain.size(); i++) {
-        if (!GetPublickeyFromCertificate(signCertChain[i], SignatureVec)) {
-            SIGNATURE_TOOLS_LOGE("%ust Get Publickey failed", i);
-            return false;
-        }
-    }
-    return !SignatureVec.empty();
-}
-
-bool VerifyHapOpensslUtils::GetSignatures(const CertChain& signCertChain,
-                                          std::vector<std::string>& SignatureVec)
-{
-    for (uint32_t i = 0; i < signCertChain.size(); i++) {
-        if (!GetDerCert(signCertChain[i], SignatureVec)) {
-            SIGNATURE_TOOLS_LOGE("%ust GetDerCert failed", i);
-            return false;
-        }
-    }
-    return !SignatureVec.empty();
-}
-
-bool VerifyHapOpensslUtils::GetDerCert(X509* ptrX509, std::vector<std::string>& SignatureVec)
-{
-    if (ptrX509 == nullptr) {
-        return false;
-    }
-    int32_t certLen = i2d_X509(ptrX509, nullptr);
-    if (certLen <= 0) {
-        SIGNATURE_TOOLS_LOGE("certLen %d, i2d_X509 failed", certLen);
-        GetOpensslErrorMessage();
-        return false;
-    }
-    std::unique_ptr<unsigned char[]> derCertificate = std::make_unique<unsigned char[]>(certLen);
-    int32_t base64CertLen = VerifyCertOpensslUtils::CalculateLenAfterBase64Encode(certLen);
-    std::unique_ptr<unsigned char[]> base64Certificate = std::make_unique<unsigned char[]>(base64CertLen);
-    unsigned char* derCertificateBackup = derCertificate.get();
-    if (i2d_X509(ptrX509, &derCertificateBackup) <= 0) {
-        SIGNATURE_TOOLS_LOGE("i2d_X509 failed");
-        GetOpensslErrorMessage();
-        return false;
-    }
-    /* base64 encode */
-    int32_t len = EVP_EncodeBlock(base64Certificate.get(), derCertificate.get(), certLen);
-    SignatureVec.emplace_back(std::string(reinterpret_cast<char*>(base64Certificate.get()), len));
-    return true;
-}
-
-bool VerifyHapOpensslUtils::GetPublickeyFromCertificate(const X509* ptrX509,
-                                                        std::vector<std::string>& publicKeyVec)
-{
-    if (ptrX509 == nullptr) {
-        return false;
-    }
-    std::string publicKey;
-    if (!VerifyCertOpensslUtils::GetPublickeyBase64(ptrX509, publicKey)) {
-        SIGNATURE_TOOLS_LOGE("GetPublickeyBase64 Failed");
-        return false;
-    }
-    publicKeyVec.emplace_back(publicKey);
     return true;
 }
 
@@ -309,7 +254,7 @@ bool VerifyHapOpensslUtils::CheckDigestParameter(const DigestParameter& digestPa
         SIGNATURE_TOOLS_LOGE("md is nullptr");
         return false;
     }
-    if (digestParameter.ptrCtx == nullptr) {
+    if (digestParameter.ctxPtr == nullptr) {
         SIGNATURE_TOOLS_LOGE("ptrCtx is nullptr");
         return false;
     }
@@ -321,7 +266,7 @@ bool VerifyHapOpensslUtils::DigestInit(const DigestParameter& digestParameter)
     if (!CheckDigestParameter(digestParameter)) {
         return false;
     }
-    if (EVP_DigestInit(digestParameter.ptrCtx, digestParameter.md) <= 0) {
+    if (EVP_DigestInit(digestParameter.ctxPtr, digestParameter.md) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestInit failed");
         return false;
@@ -340,7 +285,7 @@ bool VerifyHapOpensslUtils::DigestUpdate(const DigestParameter& digestParameter,
     if (!CheckDigestParameter(digestParameter)) {
         return false;
     }
-    if (EVP_DigestUpdate(digestParameter.ptrCtx, content, len) <= 0) {
+    if (EVP_DigestUpdate(digestParameter.ctxPtr, content, len) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate chunk failed");
         return false;
@@ -355,7 +300,7 @@ int32_t VerifyHapOpensslUtils::GetDigest(const DigestParameter& digestParameter,
     if (!CheckDigestParameter(digestParameter)) {
         return outLen;
     }
-    if (EVP_DigestFinal(digestParameter.ptrCtx, out, &outLen) <= 0) {
+    if (EVP_DigestFinal(digestParameter.ctxPtr, out, &outLen) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestFinal failed");
         outLen = 0;
@@ -374,30 +319,30 @@ int32_t VerifyHapOpensslUtils::GetDigest(const ByteBuffer& chunk,
         SIGNATURE_TOOLS_LOGE("md is nullprt");
         return outLen;
     }
-    if (digestParameter.ptrCtx == nullptr) {
+    if (digestParameter.ctxPtr == nullptr) {
         SIGNATURE_TOOLS_LOGE("ptrCtx is nullprt");
         return outLen;
     }
-    if (EVP_DigestInit(digestParameter.ptrCtx, digestParameter.md) <= 0) {
+    if (EVP_DigestInit(digestParameter.ctxPtr, digestParameter.md) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestInit failed");
         return outLen;
     }
-    if (EVP_DigestUpdate(digestParameter.ptrCtx, chunk.GetBufferPtr(), chunkLen) <= 0) {
+    if (EVP_DigestUpdate(digestParameter.ctxPtr, chunk.GetBufferPtr(), chunkLen) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate chunk failed");
         return outLen;
     }
     for (int32_t i = 0; i < static_cast<int>(optionalBlocks.size()); i++) {
         chunkLen = optionalBlocks[i].optionalBlockValue.GetCapacity();
-        if (EVP_DigestUpdate(digestParameter.ptrCtx, optionalBlocks[i].optionalBlockValue.GetBufferPtr(),
+        if (EVP_DigestUpdate(digestParameter.ctxPtr, optionalBlocks[i].optionalBlockValue.GetBufferPtr(),
             chunkLen) <= 0) {
             GetOpensslErrorMessage();
             SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate %dst optional block failed", i);
             return outLen;
         }
     }
-    if (EVP_DigestFinal(digestParameter.ptrCtx, out, &outLen) <= 0) {
+    if (EVP_DigestFinal(digestParameter.ctxPtr, out, &outLen) <= 0) {
         GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("EVP_DigestFinal failed");
         outLen = 0;
@@ -430,6 +375,21 @@ int32_t VerifyHapOpensslUtils::GetDigestAlgorithmId(int32_t signAlgorithm)
         default:
             SIGNATURE_TOOLS_LOGE("signAlgorithm: %d error", signAlgorithm);
             return NID_undef;
+    }
+}
+
+std::string VerifyHapOpensslUtils::GetDigestAlgorithmString(int32_t signAlgorithm)
+{
+    switch (signAlgorithm) {
+        case ALGORITHM_SHA256_WITH_ECDSA:
+            return "SHA-256";
+        case ALGORITHM_SHA384_WITH_ECDSA:
+            return "SHA-384";
+        case ALGORITHM_SHA512_WITH_ECDSA:
+            return "SHA-512";
+        default:
+            SIGNATURE_TOOLS_LOGE("signAlgorithm: %d error", signAlgorithm);
+            return "";
     }
 }
 } // namespace SignatureTools

@@ -17,6 +17,17 @@
 
 namespace OHOS {
 namespace SignatureTools {
+Params::Params() : options(new Options) {
+}
+
+Params::~Params()
+{
+    if (options) {
+        delete options;
+        options = NULL;
+    }
+}
+
 std::string Params::GetMethod()
 {
     return method;
@@ -29,7 +40,7 @@ void Params::SetMethod(const std::string& method)
 
 Options* Params::GetOptions()
 {
-    return options.get();
+    return options;
 }
 
 std::unordered_set<std::string> Params::InitParamField(const std::vector<std::string>& paramFields)

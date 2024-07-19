@@ -46,7 +46,7 @@ private:
     // @return 0(NID_undef) >0: success(new NID)
     static int CreateNIDFromOID(const std::string& oid, const std::string& shortName,
                                 const std::string& longName);
-    int PackageSignedData(const std::string& content, std::shared_ptr<Signer> signer,
+    int PackageSignedData(const std::string& content, const std::shared_ptr<Signer>& signer,
                           const std::string& sigAlg, std::string& ret);
     // @return 0:success <0 :error
     int AddOwnerID(std::vector<PKCS7Attr>& attrs, const std::string& ownerID);

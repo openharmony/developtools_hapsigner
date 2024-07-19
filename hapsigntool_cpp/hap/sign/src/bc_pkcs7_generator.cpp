@@ -58,7 +58,7 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
     }
     return result;
 }
-int BCPkcs7Generator::PackagePKCS7(const std::string& content, std::shared_ptr<Signer> signer,
+int BCPkcs7Generator::PackagePKCS7(const std::string& content, const std::shared_ptr<Signer>& signer,
                                    const std::string& sigAlg, std::string& ret)
 {
     PKCS7Data p7Data;

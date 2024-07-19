@@ -43,8 +43,8 @@ CodeSigning::CodeSigning()
 {
 }
 
-bool CodeSigning::GetCodeSignBlock(const std::string input, int64_t offset,
-                                   std::string inForm, std::string profileContent,
+bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
+                                   const std::string &inForm, const std::string &profileContent,
                                    ZipSigner& zip, std::vector<int8_t>& ret)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign code.");
@@ -128,7 +128,8 @@ int64_t CodeSigning::GetTimestamp()
 }
 
 bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool storeTree,
-                           int64_t fsvTreeOffset, std::string ownerID, std::pair<SignInfo, std::vector<int8_t>>& ret)
+                           int64_t fsvTreeOffset, const std::string &ownerID,
+                           std::pair<SignInfo, std::vector<int8_t>>& ret)
 {
     std::unique_ptr<FsVerityGenerator> fsVerityGenerator =
         std::make_unique<FsVerityGenerator>();
@@ -163,8 +164,8 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
     return true;
 }
 
-bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
-                                      std::string inForm, std::string profileContent,
+bool CodeSigning::GetElfCodeSignBlock(const std::string &input, int64_t offset,
+                                      const std::string &inForm, const std::string &profileContent,
                                       std::vector<int8_t>& codesignData)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign elf code.");
@@ -209,7 +210,7 @@ bool CodeSigning::GetElfCodeSignBlock(std::string input, int64_t offset,
     return true;
 }
 
-bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
+bool CodeSigning::SignNativeLibs(const std::string &input, std::string &ownerID)
 {
     // 'an' libs are always signed
     m_extractedNativeLibSuffixs.push_back(NATIVE_LIB_AN_SUFFIX);
@@ -223,12 +224,12 @@ bool CodeSigning::SignNativeLibs(std::string input, std::string ownerID)
         SIGNATURE_TOOLS_LOGE("%s native libs handle failed", input.c_str());
         return false;
     }
-    std::vector<std::pair<std::string, SignInfo>> *nativeLibInfoList = param.GetRet();
-    if (nativeLibInfoList->empty()) {
+    std::vector<std::pair<std::string, SignInfo>>& nativeLibInfoList = param.GetRet();
+    if (nativeLibInfoList.empty()) {
         SIGNATURE_TOOLS_LOGI("No native libs.");
         return true;
     }
-    m_codeSignBlock.GetSoInfoSegment().SetSoInfoList(*nativeLibInfoList);
+    m_codeSignBlock.GetSoInfoSegment().SetSoInfoList(nativeLibInfoList);
     return true;
 }
 
@@ -244,7 +245,7 @@ void CodeSigning::UpdateCodeSignBlock()
     m_codeSignBlock.ComputeSegmentOffset();
 }
 
-bool CodeSigning::GetNativeEntriesFromHap(std::string& packageName, UnzipHandleParam& param)
+bool CodeSigning::GetNativeEntriesFromHap(const std::string& packageName, UnzipHandleParam& param)
 {
     unzFile zFile = unzOpen(packageName.c_str());
     if (zFile == NULL) {
@@ -335,11 +336,11 @@ bool CodeSigning::DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& 
         if (!signFileFlag) {
             return false;
         }
-        std::vector<std::pair<std::string, SignInfo>> *ret = param.GetRet();
-        ret->push_back(std::make_pair(fileName, pairSignInfoAndMerkleTreeBytes.first));
+        std::vector<std::pair<std::string, SignInfo>>& ret = param.GetRet();
+        ret.push_back(std::make_pair(fileName, pairSignInfoAndMerkleTreeBytes.first));
     } else {
         CodeSignBlock csb = param.GetCodeSignBlock();
-        std::vector<std::string> fileNames = csb.GetSoInfoSegment().GetFileNameList();
+        std::vector<std::string>& fileNames = csb.GetSoInfoSegment().GetFileNameList();
         bool isContainFileName = std::find(fileNames.begin(), fileNames.end(), fileName) != fileNames.end();
         if (!isContainFileName) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
@@ -416,7 +417,7 @@ bool CodeSigning::CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen
     return true;
 }
 
-bool CodeSigning::IsNativeFile(std::string& input)
+bool CodeSigning::IsNativeFile(const std::string& input)
 {
     size_t dotPos = input.rfind('.');
     if (dotPos == std::string::npos) {
@@ -434,7 +435,7 @@ bool CodeSigning::IsNativeFile(std::string& input)
     return false;
 }
 
-bool CodeSigning::GenerateSignature(std::vector<int8_t>& signedData, const std::string& ownerID,
+bool CodeSigning::GenerateSignature(const std::vector<int8_t>& signedData, const std::string& ownerID,
                                     std::vector<int8_t>& ret)
 {
     if (m_signConfig->GetSigner() != nullptr) {
