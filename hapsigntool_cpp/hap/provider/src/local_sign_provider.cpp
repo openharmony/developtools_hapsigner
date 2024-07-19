@@ -24,7 +24,6 @@ std::optional<X509_CRL*> LocalSignProvider::GetCrl()
 
 bool LocalSignProvider::CheckParams(Options* options)
 {
-    bool flag = false;
     if (!SignProvider::CheckParams(options)) {
         SIGNATURE_TOOLS_LOGE("Parameter check failed !");
         return false;
@@ -34,25 +33,14 @@ bool LocalSignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_LOCAL_JKS_KEYSTORE_CODE);
     paramFileds.emplace_back(ParamConstants::PARAM_LOCAL_JKS_KEYALIAS_CODE);
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
-    for (auto it = options->begin(); it != options->end(); it++) {
-        flag = (paramSet.find(it->first) != paramSet.end());
-        if (flag) {
-            size_t size = it->first.size();
-            std::string str = it->first.substr(size - 3);
-            if (str == "Pwd") {
-                std::string strPwd = options->GetChars(it->first);
-                signParams.insert(std::make_pair(it->first, strPwd));
-            } else {
-                signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
-            }
-        }
+    if (!this->SetSignParams(options, paramSet)) {
+        return false;
     }
     if (!CheckSignCode()) {
         SIGNATURE_TOOLS_LOGE("signCode Parameter must 0 or 1");
         return false;
     }
-    flag = !CheckPublicKeyPath();
-    if (flag) {
+    if (!CheckPublicKeyPath()) {
         SIGNATURE_TOOLS_LOGE("appCertFile Parameter check error !");
         return false;
     }

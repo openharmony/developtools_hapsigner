@@ -50,7 +50,6 @@ DLL_EXPORT AppProvisionVerifyResult ParseProvision(const std::string& appProvisi
 * @return AppProvisionVerifyResult parse result.
 */
 DLL_EXPORT AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileInfo& info);
-DLL_EXPORT void SetRdDevice(bool isRdDevice);
 } // namespace SignatureTools
 } // namespace OHOS
 #endif // SIGNATRUETOOLS_PROFILE_VERIFY_H

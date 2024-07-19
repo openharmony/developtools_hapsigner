@@ -33,16 +33,14 @@ class Params {
 public:
     static std::unordered_set<std::string> InitParamField(const std::vector<std::string>& paramFields);
     static bool GetSignatureAlgorithm(const std::string& signatureAlgorithm, SignatureAlgorithmHelper& out);
-    Params() = default;
-    virtual ~Params() = default;
-    virtual std::string GetMethod();
-    virtual void SetMethod(const std::string& method);
-    virtual Options* GetOptions();
+    Params();
+    ~Params();
+    std::string GetMethod();
+    void SetMethod(const std::string& method);
+    Options* GetOptions();
 
 private:
-    std::shared_ptr<Options> options = std::make_shared<Options>();
-
-private:
+    Options* options;
     std::string method;
 };
 

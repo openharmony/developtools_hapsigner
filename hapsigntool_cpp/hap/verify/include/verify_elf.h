@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "options.h"
-#include "hap_verify_result.h"
 #include "hw_block_data.h"
 #include "signing_block.h"
 #include "pkcs7_context.h"
@@ -48,10 +47,10 @@ public:
         SignBlockInfo& signBlockInfo);
     static bool GetRawContent(std::vector<int8_t>& contentVec, std::string& rawContent);
     static bool VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap, Options* options,
-        Pkcs7Context& pkcs7Context, HapVerifyResult& verifyResult, std::string& profileJson);
+        Pkcs7Context& pkcs7Context, std::vector<int8_t>& profileVec, std::string& profileJson);
 
 private:
-    bool VerifyElfFile(const std::string& elfFile, HapVerifyResult& verifyResult,
+    bool VerifyElfFile(const std::string& elfFile, std::vector<int8_t>& profileVec,
         Options* options, Pkcs7Context& pkcs7Context);
     static bool CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset,
         const std::string fileType);

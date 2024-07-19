@@ -36,7 +36,7 @@ public:
         virtual Builder* SetBlockSize(int blockSize);
         virtual Builder* SetSegmentNum(int segmentNum);
         virtual Builder* SetFlags(int flags);
-        virtual Builder* SetReserved(std::vector<int8_t>& reserved);
+        virtual Builder* SetReserved(const std::vector<int8_t>& reserved);
 
         int64_t magic = MAGIC_NUM;
         int version = CODE_SIGNING_VERSION;
@@ -52,7 +52,7 @@ public:
     CodeSignBlockHeader();
     CodeSignBlockHeader(Builder* builder);
     virtual ~CodeSignBlockHeader();
-    static CodeSignBlockHeader* FromByteArray(std::vector<int8_t>& bytes);
+    static CodeSignBlockHeader* FromByteArray(const std::vector<int8_t>& bytes);
     static int Size();
     virtual void SetSegmentNum(int num);
     virtual int GetSegmentNum();

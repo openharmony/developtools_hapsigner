@@ -163,11 +163,6 @@ const std::string APP_CERT_HELP_TXT = R"(
 
 const std::string PROFILE_CERT_HELP_TXT = R"(
     generate-profile-cert[options]:
-        -keyAlias : key alias, required fields;
-        -keyPwd : key password, optional fields;
-        -issuer : issuer subject, required fields;
-        -issuerKeyAlias : issuer key alias, required fields;
-        -issuerKeyPwd : issuer key password, optional fields;
         -subject : certificate subject, required fields;
         -validity : certificate validity, optional fields, the default is 1095 days;
         -signAlg : signature algorithm, required fields, including SHA256withECDSA/SHA384withECDSA;
@@ -175,6 +170,11 @@ const std::string PROFILE_CERT_HELP_TXT = R"(
         -keystorePwd : keystore password, optional fields;
         -outForm : the format of the output certificate file, including cert/certChain, optional fields,
     the default is cert;
+        -keyAlias : key alias, required fields;
+        -keyPwd : key password, optional fields;
+        -issuer : issuer subject, required fields;
+        -issuerKeyAlias : issuer key alias, required fields;
+        -issuerKeyPwd : issuer key password, optional fields;
         -rootCaCertFile : root CA certificate file, required when outForm is certChain;
         -subCaCertFile : secondary sub -CA certificate file, required when outForm is certChain;
         -outFile : output file, optional fields, if not filled, it will be directly output to the console;

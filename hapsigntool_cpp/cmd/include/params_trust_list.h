@@ -22,13 +22,12 @@
 #include <mutex>
 #include <unordered_map>
 #include "signature_tools_log.h"
-#include "hap_verify_result.h"
 
 namespace OHOS {
 namespace SignatureTools {
 class ParamsTrustList final {
 public:
-    static ParamsTrustList* GetInstance();
+    static ParamsTrustList GetInstance();
     std::vector<std::string> GetTrustList(const std::string& command);
     
 private:
@@ -37,8 +36,6 @@ private:
     void GenerateTrustList();
     
 private:
-    static std::unique_ptr<ParamsTrustList> paramTrustListInstance;
-    static std::mutex mtx;
     std::unordered_map<std::string, std::vector<std::string>> trustMap;
 };
 } // namespace SignatureTools

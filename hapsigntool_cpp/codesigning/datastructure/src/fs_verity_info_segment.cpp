@@ -33,7 +33,7 @@ FsVerityInfoSegment::FsVerityInfoSegment(int8_t version, int8_t hashAlgorithm, i
 }
 
 FsVerityInfoSegment::FsVerityInfoSegment(int magic, int8_t version, int8_t hashAlgorithm,
-                                         int8_t log2BlockSize, std::vector<int8_t> reserved)
+                                         int8_t log2BlockSize, const std::vector<int8_t>& reserved)
 {
     this->magic = magic;
     this->version = version;
@@ -62,7 +62,7 @@ void FsVerityInfoSegment::ToByteArray(std::vector<int8_t>& ret)
     ret = std::vector<int8_t>(bf->GetBufferPtr(), bf->GetBufferPtr() + bf->GetPosition());
 }
 
-FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(std::vector<int8_t> &bytes)
+FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>& bytes)
 {
     if (bytes.size() != FS_VERITY_INFO_SEGMENT_SIZE) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,

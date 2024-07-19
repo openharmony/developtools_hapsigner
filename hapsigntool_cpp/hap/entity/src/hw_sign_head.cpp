@@ -37,7 +37,7 @@ HwSignHead::HwSignHead()
 {
 }
 
-std::vector<int8_t> HwSignHead::GetSignHead(int subBlockSize)
+std::vector<int8_t> HwSignHead::GetSignHead(const int subBlockSize)
 {
     int size = subBlockSize;
     std::vector<int8_t> signHead(SIGN_HEAD_LEN, 0);
@@ -70,7 +70,7 @@ std::vector<int8_t> HwSignHead::GetSignHead(int subBlockSize)
     return signHead;
 }
 
-std::vector<int8_t> HwSignHead::GetSignHeadLittleEndian(int subBlockSize, int subBlockNum)
+std::vector<int8_t> HwSignHead::GetSignHeadLittleEndian(const int subBlockSize, const int subBlockNum)
 {
     ByteBuffer bf = ByteBuffer(HwSignHead::SIGN_HEAD_LEN);
     for (char c : HwSignHead::ELF_MAGIC) {

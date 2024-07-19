@@ -58,7 +58,7 @@ int64_t ElfSignBlock::GetTreeOffset()
     return descriptorWithSign.GetFsVerityDescriptor().GetMerkleTreeOffset();
 }
 
-std::vector<int8_t> ElfSignBlock::GetSignature()
+std::vector<int8_t>& ElfSignBlock::GetSignature()
 {
     return descriptorWithSign.GetSignature();
 }

@@ -22,12 +22,12 @@ namespace OHOS {
 namespace SignatureTools {
 class HwBlockData {
 public:
-    HwBlockData(int32_t blockNum, int64_t blockStart);
+    HwBlockData(const int32_t blockNum, const int64_t blockStart);
 
     int32_t GetBlockNum();
-    void SetBlockNum(int32_t blockNum);
+    void SetBlockNum(const int32_t blockNum);
     int64_t GetBlockStart();
-    void SetBlockStart(int64_t blockStart);
+    void SetBlockStart(const int64_t blockStart);
 
 private:
     int32_t m_blockNum;

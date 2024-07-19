@@ -70,13 +70,17 @@ public:
 
     void SetVersionExtra(short versionExtra);
 
+    short GetMethod();
+
+    void SetMethod(short method);
+
     short GetFlag();
 
     void SetFlag(short flag);
 
-    short GetMethod();
+    int GetCrc32();
 
-    void SetMethod(short method);
+    void SetCrc32(int crc32);
 
     short GetLastTime();
 
@@ -86,10 +90,6 @@ public:
 
     void SetLastDate(short lastDate);
 
-    int GetCrc32();
-
-    void SetCrc32(int crc32);
-
     uint32_t GetCompressedSize();
 
     void SetCompressedSize(uint32_t compressedSize);
@@ -98,21 +98,21 @@ public:
 
     void SetUnCompressedSize(uint32_t unCompressedSize);
 
-    uint16_t GetFileNameLength();
-
-    void SetFileNameLength(uint16_t fileNameLength);
-
     uint16_t GetExtraLength();
 
     void SetExtraLength(uint16_t extraLength);
 
-    uint16_t GetCommentLength();
+    uint16_t GetFileNameLength();
 
-    void SetCommentLength(uint16_t commentLength);
+    void SetFileNameLength(uint16_t fileNameLength);
 
     uint16_t GetDiskNumStart();
 
     void SetDiskNumStart(uint16_t diskNumStart);
+
+    uint16_t GetCommentLength();
+
+    void SetCommentLength(uint16_t commentLength);
 
     short GetInternalFile();
 

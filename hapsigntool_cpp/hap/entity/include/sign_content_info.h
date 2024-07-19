@@ -25,7 +25,8 @@ namespace OHOS {
 namespace SignatureTools {
 class SignContentHash {
 public:
-    SignContentHash(char type, char tag, short algId, int length, std::vector<int8_t> hash);
+    SignContentHash(const char type, const char tag, const short algId,
+                    const int length, const std::vector<int8_t>& hash);
 
 public:
     static const int CONTENT_HEAD_SIZE = 8;
@@ -42,8 +43,9 @@ public:
     SignContentInfo();
 
 public:
-    void AddContentHashData(char type, char tag, short algId, int length, std::vector<int8_t> hash);
-    void AddHashData(SignContentHash signInfo);
+    void AddContentHashData(const char type, const char tag, const short algId,
+                            const int length, const std::vector<int8_t> &hash);
+    void AddHashData(const SignContentHash &signInfo);
     std::vector<int8_t> GetByteContent();
 
 private:

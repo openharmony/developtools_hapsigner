@@ -124,29 +124,6 @@ bool ByteBuffer::CheckInputForGettingData(int32_t index, int32_t dataLen)
     return true;
 }
 
-bool ByteBuffer::GetUInt64(uint64_t& value)
-{
-    if (!GetUInt64(0, value)) {
-        SIGNATURE_TOOLS_LOGE("GetUInt64 failed");
-        return false;
-    }
-    position += sizeof(uint64_t);
-    return true;
-}
-
-bool ByteBuffer::GetUInt64(int32_t index, uint64_t& value)
-{
-    if (!CheckInputForGettingData(index, sizeof(uint64_t))) {
-        SIGNATURE_TOOLS_LOGE("Failed to get UInt64");
-        return false;
-    }
-    if (memcpy_s(&value, sizeof(value), (buffer.get() + position + index), sizeof(uint64_t)) != EOK) {
-        SIGNATURE_TOOLS_LOGE("memcpy_s failed");
-        return false;
-    }
-    return true;
-}
-
 bool ByteBuffer::GetInt64(int64_t& value)
 {
     if (!GetInt64(0, value)) {
@@ -432,17 +409,6 @@ void ByteBuffer::PutUInt16(uint16_t value)
 void ByteBuffer::PutUInt32(uint32_t value)
 {
     if (limit - position >= static_cast<uint32_t>(sizeof(value))) {
-        if (memcpy_s(buffer.get() + position, limit - position, &value, sizeof(value)) != EOK) {
-            SIGNATURE_TOOLS_LOGE("memcpy_s failed");
-        } else {
-            position += sizeof(value);
-        }
-    }
-}
-
-void ByteBuffer::PutUInt64(uint64_t value)
-{
-    if (limit - position >= static_cast<uint64_t>(sizeof(value))) {
         if (memcpy_s(buffer.get() + position, limit - position, &value, sizeof(value)) != EOK) {
             SIGNATURE_TOOLS_LOGE("memcpy_s failed");
         } else {

@@ -132,7 +132,7 @@ bool SignProvider::InitZipOutput(std::shared_ptr<RandomAccessFile> outputHap,
                                  std::shared_ptr<ZipSigner> zip,
                                  std::shared_ptr<std::ifstream> inputStream,
                                  std::shared_ptr<std::ofstream>tmpOutput,
-                                 std::string Path)
+                                 const std::string& Path)
 {
     int alignment;
     if (!StringUtils::CheckStringToint(signParams.at(ParamConstants::PARAM_BASIC_ALIGNMENT), alignment)) {
@@ -534,7 +534,7 @@ int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X50
     return RET_OK;
 }
 
-bool SignProvider::DoAfterSign(bool isPathOverlap, std::string tmpOutputFile, std::string inputFilePath)
+bool SignProvider::DoAfterSign(bool isPathOverlap, const std::string& tmpOutputFile, const std::string& inputFilePath)
 {
     if (isPathOverlap) {
         remove(inputFilePath.c_str());
@@ -558,6 +558,20 @@ bool SignProvider::CopyFileAndAlignment(std::ifstream& input, std::ofstream& tmp
     if (!zip.ToFile(input, tmpOutput)) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "zip write to file failed");
         return false;
+    }
+    return true;
+}
+
+bool SignProvider::SetSignParams(Options* options, std::unordered_set<std::string>& paramSet)
+{
+    for (auto it = options->begin(); it != options->end(); it++) {
+        if (paramSet.find(it->first) != paramSet.end()) {
+            size_t size = it->first.size();
+            std::string str = it->first.substr(size - 3);
+            if (str != "Pwd") {
+                this->signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
+            }
+        }
     }
     return true;
 }

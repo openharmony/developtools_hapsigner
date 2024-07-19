@@ -32,23 +32,24 @@ namespace SignatureTools {
 namespace Uscript {
 class ThreadPool {
 public:
-    ThreadPool(size_t threads)
-        : stop(false)
+    ThreadPool(size_t threads = TASK_NUM)
+        : m_stop(false)
     {
         for (size_t i = 0; i < threads; ++i)
-            workers.emplace_back([this] {
+            m_workers.emplace_back([this] {
             std::function<void()> task;
-            std::unique_lock<std::mutex> lock(queue_mutex);
-            while (!(stop && tasks.empty())) {
-                condition.wait(lock, [this] { return stop || !tasks.empty(); });
-                if (stop && tasks.empty())
+            std::unique_lock<std::mutex> lock(m_queueMutex);
+            while (!(m_stop && m_tasks.empty())) {
+                m_condition.wait(lock, [this] { return m_stop || !m_tasks.empty(); });
+                if (m_stop && m_tasks.empty()) {
                     return;
-                task = std::move(tasks.front());
-                tasks.pop();
+                }
+                task = std::move(m_tasks.front());
+                m_tasks.pop();
                 lock.unlock();
                 task();
                 lock.lock();
-                condition_max.notify_one();
+                m_conditionMax.notify_one();
             }
         });
     }
@@ -63,38 +64,40 @@ public:
         );
         std::future<returnType> res = task->get_future();
         {
-            std::unique_lock<std::mutex> lock(queue_mutex);
-            while (stop == false && tasks.size() >= TASK_NUM)
-                condition_max.wait(lock);
-            tasks.emplace([task] () { (*task)(); });
-            condition.notify_one();
+            std::unique_lock<std::mutex> lock(m_queueMutex);
+            while (m_stop == false && m_tasks.size() >= TASK_NUM) {
+                m_conditionMax.wait(lock);
+            }
+            m_tasks.emplace([task] () { (*task)(); });
+            m_condition.notify_one();
         }
         return res;
     }
 
     ~ThreadPool()
     {
-        if (stop == false) {
+        if (m_stop == false) {
             {
-                std::unique_lock<std::mutex> lock(queue_mutex);
-                stop = true;
+                std::unique_lock<std::mutex> lock(m_queueMutex);
+                m_stop = true;
             }
-            condition.notify_all();
-            for (std::thread& worker : workers)
+            m_condition.notify_all();
+            for (std::thread& worker : m_workers) {
                 worker.join();
+            }
         }
     }
 
 private:
     // need to keep track of threads so we can join them
-    std::vector< std::thread > workers;
+    std::vector<std::thread> m_workers;
     // the task queue
-    std::queue< std::function<void()> > tasks;
+    std::queue<std::function<void()>> m_tasks;
     // synchronization
-    std::mutex queue_mutex;
-    std::condition_variable condition;
-    std::condition_variable condition_max;
-    bool stop;
+    std::mutex m_queueMutex;
+    std::condition_variable m_condition;
+    std::condition_variable m_conditionMax;
+    bool m_stop;
 };
 } // namespace Uscript
 } // namespace SignatureTools

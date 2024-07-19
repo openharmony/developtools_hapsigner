@@ -25,14 +25,14 @@ class HwSignHead {
 public:
     HwSignHead();
 
-    std::vector<int8_t> GetSignHead(int subBlockSize);
+    std::vector<int8_t> GetSignHead(const int subBlockSize);
     static const int SIGN_HEAD_LEN;
     static const std::string MAGIC;
     static const std::string ELF_MAGIC;
     static const std::string VERSION;
     static const int32_t ELF_BLOCK_LEN;
     static const int32_t BIN_BLOCK_LEN;
-    static std::vector<int8_t> GetSignHeadLittleEndian(int subBlockSize, int subBlockNum);
+    static std::vector<int8_t> GetSignHeadLittleEndian(const int subBlockSize, const int subBlockNum);
 
 private:
     static const int NUM_OF_BLOCK;

@@ -70,8 +70,8 @@ public:
     * @param attrs   It is only used when you need to add an ownerID, and you don't need to process it by default
     * @return        0 :success <0 :error
     */
-    int Sign(const std::string& content, std::shared_ptr<Signer> signer, const std::string& sigAlg, std::string& ret,
-             std::vector<PKCS7Attr> attrs = std::vector<PKCS7Attr>());
+    int Sign(const std::string& content, const std::shared_ptr<Signer>& signer, const std::string& sigAlg,
+             std::string& ret, std::vector<PKCS7Attr> attrs = std::vector<PKCS7Attr>());
     /* d2i deserialize */
     int Parse(const std::string& p7bBytes);
     int Parse(const std::vector<int8_t>& p7bBytes);
@@ -96,7 +96,7 @@ public:
 
 private:
     int Parse(const unsigned char** in, long len);
-    int InitPkcs7(const std::string& content, std::shared_ptr<Signer> signer,
+    int InitPkcs7(const std::string& content, const std::shared_ptr<Signer>& signer,
                   const std::string& sigAlg, std::vector<PKCS7Attr> attrs);
     /* Verify Signature Value The certificate chain is not verified here */
     int VerifySign(const std::string& content)const;

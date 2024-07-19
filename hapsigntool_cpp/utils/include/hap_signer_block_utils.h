@@ -21,7 +21,6 @@
 #include "export_define.h"
 #include "byte_buffer.h"
 #include "random_access_file.h"
-#include "hap_verify_result.h"
 #include "digest_parameter.h"
 #include "pkcs7_context.h"
 #include "signature_info.h"
@@ -31,19 +30,19 @@ namespace SignatureTools {
 
 constexpr int32_t ZIP_CHUNK_DIGEST_PRIFIX_LEN = 5;
 
-enum HapBlobType {
-    HAP_SIGN_BLOB = 0x20000000,
-    PROOF_ROTATION_BLOB = 0x20000001,
-    PROFILE_BLOB = 0x20000002,
-    PROPERTY_BLOB = 0x20000003,
-};
-
 struct HapSignBlockHead {
     int32_t version = 0;
     int32_t blockCount = 0;
     int64_t hapSignBlockSize;
     int64_t hapSignBlockMagicLo;
     int64_t hapSignBlockMagicHi;
+};
+
+enum HapBlobType {
+    HAP_SIGN_BLOB = 0x20000000,
+    PROOF_ROTATION_BLOB = 0x20000001,
+    PROFILE_BLOB = 0x20000002,
+    PROPERTY_BLOB = 0x20000003,
 };
 
 struct HapSubSignBlockHead {

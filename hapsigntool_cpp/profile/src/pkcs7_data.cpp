@@ -112,7 +112,7 @@ PKCS7Data::~PKCS7Data()
     m_p7 = NULL;
 }
 
-int PKCS7Data::Sign(const std::string& content, std::shared_ptr<Signer> signer,
+int PKCS7Data::Sign(const std::string& content, const std::shared_ptr<Signer>& signer,
                     const std::string& sigAlg, std::string& ret, std::vector<PKCS7Attr> attrs)
 {
     int result = RET_OK;
@@ -188,13 +188,15 @@ int PKCS7Data::GetContent(std::string& originalRawData) const
     BIO_free_all(oriBio);
     return RET_OK;
 }
+
 static void PKCS7AddCrls(PKCS7* p7, STACK_OF(X509_CRL)* crls)
 {
     for (int i = 0; i < sk_X509_CRL_num(crls); i++) {
         PKCS7_add_crl(p7, sk_X509_CRL_value(crls, i));
     }
 }
-int PKCS7Data::InitPkcs7(const std::string& content, std::shared_ptr<Signer> signer,
+
+int PKCS7Data::InitPkcs7(const std::string& content, const std::shared_ptr<Signer>& signer,
                          const std::string& sigAlg, std::vector<PKCS7Attr> attrs)
 {
     STACK_OF(X509)* certs = NULL;

@@ -22,7 +22,6 @@ signature_tools_hap_include = [
 ]
 
 signature_tools_hap_src = [
-  "${signature_tools_hap}/verify/src/hap_verify_result.cpp",
   "${signature_tools_hap}/verify/src/verify_hap.cpp",
   "${signature_tools_hap}/verify/src/verify_bin.cpp",
   "${signature_tools_hap}/verify/src/verify_elf.cpp",

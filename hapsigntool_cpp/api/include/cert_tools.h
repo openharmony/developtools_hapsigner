@@ -63,6 +63,7 @@ public:
     static bool SetExpandedInformation(X509* cert, Options* options);
     static bool SetPubkeyAndSignCert(X509* cert, X509_REQ* issuercsr,
                                      X509_REQ* certReq, EVP_PKEY* keyPair, Options* options);
+    static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
     CertTools() = default;
     ~CertTools() = default;
 };

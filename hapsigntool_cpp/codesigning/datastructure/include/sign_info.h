@@ -36,17 +36,17 @@ public:
     static constexpr int32_t SIGNATURE_ALIGNMENT = 4;
     SignInfo();
     SignInfo(int32_t saltSize, int32_t flags, int64_t dataSize,
-             std::vector<int8_t> &salt, std::vector<int8_t> &sig);
+             const std::vector<int8_t>& salt, const std::vector<int8_t>& sig);
     SignInfo(int32_t saltSize,
              int32_t sigSize,
              int32_t flags,
              int64_t dataSize,
-             std::vector<int8_t> &salt,
+             const std::vector<int8_t>& salt,
              int32_t extensionNum,
              int32_t extensionOffset,
-             std::vector<int8_t> &signature,
-             std::vector<int8_t> &zeroPadding,
-             std::vector<MerkleTreeExtension*> extensionList);
+             const std::vector<int8_t>& signature,
+             const std::vector<int8_t>& zeroPadding,
+             const std::vector<MerkleTreeExtension*>& extensionList);
     SignInfo(const SignInfo& other);
     SignInfo& operator=(const SignInfo& other);
     virtual ~SignInfo();

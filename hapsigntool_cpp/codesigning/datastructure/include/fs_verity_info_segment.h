@@ -31,11 +31,11 @@ public:
     FsVerityInfoSegment();
     FsVerityInfoSegment(int8_t version, int8_t hashAlgorithm, int8_t log2BlockSize);
     FsVerityInfoSegment(int magic, int8_t version, int8_t hashAlgorithm,
-                        int8_t log2BlockSize, std::vector<int8_t> reserved);
+                        int8_t log2BlockSize, const std::vector<int8_t>& reserved);
     virtual ~FsVerityInfoSegment();
     virtual int Size();
     virtual void ToByteArray(std::vector<int8_t>& ret);
-    static FsVerityInfoSegment FromByteArray(std::vector<int8_t> &bytes);
+    static FsVerityInfoSegment FromByteArray(const std::vector<int8_t>& bytes);
 
 private:
     static constexpr int MAGIC = static_cast<int>((0x1E38 << 16) + (0x31AB));;
