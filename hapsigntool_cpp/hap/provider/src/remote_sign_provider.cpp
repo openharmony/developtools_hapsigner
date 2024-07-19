@@ -32,6 +32,7 @@ bool RemoteSignProvider::CheckParams(Options* options)
         SIGNATURE_TOOLS_LOGE("SignProvider::Parameter check failed !");
         return false;
     }
+    // The following code is for reference only.
     std::vector<std::string> paramFileds;
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_SERVER);
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_USERNAME);
@@ -39,8 +40,16 @@ bool RemoteSignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE);
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_SIGNERPLUGIN);
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
-    if (!this->SetSignParams(options, paramSet)) {
-        return false;
+    for (auto it = options->begin(); it != options->end(); it++) {
+        if (paramSet.find(it->first) != paramSet.end()) {
+            size_t size = it->first.size();
+            std::string str = it->first.substr(size - 3);
+            if (str == "Pwd") {
+                signParams.insert(std::make_pair(it->first, ""));
+            } else {
+                signParams.insert(std::make_pair(it->first, options->GetString(it->first)));
+            }
+        }
     }
     for (const auto& param : paramFileds) {
         if (signParams.find(param) == signParams.end()) {

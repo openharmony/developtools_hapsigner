@@ -48,7 +48,7 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     std::string signerPlugin = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_SIGNERPLUGIN);
     std::string onlineAuthMode = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE);
     std::string username = adapter.GetOptions()->GetString(ParamConstants::PARAM_REMOTE_USERNAME);
-    std::string userPwd = adapter.GetOptions()->GetChars(ParamConstants::PARAM_REMOTE_USERPWD);
+    char* userPwd = adapter.GetOptions()->GetChars(ParamConstants::PARAM_REMOTE_USERPWD);
 
     // open so
     RemoteSignProvider::handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_GLOBAL);
@@ -72,14 +72,15 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     RemoteSignerParamType signServerType{signServer.c_str(), signServer.size()};
     RemoteSignerParamType onlineAuthModeType{onlineAuthMode.c_str(), onlineAuthMode.size()};
     RemoteSignerParamType usernameType{username.c_str(), username.size()};
-    RemoteSignerParamType userPwdType{userPwd.c_str(), userPwd.size()};
+    RemoteSignerParamType userPwdType{userPwd, strlen(userPwd)};
 
     Signer* signer = remoteSignerCreator(keyAliasType, signServerType, onlineAuthModeType, usernameType, userPwdType);
 
-    userPwd.clear();
+    for (size_t i = 0; i < strlen(userPwd); i++) {
+        userPwd[i] = 0;
+    }
 
     std::shared_ptr<Signer> remoteSigner(signer);
-
     return remoteSigner;
 }
 } // namespace SignatureTools
