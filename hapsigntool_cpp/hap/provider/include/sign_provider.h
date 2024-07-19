@@ -100,7 +100,8 @@ private:
     fileIOTuple PrepareIOStreams(const std::string& inputPath, const std::string& outputPath, bool& ret);
 
     bool InitZipOutput(std::shared_ptr<RandomAccessFile> outputHap, std::shared_ptr<ZipSigner> zip,
-                       std::shared_ptr<std::ifstream>, std::shared_ptr<std::ofstream>tmpOutput, const std::string& path);
+                       std::shared_ptr<std::ifstream>, std::shared_ptr<std::ofstream>tmpOutput,
+                       const std::string& path);
 
     bool PrintErrorLog(const std::string& log, const int& errorCode, std::string path = "");
 

@@ -34,7 +34,8 @@ public:
     static int GetBlockLen();
     static int GetElfBlockLen();
     static std::string GetBlockHead(const char type, const char tag, const short length, const int offset);
-    static std::vector<int8_t> GetBlockHeadLittleEndian(const char type, const char tag, const int length, const int offset);
+    static std::vector<int8_t> GetBlockHeadLittleEndian(const char type, const char tag,
+                                                        const int length, const int offset);
 };
 } // namespace SignatureTools
 } // namespace OHOS

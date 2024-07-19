@@ -102,7 +102,8 @@ bool SignElf::AlignFileBy4kBytes(const std::string& inputFile, std::string& tmpF
 }
 
 bool SignElf::WriteBlockDataToFile(SignerConfig& signerConfig,
-                                   const std::string &inputFile, std::string& outputFile, const std::string& profileSigned,
+                                   const std::string &inputFile, std::string& outputFile,
+                                   const std::string& profileSigned,
                                    const std::map<std::string, std::string>& signParams)
 {
     std::string proFile;
@@ -266,7 +267,8 @@ bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::map<st
     return true;
 }
 
-bool SignElf::WriteSignHeadDataToOutputFile(const std::string& inputFile, const std::string& outputFile, const int blockNum)
+bool SignElf::WriteSignHeadDataToOutputFile(const std::string& inputFile, const std::string& outputFile,
+                                            const int blockNum)
 {
     int64_t size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile);
     if (IsLongOverflowInteger(size)) {

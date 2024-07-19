@@ -387,8 +387,8 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
     if (!GetAndOutPutCert(*adapter, x509CertificatePtr)) {
         goto err;
     }
-
-    adapter->AppAndProfileAssetsRealse({issuerKeyPairPtr, keyPairPtr}, {csrPtr}, {x509CertificatePtr}); // realse heap memory
+    // realse heap memory
+    adapter->AppAndProfileAssetsRealse({issuerKeyPairPtr, keyPairPtr}, {csrPtr}, {x509CertificatePtr});
     return true;
     
 err:

@@ -83,7 +83,6 @@ ohos_executable("hap-sign-tool") {
   include_dirs = signature_tools_main_include
   sources = signature_tools_main_src
 
-  defines = [ "SIGNATURE_LOG_DEBUG" ]
 
   deps = [
     "//third_party/bzip2:libbz2",
