@@ -37,7 +37,8 @@ public:
 
     SignatureAlgorithmHelper();
     SignatureAlgorithmHelper(const SignatureAlgorithmHelper& other);
-    SignatureAlgorithmHelper(const SignatureAlgorithmId &id_, const std::string &keyAlg_, const ContentDigestAlgorithm& digestAlg_,
+    SignatureAlgorithmHelper(const SignatureAlgorithmId &id_, const std::string &keyAlg_,
+                             const ContentDigestAlgorithm& digestAlg_,
                              const std::pair<std::string, void*>& sigParams_);
     SignatureAlgorithmHelper& operator=(const SignatureAlgorithmHelper& other);
     ~SignatureAlgorithmHelper();

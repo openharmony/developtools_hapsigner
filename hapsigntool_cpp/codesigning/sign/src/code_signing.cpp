@@ -128,7 +128,8 @@ int64_t CodeSigning::GetTimestamp()
 }
 
 bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool storeTree,
-                           int64_t fsvTreeOffset, const std::string &ownerID, std::pair<SignInfo, std::vector<int8_t>>& ret)
+                           int64_t fsvTreeOffset, const std::string &ownerID,
+                           std::pair<SignInfo, std::vector<int8_t>>& ret)
 {
     std::unique_ptr<FsVerityGenerator> fsVerityGenerator =
         std::make_unique<FsVerityGenerator>();
