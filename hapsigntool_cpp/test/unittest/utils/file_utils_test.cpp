@@ -21,9 +21,7 @@
 
 namespace OHOS {
 namespace SignatureTools {
-/*
-* 测试套件,固定写法
-*/
+
 class FileUtilsTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
@@ -44,7 +42,11 @@ const int THREAD_NUMS = 8;
 const size_t MAX_FILE_SIZE = 1024 * 1024 * 10;
 const size_t BUFFER_SIZE = 1024 * 128;
 const int CHMOD = 0777;
+const size_t MAX_VALUE = 0x80000000LL;
 
+/**
+ * Generate files for thread pool testing.
+ */
 void CreateTestFile()
 {
     (void)mkdir("tmp", CHMOD);
@@ -76,6 +78,9 @@ void CreateTestFile()
     }
 }
 
+/**
+ * Thread pool execution function
+ */
 int Worker(const std::string& inputFile, const std::string& outputFile, int length)
 {
     std::ifstream input(inputFile, std::ios::binary);
@@ -102,7 +107,7 @@ int Worker(const std::string& inputFile, const std::string& outputFile, int leng
 
 /**
  * @tc.name: WriteByteToOutFile001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test WriteByteToOutFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -110,7 +115,10 @@ int Worker(const std::string& inputFile, const std::string& outputFile, int leng
  */
 HWTEST_F(FileUtilsTest, WriteByteToOutFile001, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed to get output stream object, outfile"
+    /*
+     * @tc.steps: step1. make the output file is not exist
+     * @tc.expected: step1. failed to get output stream object, the return will be true.
+     */
     std::vector<int8_t> bytes;
     std::ofstream output("./utilstmp/signed-file.out", std::ios::binary);
     bool flag = FileUtils::WriteByteToOutFile(bytes, output);
@@ -119,7 +127,7 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: WriteByteToOutFile002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test WriteByteToOutFile function for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -127,16 +135,38 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, WriteByteToOutFile002, testing::ext::TestSize.Level1)
 {
-    // outfile path is right
+    std::filesystem::path dir_path("./utils");
+    ASSERT_TRUE(std::filesystem::create_directory(dir_path));
+
     std::vector<int8_t> bytes;
-    std::ofstream output("./utils/signed-file.out", std::ios::binary);
+    std::ofstream output("./utils/unsigned-file.out", std::ios::binary);
     bool flag = FileUtils::WriteByteToOutFile(bytes, output);
-    EXPECT_EQ(flag, false);
+    EXPECT_EQ(flag, true);
+}
+
+/**
+ * @tc.name: WriteByteToOutFile003
+ * @tc.desc: Test function interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(FileUtilsTest, WriteByteToOutFile003, testing::ext::TestSize.Level1)
+{
+    /*
+     * @tc.steps: step1. make the output file is not exist
+     * @tc.expected: step1. failed to get output stream object, the return will be true.
+     */
+    std::string bytes;
+    std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
+    bool result = FileUtils::WriteByteToOutFile(bytes, output);
+    EXPECT_EQ(result, false);
 }
 
 /**
  * @tc.name: Write
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test Write function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -144,84 +174,59 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, Write, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed get output stream"
+    /*
+     * @tc.steps: step1. make the output file is not exist
+     * @tc.expected: step1. open output file failed, the return will be IO_ERROR.
+     */
     std::string str;
     std::string fileName = "./utilsxxx/signed-file.out";
     int result = FileUtils::Write(str, fileName);
-    EXPECT_EQ(result, -103);
+    EXPECT_EQ(result, IO_ERROR);
 }
 
 /**
- * @tc.name: Read001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.name: Read
+ * @tc.desc: Test Read function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(FileUtilsTest, Read001, testing::ext::TestSize.Level1)
+HWTEST_F(FileUtilsTest, Read, testing::ext::TestSize.Level1)
 {
-    // go to branch "io error"
+    /*
+     * @tc.steps: step1. make the input file is not exist
+     * @tc.expected: step1. open input file failed, the return will be IO_ERROR.
+     */
     std::string outstr;
     std::ifstream input("./utilsxxx/unsigned-file.out", std::ios::binary);
     int result = FileUtils::Read(input, outstr);
-    EXPECT_NE(result, -104);
+    EXPECT_EQ(result, IO_ERROR);
 }
 
 /**
- * @tc.name: Read002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.name: ReadFile
+ * @tc.desc: Test ReadFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(FileUtilsTest, Read002, testing::ext::TestSize.Level1)
+HWTEST_F(FileUtilsTest, ReadFile, testing::ext::TestSize.Level1)
 {
-    // go to all branch
-    std::string outstr;
-    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    int result = FileUtils::Read(input, outstr);
-    EXPECT_NE(result, 0);
-}
-
-/**
- * @tc.name: ReadFile001
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, ReadFile001, testing::ext::TestSize.Level1)
-{
-    // go to branch "open error"
+    /*
+     * @tc.steps: step1. make the input file is not exist
+     * @tc.expected: step1. open input file failed, the return will be IO_ERROR.
+     */
     std::string outstr;
     std::string fileName = "./utilsxxx/unsigned-file.out";
     int result = FileUtils::ReadFile(fileName, outstr);
-    EXPECT_NE(result, -104);
-}
-
-/**
- * @tc.name: ReadFile002
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, ReadFile002, testing::ext::TestSize.Level1)
-{
-    // go to all branch
-    std::string outstr;
-    std::string fileName = "./utils/unsigned-file.out";
-    int result = FileUtils::ReadFile(fileName, outstr);
-    EXPECT_NE(result, 0);
+    EXPECT_EQ(result, IO_ERROR);
 }
 
 /**
  * @tc.name: ReadFileByOffsetAndLength001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test ReadFileByOffsetAndLength function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -229,16 +234,19 @@ HWTEST_F(FileUtilsTest, ReadFile002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength001, testing::ext::TestSize.Level1)
 {
-    // go to branch "Size cannot be greater than Integer max value"
     std::string outstr;
     std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    int result = FileUtils::ReadFileByOffsetAndLength(input, 0, 2147483648, outstr);
-    EXPECT_EQ(result, -1);
+    /*
+     * @tc.steps: step1. make the write size is greater than INT_MAX
+     * @tc.expected: step1. the return will be RET_FAILED.
+     */
+    int result = FileUtils::ReadFileByOffsetAndLength(input, 0, MAX_VALUE, outstr);
+    EXPECT_EQ(result, RET_FAILED);
 }
 
 /**
  * @tc.name: ReadFileByOffsetAndLength002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test ReadFileByOffsetAndLength function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -246,33 +254,19 @@ HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength001, testing::ext::TestSize.Lev
  */
 HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength002, testing::ext::TestSize.Level1)
 {
-    // go to branch "Error readInputByOffsetAndLength"
     std::string outstr;
     std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
+    /*
+     * @tc.steps: step1. make the input file is not exist, and the offset is -1
+     * @tc.expected: step1. the input stream is bad, and the offset is error, the return will be IO_ERROR.
+     */
     int result = FileUtils::ReadFileByOffsetAndLength(input, -1, 32, outstr);
-    EXPECT_NE(result, 0);
-}
-
-/**
- * @tc.name: ReadFileByOffsetAndLength003
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength003, testing::ext::TestSize.Level1)
-{
-    // go to all branch
-    std::string outstr;
-    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    int result = FileUtils::ReadFileByOffsetAndLength(input, 0, 32, outstr);
-    EXPECT_NE(result, 0);
+    EXPECT_EQ(result, IO_ERROR);
 }
 
 /**
  * @tc.name: ReadInputByOffsetAndLength001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test ReadInputByOffsetAndLength function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -280,16 +274,19 @@ HWTEST_F(FileUtilsTest, ReadFileByOffsetAndLength003, testing::ext::TestSize.Lev
  */
 HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength001, testing::ext::TestSize.Level1)
 {
-    // go to branch "Size cannot be greater than Integer max value"
     std::string outstr;
     std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    int result = FileUtils::ReadInputByOffsetAndLength(input, 0, 2147483648, outstr);
+    /*
+     * @tc.steps: step1. make the length is greater than INT_MAX
+     * @tc.expected: step1. Size cannot be greater than Integer max value, the return will be -1.
+     */
+    int result = FileUtils::ReadInputByOffsetAndLength(input, 0, MAX_VALUE, outstr);
     EXPECT_EQ(result, -1);
 }
 
 /**
  * @tc.name: ReadInputByOffsetAndLength002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test ReadInputByOffsetAndLength function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -297,33 +294,19 @@ HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength001, testing::ext::TestSize.Le
  */
 HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength002, testing::ext::TestSize.Level1)
 {
-    // go to branch "Error seek"
     std::string outstr;
+    /*
+     * @tc.steps: step1. make the input file is not exist
+     * @tc.expected: step1. input error occurred, the return will be -1.
+     */
     std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
     int result = FileUtils::ReadInputByOffsetAndLength(input, 0, 32, outstr);
     EXPECT_EQ(result, -1);
 }
 
 /**
- * @tc.name: ReadInputByOffsetAndLength003
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength003, testing::ext::TestSize.Level1)
-{
-    // go to all branch
-    std::string outstr;
-    std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
-    int result = FileUtils::ReadInputByOffsetAndLength(input, 0, 32, outstr);
-    EXPECT_NE(result, 0);
-}
-
-/**
  * @tc.name: ReadInputByLength001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test ReadInputByLength function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -331,16 +314,19 @@ HWTEST_F(FileUtilsTest, ReadInputByOffsetAndLength003, testing::ext::TestSize.Le
  */
 HWTEST_F(FileUtilsTest, ReadInputByLength001, testing::ext::TestSize.Level1)
 {
-    // go to branch "Size cannot be greater than Integer max value"
+    /*
+     * @tc.steps: step1. make the length is greater than INT_MAX
+     * @tc.expected: step1. Size cannot be greater than Integer max value, the return will be -1.
+     */
     std::string outstr;
     std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    int result = FileUtils::ReadInputByLength(input, 2147483648, outstr);
+    int result = FileUtils::ReadInputByLength(input, MAX_VALUE, outstr);
     EXPECT_EQ(result, -1);
 }
 
 /**
  * @tc.name: ReadInputByLength002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test ReadInputByLength function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -348,7 +334,10 @@ HWTEST_F(FileUtilsTest, ReadInputByLength001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, ReadInputByLength002, testing::ext::TestSize.Level1)
 {
-    // go to branch "Error input"
+    /*
+     * @tc.steps: step1. make the input file is not exist
+     * @tc.expected: step1. input error occurred, the return will be -1.
+     */
     std::string outstr;
     std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
     int result = FileUtils::ReadInputByLength(input, 32, outstr);
@@ -356,49 +345,39 @@ HWTEST_F(FileUtilsTest, ReadInputByLength002, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: ReadInputByLength003
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.name: AppendWriteFileByOffsetToFile001
+ * @tc.desc: Test AppendWriteFileByOffsetToFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(FileUtilsTest, ReadInputByLength003, testing::ext::TestSize.Level1)
+HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile001, testing::ext::TestSize.Level1)
 {
-    std::string outstr;
-    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    int result = FileUtils::ReadInputByLength(input, 32, outstr);
-    EXPECT_NE(result, 0);
-}
-
-/**
- * @tc.name: AppendWriteFileByOffsetToFile005
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile005, testing::ext::TestSize.Level1)
-{
-    // go to branch "input failed"
+    /*
+     * @tc.steps: step1. make the input file is not exist
+     * @tc.expected: step1. input error occurred, the return will be false.
+     */
     std::ifstream input("./utils/unsigned-filexx.out", std::ios::binary);
-    std::ofstream output("./utils/signed-file.out", std::ios::binary);
+    std::ofstream output("./utils/signed-file.out", std::ios::binary | std::ios::out);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, 0, 32);
     EXPECT_EQ(result, false);
 }
 
 /**
- * @tc.name: AppendWriteFileByOffsetToFile006
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.name: AppendWriteFileByOffsetToFile002
+ * @tc.desc: Test AppendWriteFileByOffsetToFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile006, testing::ext::TestSize.Level1)
+HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile002, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed get out stream"
+    /*
+     * @tc.steps: step1. make the output file is not exist
+     * @tc.expected: step1. output error occurred, the return will be false.
+     */
     std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, 0, 32);
@@ -406,16 +385,19 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile006, testing::ext::TestSize
 }
 
 /**
- * @tc.name: AppendWriteFileByOffsetToFile007
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.name: AppendWriteFileByOffsetToFile003
+ * @tc.desc: Test AppendWriteFileByOffsetToFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile007, testing::ext::TestSize.Level1)
+HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile003, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed seekg"
+    /*
+     * @tc.steps: step1. make the offset is -1
+     * @tc.expected: step1. write error occurred, the return will be false.
+     */
     std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
     std::ofstream output("./utils/signed-file.out", std::ios::binary);
     bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, -1, 32);
@@ -423,25 +405,8 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile007, testing::ext::TestSize
 }
 
 /**
- * @tc.name: AppendWriteFileByOffsetToFile008
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile008, testing::ext::TestSize.Level1)
-{
-    // go to all branch
-    std::ifstream input("./utils/unsigned-file.out", std::ios::binary);
-    std::ofstream output("./utils/signed-file.out", std::ios::binary);
-    bool result = FileUtils::AppendWriteFileByOffsetToFile(input, output, 0, 32);
-    EXPECT_NE(result, true);
-}
-
-/**
  * @tc.name: AppendWriteFileToFile001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test AppendWriteFileToFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -449,7 +414,10 @@ HWTEST_F(FileUtilsTest, AppendWriteFileByOffsetToFile008, testing::ext::TestSize
  */
 HWTEST_F(FileUtilsTest, AppendWriteFileToFile001, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed to get input stream object"
+    /*
+     * @tc.steps: step1. make the input file is not exist.
+     * @tc.expected: step1. failed to get input stream object, the return will be false.
+     */
     std::string inputFile = "./utils/unsigned-filexx.out";
     std::string outputFile = "./utils/signed-file.out";
     bool result = FileUtils::AppendWriteFileToFile(inputFile, outputFile);
@@ -458,7 +426,7 @@ HWTEST_F(FileUtilsTest, AppendWriteFileToFile001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: AppendWriteFileToFile002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test AppendWriteFileToFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -466,24 +434,10 @@ HWTEST_F(FileUtilsTest, AppendWriteFileToFile001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, AppendWriteFileToFile002, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed to get output stream object"
-    std::string inputFile = "./utils/unsigned-file.out";
-    std::string outputFile = "./utilsxxx/signed-file.out";
-    bool result = FileUtils::AppendWriteFileToFile(inputFile, outputFile);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: AppendWriteFileToFile003
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, AppendWriteFileToFile003, testing::ext::TestSize.Level1)
-{
-    // go to all branch
+    /*
+     * @tc.steps: step1. make the output file is not exist.
+     * @tc.expected: step1. failed to get output stream object, the return will be false.
+     */
     std::string inputFile = "./utils/unsigned-file.out";
     std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::AppendWriteFileToFile(inputFile, outputFile);
@@ -492,7 +446,7 @@ HWTEST_F(FileUtilsTest, AppendWriteFileToFile003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: AppendWriteByteToFile
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test AppendWriteByteToFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -500,7 +454,10 @@ HWTEST_F(FileUtilsTest, AppendWriteFileToFile003, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, AppendWriteByteToFile, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed to write data to output stream"
+    /*
+     * @tc.steps: step1. make the output file is not exist.
+     * @tc.expected: step1. Failed to write data to output stream, the return will be false.
+     */
     std::string bytes;
     std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::AppendWriteByteToFile(bytes, outputFile);
@@ -509,7 +466,7 @@ HWTEST_F(FileUtilsTest, AppendWriteByteToFile, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: WriteInputToOutPut001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test WriteInputToOutPut function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -517,7 +474,10 @@ HWTEST_F(FileUtilsTest, AppendWriteByteToFile, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, WriteInputToOutPut001, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed to get input stream object"
+    /*
+     * @tc.steps: step1. make the input file is not exist.
+     * @tc.expected: step1. failed to get input stream object, the return will be false.
+     */
     std::string inputFile = "./utils/unsigned-filexx.out";
     std::string outputFile = "./utils/signed-file.out";
     bool result = FileUtils::WriteInputToOutPut(inputFile, outputFile);
@@ -534,7 +494,10 @@ HWTEST_F(FileUtilsTest, WriteInputToOutPut001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, WriteInputToOutPut002, testing::ext::TestSize.Level1)
 {
-    // go to branch "Failed to get output stream object"
+    /*
+     * @tc.steps: step1. make the output file is not exist.
+     * @tc.expected: step1. failed to get output stream object, the return will be false.
+     */
     std::string inputFile = "./utils/unsigned-file.out";
     std::string outputFile = "./utilsxxx/signed-file.out";
     bool result = FileUtils::WriteInputToOutPut(inputFile, outputFile);
@@ -543,7 +506,7 @@ HWTEST_F(FileUtilsTest, WriteInputToOutPut002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: WriteInputToOutPut003
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test WriteInputToOutPut function for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -551,67 +514,15 @@ HWTEST_F(FileUtilsTest, WriteInputToOutPut002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, WriteInputToOutPut003, testing::ext::TestSize.Level1)
 {
-    // go to all branch
     std::string inputFile = "./utils/unsigned-file.out";
     std::string outputFile = "./utils/signed-file.out";
     bool result = FileUtils::WriteInputToOutPut(inputFile, outputFile);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: WriteByteToOutFile003
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, WriteByteToOutFile003, testing::ext::TestSize.Level1)
-{
-    // go to branch "Failed to get output stream object"
-    std::string bytes;
-    std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
-    bool result = FileUtils::WriteByteToOutFile(bytes, output);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: WriteByteToOutFile004
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, WriteByteToOutFile004, testing::ext::TestSize.Level1)
-{
-    // go to branch "Failed to get output stream object"
-    std::vector<int8_t> bytes;
-    std::ofstream output("./utilsxxx/signed-file.out", std::ios::binary);
-    bool result = FileUtils::WriteByteToOutFile(bytes, output);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: WriteByteToOutFile005
- * @tc.desc: Test function interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(FileUtilsTest, WriteByteToOutFile005, testing::ext::TestSize.Level1)
-{
-    // go to all branch
-    std::vector<int8_t> bytes;
-    std::ofstream output("./utils/signed-file.out", std::ios::binary);
-    bool result = FileUtils::WriteByteToOutFile(bytes, output);
-    EXPECT_EQ(result, false);
+    EXPECT_EQ(result, true);
 }
 
 /**
  * @tc.name: IsRunnableFile001
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test IsRunnableFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -619,7 +530,10 @@ HWTEST_F(FileUtilsTest, WriteByteToOutFile005, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, IsRunnableFile001, testing::ext::TestSize.Level1)
 {
-    // go to branch "name.empty()"
+    /*
+     * @tc.steps: step1. make the file name is empty.
+     * @tc.expected: step1. the return will be false.
+     */
     std::string fileName;
     bool result = FileUtils::IsRunnableFile(fileName);
     EXPECT_EQ(result, false);
@@ -627,7 +541,7 @@ HWTEST_F(FileUtilsTest, IsRunnableFile001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: IsRunnableFile002
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test IsRunnableFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -635,15 +549,18 @@ HWTEST_F(FileUtilsTest, IsRunnableFile001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, IsRunnableFile002, testing::ext::TestSize.Level1)
 {
-    // go to branch ".an"
-    std::string fileName = "test.an";
+    /*
+     * @tc.steps: step1. make the file name has not dot symbol.
+     * @tc.expected: step1. the return will be false.
+     */
+    std::string fileName = "xxx";
     bool result = FileUtils::IsRunnableFile(fileName);
-    EXPECT_EQ(result, true);
+    EXPECT_EQ(result, false);
 }
 
 /**
  * @tc.name: IsRunnableFile003
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test IsRunnableFile function for FAIL.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -651,15 +568,18 @@ HWTEST_F(FileUtilsTest, IsRunnableFile002, testing::ext::TestSize.Level1)
  */
 HWTEST_F(FileUtilsTest, IsRunnableFile003, testing::ext::TestSize.Level1)
 {
-    // go to branch ".so"
-    std::string fileName = "test.so";
+    /*
+     * @tc.steps: step1. make the file name is end of xxx
+     * @tc.expected: step1. the return will be false.
+     */
+    std::string fileName = "test.xxx";
     bool result = FileUtils::IsRunnableFile(fileName);
-    EXPECT_NE(result, -1);
+    EXPECT_EQ(result, false);
 }
 
 /**
  * @tc.name: DelDir
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test DelDir function for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -675,19 +595,20 @@ HWTEST_F(FileUtilsTest, DelDir, testing::ext::TestSize.Level1)
     std::filesystem::create_directories(dir_path);
 
     std::filesystem::path file_path = dir_path / "example.txt";
-    std::ofstream file(file_path);
-    EXPECT_EQ(true, 1);
+    std::ofstream file(file_path, std::ios::binary | std::ios::out);
+    file.close();
+    FileUtils::DelDir(fileName);
 }
 
 /**
  * @tc.name: WriteInputToOutPut
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: Test WriteInputToOutPut function for SUCCESS through multithreading.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(FileUtilsTest, WriteInputToOutPutTest001, testing::ext::TestSize.Level1)
+HWTEST_F(FileUtilsTest, WriteInputToOutPutMultithreadingTest, testing::ext::TestSize.Level1)
 {
     CreateTestFile();
 

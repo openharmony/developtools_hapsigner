@@ -14,6 +14,7 @@
  */
 #include <memory>
 #include <gtest/gtest.h>
+#include "hap_signer_block_utils.h"
 #include "sign_block_data.h"
 
 using namespace OHOS::SignatureTools;
@@ -39,7 +40,7 @@ public:
 
 /**
  * @tc.name: getBlockHead
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get block head for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -55,7 +56,7 @@ HWTEST_F(SignBlockDataTest, getBlockHead, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getByte
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get byte for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -71,7 +72,7 @@ HWTEST_F(SignBlockDataTest, getByte, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getLen
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get length for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -87,7 +88,7 @@ HWTEST_F(SignBlockDataTest, getLen, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignData
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get sign data for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -103,7 +104,7 @@ HWTEST_F(SignBlockDataTest, getSignData, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignFile
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get sign file for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -119,7 +120,7 @@ HWTEST_F(SignBlockDataTest, getSignFile, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getType
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get sign type for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -135,7 +136,7 @@ HWTEST_F(SignBlockDataTest, getType, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setBlockHead
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get data block head for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -147,4 +148,21 @@ HWTEST_F(SignBlockDataTest, setBlockHead, testing::ext::TestSize.Level1)
     std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
     api->SetBlockHead(signData);
     EXPECT_EQ(true, 1);
+}
+
+/**
+ * @tc.name: GetOptionalBlockIndex
+ * @tc.desc: Test get optional block index for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(SignBlockDataTest, GetOptionalBlockIndex, testing::ext::TestSize.Level1)
+{
+    std::vector<OptionalBlock> optionBlocks;
+    int32_t type = 0;
+    int index = 0;
+    bool flag = HapSignerBlockUtils::GetOptionalBlockIndex(optionBlocks, type, index);
+    EXPECT_NE(flag, -1);
 }

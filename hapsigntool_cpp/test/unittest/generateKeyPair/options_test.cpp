@@ -452,10 +452,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_068, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -491,10 +491,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_069, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string inform = "abcd";
 
     (*params)["mode"] = mode;
@@ -532,10 +532,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_070, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384w";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string inform = "elf";
 
     (*params)["mode"] = mode;
@@ -573,10 +573,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_071, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileSigned = "1";
 
     (*params)["mode"] = mode;
@@ -614,10 +614,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_072, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileSigned = "0";
 
     (*params)["mode"] = mode;
@@ -657,7 +657,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_073, testing::ext::TestSize.Level1)
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -692,7 +692,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_074, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
 
@@ -728,10 +728,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_075, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -766,10 +766,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_076, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -805,10 +805,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_077, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -844,10 +844,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_078, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -927,10 +927,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_108, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -965,7 +965,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_109, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
 
@@ -1002,7 +1002,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_110, testing::ext::TestSize.Level1)
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1141,10 +1141,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_114, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string inForm = "abcd";
     std::string profileSigned = "1";
 
@@ -1184,10 +1184,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_115, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/profile.json";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string inForm = "abcd";
     std::string profileSigned = "0";
 
@@ -1258,7 +1258,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_117, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "remoteResign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outFile = "./generateKeyPair/test A/abc";
     std::string signAlg = "SHA384withECDSA";
 
@@ -1283,8 +1283,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_118, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "remoteSign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA384withECDSA";
 
     (*params)["mode"] = mode;
@@ -1308,8 +1308,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_119, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "abc";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA384withECDSA";
 
     (*params)["mode"] = mode;
@@ -1333,8 +1333,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_120, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA384withECDSA";
 
     (*params)["mode"] = mode;
@@ -1358,10 +1358,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_121, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string keyAlias = "oh-app1-key-v1";
     std::string appCertFile = "./generateKeyPair/app-profile.p7b";
 
@@ -1389,8 +1389,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_122, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA385withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1424,8 +1424,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_123, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1457,13 +1457,13 @@ HWTEST_F(OptionsCmdTest, params_run_test_124, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyAlias = "oh-app1-key-v1";
     std::string appCertFile = "./generateKeyPair/app-profile.p7b";
-    std::string profileFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string profileFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileSigned = "1";
 
     (*params)["mode"] = mode;

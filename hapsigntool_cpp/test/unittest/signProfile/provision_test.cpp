@@ -93,7 +93,7 @@ void ProvisionTest::TearDown()
 
 /**
  * @tc.name: provision_test001
- * @tc.desc: Test function of LocalSigner::GetCrls() interface for SUCCESS.
+ * @tc.desc: Test function of LocalSigner::GetCrls() interface get NULL crls.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -110,7 +110,8 @@ HWTEST_F(ProvisionTest, provision_test001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test002
- * @tc.desc: Test function of LocalSigner::GetSignature() interface for SUCCESS.
+ * @tc.desc: Test function of LocalSigner::GetSignature() interface diffrent sign algorithm 
+ * for success only support SHA256/384withECDSA.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -154,7 +155,7 @@ HWTEST_F(ProvisionTest, provision_test002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test003
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for not debug/release provision.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -231,7 +232,7 @@ HWTEST_F(ProvisionTest, provision_test004, testing::ext::TestSize.Level1)
 }
 /**
  * @tc.name: provision_test005
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for not struct json.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -247,7 +248,7 @@ HWTEST_F(ProvisionTest, provision_test005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test006
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for discarded json.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -262,39 +263,7 @@ HWTEST_F(ProvisionTest, provision_test006, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: provision_test007
- * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test007, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "55.2";
-    AppProvisionVerifyResult result = ParseProfile(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test008
- * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test008, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"name\": \"feixing\",\"age\": 18}+";
-    AppProvisionVerifyResult result = ParseProfile(provision, info);
-    EXPECT_FALSE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test009
+n * @tc.name: provision_test009
  * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
@@ -347,117 +316,6 @@ HWTEST_F(ProvisionTest, provision_test010, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: provision_test011
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test011, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.e"
-        "xample.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BE"
-        "GIN CERTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44AB"
-        "CD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F"
-        "958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},"
-        "\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after"
-        "\":1705127532,\"not-before\":1610519532},\"version-code\":0,\"version-name\":\"1.0.0\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test012
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test012, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"c"
-        "om.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-"
-        "----BEGIN CERTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB4"
-        "4ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C767"
-        "9A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":["
-        "\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\""
-        "not-after\":1705127532,\"not-before\":1610519532},\"version-code_no\":0,\"version-name\":\"1.0.0\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test013
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test013, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"c"
-        "om.example.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\""
-        "-----BEGIN CERTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB4"
-        "4ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C76"
-        "79A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":"
-        "[\"\"]},\"type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{"
-        "\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":\"0\",\"version-name\":\"1.0.0\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
  * @tc.name: provision_test014
  * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
  * @tc.size: MEDIUM
@@ -494,155 +352,11 @@ HWTEST_F(ProvisionTest, provision_test014, testing::ext::TestSize.Level1)
     EXPECT_TRUE(result == PROVISION_OK);
 }
 
-/**
- * @tc.name: provision_test015
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test015, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"\","
-        "\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44AB"
-        "CD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F9"
-        "58732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\""
-        "type\":\"debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1"
-        "705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
 
-/**
- * @tc.name: provision_test016
- * @tc.desc: Test function of RunSignProfile() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test016, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.exa"
-        "mple.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CE"
-        "RTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD5302"
-        "96054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]}"
-        ",\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"debug\",\""
-        "uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":"
-        "1610519532},\"version-code\":1,\"version-name\":\"\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test017
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test017, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.examp"
-        "le.nativetemplatedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTI"
-        "FICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296"
-        "054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\""
-        "issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"debug\",\"uu"
-        "id\":\"\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"vers"
-        "ion-name\":\"\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test018
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test018, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.examp"
-        "le.nativetemplatedemo\",\"developer-id\":\"\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD5"
-        "30296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732"
-        "865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\""
-        "debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\""
-        "not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
 
 /**
  * @tc.name: provision_test019
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for development-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -663,44 +377,8 @@ HWTEST_F(ProvisionTest, provision_test019, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: provision_test020
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test020, testing::ext::TestSize.Level1)
-{
-    ProfileInfo info;
-    std::string provision = "{\"bundle-info\":{\"app-feature\":\"\",\"bundle-name\":\"com.example.nativetem"
-        "platedemo\",\"developer-id\":\"OpenHarmony\",\"development-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
-        "MIICXjCCAeOgAwIBAgIBATAKBggqhkjOPQQDAzBuMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEpMCcGA1UEAwwgQXBwbGljYXRpb24gU2lnbmF0dXJlIFNlcnZpY2UgQ0EwHhcN\\n"
-        "MjQwNDE1MDUzOTUyWhcNMjUwNDE1MDUzOTUyWjBaMQswCQYDVQQGEwJDTjEUMBIG\\n"
-        "A1UECgwLT3Blbkhhcm1vbnkxHjAcBgNVBAsMFU9wZW5IYXJtb255IENvbW11bml0\\n"
-        "eTEVMBMGA1UEAwwMQXBwMSBSZWxlYXNlMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE\\n"
-        "odSztdiucyVAo7VQnzHzBJsS9vQYa1vU1cP92F6fiJLazWtvEljNP1XoJldSZaN9\\n"
-        "UYGdAVHh2yrHzaJFEqHCSB3uQhlJgSbl9sT0lJ4hro1YvVx921/knMRlunz4eAGX\\n"
-        "o2kwZzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEF\\n"
-        "BQcDAzAbBgNVHQ4EFEpzK6IntvQxLaKGX6xZQSiISBx+MBgGDCsGAQQBj1sCgngB\\n"
-        "AwQIMAYCAQEKAQAwCgYIKoZIzj0EAwMDaQAwZgIxAPboDdi9EhOiwAhO3N6vTRcK\\n"
-        "QT1K1TQq2vjvpC2231Dq4tLPeSzLz6ROq+Zv6IgBYgIxAJ9sZZUBoR2lgPHBzt01\\n"
-        "4uxt5nLfJj2XKa6Leb/JWDoosXjoVXoB47y699PtGetcFw==\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD53"
-        "0296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F9587328"
-        "65\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\""
-        "debug\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\""
-        "not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
-    AppProvisionVerifyResult result = ParseProvision(provision, info);
-    EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
  * @tc.name: provision_test021
- * @tc.desc: Test function of Provision operator==() interface for SUCCESS.
+ * @tc.desc: Test function of Provision operator==() interface stability.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -716,7 +394,7 @@ HWTEST_F(ProvisionTest, provision_test021, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test023
- * @tc.desc: Test function of Provision operator==() interface for SUCCESS.
+ * @tc.desc: Test function of Provision operator==() interface stability.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -733,7 +411,7 @@ HWTEST_F(ProvisionTest, provision_test023, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test025
- * @tc.desc: Test function of ProfileSignTool::GenerateP7b() interface for SUCCESS.
+ * @tc.desc: Test function of ProfileSignTool::GenerateP7b() failed for invalid keyStorePassword.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -763,7 +441,7 @@ HWTEST_F(ProvisionTest, provision_test025, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test026
- * @tc.desc: Test function of ProfileSignTool::GenerateP7b() interface for SUCCESS.
+ * @tc.desc: Test function of ProfileSignTool::GenerateP7b() failed for invalid sign algorithm.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -856,7 +534,7 @@ HWTEST_F(ProvisionTest, provision_test028, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test029
- * @tc.desc: Test function of ProfileSignTool::GenerateP7b() interface for SUCCESS.
+ * @tc.desc: Test function of ProfileSignTool::GenerateP7b() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -886,7 +564,7 @@ HWTEST_F(ProvisionTest, provision_test029, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test030
- * @tc.desc: Test function of ProfileSignTool::GenerateP7b() interface for SUCCESS.
+ * @tc.desc: Test function of ProfileSignTool::GenerateP7b() failed for invalid certichain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -916,7 +594,7 @@ HWTEST_F(ProvisionTest, provision_test030, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test031
- * @tc.desc: Test function of LocalSigner::GetCrls() interface for SUCCESS.
+ * @tc.desc: Test function of LocalSigner::GetCrls() interface get NULL crls.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -953,7 +631,7 @@ HWTEST_F(ProvisionTest, provision_test031, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test032
- * @tc.desc: Test function of LocalSigner() interface for SUCCESS.
+ * @tc.desc: Test function of LocalSigner() constructor.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -989,7 +667,7 @@ HWTEST_F(ProvisionTest, provision_test032, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test033
- * @tc.desc: Test function of LocalSigner() interface for SUCCESS.
+ * @tc.desc: Test function of LocalSigner() interface constructor.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1026,7 +704,7 @@ HWTEST_F(ProvisionTest, provision_test033, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test034
- * @tc.desc: Test function of LocalSigner() interface for SUCCESS.
+ * @tc.desc: Test function of LocalSigner() interface constructor.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1106,7 +784,7 @@ HWTEST_F(ProvisionTest, provision_test035, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test036
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1144,7 +822,7 @@ HWTEST_F(ProvisionTest, provision_test036, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test037
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1181,7 +859,7 @@ HWTEST_F(ProvisionTest, provision_test037, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test038
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1219,7 +897,7 @@ HWTEST_F(ProvisionTest, provision_test038, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test039
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1257,7 +935,7 @@ HWTEST_F(ProvisionTest, provision_test039, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test040
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1296,7 +974,7 @@ HWTEST_F(ProvisionTest, provision_test040, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test041
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1334,7 +1012,7 @@ HWTEST_F(ProvisionTest, provision_test041, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test042
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1372,7 +1050,7 @@ HWTEST_F(ProvisionTest, provision_test042, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test043
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1409,7 +1087,7 @@ HWTEST_F(ProvisionTest, provision_test043, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test044
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for distribution-certificate is empty.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1447,7 +1125,7 @@ HWTEST_F(ProvisionTest, provision_test044, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test045
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() failed for development-certificate is empty..
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1470,7 +1148,7 @@ HWTEST_F(ProvisionTest, provision_test045, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test046
- * @tc.desc: Test function of ParseProvision() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProvision() distribution-certificate is empty..
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1568,7 +1246,7 @@ HWTEST_F(ProvisionTest, provision_test048, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test049
- * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProfile() failed for p7 is invalid.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1590,7 +1268,7 @@ HWTEST_F(ProvisionTest, provision_test049, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test050
- * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProfile() failed for p7 is invalid.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

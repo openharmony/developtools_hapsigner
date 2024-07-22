@@ -39,7 +39,7 @@ public:
 
 /**
  * @tc.name: GetSignHead
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get sign head for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -54,7 +54,7 @@ HWTEST_F(HwSignHeadTest, GetSignHead, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignHeadLittleEndian
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get sign head by little endian for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
