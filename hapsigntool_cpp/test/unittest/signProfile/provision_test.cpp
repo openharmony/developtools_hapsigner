@@ -110,7 +110,7 @@ HWTEST_F(ProvisionTest, provision_test001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: provision_test002
- * @tc.desc: Test function of LocalSigner::GetSignature() interface diffrent sign algorithm 
+ * @tc.desc: Test function of LocalSigner::GetSignature() interface diffrent sign algorithm
  * for success only support SHA256/384withECDSA.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
@@ -351,9 +351,6 @@ HWTEST_F(ProvisionTest, provision_test014, testing::ext::TestSize.Level1)
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_TRUE(result == PROVISION_OK);
 }
-
-
-
 /**
  * @tc.name: provision_test019
  * @tc.desc: Test function of ParseProvision() failed for development-certificate is empty.
