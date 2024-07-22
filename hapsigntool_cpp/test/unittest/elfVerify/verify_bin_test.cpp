@@ -68,7 +68,7 @@ static const std::map<std::string, std::string> PARAMS = { {"keyPwd", "123456"},
 
 /**
  * @tc.name: Verify001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyBinTest::Verify() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -89,7 +89,7 @@ HWTEST_F(VerifyBinTest, Verify001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: param not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -105,7 +105,7 @@ HWTEST_F(VerifyBinTest, Verify002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: cer file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -125,7 +125,7 @@ HWTEST_F(VerifyBinTest, Verify003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: p7b file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -145,7 +145,7 @@ HWTEST_F(VerifyBinTest, Verify004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: input file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -165,7 +165,7 @@ HWTEST_F(VerifyBinTest, Verify005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: invalid input file
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -186,7 +186,7 @@ HWTEST_F(VerifyBinTest, Verify006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify007
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: unsigned wrong input file
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -207,7 +207,7 @@ HWTEST_F(VerifyBinTest, Verify007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify008
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyBinTest::Verify() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -228,7 +228,7 @@ HWTEST_F(VerifyBinTest, Verify008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify009
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify bin digest error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -249,7 +249,7 @@ HWTEST_F(VerifyBinTest, Verify009, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify010
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get profile error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -270,7 +270,7 @@ HWTEST_F(VerifyBinTest, Verify010, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify011
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get bin digest error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -291,7 +291,7 @@ HWTEST_F(VerifyBinTest, Verify011, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignBin001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: sign bin with wrong compatible version
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -347,7 +347,7 @@ HWTEST_F(VerifyBinTest, SignBin001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgsId001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get invalid alg id
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -362,7 +362,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgsId001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgsId002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg id of SHA-256
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -377,7 +377,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgsId002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgsId003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg id of SHA-384
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -392,7 +392,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgsId003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgsId004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg id of SHA-512
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -407,7 +407,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgsId004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgName001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg name of id 5
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -422,7 +422,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgName001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgName002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg name of id 6
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -437,7 +437,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgName002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgName003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg name of id 7
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -452,7 +452,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgName003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHashAlgName004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get alg name of id 8
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -467,7 +467,7 @@ HWTEST_F(VerifyBinTest, GetHashAlgName004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetDigestFromBytes001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get digest from bytes with 0 size file bytes
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -486,7 +486,7 @@ HWTEST_F(VerifyBinTest, GetDigestFromBytes001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetDigestFromBytes002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get digest from bytes with some size file bytes
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

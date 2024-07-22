@@ -20,9 +20,6 @@
 
 using namespace OHOS::SignatureTools;
 
-/*
- * 测试套件,固定写法
- */
 class CmsUtilsTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
@@ -50,7 +47,7 @@ void CmsUtilsTest::TearDown()
 
 /**
  * @tc.name: CheckOwnerID001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: check owner id with p7 is null
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -69,7 +66,7 @@ HWTEST_F(CmsUtilsTest, CheckOwnerID001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: CheckOwnerID002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: check owner id with profile type is debug
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -90,7 +87,7 @@ HWTEST_F(CmsUtilsTest, CheckOwnerID002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: CheckOwnerID003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: check owner id with owner id is empty
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -111,7 +108,7 @@ HWTEST_F(CmsUtilsTest, CheckOwnerID003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: CheckOwnerID004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: check owner id with profile type is release
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -132,7 +129,7 @@ HWTEST_F(CmsUtilsTest, CheckOwnerID004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify hap without profile content
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -152,7 +149,7 @@ HWTEST_F(CmsUtilsTest, VerifyHap, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: CreateNIDFromOID
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CmsUtilsTest::CreateNIDFromOID() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -170,7 +167,7 @@ HWTEST_F(CmsUtilsTest, CreateNIDFromOID, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifySignDataWithUnsignedDataDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CmsUtilsTest::VerifySignDataWithUnsignedDataDigest() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

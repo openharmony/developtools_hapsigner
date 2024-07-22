@@ -36,8 +36,6 @@ void ByteBufferTest001(const uint8_t* data, size_t size)
     bytebuffer.PutInt16(offset, value);
     bytebuffer.PutData(offset, dataTest, len, type);
     bytebuffer.PutUInt8(vValue);
-    bytebuffer.GetData(len);
-
     bytebuffer.ClearData();
     bytebuffer.IsEqual(dataTest);
 }

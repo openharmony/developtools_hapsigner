@@ -31,7 +31,7 @@ public:
 
 /**
  * @tc.name: GetSignBlockMap
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignBlockInfoTest::GetSignBlockMap() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -48,7 +48,7 @@ HWTEST_F(SignBlockInfoTest, GetSignBlockMap, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetFileDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignBlockInfoTest::GetFileDigest() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -65,7 +65,7 @@ HWTEST_F(SignBlockInfoTest, GetFileDigest, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SetFileDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignBlockInfoTest::SetFileDigest() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -83,7 +83,7 @@ HWTEST_F(SignBlockInfoTest, SetFileDigest, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetRawDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignBlockInfoTest::GetRawDigest() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -100,7 +100,7 @@ HWTEST_F(SignBlockInfoTest, GetRawDigest, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SetRawDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignBlockInfoTest::SetRawDigest() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -118,7 +118,7 @@ HWTEST_F(SignBlockInfoTest, SetRawDigest, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetNeedGenerateDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignBlockInfoTest::GetNeedGenerateDigest() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

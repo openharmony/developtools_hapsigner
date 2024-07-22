@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: fromByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::FromByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -53,7 +53,7 @@ HWTEST_F(SignedFilePosTest, fromByteArray, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getFileNameOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::GetFileNameOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -70,7 +70,7 @@ HWTEST_F(SignedFilePosTest, getFileNameOffset, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getFileNameSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::GetFileNameSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -87,7 +87,7 @@ HWTEST_F(SignedFilePosTest, getFileNameSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignInfoOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::GetSignInfoOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -104,7 +104,7 @@ HWTEST_F(SignedFilePosTest, getSignInfoOffset, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignInfoSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::GetSignInfoSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -121,7 +121,7 @@ HWTEST_F(SignedFilePosTest, getSignInfoSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: increaseFileNameOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::IncreaseFileNameOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -138,7 +138,7 @@ HWTEST_F(SignedFilePosTest, increaseFileNameOffset, testing::ext::TestSize.Level
 
 /**
  * @tc.name: increaseSignInfoOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignedFilePosTest::IncreaseSignInfoOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

@@ -84,9 +84,6 @@ void ConstructSignParams(std::map<std::string, std::string>& signParams)
     signParams["signCode"] = "1";
 }
 
-/*
-* 测试套件,固定写法
-*/
 class SignBinTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
@@ -106,7 +103,7 @@ public:
 
 /**
  * @tc.name: GenerateFileDigest001
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: The return digest size is 0, because the algorithm does not support.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -114,7 +111,6 @@ public:
  */
 HWTEST_F(SignBinTest, GenerateFileDigest001, testing::ext::TestSize.Level1)
 {
-    // error algorithm, go to branch "get Signature Algorithm failed"
     std::shared_ptr<SignBin> api = std::make_shared<SignBin>();
     std::vector<int8_t> generateFileDigest = api->GenerateFileDigest("./signed.bin", "SHA266");
     EXPECT_EQ(generateFileDigest.size(), 0);
@@ -122,7 +118,7 @@ HWTEST_F(SignBinTest, GenerateFileDigest001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GenerateFileDigest002
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: The return digest size is 0, because the input file does not exist.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -137,7 +133,7 @@ HWTEST_F(SignBinTest, GenerateFileDigest002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Sign001
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: The block head data made failed
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -192,7 +188,7 @@ HWTEST_F(SignBinTest, Sign001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Sign002
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: The sign data made failed.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -217,8 +213,8 @@ HWTEST_F(SignBinTest, Sign002, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: SignBinTest
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.name: SignBin001
+ * @tc.desc: check Compatible Version failed.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -262,8 +258,8 @@ HWTEST_F(SignBinTest, SignBin001, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: SignBinTest
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.name: SignBin002
+ * @tc.desc: Test function result of SignBin002 will be SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

@@ -142,6 +142,9 @@ HWTEST_F(ByteBufferTest, PutGetDataTest001, testing::ext::TestSize.Level1)
     int8_t* data = nullptr;
     buffer.PutData(data, 1);
     buffer.PutInt16(1);
+    uint8_t v11;
+    buffer.GetUInt8(v11);
+    buffer.GetUInt8(0, v11);
     buffer.ClearData();
 
     ByteBuffer empty;
@@ -169,7 +172,7 @@ HWTEST_F(ByteBufferTest, GetIntAndPutOperation001, testing::ext::TestSize.Level1
     ByteBuffer emptyBuffer;
     int32_t dataInt32;
     ASSERT_FALSE(emptyBuffer.GetInt32(dataInt32));
-    long long dataInt64;
+    int64_t dataInt64;
     ASSERT_FALSE(emptyBuffer.GetInt64(dataInt64));
     unsigned short dataUInt16;
     ASSERT_FALSE(emptyBuffer.GetUInt16(0, dataUInt16));
@@ -196,6 +199,16 @@ HWTEST_F(ByteBufferTest, GetIntAndPutOperation001, testing::ext::TestSize.Level1
      */
     ByteBuffer testBuffer2(TEST_HAPBYTEBUFFER_LENGTH);
     testBuffer2.PutByte(0, testChar);
+    /*
+     * @tc.steps: step5. Put data to buffer with type and get data from it.
+     * @tc.expected: step5. The return data is same as which we put.
+     */
+    ByteBuffer testBuffer3(TEST_HAPBYTEBUFFER_LENGTH);
+    testBuffer3.PutData(0, &testChar, sizeof(testChar), 1);
+    testBuffer3.PutData(1, nullptr, 0, 1);
+
+    ByteBuffer testBuffer4;
+    testBuffer4.PutData(-1, &testChar, sizeof(testChar), 1);
 }
 
 /**

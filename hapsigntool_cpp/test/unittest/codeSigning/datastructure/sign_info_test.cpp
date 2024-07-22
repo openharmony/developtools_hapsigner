@@ -33,7 +33,7 @@ public:
 
 /**
  * @tc.name: fromByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::FromByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -54,7 +54,7 @@ HWTEST_F(SignInfoTest, fromByteArray, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getDataSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::GetDataSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -71,7 +71,7 @@ HWTEST_F(SignInfoTest, getDataSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getExtensionByType
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::GenerateCsr() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -89,7 +89,7 @@ HWTEST_F(SignInfoTest, getExtensionByType, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getExtensionNum
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::GetExtensionNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -106,7 +106,7 @@ HWTEST_F(SignInfoTest, getExtensionNum, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignature
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::getSignature() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -123,7 +123,7 @@ HWTEST_F(SignInfoTest, getSignature, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::GetSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -140,7 +140,7 @@ HWTEST_F(SignInfoTest, getSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: parseMerkleTreeExtension
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The data has the wrong extensionType in the SignInfo
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -165,7 +165,7 @@ HWTEST_F(SignInfoTest, parseMerkleTreeExtension, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: toByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::ToByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

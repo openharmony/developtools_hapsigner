@@ -144,7 +144,7 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: sign002
- * @tc.desc: Test function of SignElf::sign() interface for SUCCESS.
+ * @tc.desc: The return will be false, because the inFile is not exist.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -152,7 +152,6 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
 {
-    // failed: inFile is null
     SignerConfig signerConfig;
     signerConfig.SetCompatibleVersion(9);
 
@@ -182,7 +181,7 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: sign003
- * @tc.desc: Test function of SignElf::sign() interface for SUCCESS.
+ * @tc.desc: The return will be false, because the profileFile is not exist.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -219,7 +218,7 @@ HWTEST_F(SignElfTest, Sign003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: sign004
- * @tc.desc: Test function of SignElf::sign() interface for SUCCESS.
+ * @tc.desc: The return will be false, because the outFile path is not exist.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -256,7 +255,7 @@ HWTEST_F(SignElfTest, Sign004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: sign005
- * @tc.desc: Test function of SignElf::sign() interface for SUCCESS.
+ * @tc.desc: The return will be false, because the signCode is 0, when signelf the signCode must be 1.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -293,7 +292,7 @@ HWTEST_F(SignElfTest, Sign005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetCodeSignBlock001
- * @tc.desc: Test function of CodeSigning::GetCodeSignBlock() interface for SUCCESS.
+ * @tc.desc: The return will be false, because the input format is not support, it must be hap/hsp/hqf.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -308,8 +307,8 @@ HWTEST_F(SignElfTest, GetCodeSignBlock001, testing::ext::TestSize.Level1)
     std::string profileContent = "";
     ZipSigner zip;
     std::vector<int8_t> ret;
-    object.GetCodeSignBlock(input, offset, inForm, profileContent, zip, ret);
-    EXPECT_EQ(profileContent, "");
+    bool flag = object.GetCodeSignBlock(input, offset, inForm, profileContent, zip, ret);
+    EXPECT_EQ(flag, false);
 }
 
 }

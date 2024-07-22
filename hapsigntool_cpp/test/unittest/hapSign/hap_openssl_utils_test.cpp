@@ -21,7 +21,7 @@ namespace OHOS {
 namespace SignatureTools {
 /*
  * @tc.name: hap_openssl_utils_test_001
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.desc: This function tests failed for interface DigestInit due to parameter DigestParameter not init
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -36,7 +36,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_001, testing::ext::TestSize
 
 /*
  * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.desc: This function tests failed for interface DigestInit due to parameter DigestParameter not init completed
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -50,8 +50,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_002, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_003
+ * @tc.desc: This function tests failed for interface DigestUpdate due to parameter content and len mismatch
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -66,8 +66,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_003, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_004
+ * @tc.desc: This function tests failed for interface DigestUpdate due to parameter content and len mismatch
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -81,8 +81,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_004, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_005
+ * @tc.desc: This function tests success for interface GetDigest
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -95,8 +95,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_005, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_006
+ * @tc.desc: This function tests success for interface GetDigest
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -112,8 +112,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_006, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_007
+ * @tc.desc: This function tests success for interface GetDigest
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -132,8 +132,8 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_007, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_008
+ * @tc.desc: This function tests success for interface GetDigestAlgorithmId
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -146,12 +146,12 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_008, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_009
+ * @tc.desc: This function tests success for interface VerifyPkcs7 due to Pkcs7Context not init
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_012, testing::ext::TestSize.Level1)
+HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_009, testing::ext::TestSize.Level1)
 {
     Pkcs7Context pkcs7Context;
     bool ret = VerifyHapOpensslUtils::VerifyPkcs7(pkcs7Context);
@@ -159,28 +159,12 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_012, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_010
+ * @tc.desc: This function tests success for interface VerifyPkcs7 due to Pkcs7Context not init complete
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_013, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context pkcs7Context;
-    pkcs7Context.p7 = PKCS7_new();
-    PKCS7_set_type(pkcs7Context.p7, NID_pkcs7_signed);
-    PKCS7_content_new(pkcs7Context.p7, NID_pkcs7_data);
-    bool ret = VerifyHapOpensslUtils::VerifyPkcs7(pkcs7Context);
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_015, testing::ext::TestSize.Level1)
+HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_010, testing::ext::TestSize.Level1)
 {
     Pkcs7Context pkcs7Context;
     pkcs7Context.p7 = PKCS7_new();
@@ -191,12 +175,12 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_015, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_011
+ * @tc.desc: This function tests success for interface VerifyPkcs7 due to Pkcs7Context not init complete
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_016, testing::ext::TestSize.Level1)
+HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_011, testing::ext::TestSize.Level1)
 {
     Pkcs7Context pkcs7Context;
     pkcs7Context.p7 = PKCS7_new();
@@ -206,12 +190,12 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_016, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_012
+ * @tc.desc: This function tests success for interface VerifyPkcs7 due to Pkcs7Context not init complete
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_017, testing::ext::TestSize.Level1)
+HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_012, testing::ext::TestSize.Level1)
 {
     Pkcs7Context pkcs7Context;
     pkcs7Context.p7 = PKCS7_new();
@@ -221,12 +205,12 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_017, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_013
+ * @tc.desc: This function tests success for interface GetCertChains due to Pkcs7Context not init
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_018, testing::ext::TestSize.Level1)
+HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_013, testing::ext::TestSize.Level1)
 {
     PKCS7* p7 = nullptr;
     Pkcs7Context pkcs7Context;
@@ -235,12 +219,12 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_018, testing::ext::TestSize
 }
 
 /*
- * @tc.name: hap_openssl_utils_test_002
- * @tc.desc: Verify Hap Openssl Utils.
+ * @tc.name: hap_openssl_utils_test_014
+ * @tc.desc: This function tests success for interface GetCertChains due to Pkcs7Context not init complete
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_019, testing::ext::TestSize.Level1)
+HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_014, testing::ext::TestSize.Level1)
 {
     Pkcs7Context pkcs7Context;
     pkcs7Context.p7 = PKCS7_new();

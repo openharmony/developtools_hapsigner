@@ -48,7 +48,7 @@ public:
 // rootCa
 /**
  * @tc.name: generate_ca_test_001
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() generate a root certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -86,7 +86,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_001, testing::ext::TestSize.Level1)
 // rootCa
 /**
  * @tc.name: generate_ca_test_002
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() generate a root certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -127,7 +127,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_002, testing::ext::TestSize.Level1)
 // rootCa
 /**
  * @tc.name: generate_ca_test_003
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a root certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -160,7 +160,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_004
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a root certificate without a subject.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -191,7 +191,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_005
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a root certificate without a keyalg.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -220,7 +220,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_006
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error key password.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -261,7 +261,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_007
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error skystore password.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -304,7 +304,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_008
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error issuerkeystore password.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -347,7 +347,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_009
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error keystorefile path.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -390,7 +390,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_009, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_010
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() SUCCESS to generate a root certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -430,7 +430,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_010, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_011
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a root certificate without all pwd.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -463,7 +463,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_011, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_012
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a root certificate without a subject.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -494,7 +494,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_012, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_013
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a root certificate without a keyalg.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -523,7 +523,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_013, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_014
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error outfile path.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -564,7 +564,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_014, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_015
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() SUCCESS to generate a root certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -600,7 +600,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_015, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_016
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error keyalias. 
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -642,7 +642,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_016, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_017
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error issuerkeyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -685,7 +685,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_017, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_sub_cert_test_001
- * @tc.desc: Test function of GenerateCa()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCa() SUCCESS to generate a sub certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -726,7 +726,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_test_001, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: generate_sub_cert_test_002
- * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -774,7 +774,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_test_002, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: generate_sub_cert_test_003
- * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a empty signalg.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -821,7 +821,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_test_003, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: generate_sub_cert_test_004
- * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error issuerkeystorefile.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -868,7 +868,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_test_004, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: generate_sub_cert_test_005
- * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error signalg.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -915,7 +915,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_test_005, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: generate_sub_cert_test_006
- * @tc.desc: Test function of GenerateCa()  interface for FAIL.
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -965,7 +965,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_test_006, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: valid_file_type_test_001
- * @tc.desc: Test function of ValidFileType() interface for SUCCESS.
+ * @tc.desc: Test function of ValidFileType() SUCCESS check file suffix
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1040,7 +1040,7 @@ HWTEST_F(GenerateCaTest, is_empty_test_001, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_001
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1089,7 +1089,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_001, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_002
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keystorefile.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1141,7 +1141,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_002, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_003
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusage.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1188,7 +1188,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_003, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_004
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a empty signalg.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1238,8 +1238,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_004, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_005
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
- * @tc.type: FUNC
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a empty subject.
  * @tc.require: SR000H63TL
  */
 HWTEST_F(GenerateCaTest, generate_cert_test_005, testing::ext::TestSize.Level1)
@@ -1284,7 +1283,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_005, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_006
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate without a keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1323,7 +1322,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_007
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a sub certificate without a keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1362,7 +1361,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_008
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keypwd.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1407,7 +1406,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_009
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error outfile.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1446,7 +1445,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_009, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_010
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1501,7 +1500,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_010, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_011
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error issuer.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1557,7 +1556,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_011, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_012
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error basicConstraintsCa.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1613,7 +1612,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_012, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_013
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error basicConstraintsCritical.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1668,7 +1667,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_013, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_014
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1723,7 +1722,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_014, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_015
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1774,7 +1773,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_015, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_016
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1827,7 +1826,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_016, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_022
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */

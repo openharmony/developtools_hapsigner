@@ -54,9 +54,10 @@ void SignProviderTest::SetUpTestCase(void)
 void SignProviderTest::TearDownTestCase(void)
 {
 }
+
 /*
  * @tc.name: sign_provider_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests success for interface Sign
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -96,8 +97,8 @@ HWTEST_F(SignProviderTest, sign_provider_test_001, testing::ext::TestSize.Level1
     EXPECT_EQ(ret, true);
 }
 /*
- * @tc.name: sign_provider_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_002
+ * @tc.desc: This function tests failure for interface Sign due to parameter compatibleVersion is not int
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -140,7 +141,7 @@ HWTEST_F(SignProviderTest, sign_provider_test_002, testing::ext::TestSize.Level1
 
 /*
  * @tc.name: sign_provider_test_003
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile format error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -179,8 +180,8 @@ HWTEST_F(SignProviderTest, sign_provider_test_003, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_003
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_004
+ * @tc.desc: This function tests failure for interface Sign due to parameter compatibleVersion is not int
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -221,12 +222,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_004, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_004
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_005
+ * @tc.desc: This function tests failure for interface Sign due to parameter compatibleVersion is not int
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_006, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_005, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -265,12 +266,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_006, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_005
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_006
+ * @tc.desc: This function tests failure for interface Sign due to parameter property is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_007, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_006, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -309,12 +310,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_007, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_005
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_007
+ * @tc.desc: This function tests failure for interface Sign due to parameter property is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_008, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_007, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -353,12 +354,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_008, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_005
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_008
+ * @tc.desc: This function tests failure for interface Sign due to parameter proof is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_009, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_008, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -397,12 +398,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_009, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_006
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_009
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_010, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_009, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -437,12 +438,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_010, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_007
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_010
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_011, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_010, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -477,12 +478,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_011, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_008
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_011
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_012, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_011, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -517,12 +518,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_012, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_009
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_012
+ * @tc.desc: This function tests failure for interface Sign due to parameter profileFile is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_013, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_012, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -557,12 +558,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_013, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_009
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_013
+ * @tc.desc: This function tests failure for interface Sign due to parameter compatibleVersion is not int
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_014, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_013, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -599,12 +600,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_014, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_009
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_014
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile is not exist
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_015, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_014, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -639,12 +640,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_015, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_009
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_015
+ * @tc.desc: This function tests failure for interface Sign due to parameter signAlg is not support
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_016, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_015, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -679,12 +680,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_016, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_016
+ * @tc.desc: This function tests failure for interface Sign due to parameter profileSigned error
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_017, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_016, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -721,12 +722,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_017, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_017
+ * @tc.desc: This function tests failure for interface Sign due to parameter signAlg is not support
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_018, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_017, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -763,12 +764,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_018, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_018
+ * @tc.desc: This function tests failure for interface Sign due to parameter signCode is 3
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_019, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_018, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -803,12 +804,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_019, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_019
+ * @tc.desc: This function tests failure for interface Sign due to parameter signAlg is empty
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_020, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_019, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -843,12 +844,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_020, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_020
+ * @tc.desc: This function tests failure for interface Sign due to parameter profileFile is empty
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_021, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_020, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -883,12 +884,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_021, testing::ext::TestSize.Level1
 }
 
 /*
- * @tc.name: sign_provider_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: sign_provider_test_021
+ * @tc.desc: This function tests failure for interface Sign due to parameter appCertFile is empty
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(SignProviderTest, sign_provider_test_022, testing::ext::TestSize.Level1)
+HWTEST_F(SignProviderTest, sign_provider_test_021, testing::ext::TestSize.Level1)
 {
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
@@ -926,13 +927,12 @@ HWTEST_F(SignProviderTest, sign_provider_test_022, testing::ext::TestSize.Level1
 
 /*
  * @tc.name: SignElf_001
- * @tc.desc: sign elf file.
+ * @tc.desc: Test function result of SignElf_001 will be SUCCESS.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(SignProviderTest, SignElf_001, testing::ext::TestSize.Level1)
 {
-    // success
     std::unique_ptr<SignProvider> signProvider = std::make_unique<LocalSignProvider>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
@@ -968,7 +968,7 @@ HWTEST_F(SignProviderTest, SignElf_001, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: SignElf_002
- * @tc.desc: sign elf file.
+ * @tc.desc: The return will be false, because the profileFile is null.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1007,7 +1007,7 @@ HWTEST_F(SignProviderTest, SignElf_002, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: SignElf_003
- * @tc.desc: sign elf file.
+ * @tc.desc: The return will be false, because the compatibleVersion is null.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1050,7 +1050,7 @@ HWTEST_F(SignProviderTest, SignElf_003, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: SignElf_004
- * @tc.desc: sign elf file.
+ * @tc.desc: The return will be false, because the inFile is null.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1092,7 +1092,7 @@ HWTEST_F(SignProviderTest, SignElf_004, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: SignElf_005
- * @tc.desc: sign elf file.
+ * @tc.desc: The return will be false, because the inFile path is error.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1133,7 +1133,7 @@ HWTEST_F(SignProviderTest, SignElf_005, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: SignElf_006
- * @tc.desc: sign elf file.
+ * @tc.desc: The return will be false, because the signAlg format does not support.
  * @tc.type: FUNC
  * @tc.require:
  */

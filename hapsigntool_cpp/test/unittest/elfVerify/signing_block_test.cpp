@@ -31,7 +31,7 @@ public:
 
 /**
  * @tc.name: GetLength
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SigningBlockTest::GetLength() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -48,7 +48,7 @@ HWTEST_F(SigningBlockTest, GetLength, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetValue
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SigningBlockTest::GetValue() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -66,7 +66,7 @@ HWTEST_F(SigningBlockTest, GetValue, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SigningBlockTest::GetOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
