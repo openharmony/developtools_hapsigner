@@ -72,15 +72,13 @@
 
 **c++版本编译流程**
 
-1. openharmony系统ohos-sdk形态
+1. 编译ohos-sdk形态签名工具
    + 编译**release**版本：默认是release版本，直接编译即可。
    + 编译**debug**版本（增加了调试日志）：在 hapsigntool_cpp/BUILD.gn 中 添加 defines = [ "SIGNATURE_LOG_DEBUG" ] 即可。
 
 2. 编译命令：./build.sh --product-name ohos-sdk
 
-​	  编译完成后会在目标路径生成对应压缩文件
-
-3. 编译产物最终路径：/openharmony_master/out/sdk/packages/ohos-sdk/ohos
+3. 编译产物路径：/openharmony_master/out/sdk/packages/ohos-sdk/ohos
 
 **特别说明**：
 
