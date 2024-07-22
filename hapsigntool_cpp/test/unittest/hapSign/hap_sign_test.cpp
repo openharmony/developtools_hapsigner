@@ -55,7 +55,7 @@ void HapSignTest::TearDownTestCase(void)
 }
 /*
  * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests success for interface SignHap
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -93,8 +93,8 @@ HWTEST_F(HapSignTest, hap_sign_test_001, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, true);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_002
+ * @tc.desc: This function tests success for interface SignHap
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -132,8 +132,8 @@ HWTEST_F(HapSignTest, hap_sign_test_002, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, true);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_003
+ * @tc.desc: This function tests success for interface SignHap
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -173,8 +173,8 @@ HWTEST_F(HapSignTest, hap_sign_test_003, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, false);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_004
+ * @tc.desc: This function tests success for interface SignHap
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -214,8 +214,8 @@ HWTEST_F(HapSignTest, hap_sign_test_004, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, true);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_005
+ * @tc.desc: This function tests success for interface Sign
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -262,7 +262,7 @@ HWTEST_F(HapSignTest, hap_sign_test_005, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_test_006
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests failure for interface CheckParams due to parameter signCode is 3
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -302,7 +302,7 @@ HWTEST_F(HapSignTest, hap_sign_test_006, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_test_007
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests failure for interface CheckParams due to parameter signCode and appCertFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -346,8 +346,8 @@ HWTEST_F(HapSignTest, hap_sign_test_007, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_008
+ * @tc.desc: This function tests sucess for interface Sign
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -391,8 +391,8 @@ HWTEST_F(HapSignTest, hap_sign_test_008, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_009
+ * @tc.desc: This function tests failure for interface Sign due to parameter profileSigned
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -438,8 +438,8 @@ HWTEST_F(HapSignTest, hap_sign_test_009, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_010
+ * @tc.desc: This function tests sucess for interface Sign
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -486,8 +486,8 @@ HWTEST_F(HapSignTest, hap_sign_test_010, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_011
+ * @tc.desc: This function tests sucess for interface GetDigestOutputByteSize
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -519,8 +519,8 @@ HWTEST_F(HapSignTest, hap_sign_test_011, testing::ext::TestSize.Level1)
     EXPECT_EQ(size512, 512 / 8);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_012
+ * @tc.desc: This function tests sucess for interface ComputeDigests
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -550,8 +550,8 @@ HWTEST_F(HapSignTest, hap_sign_test_012, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, true);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_013
+ * @tc.desc: This function tests failure for interface Sign due to parameter appCertFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -592,8 +592,8 @@ HWTEST_F(HapSignTest, hap_sign_test_013, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, false);
 }
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_014
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -640,8 +640,8 @@ HWTEST_F(HapSignTest, hap_sign_test_014, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_015
+ * @tc.desc: This function tests failure for interface Sign due to parameter appCertFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -686,8 +686,8 @@ HWTEST_F(HapSignTest, hap_sign_test_015, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_016
+ * @tc.desc: This function tests failure for interface Sign due to parameter outFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -734,8 +734,8 @@ HWTEST_F(HapSignTest, hap_sign_test_016, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_017
+ * @tc.desc: This function tests failure for interface Sign due to parameter outFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -782,8 +782,8 @@ HWTEST_F(HapSignTest, hap_sign_test_017, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_018
+ * @tc.desc: This function tests failure for interface Sign due to parameter signAlg
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -827,8 +827,8 @@ HWTEST_F(HapSignTest, hap_sign_test_018, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_019
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -867,8 +867,8 @@ HWTEST_F(HapSignTest, hap_sign_test_019, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_020
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -907,8 +907,8 @@ HWTEST_F(HapSignTest, hap_sign_test_020, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_021
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -947,8 +947,8 @@ HWTEST_F(HapSignTest, hap_sign_test_021, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_022
+ * @tc.desc: This function tests failure for interface Sign due to parameter inFile
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -987,8 +987,8 @@ HWTEST_F(HapSignTest, hap_sign_test_022, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_023
+ * @tc.desc: This function tests failure for interface SignHap due to parameter mode not support
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1027,8 +1027,8 @@ HWTEST_F(HapSignTest, hap_sign_test_023, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_024
+ * @tc.desc: This function tests failure for interface SignHap due to parameter mode not support
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1067,8 +1067,8 @@ HWTEST_F(HapSignTest, hap_sign_test_024, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_025
+ * @tc.desc: This function tests success for interface SignHap
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1107,8 +1107,8 @@ HWTEST_F(HapSignTest, hap_sign_test_025, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_026
+ * @tc.desc: This function tests success and failure for interface Sign & ComputeDigests
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1155,8 +1155,8 @@ HWTEST_F(HapSignTest, hap_sign_test_026, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_027
+ * @tc.desc: This function tests failure for interface SignHap due to parameter inFile not exist
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1196,7 +1196,7 @@ HWTEST_F(HapSignTest, hap_sign_test_027, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_test_028
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests failure for interface SignHap due to parameter inFile damage
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1235,8 +1235,8 @@ HWTEST_F(HapSignTest, hap_sign_test_028, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_test_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_test_029
+ * @tc.desc: This function tests failure for interface SignHap due to parameter signAlg not suport
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1276,7 +1276,7 @@ HWTEST_F(HapSignTest, hap_sign_test_029, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: get_options_test_001
- * @tc.desc: Test function of GetOptions()  interface for SUCCESS.
+ * @tc.desc: This function tests success for interface SetOptions
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1328,8 +1328,8 @@ HWTEST_F(HapSignTest, get_X509_CRLs_test_001, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: get_X509_CRLs_test_001
- * @tc.desc: Test function of GetX509CRLs()  interface for SUCCESS.
+ * @tc.name: get_X509_CRLs_test_002
+ * @tc.desc: This function tests failure for interface GetX509CRLs
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1415,7 +1415,7 @@ HWTEST_F(HapSignTest, find_by_id_test_001, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: find_by_id_test_001
+ * @tc.name: find_by_id_test_002
  * @tc.desc: Test function of FindById()  interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
@@ -1433,7 +1433,7 @@ HWTEST_F(HapSignTest, find_by_id_test_002, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: This function tests failure for interface CheckParams due to signCode is 3
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1475,8 +1475,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_001, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_002
+ * @tc.desc: This function tests failure for interface CheckInputCertMatchWithProfile due to X509 error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1515,8 +1515,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_002, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_003
+ * @tc.desc: This function tests failure for interface CheckInputCertMatchWithProfile due to x509 error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1550,8 +1550,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_003, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_004
+ * @tc.desc: This function tests failure for interface CheckInputCertMatchWithProfile due to subjectname error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1585,8 +1585,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_004, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_005
+ * @tc.desc: This function tests failure for interface CheckParams due to signCode is 3
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1628,8 +1628,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_005, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_006
+ * @tc.desc: This function tests success for interface CheckParams
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1669,8 +1669,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_006, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_007
+ * @tc.desc: This function tests failed  for interface CheckInputCertMatchWithProfile due to X509_NAME error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1705,8 +1705,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_007, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_008
+ * @tc.desc: This function tests failed  for interface CheckInputCertMatchWithProfile due to EVP_PKEY error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1743,8 +1743,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_008, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, false);
 }
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_009
+ * @tc.desc: This function tests failed for interface CheckInputCertMatchWithProfile due to EVP_PKEY error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1782,8 +1782,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_009, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_010
+ * @tc.desc: This function tests failed for interface CheckInputCertMatchWithProfile due to EVP_PKEY error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1818,8 +1818,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_010, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_011
+ * @tc.desc: This function tests failed for interface CheckInputCertMatchWithProfile due to EVP_PKEY error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1854,8 +1854,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_011, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: remote_sign_provider_012
+ * @tc.desc: This function tests failed for interface CheckInputCertMatchWithProfile due to EVP_PKEY error
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1887,7 +1887,7 @@ HWTEST_F(HapSignTest, remote_sign_provider_012, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: remote_sign_provider_013
- * @tc.desc: Test RemoteSigner interface.
+ * @tc.desc: This function tests failed for interface Sign due to parameter signerPlugin error
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1928,8 +1928,8 @@ HWTEST_F(HapSignTest, remote_sign_provider_013, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: remote_sign_provider_001
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.name: hap_sign_error_001
+ * @tc.desc: This function tests failed for interface Sign due to parameter path not exist
  * @tc.type: FUNC
  * @tc.require:
  */

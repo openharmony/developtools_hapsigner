@@ -21,9 +21,6 @@
 
 using namespace OHOS::SignatureTools;
 
-/*
- * 测试套件,固定写法
- */
 class BCSignedDataGeneratorTest : public testing::Test {
 public:
     static void SetUpTestCase(void);

@@ -31,7 +31,7 @@ public:
 
 /**
  * @tc.name: GetProfileBlockTypes001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get profile block types of 0
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -47,7 +47,7 @@ HWTEST_F(SignatureBlockTypesTest, GetProfileBlockTypes001, testing::ext::TestSiz
 
 /**
  * @tc.name: GetProfileBlockTypes002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get profile block types of 1
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -63,7 +63,7 @@ HWTEST_F(SignatureBlockTypesTest, GetProfileBlockTypes002, testing::ext::TestSiz
 
 /**
  * @tc.name: GetProfileBlockTypes003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get profile block types of 2
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -79,7 +79,7 @@ HWTEST_F(SignatureBlockTypesTest, GetProfileBlockTypes003, testing::ext::TestSiz
 
 /**
  * @tc.name: GetProfileBlockTypes004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get profile block types of null
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

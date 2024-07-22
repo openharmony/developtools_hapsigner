@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: fromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the first branch, size inequality.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -51,7 +51,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the second branch, inMagic inequality.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -77,7 +77,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the third branch, inVersion inequality.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -104,7 +104,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the forth branch, inHashAlgorithm inequality.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -132,7 +132,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the fifth branch, inLog2BlockSize inequality.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -161,7 +161,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray005, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityInfoSegmentTest::fromByteArray006() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -190,7 +190,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray006, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityInfoSegmentTest::fromByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -211,7 +211,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: size
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityInfoSegmentTest::size() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -228,7 +228,7 @@ HWTEST_F(FsVerityInfoSegmentTest, size, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: toByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityInfoSegmentTest::toByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

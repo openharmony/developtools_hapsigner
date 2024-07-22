@@ -40,7 +40,7 @@ public:
 
 /**
  * @tc.name: fromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: inMagic values are not standard.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -66,7 +66,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: fromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The value of inSegmentSize is less than 0
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -93,7 +93,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: fromByteArray003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The value of inSectionNum is less than 0
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -121,7 +121,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: fromByteArray004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The value of inSignInfoOffset is not a multiple of 4.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -161,7 +161,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: fromByteArray005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of NativeLibInfoSegmentTest::FromByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -201,7 +201,7 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray005, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: getFileNameList
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of NativeLibInfoSegmentTest::GetFileNameList() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -218,7 +218,7 @@ HWTEST_F(NativeLibInfoSegmentTest, getFileNameList, testing::ext::TestSize.Level
 
 /**
  * @tc.name: getSectionNum
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of NativeLibInfoSegmentTest::GetSectionNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -234,7 +234,7 @@ HWTEST_F(NativeLibInfoSegmentTest, getSectionNum, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignInfoList
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of NativeLibInfoSegmentTest::GetSignInfoList() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -251,7 +251,7 @@ HWTEST_F(NativeLibInfoSegmentTest, getSignInfoList, testing::ext::TestSize.Level
 
 /**
  * @tc.name: setSoInfoList
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of NativeLibInfoSegmentTest::SetSoInfoList() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -291,7 +291,7 @@ HWTEST_F(NativeLibInfoSegmentTest, setSoInfoList, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: size
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of NativeLibInfoSegmentTest::Size() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -308,7 +308,7 @@ HWTEST_F(NativeLibInfoSegmentTest, size, testing::ext::TestSize.Level1)
 
 // /**
 //  * @tc.name: toByteArray001
-//  * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+//  * @tc.desc: Test function of NativeLibInfoSegmentTest::GenerateCsr() interface for SUCCESS.
 //  * @tc.size: MEDIUM
 //  * @tc.type: FUNC
 //  * @tc.level Level 1

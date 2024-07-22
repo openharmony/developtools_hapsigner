@@ -61,7 +61,7 @@ void VerifyCodeSignatureTest::TearDown()
 
 /**
  * @tc.name: AreVectorsEqual001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyCodeSignatureTest::AreVectorsEqual() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -78,7 +78,7 @@ HWTEST_F(VerifyCodeSignatureTest, AreVectorsEqual001, testing::ext::TestSize.Lev
 
 /**
  * @tc.name: AreVectorsEqual002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyCodeSignatureTest::AreVectorsEqual() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -95,7 +95,7 @@ HWTEST_F(VerifyCodeSignatureTest, AreVectorsEqual002, testing::ext::TestSize.Lev
 
 /**
  * @tc.name: VerifyCodeSign
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify code sign without profile content
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -118,7 +118,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyCodeSign, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify hap without profile content
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -138,7 +138,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyCodeSignatureTest::VerifyHap() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -158,7 +158,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify hap with invalid offset
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -178,7 +178,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify hap without input file
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -198,7 +198,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify hap with invalid block header
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -218,7 +218,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: hap offset align error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -238,7 +238,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap007
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: hap magic number error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -258,7 +258,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyHap008
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: hap segment header error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -278,7 +278,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyHap008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifySingleFile
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify single file with invalid merkle tree offset
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -299,7 +299,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifySingleFile, testing::ext::TestSize.Level
 
 /**
  * @tc.name: VerifyElf001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: elf merkle tree error with elf
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -319,7 +319,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyElf002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: elf merkle tree error with hap
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -339,7 +339,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyElf003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify elf with invalid input file
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -359,7 +359,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyElf004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify elf with invalid length
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -379,7 +379,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyElf005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify elf with invalid app-identifier
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -399,7 +399,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyElf006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: hap file type error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -419,7 +419,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyElf007
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: parse elf sign block error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -439,7 +439,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyElf007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyNativeLib001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify hap native libs error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -461,7 +461,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyNativeLib001, testing::ext::TestSize.Lev
 
 /**
  * @tc.name: VerifyNativeLib002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: hap profile is null
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -481,7 +481,7 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyNativeLib002, testing::ext::TestSize.Lev
 
 /**
  * @tc.name: CheckCodeSign001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyCodeSignatureTest::CheckCodeSign() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

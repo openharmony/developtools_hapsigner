@@ -322,7 +322,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_013
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Write the keypair to the keystore file.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -354,7 +354,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_013, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_014
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: The key pair is read from the P12 file by alias.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -465,7 +465,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_018, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_019
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Create a p12 keystore.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -514,7 +514,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_020, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_021
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Keystore password parsing.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -551,7 +551,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_022, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_023
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Keystore password parsing.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -574,7 +574,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_023, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_024
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Keystore password parsing.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -599,7 +599,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_024, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_025
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Generate a key pair.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -612,7 +612,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_025, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_026
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Create a pkcs12 file.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -626,7 +626,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_026, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_027
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Generate a key pair.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -639,7 +639,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_027, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_028
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Call the SetNidMac() function.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -656,7 +656,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_028, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_029
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Call the SetNidMac() function.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -673,7 +673,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_030
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Set the public key into the pkcs12 structure.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -686,7 +686,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_030, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_031
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Set the public key into the pkcs12 structure.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -700,7 +700,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_031, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_033
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Set the private key into the pkcs12 structure.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -713,7 +713,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_033, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_034
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Create a p12 file.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -738,7 +738,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_034, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_035
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Create a p12 file.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -763,7 +763,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_035, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_036
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Find the key pair by alias.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -790,7 +790,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_036, testing::ext::TestSize.
 
 /*
  * @tc.name: generate_keypair_test_037
- * @tc.desc: Generate a key pair and load it into the keystore.
+ * @tc.desc: Write the keypair to the keystore file.
  * @tc.type: FUNC
  * @tc.require:
  */

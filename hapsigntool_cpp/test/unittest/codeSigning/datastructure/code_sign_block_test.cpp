@@ -36,7 +36,7 @@ public:
 
 /**
  * @tc.name: addOneMerkleTree001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::addOneMerkleTree001() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -55,7 +55,7 @@ HWTEST_F(CodeSignBlockTest, addOneMerkleTree001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: addOneMerkleTree002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::addOneMerkleTree002() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -74,7 +74,7 @@ HWTEST_F(CodeSignBlockTest, addOneMerkleTree002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: addToSegmentList
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::addToSegmentList() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -92,7 +92,7 @@ HWTEST_F(CodeSignBlockTest, addToSegmentList, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: computeMerkleTreeOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::ComputeMerkleTreeOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -110,7 +110,7 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: computeMerkleTreeOffset001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::computeMerkleTreeOffset001() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -128,7 +128,7 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset001, testing::ext::TestSize.L
 
 /**
  * @tc.name: computeSegmentOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::computeSegmentOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -145,7 +145,7 @@ HWTEST_F(CodeSignBlockTest, computeSegmentOffset, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getCodeSignBlockHeader
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::getCodeSignBlockHeader() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -162,7 +162,7 @@ HWTEST_F(CodeSignBlockTest, getCodeSignBlockHeader, testing::ext::TestSize.Level
 
 /**
  * @tc.name: getHapInfoSegment
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::getHapInfoSegment() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -179,7 +179,7 @@ HWTEST_F(CodeSignBlockTest, getHapInfoSegment, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getOneMerkleTreeByFileName001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::getOneMerkleTreeByFileName001() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -197,7 +197,7 @@ HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName001, testing::ext::TestSiz
 
 /**
  * @tc.name: getOneMerkleTreeByFileName002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::getOneMerkleTreeByFileName002() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -216,7 +216,7 @@ HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName002, testing::ext::TestSiz
 
 /**
  * @tc.name: getSegmentHeaderList
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::getSegmentHeaderList() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -233,7 +233,7 @@ HWTEST_F(CodeSignBlockTest, getSegmentHeaderList, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSoInfoSegment
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::getSoInfoSegment() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -250,7 +250,7 @@ HWTEST_F(CodeSignBlockTest, getSoInfoSegment, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setCodeSignBlockFlag
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setCodeSignBlockFlag() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -267,7 +267,7 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setCodeSignBlockFlag001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setCodeSignBlockFlag001() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -293,7 +293,7 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag001, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: setCodeSignBlockHeader
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setCodeSignBlockHeader() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -320,7 +320,7 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockHeader, testing::ext::TestSize.Level
 
 /**
  * @tc.name: setFsVerityInfoSegment
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setFsVerityInfoSegment() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -339,7 +339,7 @@ HWTEST_F(CodeSignBlockTest, setFsVerityInfoSegment, testing::ext::TestSize.Level
 
 /**
  * @tc.name: setHapInfoSegment
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setHapInfoSegment() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -368,7 +368,7 @@ HWTEST_F(CodeSignBlockTest, setHapInfoSegment, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setSegmentHeaders
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setSegmentHeaders() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -385,7 +385,7 @@ HWTEST_F(CodeSignBlockTest, setSegmentHeaders, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setSegmentNum
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setSegmentNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -402,7 +402,7 @@ HWTEST_F(CodeSignBlockTest, setSegmentNum, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setSoInfoSegment
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockTest::setSoInfoSegment() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

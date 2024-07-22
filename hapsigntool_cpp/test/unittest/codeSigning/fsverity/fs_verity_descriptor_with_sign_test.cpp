@@ -31,7 +31,7 @@ public:
 
 /**
  * @tc.name: Size001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityDescriptorWithSign::Size() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -47,7 +47,7 @@ HWTEST_F(FsVerityDescriptorWithSignTest, Size001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Size002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityDescriptorWithSign::Size() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -65,7 +65,7 @@ HWTEST_F(FsVerityDescriptorWithSignTest, Size002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Size003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityDescriptorWithSign::Size() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -83,7 +83,7 @@ HWTEST_F(FsVerityDescriptorWithSignTest, Size003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: ToByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityDescriptorWithSign::ToByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -105,7 +105,7 @@ HWTEST_F(FsVerityDescriptorWithSignTest, ToByteArray, testing::ext::TestSize.Lev
 
 /**
  * @tc.name: GetFsVerityDescriptor
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityDescriptorWithSign::GetFsVerityDescriptor() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -126,7 +126,7 @@ HWTEST_F(FsVerityDescriptorWithSignTest, GetFsVerityDescriptor, testing::ext::Te
 
 /**
  * @tc.name: GetSignature
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of FsVerityDescriptorWithSign::GetSignature() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

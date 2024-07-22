@@ -51,7 +51,7 @@ public:
 
 /*
  * @tc.name: processcmd_test_001
- * @tc.desc: main function entry function.
+ * @tc.desc: The ProcessCmd function is executed to generate the key pair.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -81,7 +81,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_001, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_002
- * @tc.desc: main function entry function.
+ * @tc.desc: Test typing empty characters and printing the help document.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -99,7 +99,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_002, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_003
- * @tc.desc: main function entry function.
+ * @tc.desc: View the help documentation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -117,7 +117,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_003, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_004
- * @tc.desc: main function entry function.
+ * @tc.desc: Print version number.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -135,7 +135,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_004, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_005
- * @tc.desc: main function entry function.
+ * @tc.desc: Check that the value command-line argument is empty.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -155,7 +155,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_005, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_006
- * @tc.desc: main function entry function.
+ * @tc.desc: Checks whether the first argument of key has -.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -175,7 +175,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_006, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_008
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether the key algorithm is NIST-P-384 or NIST-P-256.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -205,70 +205,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_008, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_012
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_012, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-keypair";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-app1-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-keyAlg";
-    char arg7[] = "ECC";
-    char arg8[] = "-keySize";
-    char arg9[] = "NIST-P-256";
-    char arg10[] = "-keystoreFile";
-    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg12[] = "-keystorePwd";
-    char arg13[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5,
-                     arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-
-    int argc = 14;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_013
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_013, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-keypair";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-app1-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-keyAlg";
-    char arg7[] = "ECC";
-    char arg8[] = "-keySize";
-    char arg9[] = "NIST-P-257";
-    char arg10[] = "-keystoreFile";
-    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg12[] = "-keystorePwd";
-    char arg13[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6,
-                     arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-
-    int argc = 14;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
  * @tc.name: processcmd_test_020
- * @tc.desc: main function entry function.
+ * @tc.desc: Checks whether the argument is in the trusted list.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -300,608 +238,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_028
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_028, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-keyUsageCritical";
-    char arg23[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_029
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_029, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-keyUsageCritical";
-    char arg23[] = "false";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_030
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_030, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-keyUsageCritical";
-    char arg23[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_031
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_031, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-extKeyUsageCritical";
-    char arg23[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_032
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_032, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-extKeyUsageCritical";
-    char arg23[] = "false";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_033
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_033, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-extKeyUsageCritical";
-    char arg23[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_034
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_034, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraints";
-    char arg23[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_035
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_035, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraints";
-    char arg23[] = "false";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_036
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_036, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraints";
-    char arg23[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_037
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_037, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraintsCritical";
-    char arg23[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_038
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_038, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraintsCritical";
-    char arg23[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_039
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_039, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraintsCritical";
-    char arg23[] = "false";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_040
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_040, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraintsCa";
-    char arg23[] = "false";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_041
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_041, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraintsCa";
-    char arg23[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: processcmd_test_042
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_042, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-ca";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-root-ca-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-subject";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
-    char arg8[] = "-validity";
-    char arg9[] = "365";
-    char arg10[] = "-signAlg";
-    char arg11[] = "SHA384withECDSA";
-    char arg12[] = "-keystoreFile";
-    char arg13[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg14[] = "-keystorePwd";
-    char arg15[] = "123456";
-    char arg16[] = "-outFile";
-    char arg17[] = "./generateKeyPair/root-ca1.cer";
-    char arg18[] = "-keyAlg";
-    char arg19[] = "ECC";
-    char arg20[] = "-keySize";
-    char arg21[] = "NIST-P-384";
-    char arg22[] = "-basicConstraintsCa";
-    char arg23[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
 * @tc.name: processcmd_test_043
-* @tc.desc: main function entry function.
+* @tc.desc: Checks whether the last value of the command argument is null.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -939,38 +277,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_043, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_044
-* @tc.desc: main function entry function.
-* @tc.type: FUNC
-* @tc.require:
-*/
-HWTEST_F(ProcessCmdTest, processcmd_test_044, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-keypair";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-app1-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-keyAlg";
-    char arg7[] = "ECC";
-    char arg8[] = "-keySize";
-    char arg9[] = "NIST-P-256";
-    char arg10[] = "-keystoreFile";
-    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg12[] = "-keystorePwd";
-    char arg13[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-    int argc = 14;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
 * @tc.name: processcmd_test_045
-* @tc.desc: main function entry function.
+* @tc.desc: Check that the required parameters of the generate-cert module are met.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1011,7 +319,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_045, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_046
-* @tc.desc: main function entry function.
+* @tc.desc: Check that the required parameters of the sign-app module are met.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1030,108 +338,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_046, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_047
-* @tc.desc: main function entry function.
-* @tc.type: FUNC
-* @tc.require:
-*/
-HWTEST_F(ProcessCmdTest, processcmd_test_047, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "sign-app";
-    char arg2[] = "-profileSigned";
-    char arg3[] = "true";
-    char* argv[] = { arg0, arg1, arg2, arg3 };
-    int argc = 4;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
-* @tc.name: processcmd_test_048
-* @tc.desc: main function entry function.
-* @tc.type: FUNC
-* @tc.require:
-*/
-HWTEST_F(ProcessCmdTest, processcmd_test_048, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "sign-app";
-    char arg2[] = "-profileSigned";
-    char arg3[] = "TRUE";
-    char* argv[] = { arg0, arg1, arg2, arg3 };
-    int argc = 4;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
-* @tc.name: processcmd_test_049
-* @tc.desc: main function entry function.
-* @tc.type: FUNC
-* @tc.require:
-*/
-HWTEST_F(ProcessCmdTest, processcmd_test_049, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "sign-app";
-    char arg2[] = "-profileSigned";
-    char arg3[] = "0";
-    char* argv[] = { arg0, arg1, arg2, arg3 };
-    int argc = 4;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
-* @tc.name: processcmd_test_050
-* @tc.desc: main function entry function.
-* @tc.type: FUNC
-* @tc.require:
-*/
-HWTEST_F(ProcessCmdTest, processcmd_test_050, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "sign-app";
-    char arg2[] = "-profileSigned";
-    char arg3[] = "false";
-    char* argv[] = { arg0, arg1, arg2, arg3 };
-    int argc = 4;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
-* @tc.name: processcmd_test_051
-* @tc.desc: main function entry function.
-* @tc.type: FUNC
-* @tc.require:
-*/
-HWTEST_F(ProcessCmdTest, processcmd_test_051, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "sign-app";
-    char arg2[] = "-profileSigned";
-    char arg3[] = "FALSE";
-    char* argv[] = { arg0, arg1, arg2, arg3 };
-    int argc = 4;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, false);
-}
-
-/*
 * @tc.name: processcmd_test_052
-* @tc.desc: main function entry function.
+* @tc.desc: Check if the -profileSigned parameter in sign-app is [1,0, true, false, TRUE, FALSE].
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1151,7 +359,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_052, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_053
-* @tc.desc: main function entry function.
+* @tc.desc: Check that the output file path exists.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1181,7 +389,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_053, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_054
-* @tc.desc: main function entry function.
+* @tc.desc: Check if the keystore file is in 'p12' or 'JKS' file format.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1211,7 +419,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_054, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_055
-* @tc.desc: main function entry function.
+* @tc.desc: Check if the signature algorithm is SHA3256withECDSA or SHA384withECDSA.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1231,7 +439,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_055, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_056
-* @tc.desc: main function entry function.
+* @tc.desc: Check if the signature algorithm is SHA3256withECDSA or SHA384withECDSA.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1251,7 +459,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_056, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_057
-* @tc.desc: main function entry function.
+* @tc.desc: Check that the -inForm value is formatted correct.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1271,7 +479,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_057, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_058
-* @tc.desc: main function entry function.
+* @tc.desc: Check that the -outForm argument is correctly formatted.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1291,7 +499,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_058, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: processcmd_test_059
-* @tc.desc: main function entry function.
+* @tc.desc: Check the generate-app-cert module for required parameters.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1308,25 +516,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_059, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_063
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_063, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "-h";
-    char* argv[] = { arg0, arg1 };
-    int argc = 2;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, true);
-}
-
-/*
  * @tc.name: processcmd_test_064
- * @tc.desc: main function entry function.
+ * @tc.desc: Printing help documents.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1342,25 +533,8 @@ HWTEST_F(ProcessCmdTest, processcmd_test_064, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_065
- * @tc.desc: main function entry function.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(ProcessCmdTest, processcmd_test_065, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "-v";
-    char* argv[] = { arg0, arg1 };
-    int argc = 2;
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-
-    EXPECT_EQ(ret, true);
-}
-
-/*
  * @tc.name: processcmd_test_066
- * @tc.desc: main function entry function.
+ * @tc.desc: Print version number.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1377,7 +551,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_066, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_067
- * @tc.desc: main function entry function.
+ * @tc.desc: Print help documentation when an empty command is passed.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1389,7 +563,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_067, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_079
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether keyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1430,7 +604,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_079, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_080
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether keyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1471,7 +645,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_080, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_081
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether extKeyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1512,7 +686,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_081, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_082
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether extKeyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1553,7 +727,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_082, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_083
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether extKeyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1594,7 +768,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_083, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_084
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraints parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1635,7 +809,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_084, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_085
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraints parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1676,7 +850,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_085, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_086
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraints parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1717,7 +891,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_086, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_087
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraintsCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1758,7 +932,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_087, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_088
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraintsCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1799,7 +973,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_088, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_089
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraintsCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1840,7 +1014,7 @@ HWTEST_F(ProcessCmdTest, processcmd_test_089, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: processcmd_test_090
- * @tc.desc: main function entry function.
+ * @tc.desc: Check whether basicConstraintsCa parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */

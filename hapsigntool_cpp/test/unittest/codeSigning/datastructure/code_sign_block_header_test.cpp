@@ -40,7 +40,7 @@ public:
 
 /**
  * @tc.name: fromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be nullptr, because the header size is different with standard.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -59,7 +59,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray001, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be nullptr, because the inMagic is different with standard.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -79,7 +79,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray002, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be nullptr, because the inVersion is different with standard.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -105,7 +105,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray003, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be nullptr, because the inSegmentNum is different with standard.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -133,7 +133,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray004, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be nullptr, because the inFlags is different with standard.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -162,7 +162,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray005, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::fromByteArray006() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -191,7 +191,7 @@ HWTEST_F(CodeSignBlockHeaderTest, fromByteArray006, testing::ext::TestSize.Level
 
 /**
  * @tc.name: getBlockSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::getBlockSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -208,7 +208,7 @@ HWTEST_F(CodeSignBlockHeaderTest, getBlockSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSegmentNum
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::getSegmentNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -225,7 +225,7 @@ HWTEST_F(CodeSignBlockHeaderTest, getSegmentNum, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setBlockSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::setBlockSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -242,7 +242,7 @@ HWTEST_F(CodeSignBlockHeaderTest, setBlockSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setFlags
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::setFlags() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -259,7 +259,7 @@ HWTEST_F(CodeSignBlockHeaderTest, setFlags, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setSegmentNum
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeader::setSegmentNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -276,7 +276,7 @@ HWTEST_F(CodeSignBlockHeaderTest, setSegmentNum, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: size
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::size() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -293,7 +293,7 @@ HWTEST_F(CodeSignBlockHeaderTest, size, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: toByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSignBlockHeaderTest::toByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

@@ -451,7 +451,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_066, testing::ext::TestSize.Leve
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/OpenHarmony.txt";
 
@@ -1590,7 +1590,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Leve
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/app-profile.p7b";
     std::string inform = "abcd";

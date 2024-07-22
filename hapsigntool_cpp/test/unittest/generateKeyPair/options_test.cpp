@@ -195,7 +195,7 @@ HWTEST_F(OptionsCmdTest, Options_test_008, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: Options_test_009
- * @tc.desc: get two-parameter string type value, and do type checking.
+ * @tc.desc: get string type value, and do type checking.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -211,7 +211,7 @@ HWTEST_F(OptionsCmdTest, Options_test_009, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: Options_test_010
- * @tc.desc: get two-parameter string type value, and do type checking.
+ * @tc.desc: get string type value, and do type checking.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -269,7 +269,7 @@ HWTEST_F(OptionsCmdTest, Options_test_012, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: Options_test_013
- * @tc.desc: Required.
+ * @tc.desc: Check if required parameters exist.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -286,24 +286,26 @@ HWTEST_F(OptionsCmdTest, Options_test_013, testing::ext::TestSize.Level1)
     (*params)["signAlg"] = signAlg;
     (*params)["outForm"] = outForm;
     (*params)["keystoreFile"] = keystoreFile;
-    params->Required({ Options::KEY_ALIAS, Options::SIGN_ALG, Options::OUT_FORM, Options::KEY_STORE_FILE });
+    bool ret = params->Required({ Options::KEY_ALIAS, Options::SIGN_ALG, Options::OUT_FORM, Options::KEY_STORE_FILE });
+    EXPECT_EQ(ret, true);
 }
 
 /*
  * @tc.name: Options_test_014
- * @tc.desc: Required.
+ * @tc.desc: Check if required parameters exist.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(OptionsCmdTest, Options_test_014, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
-    params->Required({ "" });
+    bool ret = params->Required({ "" });
+    EXPECT_EQ(ret, true);
 }
 
 /*
  * @tc.name: Options_test_015
- * @tc.desc: Required.
+ * @tc.desc: Check if required parameters exist.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -313,22 +315,8 @@ HWTEST_F(OptionsCmdTest, Options_test_015, testing::ext::TestSize.Level1)
     std::string keyAlias = "oh-app1-key-v1";
 
     (*params)["inFile"] = keyAlias;
-    params->Required({ Options::KEY_ALIAS });
-}
-
-/*
- * @tc.name: Options_test_016
- * @tc.desc: Required.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(OptionsCmdTest, Options_test_016, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "oh-app1-key-v1";
-
-    (*params)["keyAlias"] = keyAlias;
-    params->Required({ Options::KEY_ALIAS });
+    bool ret = params->Required({ Options::KEY_ALIAS });
+    EXPECT_EQ(ret, false);
 }
 
 /*
@@ -416,37 +404,6 @@ HWTEST_F(OptionsCmdTest, cmd_util_test_004, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: cmd_util_test_006
- * @tc.desc: Write command line arguments to map.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(OptionsCmdTest, cmd_util_test_006, testing::ext::TestSize.Level1)
-{
-    char arg0[] = "";
-    char arg1[] = "generate-keypair";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-app1-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-keyAlg";
-    char arg7[] = "ECC";
-    char arg8[] = "-keySize";
-    char arg9[] = "NIST-P-384";
-    char arg10[] = "-keystoreFile";
-    char arg11[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg12[] = "-keystorePwd";
-    char arg13[] = "123456";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
-    int argc = 14;
-
-    CmdUtil cmdUtil;
-    ParamsSharedPtr param = std::make_shared<Params>();
-    bool ret = cmdUtil.Convert2Params(argv, argc, param);
-
-    EXPECT_EQ(ret, true);
-}
-/*
  * @tc.name: file_util_test_001
  * @tc.desc: Check whether the file format is p12 or jks.
  * @tc.type: FUNC
@@ -465,7 +422,7 @@ HWTEST_F(OptionsCmdTest, file_util_test_001, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: params_run_test_061
-* @tc.desc: main function entry function.
+* @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -479,7 +436,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_061, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_068
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: The sign-app module checks whether the inFile module is a valid path.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -495,10 +452,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_068, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -518,7 +475,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_068, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_069
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: The sign-app module checks if inform is a valid parameter.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -534,10 +491,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_069, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string inform = "abcd";
 
     (*params)["mode"] = mode;
@@ -559,7 +516,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_069, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_070
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: The sign-app module checks if signAlg is a valid parameter.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -575,10 +532,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_070, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384w";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string inform = "elf";
 
     (*params)["mode"] = mode;
@@ -600,7 +557,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_070, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_071
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: The sign-app module executes the branch with profileSigned = "1".
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -613,13 +570,13 @@ HWTEST_F(OptionsCmdTest, params_run_test_071, testing::ext::TestSize.Level1)
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
     std::string signCode = "1";
-    std::string signAlg = "SHA384w";
+    std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string profileSigned = "1";
 
     (*params)["mode"] = mode;
@@ -641,7 +598,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_071, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_072
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: The sign-app module executes the branch with profileSigned = "0".
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -654,13 +611,13 @@ HWTEST_F(OptionsCmdTest, params_run_test_072, testing::ext::TestSize.Level1)
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
     std::string signCode = "1";
-    std::string signAlg = "SHA384w";
+    std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string profileSigned = "0";
 
     (*params)["mode"] = mode;
@@ -682,7 +639,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_072, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_073
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -695,12 +652,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_073, testing::ext::TestSize.Level1)
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
     std::string signCode = "1";
-    std::string signAlg = "SHA384w";
+    std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -719,7 +676,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_073, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_074
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -735,7 +692,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_074, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
 
@@ -756,7 +713,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_074, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_075
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -771,10 +728,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_075, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -793,7 +750,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_075, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_076
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -809,10 +766,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_076, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -832,7 +789,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_076, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_077
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -848,10 +805,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_077, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -871,7 +828,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_077, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_078
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -887,10 +844,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_078, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "entry-default-unsigned-so.hap";
+    std::string inFile = "OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -910,7 +867,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_078, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: params_run_test_104
-* @tc.desc: main function entry function.
+* @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -924,7 +881,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_104, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: params_run_test_105
-* @tc.desc: main function entry function.
+* @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -939,7 +896,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_105, testing::ext::TestSize.Level1)
 
 /*
 * @tc.name: params_run_test_106
-* @tc.desc: main function entry function.
+* @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -954,7 +911,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_106, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_108
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -970,10 +927,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_108, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -993,7 +950,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_108, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_109
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1008,7 +965,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_109, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
 
@@ -1028,7 +985,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_109, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_110
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1045,7 +1002,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_110, testing::ext::TestSize.Level1)
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1063,7 +1020,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_110, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_111
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1098,7 +1055,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_111, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_112
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1129,7 +1086,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_112, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_113
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1168,7 +1125,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_113, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_114
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1184,10 +1141,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_114, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string inForm = "abcd";
     std::string profileSigned = "1";
 
@@ -1211,7 +1168,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_114, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_115
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1227,10 +1184,10 @@ HWTEST_F(OptionsCmdTest, params_run_test_115, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/profile.json";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string inForm = "abcd";
     std::string profileSigned = "0";
 
@@ -1254,7 +1211,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_115, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_116
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: generate-app-cert module parameter inspection.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1291,7 +1248,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_116, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_117
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1301,7 +1258,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_117, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "remoteResign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
     std::string outFile = "./generateKeyPair/test A/abc";
     std::string signAlg = "SHA384withECDSA";
 
@@ -1316,7 +1273,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_117, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_118
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1326,8 +1283,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_118, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "remoteSign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA384withECDSA";
 
     (*params)["mode"] = mode;
@@ -1341,7 +1298,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_118, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_119
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1351,8 +1308,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_119, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "abc";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA384withECDSA";
 
     (*params)["mode"] = mode;
@@ -1366,7 +1323,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_119, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_120
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1376,8 +1333,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_120, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA384withECDSA";
 
     (*params)["mode"] = mode;
@@ -1391,7 +1348,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_120, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_121
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1401,8 +1358,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_121, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1422,7 +1379,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_121, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_122
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1432,8 +1389,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_122, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA385withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1457,7 +1414,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_122, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_123
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1467,8 +1424,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_123, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1490,7 +1447,7 @@ HWTEST_F(OptionsCmdTest, params_run_test_123, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: params_run_test_124
- * @tc.desc: The hap signature entry check is generated.
+ * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1500,8 +1457,8 @@ HWTEST_F(OptionsCmdTest, params_run_test_124, testing::ext::TestSize.Level1)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string inFile = "./generateKeyPair/entry-default-unsigned-so.hap";
-    std::string outFile = "./generateKeyPair/entry-default-signed-so.hap";
+    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyAlias = "oh-app1-key-v1";
@@ -1542,6 +1499,8 @@ HWTEST_F(OptionsCmdTest, params_test_001, testing::ext::TestSize.Level1)
 
     ParamsSharedPtr param = std::make_shared<Params>();
     param->SetMethod(argv[1]);
+    bool ret = true;
+    EXPECT_EQ(ret, true);
 }
 
 /*

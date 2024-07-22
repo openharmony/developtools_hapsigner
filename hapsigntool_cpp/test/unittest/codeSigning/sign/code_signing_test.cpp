@@ -24,9 +24,6 @@
 
 using namespace OHOS::SignatureTools;
 
-/*
- * 测试套件,固定写法
- */
 class CodeSigningTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
@@ -48,7 +45,7 @@ public:
 
 /**
  * @tc.name: generateSignature001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: generate signature with signed data
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -110,7 +107,7 @@ HWTEST_F(CodeSigningTest, generateSignature001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generateSignature002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: generate signature without signed data
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -169,7 +166,7 @@ HWTEST_F(CodeSigningTest, generateSignature002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetNativeEntriesFromHap
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::GetNativeEntriesFromHap() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -229,7 +226,7 @@ HWTEST_F(CodeSigningTest, GetNativeEntriesFromHap, testing::ext::TestSize.Level1
 
 /**
  * @tc.name: getTimestamp
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::getTimestamp() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -284,7 +281,7 @@ HWTEST_F(CodeSigningTest, getTimestamp, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: isNativeFile
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::isNativeFile() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -340,7 +337,7 @@ HWTEST_F(CodeSigningTest, isNativeFile, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: signFile
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::signFile() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -403,7 +400,7 @@ HWTEST_F(CodeSigningTest, signFile, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: signNativeLibs
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::signNativeLibs() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -460,7 +457,7 @@ HWTEST_F(CodeSigningTest, signNativeLibs, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: updateCodeSignBlock
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::updateCodeSignBlock() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -515,7 +512,7 @@ HWTEST_F(CodeSigningTest, updateCodeSignBlock, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: AppendCodeSignBlock
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of CodeSigningTest::AppendCodeSignBlock() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -627,7 +624,7 @@ void SetOptions(Options* options)
 
 /**
  * @tc.name: GetElfCodeSignBlock
- * @tc.desc: Test function of CodeSigning::GetElfCodeSignBlock interface for SUCCESS.
+ * @tc.desc: get elf code sign block without inForm
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -667,7 +664,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetElfCodeSignBlock002
- * @tc.desc: Test function of CodeSigning::GetElfCodeSignBlock interface for SUCCESS.
+ * @tc.desc: get elf code sign block with bin inForm
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -709,7 +706,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetElfCodeSignBlock003
- * @tc.desc: Test function of CodeSigning::GetElfCodeSignBlock interface for SUCCESS.
+ * @tc.desc: get elf code sign block with elf inForm
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -751,7 +748,7 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetElfCodeSignBlock004
- * @tc.desc: Test function of CodeSigning::GetElfCodeSignBlock interface for SUCCESS.
+ * @tc.desc: get elf code sign block without input file
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

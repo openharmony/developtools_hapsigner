@@ -56,7 +56,7 @@ void VerifyElfTest::TearDown()
 
 /**
  * @tc.name: Verify001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::Verify() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -77,7 +77,7 @@ HWTEST_F(VerifyElfTest, Verify001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: param not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -93,7 +93,7 @@ HWTEST_F(VerifyElfTest, Verify002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: param outCertChain not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -113,7 +113,7 @@ HWTEST_F(VerifyElfTest, Verify003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: param outProfile not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -133,7 +133,7 @@ HWTEST_F(VerifyElfTest, Verify004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: param inFile not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -153,7 +153,7 @@ HWTEST_F(VerifyElfTest, Verify005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: input file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -174,7 +174,7 @@ HWTEST_F(VerifyElfTest, Verify006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify007
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: wrong input file
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -195,7 +195,7 @@ HWTEST_F(VerifyElfTest, Verify007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify008
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::Verify() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -216,7 +216,7 @@ HWTEST_F(VerifyElfTest, Verify008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify009
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: check owner id error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -237,7 +237,7 @@ HWTEST_F(VerifyElfTest, Verify009, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify010
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify elf data error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -258,7 +258,7 @@ HWTEST_F(VerifyElfTest, Verify010, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify011
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: verify pkcs7 error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -279,7 +279,7 @@ HWTEST_F(VerifyElfTest, Verify011, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Verify013
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: check elf file error
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -300,7 +300,7 @@ HWTEST_F(VerifyElfTest, Verify013, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: CheckParams
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::CheckParams() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -320,7 +320,7 @@ HWTEST_F(VerifyElfTest, CheckParams, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: CheckSignFile
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::CheckSignFile() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -337,7 +337,7 @@ HWTEST_F(VerifyElfTest, CheckSignFile, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetSignBlockData
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::GetSignBlockData() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -355,7 +355,7 @@ HWTEST_F(VerifyElfTest, GetSignBlockData, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetSignBlockInfo
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::GetSignBlockInfo() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -373,7 +373,7 @@ HWTEST_F(VerifyElfTest, GetSignBlockInfo, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetFileDigest
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::GetFileDigest() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -394,7 +394,7 @@ HWTEST_F(VerifyElfTest, GetFileDigest, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetRawContent
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::GetRawContent() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -412,7 +412,7 @@ HWTEST_F(VerifyElfTest, GetRawContent, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: VerifyP7b
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyElfTest::VerifyP7b() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -436,7 +436,7 @@ HWTEST_F(VerifyElfTest, VerifyP7b, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: sign elf with code sign
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -466,7 +466,7 @@ HWTEST_F(VerifyElfTest, SignElf001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: sign elf without code sign
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -495,7 +495,7 @@ HWTEST_F(VerifyElfTest, SignElf002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: invalid param signCode
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -525,7 +525,7 @@ HWTEST_F(VerifyElfTest, SignElf003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: input file without suffix
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -555,7 +555,7 @@ HWTEST_F(VerifyElfTest, SignElf004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf005
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: input file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -585,7 +585,7 @@ HWTEST_F(VerifyElfTest, SignElf005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf006
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: pem file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -615,7 +615,7 @@ HWTEST_F(VerifyElfTest, SignElf006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf007
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: invalid compatible version
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -646,7 +646,7 @@ HWTEST_F(VerifyElfTest, SignElf007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignElf008
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: p7b file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -676,7 +676,7 @@ HWTEST_F(VerifyElfTest, SignElf008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: SignBin001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: invalid alg SHA512withECDSA
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -705,7 +705,7 @@ HWTEST_F(VerifyElfTest, SignBin001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: WriteVerifyOutput001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: cer file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -735,7 +735,7 @@ HWTEST_F(VerifyElfTest, WriteVerifyOutput001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: WriteVerifyOutput002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: p7b file not exist
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

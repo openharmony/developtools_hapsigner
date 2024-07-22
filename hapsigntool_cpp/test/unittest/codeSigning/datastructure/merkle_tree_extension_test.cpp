@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: fromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the third branch, the inMerkleTreeSize is not an integer multiple of 4096.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -58,7 +58,7 @@ HWTEST_F(MerkleTreeExtensionTest, fromByteArray001, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the third branch, the inMerkleTreeOffset is not an integer multiple of 4096.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -85,7 +85,7 @@ HWTEST_F(MerkleTreeExtensionTest, fromByteArray002, testing::ext::TestSize.Level
 
 /**
  * @tc.name: fromByteArray003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::fromByteArray003() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -112,7 +112,7 @@ HWTEST_F(MerkleTreeExtensionTest, fromByteArray003, testing::ext::TestSize.Level
 
 /**
  * @tc.name: getMerkleTreeOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::GetMerkleTreeOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -129,7 +129,7 @@ HWTEST_F(MerkleTreeExtensionTest, getMerkleTreeOffset, testing::ext::TestSize.Le
 
 /**
  * @tc.name: getMerkleTreeSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::getMerkleTreeSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -146,7 +146,7 @@ HWTEST_F(MerkleTreeExtensionTest, getMerkleTreeSize, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: getSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::getSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -163,7 +163,7 @@ HWTEST_F(MerkleTreeExtensionTest, getSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: isType
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::isType() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -181,7 +181,7 @@ HWTEST_F(MerkleTreeExtensionTest, isType, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setMerkleTreeOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::SetMerkleTreeOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -199,7 +199,7 @@ HWTEST_F(MerkleTreeExtensionTest, setMerkleTreeOffset, testing::ext::TestSize.Le
 
 /**
  * @tc.name: toByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of MerkleTreeExtensionTest::toByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

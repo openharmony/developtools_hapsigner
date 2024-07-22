@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: fromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the first branch, fromByteArray001 inequality.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -58,7 +58,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: fromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the third branch, the dataSize is not an integer multiple of 4096..
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -95,7 +95,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: fromByteArray003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Go to the forth branch, the data has wrong extensionNum in the HapInfoSegment.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -132,7 +132,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: fromByteArray004
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::fromByteArray004() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -170,7 +170,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSignInfo
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::getSignInfo() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -187,7 +187,7 @@ HWTEST_F(HapInfoSegmentTest, getSignInfo, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::getSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -204,7 +204,7 @@ HWTEST_F(HapInfoSegmentTest, getSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: setSignInfo
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::setSignInfo() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -232,7 +232,7 @@ HWTEST_F(HapInfoSegmentTest, setSignInfo, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: toByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::toByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

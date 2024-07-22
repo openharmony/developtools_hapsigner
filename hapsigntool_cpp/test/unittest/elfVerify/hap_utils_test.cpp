@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: GetAppIdentifier
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of HapUtilsTest::GetAppIdentifier() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -49,7 +49,7 @@ HWTEST_F(HapUtilsTest, GetAppIdentifier, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHapSigningBlockMagic
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of HapUtilsTest::GetHapSigningBlockMagic() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -65,7 +65,7 @@ HWTEST_F(HapUtilsTest, GetHapSigningBlockMagic, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetHapSigningBlockVersion
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of HapUtilsTest::GetHapSigningBlockVersion() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -80,7 +80,7 @@ HWTEST_F(HapUtilsTest, GetHapSigningBlockVersion, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: ReadFileToByteBuffer
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of HapUtilsTest::ReadFileToByteBuffer() interface for FAILED.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

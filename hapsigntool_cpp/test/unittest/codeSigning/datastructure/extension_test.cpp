@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: getSize
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of ExtensionTest::getSize() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -49,7 +49,7 @@ HWTEST_F(ExtensionTest, getSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: isType
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be false，because the type is error.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -67,7 +67,7 @@ HWTEST_F(ExtensionTest, isType, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: toByteArray
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of ExtensionTest::toByteArray() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

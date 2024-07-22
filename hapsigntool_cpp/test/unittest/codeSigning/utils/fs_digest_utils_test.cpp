@@ -38,7 +38,7 @@ public:
 
 /**
  * @tc.name: addData001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: add digest data without length
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -58,7 +58,7 @@ HWTEST_F(DigestUtilsTest, addData001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: addData002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: add digest data with length
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -78,7 +78,7 @@ HWTEST_F(DigestUtilsTest, addData002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: result
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: get digest result and size
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

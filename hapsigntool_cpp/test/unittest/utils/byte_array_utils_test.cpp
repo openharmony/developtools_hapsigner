@@ -39,7 +39,7 @@ public:
 
 /**
  * @tc.name: InsertIntToByteArray
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: insert int number to byte array
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -54,7 +54,7 @@ HWTEST_F(ByteArrayUtilsTest, InsertIntToByteArray, testing::ext::TestSize.Level1
 
 /**
  * @tc.name: InsertShortToByteArray
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: insert short number to byte array
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -69,7 +69,7 @@ HWTEST_F(ByteArrayUtilsTest, InsertShortToByteArray, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: InsertByteToByteArray
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: insert byte data to byte array
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -87,7 +87,7 @@ HWTEST_F(ByteArrayUtilsTest, InsertByteToByteArray, testing::ext::TestSize.Level
 
 /**
  * @tc.name: InsertCharToByteArray
- * @tc.desc: Test function interface for SUCCESS.
+ * @tc.desc: insert charactor to byte array
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

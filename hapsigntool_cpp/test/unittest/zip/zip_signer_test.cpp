@@ -91,51 +91,51 @@ void ZipSignerTest::TearDown()
 HWTEST_F(ZipSignerTest, FullProcessTest001, testing::ext::TestSize.Level1)
 {
     /*
-     * @tc.steps: step0. test ZipSigner full process function
-     * @tc.expected: step0. the return will be true.
+     * @tc.steps: step1. test ZipSigner full process function
+     * @tc.expected: step1. use the unsigned hap file, the return will be true.
      */
     std::ifstream rawInput(UNSIGNED_HAP_PATH, std::ios::binary);
     std::ofstream rawOutput(OUTPUT_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
-    auto zip0 = std::make_shared<ZipSigner>();
-    ASSERT_TRUE(zip0->Init(rawInput));
-    zip0->Alignment(ALIGNMENT);
-    zip0->RemoveSignBlock();
-    ASSERT_TRUE(zip0->ToFile(rawInput, rawOutput));
+    auto zip1 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip1->Init(rawInput));
+    zip1->Alignment(ALIGNMENT);
+    zip1->RemoveSignBlock();
+    ASSERT_TRUE(zip1->ToFile(rawInput, rawOutput));
     rawOutput.close();
     rawInput.close();
 
     /*
-     * @tc.steps: step1. test ZipSigner full process function
-     * @tc.expected: step1. the return will be true.
+     * @tc.steps: step2. test ZipSigner full process function
+     * @tc.expected: step2. use the signed hap file, the return will be true.
      */
     std::ifstream wholeInput(SIGNED_HAP_PATH, std::ios::binary);
     std::ofstream wholeOutput(OUTPUT_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
-    auto zip1 = std::make_shared<ZipSigner>();
-    ASSERT_TRUE(zip1->Init(wholeInput));
-    zip1->Alignment(ALIGNMENT);
-    zip1->RemoveSignBlock();
-    ASSERT_TRUE(zip1->ToFile(wholeInput, wholeOutput));
+    auto zip2 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip2->Init(wholeInput));
+    zip2->Alignment(ALIGNMENT);
+    zip2->RemoveSignBlock();
+    ASSERT_TRUE(zip2->ToFile(wholeInput, wholeOutput));
     wholeOutput.close();
     wholeInput.close();
 
     /*
-     * @tc.steps: step2. test ZipSigner full process function
-     * @tc.expected: step2. the return will be true.
+     * @tc.steps: step3. test ZipSigner full process function
+     * @tc.expected: step3. use the hap file with data descriptor, the return will be true.
      */
     std::ifstream dataDescInput(DATA_DESCRIPTOR_HAP_PATH, std::ios::binary);
     std::ofstream dataDescOutput(OUTPUT_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
-    auto zip2 = std::make_shared<ZipSigner>();
-    ASSERT_TRUE(zip2->Init(dataDescInput));
-    zip2->Alignment(ALIGNMENT);
-    zip2->RemoveSignBlock();
-    ASSERT_TRUE(zip2->ToFile(dataDescInput, dataDescOutput));
+    auto zip3 = std::make_shared<ZipSigner>();
+    ASSERT_TRUE(zip3->Init(dataDescInput));
+    zip3->Alignment(ALIGNMENT);
+    zip3->RemoveSignBlock();
+    ASSERT_TRUE(zip3->ToFile(dataDescInput, dataDescOutput));
     dataDescOutput.close();
     dataDescInput.close();
 }
 
 /**
  * @tc.name: Test ZipSigner Init Function
- * @tc.desc: Test function of ZipSigner interface for SUCCESS.
+ * @tc.desc: Test function of ZipSigner interface for SUCCESS and FAIL
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -143,14 +143,14 @@ HWTEST_F(ZipSignerTest, ZipSignerInitTest001, testing::ext::TestSize.Level1)
 {
     /*
      * @tc.steps: step1. test Init function
-     * @tc.expected: step1. make the zip original file is dummy, the return will be false.
+     * @tc.expected: step1. make the hap file is not exist, the return will be false.
      */
     auto zip1 = std::make_shared<ZipSigner>();
     std::ifstream dummyInput(DUMMY_HAP_PATH, std::ios::binary);
     ASSERT_FALSE(zip1->Init(dummyInput));
     /*
      * @tc.steps: step2. test Init function
-     * @tc.expected: step2. make the zip original file is empty, the return will be false.
+     * @tc.expected: step2. make the hap file is empty, the return will be false.
      */
     std::ofstream emptyOuptut(EMPTY_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
     emptyOuptut << "";
@@ -162,7 +162,7 @@ HWTEST_F(ZipSignerTest, ZipSignerInitTest001, testing::ext::TestSize.Level1)
 
     /*
      * @tc.steps: step3. test Init function
-     * @tc.expected: step3. make the zip original file is ONLY have eocd block, the return will be false.
+     * @tc.expected: step3. make the hap file is ONLY have the eocd block, the return will be false.
      */
     std::ofstream eocdOutput(EOCD_ONLY_HAP_PATH, std::ios::binary | std::ios::trunc | std::ios::out);
     char eocd[] = {0x50, 0x4b, 0x05, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x40, 0x00, 0x00, 0x00,
@@ -295,6 +295,10 @@ HWTEST_F(ZipSignerTest, ToFileTest001, testing::ext::TestSize.Level1)
 HWTEST_F(ZipSignerTest, ToFileTest002, testing::ext::TestSize.Level1)
 {
     std::ifstream inputFile(UNSIGNED_HAP_PATH, std::ios::binary);
+    /*
+     * @tc.steps: step1. test ToFile function
+     * @tc.expected: step1. make the output file stream is bad, return will be false.
+     */
     std::ofstream outputFile("", std::ios::binary | std::ios::trunc);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
@@ -314,7 +318,10 @@ HWTEST_F(ZipSignerTest, ToFileTest003, testing::ext::TestSize.Level1)
     std::ofstream outputFile("", std::ios::binary | std::ios::trunc);
     std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
     bool initRes = zip->Init(inputFile);
-
+    /*
+     * @tc.steps: step1. test ToFile function
+     * @tc.expected: step1. make the input file stream is bad, return will be false.
+     */
     std::ifstream bad("", std::ios::binary);
 
     bool toFileRes = zip->ToFile(bad, outputFile);
@@ -323,7 +330,7 @@ HWTEST_F(ZipSignerTest, ToFileTest003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Test ToFile Function
- * @tc.desc: Test function of ZipSigner::ToFile() interface for FAIL.
+ * @tc.desc: Test function of ZipSigner::ToFile() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -385,6 +392,10 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest001, testing::ext
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest002, testing::ext::TestSize.Level1)
 {
+    /*
+     * @tc.steps: step1. test GetEOCDByBytes function
+     * @tc.expected: step1. make the eocd bytes is empty, the return will be nullopt.
+     */
     std::string str;
     std::optional<EndOfCentralDirectory*> eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(str);
     EXPECT_EQ(eocdByBytes == std::nullopt, true);
@@ -398,6 +409,10 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest002, testing::ext
  */
 HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest003, testing::ext::TestSize.Level1)
 {
+    /*
+     * @tc.steps: step1. test GetEOCDByBytes function
+     * @tc.expected: step1. make the eocd bytes is all of zero, the return will be nullopt.
+     */
     std::string bytes(22, 0);
     std::optional<EndOfCentralDirectory*> eocdByBytes = EndOfCentralDirectory::GetEOCDByBytes(bytes);
     EXPECT_EQ(eocdByBytes == std::nullopt, true);
@@ -515,7 +530,7 @@ HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest001, testing::ext::
 
 /**
  * @tc.name: Test SetCentralDirectoryOffset Function
- * @tc.desc: Test function of ZipUtils::SetCentralDirectoryOffset() interface for FAIL.
+ * @tc.desc: Test function of ZipUtils::SetCentralDirectoryOffset() interface.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -526,6 +541,10 @@ HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest002, testing::ext::
     std::pair<ByteBuffer, int64_t> eocdPair;
     EXPECT_EQ(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair), true);
     eocdPair.first.SetPosition(0);
+    /*
+     * @tc.steps: step1. test SetCentralDirectoryOffset function
+     * @tc.expected: step1. make the central directory offset is -1, the return will be false.
+     */
     EXPECT_EQ(ZipUtils::SetCentralDirectoryOffset(eocdPair.first, -1), false);
 }
 
@@ -542,6 +561,11 @@ HWTEST_F(ZipSignerTest, ZipUtilsSetCentralDirectoryOffsetTest003, testing::ext::
     std::pair<ByteBuffer, int64_t> eocdPair;
     ASSERT_TRUE(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair));
     eocdPair.first.SetPosition(0);
+    /*
+     * @tc.steps: step1. test SetCentralDirectoryOffset function
+     * @tc.expected: step1. make the central directory offset is 0x100000000LL, it's greater than 0xffffffffLL,
+     * the return will be false.
+     */
     ASSERT_FALSE(ZipUtils::SetCentralDirectoryOffset(eocdPair.first, 0x100000000LL));
 }
 
@@ -586,12 +610,16 @@ HWTEST_F(ZipSignerTest, ZipEntryHeaderTest001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: Test ZipEntryHeader Class
- * @tc.desc: Test function ToBytes of ZipEntryHeader for fail.
+ * @tc.desc: Test function ToBytes of ZipEntryHeader for FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
 HWTEST_F(ZipSignerTest, ZipEntryHeaderTest002, testing::ext::TestSize.Level1)
 {
+    /*
+     * @tc.steps: step1. test ReadFileName and ReadExtra function
+     * @tc.expected: step1. make the file name and extra is empty, the return will be 0.
+     */
     ZipEntryHeader zipEntryHeader;
     zipEntryHeader.ReadFileName("");
     zipEntryHeader.ReadExtra("");
@@ -637,6 +665,10 @@ HWTEST_F(ZipSignerTest, DataDescriptorTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, GetDataDescriptorTest001, testing::ext::TestSize.Level1)
 {
+    /*
+     * @tc.steps: step1. test GetDataDescriptor and GetDataDescriptor function
+     * @tc.expected: step1. make the data descriptor is error, the return will be nullptr.
+     */
     std::string bytes1{1};
     ASSERT_EQ(DataDescriptor::GetDataDescriptor(bytes1), nullptr);
 
@@ -684,6 +716,10 @@ HWTEST_F(ZipSignerTest, CentralDirectoryTest001, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ZipSignerTest, CentralDirectoryTest002, testing::ext::TestSize.Level1)
 {
+    /*
+     * @tc.steps: step1. test GetCentralDirectory function
+     * @tc.expected: step1. make the central directory is error, the return will be nullptr.
+     */
     ByteBuffer bf(1);
     CentralDirectory* cd = new CentralDirectory();
     EXPECT_EQ(CentralDirectory::GetCentralDirectory(bf, cd), false);

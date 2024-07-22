@@ -78,6 +78,10 @@ HWTEST_F(RandomAccessFileInputOutputTest, InitTest001, testing::ext::TestSize.Le
 HWTEST_F(RandomAccessFileInputOutputTest, InitTest002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
+    /*
+     * @tc.steps: step1. test Init function
+     * @tc.expected: step1. make the random access file is not exist, the return will be false.
+     */
     bool res = outputHap->Init("");
     EXPECT_EQ(res, false);
 }
@@ -109,6 +113,10 @@ HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest002, testing::ext::Test
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
     bool res = outputHap->Init(UNSIGNED_HAP_PATH);
     EXPECT_EQ(res, true);
+    /*
+     * @tc.steps: step1. test WriteToFile function
+     * @tc.expected: step1. make the ByteBuffer's capacity is 0, the return will be -1.
+     */
     ByteBuffer buffer;
     EXPECT_EQ(outputHap->WriteToFile(buffer, 0, 0), -1);
 }
@@ -126,12 +134,16 @@ HWTEST_F(RandomAccessFileInputOutputTest, WriteToFileTest003, testing::ext::Test
     EXPECT_EQ(res, true);
     ByteBuffer buffer(1);
     buffer.PutByte(1);
+    /*
+     * @tc.steps: step1. test WriteToFile function
+     * @tc.expected: step1. make the position is -1, the return will be READ_OFFSET_OUT_OF_RANGE.
+     */
     EXPECT_EQ(outputHap->WriteToFile(buffer, -1, 0), READ_OFFSET_OUT_OF_RANGE);
 }
 
 /**
  * @tc.name: Test ReadFileFullyFromOffset Function
- * @tc.desc: Test function of RandomAccessFile::ReadFileFullyFromOffset() interface for success
+ * @tc.desc: Test function of RandomAccessFile::ReadFileFullyFromOffset() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -159,7 +171,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest001, testing:
 
 /**
  * @tc.name: Test RandomAccessFileInput Function
- * @tc.desc: Test function of RandomAccessFileInput::RandomAccessFileInput() interface for FAIL.
+ * @tc.desc: Test function of RandomAccessFileInput::RandomAccessFileInput() interface.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -167,6 +179,10 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest002, testing:
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
     EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
+    /*
+     * @tc.steps: step1. test RandomAccessFileInput Constructor.
+     * @tc.expected: step1. make the size is -1, the operation will be return.
+     */
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap, 1, -1);
     EXPECT_EQ(outputHapIn != nullptr, true);
 }
@@ -181,6 +197,10 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputTest003, testing:
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
     EXPECT_EQ(outputHap->Init(SIGNED_HAP_PATH), true);
+    /*
+     * @tc.steps: step1. test RandomAccessFileInput Constructor.
+     * @tc.expected: step1. make the offset is -1, the operation will be return.
+     */
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap, -1, 1);
     EXPECT_EQ(outputHapIn != nullptr, true);
 }
@@ -281,9 +301,18 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputCreateByteBufferT
     std::shared_ptr<ZipDataInput> outputHapIn = std::make_shared<RandomAccessFileInput>(*outputHap);
     std::pair<ByteBuffer, int64_t> eocdPair;
     ASSERT_TRUE(HapSignerBlockUtils::FindEocdInHap(*outputHap, eocdPair));
+    /*
+     * @tc.steps: step1. test CreateByteBuffer function.
+     * @tc.expected: step1. make the offset is -1, the CheckBoundValid function return will be false,
+     * and ByteBuffer's capacity is 0 
+     */
     ByteBuffer centralDirBuffer1 = outputHapIn->CreateByteBuffer(-1, 1);
     ASSERT_EQ(centralDirBuffer1.GetCapacity(), 0);
-
+    /*
+     * @tc.steps: step2. test CreateByteBuffer function.
+     * @tc.expected: step2. make the size is -1, the CopyTo function return will be false, and ByteBuffer's
+     * capacity is 0
+     */
     ByteBuffer centralDirBuffer2 = outputHapIn->CreateByteBuffer(1, 0);
     ASSERT_EQ(centralDirBuffer2.GetCapacity(), 0);
 }
@@ -327,6 +356,10 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputWriteTest002, te
               true);
     std::shared_ptr<RandomAccessFileOutput> outputHapOut =
         std::make_shared<RandomAccessFileOutput>(outputHap.get(), centralDirectoryOffset);
+    /*
+     * @tc.steps: step1. test Write function.
+     * @tc.expected: step1. make the ByteBuffer is empty, the return will be false.
+     */
     ByteBuffer signingBlock;
     EXPECT_EQ(outputHapOut->Write(signingBlock), false);
 }
@@ -356,6 +389,10 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputTest002, testing
 {
     std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
     EXPECT_EQ(outputHap->Init(UNSIGNED_HAP_PATH), true);
+    /*
+     * @tc.steps: step1. test RandomAccessFileOutput Constructor.
+     * @tc.expected: step1. make the startPosition is -1, the operation will be return. 
+     */
     std::shared_ptr<RandomAccessFileOutput> outputHapOut =
         std::make_shared<RandomAccessFileOutput>(outputHap.get(), -1);
     EXPECT_EQ(outputHapOut != nullptr, true);

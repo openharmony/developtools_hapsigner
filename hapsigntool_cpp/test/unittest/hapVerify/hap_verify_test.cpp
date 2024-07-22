@@ -106,7 +106,7 @@ void VerifyHapTest::TearDown()
 }
 
 /**
- * @tc.name: Test CheckFilePath function
+ * @tc.name: CheckFilePathTest001
  * @tc.desc: The static function test whether input is a valid filepath;
  * @tc.type: FUNC
  */
@@ -123,7 +123,7 @@ HWTEST_F(VerifyHapTest, CheckFilePathTest001, TestSize.Level1)
 }
 
 /**
- * @tc.name: Test GetDigestAndAlgorithm function
+ * @tc.name: GetDigestAndAlgorithmTest001
  * @tc.desc: The static function will return result of GetDigestAndAlgorithm;
  * @tc.type: FUNC
  */
@@ -140,7 +140,7 @@ HWTEST_F(VerifyHapTest, GetDigestAndAlgorithmTest001, TestSize.Level1)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify001
+ * @tc.name: Verify001
  * @tc.desc: The static function will return verify result;
  * @tc.type: FUNC
  */
@@ -168,7 +168,7 @@ HWTEST_F(VerifyHapTest, Verify001, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.HapVerifyOsApp001
+ * @tc.name: HapVerifyOsApp001
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
@@ -190,7 +190,7 @@ HWTEST_F(VerifyHapTest, HapVerifyOsApp001, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify002
+ * @tc.name: Verify002
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
@@ -257,11 +257,11 @@ HWTEST_F(VerifyHapTest, Verify002, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify004
+ * @tc.name: Verify003
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify003, TestSize.Level0)
 {
     /*
         * @tc.steps: step1. input a invalid path to function of HapVerify.
@@ -314,11 +314,11 @@ HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify007
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: Verify004
+ * @tc.desc: This function tests failure for interface HapOutPutPkcs7 due to PKCS7 error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify007, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify004, TestSize.Level0)
 {
     std::string outPutPath = "./test.log";
     PKCS7* p7 = nullptr;
@@ -328,11 +328,11 @@ HWTEST_F(VerifyHapTest, Verify007, TestSize.Level0)
 }
 
 /**
-* @tc.name: VerifyHapTest.Verify008
-* @tc.desc: The static function will return verify result of signed file;
+* @tc.name: Verify005
+* @tc.desc: This function tests failure for interface GetProfileContent due to profile error
 * @tc.type: FUNC
 */
-HWTEST_F(VerifyHapTest, Verify008, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify005, TestSize.Level0)
 {
     std::string profile = "";
     std::string ret = "111";
@@ -343,11 +343,11 @@ HWTEST_F(VerifyHapTest, Verify008, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify009
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: Verify006
+ * @tc.desc: This function tests failure for interface GetProfileContent due to profile error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify009, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify006, TestSize.Level0)
 {
     VerifyHap verify;
     std::string profile = "{version-name: 1.0.0,version-code: 1,uuid: fe686e1b-3770-4824-a938-961b140a7c98}";
@@ -357,11 +357,11 @@ HWTEST_F(VerifyHapTest, Verify009, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify010
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: Verify007
+ * @tc.desc: This function tests failure for interface VerifyAppPkcs7 due to context error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify010, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify007, TestSize.Level0)
 {
     VerifyHap verify;
     Pkcs7Context pkcs7Context;
@@ -371,11 +371,11 @@ HWTEST_F(VerifyHapTest, Verify010, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify014
+ * @tc.name: Verify008
  * @tc.desc: The static function will return verify result;
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify008, TestSize.Level0)
 {
     /*
         * @tc.steps: step1. input a invalid path to function of HapVerify.
@@ -436,11 +436,11 @@ HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify015
+ * @tc.name: Verify009
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify015, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify009, TestSize.Level0)
 {
     /*
         * @tc.steps: step1. input a signed file to verify.
@@ -457,11 +457,11 @@ HWTEST_F(VerifyHapTest, Verify015, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify016
+ * @tc.name: Verify010
  * @tc.desc: The static function will return verify result of signed file;
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify010, TestSize.Level0)
 {
     std::string filePath = "./hapVerify/phone-default-signed.hap";
     std::string errorfilePath = "./hapVerify/phone-default-signed_error.hap";
@@ -524,11 +524,11 @@ HWTEST_F(VerifyHapTest, Verify016, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify021
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: Verify011
+ * @tc.desc: This function tests failure for interface HapOutPutPkcs7 due to PKCS7 error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify021, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify011, TestSize.Level0)
 {
     std::string outPutPath = "./test.log";
     PKCS7* p7 = nullptr;
@@ -538,11 +538,11 @@ HWTEST_F(VerifyHapTest, Verify021, TestSize.Level0)
 }
 
 /**
-* @tc.name: VerifyHapTest.Verify022
-* @tc.desc: The static function will return verify result of signed file;
+* @tc.name: Verify012
+* @tc.desc: This function tests failure for interface GetProfileContent due to profile error
 * @tc.type: FUNC
 */
-HWTEST_F(VerifyHapTest, Verify022, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify012, TestSize.Level0)
 {
     std::string profile = "";
     std::string ret = "111";
@@ -552,11 +552,11 @@ HWTEST_F(VerifyHapTest, Verify022, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify023
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: Verify013
+ * @tc.desc: This function tests failure for interface GetProfileContent due to profile error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify023, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify013, TestSize.Level0)
 {
     VerifyHap verify;
     std::string profile = "{version-name: 1.0.0,version-code: 1,uuid: fe686e1b-3770-4824-a938-961b140a7c98}";
@@ -566,11 +566,11 @@ HWTEST_F(VerifyHapTest, Verify023, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.Verify024
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: Verify014
+ * @tc.desc: This function tests failure for interface VerifyAppPkcs7 due to context error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, Verify024, TestSize.Level0)
+HWTEST_F(VerifyHapTest, Verify014, TestSize.Level0)
 {
     VerifyHap verify;
     Pkcs7Context pkcs7Context;
@@ -580,8 +580,8 @@ HWTEST_F(VerifyHapTest, Verify024, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError001
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError001
+ * @tc.desc: This function tests failure for interface Verify due to unvaild file
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError001, TestSize.Level0)
@@ -596,8 +596,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError001, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError002
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError002
+ * @tc.desc: This function tests failure for interface Verify due to unvaild file
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError002, TestSize.Level0)
@@ -612,8 +612,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError002, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError003
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError003
+ * @tc.desc: This function tests failure for interface Verify due to unvaild file
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError003, TestSize.Level0)
@@ -628,8 +628,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError003, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError004
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError004
+ * @tc.desc: This function tests failure for interface Verify due to unvaild file
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError004, TestSize.Level0)
@@ -644,8 +644,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError004, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError005
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError005
+ * @tc.desc: This function tests failure for interface Verify due to unvaild file
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError005, TestSize.Level0)
@@ -662,8 +662,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError005, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError006
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError006
+ * @tc.desc: This function tests failure for interface Verify due to parameter outCertChain
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError006, TestSize.Level0)
@@ -678,8 +678,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError006, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError007
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError007
+ * @tc.desc: This function tests failure for interface Verify due to parameter outCertChain
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError007, TestSize.Level0)
@@ -696,8 +696,8 @@ HWTEST_F(VerifyHapTest, VerifyHapError007, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError008
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError008
+ * @tc.desc: This function tests failure for interface Verify due to parameter outProfile
  * @tc.type: FUNC
  */
 HWTEST_F(VerifyHapTest, VerifyHapError008, TestSize.Level0)
@@ -714,11 +714,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError008, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError012
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError009
+ * @tc.desc: This function tests failure for interface GetDigestAndAlgorithm due to content error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError012, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError009, TestSize.Level0)
 {
     VerifyHap verify;
     Pkcs7Context digest;
@@ -729,11 +729,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError012, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError013
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError010
+ * @tc.desc: This function tests failure for interface GetDigestAndAlgorithm due to content error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError013, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError010, TestSize.Level0)
 {
     VerifyHap verify;
     Pkcs7Context digest;
@@ -744,11 +744,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError013, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError014
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError011
+ * @tc.desc: This function tests failure for interface GetDigestAndAlgorithm due to content error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError014, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError011, TestSize.Level0)
 {
     VerifyHap verify;
     Pkcs7Context digest;
@@ -759,11 +759,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError014, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError015
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError012
+ * @tc.desc: This function tests failure for interface GetDigestAndAlgorithm due to content error
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError015, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError012, TestSize.Level0)
 {
     VerifyHap verify;
     Pkcs7Context digest;
@@ -774,11 +774,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError015, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError024
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError013
+ * @tc.desc: This function tests failure for interface Verify due to diget algo
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError024, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError013, TestSize.Level0)
 {
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
@@ -792,11 +792,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError024, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError025
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError014
+ * @tc.desc: This function tests failure for interface Verify due to hap integrity
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError025, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError014, TestSize.Level0)
 {
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
@@ -808,11 +808,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError025, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError026
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError015
+ * @tc.desc: This function tests failure for interface Verify due to verify app
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError026, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError015, TestSize.Level0)
 {
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
@@ -824,11 +824,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError026, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError027
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError016
+ * @tc.desc: This function tests failure for interface Verify due to get certchain
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError027, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError016, TestSize.Level0)
 {
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
@@ -840,11 +840,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError027, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError029
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError017
+ * @tc.desc: This function tests failure for interface Verify due to parse profle
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError029, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError017, TestSize.Level0)
 {
     Options options;
     options[Options::OUT_CERT_CHAIN] = "./hapVerify/certchain.cer";
@@ -856,11 +856,11 @@ HWTEST_F(VerifyHapTest, VerifyHapError029, TestSize.Level0)
 }
 
 /**
- * @tc.name: VerifyHapTest.VerifyHapError030
- * @tc.desc: The static function will return verify result of signed file;
+ * @tc.name: VerifyHapError018
+ * @tc.desc: This function tests two scenarios of success and failure for interface outputOptionalBlocks
  * @tc.type: FUNC
  */
-HWTEST_F(VerifyHapTest, VerifyHapError030, TestSize.Level0)
+HWTEST_F(VerifyHapTest, VerifyHapError018, TestSize.Level0)
 {
     std::string outputProfileFile = "./hapVerify/outputProfileFile.txt";
     std::string outputProofFile = "./hapVerify/outputProfileFile.txt";
@@ -887,6 +887,27 @@ HWTEST_F(VerifyHapTest, VerifyHapError030, TestSize.Level0)
     EXPECT_EQ(resultCode, false);
     resultCode = verify.outputOptionalBlocks(outputProfileFile, outputProofFile, errorfile, optionBlocks);
     EXPECT_EQ(resultCode, false);
+}
+
+/**
+ * @tc.name: VerifyHapError019
+ * @tc.desc: This function tests two scenarios of success and failure for interface GetDigestAlgorithmString
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError019, TestSize.Level0)
+{
+    int32_t signAlgorithm = ALGORITHM_SHA256_WITH_ECDSA;
+    std::string ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
+
+    signAlgorithm = ALGORITHM_SHA384_WITH_ECDSA;
+    ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
+    signAlgorithm = ALGORITHM_SHA512_WITH_ECDSA;
+    ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
+
+    signAlgorithm = ALGORITHM_SHA512_WITH_DSA;
+    ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
+
+    EXPECT_EQ(ret, "");
 }
 }
 }

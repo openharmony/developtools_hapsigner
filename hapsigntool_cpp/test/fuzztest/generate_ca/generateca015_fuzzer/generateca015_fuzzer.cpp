@@ -30,7 +30,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    X509* cert = X509_new();;
+    X509* cert = X509_new();
     bool ret = CertTools::SetAuthorizeKeyIdentifierExt(cert);
     X509_free(cert);
     return ret;

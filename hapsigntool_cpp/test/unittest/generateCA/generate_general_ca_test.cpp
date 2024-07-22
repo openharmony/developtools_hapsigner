@@ -48,7 +48,7 @@ public:
 
 /**
  * @tc.name: generate_cert_test_017
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -99,8 +99,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_017, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_018
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
- * @tc.type: FUNC
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
  * @tc.require: SR000H63TL
  */
 HWTEST_F(GenerateCaTest, generate_cert_test_018, testing::ext::TestSize.Level1)
@@ -149,7 +148,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_018, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_019
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() SUCCESS to generate a certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -185,8 +184,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_019, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_020
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
- * @tc.type: FUNC
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a empty signalg.
  * @tc.require: SR000H63TL
  */
 HWTEST_F(GenerateCaTest, generate_cert_test_020, testing::ext::TestSize.Level1)
@@ -221,7 +219,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_020, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_cert_test_021
- * @tc.desc: Test function of GenerateCert()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a empty subject.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -271,7 +269,7 @@ HWTEST_F(GenerateCaTest, get_int_test_001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_app_cert_test_001
- * @tc.desc: Test function of GenerateAppCert()  interface for certChain SUCCESS.
+ * @tc.desc: Test function of GenerateAppCert()  interface for generate certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -310,7 +308,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_001, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_002
- * @tc.desc: Test function of GenerateAppCert()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GenerateAppCert() interface for generate cert SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -345,7 +343,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_002, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_003
- * @tc.desc: Test function of GenerateAppCert()  interface for certChain SUCCESS.
+ * @tc.desc: Test function of GenerateAppCert() interface for generate certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -382,7 +380,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_003, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_004
- * @tc.desc: Test function of GenerateAppCert()  interface for certChain SUCCESS.
+ * @tc.desc: Test function of GenerateAppCert() interface for generate certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -415,7 +413,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_004, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_005
- * @tc.desc: Test function of GenerateAppCert()  interface for certChain FAIL.
+ * @tc.desc: Test function of GenerateAppCert() interface for generate certChain with error keyalias FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -456,7 +454,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_005, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_006
- * @tc.desc: Test function of GenerateAppCert()  interface for certChain FAIL.
+ * @tc.desc: Test function of GenerateAppCert() interface for generate certChain with a error issuerKeyAliasFAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -497,7 +495,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_006, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_app_cert_test_007
- * @tc.desc: Test function of GenerateAppCert()  interface for certChain FAIL.
+ * @tc.desc: Test function of GenerateAppCert() interface for generate certChain with a error keystoreFile FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -534,7 +532,7 @@ HWTEST_F(GenerateCaTest, generate_appcert_test_007, testing::ext::TestSize.Level
 }
 /**
  * @tc.name: generate_profile_cert_test_001
- * @tc.desc: Test function of GenerateProfileCert()  interface for certChain SUCCESS.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -569,7 +567,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_001, testing::ext::TestSize.L
 }
 /**
  * @tc.name: generate_profile_cert_test_002
- * @tc.desc: Test function of GenerateProfileCert()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate cert SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -608,7 +606,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_002, testing::ext::TestSize.L
 }
 /**
  * @tc.name: generate_profile_cert_test_003
- * @tc.desc: Test function of GenerateProfileCert()  interface for certChain SUCCESS.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -641,7 +639,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_003, testing::ext::TestSize.L
 }
 /**
  * @tc.name: generate_profile_cert_test_004
- * @tc.desc: Test function of GenerateProfileCert()  interface for certChain SUCCESS.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate certChain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -678,7 +676,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_004, testing::ext::TestSize.L
 }
 /**
  * @tc.name: generate_profile_cert_test_005
- * @tc.desc: Test function of GenerateProfileCert()  interface for certChain FAIL.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate certChain with a error keyAlias FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -719,7 +717,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_005, testing::ext::TestSize.L
 }
 /**
  * @tc.name: generate_profile_cert_test_006
- * @tc.desc: Test function of GenerateProfileCert()  interface for certChain FAIL.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate certChain with a issuerKeyAlias FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -760,7 +758,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_006, testing::ext::TestSize.L
 }
 /**
  * @tc.name: generate_profile_cert_test_007
- * @tc.desc: Test function of GenerateProfileCert()  interface for certChain FAIL.
+ * @tc.desc: Test function of GenerateProfileCert() interface for generate certChain with a error cacertfile FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -799,7 +797,7 @@ HWTEST_F(GenerateCaTest, generate_profilecert_test_007, testing::ext::TestSize.L
 
 /**
  * @tc.name: judge_alg_type_test_001
- * @tc.desc: Test function of JudgeAlgType()  interface for SUCCESS.
+ * @tc.desc: Test function of JudgeAlgType() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -811,7 +809,7 @@ HWTEST_F(GenerateCaTest, judge_alg_type_test_001, testing::ext::TestSize.Level1)
 }
 /**
  * @tc.name: judge_size_test_001
- * @tc.desc: Test function of JudgeSize()  interface for SUCCESS.
+ * @tc.desc: Test function of JudgeSize() interface for FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -824,7 +822,7 @@ HWTEST_F(GenerateCaTest, judge_size_test_001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name:generate_root_cert_001
- * @tc.desc: Test function of :GenerateRootCertificate()  interface for SUCCESS.
+ * @tc.desc: Test function of :GenerateRootCertificate() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -857,7 +855,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_001, testing::ext::TestSize.Level1)
 }
 /**
  * @tc.name:generate_root_cert_002
- * @tc.desc: Test function of :GenerateRootCertificate()  interface for SUCCESS.
+ * @tc.desc: Test function of :GenerateRootCertificate() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -893,7 +891,7 @@ HWTEST_F(GenerateCaTest, generate_root_cert_002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name:generate_root_cert_003
- * @tc.desc: Test function of :GenerateRootCertificate()  interface for SUCCESS.
+ * @tc.desc: Test function of :GenerateRootCertificate() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1074,7 +1072,7 @@ HWTEST_F(GenerateCaTest, is_out_form_chain_test_002, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: get_cert_fromfile_test_001
- * @tc.desc: Test function of GetCertsFromFile()  interface for FAIL.
+ * @tc.desc: Test function of GetCertsFromFile()  interface for error path FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1089,7 +1087,7 @@ HWTEST_F(GenerateCaTest, get_cert_fromfile_test_001, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: get_cert_fromfile_test_002
- * @tc.desc: Test function of GetCertsFromFile()  interface for FAIL.
+ * @tc.desc: Test function of GetCertsFromFile()  interface for error path FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1148,7 +1146,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: output_cert_test_002
- * @tc.desc: Test function of OutPutCert() interface for FAIL.
+ * @tc.desc: Test function of OutPutCert() interface write file FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1192,7 +1190,7 @@ HWTEST_F(GenerateCaTest, output_cert_test_002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: output_cert_chain_test_001
- * @tc.desc: Test function of OutPutCertChain()  interface for SUCCESS.
+ * @tc.desc: Test function of OutPutCertChain() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1213,7 +1211,7 @@ HWTEST_F(GenerateCaTest, output_cert_chain_test_001, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: output_cert_chain_test_002
- * @tc.desc: Test function of OutPutCertChain()  interface for FAIL.
+ * @tc.desc: Test function of OutPutCertChain() interface with a empty path FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1234,7 +1232,7 @@ HWTEST_F(GenerateCaTest, output_cert_chain_test_002, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: print_x509_test_001
- * @tc.desc: Test function of PrintX509CertFromMemory()  interface for SUCCESS.
+ * @tc.desc: Test function of PrintX509CertFromMemory() interface for print cert SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1248,7 +1246,7 @@ HWTEST_F(GenerateCaTest, print_x509_test_001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: read_x509_test_001
- * @tc.desc: Test function of ReadfileToX509()  interface for FAIL.
+ * @tc.desc: Test function of ReadfileToX509() interface read x509 cert file FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1261,7 +1259,7 @@ HWTEST_F(GenerateCaTest, read_x509_test_001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: read_x509_test_002
- * @tc.desc: Test function of ReadfileToX509  interface for SUCCESS.
+ * @tc.desc: Test function of ReadfileToX509 interface for read x509 cert FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1274,7 +1272,7 @@ HWTEST_F(GenerateCaTest, read_x509_test_002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: get_and_output_cert_test_001
- * @tc.desc: Test function of GetAndOutPutCert()  interface for certchain SUCCESS.
+ * @tc.desc: Test function of GetAndOutPutCert() interface for output type certchain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1297,7 +1295,7 @@ HWTEST_F(GenerateCaTest, get_and_output_cert_test_001, testing::ext::TestSize.Le
 }
 /**
  * @tc.name: get_and_output_cert_test_002
- * @tc.desc: Test function of GetAndOutPutCert()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GetAndOutPutCert() interface for output type cert SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1316,7 +1314,7 @@ HWTEST_F(GenerateCaTest, get_and_output_cert_test_002, testing::ext::TestSize.Le
 }
 /**
  * @tc.name: get_and_output_cert_test_003
- * @tc.desc: Test function of GetAndOutPutCert()  interface for certchain SUCCESS.
+ * @tc.desc: Test function of GetAndOutPutCert() interface for certchain SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1339,7 +1337,7 @@ HWTEST_F(GenerateCaTest, get_and_output_cert_test_003, testing::ext::TestSize.Le
 }
 /**
  * @tc.name: hap_verify_test_001
- * @tc.desc: Test function of VerifyHapSigner()  interface for cert SUCCESS.
+ * @tc.desc: Test function of VerifyHapSigner() interface for verify p7b FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1359,7 +1357,7 @@ HWTEST_F(GenerateCaTest, hap_verify_test_001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: hap_verify_test_002
- * @tc.desc: Test function of VerifyHapSigner()  interface for cert SUCCESS.
+ * @tc.desc: Test function of VerifyHapSigner() interface for cert verify p7b FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1379,7 +1377,7 @@ HWTEST_F(GenerateCaTest, hap_verify_test_002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_key_pair_test_001
- * @tc.desc: Test function of GetIssuerKeyByAlias()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GetIssuerKeyByAlias() interface for generate key FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1410,7 +1408,7 @@ HWTEST_F(GenerateCaTest, generate_key_pair_test_001, testing::ext::TestSize.Leve
 }
 /**
  * @tc.name: generate_key_pair_test_002
- * @tc.desc: Test function of GetIssuerKeyByAlias()  interface for cert SUCCESS.
+ * @tc.desc: Test function of GetIssuerKeyByAlias() interface without a keyalg FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1442,7 +1440,7 @@ HWTEST_F(GenerateCaTest, generate_key_pair_test_002, testing::ext::TestSize.Leve
 }
 /**
  * @tc.name: generate_key_pair_test_003
- * @tc.desc: Test function of GenerateKeyPair()  interface for cert FAIL.
+ * @tc.desc: Test function of GenerateKeyPair() interface for read key FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1473,7 +1471,7 @@ HWTEST_F(GenerateCaTest, generate_key_pair_test_003, testing::ext::TestSize.Leve
 }
 /**
  * @tc.name: generate_key_pair_test_004
- * @tc.desc: Test function of GenerateKeyPair()  interface for cert FAIL.
+ * @tc.desc: Test function of GenerateKeyPair() interface whit empty issuer all info FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1495,7 +1493,7 @@ HWTEST_F(GenerateCaTest, generate_key_pair_test_004, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: set_expandedInf_ext_one_test_001
- * @tc.desc: Test function of SetKeyUsage()  interface for SUCCESS.
+ * @tc.desc: Test function of SetKeyUsage() interface whit a empty keyusage FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1513,7 +1511,7 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_one_test_001, testing::ext::TestSiz
 
 /**
  * @tc.name: set_expandedInf_ext_one_test_002
- * @tc.desc: Test function of SetKeyUsage()  interface for SUCCESS.
+ * @tc.desc: Test function of SetKeyUsage() interface for error branch FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1531,7 +1529,7 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_one_test_002, testing::ext::TestSiz
 
 /**
  * @tc.name: set_expandedInf_ext_two_test_001
- * @tc.desc: Test function of SetkeyUsageExt()  interface for SUCCESS.
+ * @tc.desc: Test function of SetkeyUsageExt() interface for error branch FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1549,7 +1547,7 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_two_test_001, testing::ext::TestSiz
 
 /**
  * @tc.name: set_expandedInf_ext_two_test_002
- * @tc.desc: Test function of SetkeyUsageExt()  interface for SUCCESS.
+ * @tc.desc: Test function of SetkeyUsageExt() interface for error branch FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1567,7 +1565,7 @@ HWTEST_F(GenerateCaTest, set_expandedInf_ext_two_test_002, testing::ext::TestSiz
 
 /**
  * @tc.name: generate_sub_cert_to_file_test_001
- * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCaToFile() interface with error keystorefile FAILED.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1612,7 +1610,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_001, testing::ext::TestS
 
 /**
  * @tc.name: generate_sub_cert_to_file_test_002
- * @tc.desc: Test function of GenerateCaToFile()  interface for SUCCESS.
+ * @tc.desc: Test function of GenerateCaToFile() interface for SUCCESS.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1658,7 +1656,7 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_002, testing::ext::TestS
 
 /**
  * @tc.name: generate_sub_cert_to_file_test_003
- * @tc.desc: Test function of GenerateCaToFile()  interface for FAIL.
+ * @tc.desc: Test function of GenerateCaToFile() interface for SUCCESS .
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */

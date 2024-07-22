@@ -32,6 +32,11 @@ void HapSignerBlockUtilsFunc(const uint8_t* data, size_t size)
     HapSubSignBlockHead profileBlock;
     HapSubSignBlockHead propertyBlock;
     HapSignerBlockUtils::CreateHapSubSignBlockHead(signBlock, profileBlock, propertyBlock);
+
+    std::vector<OptionalBlock> optionBlocks;
+    int32_t type = 0;
+    int index = 0;
+    HapSignerBlockUtils::GetOptionalBlockIndex(optionBlocks, type, index);
 }
 
 void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)

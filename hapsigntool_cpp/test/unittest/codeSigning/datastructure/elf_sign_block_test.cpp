@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: FromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be false，because the data has wrong signature length in the ElfSignBlock.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -54,7 +54,7 @@ HWTEST_F(ElfSignBlockTest, FromByteArray001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: FromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: The return will be false，because the data has wrong fs-verify descriptor type in the ElfSignBlock
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

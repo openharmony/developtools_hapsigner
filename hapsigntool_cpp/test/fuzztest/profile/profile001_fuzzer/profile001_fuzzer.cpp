@@ -108,14 +108,15 @@ bool SignProfileTest004(const uint8_t* data, size_t size)
 
 bool SignProfileTest005(const uint8_t* data, size_t size)
 {
+    int capacity = 5;
     Pkcs7Context profilePkcs7Context;
     Pkcs7Context hapPkcs7Context;
     std::string profile = "hello,world";
     hapPkcs7Context.matchResult.matchState = MATCH_WITH_SIGN;
     hapPkcs7Context.matchResult.source = APP_GALLARY;
     ByteBuffer pkcs7ProfileBlock;
-    pkcs7ProfileBlock.SetCapacity(5);
-    pkcs7ProfileBlock.PutData("hello", 5);
+    pkcs7ProfileBlock.SetCapacity(capacity);
+    pkcs7ProfileBlock.PutData("hello", capacity);
     bool result = ProfileVerifyUtils::ParseProfile(profilePkcs7Context, hapPkcs7Context, pkcs7ProfileBlock, profile);
     return result;
 }
@@ -129,7 +130,10 @@ bool SignProfileTest006(const uint8_t* data, size_t size)
 
 bool SignProfileTest007(const uint8_t* data, size_t size)
 {
-    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"bundle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.OpenHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certificate\":\"-----BEGIN CERTIFICATE-----\\n"
+    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"b"
+        "undle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.Op"
+        "enHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certif"
+        "icate\":\"-----BEGIN CERTIFICATE-----\\n"
         "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
         "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
         "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
@@ -143,7 +147,13 @@ bool SignProfileTest007(const uint8_t* data, size_t size)
         "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
         "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
         "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C7505BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED06506FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"issuer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C75"
+        "05BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED0650"
+        "6FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"iss"
+        "uer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":"
+        "[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140"
+        "a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":16105195"
+        "32},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     ProfileInfo info;
     AppProvisionVerifyResult result = ParseAndVerify(provision, info);
     return result == AppProvisionVerifyResult::PROVISION_OK;
