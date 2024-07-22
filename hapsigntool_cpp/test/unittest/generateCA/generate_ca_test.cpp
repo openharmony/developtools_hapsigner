@@ -600,7 +600,7 @@ HWTEST_F(GenerateCaTest, generate_ca_test_015, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: generate_ca_test_016
- * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error keyalias. 
+ * @tc.desc: Test function of GenerateCa() FAILED to generate a sub certificate with a error keyalias.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */

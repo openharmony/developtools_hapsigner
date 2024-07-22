@@ -304,7 +304,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileInputCreateByteBufferT
     /*
      * @tc.steps: step1. test CreateByteBuffer function.
      * @tc.expected: step1. make the offset is -1, the CheckBoundValid function return will be false,
-     * and ByteBuffer's capacity is 0 
+     * and ByteBuffer's capacity is 0
      */
     ByteBuffer centralDirBuffer1 = outputHapIn->CreateByteBuffer(-1, 1);
     ASSERT_EQ(centralDirBuffer1.GetCapacity(), 0);
@@ -391,7 +391,7 @@ HWTEST_F(RandomAccessFileInputOutputTest, RandomAccessFileOutputTest002, testing
     EXPECT_EQ(outputHap->Init(UNSIGNED_HAP_PATH), true);
     /*
      * @tc.steps: step1. test RandomAccessFileOutput Constructor.
-     * @tc.expected: step1. make the startPosition is -1, the operation will be return. 
+     * @tc.expected: step1. make the startPosition is -1, the operation will be return.
      */
     std::shared_ptr<RandomAccessFileOutput> outputHapOut =
         std::make_shared<RandomAccessFileOutput>(outputHap.get(), -1);
