@@ -94,7 +94,7 @@ void ProfileTest::TearDown()
 
 /**
  * @tc.name: profile_test001
- * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
+ * @tc.desc: Test function of ParseProfile() failed for invalid pkcs7 data.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -115,7 +115,7 @@ HWTEST_F(ProfileTest, profile_test001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test002
- * @tc.desc: Test function of ProfileVerifyUtils::VerifyProfile() interface for SUCCESS.
+ * @tc.desc: Test function of ProfileVerifyUtils::VerifyProfile() failed for GetCertChains from pkcs7 failed.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -130,7 +130,7 @@ HWTEST_F(ProfileTest, profile_test002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test003
- * @tc.desc: Test function of ProfileVerifyUtils::VerifyProfile() interface for SUCCESS.
+ * @tc.desc: Test function of ProfileVerifyUtils::VerifyProfile() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -149,7 +149,7 @@ HWTEST_F(ProfileTest, profile_test003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test004
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for empty content.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -167,7 +167,7 @@ HWTEST_F(ProfileTest, profile_test004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test005
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for NULL config.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -185,7 +185,7 @@ HWTEST_F(ProfileTest, profile_test005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test006
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for NULL signer.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -225,7 +225,7 @@ HWTEST_F(ProfileTest, profile_test006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test007
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for generate pkcs7 block.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -265,7 +265,7 @@ HWTEST_F(ProfileTest, profile_test007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test008
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -305,7 +305,7 @@ HWTEST_F(ProfileTest, profile_test008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test009
- * @tc.desc: Test function of SignedDataGenerator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of SignedDataGenerator::GenerateSignedData() failed for invalid sigAlg.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -347,7 +347,7 @@ HWTEST_F(ProfileTest, profile_test009, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test010
- * @tc.desc: Test function of SignedDataGenerator::GenerateSignedData() interface for SUCCESS.
+ * @tc.desc: Test function of SignedDataGenerator::GenerateSignedData() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -389,7 +389,7 @@ HWTEST_F(ProfileTest, profile_test010, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test011
- * @tc.desc: Test function of Pkcs7Data::Verify() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Data::Verify() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -442,7 +442,7 @@ HWTEST_F(ProfileTest, profile_test011, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test013
- * @tc.desc: Test function of Pkcs7Data::Verify() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Data::Verify() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -489,7 +489,7 @@ HWTEST_F(ProfileTest, profile_test013, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test014
- * @tc.desc: Test function of Pkcs7Data::Verify() interface for SUCCESS.
+ * @tc.desc: Test function of Pkcs7Data::Verify() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -540,7 +540,7 @@ HWTEST_F(ProfileTest, profile_test014, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test015
- * @tc.desc: Test function of Provision operator ==() interface for SUCCESS.
+ * @tc.desc: Test function of Provision operator ==() interface .
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -556,7 +556,7 @@ HWTEST_F(ProfileTest, profile_test015, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test016
- * @tc.desc: Test function of CmsUtils::VerifySignDataWithUnsignedDataDigest() interface for SUCCESS.
+ * @tc.desc: Test function of CmsUtils::VerifySignDataWithUnsignedDataDigest() failed for not matched unsigned data.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -597,7 +597,7 @@ HWTEST_F(ProfileTest, profile_test016, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test017
- * @tc.desc: Test function of PKCS7Data::SortX509Stack() interface for SUCCESS.
+ * @tc.desc: Test function of PKCS7Data::SortX509Stack() failed for cert count is 0.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -626,7 +626,7 @@ HWTEST_F(ProfileTest, profile_test019, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test020
- * @tc.desc: Test function of PKCS7Data::GetASN1Time() interface for SUCCESS.
+ * @tc.desc: Test function of PKCS7Data::GetASN1Time() failed for NULL asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -641,7 +641,7 @@ HWTEST_F(ProfileTest, profile_test020, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test021
- * @tc.desc: Test function of PKCS7Data::SortX509Stack() interface for SUCCESS.
+ * @tc.desc: Test function of PKCS7Data::SortX509Stack() failed for invalide certs.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -834,13 +834,13 @@ HWTEST_F(ProfileTest, profile_test028, testing::ext::TestSize.Level1)
         "\":[\"\"]},\"type\":\"release\",\"uuid\":\"\",\"validity\":{\"not-after"
         "\":1705127532,\"not-before\":1610519532},\"version-code\":1,\"version-name\":\"1.0.0\"}";
     ProfileInfo info;
-    int32_t result = ParseProvision(provision, info);
+    AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_EQ(result, AppProvisionVerifyResult::PROVISION_OK);
 }
 
 /**
  * @tc.name: profile_test029
- * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.desc: Test function of RunSignApp() failed for invalid json.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -917,7 +917,7 @@ static void GenerateTmpP7b()
 
 /**
  * @tc.name: profile_test030
- * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.desc: Test function of RunSignApp() failed for invalid p7b.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -973,7 +973,7 @@ err:
 
 /**
  * @tc.name: profile_test031
- * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.desc: Test function of SortX509Stack() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -988,7 +988,7 @@ HWTEST_F(ProfileTest, profile_test031, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test032
- * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.desc: Test function of SortX509Stack() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1011,7 +1011,7 @@ HWTEST_F(ProfileTest, profile_test032, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test033
- * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.desc: Test function of SortX509Stack() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -1029,7 +1029,7 @@ HWTEST_F(ProfileTest, profile_test033, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test030
- * @tc.desc: Test function of RunSignApp() interface for SUCCESS.
+ * @tc.desc: Test function of SortX509Stack() interface failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

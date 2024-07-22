@@ -51,7 +51,7 @@ public:
 
 /*
  * @tc.name: hap_sign_tool_test_053
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The generate-app-cert module checks whether the subCaCertFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -70,7 +70,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_053, testing::ext::TestSize.Leve
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/app-release1.pem";
-    std::string subCaCertFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string subCaCertFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outForm = "certChain";
     std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
 
@@ -94,7 +94,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_053, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_054
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The generate-app-cert module checks whether the keystoreFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -110,7 +110,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_054, testing::ext::TestSize.Leve
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
     int validity = 365;
     std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/app-release1.pem";
     std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
@@ -137,7 +137,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_054, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_055
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The generate-app-cert module checks whether the issuerKeystoreFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -159,7 +159,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_055, testing::ext::TestSize.Leve
     std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outForm = "certChain";
     std::string rootCaCertFile = "./generateKeyPair/root-ca1.cer";
-    std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["keyAlias"] = keyAlias;
     (*params)["keyPwd"] = keyPwd;
@@ -182,7 +182,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_055, testing::ext::TestSize.Leve
 
 /*
 * @tc.name: hap_sign_tool_test_056
-* @tc.desc: Generate an app debug certificate for entry checks.
+* @tc.desc: generate-profile-cert module required parameter validation.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -223,7 +223,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_056, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_057
- * @tc.desc: Generates a key pair input check.
+ * @tc.desc: generate-keypair module required parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -250,7 +250,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_057, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_058
- * @tc.desc: Generates a key pair input check.
+ * @tc.desc: generate-keypair module algorithm validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -279,7 +279,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_058, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_059
- * @tc.desc: Generates a key pair input check.
+ * @tc.desc: generate-keypair module algorithm size verification.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -308,7 +308,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_059, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_060
- * @tc.desc: Generates a key pair input check.
+ * @tc.desc: The generate-keypair module checks whether the keystoreFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -321,7 +321,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_060, testing::ext::TestSize.Leve
     char keyPwd[] = "123456";
     std::string keyAlg = "ECC";
     int keySize = 384;
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     char keystorePwd[] = "123456";
 
     (*params)["keyAlias"] = keyAlias;
@@ -337,7 +337,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_060, testing::ext::TestSize.Leve
 
 /**
  * @tc.name: hap_sign_tool_test_061
- * @tc.desc: Test function of SignToolServiceImpl::RunCsr() interface for SUCCESS.
+ * @tc.desc: generate-csr module required parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -361,7 +361,7 @@ HWTEST_F(HapSignToolCmdTest, run_csr_test_061, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_062
- * @tc.desc: Generate a profile check-in check.
+ * @tc.desc: verify-profile module required parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -379,7 +379,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_062, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_063
- * @tc.desc: Generate a profile check-in check.
+ * @tc.desc: verify-profile module inFile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -400,7 +400,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_063, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_064
- * @tc.desc: Generate a profile check-in check.
+ * @tc.desc: verify-profile module outFile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -420,52 +420,8 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_064, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_065
- * @tc.desc: Generate a profile check-in check.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_065, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string outProfile = "./generateKeyPair/app-profile.p7b";
-
-    (*params)["outCertChain"] = outCertChain;
-    (*params)["outProfile"] = outProfile;
-
-    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_sign_tool_test_066
- * @tc.desc: Generate a profile check-in check.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_066, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string outProfile = "./generateKeyPair/OpenHarmony.txt";
-
-    (*params)["inFile"] = inFile;
-    (*params)["outCertChain"] = outCertChain;
-    (*params)["outProfile"] = outProfile;
-
-    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, false);
-}
-
-/*
 * @tc.name: hap_sign_tool_test_067
-* @tc.desc: Invoke the Generate generic certificate interface.
+* @tc.desc: generate-cert module required parameter validation.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -486,7 +442,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_067, testing::ext::TestSize.Leve
     char arg9[] = "oh-profile-sign-srv-ca-key-v1";
     char arg10[] = "-subject";
     char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-    char arg12[] = " - validity";
+    char arg12[] = "-validity";
     char arg13[] = "365";
     char arg14[] = "-signAlg";
     char arg15[] = "SHA384withECDSA";
@@ -513,7 +469,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_067, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_068
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -534,7 +490,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_068, testing::ext::TestSize.Leve
     char arg9[] = "oh-profile-sign-srv-ca-key-v1";
     char arg10[] = "-subject";
     char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-    char arg12[] = " - validity";
+    char arg12[] = "-validity";
     char arg13[] = "365";
     char arg14[] = "-signAlg";
     char arg15[] = "SHA384withECDSA";
@@ -561,59 +517,11 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_068, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_069
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module two-parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
 HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_069, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    char arg0[] = "";
-    char arg1[] = "generate-cert";
-    char arg2[] = "-keyAlias";
-    char arg3[] = "oh-profile1-key-v1";
-    char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
-    char arg6[] = "-issuer";
-    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
-    char arg8[] = "-issuerKeyAlias";
-    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
-    char arg10[] = "-subject";
-    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
-    char arg12[] = " - validity";
-    char arg13[] = "365";
-    char arg14[] = "-signAlg";
-    char arg15[] = "SHA384withECDSA";
-    char arg16[] = "-keystoreFile";
-    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
-    char arg18[] = "-keystorePwd";
-    char arg19[] = "123456";
-    char arg20[] = "-outFile";
-    char arg21[] = "./generateKeyPair/general.cer";
-    char arg22[] = "-validity";
-    char arg23[] = "558g22";
-    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
-    int argc = 24;
-
-    ParamsSharedPtr param = std::make_shared<Params>();
-    CmdUtil cmdUtil;
-
-    cmdUtil.Convert2Params(argv, argc, param);
-
-    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_sign_tool_test_070
- * @tc.desc: Invoke the Generate generic certificate interface.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_070, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -641,7 +549,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_070, testing::ext::TestSize.Leve
     char arg20[] = "-outFile";
     char arg21[] = "./generateKeyPair/general.cer";
     char arg22[] = "-validity";
-    char arg23[] = "558g2hhhsss1111111111111111111111111111111111112";
+    char arg23[] = "558g22";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -656,8 +564,54 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_070, testing::ext::TestSize.Leve
 }
 
 /*
+ * @tc.name: hap_sign_tool_test_070
+ * @tc.desc: The validity parameter of the generate-cert module checks whether it is valid.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_070, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    char arg0[] = "";
+    char arg1[] = "generate-cert";
+    char arg2[] = "-keyAlias";
+    char arg3[] = "oh-profile1-key-v1";
+    char arg4[] = "-keyPwd";
+    char arg5[] = "123456";
+    char arg6[] = "-issuer";
+    char arg7[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    char arg8[] = "-issuerKeyAlias";
+    char arg9[] = "oh-profile-sign-srv-ca-key-v1";
+    char arg10[] = "-subject";
+    char arg11[] = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    char arg14[] = "-signAlg";
+    char arg15[] = "SHA384withECDSA";
+    char arg16[] = "-keystoreFile";
+    char arg17[] = "./generateKeyPair/OpenHarmony.p12";
+    char arg18[] = "-keystorePwd";
+    char arg19[] = "123456";
+    char arg20[] = "-outFile";
+    char arg21[] = "./generateKeyPair/general.cer";
+    char arg22[] = "-validity";
+    char arg23[] = "558g2hhhsss1111111111111111111111111111111111112";
+    char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
+                     arg11, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
+    int argc = 22;
+
+    ParamsSharedPtr param = std::make_shared<Params>();
+    CmdUtil cmdUtil;
+
+    cmdUtil.Convert2Params(argv, argc, param);
+
+    bool ret = ParamsRunTool::DispatchParams(param, *api.get());
+    EXPECT_EQ(ret, false);
+}
+
+/*
  * @tc.name: hap_sign_tool_test_071
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module keyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -705,7 +659,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_071, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_072
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module keyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -753,7 +707,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_072, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_073
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module keyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -801,7 +755,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_073, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_074
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module extKeyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -847,7 +801,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_074, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_075
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module extKeyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -895,7 +849,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_075, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_076
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module extKeyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -943,7 +897,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_076, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_077
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraints parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -991,7 +945,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_077, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_078
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraints parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1039,7 +993,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_078, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_079
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraints parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1087,7 +1041,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_079, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_080
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraintsCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1135,7 +1089,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_080, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_081
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraintsCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1183,7 +1137,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_081, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_082
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraintsCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1231,7 +1185,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_082, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_083
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraintsCa parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1279,7 +1233,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_083, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_084
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraintsCa parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1327,7 +1281,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_084, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_085
- * @tc.desc: Invoke the Generate generic certificate interface.
+ * @tc.desc: generate-cert module basicConstraintsCa parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1375,7 +1329,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_085, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_086
- * @tc.desc: Generate profile signature entry checks.
+ * @tc.desc: sign-profile module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1408,7 +1362,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_086, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_087
- * @tc.desc: Generate profile signature entry checks.
+ * @tc.desc: sign-profile module mode parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1443,7 +1397,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_087, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_088
- * @tc.desc: Generate profile signature entry checks.
+ * @tc.desc: The sign-profile module profileCertFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1475,43 +1429,8 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_088, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_089
- * @tc.desc: Generate profile signature entry checks.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_089, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-profile1-key-v1";
-    char keyPwd[] = "123456";
-    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-    std::string inFile = "./generateKeyPair/profile.json";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
-    char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/signed-profile.p7b";
-
-    (*params)["mode"] = mode;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["profileCertFile"] = profileCertFile;
-    (*params)["inFile"] = inFile;
-    (*params)["signAlg"] = signAlg;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = outFile;
-
-    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, false);
-}
-
-/*
  * @tc.name: hap_sign_tool_test_090
- * @tc.desc: Generate profile signature entry checks.
+ * @tc.desc: The sign-profile module signAlg parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1545,43 +1464,8 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_090, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_091
- * @tc.desc: Generate profile signature entry checks.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_091, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-profile1-key-v1";
-    char keyPwd[] = "123456";
-    std::string profileCertFile = "./generateKeyPair/profile-release1.pem";
-    std::string inFile = "./generateKeyPair/profile.json";
-    std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-    char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/signed-profile.txt";
-
-    (*params)["mode"] = mode;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["profileCertFile"] = profileCertFile;
-    (*params)["inFile"] = inFile;
-    (*params)["signAlg"] = signAlg;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = outFile;
-
-    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
-    EXPECT_EQ(ret, false);
-}
-
-/*
  * @tc.name: hap_sign_tool_test_092
- * @tc.desc: Generate a profile check-in check.
+ * @tc.desc: The verify-app module inform parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1590,7 +1474,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Leve
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/app-profile.p7b";
     std::string inform = "abcd";
@@ -1606,7 +1490,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Leve
 
 /*
 * @tc.name: hap_sign_tool_test_093
-* @tc.desc: Generate the root certificate entry check.
+* @tc.desc: The generate-ca module outFile parameter checks whether it is valid.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1637,7 +1521,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_093, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_094
- * @tc.desc: Generate a universal certificate entry check.
+ * @tc.desc: The generate-cert module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1670,7 +1554,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_094, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_095
- * @tc.desc: Generate a universal certificate entry check.
+ * @tc.desc: The generate-cert module keystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1685,7 +1569,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_095, testing::ext::TestSize.Leve
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
     std::string keyUsage = "digitalSignature";
     std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outFile = "./generateKeyPair/general.cer";
 
     (*params)["keyAlias"] = keyAlias;
@@ -1703,7 +1587,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_095, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_096
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The generate-cert module subCaCertFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1719,8 +1603,8 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_096, testing::ext::TestSize.Leve
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string outForm = "certChain";
-    std::string subCaCertFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string rootCaCertFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string subCaCertFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string rootCaCertFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["keyAlias"] = keyAlias;
     (*params)["issuer"] = issuer;
@@ -1738,7 +1622,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_096, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_097
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The generate-cert module keystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1752,7 +1636,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_097, testing::ext::TestSize.Leve
     std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
     std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outForm = "certChain";
     std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string rootCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
@@ -1773,7 +1657,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_097, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_098
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The generate-cert module issuerKeystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1791,7 +1675,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_098, testing::ext::TestSize.Leve
     std::string outForm = "certChain";
     std::string subCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string rootCaCertFile = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string issuerKeystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["keyAlias"] = keyAlias;
     (*params)["issuer"] = issuer;
@@ -1810,7 +1694,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_098, testing::ext::TestSize.Leve
 
 /*
 * @tc.name: hap_sign_tool_test_099
-* @tc.desc: Generate an app debug certificate for entry checks.
+* @tc.desc: The generate-profile-cert module keystoreFile parameter checks whether it is valid.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1818,7 +1702,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_099, testing::ext::TestSize.Leve
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keystoreFile = "./generateKeyPair/abc/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/abc/OpenHarmonyDamage.p12";
     (*params)["keystoreFile"] = keystoreFile;
     bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
     EXPECT_EQ(ret, false);
@@ -1826,7 +1710,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_099, testing::ext::TestSize.Leve
 
 /*
 * @tc.name: hap_sign_tool_test_100
-* @tc.desc: Generate an app debug certificate for entry checks.
+* @tc.desc: The generate-profile-cert module outFile parameter checks whether it is valid.
 * @tc.type: FUNC
 * @tc.require:
 */
@@ -1834,7 +1718,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_100, testing::ext::TestSize.Leve
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string outFile = "./generateKeyPair/abc/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/abc/OpenHarmonyDamage.p12";
     (*params)["outFile"] = outFile;
     bool ret = ParamsRunTool::RunProfileCert(params.get(), *api);
     EXPECT_EQ(ret, false);
@@ -1842,7 +1726,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_100, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_101
- * @tc.desc: Generate a csr entry check.
+ * @tc.desc: The generate-csr module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1869,7 +1753,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_101, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_102
- * @tc.desc: Generate a csr entry check.
+ * @tc.desc: The generate-csr module keystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1881,7 +1765,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_102, testing::ext::TestSize.Leve
     std::string keyAlias = "oh-app1-key-v1";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
     std::string signAlg = "SHA256withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outFile = "./generateKeyPair/oh-app1-key-v1.csr";
 
     (*params)["keyAlias"] = keyAlias;
@@ -1896,7 +1780,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_102, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_103
- * @tc.desc: Generate a csr entry check.
+ * @tc.desc: The generate-csr module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1909,7 +1793,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_103, testing::ext::TestSize.Leve
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
     std::string signAlg = "SHA256withECDSA";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["keyAlias"] = keyAlias;
     (*params)["subject"] = subject;
@@ -1923,7 +1807,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_103, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_104
- * @tc.desc: Generate profile signature entry checks.
+ * @tc.desc: The sign-profile module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1948,7 +1832,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_104, testing::ext::TestSize.Leve
 
 /*
  * @tc.name: hap_sign_tool_test_105
- * @tc.desc: Generate profile signature entry checks.
+ * @tc.desc: The sign-profile module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1962,7 +1846,7 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_105, testing::ext::TestSize.Leve
     std::string signAlg = "SHA384withECDSA";
     std::string outFile = "./generateKeyPair/signed-profile.txt";
     std::string keyAlias = "abc";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileCertFile = "./generateKeyPair/OpenHarmony.p12";
 
     (*params)["mode"] = mode;

@@ -39,7 +39,7 @@ public:
 
 /**
  * @tc.name: GetBlockHead
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get block head for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -54,7 +54,7 @@ HWTEST_F(HwBlockHeadTest, GetBlockHead, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetBlockHeadLittleEndian
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get block head by little endian for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -69,7 +69,7 @@ HWTEST_F(HwBlockHeadTest, GetBlockHeadLittleEndian, testing::ext::TestSize.Level
 
 /**
  * @tc.name: getBlockHeadLittleEndian
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get block head by little endian for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -84,7 +84,7 @@ HWTEST_F(HwBlockHeadTest, getBlockHeadLittleEndian, testing::ext::TestSize.Level
 
 /**
  * @tc.name: GetBlockLen
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get block length for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -99,7 +99,7 @@ HWTEST_F(HwBlockHeadTest, GetBlockLen, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: GetElfBlockLen
- * @tc.desc: Test interface for SUCCESS.
+ * @tc.desc: Test get elf block length for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

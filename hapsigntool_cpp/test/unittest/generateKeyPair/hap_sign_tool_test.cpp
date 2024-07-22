@@ -343,10 +343,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_009, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -366,7 +366,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_009, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_010
- * @tc.desc: Generate a profile check-in check.
+ * @tc.desc: verify-app module inFile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -375,7 +375,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_010, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/app-profile.p7b";
 
@@ -449,13 +449,13 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_012, testing::ext::TestSize.Level1)
     char arg14[] = "-profileFile";
     char arg15[] = "./generateKeyPair/signed-profile.p7b";
     char arg16[] = "-inFile";
-    char arg17[] = "OpenHarmony.txt";
+    char arg17[] = "OpenHarmonyDamage.p12";
     char arg18[] = "-keystoreFile";
     char arg19[] = "./generateKeyPair/OpenHarmony.p12";
     char arg20[] = "-keystorePwd";
     char arg21[] = "123456";
     char arg22[] = "-outFile";
-    char arg23[] = "./generateKeyPair/OpenHarmony.txt";
+    char arg23[] = "./generateKeyPair/OpenHarmonyDamage.p12";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
@@ -527,7 +527,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_014, testing::ext::TestSize.Level1)
     char arg0[] = "";
     char arg1[] = "verify-app";
     char arg2[] = "-inFile";
-    char arg3[] = "./generateKeyPair/OpenHarmony.txt";
+    char arg3[] = "./generateKeyPair/OpenHarmonyDamage.p12";
     char arg4[] = "-outCertChain";
     char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
     char arg6[] = "-outProfile";
@@ -956,7 +956,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_026, testing::ext::TestSize.Level1)
     std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
     int validity = 365;
     std::string signAlg = "SHA385withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/root-ca1.cer";
     std::string keyAlg = "ECC";
@@ -1040,8 +1040,8 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_029, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1075,10 +1075,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_030, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1114,10 +1114,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_031, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1153,10 +1153,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_032, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA385withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1191,10 +1191,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_033, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1229,10 +1229,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_034, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["mode"] = mode;
     (*params)["keyAlias"] = keyAlias;
@@ -1268,10 +1268,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_035, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.txt";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileSigned = "0";
 
     (*params)["mode"] = mode;
@@ -1344,7 +1344,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_041, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
     int validity = 365;
     std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/root-ca1.cer";
     std::string keyAlg = "ECC";
@@ -1580,7 +1580,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_047, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
     int validity = 365;
     std::string signAlg = "SHA384withECDSA";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/general.cer";
     std::string keyUsage = "digitalSignature";
@@ -1603,7 +1603,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_047, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_048
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1642,7 +1642,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_048, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_049
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1685,7 +1685,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_049, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_050
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1726,7 +1726,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_050, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_051
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1769,7 +1769,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_051, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_052
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1810,7 +1810,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_052, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_053
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1826,10 +1826,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileSigned = "1";
 
     (*params)["mode"] = mode;
@@ -1851,7 +1851,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
 
 /*
  * @tc.name: hap_sign_tool_test_054
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1867,10 +1867,10 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_054, testing::ext::TestSize.Level1)
     std::string signAlg = "SHA384wA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmony.txt";
+    std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string profileSigned = "1";
 
     (*params)["mode"] = mode;
@@ -1891,30 +1891,8 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_054, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_055
- * @tc.desc: Generate profile debugging certificate entry check.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_055, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string outProfile = "./generateKeyPair/app-profile.p7b";
-
-    (*params)["inFile"] = inFile;
-    (*params)["outCertChain"] = outCertChain;
-    (*params)["outProfile"] = outProfile;
-    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
-    EXPECT_EQ(ret, false);
-}
-
-/*
  * @tc.name: hap_sign_tool_test_056
- * @tc.desc: Generate profile debugging certificate entry check.
+ * @tc.desc: verify-app module outProfile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
@@ -1923,9 +1901,9 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_056, testing::ext::TestSize.Level1)
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
-    std::string outProfile = "./generateKeyPair/OpenHarmony.txt";
+    std::string outProfile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
     (*params)["inFile"] = inFile;
     (*params)["outCertChain"] = outCertChain;

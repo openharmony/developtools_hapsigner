@@ -318,7 +318,7 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_097, testing::ext::TestSize.Le
     char arg0[] = "";
     char arg1[] = "verify-app";
     char arg2[] = "-inFile";
-    char arg3[] = "./generateKeyPair/OpenHarmony.txt";
+    char arg3[] = "./generateKeyPair/OpenHarmonyDamage.p12";
     char arg4[] = "-outCertChain";
     char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
     char arg6[] = "-outProfile";
@@ -963,7 +963,7 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_119, testing::ext::TestSize.Le
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/signed-profile.p7b";
     std::string inForm = "zip";
@@ -987,7 +987,7 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_120, testing::ext::TestSize.Le
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/abc/signed-profile.p7b";
     std::string inForm = "zip";
@@ -1011,7 +1011,7 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_121, testing::ext::TestSize.Le
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/signed-profile.p7b";
 
@@ -1033,8 +1033,8 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_122, testing::ext::TestSize.Le
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
-    std::string outCertChain = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outCertChain = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outProfile = "./generateKeyPair/signed-profile.p7b";
     std::string inForm = "zip";
 
@@ -1057,7 +1057,7 @@ HWTEST_F(ProcessCmdExpansionTest, processcmd_test_123, testing::ext::TestSize.Le
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
-    std::string inFile = "./generateKeyPair/OpenHarmony.txt";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
     std::string outCertChain = "./generateKeyPair/app-sign-srv-ca1.cer";
     std::string outProfile = "./generateKeyPair/signed-profile.txt";
     std::string inForm = "zip";

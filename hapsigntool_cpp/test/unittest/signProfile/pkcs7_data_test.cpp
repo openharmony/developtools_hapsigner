@@ -77,7 +77,7 @@ void Pkcs7DataTest::TearDown()
 
 /**
  * @tc.name: pkcs7_test001
- * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify（） interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify（） failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -95,7 +95,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test002
- * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -113,7 +113,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test003
- * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify failed for invalid cert.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -131,7 +131,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test003, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test004
- * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() failed for invalid cert.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -164,7 +164,7 @@ static void ReverseX509Stack(STACK_OF(X509)* certs)
 \
 /**
  * @tc.name: pkcs7_test005
- * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::CertVerify() interface cert signature verify failed.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -198,7 +198,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test007
- * @tc.desc: Test function of PKCS7Data::GetASN1Time() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::GetASN1Time() failed for too large time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -215,7 +215,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test008
- * @tc.desc: Test function of VerifyCertOpensslUtils::GetTextFromX509Name() interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::GetTextFromX509Name() failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -230,7 +230,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test008, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test009
- * @tc.desc: Test function of VerifyCertOpensslUtils::GetDnToString() interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::GetDnToString() failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -244,7 +244,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test009, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test010
- * @tc.desc: Test function of VerifyCertOpensslUtils::GetSubjectFromX509() interface for failed.
+ * @tc.desc: Test function of VerifyCertOpensslUtils::GetSubjectFromX509() failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -259,7 +259,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test010, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test011
- * @tc.desc: Test function of PKCS7Data::X509NameCompare() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::X509NameCompare() failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -273,7 +273,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test011, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test012
- * @tc.desc: Test function of PKCS7Data::X509NameCompare() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::X509NameCompare() failed for invalid param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -335,7 +335,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test013, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test014
- * @tc.desc: Test function of Pkcs7Data::Parse() interface for failed.
+ * @tc.desc: Test function of Pkcs7Data::Parse() failed for invalid pkcs7.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -354,7 +354,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test014, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test015
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -372,7 +372,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test015, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test016
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -391,7 +391,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test016, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test017
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -411,7 +411,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test017, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test018
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -432,7 +432,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test018, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test019
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -453,7 +453,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test019, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test020
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -475,7 +475,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test020, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test021
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -500,7 +500,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test021, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test022
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -532,7 +532,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test022, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test023
- * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() interface for failed.
+ * @tc.desc: Test function of PKCS7Data::CheckSignTimeInValidPeriod() failed for invalid asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -564,7 +564,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test023, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test024
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for  no requred mode.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -592,7 +592,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test024, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test025
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for no required sigAlg.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -620,7 +620,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test025, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test026
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for no output File.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -648,7 +648,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test026, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test027
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for no inFile.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -676,7 +676,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test027, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test028
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for invalid mode.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -705,7 +705,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test028, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test029
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for no mode param.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -733,7 +733,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test029, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test030
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for no profile cert file.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -761,7 +761,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test030, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test031
- * @tc.desc: Test function of HapSignTool::RunSignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of HapSignTool::RunSignProfile() failed for no keystore file.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -789,7 +789,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test031, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test032
- * @tc.desc: Test function of SignToolServiceImpl::GetProvisionContent() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::GetProvisionContent() failed for invalid json.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -805,7 +805,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test032, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test033
- * @tc.desc: Test function of VerifyHapOpensslUtils::ParsePkcs7Package() interface for SUCCESS.
+ * @tc.desc: Test function of VerifyHapOpensslUtils::ParsePkcs7Package() failed for invalid packageLen .
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -822,7 +822,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test033, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test034
- * @tc.desc: Test function of SignToolServiceImpl::SignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::SignProfile() failed for empty json.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -880,7 +880,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test035, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: pkcs7_test036
- * @tc.desc: Test function of SignToolServiceImpl::SignProfile() interface for SUCCESS.
+ * @tc.desc: Test function of SignToolServiceImpl::SignProfile() failed for invalid certchain.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -909,7 +909,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test036, testing::ext::TestSize.Level1)
 
 /**
 * @tc.name: pkcs7_test037
-* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() interface for SUCCESS json写入OUT_FILE.
+* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() failed for invalid pkcs7.
 * @tc.size: MEDIUM
 * @tc.type: FUNC
 * @tc.level Level 1
@@ -946,7 +946,7 @@ HWTEST_F(Pkcs7DataTest, pkcs7_test038, testing::ext::TestSize.Level1)
 
 /**
 * @tc.name: pkcs7_test039
-* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() interface for SUCCESS json写入OUT_FILE.
+* @tc.desc: Test function of SignToolServiceImpl::VerifyProfile() failed for invalid pkcs7.
 * @tc.size: MEDIUM
 * @tc.type: FUNC
 * @tc.level Level 1
