@@ -27,7 +27,7 @@
           ├──hap_sign_tool       # 主程序入口，完成输入参数的基础校验
           ├──hap_sign_tool_lib   # 签名工具库，解析命令字和参数列表，实现各模块逻辑功能
     ├── tools                    # 自动化测试脚本
-    ├── pc                       # c++签名工具根目录
+    ├── hapsigntool_cpp          # c++签名工具根目录
           ├── api          # 签名接口api
           ├── cmd          # 命令行输入
           ├── codesigning  # 代码签名模块
