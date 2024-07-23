@@ -28,20 +28,20 @@
           ├──hap_sign_tool_lib   # 签名工具库，解析命令字和参数列表，实现各模块逻辑功能
     ├── tools                    # 自动化测试脚本
     ├── hapsigntool_cpp          # c++签名工具根目录
-          ├── api          # 签名接口api
-          ├── cmd          # 命令行输入
-          ├── codesigning  # 代码签名模块
-          ├── common       # 公共类
-          ├── hap          # hap包签名验签
-          ├── main.cpp     # 程序执行入口
-          ├── profile      # profile签名验签
-          ├── signer       # 签名工厂，支持本地和远程签名
-          ├── utils        # 工具类
-          ├── zip          # hap包解压缩，获取entry
-          ├── service      # 代码签名模块
-          ├── test         # 存放C++版工具的测试文件
-                ├── fuzztest     # fuzz测试用例
-                ├── unittest     # unit测试用例
+          ├── api                # 签名接口api
+          ├── cmd                # 命令行输入
+          ├── codesigning        # 代码签名模块
+          ├── common             # 公共类
+          ├── hap                # hap包签名验签
+          ├── main.cpp           # 程序执行入口
+          ├── profile            # profile签名验签
+          ├── signer             # 签名工厂，支持本地和远程签名
+          ├── utils              # 工具类
+          ├── zip                # hap包解压缩，获取entry
+          ├── service            # 代码签名模块
+    ├── hapsigntool_cpp_test     # 存放C++版工具的测试文件
+          ├── fuzztest           # fuzz测试用例
+          ├── unittest           # unit测试用例
 
 
 
