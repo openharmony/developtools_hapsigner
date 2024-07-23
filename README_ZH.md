@@ -23,7 +23,7 @@
     
     ├── autosign                 # 一键签名脚本
     ├── dist                     # SDK预置文件
-    ├── hapsigntool              # 主代码
+    ├── hapsigntool              # java版工具根目录
           ├──hap_sign_tool       # 主程序入口，完成输入参数的基础校验
           ├──hap_sign_tool_lib   # 签名工具库，解析命令字和参数列表，实现各模块逻辑功能
     ├── tools                    # 自动化测试脚本
@@ -39,7 +39,7 @@
           ├── utils        # 工具类
           ├── zip          # hap包解压缩，获取entry
           ├── service      # 代码签名模块
-          ├── test         # 存放测试文件
+          ├── test         # 存放C++版工具的测试文件
                 ├── fuzztest     # fuzz测试用例
                 ├── unittest     # unit测试用例
 
