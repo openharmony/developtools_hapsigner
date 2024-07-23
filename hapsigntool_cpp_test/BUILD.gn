@@ -11,14 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("../cmd/signature_tools_cmd.gni")
-import("../codesigning/signature_tools_codesigning.gni")
-import("../common/signature_tools_common.gni")
-import("../hap/signature_tools_hap.gni")
-import("../profile/signature_tools_profile.gni")
-import("../signature_tools.gni")
-import("../utils/signature_tools_utils.gni")
-import("../zip/signature_tools_zip.gni")
+import("../hapsigntool_cpp/cmd/signature_tools_cmd.gni")
+import("../hapsigntool_cpp/codesigning/signature_tools_codesigning.gni")
+import("../hapsigntool_cpp/common/signature_tools_common.gni")
+import("../hapsigntool_cpp/hap/signature_tools_hap.gni")
+import("../hapsigntool_cpp/profile/signature_tools_profile.gni")
+import("../hapsigntool_cpp/signature_tools.gni")
+import("../hapsigntool_cpp/utils/signature_tools_utils.gni")
+import("../hapsigntool_cpp/zip/signature_tools_zip.gni")
 
 import("//build/ohos.gni")
 
