@@ -13,7 +13,7 @@
 
 import("//build/config/features.gni")
 import("//build/test.gni")
-import("../../../../signature_tools.gni")
+import("../../../../hapsigntool_cpp/signature_tools.gni")
 module_out_path = "developtools/hapsigner/hapsigner_pc"
 
 ohos_fuzztest("ProcessCmd001FuzzTest") {
