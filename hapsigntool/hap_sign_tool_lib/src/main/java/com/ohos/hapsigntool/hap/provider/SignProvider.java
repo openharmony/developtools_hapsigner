@@ -365,9 +365,8 @@ public abstract class SignProvider {
                 outputSignedFile(outputHap, centralDirectoryOffset, signingBlock, centralDirectory, eocdBuffer);
                 isRet = true;
             }
-        } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException |
-                 InvalidParamsException | ProfileException | NumberFormatException | CustomException | IOException |
-                 CodeSignException | ElfFormatException e) {
+        } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException
+|InvalidParamsException |ProfileException |NumberFormatException |CustomException |IOException |CodeSignException e) {
             printErrorLogWithoutStack(e);
         } catch (SignatureException e) {
             printErrorLog(e);
@@ -505,7 +504,7 @@ public abstract class SignProvider {
      * @throws HapFormatException hap format error
      */
     private Zip copyFileAndAlignment(File input, File tmpOutput, int alignment, String suffix)
-        throws IOException, HapFormatException, ElfFormatException {
+        throws IOException, HapFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
         if ("hap".equals(suffix)) {

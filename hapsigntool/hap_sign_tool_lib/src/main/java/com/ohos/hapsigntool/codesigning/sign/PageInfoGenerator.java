@@ -65,22 +65,11 @@ public class PageInfoGenerator {
     /**
      * Constructor for PageInfoGenerator
      *
-     * @param input file
-     * @throws IOException io error
-     * @throws ElfFormatException elf file format error
-     */
-    public PageInfoGenerator(File input) throws IOException, ElfFormatException, HapFormatException {
-        new PageInfoGenerator(new Zip(input));
-    }
-
-    /**
-     * Constructor for PageInfoGenerator
-     *
      * @param zip zip
      * @throws IOException io error
-     * @throws ElfFormatException elf file format error
+     * @throws HapFormatException hap file format error
      */
-    public PageInfoGenerator(Zip zip) throws IOException, ElfFormatException, HapFormatException {
+    public PageInfoGenerator(Zip zip) throws IOException, HapFormatException {
         Map<String, Long> runnableFileNames = new LinkedHashMap<>();
         List<ZipEntry> zipEntries = zip.getZipEntries();
         for (ZipEntry entry : zipEntries) {
@@ -106,8 +95,7 @@ public class PageInfoGenerator {
         }
     }
 
-    private void libExecSegment(JarFile hap, String libFileName, long entryDataOffset)
-        throws IOException, ElfFormatException {
+    private void libExecSegment(JarFile hap, String libFileName, long entryDataOffset) throws IOException {
         JarEntry libEntry = hap.getJarEntry(libFileName);
         if (libFileName.endsWith(FileUtils.ABC_FILE_SUFFIX)) {
             long size = libEntry.getSize();
@@ -124,7 +112,7 @@ public class PageInfoGenerator {
                     excSegmentList.add(new ExcSegment(ELF_M_CODE, libFileName, off, endoff));
                 }
             } catch (ElfFormatException e) {
-                throw new ElfFormatException(libFileName + " error : " + e.getMessage(), e);
+                LOGGER.info(libFileName + " error : " + e.getMessage());
             }
         }
     }
