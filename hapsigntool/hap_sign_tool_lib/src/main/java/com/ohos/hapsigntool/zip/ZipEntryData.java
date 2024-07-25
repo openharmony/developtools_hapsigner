@@ -51,6 +51,22 @@ public class ZipEntryData {
         return zipEntryHeader;
     }
 
+    private EntryType type;
+
+    private byte[] data;
+
+    /**
+     * updateLength
+     */
+    public void updateLength() {
+        zipEntryHeader.updateLength();
+        if (type == EntryType.BitMap) {
+            length = zipEntryHeader.getLength() + data.length + (dataDescriptor == null ? 0 : 16);
+        } else {
+            length = zipEntryHeader.getLength() + fileSize + (dataDescriptor == null ? 0 : 16);
+        }
+    }
+
     /**
      * init zip entry by file
      *
@@ -139,5 +155,21 @@ public class ZipEntryData {
 
     public void setLength(long length) {
         this.length = length;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public EntryType getType() {
+        return type;
+    }
+
+    public void setType(EntryType type) {
+        this.type = type;
     }
 }

@@ -114,6 +114,13 @@ public class ZipEntryHeader {
     private int length;
 
     /**
+     * updateLength
+     */
+    public void updateLength() {
+        length = HEADER_LENGTH + fileNameLength + extraLength;
+    }
+
+    /**
      * get Zip Entry Header
      *
      * @param bytes ZipEntryHeader bytes
@@ -137,7 +144,7 @@ public class ZipEntryHeader {
         entryHeader.setUnCompressedSize(UnsignedDecimalUtil.getUnsignedInt(bf));
         entryHeader.setFileNameLength(UnsignedDecimalUtil.getUnsignedShort(bf));
         entryHeader.setExtraLength(UnsignedDecimalUtil.getUnsignedShort(bf));
-        entryHeader.setLength(HEADER_LENGTH + entryHeader.getFileNameLength() + entryHeader.getExtraLength());
+        entryHeader.updateLength();
         return entryHeader;
     }
 
