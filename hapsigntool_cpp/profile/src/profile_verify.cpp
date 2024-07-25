@@ -250,7 +250,7 @@ static AppProvisionVerifyResult CheckProfileValidType(ProfileInfo& info)
         }
     } else {
         PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR,
-                            "Require build type must be debug or release");
+                            "The type field in the profile file is incorrect");
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
