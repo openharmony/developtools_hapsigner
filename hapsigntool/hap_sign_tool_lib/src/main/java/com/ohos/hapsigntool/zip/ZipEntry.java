@@ -205,10 +205,11 @@ public class ZipEntry {
             cd.setMethod(method);
             zipEntryHeader.setMethod(method);
 
-            cd.setLastTime((short) 0);
-            cd.setLastDate((short) 20001);
-            zipEntryHeader.setLastTime((short) 0);
-            zipEntryHeader.setLastDate((short) 20001);
+            long time = System.currentTimeMillis();
+            cd.setLastTime((short) (time >> 32));
+            cd.setLastDate((short) time);
+            zipEntryHeader.setLastTime((short) (time >> 32));
+            zipEntryHeader.setLastDate((short) time);
 
             cd.setCompressedSize(compressedSize);
             zipEntryHeader.setCompressedSize(compressedSize);

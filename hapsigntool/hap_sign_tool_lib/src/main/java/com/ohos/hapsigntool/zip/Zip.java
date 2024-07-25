@@ -129,9 +129,9 @@ public class Zip {
     }
 
     private void getZipCentralDirectory(File file) throws IOException {
-        zipEntries = new ArrayList<>(endOfCentralDirectory.getcDTotal());
+        zipEntries = new ArrayList<>(endOfCentralDirectory.getCDTotal());
         // read full central directory bytes
-        byte[] cdBytes = FileUtils.readFileByOffsetAndLength(file, cDOffset, endOfCentralDirectory.getcDSize());
+        byte[] cdBytes = FileUtils.readFileByOffsetAndLength(file, cDOffset, endOfCentralDirectory.getCDSize());
         if (cdBytes.length < CentralDirectory.CD_LENGTH) {
             throw new ZipException("find zip cd failed");
         }
@@ -172,12 +172,6 @@ public class Zip {
             long fileSize = cd.getMethod() == FILE_UNCOMPRESS_METHOD_FLAG ? unCompressedSize : compressedSize;
 
             ZipEntryData zipEntryData = ZipEntryData.getZipEntry(file, offset, fileSize);
-            if (zipEntryData.getZipEntryHeader().getMethod() == FILE_UNCOMPRESS_METHOD_FLAG
-                    && FileUtils.isRunnableFile(zipEntryData.getZipEntryHeader().getFileName())) {
-                zipEntryData.setType(EntryType.RunnableFile);
-            } else {
-                zipEntryData.setType(EntryType.ResourceFile);
-            }
             if (cDOffset - offset < zipEntryData.getLength()) {
                 throw new ZipException("cd offset in front of entry end");
             }
@@ -235,13 +229,14 @@ public class Zip {
             boolean isFirstUnRunnableFile = true;
             for (ZipEntry entry : zipEntries) {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
-                EntryType type = zipEntryData.getType();
-                if (type != EntryType.ResourceFile && !isFirstUnRunnableFile) {
+                short method = zipEntryData.getZipEntryHeader().getMethod();
+                if (method != FILE_UNCOMPRESS_METHOD_FLAG && !isFirstUnRunnableFile) {
                     // only align uncompressed entry and the first compress entry.
                     break;
                 }
                 int alignBytes;
-                if (type != EntryType.ResourceFile) {
+                EntryType type = entry.getZipEntryData().getType();
+                if (type == EntryType.RunnableFile || type == EntryType.BitMap) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
                 } else if (isFirstUnRunnableFile) {
@@ -263,10 +258,18 @@ public class Zip {
     }
 
     public void addBitMap(byte[] data) throws ZipException {
+        for (ZipEntry e : zipEntries) {
+            if (e.getZipEntryData().getType() == EntryType.BitMap) {
+                e.getZipEntryData().setData(data);
+                e.getZipEntryData().getZipEntryHeader().setUnCompressedSize(data.length);
+                e.getZipEntryData().getZipEntryHeader().setCompressedSize(data.length);
+                return;
+            }
+        }
         ZipEntry entry = new ZipEntry.Builder().setMethod(FILE_UNCOMPRESS_METHOD_FLAG)
                 .setUncompressedSize(data.length)
                 .setCompressedSize(data.length)
-                .setFileName("pages.info")
+                .setFileName(FileUtils.BIT_MAP_FILENAME)
                 .setData(data)
                 .build();
         zipEntries.add(entry);
@@ -322,10 +325,10 @@ public class Zip {
         }
         cDOffset = offset;
         endOfCentralDirectory.setOffset(offset);
-        endOfCentralDirectory.setcDSize(cdLength);
+        endOfCentralDirectory.setCDSize(cdLength);
         offset += cdLength;
         eOCDOffset = offset;
-        endOfCentralDirectory.setcDTotal(zipEntries.size());
+        endOfCentralDirectory.setCDTotal(zipEntries.size());
         endOfCentralDirectory.setThisDiskCDNum(zipEntries.size());
     }
 
