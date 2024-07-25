@@ -19,6 +19,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
+import com.ohos.hapsigntool.codesigning.sign.PageInfoGenerator;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
@@ -336,7 +338,7 @@ public abstract class SignProvider {
             }
             // copy file and Alignment
             int alignment = Integer.parseInt(signParams.get(ParamConstants.PARAM_BASIC_ALIGNMENT));
-            Zip zip = copyFileAndAlignment(input, tmpOutput, alignment);
+            Zip zip = copyFileAndAlignment(input, tmpOutput, alignment, suffix);
             // generate sign block and output signedHap
             try (RandomAccessFile outputHap = new RandomAccessFile(tmpOutput, "rw")) {
                 ZipDataInput outputHapIn = new RandomAccessFileZipDataInput(outputHap);
@@ -363,8 +365,9 @@ public abstract class SignProvider {
                 outputSignedFile(outputHap, centralDirectoryOffset, signingBlock, centralDirectory, eocdBuffer);
                 isRet = true;
             }
-        } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException
-|InvalidParamsException |ProfileException |NumberFormatException |CustomException |IOException |CodeSignException e) {
+        } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException |
+                 InvalidParamsException | ProfileException | NumberFormatException | CustomException | IOException |
+                 CodeSignException | ElfFormatException e) {
             printErrorLogWithoutStack(e);
         } catch (SignatureException e) {
             printErrorLog(e);
@@ -501,10 +504,18 @@ public abstract class SignProvider {
      * @throws IOException io error
      * @throws HapFormatException hap format error
      */
-    private Zip copyFileAndAlignment(File input, File tmpOutput, int alignment)
-            throws IOException, HapFormatException {
+    private Zip copyFileAndAlignment(File input, File tmpOutput, int alignment, String suffix)
+        throws IOException, HapFormatException, ElfFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
+        if ("hap".equals(suffix)) {
+            PageInfoGenerator pageInfoGenerator = new PageInfoGenerator(zip);
+            byte[] bitMap = pageInfoGenerator.generateBitMap();
+            if (bitMap != null) {
+                zip.addBitMap(bitMap);
+                zip.alignment(alignment);
+            }
+        }
         zip.removeSignBlock();
         long start = System.currentTimeMillis();
         zip.toFile(tmpOutput.getCanonicalPath());

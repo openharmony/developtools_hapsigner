@@ -121,7 +121,7 @@ public class HapInfoSegment {
                 String.format(Locale.ROOT, "Invalid dataSize number of HapInfoSegment, not a multiple of 4096: %d",
                     inHapSignInfo.getDataSize()));
         }
-        if (inHapSignInfo.getExtensionNum() != SignInfo.MAX_EXTENSION_NUM) {
+        if (inHapSignInfo.getExtensionNum() > SignInfo.MAX_EXTENSION_NUM) {
             throw new VerifyCodeSignException("Invalid extensionNum of HapInfoSegment");
         }
         if (inHapSignInfo.getExtensionByType(MerkleTreeExtension.MERKLE_TREE_INLINED) == null) {
