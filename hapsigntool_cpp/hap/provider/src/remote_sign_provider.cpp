@@ -66,28 +66,28 @@ bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* c
     bool ret = true;
     if (inputCert == nullptr || certInProfile == nullptr) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, param error");
+                            "The cert is empty");
         return false;
     }
     X509_NAME* subject1 = X509_get_subject_name(inputCert);
     X509_NAME* subject2 = X509_get_subject_name(certInProfile);
     if (X509_NAME_cmp(subject1, subject2) != 0) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, subject name is not equal");
+                            "The subject does not match!");
         return false;
     }
     X509_NAME* issuer1 = X509_get_issuer_name(inputCert);
     X509_NAME* issuer2 = X509_get_issuer_name(certInProfile);
     if (X509_NAME_cmp(issuer1, issuer2) != 0) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, issuer name is not equal");
+                            "The issuer name does not match!");
         return false;
     }
     ASN1_INTEGER* serial1 = X509_get_serialNumber(inputCert);
     ASN1_INTEGER* serial2 = X509_get_serialNumber(certInProfile);
     if (ASN1_INTEGER_cmp(serial1, serial2) != 0) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, serial Number is not equal");
+                            "serial number does not match!");
         return false;
     }
     EVP_PKEY* pkey1 = X509_get_pubkey(inputCert);
@@ -96,12 +96,12 @@ bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* c
         EVP_PKEY_free(pkey1);
         EVP_PKEY_free(pkey2);
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, pubkey is not equal");
+                            "The public key does not match!");
         return false;
     }
     if (!pkey1 || !pkey2) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed,have key is null");
+                            "The public key is null!");
         ret = false;
     }
     if (pkey1) EVP_PKEY_free(pkey1);
