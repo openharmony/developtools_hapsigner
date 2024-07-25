@@ -332,7 +332,7 @@ bool SignToolServiceImpl::OutputString(std::string content, std::string file)
 bool SignToolServiceImpl::X509CertVerify(X509* cert, EVP_PKEY* privateKey)
 {
     if (!X509_verify(cert, privateKey)) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "private key verify cert failed!");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "verify cert failed!");
         return false;
     }
     return true;
@@ -688,7 +688,7 @@ bool SignToolServiceImpl::VerifyHapSigner(Options* option)
         PrintMsg("bin verify successed!");
         return true;
     } else {
-        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "This requirement was not implemented !");
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "Unsupported inForm!");
         return false;
     }
 }
