@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.zip;
 import com.ohos.hapsigntool.error.ZipException;
 
 import java.util.Arrays;
+import java.util.zip.CRC32;
 
 /**
  * ZipEntry and CentralDirectory data
@@ -27,7 +28,15 @@ import java.util.Arrays;
 public class ZipEntry {
     private ZipEntryData zipEntryData;
 
-    private CentralDirectory fileEntryIncentralDirectory;
+    private CentralDirectory fileEntryInCentralDirectory;
+
+    /**
+     * updateLength
+     */
+    public void updateLength() {
+        zipEntryData.updateLength();
+        fileEntryInCentralDirectory.updateLength();
+    }
 
     /**
      * alignment one entry
@@ -40,7 +49,7 @@ public class ZipEntry {
         // if cd extra len bigger than entry extra len, make cd and entry extra length equals
         int padding = calZeroPaddingLengthForEntryExtra();
         int remainder = (int) ((zipEntryData.getZipEntryHeader().getLength()
-                + fileEntryIncentralDirectory.getOffset()) % alignNum);
+                + fileEntryInCentralDirectory.getOffset()) % alignNum);
 
         if (remainder == 0) {
             return padding;
@@ -58,7 +67,7 @@ public class ZipEntry {
 
     private int calZeroPaddingLengthForEntryExtra() throws ZipException {
         int entryExtraLen = zipEntryData.getZipEntryHeader().getExtraLength();
-        int cdExtraLen = fileEntryIncentralDirectory.getExtraLength();
+        int cdExtraLen = fileEntryInCentralDirectory.getExtraLength();
         if (cdExtraLen > entryExtraLen) {
             setEntryHeaderNewExtraLength(cdExtraLen);
             return cdExtraLen - entryExtraLen;
@@ -71,12 +80,12 @@ public class ZipEntry {
     }
 
     private void setCenterDirectoryNewExtraLength(int newLength) throws ZipException {
-        byte[] newCDExtra = getAlignmentNewExtra(newLength, fileEntryIncentralDirectory.getExtraData());
-        fileEntryIncentralDirectory.setExtraData(newCDExtra);
-        fileEntryIncentralDirectory.setExtraLength(newLength);
-        fileEntryIncentralDirectory.setLength(CentralDirectory.CD_LENGTH
-                + fileEntryIncentralDirectory.getFileNameLength()
-                + fileEntryIncentralDirectory.getExtraLength() + fileEntryIncentralDirectory.getCommentLength());
+        byte[] newCDExtra = getAlignmentNewExtra(newLength, fileEntryInCentralDirectory.getExtraData());
+        fileEntryInCentralDirectory.setExtraData(newCDExtra);
+        fileEntryInCentralDirectory.setExtraLength(newLength);
+        fileEntryInCentralDirectory.setLength(CentralDirectory.CD_LENGTH
+                + fileEntryInCentralDirectory.getFileNameLength()
+                + fileEntryInCentralDirectory.getExtraLength() + fileEntryInCentralDirectory.getCommentLength());
     }
 
     private void setEntryHeaderNewExtraLength(int newLength) throws ZipException {
@@ -109,10 +118,143 @@ public class ZipEntry {
     }
 
     public CentralDirectory getCentralDirectory() {
-        return fileEntryIncentralDirectory;
+        return fileEntryInCentralDirectory;
     }
 
     public void setCentralDirectory(CentralDirectory centralDirectory) {
-        this.fileEntryIncentralDirectory = centralDirectory;
+        this.fileEntryInCentralDirectory = centralDirectory;
+    }
+
+    public static class Builder {
+        private short version = 10;
+
+        private short flag = 2048;
+
+        private short method = 0;
+
+        private long compressedSize;
+
+        private long unCompressedSize;
+
+        private String fileName;
+
+        private byte[] extraData;
+
+        private byte[] comment;
+
+        private byte[] data;
+
+        public Builder setVersion(short version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder setFlag(short flag) {
+            this.flag = flag;
+            return this;
+        }
+
+        public Builder setMethod(short method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder setCompressedSize(long compressedSize) {
+            this.compressedSize = compressedSize;
+            return this;
+        }
+
+        public Builder setUncompressedSize(long unCompressedSize) {
+            this.unCompressedSize = unCompressedSize;
+            return this;
+        }
+
+        public Builder setFileName(String fileName) {
+            this.fileName = fileName;
+            return this;
+        }
+
+        public Builder setExtraData(byte[] extraData) {
+            this.extraData = extraData;
+            return this;
+        }
+
+        public Builder setComment(byte[] comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public Builder setData(byte[] data) {
+            this.data = data;
+            return this;
+        }
+
+        public ZipEntry build() throws ZipException {
+            ZipEntry entry = new ZipEntry();
+            ZipEntryData zipEntryData = new ZipEntryData();
+            zipEntryData.setData(data);
+
+            ZipEntryHeader zipEntryHeader = new ZipEntryHeader();
+            CentralDirectory cd = new CentralDirectory();
+
+            cd.setVersion(version);
+            cd.setVersionExtra(version);
+            zipEntryHeader.setVersion(version);
+            cd.setFlag(flag);
+            zipEntryHeader.setFlag(flag);
+            cd.setMethod(method);
+            zipEntryHeader.setMethod(method);
+
+            cd.setLastTime((short) 0);
+            cd.setLastDate((short) 20001);
+            zipEntryHeader.setLastTime((short) 0);
+            zipEntryHeader.setLastDate((short) 20001);
+
+            cd.setCompressedSize(compressedSize);
+            zipEntryHeader.setCompressedSize(compressedSize);
+            cd.setUnCompressedSize(unCompressedSize);
+            zipEntryHeader.setUnCompressedSize(unCompressedSize);
+
+            cd.setFileName(fileName);
+            cd.setFileNameLength(fileName.length());
+            zipEntryHeader.setFileName(fileName);
+            zipEntryHeader.setFileNameLength(fileName.length());
+
+            if (extraData != null) {
+                cd.setExtraData(extraData);
+                cd.setExtraLength(extraData.length);
+                zipEntryHeader.setExtraData(extraData);
+                zipEntryHeader.setExtraLength(extraData.length);
+            } else {
+                cd.setExtraLength(0);
+                zipEntryHeader.setExtraLength(0);
+            }
+            if (comment != null) {
+                cd.setComment(comment);
+                cd.setCommentLength(comment.length);
+            } else {
+                cd.setCommentLength(0);
+            }
+            cd.setDiskNumStart(0);
+            cd.setExternalFile(0);
+
+            cd.updateLength();
+            zipEntryHeader.updateLength();
+
+            if (data == null) {
+                throw new ZipException("can not find entry data");
+            }
+            final CRC32 c = new CRC32();
+            c.update(data);
+            final int crc32 = new Long(c.getValue()).intValue();
+            cd.setCrc32(crc32);
+            zipEntryHeader.setCrc32(crc32);
+
+            zipEntryData.setZipEntryHeader(zipEntryHeader);
+            entry.setZipEntryData(zipEntryData);
+            zipEntryData.setType(EntryType.BitMap);
+            entry.setCentralDirectory(cd);
+            return entry;
+        }
     }
 }

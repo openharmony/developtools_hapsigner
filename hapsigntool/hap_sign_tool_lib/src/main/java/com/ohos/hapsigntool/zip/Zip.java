@@ -43,7 +43,7 @@ public class Zip {
     /**
      * file is uncompress file flag
      */
-    public static final int FILE_UNCOMPRESS_METHOD_FLAG = 0;
+    public static final short FILE_UNCOMPRESS_METHOD_FLAG = 0;
 
     /**
      * max comment length
@@ -172,6 +172,12 @@ public class Zip {
             long fileSize = cd.getMethod() == FILE_UNCOMPRESS_METHOD_FLAG ? unCompressedSize : compressedSize;
 
             ZipEntryData zipEntryData = ZipEntryData.getZipEntry(file, offset, fileSize);
+            if (zipEntryData.getZipEntryHeader().getMethod() == FILE_UNCOMPRESS_METHOD_FLAG
+                    && FileUtils.isRunnableFile(zipEntryData.getZipEntryHeader().getFileName())) {
+                zipEntryData.setType(EntryType.RunnableFile);
+            } else {
+                zipEntryData.setType(EntryType.ResourceFile);
+            }
             if (cDOffset - offset < zipEntryData.getLength()) {
                 throw new ZipException("cd offset in front of entry end");
             }
@@ -189,8 +195,15 @@ public class Zip {
             for (ZipEntry entry : zipEntries) {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
                 FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), fos);
-                boolean isSuccess = FileUtils.appendWriteFileByOffsetToFile(file, fos,
-                        zipEntryData.getFileOffset(), zipEntryData.getFileSize());
+                boolean isSuccess;
+                if (entry.getZipEntryData().getType() == EntryType.BitMap) {
+                    ByteBuffer bf = ByteBuffer.wrap(entry.getZipEntryData().getData());
+                    bf.order(ByteOrder.LITTLE_ENDIAN);
+                    isSuccess = FileUtils.writeByteToOutFile(bf.array(), fos);
+                } else {
+                    isSuccess = FileUtils.appendWriteFileByOffsetToFile(file, fos,
+                            zipEntryData.getFileOffset(), zipEntryData.getFileSize());
+                }
                 if (!isSuccess) {
                     throw new ZipException("write zip data failed");
                 }
@@ -250,6 +263,16 @@ public class Zip {
         }
     }
 
+    public void addBitMap(byte[] data) throws ZipException {
+        ZipEntry entry = new ZipEntry.Builder().setMethod(FILE_UNCOMPRESS_METHOD_FLAG)
+                .setUncompressedSize(data.length)
+                .setCompressedSize(data.length)
+                .setFileName("pages.info")
+                .setData(data)
+                .build();
+        zipEntries.add(entry);
+    }
+
     /**
      * remove sign block
      */
@@ -262,22 +285,20 @@ public class Zip {
      * sort uncompress entry in the front.
      */
     private void sort() {
-        // sort uncompress file (so, abc, an) - other uncompress file - compress file
+        // sort uncompress file (so, abc, an) - bitmap - other uncompress file - compress file
         zipEntries.sort((entry1, entry2) -> {
+            EntryType entry1Type = entry1.getZipEntryData().getType();
+            EntryType entry2Type = entry2.getZipEntryData().getType();
+            if (entry1Type != entry2Type) {
+                return entry1Type.compareTo(entry2Type);
+            }
+
             short entry1Method = entry1.getZipEntryData().getZipEntryHeader().getMethod();
             short entry2Method = entry2.getZipEntryData().getZipEntryHeader().getMethod();
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
             if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG && entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
-                boolean isRunnableFile1 = FileUtils.isRunnableFile(entry1FileName);
-                boolean isRunnableFile2 = FileUtils.isRunnableFile(entry2FileName);
-                if (isRunnableFile1 && isRunnableFile2) {
-                    return entry1FileName.compareTo(entry2FileName);
-                } else if (isRunnableFile1) {
-                    return -1;
-                } else if (isRunnableFile2) {
-                    return 1;
-                }
+                return entry1FileName.compareTo(entry2FileName);
             } else if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG) {
                 return -1;
             } else if (entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
@@ -292,6 +313,7 @@ public class Zip {
         long offset = 0L;
         long cdLength = 0L;
         for (ZipEntry entry : zipEntries) {
+            entry.updateLength();
             entry.getCentralDirectory().setOffset(offset);
             offset += entry.getZipEntryData().getLength();
             cdLength += entry.getCentralDirectory().getLength();
@@ -304,6 +326,8 @@ public class Zip {
         endOfCentralDirectory.setcDSize(cdLength);
         offset += cdLength;
         eOCDOffset = offset;
+        endOfCentralDirectory.setcDTotal(zipEntries.size());
+        endOfCentralDirectory.setThisDiskCDNum(zipEntries.size());
     }
 
     public List<ZipEntry> getZipEntries() {
