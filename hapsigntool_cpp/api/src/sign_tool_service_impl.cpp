@@ -139,7 +139,7 @@ int SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
 {
     std::string iksFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
     if (!FileUtils::IsEmpty(iksFile) && !options->Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE)) {
-        PrintErrorNumberMsg("WRITE_FILE_ERROR", IO_ERROR,
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "Parameter '" + iksFile + "' and parameter '" +
                             options->GetString(Options::KEY_STORE_FILE) + "' are inconsistent");
         return RET_FAILED;
@@ -160,7 +160,7 @@ int SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
     }
     return RET_OK;
 err:
-    PrintErrorNumberMsg("WRITE_FILE_ERROR", IO_ERROR,
+    PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                         "Parameter 'keystorePwd' and parameter 'issuerKeystorePwd' are inconsistent");
     return RET_FAILED;
 }
@@ -602,7 +602,6 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
     }
     nlohmann::json obj = nlohmann::json::parse(bytes);
     if (obj.is_discarded() || (!obj.is_structured())) {
-        SIGNATURE_TOOLS_LOGE("Parsing appProvision failed!");
         PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing appProvision failed!");
         return PARSE_ERROR;
     }

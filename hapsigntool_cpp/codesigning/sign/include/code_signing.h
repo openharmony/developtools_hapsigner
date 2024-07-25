@@ -18,8 +18,10 @@
 #include <vector>
 #include <string>
 #include <contrib/minizip/unzip.h>
+#include <mutex>
 
 #include "securec.h"
+#include "thread_pool.h"
 #include "hap_utils.h"
 #include "zip_signer.h"
 #include "file_utils.h"
@@ -55,27 +57,30 @@ public:
                              std::vector<int8_t> &codesignData);
 
 public:
-    const std::string NATIVE_LIB_AN_SUFFIX = ".an";
-    const std::string NATIVE_LIB_SO_SUFFIX = ".so";
     static bool IsNativeFile(const std::string& input);
     uint32_t ComputeDataSize(ZipSigner& zip);
     int64_t GetTimestamp();
     bool SignNativeLibs(const std::string &input, std::string &ownerID);
     void UpdateCodeSignBlock();
     bool GetNativeEntriesFromHap(const std::string& packageName, UnzipHandleParam& param);
+    bool RunParseZipInfo(const std::string& packageName, UnzipHandleParam& param, uLong index);
     bool GenerateSignature(const std::vector<int8_t>& signedData, const std::string&,
                            std::vector<int8_t>&);
     int64_t m_timestamp = 0;
     std::vector<std::string> m_extractedNativeLibSuffixs;
     SignerConfig* m_signConfig;
     CodeSignBlock m_codeSignBlock;
+    std::mutex m_mutex;
 
 private:
     static bool CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo, char fileName[], size_t* nameLen);
     static bool CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen);
-    bool HandleZipGlobalInfo(unzFile& zFile, unz_global_info& zGlobalInfo, UnzipHandleParam& param);
+    bool HandleZipGlobalInfo(const std::string& packageName, unzFile& zFile, unz_global_info& zGlobalInfo, UnzipHandleParam& param);
     bool DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& sb,
                                  UnzipHandleParam& param, int readFileSize);
+    static constexpr int MAX_PROCESSORS = 32;
+    const int POOL_SIZE = std::min(MAX_PROCESSORS, static_cast<int>(std::thread::hardware_concurrency()));
+    std::shared_ptr<Uscript::ThreadPool> mPools;
 };
 } // namespace SignatureTools
 } // namespace OHOS

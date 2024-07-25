@@ -55,7 +55,7 @@ static bool UpdateParamForVariantCertInt(const ParamsSharedPtr& param)
         }
         if (!StringUtils::CheckStringToint(val, validity)) {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid parameter '"
-                                + val + "', You should fill in the numbers");
+                                + val + "'");
             return false;
         }
         validity *= ONE_DAY_TIME;
@@ -129,30 +129,6 @@ static bool UpdateParamForVariantBoolKeyUsage(const ParamsSharedPtr& param)
     return true;
 }
 
-static bool UpdateParamForVariantBoolConstraints(const ParamsSharedPtr& param)
-{
-    Options* options = param->GetOptions();
-
-    //The bool type is used only by the "generate-cert" module
-    if (options->count(Options::BASIC_CONSTRAINTS)) {
-        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
-            return false;
-        }
-    } else if (param->GetMethod() == GENERATE_CERT) {
-        (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS;
-    }
-
-    //The bool type is used only by the "generate-cert" module
-    if (options->count(Options::BASIC_CONSTRAINTS_CRITICAL)) {
-        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
-            return false;
-        }
-    } else if (param->GetMethod() == GENERATE_CERT) {
-        (*options)[Options::BASIC_CONSTRAINTS_CRITICAL] = DEFAULT_BASIC_CONSTRAINTS_CRITICAL;
-    }
-    return true;
-}
-
 static bool UpdateParamForVariantBoolProfileSigned(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
@@ -173,14 +149,6 @@ static bool UpdateParamForVariantBoolProfileSigned(const ParamsSharedPtr& param)
         (*options)[Options::PROFILE_SIGNED] = DEFAULT_PROFILE_SIGNED_1;
     }
 
-    //The bool type is used only by the "generate-cert" module
-    if (options->count(Options::BASIC_CONSTRAINTS_CA)) {
-        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
-            return false;
-        }
-    } else if (param->GetMethod() == GENERATE_CERT) {
-        (*options)[Options::BASIC_CONSTRAINTS_CA] = DEFAULT_BASIC_CONSTRAINTS_CA;
-    }
     return true;
 }
 
@@ -194,8 +162,9 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
 
             //Purpose: To prevent the user output path from passing an empty string. eg "   "
             std::string tmpOutFilePath = outFilePath;
-            tmpOutFilePath.erase(std::remove_if(tmpOutFilePath.begin(), tmpOutFilePath.end(), ::isspace),
-                tmpOutFilePath.end());
+            tmpOutFilePath.erase(std::remove_if(tmpOutFilePath.begin(),
+                tmpOutFilePath.end(), ::isspace), tmpOutFilePath.end());
+
             if (parentPath.empty() && !tmpOutFilePath.empty()) {
                 parentPath = "./";
             }
@@ -336,9 +305,6 @@ static bool UpdateParam(const ParamsSharedPtr& param)
         return false;
     }
     if (!UpdateParamForVariantBoolKeyUsage(param)) {
-        return false;
-    }
-    if (!UpdateParamForVariantBoolConstraints(param)) {
         return false;
     }
     if (!UpdateParamForVariantBoolProfileSigned(param)) {

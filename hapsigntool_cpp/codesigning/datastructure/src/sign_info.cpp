@@ -200,14 +200,14 @@ std::vector<MerkleTreeExtension*> SignInfo::ParseMerkleTreeExtension(ByteBuffer*
         int32_t extensionType = 0;
         bf->GetInt32(extensionType);
         if (extensionType != MerkleTreeExtension::MERKLE_TREE_INLINED) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
                                 "The signed package has the wrong extensionType in the SignInfo");
             return inExtensionList;
         }
         int32_t extensionSize = 0;
         bf->GetInt32(extensionSize);
         if (extensionSize != MerkleTreeExtension::MERKLE_TREE_EXTENSION_DATA_SIZE) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
                                 "The signed package has the wrong extensionSize in the SignInfo");
             return inExtensionList;
         }
