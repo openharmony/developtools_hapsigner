@@ -102,8 +102,8 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset, testing::ext::TestSize.Leve
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
     
-    long long codeSignBlockOffset = 949572;
-    long long offset = api->ComputeMerkleTreeOffset(codeSignBlockOffset);
+    int64_t codeSignBlockOffset = 949572;
+    int64_t offset = api->ComputeMerkleTreeOffset(codeSignBlockOffset);
 
     EXPECT_NE(offset, 0);
 }
@@ -120,8 +120,8 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset001, testing::ext::TestSize.L
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    long long codeSignBlockOffset = -68;
-    long long offset = api->ComputeMerkleTreeOffset(codeSignBlockOffset);
+    int64_t codeSignBlockOffset = -68;
+    int64_t offset = api->ComputeMerkleTreeOffset(codeSignBlockOffset);
 
     EXPECT_EQ(offset, 0);
 }

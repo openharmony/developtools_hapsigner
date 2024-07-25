@@ -108,28 +108,6 @@ bool SignProfileTest004(const uint8_t* data, size_t size)
 
 bool SignProfileTest005(const uint8_t* data, size_t size)
 {
-    int capacity = 5;
-    Pkcs7Context profilePkcs7Context;
-    Pkcs7Context hapPkcs7Context;
-    std::string profile = "hello,world";
-    hapPkcs7Context.matchResult.matchState = MATCH_WITH_SIGN;
-    hapPkcs7Context.matchResult.source = APP_GALLARY;
-    ByteBuffer pkcs7ProfileBlock;
-    pkcs7ProfileBlock.SetCapacity(capacity);
-    pkcs7ProfileBlock.PutData("hello", capacity);
-    bool result = ProfileVerifyUtils::ParseProfile(profilePkcs7Context, hapPkcs7Context, pkcs7ProfileBlock, profile);
-    return result;
-}
-
-bool SignProfileTest006(const uint8_t* data, size_t size)
-{
-    Pkcs7Context p7context;
-    bool result = ProfileVerifyUtils::VerifyProfile(p7context);
-    return result;
-}
-
-bool SignProfileTest007(const uint8_t* data, size_t size)
-{
     std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"b"
         "undle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.Op"
         "enHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certif"
@@ -166,8 +144,6 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     SignProfileTest003(data, size);
     SignProfileTest004(data, size);
     SignProfileTest005(data, size);
-    SignProfileTest006(data, size);
-    SignProfileTest007(data, size);
     return true;
 }
 }

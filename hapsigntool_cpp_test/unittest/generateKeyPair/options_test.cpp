@@ -320,36 +320,36 @@ HWTEST_F(OptionsCmdTest, Options_test_015, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: cmd_util_test_001
+ * @tc.name: Options_test_016
  * @tc.desc: Check whether the algorithm is in ECC format.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, cmd_util_test_001, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_016, testing::ext::TestSize.Level1)
 {
     std::string keyAlg = "ECC";
     EXPECT_EQ(CmdUtil::JudgeAlgType(keyAlg), true);
 }
 
 /*
- * @tc.name: cmd_util_test_002
+ * @tc.name: Options_test_017
  * @tc.desc: Check whether the algorithm length is 256 or 384.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, cmd_util_test_002, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_017, testing::ext::TestSize.Level1)
 {
     int size = 256;
     EXPECT_EQ(CmdUtil::JudgeSize(size), true);
 }
 
 /*
- * @tc.name: cmd_util_test_003
+ * @tc.name: Options_test_018
  * @tc.desc: Write command line arguments to map.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, cmd_util_test_003, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_018, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-keypair";
@@ -376,12 +376,12 @@ HWTEST_F(OptionsCmdTest, cmd_util_test_003, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: cmd_util_test_004
+ * @tc.name: Options_test_019
  * @tc.desc: Gets command line arguments.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, cmd_util_test_004, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_019, testing::ext::TestSize.Level1)
 {
     char argv[][100] = { "generate-keypair",
                      "-keyAlias", "oh-app1-key-v1",
@@ -404,12 +404,12 @@ HWTEST_F(OptionsCmdTest, cmd_util_test_004, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: file_util_test_001
+ * @tc.name: Options_test_020
  * @tc.desc: Check whether the file format is p12 or jks.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, file_util_test_001, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_020, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
@@ -421,12 +421,12 @@ HWTEST_F(OptionsCmdTest, file_util_test_001, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: params_run_test_061
+* @tc.name: Options_test_021
 * @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(OptionsCmdTest, params_run_test_061, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_021, testing::ext::TestSize.Level1)
 {
     std::string str = "";
     bool ret = CmdUtil::VerifyTypes(str);
@@ -435,12 +435,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_061, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_068
+ * @tc.name: Options_test_022
  * @tc.desc: The sign-app module checks whether the inFile module is a valid path.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_068, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_022, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -474,12 +474,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_068, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_069
+ * @tc.name: Options_test_023
  * @tc.desc: The sign-app module checks if inform is a valid parameter.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_069, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_023, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -515,12 +515,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_069, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_070
+ * @tc.name: Options_test_024
  * @tc.desc: The sign-app module checks if signAlg is a valid parameter.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_070, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_024, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -556,12 +556,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_070, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_071
+ * @tc.name: Options_test_025
  * @tc.desc: The sign-app module executes the branch with profileSigned = "1".
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_071, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_025, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -597,12 +597,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_071, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_072
+ * @tc.name: Options_test_026
  * @tc.desc: The sign-app module executes the branch with profileSigned = "0".
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_072, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_026, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -638,12 +638,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_072, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_073
+ * @tc.name: Options_test_027
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_073, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_027, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -675,12 +675,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_073, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_074
+ * @tc.name: Options_test_028
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_074, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_028, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -712,12 +712,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_074, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_075
+ * @tc.name: Options_test_029
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_075, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_029, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -749,12 +749,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_075, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_076
+ * @tc.name: Options_test_030
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_076, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_030, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -788,12 +788,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_076, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_077
+ * @tc.name: Options_test_031
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_077, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_031, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -827,12 +827,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_077, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_078
+ * @tc.name: Options_test_032
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_078, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_032, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -866,12 +866,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_078, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: params_run_test_104
+* @tc.name: Options_test_033
 * @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(OptionsCmdTest, params_run_test_104, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_033, testing::ext::TestSize.Level1)
 {
     std::string str = "clientAuthentication";
     bool ret = CmdUtil::VerifyType(str);
@@ -880,12 +880,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_104, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: params_run_test_105
+* @tc.name: Options_test_034
 * @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(OptionsCmdTest, params_run_test_105, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_034, testing::ext::TestSize.Level1)
 {
     std::string supportTypes = "abc,cba";
     std::string inputtype = "abc";
@@ -895,12 +895,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_105, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: params_run_test_106
+* @tc.name: Options_test_035
 * @tc.desc: Checks whether the type is legal.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(OptionsCmdTest, params_run_test_106, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_035, testing::ext::TestSize.Level1)
 {
     std::string supportTypes = "abc,cba";
     std::string inputtype = "cba";
@@ -910,12 +910,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_106, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_108
+ * @tc.name: Options_test_036
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_108, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_036, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -949,12 +949,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_108, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_109
+ * @tc.name: Options_test_037
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_109, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_037, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -984,12 +984,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_109, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_110
+ * @tc.name: Options_test_038
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_110, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_038, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1019,12 +1019,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_110, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_111
+ * @tc.name: Options_test_039
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_111, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_039, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1054,12 +1054,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_111, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_112
+ * @tc.name: Options_test_040
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_112, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_040, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1085,12 +1085,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_112, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_113
+ * @tc.name: Options_test_041
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_113, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_041, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1124,12 +1124,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_113, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_114
+ * @tc.name: Options_test_042
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_114, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_042, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1167,12 +1167,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_114, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_115
+ * @tc.name: Options_test_043
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_115, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_043, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1210,12 +1210,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_115, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_116
+ * @tc.name: Options_test_044
  * @tc.desc: generate-app-cert module parameter inspection.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_116, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_044, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1247,12 +1247,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_116, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_117
+ * @tc.name: Options_test_045
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_117, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_045, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1272,12 +1272,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_117, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_118
+ * @tc.name: Options_test_046
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_118, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_046, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1297,12 +1297,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_118, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_119
+ * @tc.name: Options_test_047
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_119, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_047, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1322,12 +1322,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_119, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_120
+ * @tc.name: Options_test_048
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_120, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_048, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1347,12 +1347,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_120, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_121
+ * @tc.name: Options_test_049
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_121, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_049, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1378,12 +1378,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_121, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_122
+ * @tc.name: Options_test_050
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_122, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_050, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1413,12 +1413,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_122, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_123
+ * @tc.name: Options_test_051
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_123, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_051, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1446,12 +1446,12 @@ HWTEST_F(OptionsCmdTest, params_run_test_123, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_run_test_124
+ * @tc.name: Options_test_052
  * @tc.desc: sign-app module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_run_test_124, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_052, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1481,12 +1481,389 @@ HWTEST_F(OptionsCmdTest, params_run_test_124, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_test_001
+ * @tc.name: Options_test_053
+ * @tc.desc: sign-app module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_053, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/app-profile.p7b";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string appCertFile = "./generateKeyPair/app-profile.p7b";
+    std::string profileFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string profileSigned = "1";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileSigned"] = profileSigned;
+    (*params)["profileFile"] = profileFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_054
+ * @tc.desc: sign-app module inForm parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_054, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string appCertFile = "./generateKeyPair/app-profile.p7b";
+    std::string profileFile = "./generateKeyPair/app-profile.p7b";
+    std::string profileSigned = "1";
+    std::string inForm = "abc";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileSigned"] = profileSigned;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inForm"] = inForm;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_055
+ * @tc.desc: generate-ca module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_055, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-root-ca-key-v1";
+    char keyPwd[] = "123456";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    int validity = 365;
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/app-profile.p7b";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/root-ca1.cer";
+    std::string keyAlg = "ECC";
+    int keySize = 384;
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlg"] = keyAlg;
+    (*params)["keySize"] = keySize;
+    (*params)["validity"] = validity;
+    (*params)["issuer"] = issuer;
+
+    bool ret = ParamsRunTool::RunCa(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_056
+ * @tc.desc: generate-cert module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_056, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string keyUsage = "digitalSignature";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/abc/OpenHarmonyDamage.p12";
+    std::string outFile = "./generateKeyPair/general.cer";
+    
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
+
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_057
+ * @tc.desc: generate-cert module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_057, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-profile1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-profile-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string keyUsage = "digitalSignature";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/app-profile.p7b";
+    std::string outFile = "./generateKeyPair/general.cer";
+    
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["keyUsage"] = keyUsage;
+
+    bool ret = ParamsRunTool::RunCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_058
+ * @tc.desc: generate-app-cert module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_058, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/app-profile.p7b";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_059
+ * @tc.desc: generate-app-cert module issuerKeystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_059, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA384withECDSA";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outFile = "./generateKeyPair/app-release1.pem";
+    std::string issuerKeystoreFile = "./generateKeyPair/app-profile.p7b";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["issuer"] = issuer;
+    (*params)["issuerKeyAlias"] = issuerKeyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+    (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
+
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_060
+ * @tc.desc: generate-app-cert module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_060, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string keystoreFile = "./generateKeyPair/abc/OpenHarmony.p12";
+    (*params)["keystoreFile"] = keystoreFile;
+    bool ret = ParamsRunTool::RunAppCert(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_061
+ * @tc.desc: generate-csr module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_061, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string keyAlias = "oh-app1-key-v1";
+    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string signAlg = "SHA256withECDSA";
+    std::string keystoreFile = "./generateKeyPair/app-profile.p7b";
+    std::string outFile = "./generateKeyPair/oh-app1-key-v1.csr";
+
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["subject"] = subject;
+    (*params)["signAlg"] = signAlg;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunCsr(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_062
+ * @tc.desc: sign-profile module keystoreFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_062, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string inFile = "./generateKeyPair/profile.json";
+    std::string signAlg = "SHA384withECDSA";
+    std::string outFile = "./generateKeyPair/signed-profile.txt";
+    std::string keyAlias = "abc";
+    std::string keystoreFile = "./generateKeyPair/app-profile.p7b";
+    std::string profileCertFile = "./generateKeyPair/OpenHarmony.p12";
+
+    (*params)["mode"] = mode;
+    (*params)["inFile"] = inFile;
+    (*params)["signAlg"] = signAlg;
+    (*params)["outFile"] = outFile;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["profileCertFile"] = profileCertFile;
+
+    bool ret = ParamsRunTool::RunSignProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_063
+ * @tc.desc: verify-profile module inFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_063, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/OpenHarmony.p12";
+    std::string outFile = "./generateKeyPair/VerifyResult.json";
+
+    (*params)["inFile"] = inFile;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunVerifyProfile(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_064
+ * @tc.desc: verify-app module inFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_064, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    (*params)["inFile"] = inFile;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: Options_test_065
+ * @tc.desc: verify-profile module inFile parameter validation.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(OptionsCmdTest, Options_test_065, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string inFile = "./generateKeyPair/abc/OpenHarmonyDamage.p12";
+    std::string outCertChain = "abc";
+    std::string outProfile = "abc";
+    (*params)["inFile"] = inFile;
+    (*params)["outCertChain"] = outCertChain;
+    (*params)["outProfile"] = outProfile;
+    bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+
+/*
+ * @tc.name: Options_test_066
  * @tc.desc: Set the first parameter of the command.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_test_001, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_066, testing::ext::TestSize.Level1)
 {
     char argv[][100] = { "generate-keypair",
                      "-keyAlias", "oh-app1-key-v1",
@@ -1504,12 +1881,12 @@ HWTEST_F(OptionsCmdTest, params_test_001, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_test_002
+ * @tc.name: Options_test_067
  * @tc.desc: Remove the white space.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_test_002, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_067, testing::ext::TestSize.Level1)
 {
     std::string str = "  123456  ";
     std::string params = StringUtils::Trim(str);
@@ -1523,12 +1900,12 @@ HWTEST_F(OptionsCmdTest, params_test_002, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_test_003
+ * @tc.name: Options_test_068
  * @tc.desc: Gets the first command line argument.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_test_003, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_068, testing::ext::TestSize.Level1)
 {
     char argv[][100] = { "generate-keypair",
                      "-keyAlias", "oh-app1-key-v1",
@@ -1552,12 +1929,12 @@ HWTEST_F(OptionsCmdTest, params_test_003, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_test_004
+ * @tc.name: Options_test_069
  * @tc.desc: Gets the first command line argument.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_test_004, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_069, testing::ext::TestSize.Level1)
 {
     std::string signatureAlgorithm = ParamConstants::HAP_SIG_ALGORITHM_SHA384_ECDSA;
     SignatureAlgorithmHelper out;
@@ -1566,12 +1943,12 @@ HWTEST_F(OptionsCmdTest, params_test_004, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: params_test_005
+ * @tc.name: Options_test_070
  * @tc.desc: Gets the first command line argument.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(OptionsCmdTest, params_test_005, testing::ext::TestSize.Level1)
+HWTEST_F(OptionsCmdTest, Options_test_070, testing::ext::TestSize.Level1)
 {
     std::string signatureAlgorithm = "123456";
     SignatureAlgorithmHelper out;

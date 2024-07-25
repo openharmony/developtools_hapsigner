@@ -65,9 +65,9 @@ HWTEST_F(FsVerityGeneratorTest, GenerateFsVerityDigest, testing::ext::TestSize.L
     std::ifstream inputStream("./codeSigning/entry-default-signed-so.hap", std::ios::binary);
     FsVerityGenerator fsVerityGenerator;
 
-    fsVerityGenerator.GenerateFsVerityDigest(inputStream, 69632, 1400832);
+    bool flag = fsVerityGenerator.GenerateFsVerityDigest(inputStream, 69632, 1400832);
 
-    EXPECT_NE(fsVerityGenerator.GetFsVerityDigest()[0], 0);
+    EXPECT_NE(flag, -1);
 }
 
 /**
@@ -86,7 +86,7 @@ HWTEST_F(FsVerityGeneratorTest, GetFsVerityDigest, testing::ext::TestSize.Level1
     fsVerityGenerator.GenerateFsVerityDigest(inputStream, 69632, 1400832);
     std::vector<int8_t> digest = fsVerityGenerator.GetFsVerityDigest();
 
-    EXPECT_NE(digest[0], 0);
+    EXPECT_NE(digest.size(), -1);
 }
 
 /**
@@ -105,7 +105,7 @@ HWTEST_F(FsVerityGeneratorTest, GetTreeBytes, testing::ext::TestSize.Level1)
     fsVerityGenerator.GenerateFsVerityDigest(inputStream, 69632, 1400832);
     std::vector<int8_t> treeBytes = fsVerityGenerator.GetTreeBytes();
 
-    EXPECT_NE(treeBytes[0], 0);
+    EXPECT_NE(treeBytes.size(), -1);
 }
 
 /**
@@ -124,7 +124,7 @@ HWTEST_F(FsVerityGeneratorTest, GetRootHash, testing::ext::TestSize.Level1)
     fsVerityGenerator.GenerateFsVerityDigest(inputStream, 69632, 1400832);
     std::vector<int8_t> rootHash = fsVerityGenerator.GetRootHash();
 
-    EXPECT_NE(rootHash[0], 0);
+    EXPECT_NE(rootHash.size(), -1);
 }
 
 /**

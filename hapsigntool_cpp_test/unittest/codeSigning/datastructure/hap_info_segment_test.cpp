@@ -58,7 +58,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: fromByteArray002
- * @tc.desc: Go to the third branch, the dataSize is not an integer multiple of 4096..
+ * @tc.desc: Go to the third branch, the dataSize is not an integer multiple of 4096.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

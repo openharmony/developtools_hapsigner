@@ -31,7 +31,6 @@
 #include "bc_signeddata_generator.h"
 #include "profile_verify.h"
 #include "constant.h"
-#include "profile_verify_utils.h"
 #include "cms_utils.h"
 
 using  nlohmann::json;
@@ -1217,72 +1216,6 @@ HWTEST_F(ProvisionTest, provision_test047, testing::ext::TestSize.Level1)
         "n-code\":3,\"version-name\":\"1.0.0\"}";
     AppProvisionVerifyResult result = ParseProvision(provision, info);
     EXPECT_TRUE(result == PROVISION_OK);
-}
-
-/**
- * @tc.name: provision_test048
- * @tc.desc: Test function of ParseProfile() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test048, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context profilePkcs7Context;
-    Pkcs7Context hapPkcs7Context;
-    std::string profile = "hello,world";
-    hapPkcs7Context.matchResult.matchState = MATCH_WITH_SIGN;
-    hapPkcs7Context.matchResult.source = APP_GALLARY;
-    ByteBuffer pkcs7ProfileBlock;
-    pkcs7ProfileBlock.SetCapacity(5);
-    pkcs7ProfileBlock.PutData("hello", 5);
-    int result = ProfileVerifyUtils::ParseProfile(profilePkcs7Context, hapPkcs7Context, pkcs7ProfileBlock, profile);
-    EXPECT_EQ(result, true);
-}
-
-/**
- * @tc.name: provision_test049
- * @tc.desc: Test function of ParseProfile() failed for p7 is invalid.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test049, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context profilePkcs7Context;
-    Pkcs7Context hapPkcs7Context;
-    int length = 5;
-    std::string profile = "hello,world";
-    hapPkcs7Context.matchResult.source = APP_GALLARY;
-    ByteBuffer pkcs7ProfileBlock;
-    pkcs7ProfileBlock.SetCapacity(length);
-    pkcs7ProfileBlock.PutData("hello", length);
-    int result = ProfileVerifyUtils::ParseProfile(profilePkcs7Context, hapPkcs7Context, pkcs7ProfileBlock, profile);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: provision_test050
- * @tc.desc: Test function of ParseProfile() failed for p7 is invalid.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProvisionTest, provision_test050, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context profilePkcs7Context;
-    Pkcs7Context hapPkcs7Context;
-    int length = 5;
-    std::string profile = "hello,world";
-    hapPkcs7Context.matchResult.matchState = MATCH_WITH_SIGN;
-    ByteBuffer pkcs7ProfileBlock;
-    pkcs7ProfileBlock.SetCapacity(length);
-    pkcs7ProfileBlock.PutData("hello", length);
-    int result = ProfileVerifyUtils::ParseProfile(profilePkcs7Context, hapPkcs7Context, pkcs7ProfileBlock, profile);
-    EXPECT_EQ(result, false);
 }
 
 }

@@ -43,6 +43,20 @@
       <cleaner>
       </cleaner>
   </target>
+  <target name="GenerateCa010FuzzTest">
+      <preparer>
+        <option name="push" value="generate_ca/OpenHarmony.p12 -> /data/test/generateCA/" src="res" />
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
+  <target name="GenerateCa011FuzzTest">
+      <preparer>
+        <option name="push" value="generate_ca/OpenHarmony.p12 -> /data/test/generateCA/" src="res" />
+      </preparer>
+      <cleaner>
+      </cleaner>
+  </target>
   <target name="ProcessCmd001FuzzTest">
       <preparer>
       </preparer>

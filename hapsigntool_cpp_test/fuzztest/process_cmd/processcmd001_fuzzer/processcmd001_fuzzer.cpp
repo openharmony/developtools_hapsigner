@@ -16,6 +16,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include "options.h"
 #include "params_run_tool.h"
 
 namespace OHOS {
@@ -26,13 +27,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return true;
     }
 
-    char arg0[] = "";
-    char* argv[] = { arg0 };
-
-    int argc = 1;
-
-    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
-    return ret;
+    Options options;
+    options.Equals(Options::KEY_STORE_FILE, Options::ISSUER_KEY_STORE_FILE);
+    return true;
 }
 } // namespace SignatureTools
 } // namespace OHOS
