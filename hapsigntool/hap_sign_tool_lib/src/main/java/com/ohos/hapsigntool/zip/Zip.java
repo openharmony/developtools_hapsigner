@@ -235,14 +235,13 @@ public class Zip {
             boolean isFirstUnRunnableFile = true;
             for (ZipEntry entry : zipEntries) {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
-                short method = zipEntryData.getZipEntryHeader().getMethod();
-                if (method != FILE_UNCOMPRESS_METHOD_FLAG && !isFirstUnRunnableFile) {
+                EntryType type = zipEntryData.getType();
+                if (type != EntryType.ResourceFile && !isFirstUnRunnableFile) {
                     // only align uncompressed entry and the first compress entry.
                     break;
                 }
                 int alignBytes;
-                if (method == FILE_UNCOMPRESS_METHOD_FLAG && FileUtils.isRunnableFile(
-                        zipEntryData.getZipEntryHeader().getFileName())) {
+                if (type != EntryType.ResourceFile) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
                 } else if (isFirstUnRunnableFile) {
