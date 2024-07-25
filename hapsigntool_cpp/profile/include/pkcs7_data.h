@@ -49,7 +49,8 @@ struct std::equal_to<X509*> {
 /* all cert is put into one bottle */
 template<>
 struct std::hash<X509*> {
-    size_t operator()(const X509* cert)const {
+    size_t operator()(const X509* cert)const
+    {
         return 0;
     }
 };

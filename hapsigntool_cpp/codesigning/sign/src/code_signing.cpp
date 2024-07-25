@@ -362,7 +362,7 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
     SIGNATURE_TOOLS_LOGI("zGlobalInfo.number_entry = %lu", zGlobalInfo.number_entry);
     for (uLong i = 0; i < zGlobalInfo.number_entry; ++i) {
         thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
-                                 std::ref(packageName), std::ref(param), i));
+            std::ref(packageName), std::ref(param), i));
     }
 
     bool result = true;
