@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedHashMap;
@@ -137,16 +138,16 @@ public class PageInfoGenerator {
                 : (int) ((es.getEndOffset() >> 12) + 1) * PageInfoExtension.DEFAULT_UNIT_SIZE;
             for (int i = begin; i < end; i = i + 4) {
                 if ((ELF_M_CODE == es.getType())) {
-                    bitmap.set(i + 3);
+                    bitmap.set(i);
                 } else {
-                    bitmap.set(i + 2);
+                    bitmap.set(i + 1);
                 }
             }
         }
         long[] longArray = bitmap.toLongArray();
-        ByteBuffer buffer = ByteBuffer.allocate(longArray.length * 8);
+        ByteBuffer buffer = ByteBuffer.allocate(longArray.length * 8).order(ByteOrder.LITTLE_ENDIAN);
         for (long l : longArray) {
-            buffer.putLong(Long.reverse(l));
+            buffer.putLong(l);
         }
         return buffer.array();
     }
