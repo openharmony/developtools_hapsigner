@@ -58,7 +58,7 @@ public class SignInfo {
     /**
      * maximum of extension number
      */
-    public static final int MAX_EXTENSION_NUM = 1;
+    public static final int MAX_EXTENSION_NUM = 2;
 
     /**
      * sign info structure without signature in bytes, refer to toByteArray() method
@@ -112,6 +112,7 @@ public class SignInfo {
         this.sigSize = sig == null ? 0 : sig.length;
         // align for extension after signature
         this.zeroPadding = new byte[(SIGNATURE_ALIGNMENT - (this.sigSize % SIGNATURE_ALIGNMENT)) % SIGNATURE_ALIGNMENT];
+        this.extensionOffset = SIGN_INFO_SIZE_WITHOUT_SIGNATURE + sigSize + this.zeroPadding.length;
     }
 
     /**
@@ -138,7 +139,6 @@ public class SignInfo {
      * @param extension Extension object
      */
     public void addExtension(Extension extension) {
-        this.extensionOffset = this.size();
         this.extensionList.add(extension);
         this.extensionNum = this.extensionList.size();
     }
@@ -254,7 +254,7 @@ public class SignInfo {
             % SIGNATURE_ALIGNMENT];
         bf.get(inZeroPadding);
         // parse merkle tree extension
-        List<Extension> inExtensionList = parseMerkleTreeExtension(bf, inExtensionNum);
+        List<Extension> inExtensionList = parseExtensionList(bf, inExtensionNum);
         return new SignInfoBuilder().setSaltSize(inSaltSize)
             .setSigSize(inSigSize)
             .setFlags(inFlags)
@@ -268,22 +268,33 @@ public class SignInfo {
             .build();
     }
 
-    private static List<Extension> parseMerkleTreeExtension(ByteBuffer bf, int inExtensionNum)
+    private static List<Extension> parseExtensionList(ByteBuffer bf, int inExtensionNum)
         throws VerifyCodeSignException {
         List<Extension> inExtensionList = new ArrayList<>();
-        if (inExtensionNum == 1) {
-            // parse merkle tree extension
+        for (int i = 0; i < inExtensionNum; i++) {
             int extensionType = bf.getInt();
-            if (extensionType != MerkleTreeExtension.MERKLE_TREE_INLINED) {
+            if (extensionType == MerkleTreeExtension.MERKLE_TREE_INLINED) {
+                // parse merkle tree extension
+                int extensionSize = bf.getInt();
+                if (extensionSize != (Extension.EXTENSION_HEADER_SIZE
+                    + MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE)) {
+                    throw new VerifyCodeSignException("Invalid extensionSize of SignInfo");
+                }
+                byte[] merkleTreeExtension = new byte[MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE];
+                bf.get(merkleTreeExtension);
+                inExtensionList.add(MerkleTreeExtension.fromByteArray(merkleTreeExtension));
+            } else if (extensionType == PageInfoExtension.PAGE_INFO_INLINED) {
+                // parse page info extension
+                int extensionSize = bf.getInt();
+                if (extensionSize <= (Extension.EXTENSION_HEADER_SIZE)) {
+                    throw new VerifyCodeSignException("Invalid extensionSize of SignInfo");
+                }
+                byte[] pageInfoExtension = new byte[extensionSize - Extension.EXTENSION_HEADER_SIZE];
+                bf.get(pageInfoExtension);
+                inExtensionList.add(PageInfoExtension.fromByteArray(pageInfoExtension));
+            } else {
                 throw new VerifyCodeSignException("Invalid extensionType of SignInfo");
             }
-            int extensionSize = bf.getInt();
-            if (extensionSize != MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE) {
-                throw new VerifyCodeSignException("Invalid extensionSize of SignInfo");
-            }
-            byte[] merkleTreeExtension = new byte[MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE];
-            bf.get(merkleTreeExtension);
-            inExtensionList.add(MerkleTreeExtension.fromByteArray(merkleTreeExtension));
         }
         return inExtensionList;
     }
