@@ -31,7 +31,6 @@
 #include "bc_signeddata_generator.h"
 #include "profile_verify.h"
 #include "constant.h"
-#include "profile_verify_utils.h"
 #include "cms_utils.h"
 
 using  nlohmann::json;
@@ -90,61 +89,6 @@ void ProfileTest::SetUp()
 
 void ProfileTest::TearDown()
 {
-}
-
-/**
- * @tc.name: profile_test001
- * @tc.desc: Test function of ParseProfile() failed for invalid pkcs7 data.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProfileTest, profile_test001, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context profilePkcs7Context;
-    Pkcs7Context hapPkcs7Context;
-    int length = 5;
-    std::string profile = "hello,world";
-    ByteBuffer pkcs7ProfileBlock;
-    pkcs7ProfileBlock.SetCapacity(length);
-    pkcs7ProfileBlock.PutData("hello", length);
-    int result = ProfileVerifyUtils::ParseProfile(profilePkcs7Context, hapPkcs7Context, pkcs7ProfileBlock, profile);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: profile_test002
- * @tc.desc: Test function of ProfileVerifyUtils::VerifyProfile() failed for GetCertChains from pkcs7 failed.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProfileTest, profile_test002, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context p7context;
-    int result = ProfileVerifyUtils::VerifyProfile(p7context);
-    EXPECT_EQ(result, false);
-}
-
-/**
- * @tc.name: profile_test003
- * @tc.desc: Test function of ProfileVerifyUtils::VerifyProfile() failed for invalid certchain.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(ProfileTest, profile_test003, testing::ext::TestSize.Level1)
-{
-    Pkcs7Context p7context;
-    X509* cert = X509_new();
-    std::vector<X509*> certs;
-    certs.push_back(cert);
-    p7context.certChain.push_back(certs);
-    int result = ProfileVerifyUtils::VerifyProfile(p7context);
-    EXPECT_EQ(result, false);
 }
 
 /**

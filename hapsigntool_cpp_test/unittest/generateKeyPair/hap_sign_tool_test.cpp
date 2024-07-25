@@ -979,12 +979,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_026, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_028
+ * @tc.name: hap_sign_tool_test_027
  * @tc.desc: Generate a universal certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_028, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_027, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1023,12 +1023,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_028, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_029
+ * @tc.name: hap_sign_tool_test_028
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_029, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_028, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1058,6 +1058,45 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_029, testing::ext::TestSize.Level1)
 }
 
 /*
+ * @tc.name: hap_sign_tool_test_029
+ * @tc.desc: The hap signature entry check is generated.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_029, testing::ext::TestSize.Level1)
+{
+    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+
+    std::string mode = "localSign";
+    std::string keyAlias = "oh-app1-key-v1";
+    char keyPwd[] = "123456";
+    std::string signCode = "1";
+    std::string signAlg = "SHA384withECDSA";
+    std::string appCertFile = "./generateKeyPair/app-release1.pem";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string inFile = "OpenHarmonyDamage.p12";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    char keystorePwd[] = "123456";
+    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+
+    (*params)["mode"] = mode;
+    (*params)["keyAlias"] = keyAlias;
+    (*params)["keyPwd"] = keyPwd;
+    (*params)["signCode"] = signCode;
+    (*params)["signAlg"] = signAlg;
+    (*params)["appCertFile"] = appCertFile;
+    (*params)["profileFile"] = profileFile;
+    (*params)["inFile"] = inFile;
+    (*params)["keystoreFile"] = keystoreFile;
+    (*params)["keystorePwd"] = keystorePwd;
+    (*params)["outFile"] = outFile;
+
+    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
+    EXPECT_EQ(ret, false);
+}
+
+/*
  * @tc.name: hap_sign_tool_test_030
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
@@ -1074,9 +1113,9 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_030, testing::ext::TestSize.Level1)
     std::string signCode = "1";
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
-    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
+    std::string profileFile = "./generateKeyPair/signed-profile.txt";
     std::string inFile = "OpenHarmonyDamage.p12";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmonyDamage.p12";
+    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
     std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
 
@@ -1111,9 +1150,9 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_031, testing::ext::TestSize.Level1)
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
     std::string signCode = "1";
-    std::string signAlg = "SHA384withECDSA";
+    std::string signAlg = "SHA385withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
-    std::string profileFile = "./generateKeyPair/signed-profile.txt";
+    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
     std::string inFile = "OpenHarmonyDamage.p12";
     std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
     char keystorePwd[] = "123456";
@@ -1150,45 +1189,6 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_032, testing::ext::TestSize.Level1)
     std::string keyAlias = "oh-app1-key-v1";
     char keyPwd[] = "123456";
     std::string signCode = "1";
-    std::string signAlg = "SHA385withECDSA";
-    std::string appCertFile = "./generateKeyPair/app-release1.pem";
-    std::string profileFile = "./generateKeyPair/signed-profile.p7b";
-    std::string inFile = "OpenHarmonyDamage.p12";
-    std::string keystoreFile = "./generateKeyPair/OpenHarmony.p12";
-    char keystorePwd[] = "123456";
-    std::string outFile = "./generateKeyPair/OpenHarmonyDamage.p12";
-
-    (*params)["mode"] = mode;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["signCode"] = signCode;
-    (*params)["signAlg"] = signAlg;
-    (*params)["appCertFile"] = appCertFile;
-    (*params)["profileFile"] = profileFile;
-    (*params)["inFile"] = inFile;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["outFile"] = outFile;
-
-    bool ret = ParamsRunTool::RunSignApp(params.get(), *api);
-    EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_sign_tool_test_033
- * @tc.desc: The hap signature entry check is generated.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_033, testing::ext::TestSize.Level1)
-{
-    std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-
-    std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
-    char keyPwd[] = "123456";
-    std::string signCode = "1";
     std::string signAlg = "SHA384withECDSA";
     std::string appCertFile = "./generateKeyPair/app-release1.pem";
     std::string inFile = "OpenHarmonyDamage.p12";
@@ -1212,12 +1212,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_033, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_034
+ * @tc.name: hap_sign_tool_test_033
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_034, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_033, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1251,12 +1251,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_034, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_035
+ * @tc.name: hap_sign_tool_test_034
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_035, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_034, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1292,12 +1292,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_035, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: hap_sign_tool_test_040
+* @tc.name: hap_sign_tool_test_035
 * @tc.desc: Generate the root certificate entry check.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_040, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_035, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1329,12 +1329,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_040, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: hap_sign_tool_test_041
+* @tc.name: hap_sign_tool_test_036
 * @tc.desc: Generate the root certificate entry check.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_041, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_036, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1366,12 +1366,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_041, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_042
+ * @tc.name: hap_sign_tool_test_037
  * @tc.desc: Generate the root certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_042, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_037, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1405,12 +1405,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_042, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_043
+ * @tc.name: hap_sign_tool_test_038
  * @tc.desc: Generate a universal certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_043, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_038, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1444,12 +1444,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_043, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_044
+ * @tc.name: hap_sign_tool_test_039
  * @tc.desc: Generate a universal certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_044, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_039, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1483,12 +1483,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_044, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_045
+ * @tc.name: hap_sign_tool_test_040
  * @tc.desc: Generate a universal certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_045, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_040, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1524,12 +1524,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_045, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_046
+ * @tc.name: hap_sign_tool_test_041
  * @tc.desc: Generate a universal certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_046, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_041, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1563,12 +1563,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_046, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_047
+ * @tc.name: hap_sign_tool_test_042
  * @tc.desc: Generate a universal certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_047, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_042, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1602,12 +1602,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_047, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_048
+ * @tc.name: hap_sign_tool_test_043
  * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_048, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_043, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1641,12 +1641,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_048, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_049
+ * @tc.name: hap_sign_tool_test_044
  * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_049, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_044, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1684,12 +1684,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_049, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_050
+ * @tc.name: hap_sign_tool_test_045
  * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_050, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_045, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1725,12 +1725,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_050, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_051
+ * @tc.name: hap_sign_tool_test_046
  * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_051, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_046, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1768,12 +1768,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_051, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_052
+ * @tc.name: hap_sign_tool_test_047
  * @tc.desc: Generate app debugging certificate entry check.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_052, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_047, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1809,12 +1809,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_052, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_053
+ * @tc.name: hap_sign_tool_test_048
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_048, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1850,12 +1850,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_054
+ * @tc.name: hap_sign_tool_test_049
  * @tc.desc: The hap signature entry check is generated.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_054, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_049, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1891,12 +1891,12 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_054, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_056
+ * @tc.name: hap_sign_tool_test_050
  * @tc.desc: verify-app module outProfile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_056, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolTest, hap_sign_tool_test_050, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();

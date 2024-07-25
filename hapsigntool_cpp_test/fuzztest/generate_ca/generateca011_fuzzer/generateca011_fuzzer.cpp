@@ -33,16 +33,15 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "oh-app-sign-srv-ca-key-v1";
+    std::string keyAlias = "oh-app1-key-v1";
     std::string issuerkeyAlias = "oh-root-ca-key-v1";
     std::string keyAlg = "ECC";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Application Signature Service CA";
     std::string signAlg = "SHA384withECDSA";
     int basicConstraintsPathLen = 0;
-    std::string keystoreFile = "/data/test/generateCA/OpenHarmony.p12";
-    std::string outFile = "/data/test/generateCA/subca.cer";
+    std::string keystoreFile = "./generateCA/OpenHarmony.p12";
+    std::string outFile = "./generateCA/subca.cer";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     int keySize = 384;
     char secret[] = "123456";
@@ -66,7 +65,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     X509_REQ* rootcsr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     X509_REQ* subcsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
     CertTools::SignCsrGenerateCert(rootcsr, subcsr, keyPair, params.get());
-    return false;
+    return true;
 }
 }
 }

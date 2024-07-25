@@ -174,12 +174,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_006, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_008
+ * @tc.name: processcmd_test_007
  * @tc.desc: Check whether the key algorithm is NIST-P-384 or NIST-P-256.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_008, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_007, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-keypair";
@@ -205,12 +205,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_008, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_020
+ * @tc.name: processcmd_test_008
  * @tc.desc: Checks whether the argument is in the trusted list.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_008, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-keypair";
@@ -238,12 +238,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_043
+* @tc.name: processcmd_test_009
 * @tc.desc: Checks whether the last value of the command argument is null.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_043, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_009, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -277,12 +277,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_043, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_045
+* @tc.name: processcmd_test_010
 * @tc.desc: Check that the required parameters of the generate-cert module are met.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_045, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_010, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -318,12 +318,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_045, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_046
+* @tc.name: processcmd_test_011
 * @tc.desc: Check that the required parameters of the sign-app module are met.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_046, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_011, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "sign-app";
@@ -338,12 +338,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_046, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_052
+* @tc.name: processcmd_test_012
 * @tc.desc: Check if the -profileSigned parameter in sign-app is [1,0, true, false, TRUE, FALSE].
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_052, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_012, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "sign-app";
@@ -358,12 +358,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_052, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_053
+* @tc.name: processcmd_test_013
 * @tc.desc: Check that the output file path exists.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_053, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_013, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-keypair";
@@ -388,12 +388,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_053, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_054
+* @tc.name: processcmd_test_014
 * @tc.desc: Check if the keystore file is in 'p12' or 'JKS' file format.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_054, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_014, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-keypair";
@@ -418,12 +418,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_054, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_055
+* @tc.name: processcmd_test_015
 * @tc.desc: Check if the signature algorithm is SHA3256withECDSA or SHA384withECDSA.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_055, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_015, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "sign-app";
@@ -438,12 +438,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_055, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_056
+* @tc.name: processcmd_test_016
 * @tc.desc: Check if the signature algorithm is SHA3256withECDSA or SHA384withECDSA.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_056, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_016, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "sign-app";
@@ -458,12 +458,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_056, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_057
+* @tc.name: processcmd_test_017
 * @tc.desc: Check that the -inForm value is formatted correct.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_057, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_017, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "verify-app";
@@ -478,12 +478,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_057, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_058
+* @tc.name: processcmd_test_018
 * @tc.desc: Check that the -outForm argument is correctly formatted.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_058, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_018, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-app-cert";
@@ -498,12 +498,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_058, testing::ext::TestSize.Level1)
 }
 
 /*
-* @tc.name: processcmd_test_059
+* @tc.name: processcmd_test_019
 * @tc.desc: Check the generate-app-cert module for required parameters.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(ProcessCmdTest, processcmd_test_059, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_019, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-app-cert";
@@ -516,12 +516,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_059, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_064
+ * @tc.name: processcmd_test_020
  * @tc.desc: Printing help documents.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_064, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_020, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "-help";
@@ -533,12 +533,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_064, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_066
+ * @tc.name: processcmd_test_021
  * @tc.desc: Print version number.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_066, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_021, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "-version";
@@ -550,24 +550,24 @@ HWTEST_F(ProcessCmdTest, processcmd_test_066, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_067
+ * @tc.name: processcmd_test_022
  * @tc.desc: Print help documentation when an empty command is passed.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_067, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_022, testing::ext::TestSize.Level1)
 {
     bool ret = ParamsRunTool::ProcessCmd(nullptr, 5);
     EXPECT_EQ(ret, true);
 }
 
 /*
- * @tc.name: processcmd_test_079
+ * @tc.name: processcmd_test_023
  * @tc.desc: Check whether keyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_079, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_023, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -603,12 +603,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_079, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_080
+ * @tc.name: processcmd_test_024
  * @tc.desc: Check whether keyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_080, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_024, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -644,12 +644,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_080, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_081
+ * @tc.name: processcmd_test_025
  * @tc.desc: Check whether extKeyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_081, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_025, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -685,12 +685,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_081, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_082
+ * @tc.name: processcmd_test_026
  * @tc.desc: Check whether extKeyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_082, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_026, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -726,12 +726,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_082, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_083
+ * @tc.name: processcmd_test_027
  * @tc.desc: Check whether extKeyUsageCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_083, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_027, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -767,12 +767,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_083, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_084
+ * @tc.name: processcmd_test_028
  * @tc.desc: Check whether basicConstraints parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_084, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_028, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -808,12 +808,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_084, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_085
+ * @tc.name: processcmd_test_029
  * @tc.desc: Check whether basicConstraints parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_085, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_029, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -849,12 +849,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_085, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_086
+ * @tc.name: processcmd_test_030
  * @tc.desc: Check whether basicConstraints parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_086, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_030, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -890,12 +890,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_086, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_087
+ * @tc.name: processcmd_test_031
  * @tc.desc: Check whether basicConstraintsCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_087, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_031, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -931,12 +931,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_087, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_088
+ * @tc.name: processcmd_test_032
  * @tc.desc: Check whether basicConstraintsCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_088, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_032, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -972,12 +972,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_088, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_089
+ * @tc.name: processcmd_test_033
  * @tc.desc: Check whether basicConstraintsCritical parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_089, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_033, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -1013,12 +1013,12 @@ HWTEST_F(ProcessCmdTest, processcmd_test_089, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: processcmd_test_090
+ * @tc.name: processcmd_test_034
  * @tc.desc: Check whether basicConstraintsCa parameter for [ 1, 0, true, false, true, false ].
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(ProcessCmdTest, processcmd_test_090, testing::ext::TestSize.Level1)
+HWTEST_F(ProcessCmdTest, processcmd_test_034, testing::ext::TestSize.Level1)
 {
     char arg0[] = "";
     char arg1[] = "generate-cert";
@@ -1047,6 +1047,58 @@ HWTEST_F(ProcessCmdTest, processcmd_test_090, testing::ext::TestSize.Level1)
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23 };
     int argc = 24;
+
+    bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_035
+ * @tc.desc: Check that the inFile argument is correct.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdTest, processcmd_test_035, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string inFile = "./generateKeyPair";
+    (*params)["inFile"] = inFile;
+    bool ret = CmdUtil::UpdateParamForCheckInFile(params.get(), {Options::IN_FILE});
+
+    EXPECT_EQ(ret, false);
+}
+
+/*
+ * @tc.name: processcmd_test_036
+ * @tc.desc: Check that the inFile argument is correct.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdTest, processcmd_test_036, testing::ext::TestSize.Level1)
+{
+    std::shared_ptr<Options> params = std::make_shared<Options>();
+    std::string inFile = "generateKeyPair";
+    (*params)["inFile"] = inFile;
+    bool ret = CmdUtil::UpdateParamForCheckOutFile(params.get(), {Options::IN_FILE});
+
+    EXPECT_EQ(ret, true);
+}
+
+/*
+ * @tc.name: processcmd_test_037
+ * @tc.desc: Check that the profileSigned argument is correct.
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ProcessCmdTest, processcmd_test_037, testing::ext::TestSize.Level1)
+{
+    char arg0[] = "";
+    char arg1[] = "sign-app";
+    char arg2[] = "-profileSigned";
+    char arg3[] = "0";
+    char* argv[] = {arg0, arg1, arg2, arg3};
+    int argc = 4;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
 

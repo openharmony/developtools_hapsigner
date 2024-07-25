@@ -50,12 +50,12 @@ public:
 };
 
 /*
- * @tc.name: hap_sign_tool_test_053
+ * @tc.name: hapSign_tool_cmd_test_001
  * @tc.desc: The generate-app-cert module checks whether the subCaCertFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_053, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_001, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -93,12 +93,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_053, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_054
+ * @tc.name: hapSign_tool_cmd_test_002
  * @tc.desc: The generate-app-cert module checks whether the keystoreFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_054, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_002, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -136,12 +136,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_054, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_055
+ * @tc.name: hapSign_tool_cmd_test_003
  * @tc.desc: The generate-app-cert module checks whether the issuerKeystoreFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_055, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_003, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -181,12 +181,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_055, testing::ext::TestSize.Leve
 }
 
 /*
-* @tc.name: hap_sign_tool_test_056
+* @tc.name: hapSign_tool_cmd_test_004
 * @tc.desc: generate-profile-cert module required parameter validation.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_056, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_004, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -222,12 +222,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_056, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_057
+ * @tc.name: hapSign_tool_cmd_test_005
  * @tc.desc: generate-keypair module required parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_057, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_005, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -249,12 +249,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_057, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_058
+ * @tc.name: hapSign_tool_cmd_test_006
  * @tc.desc: generate-keypair module algorithm validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_058, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_006, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -278,12 +278,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_058, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_059
+ * @tc.name: hapSign_tool_cmd_test_007
  * @tc.desc: generate-keypair module algorithm size verification.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_059, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_007, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -307,12 +307,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_059, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_060
+ * @tc.name: hapSign_tool_cmd_test_008
  * @tc.desc: The generate-keypair module checks whether the keystoreFile parameter is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_060, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_008, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -336,12 +336,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_060, testing::ext::TestSize.Leve
 }
 
 /**
- * @tc.name: hap_sign_tool_test_061
+ * @tc.name: hapSign_tool_cmd_test_009
  * @tc.desc: generate-csr module required parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, run_csr_test_061, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_009, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -360,12 +360,12 @@ HWTEST_F(HapSignToolCmdTest, run_csr_test_061, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_062
+ * @tc.name: hapSign_tool_cmd_test_010
  * @tc.desc: verify-profile module required parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_062, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_010, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -378,12 +378,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_062, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_063
+ * @tc.name: hapSign_tool_cmd_test_011
  * @tc.desc: verify-profile module inFile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_063, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_011, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -399,12 +399,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_063, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_064
+ * @tc.name: hapSign_tool_cmd_test_012
  * @tc.desc: verify-profile module outFile parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_064, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_012, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -420,12 +420,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_064, testing::ext::TestSize.Leve
 }
 
 /*
-* @tc.name: hap_sign_tool_test_067
+* @tc.name: hapSign_tool_cmd_test_013
 * @tc.desc: generate-cert module required parameter validation.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_067, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_013, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -468,12 +468,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_067, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_068
+ * @tc.name: hapSign_tool_cmd_test_014
  * @tc.desc: generate-cert module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_068, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_014, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -516,12 +516,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_068, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_069
+ * @tc.name: hapSign_tool_cmd_test_015
  * @tc.desc: generate-cert module two-parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_069, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_015, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -564,12 +564,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_069, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_070
+ * @tc.name: hapSign_tool_cmd_test_016
  * @tc.desc: The validity parameter of the generate-cert module checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_070, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_016, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -610,12 +610,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_070, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_071
+ * @tc.name: hapSign_tool_cmd_test_017
  * @tc.desc: generate-cert module keyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_071, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_017, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -658,12 +658,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_071, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_072
+ * @tc.name: hapSign_tool_cmd_test_018
  * @tc.desc: generate-cert module keyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_072, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_018, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -706,12 +706,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_072, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_073
+ * @tc.name: hapSign_tool_cmd_test_019
  * @tc.desc: generate-cert module keyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_073, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_019, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -754,12 +754,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_073, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_074
+ * @tc.name: hapSign_tool_cmd_test_020
  * @tc.desc: generate-cert module extKeyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_074, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_020, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -800,12 +800,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_074, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_075
+ * @tc.name: hapSign_tool_cmd_test_021
  * @tc.desc: generate-cert module extKeyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_075, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_021, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -848,12 +848,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_075, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_076
+ * @tc.name: hapSign_tool_cmd_test_022
  * @tc.desc: generate-cert module extKeyUsageCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_076, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_022, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -896,12 +896,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_076, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_077
+ * @tc.name: hapSign_tool_cmd_test_023
  * @tc.desc: generate-cert module basicConstraints parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_077, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_023, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -944,12 +944,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_077, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_078
+ * @tc.name: hapSign_tool_cmd_test_024
  * @tc.desc: generate-cert module basicConstraints parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_078, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_024, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -992,12 +992,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_078, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_079
+ * @tc.name: hapSign_tool_cmd_test_025
  * @tc.desc: generate-cert module basicConstraints parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_079, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_025, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1040,12 +1040,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_079, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_080
+ * @tc.name: hapSign_tool_cmd_test_026
  * @tc.desc: generate-cert module basicConstraintsCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_080, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_026, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1088,12 +1088,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_080, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_081
+ * @tc.name: hapSign_tool_cmd_test_027
  * @tc.desc: generate-cert module basicConstraintsCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_081, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_027, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1136,12 +1136,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_081, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_082
+ * @tc.name: hapSign_tool_cmd_test_028
  * @tc.desc: generate-cert module basicConstraintsCritical parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_082, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_028, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1184,12 +1184,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_082, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_083
+ * @tc.name: hapSign_tool_cmd_test_029
  * @tc.desc: generate-cert module basicConstraintsCa parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_083, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_029, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1232,12 +1232,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_083, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_084
+ * @tc.name: hapSign_tool_cmd_test_030
  * @tc.desc: generate-cert module basicConstraintsCa parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_084, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_030, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1280,12 +1280,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_084, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_085
+ * @tc.name: hapSign_tool_cmd_test_031
  * @tc.desc: generate-cert module basicConstraintsCa parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_085, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_031, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1328,12 +1328,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_085, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_086
+ * @tc.name: hapSign_tool_cmd_test_032
  * @tc.desc: sign-profile module parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_086, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_032, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1361,12 +1361,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_086, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_087
+ * @tc.name: hapSign_tool_cmd_test_033
  * @tc.desc: sign-profile module mode parameter validation.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_087, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_033, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1396,12 +1396,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_087, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_088
+ * @tc.name: hapSign_tool_cmd_test_034
  * @tc.desc: The sign-profile module profileCertFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_088, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_034, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1429,12 +1429,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_088, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_090
+ * @tc.name: hapSign_tool_cmd_test_035
  * @tc.desc: The sign-profile module signAlg parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_090, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_035, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1464,12 +1464,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_090, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_092
+ * @tc.name: hapSign_tool_cmd_test_036
  * @tc.desc: The verify-app module inform parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_036, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1489,12 +1489,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_092, testing::ext::TestSize.Leve
 }
 
 /*
-* @tc.name: hap_sign_tool_test_093
+* @tc.name: hapSign_tool_cmd_test_037
 * @tc.desc: The generate-ca module outFile parameter checks whether it is valid.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_093, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_037, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1520,12 +1520,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_093, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_094
+ * @tc.name: hapSign_tool_cmd_test_038
  * @tc.desc: The generate-cert module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_094, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_038, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1553,12 +1553,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_094, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_095
+ * @tc.name: hapSign_tool_cmd_test_039
  * @tc.desc: The generate-cert module keystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_095, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_039, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1586,12 +1586,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_095, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_096
+ * @tc.name: hapSign_tool_cmd_test_040
  * @tc.desc: The generate-cert module subCaCertFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_096, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_040, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1621,12 +1621,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_096, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_097
+ * @tc.name: hapSign_tool_cmd_test_041
  * @tc.desc: The generate-cert module keystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_097, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_041, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1656,12 +1656,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_097, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_098
+ * @tc.name: hapSign_tool_cmd_test_042
  * @tc.desc: The generate-cert module issuerKeystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_098, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_042, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1693,12 +1693,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_098, testing::ext::TestSize.Leve
 }
 
 /*
-* @tc.name: hap_sign_tool_test_099
+* @tc.name: hapSign_tool_cmd_test_043
 * @tc.desc: The generate-profile-cert module keystoreFile parameter checks whether it is valid.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_099, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_043, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1709,12 +1709,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_099, testing::ext::TestSize.Leve
 }
 
 /*
-* @tc.name: hap_sign_tool_test_100
+* @tc.name: hapSign_tool_cmd_test_044
 * @tc.desc: The generate-profile-cert module outFile parameter checks whether it is valid.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_100, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_044, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1725,12 +1725,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_100, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_101
+ * @tc.name: hapSign_tool_cmd_test_045
  * @tc.desc: The generate-csr module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_101, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_045, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1752,12 +1752,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_101, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_102
+ * @tc.name: hapSign_tool_cmd_test_046
  * @tc.desc: The generate-csr module keystoreFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_102, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_046, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1779,12 +1779,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_102, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_103
+ * @tc.name: hapSign_tool_cmd_test_047
  * @tc.desc: The generate-csr module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_103, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_047, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1806,12 +1806,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_103, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_104
+ * @tc.name: hapSign_tool_cmd_test_048
  * @tc.desc: The sign-profile module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_104, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_048, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -1831,12 +1831,12 @@ HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_104, testing::ext::TestSize.Leve
 }
 
 /*
- * @tc.name: hap_sign_tool_test_105
+ * @tc.name: hapSign_tool_cmd_test_049
  * @tc.desc: The sign-profile module outFile parameter checks whether it is valid.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(HapSignToolCmdTest, hap_sign_tool_test_105, testing::ext::TestSize.Level1)
+HWTEST_F(HapSignToolCmdTest, hapSign_tool_cmd_test_049, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();

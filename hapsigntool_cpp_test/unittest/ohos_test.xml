@@ -34,7 +34,6 @@
         <option name="push" value="./hapVerify/packets/packet_hap_integrity_error.txt -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./hapVerify/packets/packet_verify_app_error.txt -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./hapVerify/packets/packet_get_certchain_error.txt -> /data/test/hapVerify/" src="res" />
-        <option name="push" value="./hapVerify/packets/packet_get_optional_block_error.txt -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./hapVerify/packets/packet_parse_profile_error.txt -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./hapVerify/packets/phone-default-signed.txt -> /data/test/hapVerify/" src="res" />
         <option name="push" value="./hapVerify/packets/hap_verify_v2.txt -> /data/test/hapVerify/" src="res" />

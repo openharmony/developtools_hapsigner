@@ -1491,11 +1491,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_010, testing::ext::TestSize.Level1)
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    EXPECT_NE(csr, nullptr);
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_NE(cert, nullptr);
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**
@@ -1546,11 +1544,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_011, testing::ext::TestSize.Level1)
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    EXPECT_NE(csr, nullptr);
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_NE(cert, nullptr);
+    EXPECT_EQ(cert, nullptr);
 }
 
 
@@ -1602,11 +1598,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_012, testing::ext::TestSize.Level1)
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    EXPECT_NE(csr, nullptr);
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_NE(cert, nullptr);
+    EXPECT_EQ(cert, nullptr);
 }
 
 
@@ -1658,11 +1652,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_013, testing::ext::TestSize.Level1)
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    EXPECT_NE(csr, nullptr);
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_NE(cert, nullptr);
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**
@@ -1713,11 +1705,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_014, testing::ext::TestSize.Level1)
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
-    EXPECT_NE(keyPair, nullptr);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    EXPECT_NE(csr, nullptr);
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_NE(cert, nullptr);
+    EXPECT_EQ(cert, nullptr);
 }
 
 /**

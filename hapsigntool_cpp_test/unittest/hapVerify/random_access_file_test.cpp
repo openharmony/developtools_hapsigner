@@ -70,13 +70,13 @@ namespace {
          */
         std::string filePath = "./hapVerify/test_hapverify.zip";
         SignatureInfo si0;
-        int32_t sumLen = HapSignerBlockUtils::CreatTestZipFile(filePath, si0);
+        int64_t sumLen = HapSignerBlockUtils::CreatTestZipFile(filePath, si0);
         RandomAccessFile hapTestFile1;
         bool initRet = hapTestFile1.Init(filePath);
         ASSERT_TRUE(initRet);
         ASSERT_TRUE(hapTestFile1.GetLength() == sumLen);
         ReadFileErrorCode targetCode = DEST_BUFFER_IS_NULL;
-        long long ret = hapTestFile1.ReadFileFullyFromOffset(nullptr, 0, 0);
+        int32_t ret = hapTestFile1.ReadFileFullyFromOffset(nullptr, 0, 0);
         ASSERT_TRUE(ret == targetCode);
         ByteBuffer nullBuffer;
         ret = hapTestFile1.ReadFileFullyFromOffset(nullBuffer, 0);

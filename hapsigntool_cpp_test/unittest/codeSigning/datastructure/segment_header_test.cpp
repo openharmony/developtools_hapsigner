@@ -32,7 +32,7 @@ public:
 
 /**
  * @tc.name: getSegmentOffset
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SegmentHeaderTest::getSegmentOffset() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -49,7 +49,7 @@ HWTEST_F(SegmentHeaderTest, getSegmentOffset, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: FromByteArray001
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SegmentHeaderTest::FromByteArray001() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -66,7 +66,7 @@ HWTEST_F(SegmentHeaderTest, FromByteArray001, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: FromByteArray002
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SegmentHeaderTest::FromByteArray002() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -84,7 +84,7 @@ HWTEST_F(SegmentHeaderTest, FromByteArray002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: FromByteArray003
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SegmentHeaderTest::FromByteArray003() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

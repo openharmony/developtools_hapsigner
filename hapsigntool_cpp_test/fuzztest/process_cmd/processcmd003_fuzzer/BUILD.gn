@@ -14,7 +14,7 @@
 import("//build/config/features.gni")
 import("//build/test.gni")
 import("../../../../hapsigntool_cpp/signature_tools.gni")
-module_out_path = "developtools/hapsigner/hapsigner_pc"
+module_out_path = "hapsigner/hapsigner_pc"
 
 ohos_fuzztest("ProcessCmd003FuzzTest") {
   testonly = true

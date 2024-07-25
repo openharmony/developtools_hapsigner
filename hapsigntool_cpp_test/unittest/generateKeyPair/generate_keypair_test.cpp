@@ -292,12 +292,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_008, testing::ext::TestSize.
 }
 
 /*
-* @tc.name: generate_keypair_test_010
+* @tc.name: generate_keypair_test_009
 * @tc.desc: Generate a key pair and load it into the keystore.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_009, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -321,12 +321,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_013
+ * @tc.name: generate_keypair_test_010
  * @tc.desc: Write the keypair to the keystore file.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_013, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_010, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -353,12 +353,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_013, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_014
+ * @tc.name: generate_keypair_test_011
  * @tc.desc: The key pair is read from the P12 file by alias.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_014, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_011, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -385,12 +385,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_014, testing::ext::TestSize.
 }
 
 /*
-* @tc.name: generate_keypair_test_016
+* @tc.name: generate_keypair_test_012
 * @tc.desc: Generate a key pair and load it into the keystore.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_016, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_012, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -410,12 +410,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_016, testing::ext::TestSize.
 }
 
 /*
-* @tc.name: generate_keypair_test_017
+* @tc.name: generate_keypair_test_013
 * @tc.desc: Generate a key pair and load it into the keystore.
 * @tc.type: FUNC
 * @tc.require:
 */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_017, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_013, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -439,12 +439,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_017, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_018
+ * @tc.name: generate_keypair_test_014
  * @tc.desc: Generate a key pair and load it into the keystore.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_018, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_014, testing::ext::TestSize.Level1)
 {
     std::unique_ptr<SignToolServiceImpl> api = std::make_unique<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
@@ -464,12 +464,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_018, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_019
+ * @tc.name: generate_keypair_test_015
  * @tc.desc: Create a p12 keystore.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_019, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_015, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -490,12 +490,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_019, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_020
+ * @tc.name: generate_keypair_test_016
  * @tc.desc: Generate a key pair and load it into the keystore.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_020, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_016, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -513,12 +513,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_020, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_021
+ * @tc.name: generate_keypair_test_017
  * @tc.desc: Keystore password parsing.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_021, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_017, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     int ret = keyhelper.Pkcs12PasswordParse(nullptr, nullptr, "");
@@ -526,12 +526,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_021, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_022
+ * @tc.name: generate_keypair_test_018
  * @tc.desc: Generate a key pair and load it into the keystore.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_022, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_018, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -550,12 +550,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_022, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_023
+ * @tc.name: generate_keypair_test_019
  * @tc.desc: Keystore password parsing.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_023, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_019, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -573,12 +573,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_023, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_024
+ * @tc.name: generate_keypair_test_020
  * @tc.desc: Keystore password parsing.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_024, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_020, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -598,12 +598,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_024, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_025
+ * @tc.name: generate_keypair_test_021
  * @tc.desc: Generate a key pair.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_025, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_021, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     EVP_PKEY* keypair = keyhelper.GenerateKeyPair("", 256);
@@ -611,12 +611,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_025, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_026
+ * @tc.name: generate_keypair_test_022
  * @tc.desc: Create a pkcs12 file.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_026, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_022, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     PKCS12* p12 = nullptr;
@@ -625,12 +625,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_026, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_027
+ * @tc.name: generate_keypair_test_023
  * @tc.desc: Generate a key pair.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_027, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_023, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     EVP_PKEY* keypair = keyhelper.GenerateKeyPair("ECC", 0);
@@ -638,12 +638,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_027, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_028
+ * @tc.name: generate_keypair_test_024
  * @tc.desc: Call the SetNidMac() function.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_028, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_024, testing::ext::TestSize.Level1)
 {
     int nidKey = 1;
     int iter = 1;
@@ -655,12 +655,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_028, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_029
+ * @tc.name: generate_keypair_test_025
  * @tc.desc: Call the SetNidMac() function.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_025, testing::ext::TestSize.Level1)
 {
     int nidKey = 0;
     int iter = 0;
@@ -672,12 +672,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_030
+ * @tc.name: generate_keypair_test_026
  * @tc.desc: Set the public key into the pkcs12 structure.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_030, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_026, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     int ret = keyhelper.SetCertPkcs12(nullptr, nullptr, nullptr, nullptr, 0, nullptr, nullptr, 0, 0, nullptr);
@@ -685,12 +685,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_030, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_031
+ * @tc.name: generate_keypair_test_027
  * @tc.desc: Set the public key into the pkcs12 structure.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_031, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_027, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     X509* cert = X509_new();
@@ -699,12 +699,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_031, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_033
+ * @tc.name: generate_keypair_test_028
  * @tc.desc: Set the private key into the pkcs12 structure.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_033, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_028, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
     int ret = keyhelper.SetPkeyPkcs12(nullptr, nullptr, nullptr, nullptr, nullptr, 0, nullptr, 0, 0, nullptr, 0);
@@ -712,12 +712,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_033, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_034
+ * @tc.name: generate_keypair_test_029
  * @tc.desc: Create a p12 file.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_034, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_029, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -737,12 +737,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_034, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_035
+ * @tc.name: generate_keypair_test_030
  * @tc.desc: Create a p12 file.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_035, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_030, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -762,12 +762,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_035, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_036
+ * @tc.name: generate_keypair_test_031
  * @tc.desc: Find the key pair by alias.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_036, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_031, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     PKCS12* p12 = nullptr;
@@ -789,12 +789,12 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_036, testing::ext::TestSize.
 }
 
 /*
- * @tc.name: generate_keypair_test_037
+ * @tc.name: generate_keypair_test_032
  * @tc.desc: Write the keypair to the keystore file.
  * @tc.type: FUNC
  * @tc.require:
  */
-HWTEST_F(GenerateKeyPairTest, generate_keypair_test_037, testing::ext::TestSize.Level1)
+HWTEST_F(GenerateKeyPairTest, generate_keypair_test_032, testing::ext::TestSize.Level1)
 {
     KeyStoreHelper keyhelper;
 
