@@ -47,6 +47,8 @@
             ],
             "inner_kits": [],
             "test": [
+                "//developtools/hapsigner/hapsigntool_cpp_test/unittest:hapsigntool_pc_unittest",
+                "//developtools/hapsigner/hapsigntool_cpp_test/fuzztest:hapsigntool_pc_fuzztest"
             ]
         }
     }
