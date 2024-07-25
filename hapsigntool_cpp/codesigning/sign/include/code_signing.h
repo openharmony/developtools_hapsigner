@@ -63,6 +63,9 @@ public:
     bool SignNativeLibs(const std::string &input, std::string &ownerID);
     void UpdateCodeSignBlock();
     bool GetNativeEntriesFromHap(const std::string& packageName, UnzipHandleParam& param);
+    bool GetSingleFileStreamFromZip(unzFile& zFile, char fileName[],
+                                    unz_file_info& zFileInfo,
+                                    int& readFileSize, std::stringbuf& sb);
     bool RunParseZipInfo(const std::string& packageName, UnzipHandleParam& param, uLong index);
     bool GenerateSignature(const std::vector<int8_t>& signedData, const std::string&,
                            std::vector<int8_t>&);
@@ -75,7 +78,10 @@ public:
 private:
     static bool CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo, char fileName[], size_t* nameLen);
     static bool CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen);
-    bool HandleZipGlobalInfo(const std::string& packageName, unzFile& zFile, unz_global_info& zGlobalInfo, UnzipHandleParam& param);
+    bool HandleZipGlobalInfo(const std::string& packageName, unzFile& zFile,
+                             unz_global_info& zGlobalInfo, UnzipHandleParam& param);
+    bool DoNativeLibVerify(std::string fileName, std::stringbuf& sb,
+                           UnzipHandleParam& param, int readFileSize);
     bool DoNativeLibSignOrVerify(std::string fileName, std::stringbuf& sb,
                                  UnzipHandleParam& param, int readFileSize);
     static constexpr int MAX_PROCESSORS = 32;
