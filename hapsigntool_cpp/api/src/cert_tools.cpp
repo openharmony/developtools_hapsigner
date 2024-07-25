@@ -27,8 +27,6 @@
 #include "constant.h"
 #include "cmd_util.h"
 
-#define BASIC_NUMBER_TWO  2
-
 namespace OHOS {
 namespace SignatureTools {
 
@@ -106,13 +104,10 @@ static bool UpdateConstraint(Options* options)
 
 bool CertTools::SetBisicConstraints(Options* options, X509* cert)
 {
-    /*Check here when the parameter is not entered through the command line */
-    if (!(options->count(Options::BASIC_CONSTRAINTS)
-        && (*options)[Options::BASIC_CONSTRAINTS].index() == BASIC_NUMBER_TWO)) {
-        if (!UpdateConstraint(options)) {
-            return false;
-        }
+    if (!UpdateConstraint(options)) {
+        return false;
     }
+
     bool basicCon = options->GetBool(Options::BASIC_CONSTRAINTS);
     if (basicCon) {
         bool basicConstraintsCritical = options->GetBool(Options::BASIC_CONSTRAINTS_CRITICAL);

@@ -17,6 +17,7 @@
 
 #include "nlohmann/json.hpp"
 #include "signature_tools_log.h"
+#include "signature_tools_errno.h"
 #include "profile_verify.h"
 
 using namespace std;
@@ -216,7 +217,7 @@ void from_json(const json& obj, ProfileInfo& out)
 AppProvisionVerifyResult ReturnIfStringIsEmpty(const std::string& str, const std::string& errMsg)
 {
     if (str.empty()) {
-        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, errMsg);
+        PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errMsg);
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
@@ -225,7 +226,7 @@ AppProvisionVerifyResult ReturnIfStringIsEmpty(const std::string& str, const std
 AppProvisionVerifyResult ReturnIfIntIsNonPositive(int num, const std::string& errMsg)
 {
     if (num <= 0) {
-        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, errMsg);
+        PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errMsg);
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
@@ -248,7 +249,8 @@ static AppProvisionVerifyResult CheckProfileValidType(ProfileInfo& info)
             return PROVISION_INVALID;
         }
     } else {
-        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, "Require build type must be debug or release");
+        PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR,
+		                    "Require build type must be debug or release");
         return PROVISION_INVALID;
     }
     return PROVISION_OK;
@@ -281,7 +283,7 @@ AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileIn
     json obj = json::parse(appProvision, nullptr, false);
     if (obj.is_discarded() || (!obj.is_structured())) {
         std::string errStr = "invalid json object, parse provision failed, json: " + appProvision;
-        PrintErrorNumberMsg("PROVISION_INVALID", PROVISION_INVALID, errStr.c_str());
+        PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errStr.c_str());
         return PROVISION_INVALID;
     }
     obj.get_to(info);

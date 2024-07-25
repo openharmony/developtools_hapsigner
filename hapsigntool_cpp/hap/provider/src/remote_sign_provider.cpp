@@ -73,21 +73,21 @@ bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* c
     X509_NAME* subject2 = X509_get_subject_name(certInProfile);
     if (X509_NAME_cmp(subject1, subject2) != 0) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, subject name is not compare");
+                            "Check Input Cert Match With Profile failed, subject name is not equal");
         return false;
     }
     X509_NAME* issuer1 = X509_get_issuer_name(inputCert);
     X509_NAME* issuer2 = X509_get_issuer_name(certInProfile);
     if (X509_NAME_cmp(issuer1, issuer2) != 0) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, issuer name is not compare");
+                            "Check Input Cert Match With Profile failed, issuer name is not equal");
         return false;
     }
     ASN1_INTEGER* serial1 = X509_get_serialNumber(inputCert);
     ASN1_INTEGER* serial2 = X509_get_serialNumber(certInProfile);
     if (ASN1_INTEGER_cmp(serial1, serial2) != 0) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, serial Number is not compare");
+                            "Check Input Cert Match With Profile failed, serial Number is not equal");
         return false;
     }
     EVP_PKEY* pkey1 = X509_get_pubkey(inputCert);
@@ -96,7 +96,7 @@ bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* c
         EVP_PKEY_free(pkey1);
         EVP_PKEY_free(pkey2);
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "Check Input Cert Match With Profile failed, pubkey is not compare");
+                            "Check Input Cert Match With Profile failed, pubkey is not equal");
         return false;
     }
     if (!pkey1 || !pkey2) {

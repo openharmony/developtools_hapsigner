@@ -91,7 +91,6 @@ public:
     DLL_EXPORT void PutData(int32_t offset, const char data[], int32_t len, int32_t type);
     DLL_EXPORT void PutByte(char value);
     DLL_EXPORT void Put(const ByteBuffer& byteBuffer);
-    DLL_EXPORT std::string GetData(int32_t len);
     DLL_EXPORT void GetData(char data[], uint32_t len);
     DLL_EXPORT void GetData(int32_t offset, int8_t data[], uint32_t len);
     DLL_EXPORT void GetByte(int8_t data[], int32_t len);
