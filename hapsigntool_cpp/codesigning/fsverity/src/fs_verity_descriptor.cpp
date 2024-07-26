@@ -30,8 +30,8 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     int8_t inFsVersion;
     bf->GetInt8(inFsVersion);
     if (FsVerityDescriptor::VERSION != inFsVersion) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong fs-verify descriptor version in the ElfSignBlock");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The FS descriptor version of FsVerityDescriptor is incorrect");
         return builder->Build();
     }
     int8_t inFsHashAlgorithm;
@@ -58,8 +58,8 @@ FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
     int64_t inTreeOffset;
     bf->GetInt64(inTreeOffset);
     if (inTreeOffset % PAGE_SIZE_4K != 0) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong merkle tree offset in the ElfSignBlock");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The offset of merkle tree of FsVerityDescriptor is incorrect");
         return builder->Build();
     }
     int8_t reserve[FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET];

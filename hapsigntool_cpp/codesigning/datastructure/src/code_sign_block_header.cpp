@@ -78,9 +78,8 @@ void CodeSignBlockHeader::ToByteArray(std::vector<int8_t>& ret)
 CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t>& bytes)
 {
     if (bytes.size() != Size()) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed package in CodeSignBlockHeader is different in size from the \
-                             standard header size.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The size of code signature block is incorrect.");
         return nullptr;
     }
     ByteBuffer bf(bytes.size());
@@ -89,15 +88,15 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
     int64_t inMagic;
     bf.GetInt64(inMagic);
     if (inMagic != MAGIC_NUM) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed package has the wrong magic number in the CodeSignBlockHeader.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The magic number in the code signature block header is incorrect.");
         return nullptr;
     }
     int inVersion;
     bf.GetInt32(inVersion);
     if (inVersion != CODE_SIGNING_VERSION) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed package has the wrong code signing version in the CodeSignBlockHeader.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The code signing version in the code signature block header is incorrect.");
         return nullptr;
     }
     int inBlockSize;
@@ -105,15 +104,15 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
     int inSegmentNum;
     bf.GetInt32(inSegmentNum);
     if (inSegmentNum != SEGMENT_NUM) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed package has the wrong segment number in the CodeSignBlockHeader.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The segment number in the code signature block header is incorrect.");
         return nullptr;
     }
     int inFlags;
     bf.GetInt32(inFlags);
     if (inFlags < 0 || inFlags >(FLAG_MERKLE_TREE_INLINED + FLAG_NATIVE_LIB_INCLUDED)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed package has the wrong flag in the CodeSignBlockHeader.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The flag in the code signature block header is incorrect.");
         return nullptr;
     }
     std::vector<int8_t> inReserved(RESERVED_BYTE_ARRAY_LENGTH);

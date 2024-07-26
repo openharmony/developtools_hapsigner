@@ -82,6 +82,10 @@ const int KEYSTORE_PASSWORD_ERROR = -115;
  * Enum constant KEYSTORE_STRUCTURE_ERROR.
  */
 const int KEYSTORE_STRUCTURE_ERROR = -116;
+/**
+ * Enum constant PROVISION_INVALID_ERROR.
+ */
+const int PROVISION_INVALID_ERROR = -117;
 
 } // namespace SignatureTools
 } // namespace OHOS

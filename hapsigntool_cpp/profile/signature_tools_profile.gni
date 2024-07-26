@@ -19,5 +19,4 @@ signature_tools_profile_src = [
   "${signature_tools_profile}/src/profile_verify.cpp",
   "${signature_tools_profile}/src/pkcs7_data.cpp",
   "${signature_tools_profile}/src/profile_sign_tool.cpp",
-  "${signature_tools_profile}/src/profile_verify_utils.cpp",
 ]
