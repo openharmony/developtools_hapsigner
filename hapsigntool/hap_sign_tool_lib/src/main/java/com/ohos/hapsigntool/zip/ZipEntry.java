@@ -125,6 +125,9 @@ public class ZipEntry {
         this.fileEntryInCentralDirectory = centralDirectory;
     }
 
+    /**
+     * zip entry builder
+     */
     public static class Builder {
         private short version = 10;
 
@@ -189,46 +192,52 @@ public class ZipEntry {
             return this;
         }
 
+        /**
+         * build zip entry
+         *
+         * @return Zip Entry
+         * @throws ZipException ZipException
+         */
         public ZipEntry build() throws ZipException {
+            long time = System.currentTimeMillis();
+            CentralDirectory cd = addCenterDirectory(time);
+            ZipEntryHeader zipEntryHeader = addZipEntryHeader(time);
+            if (data == null) {
+                throw new ZipException("can not find entry data");
+            }
+            final CRC32 c = new CRC32();
+            c.update(data);
+            final int crc32 = new Long(c.getValue()).intValue();
+            cd.setCrc32(crc32);
+            zipEntryHeader.setCrc32(crc32);
+
+            ZipEntryData entryData = new ZipEntryData();
+            entryData.setData(data);
+            entryData.setZipEntryHeader(zipEntryHeader);
             ZipEntry entry = new ZipEntry();
-            ZipEntryData zipEntryData = new ZipEntryData();
-            zipEntryData.setData(data);
+            entry.setZipEntryData(entryData);
+            entryData.setType(EntryType.bitMap);
+            entry.setCentralDirectory(cd);
+            return entry;
+        }
 
-            ZipEntryHeader zipEntryHeader = new ZipEntryHeader();
+        private CentralDirectory addCenterDirectory(long time) {
             CentralDirectory cd = new CentralDirectory();
-
             cd.setVersion(version);
             cd.setVersionExtra(version);
-            zipEntryHeader.setVersion(version);
             cd.setFlag(flag);
-            zipEntryHeader.setFlag(flag);
             cd.setMethod(method);
-            zipEntryHeader.setMethod(method);
-
-            long time = System.currentTimeMillis();
             cd.setLastTime((short) (time >> 32));
             cd.setLastDate((short) time);
-            zipEntryHeader.setLastTime((short) (time >> 32));
-            zipEntryHeader.setLastDate((short) time);
-
             cd.setCompressedSize(compressedSize);
-            zipEntryHeader.setCompressedSize(compressedSize);
             cd.setUnCompressedSize(unCompressedSize);
-            zipEntryHeader.setUnCompressedSize(unCompressedSize);
-
             cd.setFileName(fileName);
             cd.setFileNameLength(fileName.length());
-            zipEntryHeader.setFileName(fileName);
-            zipEntryHeader.setFileNameLength(fileName.length());
-
             if (extraData != null) {
                 cd.setExtraData(extraData);
                 cd.setExtraLength(extraData.length);
-                zipEntryHeader.setExtraData(extraData);
-                zipEntryHeader.setExtraLength(extraData.length);
             } else {
                 cd.setExtraLength(0);
-                zipEntryHeader.setExtraLength(0);
             }
             if (comment != null) {
                 cd.setComment(comment);
@@ -240,22 +249,28 @@ public class ZipEntry {
             cd.setExternalFile(0);
 
             cd.updateLength();
-            zipEntryHeader.updateLength();
+            return cd;
+        }
 
-            if (data == null) {
-                throw new ZipException("can not find entry data");
+        private ZipEntryHeader addZipEntryHeader(long time) {
+            ZipEntryHeader zipEntryHeader = new ZipEntryHeader();
+            zipEntryHeader.setVersion(version);
+            zipEntryHeader.setFlag(flag);
+            zipEntryHeader.setMethod(method);
+            zipEntryHeader.setLastTime((short) (time >> 32));
+            zipEntryHeader.setLastDate((short) time);
+            zipEntryHeader.setCompressedSize(compressedSize);
+            zipEntryHeader.setUnCompressedSize(unCompressedSize);
+            zipEntryHeader.setFileName(fileName);
+            zipEntryHeader.setFileNameLength(fileName.length());
+            if (extraData != null) {
+                zipEntryHeader.setExtraData(extraData);
+                zipEntryHeader.setExtraLength(extraData.length);
+            } else {
+                zipEntryHeader.setExtraLength(0);
             }
-            final CRC32 c = new CRC32();
-            c.update(data);
-            final int crc32 = new Long(c.getValue()).intValue();
-            cd.setCrc32(crc32);
-            zipEntryHeader.setCrc32(crc32);
-
-            zipEntryData.setZipEntryHeader(zipEntryHeader);
-            entry.setZipEntryData(zipEntryData);
-            zipEntryData.setType(EntryType.BitMap);
-            entry.setCentralDirectory(cd);
-            return entry;
+            zipEntryHeader.updateLength();
+            return zipEntryHeader;
         }
     }
 }

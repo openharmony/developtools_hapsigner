@@ -190,7 +190,7 @@ public class Zip {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
                 FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), fos);
                 boolean isSuccess;
-                if (entry.getZipEntryData().getType() == EntryType.BitMap) {
+                if (entry.getZipEntryData().getType() == EntryType.bitMap) {
                     ByteBuffer bf = ByteBuffer.wrap(entry.getZipEntryData().getData());
                     bf.order(ByteOrder.LITTLE_ENDIAN);
                     isSuccess = FileUtils.writeByteToOutFile(bf.array(), fos);
@@ -236,7 +236,7 @@ public class Zip {
                 }
                 int alignBytes;
                 EntryType type = entry.getZipEntryData().getType();
-                if (type == EntryType.RunnableFile || type == EntryType.BitMap) {
+                if (type == EntryType.runnableFile || type == EntryType.bitMap) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
                 } else if (isFirstUnRunnableFile) {
@@ -257,9 +257,15 @@ public class Zip {
         }
     }
 
+    /**
+     * add bit map entry
+     *
+     * @param data bitmap data
+     * @throws ZipException ZipException
+     */
     public void addBitMap(byte[] data) throws ZipException {
         for (ZipEntry e : zipEntries) {
-            if (e.getZipEntryData().getType() == EntryType.BitMap) {
+            if (e.getZipEntryData().getType() == EntryType.bitMap) {
                 e.getZipEntryData().setData(data);
                 e.getZipEntryData().getZipEntryHeader().setUnCompressedSize(data.length);
                 e.getZipEntryData().getZipEntryHeader().setCompressedSize(data.length);

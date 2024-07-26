@@ -47,10 +47,6 @@ public class ZipEntryData {
 
     private long length;
 
-    public ZipEntryHeader getZipEntryHeader() {
-        return zipEntryHeader;
-    }
-
     private EntryType type;
 
     private byte[] data;
@@ -60,7 +56,7 @@ public class ZipEntryData {
      */
     public void updateLength() {
         zipEntryHeader.updateLength();
-        if (type == EntryType.BitMap) {
+        if (type == EntryType.bitMap) {
             length = zipEntryHeader.getLength() + data.length + (dataDescriptor == null ? 0 : 16);
         } else {
             length = zipEntryHeader.getLength() + fileSize + (dataDescriptor == null ? 0 : 16);
@@ -102,16 +98,16 @@ public class ZipEntryData {
             ZipEntryData entry = new ZipEntryData();
             entry.setFileOffset(offset);
             entry.setFileSize(fileSize);
-            byte[] data = FileUtils.readInputByLength(input, fileSize);
+            byte[] readData = FileUtils.readInputByLength(input, fileSize);
 
             if (entryHeader.getMethod() == Zip.FILE_UNCOMPRESS_METHOD_FLAG
                     && FileUtils.isRunnableFile(entryHeader.getFileName())) {
-                entry.setType(EntryType.RunnableFile);
-            } else if (entryHeader.getFileName().equals(FileUtils.BIT_MAP_FILENAME)) {
-                entry.setType(EntryType.BitMap);
-                entry.data = data;
+                entry.setType(EntryType.runnableFile);
+            } else if (FileUtils.BIT_MAP_FILENAME.equals(entryHeader.getFileName())) {
+                entry.setType(EntryType.bitMap);
+                entry.data = readData;
             } else {
-                entry.setType(EntryType.ResourceFile);
+                entry.setType(EntryType.resourceFile);
             }
 
             long entryLength = entryHeader.getLength() + fileSize;
@@ -133,6 +129,10 @@ public class ZipEntryData {
 
     public void setZipEntryHeader(ZipEntryHeader zipEntryHeader) {
         this.zipEntryHeader = zipEntryHeader;
+    }
+
+    public ZipEntryHeader getZipEntryHeader() {
+        return zipEntryHeader;
     }
 
     public DataDescriptor getDataDescriptor() {
