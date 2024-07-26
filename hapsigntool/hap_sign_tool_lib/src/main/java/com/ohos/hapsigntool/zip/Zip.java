@@ -190,7 +190,7 @@ public class Zip {
                 ZipEntryData zipEntryData = entry.getZipEntryData();
                 FileUtils.writeByteToOutFile(zipEntryData.getZipEntryHeader().toBytes(), fos);
                 boolean isSuccess;
-                if (entry.getZipEntryData().getType() == EntryType.bitMap) {
+                if (entry.getZipEntryData().getData() != null) {
                     ByteBuffer bf = ByteBuffer.wrap(entry.getZipEntryData().getData());
                     bf.order(ByteOrder.LITTLE_ENDIAN);
                     isSuccess = FileUtils.writeByteToOutFile(bf.array(), fos);
@@ -236,7 +236,8 @@ public class Zip {
                 }
                 int alignBytes;
                 EntryType type = entry.getZipEntryData().getType();
-                if (type == EntryType.runnableFile || type == EntryType.bitMap) {
+                if ((type == EntryType.runnableFile && method == FILE_UNCOMPRESS_METHOD_FLAG) ||
+                    type == EntryType.bitMap) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
                 } else if (isFirstUnRunnableFile) {

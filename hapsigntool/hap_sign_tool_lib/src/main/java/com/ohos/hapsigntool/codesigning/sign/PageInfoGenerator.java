@@ -81,7 +81,8 @@ public class PageInfoGenerator {
                 throw new HapFormatException(
                     String.format(Locale.ROOT, "Invalid entryDataOffset(%d), not a multiple of 4096", entryDataOffset));
             }
-            if (EntryType.runnableFile.equals(entry.getZipEntryData().getType())) {
+            if (EntryType.runnableFile.equals(entry.getZipEntryData().getType())
+                    && Zip.FILE_UNCOMPRESS_METHOD_FLAG == entry.getZipEntryData().getZipEntryHeader().getMethod()) {
                 runnableFileNames.put(zipEntryHeader.getFileName(), entryDataOffset);
                 continue;
             }

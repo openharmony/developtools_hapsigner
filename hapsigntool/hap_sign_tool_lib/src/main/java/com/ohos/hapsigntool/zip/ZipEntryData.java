@@ -98,14 +98,12 @@ public class ZipEntryData {
             ZipEntryData entry = new ZipEntryData();
             entry.setFileOffset(offset);
             entry.setFileSize(fileSize);
-            byte[] readData = FileUtils.readInputByLength(input, fileSize);
+            input.skip(fileSize);
 
-            if (entryHeader.getMethod() == Zip.FILE_UNCOMPRESS_METHOD_FLAG
-                    && FileUtils.isRunnableFile(entryHeader.getFileName())) {
+            if (FileUtils.isRunnableFile(entryHeader.getFileName())) {
                 entry.setType(EntryType.runnableFile);
             } else if (FileUtils.BIT_MAP_FILENAME.equals(entryHeader.getFileName())) {
                 entry.setType(EntryType.bitMap);
-                entry.data = readData;
             } else {
                 entry.setType(EntryType.resourceFile);
             }
