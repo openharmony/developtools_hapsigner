@@ -26,30 +26,6 @@
 using namespace testing::ext;
 using namespace OHOS::SignatureTools;
 
-namespace OHOS {
-    namespace SignatureTools {
-        bool Base64StringDecode(const std::string& base64String, ByteBuffer& output)
-        {
-            std::unique_ptr<char[]> decodeBuffer = std::make_unique<char[]>(base64String.size());
-            if (decodeBuffer == nullptr) {
-                return false;
-            }
-
-            const unsigned char* input = reinterpret_cast<const unsigned char*>(base64String.c_str());
-            int32_t len = EVP_DecodeBlock(reinterpret_cast<unsigned char*>(decodeBuffer.get()),
-                                          input, base64String.size());
-            if (len <= 0) {
-                return false;
-            }
-
-            output.SetCapacity(len);
-            output.PutData(0, decodeBuffer.get(), len);
-            decodeBuffer.reset(nullptr);
-            return true;
-        }
-    } // namespace SignatureTools
-} // namespace OHOS
-
 namespace {
     class VerifyCertOpensslUtilsTest : public testing::Test {
     public:
