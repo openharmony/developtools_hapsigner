@@ -114,7 +114,7 @@ uint32_t CodeSigning::ComputeDataSize(ZipSigner& zip)
     }
     if ((dataSize % CodeSignBlock::PAGE_SIZE_4K) != 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "Invalid dataSize, the dataSize is not an integer multiple of 4096");
+                            "Invalid dataSize, the dataSize must be an integer multiple of 4096");
         return -1;
     }
     return dataSize;

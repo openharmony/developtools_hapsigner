@@ -143,7 +143,7 @@ NativeLibInfoSegment NativeLibInfoSegment::FromByteArray(std::vector<int8_t> &by
     for (SignedFilePos &pos : inSignedFilePosList) {
         if (pos.GetSignInfoOffset() % ALIGNMENT_FOR_SIGNINFO != 0) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                                "The offset in signature info is not an integer multiple of 4");
+                                "The offset of signature information must be an integer multiple of 4");
             return NativeLibInfoSegment();
         }
         std::vector<int8_t> signInfoBuffer(pos.GetSignInfoSize());
@@ -161,19 +161,19 @@ bool NativeLibInfoSegment::CheckBuffer(ByteBuffer* bf, int32_t& inMagic, int32_t
     bf->GetInt32(inMagic);
     if (inMagic != MAGIC_NUM) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The magic number in native lib info is incorrect.");
+                            "The magic number of NativeLibInfoSegment is incorrect.");
         return false;
     }
     bf->GetInt32(inSegmentSize);
     if (inSegmentSize < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The segment size in native lib info is incorrect.");
+                            "The segment size of NativeLibInfoSegment is incorrect.");
         return false;
     }
     bf->GetInt32(inSectionNum);
     if (inSectionNum < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The section number in native lib info is incorrect.");
+                            "The section number of NativeLibInfoSegment is incorrect.");
         return false;
     }
     return true;
