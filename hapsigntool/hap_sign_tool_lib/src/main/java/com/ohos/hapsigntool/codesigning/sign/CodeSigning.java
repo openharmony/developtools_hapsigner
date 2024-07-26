@@ -220,7 +220,9 @@ public class CodeSigning {
         for (ZipEntry entry : zip.getZipEntries()) {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
             EntryType type = entry.getZipEntryData().getType();
-            if (EntryType.bitMap.equals(type) || EntryType.runnableFile.equals(type)) {
+            short method = zipEntryHeader.getMethod();
+            if (EntryType.bitMap.equals(type) ||
+                    (EntryType.runnableFile.equals(type) && method == Zip.FILE_UNCOMPRESS_METHOD_FLAG)) {
                 continue;
             }
             // if the first file is not uncompressed abc or so, set dataSize to zero
