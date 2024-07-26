@@ -376,7 +376,7 @@ HWTEST_F(ZipSignerTest, EndOfCentralDirectoryGetEOCDByBytesTest001, testing::ext
     input.seekg(0, std::ios::beg);
 
     int eocdLength = EndOfCentralDirectory::EOCD_LENGTH;
-    uint64_t eocdOffset = (uint64_t)(fileSize - eocdLength);
+    uint64_t eocdOffset = reinterpret_cast<uint64_t>(fileSize - eocdLength);
 
     std::string retStr;
     int res = FileUtils::ReadFileByOffsetAndLength(input, eocdOffset, eocdLength, retStr);
