@@ -19,7 +19,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
 import com.ohos.hapsigntool.codesigning.sign.PageInfoGenerator;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
