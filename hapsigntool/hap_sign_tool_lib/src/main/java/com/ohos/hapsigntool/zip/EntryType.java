@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.ohos.hapsigntool.zip;
 
 /**
@@ -20,7 +21,7 @@ package com.ohos.hapsigntool.zip;
  * @since 2024/06/25
  */
 public enum EntryType {
-    RunnableFile,
-    BitMap,
-    ResourceFile;
+    runnableFile,
+    bitMap,
+    resourceFile;
 }

@@ -498,6 +498,7 @@ public abstract class SignProvider {
      * @param input file input
      * @param tmpOutput file tmpOutput
      * @param alignment alignment
+     * @param suffix suffix
      * @return zip zip
      * @throws IOException io error
      * @throws HapFormatException hap format error
