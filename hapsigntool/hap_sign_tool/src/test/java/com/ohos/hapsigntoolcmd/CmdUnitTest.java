@@ -958,7 +958,7 @@ public class CmdUnitTest {
             CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
             CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
             CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
-            CMD_IN_FILE, unsignedHap,
+            CMD_IN_FILE, signedHap,
             CMD_OUT_FILE, signedHap
         });
         assertTrue(result);

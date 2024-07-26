@@ -20,6 +20,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.elf.ElfFile;
 import com.ohos.hapsigntool.codesigning.elf.ElfProgramHeader;
 import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.zip.EntryType;
@@ -67,14 +68,14 @@ public class PageInfoGenerator {
      * @throws IOException io error
      * @throws HapFormatException hap file format error
      */
-    public PageInfoGenerator(Zip zip) throws IOException, HapFormatException {
+    public PageInfoGenerator(Zip zip) throws IOException, HapFormatException, ElfFormatException {
         Map<String, Long> runnableFileNames = new LinkedHashMap<>();
         List<ZipEntry> zipEntries = zip.getZipEntries();
         for (ZipEntry entry : zipEntries) {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
             long entryDataOffset = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
                 + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
-            if (entryDataOffset % CodeSignBlock.PAGE_SIZE_4K != 0) {
+            if (!NumberUtils.isMultiple4K(entryDataOffset)) {
                 throw new HapFormatException(
                     String.format(Locale.ROOT, "Invalid entryDataOffset(%d), not a multiple of 4096", entryDataOffset));
             }
@@ -94,7 +95,8 @@ public class PageInfoGenerator {
         }
     }
 
-    private void libExecSegment(JarFile hap, String libFileName, long entryDataOffset) throws IOException {
+    private void libExecSegment(JarFile hap, String libFileName, long entryDataOffset)
+        throws IOException, ElfFormatException {
         JarEntry libEntry = hap.getJarEntry(libFileName);
         if (libFileName.endsWith(FileUtils.ABC_FILE_SUFFIX)) {
             long size = libEntry.getSize();
@@ -102,6 +104,10 @@ public class PageInfoGenerator {
         } else {
             try (InputStream stream = hap.getInputStream(libEntry)) {
                 ElfFile elfFile = new ElfFile(stream);
+                if (!elfFile.isElfFile()) {
+                    LOGGER.info("{} not ELF file", libFileName);
+                    return;
+                }
                 List<ElfProgramHeader> elfPHeaders = elfFile.filterExecPHeaders();
                 for (ElfProgramHeader programHeader : elfPHeaders) {
                     long pOffset = programHeader.getPOffset();
@@ -110,8 +116,6 @@ public class PageInfoGenerator {
                     long endoff = off + pFilesz;
                     excSegmentList.add(new ExcSegment(ELF_M_CODE, libFileName, off, endoff));
                 }
-            } catch (ElfFormatException e) {
-                LOGGER.info(libFileName + " error : " + e.getMessage());
             }
         }
     }
@@ -123,7 +127,7 @@ public class PageInfoGenerator {
      * @throws HapFormatException hap format error
      */
     public byte[] generateBitMap() throws HapFormatException {
-        if (maxEntryDataOffset % CodeSignBlock.PAGE_SIZE_4K != 0) {
+        if (!NumberUtils.isMultiple4K(maxEntryDataOffset)) {
             throw new HapFormatException(
                 String.format(Locale.ROOT, "Invalid maxEndOff(%d), not a multiple of 4096", maxEntryDataOffset));
         }
@@ -131,10 +135,10 @@ public class PageInfoGenerator {
         BitSet bitmap = new BitSet(len);
         for (ExcSegment es : excSegmentList) {
             int begin = (int) (es.getStartOffset() >> 12) * PageInfoExtension.DEFAULT_UNIT_SIZE;
-            int end = (es.getEndOffset() % CodeSignBlock.PAGE_SIZE_4K == 0)
+            int end = (NumberUtils.isMultiple4K(es.getEndOffset()))
                 ? (int) ((es.getEndOffset() >> 12)) * PageInfoExtension.DEFAULT_UNIT_SIZE
                 : (int) ((es.getEndOffset() >> 12) + 1) * PageInfoExtension.DEFAULT_UNIT_SIZE;
-            for (int i = begin; i < end; i = i + 4) {
+            for (int i = begin; i < end; i = i + PageInfoExtension.DEFAULT_UNIT_SIZE) {
                 if ((ELF_M_CODE == es.getType())) {
                     bitmap.set(i);
                 } else {

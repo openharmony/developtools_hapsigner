@@ -16,6 +16,7 @@
 package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -152,7 +153,7 @@ public class PageInfoExtension extends Extension {
         bf.put(bytes);
         bf.rewind();
         long inMapOffset = bf.getLong();
-        if (inMapOffset % CodeSignBlock.PAGE_SIZE_4K != 0) {
+        if (!NumberUtils.isMultiple4K(inMapOffset)) {
             throw new VerifyCodeSignException("mapOffset is not a multiple of 4096");
         }
         long inMapSize = bf.getLong();

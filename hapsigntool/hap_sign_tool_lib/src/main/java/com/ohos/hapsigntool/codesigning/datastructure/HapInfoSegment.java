@@ -16,6 +16,7 @@
 package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -116,7 +117,7 @@ public class HapInfoSegment {
         byte[] hapSignInfoByteArray = new byte[bytes.length - MAGIC_NUM_BYTES];
         bf.get(hapSignInfoByteArray);
         SignInfo inHapSignInfo = SignInfo.fromByteArray(hapSignInfoByteArray);
-        if (inHapSignInfo.getDataSize() % CodeSignBlock.PAGE_SIZE_4K != 0) {
+        if (!NumberUtils.isMultiple4K(inHapSignInfo.getDataSize())) {
             throw new VerifyCodeSignException(
                 String.format(Locale.ROOT, "Invalid dataSize number of HapInfoSegment, not a multiple of 4096: %d",
                     inHapSignInfo.getDataSize()));

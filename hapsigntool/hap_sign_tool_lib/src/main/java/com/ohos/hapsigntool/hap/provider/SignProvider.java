@@ -19,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
 import com.ohos.hapsigntool.codesigning.sign.PageInfoGenerator;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
@@ -329,12 +330,8 @@ public abstract class SignProvider {
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
             String suffix = getFileSuffix(input);
-            if (input.getCanonicalPath().equals(output.getCanonicalPath())) {
-                tmpOutput = File.createTempFile("signedHap", "." + suffix);
-                isPathOverlap = true;
-            } else {
-                tmpOutput = output;
-            }
+            isPathOverlap = input.getCanonicalPath().equals(output.getCanonicalPath());
+            tmpOutput = isPathOverlap ? File.createTempFile("signedHap", "." + suffix) : output;
             // copy file and Alignment
             int alignment = Integer.parseInt(signParams.get(ParamConstants.PARAM_BASIC_ALIGNMENT));
             Zip zip = copyFileAndAlignment(input, tmpOutput, alignment, suffix);
@@ -365,7 +362,8 @@ public abstract class SignProvider {
                 isRet = true;
             }
         } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException
-|InvalidParamsException |ProfileException |NumberFormatException |CustomException |IOException |CodeSignException e) {
+                 | InvalidParamsException | ProfileException | NumberFormatException | CustomException | IOException
+                 | CodeSignException | ElfFormatException e) {
             printErrorLogWithoutStack(e);
         } catch (SignatureException e) {
             printErrorLog(e);
@@ -504,7 +502,7 @@ public abstract class SignProvider {
      * @throws HapFormatException hap format error
      */
     private Zip copyFileAndAlignment(File input, File tmpOutput, int alignment, String suffix)
-        throws IOException, HapFormatException {
+        throws IOException, HapFormatException, ElfFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
         if (StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)) {
