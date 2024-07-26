@@ -66,7 +66,6 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     X509_REQ* subcsr = CertTools::GenerateCsr(keyPair, signAlg, issuer);
     X509* cert = X509_new();
     CertTools::SignForSubCert(cert, subcsr, rootcsr, keyPair, params.get());
-
     return true;
 }
 }

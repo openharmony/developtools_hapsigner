@@ -19,14 +19,7 @@
 #include <string>
 
 #include "byte_buffer.h"
-
 #include "test_const.h"
-
-namespace OHOS {
-    namespace SignatureTools {
-        bool Base64StringDecode(const std::string& base64String, SignatureTools::ByteBuffer& output);
-    }
-}
 
 int32_t GetCertInfo001(void);
 int32_t CertVerify001(void);
