@@ -153,29 +153,6 @@ public class PageInfoGenerator {
         return buffer.array();
     }
 
-    /**
-     * get bitmap file's offset and size
-     *
-     * @param zip hap file
-     * @return long array of offset and size
-     */
-    public static long[] getPageInfoFromZip(Zip zip) {
-        List<ZipEntry> zipEntries = zip.getZipEntries();
-        for (ZipEntry e : zipEntries) {
-            String fileName = e.getCentralDirectory().getFileName();
-            if (!FileUtils.BIT_MAP_FILENAME.equals(fileName)) {
-                continue;
-            }
-            long fileOffset = e.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH + e.getZipEntryData()
-                .getZipEntryHeader()
-                .getFileNameLength() + e.getZipEntryData().getZipEntryHeader().getExtraLength();
-            long fileSize = e.getCentralDirectory().getUnCompressedSize();
-            long bitmapSize = fileSize * 8;
-            return new long[] {fileOffset, bitmapSize};
-        }
-        return new long[0];
-    }
-
     static class ExcSegment {
         /**
          * abc or elf
