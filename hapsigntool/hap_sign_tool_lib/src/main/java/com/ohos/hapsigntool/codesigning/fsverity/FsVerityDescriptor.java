@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.codesigning.fsverity;
 
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -173,7 +174,7 @@ public class FsVerityDescriptor {
         int inFlags = bf.getInt();
         bf.getInt();
         long inTreeOffset = bf.getLong();
-        if (inTreeOffset % PAGE_SIZE_4K != 0) {
+        if (!NumberUtils.isMultiple4K(inTreeOffset)) {
             throw new VerifyCodeSignException("Invalid merkle tree offset of ElfSignBlock");
         }
         bf.get(new byte[FsVerityDescriptor.RESERVED_SIZE_AFTER_TREE_OFFSET]);

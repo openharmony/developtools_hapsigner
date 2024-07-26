@@ -42,6 +42,9 @@ public class ElfFile {
      */
     public ElfFile(InputStream is) throws IOException, ElfFormatException {
         elfHeader = new ElfHeader(is);
+        if (!isElfFile()) {
+            return;
+        }
         byte eiClass = elfHeader.getEiClass();
         byte eiData = elfHeader.getEiData();
         short ePhnum = elfHeader.getEPhnum();
@@ -64,5 +67,14 @@ public class ElfFile {
      */
     public List<ElfProgramHeader> filterExecPHeaders() {
         return programHeaderList.stream().filter(phdr -> (phdr.getPFlags() & 1) == 1).collect(Collectors.toList());
+    }
+
+    /**
+     * return true if magic number is correct
+     *
+     * @return true if magic number is correct
+     */
+    public boolean isElfFile() {
+        return elfHeader.isElfFile();
     }
 }

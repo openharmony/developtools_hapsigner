@@ -29,6 +29,7 @@ import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptor;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptorWithSign;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.ProfileException;
@@ -238,7 +239,7 @@ public class CodeSigning {
                     + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
             break;
         }
-        if ((dataSize % CodeSignBlock.PAGE_SIZE_4K) != 0) {
+        if (!NumberUtils.isMultiple4K(dataSize)) {
             throw new HapFormatException(
                 String.format(Locale.ROOT, "Invalid dataSize(%d), not a multiple of 4096", dataSize));
         }
