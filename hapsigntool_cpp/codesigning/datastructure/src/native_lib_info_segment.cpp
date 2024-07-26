@@ -161,19 +161,19 @@ bool NativeLibInfoSegment::CheckBuffer(ByteBuffer* bf, int32_t& inMagic, int32_t
     bf->GetInt32(inMagic);
     if (inMagic != MAGIC_NUM) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong magic number in the NativeLibInfoSegment");
+                            "The magic number in native lib info is incorrect.");
         return false;
     }
     bf->GetInt32(inSegmentSize);
     if (inSegmentSize < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong segmentSize in the NativeLibInfoSegment");
+                            "The segment size in native lib info is incorrect.");
         return false;
     }
     bf->GetInt32(inSectionNum);
     if (inSectionNum < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong sectionNum in the NativeLibInfoSegment");
+                            "The section number in native lib info is incorrect.");
         return false;
     }
     return true;

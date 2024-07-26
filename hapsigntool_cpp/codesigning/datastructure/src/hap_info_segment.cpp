@@ -66,12 +66,12 @@ HapInfoSegment HapInfoSegment::FromByteArray(std::vector<int8_t>& bytes)
     bf->GetInt32(inMagic);
     if (inMagic != HapInfoSegment::MAGIC_NUM) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong magic number in the HapInfoSegment.");
+                            "The magic number in the hap info is incorrect.");
         return HapInfoSegment();
     }
     if (bytes.size() <= HapInfoSegment::MAGIC_NUM_BYTES) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong bytes size in the HapInfoSegment.");
+                            "The bytes size in the hap info is incorrect.");
         return HapInfoSegment();
     }
     std::vector<int8_t> hapSignInfoByteArray(bytes.size() - HapInfoSegment::MAGIC_NUM_BYTES);
@@ -84,7 +84,7 @@ HapInfoSegment HapInfoSegment::FromByteArray(std::vector<int8_t>& bytes)
     }
     if (inHapSignInfo.GetExtensionNum() != SignInfo::MAX_EXTENSION_NUM) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong extensionNum in the HapInfoSegment.");
+                            "The extension number in the hap info segment is incorrect.");
         return HapInfoSegment();
     }
     return HapInfoSegment(inMagic, inHapSignInfo);
