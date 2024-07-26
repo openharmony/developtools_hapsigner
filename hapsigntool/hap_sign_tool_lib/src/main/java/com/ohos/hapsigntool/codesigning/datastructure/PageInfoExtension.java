@@ -83,7 +83,7 @@ public class PageInfoExtension extends Extension {
      * @param mapSize   bit size
      */
     public PageInfoExtension(long mapOffset, long mapSize) {
-        super(PAGE_INFO_INLINED, Extension.EXTENSION_HEADER_SIZE + PAGE_INFO_EXTENSION_DATA_SIZE_WITHOUT_SIGN);
+        super(PAGE_INFO_INLINED, PAGE_INFO_EXTENSION_DATA_SIZE_WITHOUT_SIGN);
         this.mapOffset = mapOffset;
         this.mapSize = mapSize;
         unitSize = DEFAULT_UNIT_SIZE;
@@ -95,7 +95,7 @@ public class PageInfoExtension extends Extension {
             this.signature = signature;
             this.zeroPadding = new byte[(SIGNATURE_ALIGNMENT - (signSize % SIGNATURE_ALIGNMENT)) % SIGNATURE_ALIGNMENT];
         }
-        super.setSize(size());
+        super.setSize(size() - Extension.EXTENSION_HEADER_SIZE);
     }
 
     public long getMapOffset() {

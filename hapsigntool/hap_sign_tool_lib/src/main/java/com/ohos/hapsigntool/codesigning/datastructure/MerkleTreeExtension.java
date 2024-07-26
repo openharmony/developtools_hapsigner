@@ -64,7 +64,7 @@ public class MerkleTreeExtension extends Extension {
      * @param rootHash         Root hash of the merkle tree
      */
     public MerkleTreeExtension(long merkleTreeSize, long merkleTreeOffset, byte[] rootHash) {
-        super(MERKLE_TREE_INLINED, Extension.EXTENSION_HEADER_SIZE + MERKLE_TREE_EXTENSION_DATA_SIZE);
+        super(MERKLE_TREE_INLINED, MERKLE_TREE_EXTENSION_DATA_SIZE);
         this.merkleTreeSize = merkleTreeSize;
         this.merkleTreeOffset = merkleTreeOffset;
         if (rootHash == null) {

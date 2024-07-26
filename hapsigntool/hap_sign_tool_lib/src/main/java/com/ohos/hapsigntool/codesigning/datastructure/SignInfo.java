@@ -276,20 +276,19 @@ public class SignInfo {
             if (extensionType == MerkleTreeExtension.MERKLE_TREE_INLINED) {
                 // parse merkle tree extension
                 int extensionSize = bf.getInt();
-                if (extensionSize != (Extension.EXTENSION_HEADER_SIZE
-                    + MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE)) {
-                    throw new VerifyCodeSignException("Invalid extensionSize of SignInfo");
+                if (extensionSize != (MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE)) {
+                    throw new VerifyCodeSignException("Invalid MerkleTree extensionSize of SignInfo");
                 }
-                byte[] merkleTreeExtension = new byte[MerkleTreeExtension.MERKLE_TREE_EXTENSION_DATA_SIZE];
+                byte[] merkleTreeExtension = new byte[extensionSize];
                 bf.get(merkleTreeExtension);
                 inExtensionList.add(MerkleTreeExtension.fromByteArray(merkleTreeExtension));
             } else if (extensionType == PageInfoExtension.PAGE_INFO_INLINED) {
                 // parse page info extension
                 int extensionSize = bf.getInt();
-                if (extensionSize <= (Extension.EXTENSION_HEADER_SIZE)) {
-                    throw new VerifyCodeSignException("Invalid extensionSize of SignInfo");
+                if (extensionSize < (PageInfoExtension.PAGE_INFO_EXTENSION_DATA_SIZE_WITHOUT_SIGN)) {
+                    throw new VerifyCodeSignException("Invalid PageInfo extensionSize of SignInfo");
                 }
-                byte[] pageInfoExtension = new byte[extensionSize - Extension.EXTENSION_HEADER_SIZE];
+                byte[] pageInfoExtension = new byte[extensionSize];
                 bf.get(pageInfoExtension);
                 inExtensionList.add(PageInfoExtension.fromByteArray(pageInfoExtension));
             } else {
