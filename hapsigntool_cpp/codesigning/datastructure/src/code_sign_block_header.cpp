@@ -79,8 +79,7 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
 {
     if (bytes.size() != Size()) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The header size in code signature block is different from the \
-                            standard header size.");
+                            "The size of code signature block is incorrect.");
         return nullptr;
     }
     ByteBuffer bf(bytes.size());

@@ -332,7 +332,7 @@ bool SignToolServiceImpl::OutputString(std::string content, std::string file)
 bool SignToolServiceImpl::X509CertVerify(X509* cert, EVP_PKEY* privateKey)
 {
     if (!X509_verify(cert, privateKey)) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "verify cert failed!");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Verify certificate failed!");
         return false;
     }
     return true;

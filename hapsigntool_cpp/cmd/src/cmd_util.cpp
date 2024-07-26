@@ -375,7 +375,7 @@ bool CmdUtil::Convert2Params(char** args, const size_t size, const ParamsSharedP
     }
     if (!readKey) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
-                            "The last command-line parameters value cannot be omitted");
+                            "The last value of parameter cannot be omitted");
         return false;
     }
     if (!UpdateParam(param)) {

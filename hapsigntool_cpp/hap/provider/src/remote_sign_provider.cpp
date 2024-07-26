@@ -66,7 +66,7 @@ bool RemoteSignProvider::CheckInputCertMatchWithProfile(X509* inputCert, X509* c
     bool ret = true;
     if (inputCert == nullptr || certInProfile == nullptr) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
-                            "The cert is empty");
+                            "The certificate is empty");
         return false;
     }
     X509_NAME* subject1 = X509_get_subject_name(inputCert);
