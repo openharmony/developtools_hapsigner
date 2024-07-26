@@ -507,7 +507,7 @@ public abstract class SignProvider {
         throws IOException, HapFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
-        if ("hap".equals(suffix)) {
+        if (StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)) {
             PageInfoGenerator pageInfoGenerator = new PageInfoGenerator(zip);
             byte[] bitMap = pageInfoGenerator.generateBitMap();
             if (bitMap != null) {
