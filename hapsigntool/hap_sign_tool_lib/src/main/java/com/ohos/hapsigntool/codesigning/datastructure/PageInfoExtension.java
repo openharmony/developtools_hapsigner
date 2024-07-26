@@ -19,6 +19,7 @@ import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Locale;
 
 /**
  * Pages info extension is a type of Extension to store bitmap file's information, i.e. size and offset, ect.
@@ -167,5 +168,12 @@ public class PageInfoExtension extends Extension {
         extension.unitSize = inUnitSize;
         extension.setSignature(inSignature);
         return extension;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.ROOT,
+            "PageInfoExtension: size[%d], mapOffset[%d], mapSize[%d], unitSize[%d], signSize[%d]", size(),
+            this.mapOffset, this.mapSize, this.unitSize, this.signSize);
     }
 }

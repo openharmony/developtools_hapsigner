@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.sign;
 
+import com.ohos.hapsigntool.codesigning.datastructure.CodeSignBlock;
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.elf.ElfFile;
 import com.ohos.hapsigntool.codesigning.elf.ElfProgramHeader;
@@ -53,10 +54,6 @@ public class PageInfoGenerator {
 
     private static final byte ELF_M_CODE = 1;
 
-    private static final long PAGE_SIZE_4K = 4096L;
-
-    private static final long PAGE_SIZE_1K = PAGE_SIZE_4K / PageInfoExtension.DEFAULT_UNIT_SIZE;
-
     private static final Logger LOGGER = LogManager.getLogger(PageInfoGenerator.class);
 
     private long maxEntryDataOffset = 0L;
@@ -77,7 +74,7 @@ public class PageInfoGenerator {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
             long entryDataOffset = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
                 + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
-            if (entryDataOffset % PAGE_SIZE_4K != 0) {
+            if (entryDataOffset % CodeSignBlock.PAGE_SIZE_4K != 0) {
                 throw new HapFormatException(
                     String.format(Locale.ROOT, "Invalid entryDataOffset(%d), not a multiple of 4096", entryDataOffset));
             }
@@ -126,15 +123,15 @@ public class PageInfoGenerator {
      * @throws HapFormatException hap format error
      */
     public byte[] generateBitMap() throws HapFormatException {
-        if (maxEntryDataOffset % PAGE_SIZE_4K != 0) {
+        if (maxEntryDataOffset % CodeSignBlock.PAGE_SIZE_4K != 0) {
             throw new HapFormatException(
                 String.format(Locale.ROOT, "Invalid maxEndOff(%d), not a multiple of 4096", maxEntryDataOffset));
         }
-        int len = (int) (maxEntryDataOffset / PAGE_SIZE_1K);
+        int len = (int) (maxEntryDataOffset / CodeSignBlock.PAGE_SIZE_4K * PageInfoExtension.DEFAULT_UNIT_SIZE);
         BitSet bitmap = new BitSet(len);
         for (ExcSegment es : excSegmentList) {
             int begin = (int) (es.getStartOffset() >> 12) * PageInfoExtension.DEFAULT_UNIT_SIZE;
-            int end = (es.getEndOffset() % PAGE_SIZE_4K == 0)
+            int end = (es.getEndOffset() % CodeSignBlock.PAGE_SIZE_4K == 0)
                 ? (int) ((es.getEndOffset() >> 12)) * PageInfoExtension.DEFAULT_UNIT_SIZE
                 : (int) ((es.getEndOffset() >> 12) + 1) * PageInfoExtension.DEFAULT_UNIT_SIZE;
             for (int i = begin; i < end; i = i + 4) {

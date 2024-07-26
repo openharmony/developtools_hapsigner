@@ -212,7 +212,7 @@ public class CodeSigning {
             + entry.getZipEntryData().getZipEntryHeader().getFileNameLength() + entry.getZipEntryData()
             .getZipEntryHeader()
             .getExtraLength();
-        long bitmapSize = bitmapOff * 8;
+        long bitmapSize = bitmapOff / CodeSignBlock.PAGE_SIZE_4K * PageInfoExtension.DEFAULT_UNIT_SIZE;
         pageInfoExtension = new PageInfoExtension(bitmapOff, bitmapSize);
     }
 
@@ -466,6 +466,7 @@ public class CodeSigning {
                 byte[] signatureV2 = generateSignature(fsVerityDigestV2, ownerID);
                 pageInfoExtension.setSignature(signatureV2);
                 signInfo.addExtension(pageInfoExtension);
+                LOGGER.debug(pageInfoExtension.toString());
             }
         }
         return Pair.create(signInfo, fsVerityGenerator.getTreeBytes());
