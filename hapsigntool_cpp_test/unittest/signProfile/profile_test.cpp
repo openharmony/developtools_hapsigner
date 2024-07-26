@@ -102,7 +102,7 @@ void ProfileTest::TearDown()
 HWTEST_F(ProfileTest, profile_test004, testing::ext::TestSize.Level1)
 {
     std::string content;
-    SignerConfig* config = NULL;
+    SignerConfig* config = nullptr;
     std::string ret;
     std::shared_ptr<Pkcs7Generator> generator = std::make_shared<BCPkcs7Generator>();
     int result = generator->GenerateSignedData(content, config, ret);
@@ -111,7 +111,7 @@ HWTEST_F(ProfileTest, profile_test004, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test005
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for NULL config.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for nullptr config.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -120,7 +120,7 @@ HWTEST_F(ProfileTest, profile_test004, testing::ext::TestSize.Level1)
 HWTEST_F(ProfileTest, profile_test005, testing::ext::TestSize.Level1)
 {
     std::string content = "hello,world";
-    SignerConfig* config = NULL;
+    SignerConfig* config = nullptr;
     std::string ret;
     std::shared_ptr<Pkcs7Generator> generator = std::make_shared<BCPkcs7Generator>();
     int result = generator->GenerateSignedData(content, config, ret);
@@ -129,7 +129,7 @@ HWTEST_F(ProfileTest, profile_test005, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: profile_test006
- * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for NULL signer.
+ * @tc.desc: Test function of Pkcs7Generator::GenerateSignedData() failed for nullptr signer.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -360,11 +360,11 @@ HWTEST_F(ProfileTest, profile_test011, testing::ext::TestSize.Level1)
     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
     PKCS7Data p7;
     std::string p7b;
-    PKCS7* pkcs7 = NULL;
+    PKCS7* pkcs7 = nullptr;
     int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
     EXPECT_EQ(result, 0);
     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
-    pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
+    pkcs7 = d2i_PKCS7(nullptr, &p, static_cast<long>(p7b.size()));
     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
     int num = 1;
     while (sk_X509_num(certs) > num) {
@@ -373,7 +373,7 @@ HWTEST_F(ProfileTest, profile_test011, testing::ext::TestSize.Level1)
     }
     sk_X509_push(certs, sk_X509_value(certs, 0));
     X509_up_ref(sk_X509_value(certs, 0));
-    unsigned char* out = NULL;
+    unsigned char* out = nullptr;
     int len = 0;
     len = i2d_PKCS7(pkcs7, &out);
     p7b.assign(out, out + len);
@@ -413,14 +413,14 @@ HWTEST_F(ProfileTest, profile_test013, testing::ext::TestSize.Level1)
     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
     PKCS7Data p7;
     std::string p7b;
-    PKCS7* pkcs7 = NULL;
+    PKCS7* pkcs7 = nullptr;
     int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
     EXPECT_EQ(result, 0);
     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
-    pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
+    pkcs7 = d2i_PKCS7(nullptr, &p, static_cast<long>(p7b.size()));
     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
     sk_X509_delete(certs, 2);
-    unsigned char* out = NULL;
+    unsigned char* out = nullptr;
     int len = 0;
     len = i2d_PKCS7(pkcs7, &out);
     p7b.assign(out, out + len);
@@ -460,17 +460,17 @@ HWTEST_F(ProfileTest, profile_test014, testing::ext::TestSize.Level1)
     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
     PKCS7Data p7;
     std::string p7b;
-    PKCS7* pkcs7 = NULL;
+    PKCS7* pkcs7 = nullptr;
     int result = p7.Sign(content, signer, "SHA384withECDSA", p7b);
     EXPECT_EQ(result, 0);
     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
-    pkcs7 = d2i_PKCS7(NULL, &p, static_cast<long>(p7b.size()));
+    pkcs7 = d2i_PKCS7(nullptr, &p, static_cast<long>(p7b.size()));
     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
     sk_X509_delete(certs, 2);
     sk_X509_push(certs, sk_X509_value(certs, 1));
     X509_up_ref(sk_X509_value(certs, 1));
     PKCS7Data::PrintCertChainSub(certs);
-    unsigned char* out = NULL;
+    unsigned char* out = nullptr;
     int len = 0;
     len = i2d_PKCS7(pkcs7, &out);
     p7b.assign(out, out + len);
@@ -492,7 +492,7 @@ HWTEST_F(ProfileTest, profile_test014, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, profile_test015, testing::ext::TestSize.Level1)
 {
-    ProfileInfo* info = NULL;
+    ProfileInfo* info = nullptr;
     ProfileInfo info2;
     info = &info2;
     info2 = *info;
@@ -549,7 +549,7 @@ HWTEST_F(ProfileTest, profile_test016, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, test017, testing::ext::TestSize.Level1)
 {
-    STACK_OF(X509)* certs = sk_X509_new(NULL);
+    STACK_OF(X509)* certs = sk_X509_new(nullptr);
     EXPECT_TRUE(PKCS7Data::SortX509Stack(certs) < 0);
     sk_X509_free(certs);
 }
@@ -564,13 +564,13 @@ HWTEST_F(ProfileTest, test017, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, profile_test019, testing::ext::TestSize.Level1)
 {
-    STACK_OF(X509)* certs = NULL;
+    STACK_OF(X509)* certs = nullptr;
     PKCS7Data::PrintCertChainSub(certs);
 }
 
 /**
  * @tc.name: profile_test020
- * @tc.desc: Test function of PKCS7Data::GetASN1Time() failed for NULL asn1_time.
+ * @tc.desc: Test function of PKCS7Data::GetASN1Time() failed for nullptr asn1_time.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
@@ -578,7 +578,7 @@ HWTEST_F(ProfileTest, profile_test019, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, profile_test020, testing::ext::TestSize.Level1)
 {
-    ASN1_TIME* time = NULL;
+    ASN1_TIME* time = nullptr;
     std::string result = PKCS7Data::GetASN1Time(time);
     EXPECT_TRUE(result.empty());
 }
@@ -593,7 +593,7 @@ HWTEST_F(ProfileTest, profile_test020, testing::ext::TestSize.Level1)
  */
 HWTEST_F(ProfileTest, profile_test021, testing::ext::TestSize.Level1)
 {
-    STACK_OF(X509)* certs = NULL;
+    STACK_OF(X509)* certs = nullptr;
     EXPECT_TRUE(PKCS7Data::SortX509Stack(certs) < 0);
 }
 
@@ -894,16 +894,16 @@ HWTEST_F(ProfileTest, profile_test030, testing::ext::TestSize.Level1)
 
 static STACK_OF(X509)* ReadCerts(const std::string& path)
 {
-    X509* cert = NULL;
-    BIO* in = NULL;
-    STACK_OF(X509)* certs = NULL;
-    certs = sk_X509_new(NULL);
-    if (certs == NULL)
+    X509* cert = nullptr;
+    BIO* in = nullptr;
+    STACK_OF(X509)* certs = nullptr;
+    certs = sk_X509_new(nullptr);
+    if (certs == nullptr)
         goto err;
     in = BIO_new_file(path.c_str(), "rb");
-    if (in == NULL)
+    if (in == nullptr)
         goto err;
-    while ((cert = PEM_read_bio_X509(in, NULL, NULL, NULL)))
+    while ((cert = PEM_read_bio_X509(in, nullptr, nullptr, nullptr)))
     {
         sk_X509_push(certs, cert);
     }
@@ -912,7 +912,7 @@ static STACK_OF(X509)* ReadCerts(const std::string& path)
 err:
     BIO_free(in);
     sk_X509_pop_free(certs, X509_free);
-    return NULL;
+    return nullptr;
 }
 
 /**
