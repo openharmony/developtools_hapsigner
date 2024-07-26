@@ -209,7 +209,7 @@ public class ElfHeader {
      * @return true if start with [0x7F 0x45 0x4C 0x46]
      */
     public static boolean isElfFile(byte[] bytes) {
-        if (bytes == null || bytes.length != 4) {
+        if (bytes == null || bytes.length < 4) {
             return false;
         }
         return bytes[0] == 0x7F && bytes[1] == 0x45 && bytes[2] == 0x4C && bytes[3] == 0x46;
