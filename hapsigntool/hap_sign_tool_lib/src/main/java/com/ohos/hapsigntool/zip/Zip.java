@@ -295,17 +295,16 @@ public class Zip {
     private void sort() {
         // sort uncompress file (so, abc, an) - bitmap - other uncompress file - compress file
         zipEntries.sort((entry1, entry2) -> {
-            EntryType entry1Type = entry1.getZipEntryData().getType();
-            EntryType entry2Type = entry2.getZipEntryData().getType();
-            if (entry1Type != entry2Type) {
-                return entry1Type.compareTo(entry2Type);
-            }
-
             short entry1Method = entry1.getZipEntryData().getZipEntryHeader().getMethod();
             short entry2Method = entry2.getZipEntryData().getZipEntryHeader().getMethod();
             String entry1FileName = entry1.getZipEntryData().getZipEntryHeader().getFileName();
             String entry2FileName = entry2.getZipEntryData().getZipEntryHeader().getFileName();
             if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG && entry2Method == FILE_UNCOMPRESS_METHOD_FLAG) {
+                EntryType entry1Type = entry1.getZipEntryData().getType();
+                EntryType entry2Type = entry2.getZipEntryData().getType();
+                if (entry1Type != entry2Type) {
+                    return entry1Type.compareTo(entry2Type);
+                }
                 return entry1FileName.compareTo(entry2FileName);
             } else if (entry1Method == FILE_UNCOMPRESS_METHOD_FLAG) {
                 return -1;
