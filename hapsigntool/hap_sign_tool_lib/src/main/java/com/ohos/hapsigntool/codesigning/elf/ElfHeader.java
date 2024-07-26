@@ -122,7 +122,7 @@ public class ElfHeader {
      */
     public ElfHeader(InputStream is) throws IOException, ElfFormatException {
         int read = is.read(ident);
-        if (read != ident.length || !(ident[0] == 0x7F && ident[1] == 0x45 && ident[2] == 0x4C && ident[3] == 0x46)) {
+        if (read != ident.length || !isElfFile(ident)) {
             throw new ElfFormatException("Not a elf file");
         }
         eiClass = ident[4];
@@ -200,5 +200,18 @@ public class ElfHeader {
 
     public short getEPhnum() {
         return ePhNum;
+    }
+
+    /**
+     * elf file start with [0x7F 0x45 0x4C 0x46]
+     *
+     * @param bytes byte array
+     * @return true if start with [0x7F 0x45 0x4C 0x46]
+     */
+    public static boolean isElfFile(byte[] bytes) {
+        if (bytes == null || bytes.length != 4) {
+            return false;
+        }
+        return bytes[0] == 0x7F && bytes[1] == 0x45 && bytes[2] == 0x4C && bytes[3] == 0x46;
     }
 }

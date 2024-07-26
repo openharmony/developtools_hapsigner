@@ -22,6 +22,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.FsVerityInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
+import com.ohos.hapsigntool.codesigning.elf.ElfHeader;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptor;
@@ -335,7 +336,7 @@ public class CodeSigning {
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {
                 byte[] bytes = new byte[4];
                 hnpInputStream.read(bytes, 0, 4);
-                if (!isElfFile(bytes)) {
+                if (!ElfHeader.isElfFile(bytes)) {
                     hnpInputStream.closeEntry();
                     continue;
                 }
@@ -389,13 +390,6 @@ public class CodeSigning {
             return true;
         }
         return false;
-    }
-
-    private boolean isElfFile(byte[] bytes) {
-        if (bytes == null || bytes.length != 4) {
-            return false;
-        }
-        return bytes[0] == 0x7F && bytes[1] == 0x45 && bytes[2] == 0x4C && bytes[3] == 0x46;
     }
 
     /**

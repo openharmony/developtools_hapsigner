@@ -53,12 +53,6 @@ public class FsVerityGenerator {
 
     /**
      * Constructor for FsVerityGenerator
-     */
-    public FsVerityGenerator() {
-    }
-
-    /**
-     * Constructor for FsVerityGenerator
      *
      * @param pg PageInfoExtension
      */
