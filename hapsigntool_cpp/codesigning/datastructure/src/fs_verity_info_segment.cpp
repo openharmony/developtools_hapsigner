@@ -66,7 +66,7 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
 {
     if (bytes.size() != FS_VERITY_INFO_SEGMENT_SIZE) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong signed size in the FsVerityInfoSegment");
+                            "The signed size in the FS info is incorrect");
         return FsVerityInfoSegment();
     }
 
@@ -77,7 +77,7 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
     bf.GetInt32(inMagic);
     if (inMagic != MAGIC) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong magic number in the FsVerityInfoSegment");
+                            "The magic number in the FS info is incorrect");
         return FsVerityInfoSegment();
     }
 
@@ -85,7 +85,7 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
     bf.GetInt8(inVersion);
     if (inVersion != FsVerityDescriptor::VERSION) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong version in the FsVerityInfoSegment");
+                            "The version in the FS info is incorrect");
         return FsVerityInfoSegment();
     }
 
@@ -93,7 +93,7 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
     bf.GetInt8(inHashAlgorithm);
     if (inHashAlgorithm != FsVerityGenerator::GetFsVerityHashAlgorithm()) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong hashAlgorithm in the FsVerityInfoSegment");
+                            "The hash algorithm in the FS info is incorrect");
         return FsVerityInfoSegment();
     }
 
@@ -101,7 +101,7 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
     bf.GetInt8(inLog2BlockSize);
     if (inLog2BlockSize != FsVerityGenerator::GetLog2BlockSize()) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The signed data has the wrong log2BlockSize in the FsVerityInfoSegment");
+                            "The log block size in the FS info is incorrect");
         return FsVerityInfoSegment();
     }
 
