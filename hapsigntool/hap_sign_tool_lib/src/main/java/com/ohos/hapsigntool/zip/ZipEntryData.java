@@ -56,7 +56,7 @@ public class ZipEntryData {
      */
     public void updateLength() {
         zipEntryHeader.updateLength();
-        if (type == EntryType.bitMap) {
+        if (data != null) {
             length = zipEntryHeader.getLength() + data.length + (dataDescriptor == null ? 0 : 16);
         } else {
             length = zipEntryHeader.getLength() + fileSize + (dataDescriptor == null ? 0 : 16);
