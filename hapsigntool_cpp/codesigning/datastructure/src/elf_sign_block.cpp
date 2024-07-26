@@ -83,8 +83,8 @@ bool ElfSignBlock::FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSi
     int32_t inTreeType = 0;
     bf->GetInt32(inTreeType);
     if (MERKLE_TREE_INLINED != inTreeType) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong merkle tree type in the ElfSignBlock");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The merkle tree type of elf signature block is incorrect");
         return false;
     }
     int32_t inTreeLength = 0;
@@ -94,8 +94,8 @@ bool ElfSignBlock::FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSi
     int32_t inFsdType = 0;
     bf->GetInt32(inFsdType);
     if (FsVerityDescriptor::FS_VERITY_DESCRIPTOR_TYPE != inFsdType) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong fs-verify descriptor type in the ElfSignBlock");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The FS descriptor type of elf signature block is incorrect");
         return false;
     }
     int32_t inFsdLength = 0;
@@ -103,16 +103,16 @@ bool ElfSignBlock::FromByteArray(std::vector<int8_t>& bytes, ElfSignBlock& elfSi
     bf->GetInt32(inFsdLength);
     if (bytes.size() != FsVerityDescriptorWithSign::INTEGER_BYTES * tmpVariable + inTreeLength +
         FsVerityDescriptorWithSign::INTEGER_BYTES * tmpVariable + inFsdLength) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong signature length in the ElfSignBlock");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The signature length of the elf signature block is incorrect");
         return false;
     }
     std::vector<int8_t> fsdArray(FsVerityDescriptor::DESCRIPTOR_SIZE);
     bf->GetByte(fsdArray.data(), fsdArray.size());
     FsVerityDescriptor fsd = FsVerityDescriptor::FromByteArray(fsdArray);
     if (inFsdLength != fsd.GetSignSize() + FsVerityDescriptor::DESCRIPTOR_SIZE) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong signed size in the ElfSignBlock");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The signed size of the elf signature block is incorrect");
         return false;
     }
     std::vector<int8_t> inSignature(inFsdLength - FsVerityDescriptor::DESCRIPTOR_SIZE);

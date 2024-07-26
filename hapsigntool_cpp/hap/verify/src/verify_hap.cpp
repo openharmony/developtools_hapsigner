@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "securec.h"
-#include "profile_verify_utils.h"
 #include "hap_signer_block_utils.h"
 #include "signature_info.h"
 #include "options.h"
@@ -298,7 +297,6 @@ int VerifyHap::GetProfileContent(const std::string profile, std::string& ret)
     }
     PKCS7Data p7Data;
     if (p7Data.Parse(profile) < 0) {
-        PrintErrorNumberMsg("PKCS7_PARSE_ERROR", PARSE_ERROR, "Parse profile failed");
         ret = profile;
         return -1;
     }

@@ -65,8 +65,8 @@ void FsVerityInfoSegment::ToByteArray(std::vector<int8_t>& ret)
 FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>& bytes)
 {
     if (bytes.size() != FS_VERITY_INFO_SEGMENT_SIZE) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong signed size in the FsVerityInfoSegment");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The signed size of FsVerityInfoSegment is incorrect");
         return FsVerityInfoSegment();
     }
 
@@ -76,32 +76,32 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
     int inMagic;
     bf.GetInt32(inMagic);
     if (inMagic != MAGIC) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong magic number in the FsVerityInfoSegment");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The magic number of FsVerityInfoSegment is incorrect");
         return FsVerityInfoSegment();
     }
 
     int8_t inVersion;
     bf.GetInt8(inVersion);
     if (inVersion != FsVerityDescriptor::VERSION) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong version in the FsVerityInfoSegment");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The version of FsVerityInfoSegment is incorrect");
         return FsVerityInfoSegment();
     }
 
     int8_t inHashAlgorithm;
     bf.GetInt8(inHashAlgorithm);
     if (inHashAlgorithm != FsVerityGenerator::GetFsVerityHashAlgorithm()) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong hashAlgorithm in the FsVerityInfoSegment");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The hash algorithm of FsVerityInfoSegment is incorrect");
         return FsVerityInfoSegment();
     }
 
     int8_t inLog2BlockSize;
     bf.GetInt8(inLog2BlockSize);
     if (inLog2BlockSize != FsVerityGenerator::GetLog2BlockSize()) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "The signed data has the wrong log2BlockSize in the FsVerityInfoSegment");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "The log block size of FsVerityInfoSegment is incorrect");
         return FsVerityInfoSegment();
     }
 

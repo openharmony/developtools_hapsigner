@@ -46,6 +46,15 @@ struct std::equal_to<X509*> {
     }
 };
 
+/* all cert is put into one bottle */
+template<>
+struct std::hash<X509*> {
+    size_t operator()(const X509* cert)const
+    {
+        return 0;
+    }
+};
+
 namespace OHOS {
 namespace SignatureTools {
 #define  PKCS7_NODETACHED_FLAGS  (PKCS7_BINARY | PKCS7_NOVERIFY)

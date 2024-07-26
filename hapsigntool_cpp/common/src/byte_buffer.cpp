@@ -471,15 +471,6 @@ void ByteBuffer::GetByte(int8_t data[], int32_t len)
     }
 }
 
-std::string ByteBuffer::GetData(int32_t len)
-{
-    std::unique_ptr<char[]> pData = std::make_unique<char[]>(len);
-    if (0 == memcpy_s(pData.get(), len, buffer.get() + position, len)) {
-        position = position + len;
-    }
-    return std::string(pData.get());
-}
-
 void ByteBuffer::GetData(char data[], uint32_t len)
 {
     if (0 == memcpy_s(data, len, buffer.get() + position, len)) {
