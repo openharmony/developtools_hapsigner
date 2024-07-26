@@ -182,7 +182,6 @@ public class CodeSigning {
 
         LOGGER.debug("Sign hap.");
         String ownerID = HapUtils.getAppIdentifier(profileContent);
-        createPageInfoExtension(zip);
         try (FileInputStream inputStream = new FileInputStream(input)) {
             Pair<SignInfo, byte[]> hapSignInfoAndMerkleTreeBytesPair = signFile(inputStream, dataSize, true,
                 fsvTreeOffset, ownerID);
@@ -208,11 +207,13 @@ public class CodeSigning {
         return generated;
     }
 
-    private void createPageInfoExtension(Zip zip) {
-        long[] bitmapOffSize = PageInfoGenerator.getPageInfoFromZip(zip);
-        if (bitmapOffSize.length == 2) {
-            pageInfoExtension = new PageInfoExtension(bitmapOffSize[0], bitmapOffSize[1]);
-        }
+    private void createPageInfoExtension(ZipEntry entry) {
+        long bitmapOff = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
+            + entry.getZipEntryData().getZipEntryHeader().getFileNameLength() + entry.getZipEntryData()
+            .getZipEntryHeader()
+            .getExtraLength();
+        long bitmapSize = bitmapOff * 8;
+        pageInfoExtension = new PageInfoExtension(bitmapOff, bitmapSize);
     }
 
     private long computeDataSize(Zip zip) throws HapFormatException {
@@ -221,8 +222,11 @@ public class CodeSigning {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
             EntryType type = entry.getZipEntryData().getType();
             short method = zipEntryHeader.getMethod();
-            if (EntryType.bitMap.equals(type) ||
-                    (EntryType.runnableFile.equals(type) && method == Zip.FILE_UNCOMPRESS_METHOD_FLAG)) {
+            if ((EntryType.runnableFile.equals(type) && method == Zip.FILE_UNCOMPRESS_METHOD_FLAG)) {
+                continue;
+            }
+            if (EntryType.bitMap.equals(type)) {
+                createPageInfoExtension(entry);
                 continue;
             }
             // if the first file is not uncompressed abc or so, set dataSize to zero
