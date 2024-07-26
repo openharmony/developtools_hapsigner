@@ -143,7 +143,7 @@ NativeLibInfoSegment NativeLibInfoSegment::FromByteArray(std::vector<int8_t> &by
     for (SignedFilePos &pos : inSignedFilePosList) {
         if (pos.GetSignInfoOffset() % ALIGNMENT_FOR_SIGNINFO != 0) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                                "The native lib's sign info offset is not an integer multiple of 4");
+                                "The offset in signature info is not an integer multiple of 4");
             return NativeLibInfoSegment();
         }
         std::vector<int8_t> signInfoBuffer(pos.GetSignInfoSize());
