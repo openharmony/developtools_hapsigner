@@ -132,9 +132,6 @@ public class ElfHeader {
         eiClass = ident[4];
         eiData = ident[5];
         eiVersion = ident[6];
-        if (eiVersion < 1) {
-            throw new ElfFormatException("ELF eiVersion is incorrect");
-        }
         int len;
         if (eiClass == ElfDefine.ELF_32_CLASS) {
             len = ElfDefine.ELF_HEADER_32_LEN - ElfDefine.EI_NIDENT_LEN;
