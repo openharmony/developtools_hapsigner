@@ -408,7 +408,6 @@ bool CmdUtil::ValidAndPutParam(const ParamsSharedPtr& params, const std::string&
             std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
                            [](unsigned char c) { return std::tolower(c); });
             params->GetOptions()->emplace(key, keyAlias);
-            
         } else {
             params->GetOptions()->emplace(key, std::string(value));
         }
