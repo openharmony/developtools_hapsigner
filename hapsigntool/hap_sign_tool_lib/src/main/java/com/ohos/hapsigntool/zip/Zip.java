@@ -236,8 +236,8 @@ public class Zip {
                 }
                 int alignBytes;
                 EntryType type = entry.getZipEntryData().getType();
-                if ((type == EntryType.runnableFile && method == FILE_UNCOMPRESS_METHOD_FLAG) ||
-                    type == EntryType.bitMap) {
+                if ((type == EntryType.RUNNABLE_FILE && method == FILE_UNCOMPRESS_METHOD_FLAG) ||
+                    type == EntryType.BIT_MAP) {
                     // .abc and .so file align 4096 byte.
                     alignBytes = 4096;
                 } else if (isFirstUnRunnableFile) {
@@ -266,7 +266,7 @@ public class Zip {
      */
     public void addBitMap(byte[] data) throws ZipException {
         for (ZipEntry e : zipEntries) {
-            if (e.getZipEntryData().getType() == EntryType.bitMap) {
+            if (e.getZipEntryData().getType() == EntryType.BIT_MAP) {
                 e.getZipEntryData().setData(data);
                 e.getZipEntryData().getZipEntryHeader().setUnCompressedSize(data.length);
                 e.getZipEntryData().getZipEntryHeader().setCompressedSize(data.length);

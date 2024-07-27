@@ -223,10 +223,10 @@ public class CodeSigning {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
             EntryType type = entry.getZipEntryData().getType();
             short method = zipEntryHeader.getMethod();
-            if ((EntryType.runnableFile.equals(type) && method == Zip.FILE_UNCOMPRESS_METHOD_FLAG)) {
+            if ((EntryType.RUNNABLE_FILE.equals(type) && method == Zip.FILE_UNCOMPRESS_METHOD_FLAG)) {
                 continue;
             }
-            if (EntryType.bitMap.equals(type)) {
+            if (EntryType.BIT_MAP.equals(type)) {
                 createPageInfoExtension(entry);
                 continue;
             }

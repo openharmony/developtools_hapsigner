@@ -362,8 +362,8 @@ public abstract class SignProvider {
                 isRet = true;
             }
         } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException
-                 | InvalidParamsException | ProfileException | NumberFormatException | CustomException | IOException
-                 | CodeSignException | ElfFormatException e) {
+                | InvalidParamsException | ProfileException | NumberFormatException | CustomException | IOException
+                | CodeSignException | ElfFormatException e) {
             printErrorLogWithoutStack(e);
         } catch (SignatureException e) {
             printErrorLog(e);
@@ -500,6 +500,7 @@ public abstract class SignProvider {
      * @return zip zip
      * @throws IOException io error
      * @throws HapFormatException hap format error
+     * @throws ElfFormatException ElfFormatException
      */
     private Zip copyFileAndAlignment(File input, File tmpOutput, int alignment, String suffix)
         throws IOException, HapFormatException, ElfFormatException {
