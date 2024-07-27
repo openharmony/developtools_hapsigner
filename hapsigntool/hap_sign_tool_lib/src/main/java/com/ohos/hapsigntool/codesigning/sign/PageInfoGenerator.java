@@ -67,6 +67,7 @@ public class PageInfoGenerator {
      * @param zip zip
      * @throws IOException io error
      * @throws HapFormatException hap file format error
+     * @throws ElfFormatException ElfFormatException
      */
     public PageInfoGenerator(Zip zip) throws IOException, HapFormatException, ElfFormatException {
         Map<String, Long> runnableFileNames = new LinkedHashMap<>();
@@ -79,7 +80,7 @@ public class PageInfoGenerator {
                 throw new HapFormatException(
                     String.format(Locale.ROOT, "Invalid entryDataOffset(%d), not a multiple of 4096", entryDataOffset));
             }
-            if (EntryType.runnableFile.equals(entry.getZipEntryData().getType())
+            if (EntryType.RUNNABLE_FILE.equals(entry.getZipEntryData().getType())
                     && Zip.FILE_UNCOMPRESS_METHOD_FLAG == entry.getZipEntryData().getZipEntryHeader().getMethod()) {
                 runnableFileNames.put(zipEntryHeader.getFileName(), entryDataOffset);
                 continue;
