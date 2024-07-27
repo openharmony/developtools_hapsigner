@@ -128,7 +128,7 @@ public class HapInfoSegment {
                     inHapSignInfo.getDataSize()));
         }
         if (inHapSignInfo.getExtensionNum() > SignInfo.MAX_EXTENSION_NUM) {
-            LOGGER.info("Invalid extensionNum {} of HapInfoSegment", inHapSignInfo.getExtensionNum());
+            LOGGER.info("Maybe the tool is out-of-date, extensionNum {}", inHapSignInfo.getExtensionNum());
         }
         if (inHapSignInfo.getExtensionByType(MerkleTreeExtension.MERKLE_TREE_INLINED) == null) {
             throw new VerifyCodeSignException("No merkle tree extension is found in HapInfoSegment");
