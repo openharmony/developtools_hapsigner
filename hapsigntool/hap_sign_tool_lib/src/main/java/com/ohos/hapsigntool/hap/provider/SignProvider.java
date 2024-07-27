@@ -508,7 +508,7 @@ public abstract class SignProvider {
         if (StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)) {
             PageInfoGenerator pageInfoGenerator = new PageInfoGenerator(zip);
             byte[] bitMap = pageInfoGenerator.generateBitMap();
-            if (bitMap != null) {
+            if (bitMap != null && bitMap.length > 0) {
                 zip.addBitMap(bitMap);
                 zip.alignment(alignment);
             }
