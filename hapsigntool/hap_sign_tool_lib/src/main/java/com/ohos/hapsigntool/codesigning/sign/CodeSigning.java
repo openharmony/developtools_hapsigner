@@ -20,13 +20,16 @@ import com.ohos.hapsigntool.codesigning.datastructure.ElfSignBlock;
 import com.ohos.hapsigntool.codesigning.datastructure.Extension;
 import com.ohos.hapsigntool.codesigning.datastructure.FsVerityInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
+import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
+import com.ohos.hapsigntool.codesigning.elf.ElfHeader;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptor;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptorWithSign;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.ProfileException;
@@ -34,6 +37,7 @@ import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
+import com.ohos.hapsigntool.zip.EntryType;
 import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipEntry;
 import com.ohos.hapsigntool.zip.ZipEntryHeader;
@@ -79,13 +83,11 @@ public class CodeSigning {
 
     private static final Logger LOGGER = LogManager.getLogger(CodeSigning.class);
 
-    private static final String NATIVE_LIB_AN_SUFFIX = ".an";
-
-    private static final String NATIVE_LIB_SO_SUFFIX = ".so";
-
     private final SignerConfig signConfig;
 
     private CodeSignBlock codeSignBlock;
+
+    private PageInfoExtension pageInfoExtension;
 
     /**
      * provide code sign functions to sign a hap
@@ -181,7 +183,6 @@ public class CodeSigning {
 
         LOGGER.debug("Sign hap.");
         String ownerID = HapUtils.getAppIdentifier(profileContent);
-
         try (FileInputStream inputStream = new FileInputStream(input)) {
             Pair<SignInfo, byte[]> hapSignInfoAndMerkleTreeBytesPair = signFile(inputStream, dataSize, true,
                 fsvTreeOffset, ownerID);
@@ -207,12 +208,26 @@ public class CodeSigning {
         return generated;
     }
 
+    private void createPageInfoExtension(ZipEntry entry) {
+        long bitmapOff = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
+            + entry.getZipEntryData().getZipEntryHeader().getFileNameLength() + entry.getZipEntryData()
+            .getZipEntryHeader()
+            .getExtraLength();
+        long bitmapSize = bitmapOff / CodeSignBlock.PAGE_SIZE_4K * PageInfoExtension.DEFAULT_UNIT_SIZE;
+        pageInfoExtension = new PageInfoExtension(bitmapOff, bitmapSize);
+    }
+
     private long computeDataSize(Zip zip) throws HapFormatException {
         long dataSize = 0L;
         for (ZipEntry entry : zip.getZipEntries()) {
             ZipEntryHeader zipEntryHeader = entry.getZipEntryData().getZipEntryHeader();
-            if (FileUtils.isRunnableFile(zipEntryHeader.getFileName())
-                && zipEntryHeader.getMethod() == Zip.FILE_UNCOMPRESS_METHOD_FLAG) {
+            EntryType type = entry.getZipEntryData().getType();
+            short method = zipEntryHeader.getMethod();
+            if ((EntryType.runnableFile.equals(type) && method == Zip.FILE_UNCOMPRESS_METHOD_FLAG)) {
+                continue;
+            }
+            if (EntryType.bitMap.equals(type)) {
+                createPageInfoExtension(entry);
                 continue;
             }
             // if the first file is not uncompressed abc or so, set dataSize to zero
@@ -224,7 +239,7 @@ public class CodeSigning {
                     + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
             break;
         }
-        if ((dataSize % CodeSignBlock.PAGE_SIZE_4K) != 0) {
+        if (!NumberUtils.isMultiple4K(dataSize)) {
             throw new HapFormatException(
                 String.format(Locale.ROOT, "Invalid dataSize(%d), not a multiple of 4096", dataSize));
         }
@@ -328,7 +343,7 @@ public class CodeSigning {
             while ((libEntry = hnpInputStream.getNextEntry()) != null) {
                 byte[] bytes = new byte[4];
                 hnpInputStream.read(bytes, 0, 4);
-                if (!isElfFile(bytes)) {
+                if (!ElfHeader.isElfFile(bytes)) {
                     hnpInputStream.closeEntry();
                     continue;
                 }
@@ -375,20 +390,13 @@ public class CodeSigning {
         if (StringUtils.isEmpty(entryName)) {
             return false;
         }
-        if (entryName.endsWith(NATIVE_LIB_AN_SUFFIX)) {
+        if (entryName.endsWith(FileUtils.NATIVE_LIB_AN_SUFFIX)) {
             return true;
         }
         if (entryName.startsWith(FileUtils.LIBS_PATH_PREFIX)) {
             return true;
         }
         return false;
-    }
-
-    private boolean isElfFile(byte[] bytes) {
-        if (bytes == null || bytes.length != 4) {
-            return false;
-        }
-        return bytes[0] == 0x7F && bytes[1] == 0x45 && bytes[2] == 0x4C && bytes[3] == 0x46;
     }
 
     /**
@@ -438,6 +446,7 @@ public class CodeSigning {
     public Pair<SignInfo, byte[]> signFile(InputStream inputStream, long fileSize, boolean storeTree,
         long fsvTreeOffset, String ownerID) throws FsVerityDigestException, CodeSignException {
         FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
+        fsVerityGenerator.setPageInfoExtension(pageInfoExtension);
         fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
         byte[] fsVerityDigest = fsVerityGenerator.getFsVerityDigest();
         byte[] signature = generateSignature(fsVerityDigest, ownerID);
@@ -453,6 +462,13 @@ public class CodeSigning {
             Extension merkleTreeExtension = new MerkleTreeExtension(merkleTreeSize, fsvTreeOffset,
                 fsVerityGenerator.getRootHash());
             signInfo.addExtension(merkleTreeExtension);
+            if (pageInfoExtension != null) {
+                byte[] fsVerityDigestV2 = fsVerityGenerator.getFsVerityDigestV2();
+                byte[] signatureV2 = generateSignature(fsVerityDigestV2, ownerID);
+                pageInfoExtension.setSignature(signatureV2);
+                signInfo.addExtension(pageInfoExtension);
+                LOGGER.debug(pageInfoExtension.toString());
+            }
         }
         return Pair.create(signInfo, fsVerityGenerator.getTreeBytes());
     }

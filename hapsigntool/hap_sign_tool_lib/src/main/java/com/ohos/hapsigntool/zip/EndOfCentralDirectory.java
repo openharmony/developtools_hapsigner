@@ -123,8 +123,8 @@ public class EndOfCentralDirectory {
         eocd.setDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
         eocd.setcDStartDiskNum(UnsignedDecimalUtil.getUnsignedShort(bf));
         eocd.setThisDiskCDNum(UnsignedDecimalUtil.getUnsignedShort(bf));
-        eocd.setcDTotal(UnsignedDecimalUtil.getUnsignedShort(bf));
-        eocd.setcDSize(UnsignedDecimalUtil.getUnsignedInt(bf));
+        eocd.setCDTotal(UnsignedDecimalUtil.getUnsignedShort(bf));
+        eocd.setCDSize(UnsignedDecimalUtil.getUnsignedInt(bf));
         eocd.setOffset(UnsignedDecimalUtil.getUnsignedInt(bf));
         eocd.setCommentLength(UnsignedDecimalUtil.getUnsignedShort(bf));
         if (bf.remaining() != eocd.getCommentLength()) {
@@ -195,19 +195,19 @@ public class EndOfCentralDirectory {
         this.thisDiskCDNum = thisDiskCDNum;
     }
 
-    public int getcDTotal() {
+    public int getCDTotal() {
         return cDTotal;
     }
 
-    public void setcDTotal(int cDTotal) {
+    public void setCDTotal(int cDTotal) {
         this.cDTotal = cDTotal;
     }
 
-    public long getcDSize() {
+    public long getCDSize() {
         return cDSize;
     }
 
-    public void setcDSize(long cDSize) {
+    public void setCDSize(long cDSize) {
         this.cDSize = cDSize;
     }
 

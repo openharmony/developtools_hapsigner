@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.codesigning.fsverity;
 
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
+import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -66,6 +67,11 @@ public class FsVerityDescriptor {
     public static final byte CODE_SIGN_VERSION = 0x1;
 
     /**
+     * code sign version
+     */
+    public static final byte CODE_SIGN_VERSION_V2 = 0x2;
+
+    /**
      * FsVerity descriptor size
      */
     public static final int DESCRIPTOR_SIZE = 256;
@@ -83,12 +89,7 @@ public class FsVerityDescriptor {
     /**
      * reserved size
      */
-    public static final int RESERVED_SIZE_AFTER_FLAGS = 4;
-
-    /**
-     * reserved size
-     */
-    public static final int RESERVED_SIZE_AFTER_TREE_OFFSET = 127;
+    public static final int RESERVED_SIZE_AFTER_TREE_OFFSET = 119;
 
     private byte version;
 
@@ -108,7 +109,11 @@ public class FsVerityDescriptor {
 
     private int flags;
 
+    private int bitMapSize;
+
     private long merkleTreeOffset;
+
+    private long bitMapOffset;
 
     private byte csVersion;
 
@@ -152,7 +157,7 @@ public class FsVerityDescriptor {
         bf.rewind();
         FsVerityDescriptor.Builder builder = new FsVerityDescriptor.Builder();
         byte inFsVersion = bf.get();
-        if (FsVerityDescriptor.VERSION != inFsVersion) {
+        if (inFsVersion != FsVerityDescriptor.VERSION) {
             throw new VerifyCodeSignException("Invalid fs-verify descriptor version of ElfSignBlock");
         }
         byte inFsHashAlgorithm = bf.get();
@@ -169,7 +174,7 @@ public class FsVerityDescriptor {
         int inFlags = bf.getInt();
         bf.getInt();
         long inTreeOffset = bf.getLong();
-        if (inTreeOffset % PAGE_SIZE_4K != 0) {
+        if (!NumberUtils.isMultiple4K(inTreeOffset)) {
             throw new VerifyCodeSignException("Invalid merkle tree offset of ElfSignBlock");
         }
         bf.get(new byte[FsVerityDescriptor.RESERVED_SIZE_AFTER_TREE_OFFSET]);
@@ -198,8 +203,9 @@ public class FsVerityDescriptor {
         writeBytesWithSize(buffer, rawRootHash, ROOT_HASH_FILED_SIZE);
         writeBytesWithSize(buffer, salt, SALT_SIZE);
         buffer.putInt(flags);
-        writeBytesWithSize(buffer, null, RESERVED_SIZE_AFTER_FLAGS);
+        buffer.putInt(0);
         buffer.putLong(merkleTreeOffset);
+        buffer.putLong(0);
         writeBytesWithSize(buffer, null, RESERVED_SIZE_AFTER_TREE_OFFSET);
         buffer.put(csVersion);
         return buffer.array();
@@ -211,7 +217,7 @@ public class FsVerityDescriptor {
      * @return bytes of descriptor
      * @throws FsVerityDigestException if error
      */
-    public byte[] getByteForGenerateDigest() throws FsVerityDigestException {
+    public byte[] getDiscByte() throws FsVerityDigestException {
         ByteBuffer buffer = ByteBuffer.allocate(DESCRIPTOR_SIZE).order(ByteOrder.LITTLE_ENDIAN);
         buffer.put(CODE_SIGN_VERSION);
         buffer.put(hashAlgorithm);
@@ -225,8 +231,39 @@ public class FsVerityDescriptor {
         writeBytesWithSize(buffer, rawRootHash, ROOT_HASH_FILED_SIZE);
         writeBytesWithSize(buffer, salt, SALT_SIZE);
         buffer.putInt(flags);
-        writeBytesWithSize(buffer, null, RESERVED_SIZE_AFTER_FLAGS);
+        buffer.putInt(0);
         buffer.putLong(merkleTreeOffset);
+        return buffer.array();
+    }
+
+    /**
+     * Get bytes for generate digest, cs_version 2
+     *
+     * @param mapOffset bit map data offset at file
+     * @param mapSize bit map size
+     * @param unitSize bit map unit size corresponding to each page
+     * @return bytes of descriptor
+     * @throws FsVerityDigestException if error
+     */
+    public byte[] getDiscByteCsv2(long mapOffset, long mapSize, byte unitSize) throws FsVerityDigestException {
+        ByteBuffer buffer = ByteBuffer.allocate(DESCRIPTOR_SIZE).order(ByteOrder.LITTLE_ENDIAN);
+        buffer.put(VERSION);
+        buffer.put(hashAlgorithm);
+        buffer.put(log2BlockSize);
+        if (this.saltSize > SALT_SIZE) {
+            throw new FsVerityDigestException("Salt is too long");
+        }
+        buffer.put(this.saltSize);
+        buffer.putInt(0);
+        buffer.putLong(fileSize);
+        writeBytesWithSize(buffer, rawRootHash, ROOT_HASH_FILED_SIZE);
+        writeBytesWithSize(buffer, salt, SALT_SIZE);
+        buffer.putInt((unitSize << 1 | flags));
+        buffer.putInt((int) mapSize);
+        buffer.putLong(merkleTreeOffset);
+        buffer.putLong(mapOffset);
+        writeBytesWithSize(buffer, null, RESERVED_SIZE_AFTER_TREE_OFFSET);
+        buffer.put(CODE_SIGN_VERSION_V2);
         return buffer.array();
     }
 
@@ -271,7 +308,11 @@ public class FsVerityDescriptor {
 
         private int flags;
 
+        private int bitMapSize;
+
         private long merkleTreeOffset;
+
+        private long bitMapOffset;
 
         private byte csVersion;
 
