@@ -101,11 +101,11 @@ public class ZipEntryData {
             input.skip(fileSize);
 
             if (FileUtils.isRunnableFile(entryHeader.getFileName())) {
-                entry.setType(EntryType.runnableFile);
+                entry.setType(EntryType.RUNNABLE_FILE);
             } else if (FileUtils.BIT_MAP_FILENAME.equals(entryHeader.getFileName())) {
-                entry.setType(EntryType.bitMap);
+                entry.setType(EntryType.BIT_MAP);
             } else {
-                entry.setType(EntryType.resourceFile);
+                entry.setType(EntryType.RESOURCE_FILE);
             }
 
             long entryLength = entryHeader.getLength() + fileSize;
