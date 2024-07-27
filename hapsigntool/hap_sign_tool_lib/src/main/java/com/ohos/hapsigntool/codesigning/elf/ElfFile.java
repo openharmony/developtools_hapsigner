@@ -74,7 +74,7 @@ public class ElfFile {
      *
      * @return true if magic number is correct
      */
-    public boolean isElfFile() {
+    public final boolean isElfFile() {
         return elfHeader.isElfFile();
     }
 }

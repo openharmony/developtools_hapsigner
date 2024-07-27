@@ -37,6 +37,8 @@ import java.util.Locale;
  * @since 2023/09/08
  */
 public class HapInfoSegment {
+    private static final Logger LOGGER = LogManager.getLogger(HapInfoSegment.class);
+
     private static final int MAGIC_NUM_BYTES = 4;
 
     /**
@@ -47,8 +49,6 @@ public class HapInfoSegment {
     private int magic = MAGIC_NUM;
 
     private SignInfo hapSignInfo;
-
-    private static final Logger LOGGER = LogManager.getLogger(HapInfoSegment.class);
 
     /**
      * Default constructor of HapInfoSegment
