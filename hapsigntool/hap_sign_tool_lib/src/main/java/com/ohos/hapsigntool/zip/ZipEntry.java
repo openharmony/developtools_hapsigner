@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.zip;
 import com.ohos.hapsigntool.error.ZipException;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.zip.CRC32;
 
 /**
@@ -199,7 +200,10 @@ public class ZipEntry {
          * @throws ZipException ZipException
          */
         public ZipEntry build() throws ZipException {
-            long time = System.currentTimeMillis();
+            Calendar calendar = Calendar.getInstance();
+            int time = (calendar.get(Calendar.YEAR) - 80 << 25) | (calendar.get(Calendar.MONTH) + 1) << 21 |
+                    calendar.get(Calendar.DAY_OF_MONTH) << 16 | calendar.get(Calendar.HOUR_OF_DAY) << 11 |
+                    calendar.get(Calendar.MINUTE) << 5 | calendar.get(Calendar.SECOND) >> 1;
             CentralDirectory cd = addCenterDirectory(time);
             ZipEntryHeader zipEntryHeader = addZipEntryHeader(time);
             if (data == null) {
@@ -221,14 +225,14 @@ public class ZipEntry {
             return entry;
         }
 
-        private CentralDirectory addCenterDirectory(long time) {
+        private CentralDirectory addCenterDirectory(int time) {
             CentralDirectory cd = new CentralDirectory();
             cd.setVersion(version);
             cd.setVersionExtra(version);
             cd.setFlag(flag);
             cd.setMethod(method);
-            cd.setLastTime((short) (time >> 32));
-            cd.setLastDate((short) time);
+            cd.setLastTime((short) time);
+            cd.setLastDate((short) (time >> 16));
             cd.setCompressedSize(compressedSize);
             cd.setUnCompressedSize(unCompressedSize);
             cd.setFileName(fileName);
@@ -252,13 +256,13 @@ public class ZipEntry {
             return cd;
         }
 
-        private ZipEntryHeader addZipEntryHeader(long time) {
+        private ZipEntryHeader addZipEntryHeader(int time) {
             ZipEntryHeader zipEntryHeader = new ZipEntryHeader();
             zipEntryHeader.setVersion(version);
             zipEntryHeader.setFlag(flag);
             zipEntryHeader.setMethod(method);
-            zipEntryHeader.setLastTime((short) (time >> 32));
-            zipEntryHeader.setLastDate((short) time);
+            zipEntryHeader.setLastTime((short) time);
+            zipEntryHeader.setLastDate((short) (time >> 16));
             zipEntryHeader.setCompressedSize(compressedSize);
             zipEntryHeader.setUnCompressedSize(unCompressedSize);
             zipEntryHeader.setFileName(fileName);
