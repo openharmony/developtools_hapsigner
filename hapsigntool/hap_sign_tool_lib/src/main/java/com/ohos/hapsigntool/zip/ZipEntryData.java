@@ -47,8 +47,20 @@ public class ZipEntryData {
 
     private long length;
 
-    public ZipEntryHeader getZipEntryHeader() {
-        return zipEntryHeader;
+    private EntryType type;
+
+    private byte[] data;
+
+    /**
+     * updateLength
+     */
+    public void updateLength() {
+        zipEntryHeader.updateLength();
+        if (data != null) {
+            length = zipEntryHeader.getLength() + data.length + (dataDescriptor == null ? 0 : 16);
+        } else {
+            length = zipEntryHeader.getLength() + fileSize + (dataDescriptor == null ? 0 : 16);
+        }
     }
 
     /**
@@ -88,6 +100,14 @@ public class ZipEntryData {
             entry.setFileSize(fileSize);
             input.skip(fileSize);
 
+            if (FileUtils.isRunnableFile(entryHeader.getFileName())) {
+                entry.setType(EntryType.runnableFile);
+            } else if (FileUtils.BIT_MAP_FILENAME.equals(entryHeader.getFileName())) {
+                entry.setType(EntryType.bitMap);
+            } else {
+                entry.setType(EntryType.resourceFile);
+            }
+
             long entryLength = entryHeader.getLength() + fileSize;
             short flag = entryHeader.getFlag();
             // set desc null flag
@@ -107,6 +127,10 @@ public class ZipEntryData {
 
     public void setZipEntryHeader(ZipEntryHeader zipEntryHeader) {
         this.zipEntryHeader = zipEntryHeader;
+    }
+
+    public ZipEntryHeader getZipEntryHeader() {
+        return zipEntryHeader;
     }
 
     public DataDescriptor getDataDescriptor() {
@@ -139,5 +163,21 @@ public class ZipEntryData {
 
     public void setLength(long length) {
         this.length = length;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public EntryType getType() {
+        return type;
+    }
+
+    public void setType(EntryType type) {
+        this.type = type;
     }
 }

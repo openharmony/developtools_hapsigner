@@ -78,6 +78,21 @@ public final class FileUtils {
      */
     public static final String LIBS_PATH_PREFIX = "libs/";
 
+    /**
+     * abc file suffix
+     */
+    public static final String ABC_FILE_SUFFIX = ".abc";
+
+    /**
+     * an file suffix
+     */
+    public static final String NATIVE_LIB_AN_SUFFIX = ".an";
+
+    /**
+     * bitmap file name
+     */
+    public static final String BIT_MAP_FILENAME = ".pages.info";
+
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     private FileUtils() {
@@ -494,7 +509,7 @@ public final class FileUtils {
         if (StringUtils.isEmpty(name)) {
             return false;
         }
-        if (name.endsWith(".an") || name.endsWith(".abc")) {
+        if (name.endsWith(NATIVE_LIB_AN_SUFFIX) || name.endsWith(ABC_FILE_SUFFIX)) {
             return true;
         }
         if (name.startsWith(LIBS_PATH_PREFIX)) {
