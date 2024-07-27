@@ -63,6 +63,8 @@ public class SignInfo {
      */
     public static final int MAX_EXTENSION_NUM = 2;
 
+    private static final Logger LOGGER = LogManager.getLogger(SignInfo.class);
+
     /**
      * sign info structure without signature in bytes, refer to toByteArray() method
      */
@@ -92,8 +94,6 @@ public class SignInfo {
 
     // temporary, use list instead
     private List<Extension> extensionList = new ArrayList<>();
-
-    private static final Logger LOGGER = LogManager.getLogger(SignInfo.class);
 
     /**
      * Constructor for SignInfo

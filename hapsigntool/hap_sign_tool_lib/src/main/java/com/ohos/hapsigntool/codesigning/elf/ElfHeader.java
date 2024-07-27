@@ -33,7 +33,7 @@ public class ElfHeader {
      */
     private byte[] ident = new byte[ElfDefine.EI_NIDENT_LEN];
 
-    private boolean elfFile;
+    private boolean isElfFile;
 
     /**
      * 32-bit or 64-bit file
@@ -124,8 +124,8 @@ public class ElfHeader {
      */
     public ElfHeader(InputStream is) throws IOException, ElfFormatException {
         int read = is.read(ident);
-        elfFile = isElfFile(ident);
-        if (read != ident.length || !elfFile) {
+        isElfFile = isElfFile(ident);
+        if (read != ident.length || !isElfFile) {
             return;
         }
         eiClass = ident[4];
@@ -218,6 +218,6 @@ public class ElfHeader {
      * @return true if magic number is correct
      */
     public boolean isElfFile() {
-        return elfFile;
+        return isElfFile;
     }
 }
