@@ -17,6 +17,9 @@ package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -89,6 +92,8 @@ public class SignInfo {
 
     // temporary, use list instead
     private List<Extension> extensionList = new ArrayList<>();
+
+    private static final Logger LOGGER = LogManager.getLogger(SignInfo.class);
 
     /**
      * Constructor for SignInfo
@@ -242,7 +247,7 @@ public class SignInfo {
         bf.get(inSalt);
         int inExtensionNum = bf.getInt();
         if (inExtensionNum < 0 || inExtensionNum > MAX_EXTENSION_NUM) {
-            throw new VerifyCodeSignException("Invalid extensionNum of SignInfo");
+            LOGGER.info("Invalid extensionNum {} of SignInfo", inExtensionNum);
         }
         int inExtensionOffset = bf.getInt();
         if (inExtensionOffset < 0 || inExtensionOffset % 4 != 0) {
@@ -292,7 +297,7 @@ public class SignInfo {
                 bf.get(pageInfoExtension);
                 inExtensionList.add(PageInfoExtension.fromByteArray(pageInfoExtension));
             } else {
-                throw new VerifyCodeSignException("Invalid extensionType of SignInfo");
+                LOGGER.info("Invalid extensionType {} of SignInfo", extensionType);
             }
         }
         return inExtensionList;
