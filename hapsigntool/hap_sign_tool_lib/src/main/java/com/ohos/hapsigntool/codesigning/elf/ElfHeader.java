@@ -33,6 +33,8 @@ public class ElfHeader {
      */
     private byte[] ident = new byte[ElfDefine.EI_NIDENT_LEN];
 
+    private boolean elfFile;
+
     /**
      * 32-bit or 64-bit file
      */
@@ -122,7 +124,8 @@ public class ElfHeader {
      */
     public ElfHeader(InputStream is) throws IOException, ElfFormatException {
         int read = is.read(ident);
-        if (read != ident.length || !isElfFile()) {
+        elfFile = isElfFile(ident);
+        if (read != ident.length || !elfFile) {
             return;
         }
         eiClass = ident[4];
@@ -166,16 +169,10 @@ public class ElfHeader {
             eEntry = byteBuffer.getInt() & 0xFFFFFFFFL;
             ePhOff = byteBuffer.getInt() & 0xFFFFFFFFL;
             eShOff = byteBuffer.getInt() & 0xFFFFFFFFL;
-            if (ePhOff != ElfDefine.ELF_HEADER_32_LEN) {
-                throw new ElfFormatException("ELF Program header table file offset is incorrect");
-            }
         } else {
             eEntry = byteBuffer.getLong();
             ePhOff = byteBuffer.getLong();
             eShOff = byteBuffer.getLong();
-            if (ePhOff != ElfDefine.ELF_HEADER_64_LEN) {
-                throw new ElfFormatException("ELF Program header table file offset is incorrect");
-            }
         }
         eFlags = byteBuffer.getInt();
         eEhSize = byteBuffer.getShort();
@@ -221,9 +218,6 @@ public class ElfHeader {
      * @return true if magic number is correct
      */
     public boolean isElfFile() {
-        if (ident == null || ident.length < 4) {
-            return false;
-        }
-        return ident[0] == 0x7F && ident[1] == 0x45 && ident[2] == 0x4C && ident[3] == 0x46;
+        return elfFile;
     }
 }
