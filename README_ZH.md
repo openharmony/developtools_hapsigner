@@ -131,7 +131,7 @@ hap-sign-tool sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withEC
 
     sign-profile : ProvisionProfile文件签名
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
-         ├── -keyAlias          #密钥别名，必填项, 密钥别名不区分大小写
+         ├── -keyAlias          #密钥别名，必填项, 不区分大小写
          ├── -keyPwd            #密钥口令，可选项
          ├── -profileCertFile   #Profile签名证书（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -inFile            #输入的原始Provision Profile文件，必填项
@@ -160,7 +160,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 
     sign-app : 应用包和二进制工具签名
          ├── -mode              #签名模式，必填项，包括localSign，remoteSign
-         ├── -keyAlias          #密钥别名，必填项，密钥别名不区分大小写
+         ├── -keyAlias          #密钥别名，必填项，不区分大小写
          ├── -keyPwd            #密钥口令，可选项
          ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，应用包签名必填项，二进制工具签名选填
@@ -206,7 +206,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 1.生成密钥对
 
      generate-keypair : 生成密钥对
-         ├── -keyAlias          # 密钥别名，必填项，密钥别名不区分大小写
+         ├── -keyAlias          # 密钥别名，必填项，不区分大小写
          ├── -keyPwd            # 密钥口令，可选项
          ├── -keyAlg            # 密钥算法，必填项，包括RSA/ECC
          ├── -keySize           # 密钥长度，必填项，RSA算法的长度为2048/3072/4096，ECC算法的长度NIST-P-256/NIST-P-384
@@ -216,7 +216,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 2.生成证书签名请求
 
     generate-csr : 生成证书签名请求
-         ├── -keyAlias          # 密钥别名，必填项，密钥别名不区分大小写
+         ├── -keyAlias          # 密钥别名，必填项，不区分大小写
          ├── -keyPwd            # 密钥口令，可选项
          ├── -subject           # 证书主题，必填项
          ├── -signAlg           # 签名算法，必填项，包括SHA256withRSA / SHA384withRSA / SHA256withECDSA / SHA384withECDSA
@@ -227,12 +227,12 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 3.生成根CA/中间CA证书
 
     generate-ca : 生成根CA/中间CA证书，如果密钥不存在，一起生成密钥
-         ├── -keyAlias                        # 密钥别名，必填项，密钥别名不区分大小写
+         ├── -keyAlias                        # 密钥别名，必填项，不区分大小写
          ├── -keyPwd                          # 密钥口令，可选项
          ├── -keyAlg                          # 密钥算法，必填项，包括RSA/ECC
          ├── -keySize                         # 密钥长度，必填项，RSA算法的长度为2048/3072/4096，ECC算法的长度NIST-P-256/NIST-P-384
          ├── -issuer                          # 颁发者的主题，可选项，如果不填，表示根CA
-         ├── -issuerKeyAlias                  # 颁发者的密钥别名，可选项，如果不填，表示根CA，密钥别名不区分大小写
+         ├── -issuerKeyAlias                  # 颁发者的密钥别名，可选项，如果不填，表示根CA，不区分大小写
          ├── -issuerKeyPwd                    # 颁发者的密钥口令，可选项
          ├── -subject                         # 证书主题，必填项
          ├── -validity                        # 证书有效期，可选项，默认为3650天
@@ -247,10 +247,10 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 4.生成应用调试/发布证书
 
     generate-app-cert : 生成应用调试/发布证书
-         ├── -keyAlias                        # 密钥别名，必填项，密钥别名不区分大小写
+         ├── -keyAlias                        # 密钥别名，必填项，不区分大小写
          ├── -keyPwd                          # 密钥口令，可选项
          ├── -issuer                          # 颁发者的主题，必填项
-         ├── -issuerKeyAlias                  # 颁发者的密钥别名，必填项，密钥别名不区分大小写
+         ├── -issuerKeyAlias                  # 颁发者的密钥别名，必填项，不区分大小写
          ├── -issuerKeyPwd                    # 颁发者的密钥口令，可选项
          ├── -subject                         # 证书主题，必填项
          ├── -validity                        # 证书有效期，可选项，默认为3650天
@@ -267,10 +267,10 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 5.生成profile调试/发布证书
 
     generate-profile-cert : 生成profile调试/发布证书
-         ├── -keyAlias                        # 密钥别名，必填项，密钥别名不区分大小写
+         ├── -keyAlias                        # 密钥别名，必填项，不区分大小写
          ├── -keyPwd                          # 密钥口令，可选项
          ├── -issuer                          # 颁发者的主题，必填项
-         ├── -issuerKeyAlias                  # 颁发者的密钥别名，必填项，密钥别名不区分大小写
+         ├── -issuerKeyAlias                  # 颁发者的密钥别名，必填项，不区分大小写
          ├── -issuerKeyPwd                    # 颁发者的密钥口令，可选项
          ├── -subject                         # 证书主题，必填项
          ├── -validity                        # 证书有效期，可选项，默认为3650天
@@ -287,10 +287,10 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 6.通用证书生成，可以生成自定义证书
 
     generate-cert : 通用证书生成，可以生成自定义证书
-          ├── -keyAlias                          # 密钥别名，必填项，密钥别名不区分大小写
+          ├── -keyAlias                          # 密钥别名，必填项，不区分大小写
           ├── -keyPwd                            # 密钥口令，可选项
           ├── -issuer                            # 颁发者的主题，必填项
-          ├── -issuerKeyAlias                    # 颁发者的密钥别名，必填项，密钥别名不区分大小写
+          ├── -issuerKeyAlias                    # 颁发者的密钥别名，必填项，不区分大小写
           ├── -issuerKeyPwd                      # 颁发者的密钥口令，可选项
           ├── -subject                           # 证书主题，必填项
           ├── -validity                          # 证书有效期，可选项，默认为1095天
@@ -316,7 +316,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 
     sign-profile : ProvisionProfile文件签名
           ├── -mode            # 签名模式，必填项，包括localSign，remoteSign
-          ├── -keyAlias        # 密钥别名，必填项，密钥别名不区分大小写
+          ├── -keyAlias        # 密钥别名，必填项，不区分大小写
           ├── -keyPwd          # 密钥口令，可选项
           ├── -profileCertFile # Profile签名证书（证书链，顺序为实体证书-中间CA证书-根证书），必填项
           ├── -inFile          # 输入的原始Provision Profile文件，必填项
@@ -335,7 +335,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
   
      sign-app : 应用包和二进制工具签名
           ├── -mode          # 签名模式，必填项，包括localSign，remoteSign
-          ├── -keyAlias      # 密钥别名，必填项，密钥别名不区分大小写
+          ├── -keyAlias      # 密钥别名，必填项，不区分大小写
           ├── -keyPwd        # 密钥口令，可选项
           ├── -appCertFile   # 应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
           ├── -profileFile   # 签名后的Provision Profile文件名，profileSigned为1时为p7b格式，profileSigned为0时为json格式，应用包签名必填项，二进制工具签名选填
