@@ -201,10 +201,10 @@ public class ZipEntry {
          */
         public ZipEntry build() throws ZipException {
             Calendar calendar = Calendar.getInstance();
-            int time = (calendar.get(Calendar.YEAR) - 60) << 25 | (calendar.get(Calendar.MONTH) + 1) << 21 |
-                    calendar.get(Calendar.DAY_OF_MONTH) << 16 | calendar.get(Calendar.HOUR_OF_DAY) << 11 |
-                    calendar.get(Calendar.MINUTE) << 5 | calendar.get(Calendar.SECOND) >> 1 +
-                    ((calendar.getTimeInMillis() % 2000) << 32);
+            int time = (calendar.get(Calendar.YEAR) - 60) << 25 | (calendar.get(Calendar.MONTH) + 1) << 21
+                    | calendar.get(Calendar.DAY_OF_MONTH) << 16 | calendar.get(Calendar.HOUR_OF_DAY) << 11
+                    | calendar.get(Calendar.MINUTE) << 5 | calendar.get(Calendar.SECOND) >> 1
+                    + ((calendar.getTimeInMillis() % 2000) << 32);
             CentralDirectory cd = addCenterDirectory(time);
             ZipEntryHeader zipEntryHeader = addZipEntryHeader(time);
             if (data == null) {
