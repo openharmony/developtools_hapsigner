@@ -16,6 +16,7 @@
 package com.ohos.hapsigntool.codesigning.elf;
 
 import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
+import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +99,7 @@ public class ElfHeader {
     /**
      * Program header table entry count
      */
-    private short ePhNum;
+    private int ePhNum;
 
     /**
      * Section header table entry size
@@ -166,9 +167,9 @@ public class ElfHeader {
         eVersion = byteBuffer.getInt();
 
         if (eiClass == ElfDefine.ELF_32_CLASS) {
-            eEntry = byteBuffer.getInt() & 0xFFFFFFFFL;
-            ePhOff = byteBuffer.getInt() & 0xFFFFFFFFL;
-            eShOff = byteBuffer.getInt() & 0xFFFFFFFFL;
+            eEntry = UnsignedDecimalUtil.getUnsignedInt(byteBuffer);
+            ePhOff = UnsignedDecimalUtil.getUnsignedInt(byteBuffer);
+            eShOff = UnsignedDecimalUtil.getUnsignedInt(byteBuffer);
         } else {
             eEntry = byteBuffer.getLong();
             ePhOff = byteBuffer.getLong();
@@ -177,7 +178,7 @@ public class ElfHeader {
         eFlags = byteBuffer.getInt();
         eEhSize = byteBuffer.getShort();
         ePhEntSize = byteBuffer.getShort();
-        ePhNum = byteBuffer.getShort();
+        ePhNum = UnsignedDecimalUtil.getUnsignedShort(byteBuffer);
         eShEntSize = byteBuffer.getShort();
         eShNum = byteBuffer.getShort();
         eShStrndx = byteBuffer.getShort();
@@ -195,7 +196,7 @@ public class ElfHeader {
         return ePhOff;
     }
 
-    public short getEPhnum() {
+    public int getEPhnum() {
         return ePhNum;
     }
 

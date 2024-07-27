@@ -47,14 +47,14 @@ public class ElfFile {
         }
         byte eiClass = elfHeader.getEiClass();
         byte eiData = elfHeader.getEiData();
-        short ePhnum = elfHeader.getEPhnum();
+        int ePhnum = elfHeader.getEPhnum();
         long ePhOff = elfHeader.getEPhOff();
         if (eiClass == ElfDefine.ELF_32_CLASS) {
             is.skip(ePhOff - ElfDefine.ELF_HEADER_32_LEN);
         } else if (eiClass == ElfDefine.ELF_64_CLASS) {
             is.skip(ePhOff - ElfDefine.ELF_HEADER_64_LEN);
         }
-        for (short i = 0; i < ePhnum; i++) {
+        for (int i = 0; i < ePhnum; i++) {
             ElfProgramHeader pHeader = new ElfProgramHeader(is, eiClass, eiData);
             programHeaderList.add(pHeader);
         }

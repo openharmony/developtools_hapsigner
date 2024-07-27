@@ -16,6 +16,7 @@
 package com.ohos.hapsigntool.codesigning.elf;
 
 import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
+import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,9 +96,9 @@ public class ElfProgramHeader {
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
             byteBuffer.order(bo);
             pType = byteBuffer.getInt();
-            pOffset = byteBuffer.getInt() & 0xFFFFFFFFL;
-            pVaddr = byteBuffer.getInt() & 0xFFFFFFFFL;
-            pPaddr = byteBuffer.getInt() & 0xFFFFFFFFL;
+            pOffset = UnsignedDecimalUtil.getUnsignedInt(byteBuffer);
+            pVaddr = UnsignedDecimalUtil.getUnsignedInt(byteBuffer);
+            pPaddr = UnsignedDecimalUtil.getUnsignedInt(byteBuffer);
             pFilesz = byteBuffer.getInt();
             pMemsz = byteBuffer.getInt();
             pFlags = byteBuffer.getInt();
