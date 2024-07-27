@@ -221,7 +221,7 @@ public class ZipEntry {
             entryData.setZipEntryHeader(zipEntryHeader);
             ZipEntry entry = new ZipEntry();
             entry.setZipEntryData(entryData);
-            entryData.setType(EntryType.bitMap);
+            entryData.setType(EntryType.BIT_MAP);
             entry.setCentralDirectory(cd);
             return entry;
         }

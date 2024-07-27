@@ -21,7 +21,7 @@ package com.ohos.hapsigntool.zip;
  * @since 2024/06/25
  */
 public enum EntryType {
-    runnableFile,
-    bitMap,
-    resourceFile;
+    RUNNABLE_FILE,
+    BIT_MAP,
+    RESOURCE_FILE;
 }
