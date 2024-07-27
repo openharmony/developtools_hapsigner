@@ -28,6 +28,6 @@ public class NumberUtils {
      * @return true if l is multiple of 4096
      */
     public static boolean isMultiple4K(long num) {
-        return (num & 0xfff) == 0;
+        return (num & 0xfffL) == 0;
     }
 }
