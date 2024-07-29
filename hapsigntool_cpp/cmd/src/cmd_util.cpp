@@ -387,7 +387,7 @@ bool CmdUtil::Convert2Params(char** args, const size_t size, const ParamsSharedP
 bool CmdUtil::ValidAndPutParam(const ParamsSharedPtr& params, const std::string& key, char* value)
 {
     std::string  str = "Pwd";
-    bool result;
+    bool result = true;
     if (key.empty()) {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "The command-line parameter key cannot be empty");
@@ -402,10 +402,15 @@ bool CmdUtil::ValidAndPutParam(const ParamsSharedPtr& params, const std::string&
         result = false;
     } else if (key.length() >= str.length() && key.substr(key.length() - INVALIDCHAR) == str) {
         params->GetOptions()->emplace(key, value);
-        result = true;
     } else {
-        params->GetOptions()->emplace(key, std::string(value));
-        result = true;
+        if (key == Options::KEY_ALIAS || key == Options::ISSUER_KEY_ALIAS) {
+            std::string keyAlias = value;
+            std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
+                           [](unsigned char c) { return std::tolower(c); });
+            params->GetOptions()->emplace(key, keyAlias);
+        } else {
+            params->GetOptions()->emplace(key, std::string(value));
+        }
     }
     return result;
 }

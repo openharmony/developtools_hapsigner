@@ -53,7 +53,8 @@ static std::unordered_map <std::string,
 bool ParamsRunTool::ProcessCmd(char** args, size_t size)
 {
     if (size < CmdUtil::ARGS_MIN_LEN) {
-        args[1] = const_cast<char*>("");
+        PrintHelp();
+        return true;
     }
     if (args == nullptr || strcmp(args[1], "") == 0) {
         PrintHelp();
