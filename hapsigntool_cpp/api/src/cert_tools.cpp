@@ -76,7 +76,6 @@ bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
 static bool UpdateConstraint(Options* options)
 {
     if (options->count(Options::BASIC_CONSTRAINTS)) {
-        std::string val = options->GetString(Options::BASIC_CONSTRAINTS);
         if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
             return false;
         }
@@ -89,7 +88,7 @@ static bool UpdateConstraint(Options* options)
             return false;
         }
     } else {
-        (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS_CRITICAL;
+        (*options)[Options::BASIC_CONSTRAINTS_CRITICAL] = DEFAULT_BASIC_CONSTRAINTS_CRITICAL;
     }
 
     if (options->count(Options::BASIC_CONSTRAINTS_CA)) {
@@ -97,7 +96,7 @@ static bool UpdateConstraint(Options* options)
             return false;
         }
     } else {
-        (*options)[Options::BASIC_CONSTRAINTS] = DEFAULT_BASIC_CONSTRAINTS_CA;
+        (*options)[Options::BASIC_CONSTRAINTS_CA] = DEFAULT_BASIC_CONSTRAINTS_CA;
     }
     return true;
 }
