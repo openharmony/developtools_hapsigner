@@ -16,7 +16,8 @@
 #include <gtest/gtest.h>
 #include "hw_block_head.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
 * 测试套件,固定写法
@@ -111,3 +112,5 @@ HWTEST_F(HwBlockHeadTest, GetElfBlockLen, testing::ext::TestSize.Level1)
     int elfBlockLen = api->GetElfBlockLen();
     EXPECT_EQ(elfBlockLen, 12);
 }
+} // namespace SignatureTools
+} // namespace OHOS

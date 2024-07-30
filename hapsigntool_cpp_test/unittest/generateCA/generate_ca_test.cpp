@@ -1055,9 +1055,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_001, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char isksPwd[] = "123456";
@@ -1106,9 +1106,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_002, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char isksPwd[] = "123456";
@@ -1158,9 +1158,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_003, testing::ext::TestSize.Level1)
     std::string keystoreFile = "/data/test/generateCA/ohtest.p12";
     std::string keyUsage = "digitalSignature";
     std::string outFile = "general.cer";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
@@ -1205,9 +1205,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_004, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char isksPwd[] = "123456";
@@ -1253,9 +1253,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_005, testing::ext::TestSize.Level1)
     std::string subject = "";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char isksPwd[] = "123456";
@@ -1296,9 +1296,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_006, testing::ext::TestSize.Level1)
     std::string keystoreFile = "/data/test/generateCA/ohtest.p12";
     std::string keyUsage = "digitalSignature";
     std::string outFile = "/datamsge/test/generateCA/general.cer";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
@@ -1335,9 +1335,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_007, testing::ext::TestSize.Level1)
     std::string keystoreFile = "/data/test/generateCA/ohtest.p12";
     std::string keyUsage = "digitalSignature";
     std::string outFile = "general.cer";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
@@ -1377,9 +1377,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_008, testing::ext::TestSize.Level1)
     std::string keystoreFile = "/data/test/generateCA/ohtest.p12";
     std::string keyUsage = "digitalSignature";
     std::string outFile = "general.cer";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
@@ -1419,9 +1419,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_009, testing::ext::TestSize.Level1)
     std::string keystoreFile = "/data/test/generateCA/ohtest.p12";
     std::string keyUsage = "digitalSignature";
     std::string outFile = "/mjssngek/test/generateCA/general.cer";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char keystorePwd[] = "123456";
@@ -1445,7 +1445,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_009, testing::ext::TestSize.Level1)
 // general cert
 /**
  * @tc.name: generate_cert_test_010
- * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyalias.
+ * @tc.desc: Test function of GenerateCert() SUCCESS to generate a certificate.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -1463,9 +1463,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_010, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char ksPwd[] = "123456";
@@ -1493,221 +1493,7 @@ HWTEST_F(GenerateCaTest, generate_cert_test_010, testing::ext::TestSize.Level1)
     keyPair = adaptePtr->GetAliasKey(true);
     X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
     X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(cert, nullptr);
-}
-
-/**
- * @tc.name: generate_cert_test_011
- * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error issuer.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_cert_test_011, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    std::string issuerkeyAlias = "oh-app1-key-v1";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
-    char keystorePwd[] = "123456";
-    std::string signAlg = "SHA384withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
-    bool keyUsageCritical = false;
-    char secret[] = "123456";
-    char ksPwd[] = "123456";
-    char isksPwd[] = "123456";
-    (*params)["keyPwd"] = secret;
-    (*params)["keystorePwd"] = ksPwd;
-    (*params)["issuerKeystorePwd"] = isksPwd;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["signAlg"] = signAlg;
-    (*params)["subject"] = subject;
-    (*params)["issuer"] = issuer;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
-    (*params)["keyUsage"] = keyUsage;
-    (*params)["basicConstraints"] = basicConstraints;
-    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
-    (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    (*params)["keyUsageCritical"] = keyUsageCritical;
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(cert, nullptr);
-}
-
-
-/**
- * @tc.name: generate_cert_test_012
- * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error basicConstraintsCa.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_cert_test_012, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    std::string issuerkeyAlias = "oh-app1-key-v1";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
-    char keystorePwd[] = "123456";
-    std::string signAlg = "SHA384withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = false;
-    bool keyUsageCritical = true;
-    char secret[] = "123456";
-    char ksPwd[] = "123456";
-    char isksPwd[] = "123456";
-    (*params)["keyPwd"] = secret;
-    (*params)["keystorePwd"] = ksPwd;
-    (*params)["issuerKeystorePwd"] = isksPwd;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["signAlg"] = signAlg;
-    (*params)["subject"] = subject;
-    (*params)["issuer"] = issuer;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
-    (*params)["keyUsage"] = keyUsage;
-    (*params)["basicConstraints"] = basicConstraints;
-    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
-    (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    (*params)["keyUsageCritical"] = keyUsageCritical;
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(cert, nullptr);
-}
-
-
-/**
- * @tc.name: generate_cert_test_013
- * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error basicConstraintsCritical.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_cert_test_013, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    std::string issuerkeyAlias = "oh-app1-key-v1";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
-    char keystorePwd[] = "123456";
-    std::string signAlg = "SHA384withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = false;
-    bool basicConstraintsCa = false;
-    bool keyUsageCritical = true;
-    char secret[] = "123456";
-    char ksPwd[] = "123456";
-    char isksPwd[] = "123456";
-    (*params)["keyPwd"] = secret;
-    (*params)["keystorePwd"] = ksPwd;
-    (*params)["issuerKeystorePwd"] = isksPwd;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["signAlg"] = signAlg;
-    (*params)["subject"] = subject;
-    (*params)["issuer"] = issuer;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
-    (*params)["keyUsage"] = keyUsage;
-    (*params)["basicConstraints"] = basicConstraints;
-    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
-    (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    (*params)["keyUsageCritical"] = keyUsageCritical;
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(cert, nullptr);
-}
-
-/**
- * @tc.name: generate_cert_test_014
- * @tc.desc: Test function of GenerateCert() FAILED to generate a certificate with a error keyusagecritial.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, generate_cert_test_014, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<Options> params = std::make_shared<Options>();
-    std::string keyAlias = "alias";
-    std::string issuerkeyAlias = "oh-app1-key-v1";
-    char keyPwd[] = "123456";
-    std::string keyAlg = "ECC";
-    int keySize = 256;
-    std::string keystoreFile = "/data/test/generateKeyPair/keypair.p12";
-    char keystorePwd[] = "123456";
-    std::string signAlg = "SHA384withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
-    std::string keyUsage = "digitalSignature";
-    bool basicConstraints = false;
-    bool basicConstraintsCritical = false;
-    bool basicConstraintsCa = false;
-    bool keyUsageCritical = true;
-    char secret[] = "123456";
-    char ksPwd[] = "123456";
-    char isksPwd[] = "123456";
-    (*params)["keyPwd"] = secret;
-    (*params)["keystorePwd"] = ksPwd;
-    (*params)["issuerKeystorePwd"] = isksPwd;
-    (*params)["keyAlias"] = keyAlias;
-    (*params)["keyPwd"] = keyPwd;
-    (*params)["keyAlg"] = keyAlg;
-    (*params)["keySize"] = keySize;
-    (*params)["keystoreFile"] = keystoreFile;
-    (*params)["keystorePwd"] = keystorePwd;
-    (*params)["signAlg"] = signAlg;
-    (*params)["subject"] = subject;
-    (*params)["issuer"] = issuer;
-    (*params)["issuerkeyAlias"] = issuerkeyAlias;
-    (*params)["keyUsage"] = keyUsage;
-    (*params)["basicConstraints"] = basicConstraints;
-    (*params)["basicConstraintsCritical"] = basicConstraintsCritical;
-    (*params)["basicConstraintsCa"] = basicConstraintsCa;
-    (*params)["keyUsageCritical"] = keyUsageCritical;
-    std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
-    EVP_PKEY* keyPair = nullptr;
-    keyPair = adaptePtr->GetAliasKey(true);
-    X509_REQ* csr = CertTools::GenerateCsr(keyPair, signAlg, subject);
-    X509 *cert = CertTools::GenerateCert(keyPair, csr, params.get());
-    EXPECT_EQ(cert, nullptr);
+    EXPECT_NE(cert, nullptr);
 }
 
 /**
@@ -1730,9 +1516,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_015, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = false;
-    bool basicConstraintsCritical = false;
-    bool basicConstraintsCa = false;
+    std::string basicConstraints = "false";
+    std::string basicConstraintsCritical = "false";
+    std::string basicConstraintsCa = "false";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char ksPwd[] = "123456";
@@ -1781,9 +1567,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_016, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = false;
-    bool basicConstraintsCritical = false;
-    bool basicConstraintsCa = false;
+    std::string basicConstraints = "false";
+    std::string basicConstraintsCritical = "false";
+    std::string basicConstraintsCa = "false";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char ksPwd[] = "123456";

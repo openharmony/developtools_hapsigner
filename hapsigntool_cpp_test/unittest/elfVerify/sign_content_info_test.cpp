@@ -19,7 +19,8 @@
 
 #include "sign_content_info.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class SignContentInfoTest : public testing::Test {
 public:
@@ -28,3 +29,5 @@ public:
     void SetUp() {};
     void TearDown() {};
 };
+} // namespace SignatureTools
+} // namespace OHOS

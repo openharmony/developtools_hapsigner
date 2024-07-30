@@ -16,7 +16,8 @@
 #include <gtest/gtest.h>
 #include "hw_sign_head.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
 * 测试套件,固定写法
@@ -66,3 +67,5 @@ HWTEST_F(HwSignHeadTest, getSignHeadLittleEndian, testing::ext::TestSize.Level1)
     std::vector<int8_t> signHeadLittleEndian = api->GetSignHeadLittleEndian(1024, 1);
     EXPECT_EQ(signHeadLittleEndian.size(), 32);
 }
+} // namespace SignatureTools
+} // namespace OHOS

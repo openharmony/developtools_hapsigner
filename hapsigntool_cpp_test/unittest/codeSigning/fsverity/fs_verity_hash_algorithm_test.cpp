@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "fs_verity_hash_algorithm.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class FsVerityHashAlgorithmTest : public testing::Test {
 public:
@@ -71,3 +72,5 @@ HWTEST_F(FsVerityHashAlgorithmTest, GetOutputByteSize, testing::ext::TestSize.Le
 
     EXPECT_EQ(SHA256.GetOutputByteSize(), 256 / 8);
 }
+} // namespace SignatureTools
+} // namespace OHOS

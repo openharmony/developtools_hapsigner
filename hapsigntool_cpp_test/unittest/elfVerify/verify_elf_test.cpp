@@ -22,7 +22,8 @@
 #include "sign_provider.h"
 #include "verify_hap.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class VerifyElfTest : public testing::Test {
 public:
@@ -40,6 +41,7 @@ void VerifyElfTest::SetUpTestCase(void)
     (void)rename("./elfVerify/elf_signed_package.txt", "./elfVerify/elf_signed_package.elf");
     (void)rename("./elfVerify/elf_unsigned_package.txt", "./elfVerify/elf_unsigned_package.elf");
     (void)rename("./elfVerify/elf_check_file_err_package.txt", "./elfVerify/elf_check_file_err_package.elf");
+    (void)rename("./elfVerify/elf_signed_with_profile_json.txt", "./elfVerify/elf_signed_with_profile_json.elf");
 }
 
 void VerifyElfTest::TearDownTestCase(void)
@@ -289,6 +291,27 @@ HWTEST_F(VerifyElfTest, Verify013, testing::ext::TestSize.Level1)
 {
     Options options;
     options.emplace(Options::IN_FILE, std::string("./elfVerify/elf_check_file_err_package.elf"));
+    options.emplace(Options::OUT_CERT_CHAIN, std::string("./elfVerify/xx.cer"));
+    options.emplace(Options::OUT_PROFILE, std::string("./elfVerify/xx.p7b"));
+
+    VerifyElf verifyElf;
+    bool flag = verifyElf.Verify(&options);
+
+    EXPECT_EQ(flag, true);
+}
+
+/**
+ * @tc.name: Verify014
+ * @tc.desc: verify elf with unsigned profile
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyElfTest, Verify014, testing::ext::TestSize.Level1)
+{
+    Options options;
+    options.emplace(Options::IN_FILE, std::string("./elfVerify/elf_signed_with_profile_json.elf"));
     options.emplace(Options::OUT_CERT_CHAIN, std::string("./elfVerify/xx.cer"));
     options.emplace(Options::OUT_PROFILE, std::string("./elfVerify/xx.p7b"));
 
@@ -762,3 +785,5 @@ HWTEST_F(VerifyElfTest, WriteVerifyOutput002, testing::ext::TestSize.Level1)
 
     EXPECT_NE(flag, 0);
 }
+} // namespace SignatureTools
+} // namespace OHOS

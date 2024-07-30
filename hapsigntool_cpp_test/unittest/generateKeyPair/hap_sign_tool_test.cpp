@@ -997,9 +997,9 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_027, testing::ext::TestSize.Level1)
     std::string keyStoreFile = "./generateKeyPair/OpenHarmony.p12";
     std::string keyUsage = "digitalSignature";
     std::string outFile = "./generateKeyPair/general.cer";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     int keysize = 384;

@@ -24,7 +24,6 @@
 #include "hap_signer_block_utils_test.h"
 
 using namespace testing::ext;
-using namespace OHOS::SignatureTools;
 
 namespace OHOS {
 namespace SignatureTools {
@@ -96,10 +95,45 @@ int64_t CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo)
         sizeof(centralDirOffset) + sizeof(magic) + sizeof(eocdCommentLen);
     return sumLen;
 }
-} // namespace SignatureTools
-} // namespace OHOS
 
-namespace {
+int SetTestSignerInfoSignAlgor(PKCS7_SIGNER_INFO* info)
+{
+    int signNid = 0;
+    int hashNid = 0;
+    X509_ALGOR* dig;
+    X509_ALGOR* sig;
+    PKCS7_SIGNER_INFO_get0_algs(info, NULL, &dig, &sig);
+    if (dig == NULL || dig->algorithm == NULL ||
+        (hashNid = OBJ_obj2nid(dig->algorithm)) == NID_undef ||
+        !OBJ_find_sigid_by_algs(&signNid, hashNid, NID_X9_62_id_ecPublicKey) ||
+        X509_ALGOR_set0(sig, OBJ_nid2obj(signNid), V_ASN1_UNDEF, 0) != 1) {
+        return 0;
+    }
+    return 1;
+}
+
+int Pkcs7TestSetSignerInfo(PKCS7_SIGNER_INFO* info, X509* cert, const EVP_MD* hash)
+{
+    if (!ASN1_INTEGER_set(info->version, 1) ||
+        !X509_NAME_set(&info->issuer_and_serial->issuer, X509_get_issuer_name(cert))) {
+        return 0;
+    }
+
+    ASN1_INTEGER_free(info->issuer_and_serial->serial);
+    if (!(info->issuer_and_serial->serial =
+        ASN1_INTEGER_dup(X509_get_serialNumber(cert)))) {
+        return 0;
+    }
+
+    X509_ALGOR_set0(info->digest_alg, OBJ_nid2obj(EVP_MD_type(hash)),
+                    V_ASN1_NULL, NULL);
+
+    if (!SetTestSignerInfoSignAlgor(info)) {
+        return 0;
+    }
+    return 1;
+}
+
 const std::string HAP_VERIFY_V2_PATH = "./hapVerify/hap_verify_v2.hap";
 const std::string HAP_VERIFY_V3_PATH = "./hapVerify/hap_verify_v3.hap";
 class HapSignerBlockUtilsTest : public testing::Test {
@@ -521,4 +555,89 @@ HWTEST_F(HapSignerBlockUtilsTest, VerifyHapIntegrityTest001, TestSize.Level1)
 
     ASSERT_FALSE(HapSignerBlockUtils::VerifyHapIntegrity(digestInfo, hapTestFile, signInfo));
 }
-} // namespace
+
+/**
+ * @tc.name: VerifyHapError001
+ * @tc.desc: This function tests failure for interface GetCertsChain due to PKCS7_SIGNER_INFO have not cert
+ * @tc.type: FUNC
+ */
+HWTEST_F(HapSignerBlockUtilsTest, VerifyHapError001, TestSize.Level1)
+{
+    PKCS7* pkcs7 = PKCS7_new();
+    X509* cert = X509_new();
+    PKCS7_set_type(pkcs7, NID_pkcs7_signed);
+    PKCS7_content_new(pkcs7, NID_pkcs7_data);
+    const EVP_MD* md = EVP_sha384();
+    PKCS7_SIGNER_INFO* info = PKCS7_SIGNER_INFO_new();
+    Pkcs7TestSetSignerInfo(info, cert, md);
+    PKCS7_add_signer(pkcs7, info);
+    Pkcs7Context pkcs7Context;
+    bool ret = VerifyHapOpensslUtils::GetCertChains(pkcs7, pkcs7Context);
+    EXPECT_EQ(ret, false);
+    PKCS7_free(pkcs7);
+    X509_free(cert);
+}
+
+/**
+ * @tc.name: VerifyHapError002
+ * @tc.desc: This function tests failure for interface GetCrlStack due to pkcs7 not init
+ * @tc.type: FUNC
+ */
+HWTEST_F(HapSignerBlockUtilsTest, VerifyHapError002, TestSize.Level1)
+{
+    PKCS7* pkcs7 = PKCS7_new();
+    bool ret = VerifyHapOpensslUtils::GetCrlStack(pkcs7, nullptr);
+    EXPECT_EQ(ret, false);
+    PKCS7_free(pkcs7);
+}
+
+/**
+ * @tc.name: VerifyHapError003
+ * @tc.desc: This function tests failure for interface VerifyPkcs7 due to cert1 not init
+ * @tc.type: FUNC
+ */
+HWTEST_F(HapSignerBlockUtilsTest, VerifyHapError003, TestSize.Level1)
+{
+    PKCS7* pkcs7 = PKCS7_new();
+    X509* cert = X509_new();
+    PKCS7_set_type(pkcs7, NID_pkcs7_signed);
+    PKCS7_content_new(pkcs7, NID_pkcs7_data);
+    const EVP_MD* md = EVP_sha384();
+    PKCS7_SIGNER_INFO* info = PKCS7_SIGNER_INFO_new();
+    Pkcs7TestSetSignerInfo(info, cert, md);
+    char* t = new char[2];
+    t[0] = 1;
+    t[1] = 2;
+    ASN1_STRING_set0(info->enc_digest, t, 2);
+    PKCS7_add_signer(pkcs7, info);
+    Pkcs7Context pkcs7Context;
+    pkcs7Context.p7 = pkcs7;
+    CertChain certs;
+    X509* cert1 = X509_new();
+    certs.push_back(cert1);
+    pkcs7Context.certChain.push_back(certs);
+    bool ret = VerifyHapOpensslUtils::VerifyPkcs7(pkcs7Context);
+    EXPECT_EQ(ret, false);
+    X509_free(cert);
+    X509_free(cert1);
+}
+
+/**
+ * @tc.name: VerifyHapError004
+ * @tc.desc: This function tests failure for interface ParsePkcs7Package due to cert1 not init
+ * @tc.type: FUNC
+ */
+HWTEST_F(HapSignerBlockUtilsTest, VerifyHapError004, TestSize.Level1)
+{
+    PKCS7* pkcs7 = PKCS7_new();
+    PKCS7_set_type(pkcs7, NID_pkcs7_signed);
+    PKCS7_content_new(pkcs7, NID_pkcs7_data);
+    unsigned char* p = nullptr;
+    int len = i2d_PKCS7(pkcs7, &p);
+    Pkcs7Context pkcs7Context;
+    bool ret = VerifyHapOpensslUtils::ParsePkcs7Package(p, len, pkcs7Context);
+    EXPECT_EQ(ret, false);
+    PKCS7_free(pkcs7);
+}
+} // namespace SignatureTools
+} // namespace OHOS

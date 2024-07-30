@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "hap_info_segment.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -247,3 +248,5 @@ HWTEST_F(HapInfoSegmentTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 64);
 }
+} // namespace SignatureTools
+} // namespace OHOS

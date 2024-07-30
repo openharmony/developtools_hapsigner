@@ -18,7 +18,8 @@
 #include <gtest/gtest.h>
 #include "fs_verity_generator.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class FsVerityGeneratorTest : public testing::Test {
 public:
@@ -183,3 +184,5 @@ HWTEST_F(FsVerityGeneratorTest, GetLog2BlockSize, testing::ext::TestSize.Level1)
 
     EXPECT_NE(blockSize, 0);
 }
+} // namespace SignatureTools
+} // namespace OHOS

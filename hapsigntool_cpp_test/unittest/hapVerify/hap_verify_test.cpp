@@ -32,6 +32,8 @@
 #include "options.h"
 #include "signature_tools_errno.h"
 #include "hap_utils.h"
+#include "cert_dn_utils.h"
+#include "signer_config.h"
 
 using namespace testing::ext;
 
@@ -908,6 +910,161 @@ HWTEST_F(VerifyHapTest, VerifyHapError019, TestSize.Level0)
     ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
 
     EXPECT_EQ(ret, "");
+}
+
+/**
+ * @tc.name: VerifyHapError021
+ * @tc.desc: This function tests failure for interface GetCertsChain due to certsChain and certVisitSign are empty
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError021, TestSize.Level0)
+{
+    CertSign certVisitSign;
+    CertChain certsChain;
+    STACK_OF(X509)* certs = sk_X509_new_null();
+    sk_X509_push(certs, nullptr);
+    CertSign certVisitSign1;
+    VerifyCertOpensslUtils::GenerateCertSignFromCertStack(certs, certVisitSign1);
+    sk_X509_pop_free(certs, X509_free);
+    bool ret = VerifyCertOpensslUtils::GetCertsChain(certsChain, certVisitSign);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: VerifyHapError022
+ * @tc.desc: This function tests failure for interface GetCertsChain due to certVisitSign is empty
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError022, TestSize.Level0)
+{
+    CertSign certVisitSign;
+    CertChain certsChain;
+    certsChain.push_back(nullptr);
+    bool ret = VerifyCertOpensslUtils::GetCertsChain(certsChain, certVisitSign);
+    EXPECT_EQ(ret, false);
+}
+
+/**
+ * @tc.name: VerifyHapError023
+ * @tc.desc: This function tests failure for interface GetCrlBySignedCertIssuer due to crls is empty
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError023, TestSize.Level0)
+{
+    STACK_OF(X509_CRL)* crls = sk_X509_CRL_new_null();
+    X509* cert = X509_new();
+    X509_CRL* ret = VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(crls, cert);
+    EXPECT_EQ(ret, nullptr);
+    sk_X509_CRL_pop_free(crls, X509_CRL_free);
+    X509_free(cert);
+}
+
+/**
+ * @tc.name: VerifyHapError024
+ * @tc.desc: This function tests failure for interface GetCrlBySignedCertIssuer due to crls all empty element
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError024, TestSize.Level0)
+{
+    STACK_OF(X509_CRL)* crls = sk_X509_CRL_new_null();
+    sk_X509_CRL_push(crls, nullptr);
+    X509* cert = X509_new();
+    X509_CRL* ret = VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(crls, cert);
+    EXPECT_EQ(ret, nullptr);
+    sk_X509_CRL_pop_free(crls, X509_CRL_free);
+    X509_free(cert);
+}
+
+/**
+ * @tc.name: VerifyHapError025
+ * @tc.desc: This function tests success for interface GetCrlBySignedCertIssuer
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError025, TestSize.Level0)
+{
+    STACK_OF(X509_CRL)* crls = sk_X509_CRL_new_null();
+    sk_X509_CRL_push(crls, X509_CRL_new());
+    X509* cert = X509_new();
+    X509_CRL* ret = VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(crls, cert);
+    EXPECT_NE(ret, nullptr);
+    sk_X509_CRL_pop_free(crls, X509_CRL_free);
+    X509_free(cert);
+}
+
+/**
+ * @tc.name: VerifyHapError026
+ * @tc.desc: This function tests failed for interface GetCrlBySignedCertIssuer dut issuer name different
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError026, TestSize.Level0)
+{
+    STACK_OF(X509_CRL)* crls = sk_X509_CRL_new_null();
+    sk_X509_CRL_push(crls, X509_CRL_new());
+    X509* cert = X509_new();
+    X509_REQ* issuerReq = X509_REQ_new();
+    std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    X509_NAME* subName = BuildDN(subjectname, issuerReq);
+    X509_set_issuer_name(cert, subName);
+    X509_CRL* ret = VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(crls, cert);
+    EXPECT_EQ(ret, nullptr);
+    sk_X509_CRL_pop_free(crls, X509_CRL_free);
+    X509_free(cert);
+}
+
+/**
+ * @tc.name: VerifyHapError027
+ * @tc.desc: This function tests failed for interface VerifyCrl dut certsChain no have public key
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError027, TestSize.Level0)
+{
+    STACK_OF(X509_CRL)* crls = sk_X509_CRL_new_null();
+    sk_X509_CRL_push(crls, X509_CRL_new());
+    X509* cert = X509_new();
+    X509* cert1 = X509_new();
+    CertChain certsChain;
+    certsChain.push_back(cert);
+    certsChain.push_back(cert1);
+    Pkcs7Context pkcs7Context;
+    bool ret = VerifyCertOpensslUtils::VerifyCrl(certsChain, crls, pkcs7Context);
+    EXPECT_EQ(ret, false);
+    SignerConfig config;
+    config.SetX509CRLs(crls);
+    X509_free(cert);
+    X509_free(cert1);
+}
+
+/**
+ * @tc.name: VerifyHapError028
+ * @tc.desc: This function tests failed for interface outputOptionalBlocks dut  errorfile is not exit
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError028, TestSize.Level0)
+{
+    std::string outputProfileFile = "outputProfileFile.txt";
+    std::string outputProofFile = "outputProfileFile.txt";
+    std::string outputPropertyFile = "outputProfileFile.txt";
+    std::string errorfile = "./nohave/path.txt";
+    ByteBuffer bf1("123456789", 9);
+    ByteBuffer bf2("123456789", 9);
+    ByteBuffer bf3("123456789", 9);
+    std::vector<OptionalBlock> optionBlocks;
+    optionBlocks.push_back({ HapUtils::HAP_PROFILE_BLOCK_ID, bf1 });
+    optionBlocks.push_back({ HapUtils::HAP_PROPERTY_BLOCK_ID, bf2 });
+    optionBlocks.push_back({ HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID, bf3 });
+    ProfileInfo info1;
+    ProfileInfo info2(info1);
+    ProfileInfo info3;
+    info1.profileBlockLength = 1;
+    info1.profileBlock = std::make_unique<unsigned char[]>(2);
+    info3 = info1;
+    VerifyHap verify;
+    bool resultCode = verify.outputOptionalBlocks(errorfile, outputProofFile, outputPropertyFile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
+    resultCode = verify.outputOptionalBlocks(outputProfileFile, errorfile, outputPropertyFile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
+    resultCode = verify.outputOptionalBlocks(outputProfileFile, outputProofFile, errorfile, optionBlocks);
+    EXPECT_EQ(resultCode, false);
 }
 }
 }

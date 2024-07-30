@@ -22,7 +22,6 @@
 
 #include "zip_signer.h"
 
-using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
 static constexpr int ALIGNMENT = 4;
@@ -203,9 +202,9 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    (void)rename("./zip/data_descriptor_hap.txt", DATA_DESC_HAP_FILE_PATH);
-    (void)rename("./zip/unsigned.txt", UNSIGNED_HAP_FILE_PATH);
-    (void)rename("./zip/signed.txt", SIGNED_HAP_FILE_PATH);
+    (void)rename("./zip/data_descriptor_hap.txt", OHOS::SignatureTools::DATA_DESC_HAP_FILE_PATH);
+    (void)rename("./zip/unsigned.txt", OHOS::SignatureTools::UNSIGNED_HAP_FILE_PATH);
+    (void)rename("./zip/signed.txt", OHOS::SignatureTools::SIGNED_HAP_FILE_PATH);
     sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;
