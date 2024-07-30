@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include <fs_verity_digest.h>
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class FsVerityDigestTest : public testing::Test {
 public:
@@ -44,3 +45,5 @@ HWTEST_F(FsVerityDigestTest, GetFsVerityDigest, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(digest.size(), 16);
 }
+} // namespace SignatureTools
+} // namespace OHOS

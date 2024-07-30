@@ -19,7 +19,8 @@
 
 #include "signing_block.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class SigningBlockTest : public testing::Test {
 public:
@@ -80,3 +81,5 @@ HWTEST_F(SigningBlockTest, GetOffset, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(offset, 0);
 }
+} // namespace SignatureTools
+} // namespace OHOS

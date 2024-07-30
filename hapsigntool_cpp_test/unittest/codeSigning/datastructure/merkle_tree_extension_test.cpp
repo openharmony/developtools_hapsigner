@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "merkle_tree_extension.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -215,3 +216,5 @@ HWTEST_F(MerkleTreeExtensionTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 88);
 }
+} // namespace SignatureTools
+} // namespace OHOS

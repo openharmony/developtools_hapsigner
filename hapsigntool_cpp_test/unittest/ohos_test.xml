@@ -124,6 +124,11 @@
         <option name="push" value="./elfVerify/package/bin_get_digest_err_package.txt -> /data/test/elfVerify" src="res"/>
         <option name="push" value="./elfVerify/package/bin_signed_package.txt -> /data/test/elfVerify" src="res"/>
         <option name="push" value="./elfVerify/package/bin_unsigned_package.txt -> /data/test/elfVerify" src="res"/>
+        <option name="push" value="./elfVerify/package/elf_signed_with_profile_json.txt -> /data/test/elfVerify" src="res"/>
+
+        <option name="push" value="./generateCA/package/phone-default-signed.txt -> /data/test/generateCA/" src="res"/>
+        <option name="push" value="./generateCA/package/bin_signed_package.txt -> /data/test/generateCA/" src="res"/>
+        <option name="push" value="./generateCA/package/elf_signed_package.txt -> /data/test/generateCA/" src="res"/>
       </preparer>
       <cleaner>
       </cleaner>

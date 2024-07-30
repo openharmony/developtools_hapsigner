@@ -19,9 +19,8 @@
 #include "securec.h"
 #include "../profile_resources.h"
 
-using namespace OHOS::SignatureTools;
-
 namespace OHOS {
+namespace SignatureTools {
 bool SignProfileTest001(const uint8_t* data, size_t size)
 {
     std::string content(data, data + size);
@@ -147,11 +146,11 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     return true;
 }
 }
-
+}
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithMyAPI(data, size);
+    OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;
 }

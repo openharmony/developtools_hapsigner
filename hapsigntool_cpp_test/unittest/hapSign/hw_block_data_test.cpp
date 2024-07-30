@@ -16,7 +16,8 @@
 #include <gtest/gtest.h>
 #include "hw_block_data.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
 * 测试套件,固定写法
@@ -96,3 +97,5 @@ HWTEST_F(HwBlockDataTest, SetBlockStart, testing::ext::TestSize.Level1)
     api->SetBlockStart(1);
     EXPECT_EQ(true, 1);
 }
+} // namespace SignatureTools
+} // namespace OHOS

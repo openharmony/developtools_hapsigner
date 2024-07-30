@@ -22,7 +22,8 @@
 #include "local_sign_provider.h"
 #include "unzip_handle_param.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class CodeSigningTest : public testing::Test {
 public:
@@ -785,3 +786,5 @@ HWTEST_F(CodeSigningTest, GetElfCodeSignBlock004, testing::ext::TestSize.Level1)
     bool ret = codeSigning.GetElfCodeSignBlock(inputFile, offset, inForm, params.at("profileContent"), codesignData);
     EXPECT_EQ(ret, false);
 }
+} // namespace SignatureTools
+} // namespace OHOS

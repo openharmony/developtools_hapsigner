@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "extension.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
  /*
  * 测试套件,固定写法
@@ -82,3 +83,5 @@ HWTEST_F(ExtensionTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 8);
 }
+} // namespace SignatureTools
+} // namespace OHOS

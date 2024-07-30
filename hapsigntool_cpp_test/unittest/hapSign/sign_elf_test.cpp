@@ -38,7 +38,7 @@ public:
     };
 };
 
-void SetParamsMap(std::map<std::string, std::string>& params)
+void SetElfParamsMap(std::map<std::string, std::string>& params)
 {
     params["keyPwd"] = "123456";
     params["mode"] = "localSign";
@@ -78,7 +78,7 @@ void SetParamsMap(std::map<std::string, std::string>& params)
     params["profileContent"] = provision;
 }
 
-void SetOptions(Options* options)
+void SetElfOptions(Options* options)
 {
     std::string mode = "localSign";
     std::string keyAlias = "oh-app1-key-v1";
@@ -122,7 +122,7 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    SetParamsMap(params);
+    SetElfParamsMap(params);
     signerConfig.FillParameters(params);
 
     ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
@@ -134,7 +134,7 @@ HWTEST_F(SignElfTest, Sign001, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    SetOptions(options.get());
+    SetElfOptions(options.get());
     signerConfig.SetOptions(options.get());
 
     signerConfig.GetSigner();
@@ -156,7 +156,7 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    SetParamsMap(params);
+    SetElfParamsMap(params);
     params["inFile"] = "./hapSign/unsigned-file-no.out";
     signerConfig.FillParameters(params);
 
@@ -169,7 +169,7 @@ HWTEST_F(SignElfTest, Sign002, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    SetOptions(options.get());
+    SetElfOptions(options.get());
     (*options)["inFile"] = "./hapSign/unsigned-file-no.out";
     signerConfig.SetOptions(options.get());
 
@@ -194,7 +194,7 @@ HWTEST_F(SignElfTest, Sign003, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    SetParamsMap(params);
+    SetElfParamsMap(params);
     params["profileFile"] = "./hapSign/signed-profile-no.p7b";
     signerConfig.FillParameters(params);
 
@@ -207,7 +207,7 @@ HWTEST_F(SignElfTest, Sign003, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    SetOptions(options.get());
+    SetElfOptions(options.get());
     (*options)["profileFile"] = "./hapSign/signed-profile-no.p7b";
     signerConfig.SetOptions(options.get());
 
@@ -231,7 +231,7 @@ HWTEST_F(SignElfTest, Sign004, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    SetParamsMap(params);
+    SetElfParamsMap(params);
     params["outFile"] = "./hapSign_test/entry-default-signed.elf";
     signerConfig.FillParameters(params);
 
@@ -244,7 +244,7 @@ HWTEST_F(SignElfTest, Sign004, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    SetOptions(options.get());
+    SetElfOptions(options.get());
     (*options)["outFile"] = "./hapSign_test/entry-default-signed.elf";
     signerConfig.SetOptions(options.get());
 
@@ -268,7 +268,7 @@ HWTEST_F(SignElfTest, Sign005, testing::ext::TestSize.Level1)
     signerConfig.SetCompatibleVersion(9);
 
     std::map<std::string, std::string> params;
-    SetParamsMap(params);
+    SetElfParamsMap(params);
     params["signCode"] = "0";
     signerConfig.FillParameters(params);
 
@@ -281,7 +281,7 @@ HWTEST_F(SignElfTest, Sign005, testing::ext::TestSize.Level1)
     signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
 
     std::shared_ptr<Options> options = std::make_shared<Options>();
-    SetOptions(options.get());
+    SetElfOptions(options.get());
     (*options)["signCode"] = "0";
     signerConfig.SetOptions(options.get());
 
@@ -310,6 +310,5 @@ HWTEST_F(SignElfTest, GetCodeSignBlock001, testing::ext::TestSize.Level1)
     bool flag = object.GetCodeSignBlock(input, offset, inForm, profileContent, zip, ret);
     EXPECT_EQ(flag, false);
 }
-
 }
 }
