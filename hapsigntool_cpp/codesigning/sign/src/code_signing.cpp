@@ -272,19 +272,7 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
                                              int &readFileSize, std::stringbuf &sb)
 {
     char szReadBuffer[BUFFER_SIZE] = { 0 };
-    if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
-        unzClose(zFile);
-        return false;
-    }
-    size_t nameLen = 0;
-    if (!CheckUnzParam(zFile, zFileInfo, fileName, &nameLen)) {
-        unzClose(zFile);
-        return false;
-    }
-    if (!CheckFileName(zFile, fileName, &nameLen)) {
-        unzClose(zFile);
-        return false;
-    }
+
     long fileLength = zFileInfo.uncompressed_size;
     int nReadFileSize;
     do {
@@ -328,7 +316,6 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
         unzClose(zFile);
         return false;
     }
-
     for (uLong i = 0; i < index; ++i) {
         int ret = unzGoToNextFile(zFile);
         if (ret != UNZ_OK) {
@@ -336,11 +323,23 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
             return false;
         }
     }
-
     unz_file_info zFileInfo;
     char fileName[FILE_NAME_SIZE];
     int readFileSize = 0;
     std::stringbuf sb;
+    if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
+        unzClose(zFile);
+        return false;
+    }
+    size_t nameLen = 0;
+    if (!CheckUnzParam(zFile, zFileInfo, fileName, &nameLen)) {
+        unzClose(zFile);
+        return false;
+    }
+    if (!CheckFileName(zFile, fileName, &nameLen)) {
+        unzClose(zFile);
+        return true;
+    }
     bool flag = GetSingleFileStreamFromZip(zFile, fileName, zFileInfo, readFileSize, sb);
     if (!flag) {
         return false;
@@ -348,10 +347,12 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
     bool handleFlag = DoNativeLibSignOrVerify(std::string(fileName), sb, param, readFileSize);
     if (!handleFlag) {
         SIGNATURE_TOOLS_LOGE("%s native libs handle failed", fileName);
-        unzClose(zFile);
-        return false;
+        if(!zFile) {
+            unzClose(zFile);
+            zFile = nullptr;
+            return false;
+        }
     }
-
     return true;
 }
 
