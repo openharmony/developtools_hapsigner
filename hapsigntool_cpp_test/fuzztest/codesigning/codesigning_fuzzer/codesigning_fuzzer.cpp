@@ -18,9 +18,8 @@
 #include <cstdio>
 #include "signing_block.h"
 #include "sign_block_info.h"
-using namespace OHOS::SignatureTools;
-
 namespace OHOS {
+namespace SignatureTools {
 bool SignBlockInfoObjectBuild(const uint8_t* data, size_t size)
 {
     SignBlockInfo object;
@@ -36,14 +35,14 @@ bool SigningBlockObjectBuild(const uint8_t* data, size_t size)
     SigningBlock object(type, sig);
     return true;
 }
-
+}
 }
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::SignBlockInfoObjectBuild(data, size);
-    OHOS::SigningBlockObjectBuild(data, size);
+    OHOS::SignatureTools::SignBlockInfoObjectBuild(data, size);
+    OHOS::SignatureTools::SigningBlockObjectBuild(data, size);
     return 0;
 }

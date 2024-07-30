@@ -51,9 +51,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char keyPwd[] = "123456";
     char ksPwd[] = "123456";
     bool extKeyUsageCritical = true;
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     std::string outFile = "/data/test/generateCA/single-app1.cer";
     (*params)["keyPwd"] = keyPwd;
     (*params)["issuer"] = issuer;

@@ -18,7 +18,8 @@
 #include <gtest/gtest.h>
 #include "merkle_tree_builder.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class MerkleTreeBuilderTest : public testing::Test {
 public:
@@ -89,3 +90,5 @@ HWTEST_F(MerkleTreeBuilderTest, GenerateMerkleTree003, testing::ext::TestSize.Le
 
     EXPECT_EQ(merkleTree, nullptr);
 }
+} // namespace SignatureTools
+} // namespace OHOS

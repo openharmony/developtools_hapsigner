@@ -18,7 +18,8 @@
 #include "cms_utils.h"
 #include "verify_code_signature.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class CmsUtilsTest : public testing::Test {
 public:
@@ -181,3 +182,5 @@ HWTEST_F(CmsUtilsTest, VerifySignDataWithUnsignedDataDigest, testing::ext::TestS
 
     EXPECT_EQ(flag, false);
 }
+} // namespace SignatureTools
+} // namespace OHOS

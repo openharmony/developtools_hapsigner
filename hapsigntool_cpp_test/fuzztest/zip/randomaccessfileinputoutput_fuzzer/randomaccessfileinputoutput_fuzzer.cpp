@@ -24,7 +24,6 @@
 #include "random_access_file_input.h"
 #include "random_access_file_output.h"
 
-using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
 
@@ -76,7 +75,7 @@ void DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    (void)rename("./zip/unsigned.txt", UNSIGNED_HAP_FILE_PATH);
+    (void)rename("./zip/unsigned.txt", OHOS::SignatureTools::UNSIGNED_HAP_FILE_PATH);
     sync();
     OHOS::SignatureTools::DoSomethingInterestingWithMyAPI(data, size);
     return 0;

@@ -19,7 +19,8 @@
 #include "code_signing.h"
 #include "options.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class BCSignedDataGeneratorTest : public testing::Test {
 public:
@@ -340,3 +341,5 @@ HWTEST_F(BCSignedDataGeneratorTest, SetOwnerId, testing::ext::TestSize.Level1)
     api->SetOwnerId(ownerID);
     EXPECT_EQ(true, 1);
 }
+} // namespace SignatureTools
+} // namespace OHOS

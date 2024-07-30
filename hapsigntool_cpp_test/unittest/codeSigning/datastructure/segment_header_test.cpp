@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "segment_header.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -99,3 +100,5 @@ HWTEST_F(SegmentHeaderTest, FromByteArray003, testing::ext::TestSize.Level1)
 
     EXPECT_NE(arr.size(), 0);
 }
+} // namespace SignatureTools
+} // namespace OHOS

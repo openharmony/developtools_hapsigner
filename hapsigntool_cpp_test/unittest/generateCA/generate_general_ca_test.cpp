@@ -31,20 +31,30 @@ namespace SignatureTools {
 
 class GenerateCaTest : public testing::Test {
 public:
-    static void SetUpTestCase()
-    {
-    };
-    static void TearDownTestCase()
-    {
-    };
-    void SetUp()
-    {
-    };
-    void TearDown()
-    {
-    };
+    static void SetUpTestCase();
+    static void TearDownTestCase();
+    void SetUp();
+    void TearDown();
 };
 
+void GenerateCaTest::SetUpTestCase(void)
+{
+    (void)rename("./generateCA/phone-default-signed.txt", "./generateCA/phone-default-signed.hap");
+    (void)rename("./generateCA/bin_signed_package.txt", "./generateCA/bin_signed_package.bin");
+    (void)rename("./generateCA/elf_signed_package.txt", "./generateCA/elf_signed_package.elf");
+}
+
+void GenerateCaTest::TearDownTestCase(void)
+{
+}
+
+void GenerateCaTest::SetUp()
+{
+}
+
+void GenerateCaTest::TearDown()
+{
+}
 
 /**
  * @tc.name: generate_cert_test_017
@@ -66,9 +76,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_017, testing::ext::TestSize.Level1)
     std::string subject = "";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char isksPwd[] = "123456";
@@ -115,9 +125,9 @@ HWTEST_F(GenerateCaTest, generate_cert_test_018, testing::ext::TestSize.Level1)
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     std::string keyUsage = "digitalSignature";
-    bool basicConstraints = true;
-    bool basicConstraintsCritical = true;
-    bool basicConstraintsCa = true;
+    std::string basicConstraints = "true";
+    std::string basicConstraintsCritical = "true";
+    std::string basicConstraintsCa = "true";
     bool keyUsageCritical = true;
     char secret[] = "123456";
     char isksPwd[] = "123456";
@@ -1373,6 +1383,72 @@ HWTEST_F(GenerateCaTest, hap_verify_test_002, testing::ext::TestSize.Level1)
     params[Options::OUT_PROFILE] = outProfile;
     bool result = api.VerifyHapSigner(&params);
     EXPECT_EQ(result, false);
+}
+
+/**
+ * @tc.name: hap_verify_test_003
+ * @tc.desc: Test function of VerifyHapSigner() interface for verify hap SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, hap_verify_test_003, testing::ext::TestSize.Level1)
+{
+    SignToolServiceImpl api;
+    Options params;
+    std::string inFile = "./generateCA/phone-default-signed.hap";
+    std::string outCertChain = "./generateCA/xxx.cer";
+    std::string outProfile = "./generateCA/xxx.p7b";
+    std::string inForm = "zip";
+    params[Options::IN_FILE] = inFile;
+    params[Options::OUT_CERT_CHAIN] = outCertChain;
+    params[Options::OUT_PROFILE] = outProfile;
+    params[Options::INFORM] = inForm;
+    bool result = api.VerifyHapSigner(&params);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: hap_verify_test_004
+ * @tc.desc: Test function of VerifyHapSigner() interface for verify elf SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, hap_verify_test_004, testing::ext::TestSize.Level1)
+{
+    SignToolServiceImpl api;
+    Options params;
+    std::string inFile = "./generateCA/elf_signed_package.elf";
+    std::string outCertChain = "./generateCA/xxx.cer";
+    std::string outProfile = "./generateCA/xxx.p7b";
+    std::string inForm = "elf";
+    params[Options::IN_FILE] = inFile;
+    params[Options::OUT_CERT_CHAIN] = outCertChain;
+    params[Options::OUT_PROFILE] = outProfile;
+    params[Options::INFORM] = inForm;
+    bool result = api.VerifyHapSigner(&params);
+    EXPECT_EQ(result, true);
+}
+
+/**
+ * @tc.name: hap_verify_test_005
+ * @tc.desc: Test function of VerifyHapSigner() interface for verify bin SUCCESS.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, hap_verify_test_005, testing::ext::TestSize.Level1)
+{
+    SignToolServiceImpl api;
+    Options params;
+    std::string inFile = "./generateCA/bin_signed_package.bin";
+    std::string outCertChain = "./generateCA/xxx.cer";
+    std::string outProfile = "./generateCA/xxx.p7b";
+    std::string inForm = "bin";
+    params[Options::IN_FILE] = inFile;
+    params[Options::OUT_CERT_CHAIN] = outCertChain;
+    params[Options::OUT_PROFILE] = outProfile;
+    params[Options::INFORM] = inForm;
+    bool result = api.VerifyHapSigner(&params);
+    EXPECT_EQ(result, true);
 }
 
 /**

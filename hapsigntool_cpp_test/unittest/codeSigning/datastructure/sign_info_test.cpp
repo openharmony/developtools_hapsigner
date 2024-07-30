@@ -18,7 +18,8 @@
 #include "sign_info.h"
 #include "byte_buffer.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -180,3 +181,5 @@ HWTEST_F(SignInfoTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(bytes.size(), 60);
 }
+} // namespace SignatureTools
+} // namespace OHOS

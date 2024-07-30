@@ -21,7 +21,8 @@
 #include "sign_bin.h"
 #include "hash_utils.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class VerifyBinTest : public testing::Test {
 public:
@@ -502,3 +503,5 @@ HWTEST_F(VerifyBinTest, GetDigestFromBytes002, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(size, 0);
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -20,7 +20,8 @@
 #include "hap_utils.h"
 #include "byte_buffer.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class HapUtilsTest : public testing::Test {
 public:
@@ -94,3 +95,5 @@ HWTEST_F(HapUtilsTest, ReadFileToByteBuffer, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(result, false);
 }
+} // namespace SignatureTools
+} // namespace OHOS

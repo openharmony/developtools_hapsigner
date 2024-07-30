@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 
+#include "cert_dn_utils.h"
 #include "securec.h"
 #include "file_utils.h"
 
@@ -627,6 +628,36 @@ HWTEST_F(FileUtilsTest, WriteInputToOutPutMultithreadingTest, testing::ext::Test
     }
 
     printf("All threads completed.\n");
+}
+
+/**
+ * @tc.name: GCheckDn001
+ * @tc.desc: Test GCheckDn001 function for SUCCESS through multithreading.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(FileUtilsTest, GCheckDn001, testing::ext::TestSize.Level1)
+{
+    std::vector<std::pair<std::string, std::string>> pairs;
+    pairs.push_back({ "1111", "2222" });
+    g_checkDn(std::string(","), pairs);
+}
+
+/**
+ * @tc.name: GCheckDn002
+ * @tc.desc: Test GCheckDn002 function for SUCCESS through multithreading.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(FileUtilsTest, GCheckDn002, testing::ext::TestSize.Level1)
+{
+    std::vector<std::pair<std::string, std::string>> pairs;
+    pairs.push_back({ "1111", "2222" });
+    g_checkDn(std::string("hello=="), pairs);
 }
 } // namespace SignatureTools
 } // namespace OHOS

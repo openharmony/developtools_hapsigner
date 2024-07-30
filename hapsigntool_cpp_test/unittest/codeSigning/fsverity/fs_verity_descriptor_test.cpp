@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "fs_verity_descriptor.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class FsVerityDescriptorTest : public testing::Test {
 public:
@@ -398,3 +399,5 @@ HWTEST_F(FsVerityDescriptorTest, WriteBytesWithSize, testing::ext::TestSize.Leve
 
     EXPECT_EQ(size, 8);
 }
+} // namespace SignatureTools
+} // namespace OHOS

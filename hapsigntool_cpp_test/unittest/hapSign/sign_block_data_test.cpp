@@ -17,7 +17,8 @@
 #include "hap_signer_block_utils.h"
 #include "sign_block_data.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
 * 测试套件,固定写法
@@ -166,3 +167,5 @@ HWTEST_F(SignBlockDataTest, GetOptionalBlockIndex, testing::ext::TestSize.Level1
     bool flag = HapSignerBlockUtils::GetOptionalBlockIndex(optionBlocks, type, index);
     EXPECT_NE(flag, -1);
 }
+} // namespace SignatureTools
+} // namespace OHOS
