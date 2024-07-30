@@ -35,7 +35,6 @@ signature_tools_hap_src = [
   "${signature_tools_hap}/entity/src/sign_block_info.cpp",
   "${signature_tools_hap}/entity/src/sign_content_info.cpp",
   "${signature_tools_hap}/entity/src/sign_block_data.cpp",
-  "${signature_tools_hap}/entity/src/signature_block_tags.cpp",
   "${signature_tools_hap}/entity/src/signature_block_types.cpp",
   "${signature_tools_hap}/entity/src/signing_block.cpp",
   "${signature_tools_hap}/provider/src/local_sign_provider.cpp",
