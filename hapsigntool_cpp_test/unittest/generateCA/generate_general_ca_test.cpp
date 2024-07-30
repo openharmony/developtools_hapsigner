@@ -1771,5 +1771,25 @@ HWTEST_F(GenerateCaTest, generate_sub_cert_to_file_test_003, testing::ext::TestS
     bool ret = api->GenerateSubCertToFile(params.get(), keyPair);
     EXPECT_EQ(ret, true);
 }
+
+/**
+ * @tc.name: run_app_cert_err_test_001
+ * @tc.desc: Test function of RunAppCert() interface for failed due to outFile is not exist.
+ * @tc.type: FUNC
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(GenerateCaTest, run_app_cert_err_test_001, testing::ext::TestSize.Level1)
+{
+    Options options;
+    SignToolServiceImpl service;
+    options[Options::ISSUER_KEY_STORE_FILE] = std::string("/data/test/generateCA/ohtest.p12");
+    options[Options::CA_CERT_FILE] = std::string("/data/test/generateCA/root-ca1.cer");
+    options[Options::SUB_CA_CERT_FILE] = std::string("/data/test/generateCA/app-sign-srv-ca1.cer");
+    options[Options::KEY_STORE_FILE] = std::string("/data/test/generateCA/OpenHarmony.p12");
+
+    options[Options::OUT_FILE] = "./nohave/test.cer";
+    bool ret = ParamsRunTool::RunAppCert(&options, service);
+    EXPECT_EQ(ret, false);
+}
 }
 }
