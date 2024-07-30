@@ -24,7 +24,6 @@
 #include "hap_signer_block_utils_test.h"
 
 using namespace testing::ext;
-using namespace OHOS::SignatureTools;
 
 namespace OHOS {
 namespace SignatureTools {
@@ -134,10 +133,7 @@ int Pkcs7TestSetSignerInfo(PKCS7_SIGNER_INFO* info, X509* cert, const EVP_MD* ha
     }
     return 1;
 }
-} // namespace SignatureTools
-} // namespace OHOS
 
-namespace {
 const std::string HAP_VERIFY_V2_PATH = "./hapVerify/hap_verify_v2.hap";
 const std::string HAP_VERIFY_V3_PATH = "./hapVerify/hap_verify_v3.hap";
 class HapSignerBlockUtilsTest : public testing::Test {
@@ -643,4 +639,5 @@ HWTEST_F(HapSignerBlockUtilsTest, VerifyHapError004, TestSize.Level1)
     EXPECT_EQ(ret, false);
     PKCS7_free(pkcs7);
 }
-} // namespace
+} // namespace SignatureTools
+} // namespace OHOS
