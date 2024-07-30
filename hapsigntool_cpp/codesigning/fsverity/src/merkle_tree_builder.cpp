@@ -16,8 +16,10 @@
 
 #include "merkle_tree_builder.h"
 
-using namespace OHOS::SignatureTools;
 using namespace OHOS::SignatureTools::Uscript;
+namespace OHOS {
+namespace SignatureTools {
+    
 const int MerkleTreeBuilder::FSVERITY_HASH_PAGE_SIZE = 4096;
 const int64_t MerkleTreeBuilder::INPUTSTREAM_MAX_SIZE = 4503599627370496L;
 const int MerkleTreeBuilder::CHUNK_SIZE = 4096;
@@ -291,3 +293,5 @@ long MerkleTreeBuilder::GetFullChunkSize(long dataSize, long divisor, long multi
 {
     return GetChunkCount(dataSize, divisor) * multiplier;
 }
+} // namespace SignatureTools
+} // namespace OHOS

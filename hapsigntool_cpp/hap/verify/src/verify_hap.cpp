@@ -90,7 +90,7 @@ bool VerifyHap::outputOptionalBlocks(const std::string& outputProfileFile, const
                 return false;
             }
         } else if (optionBlock.optionalType == HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID) {
-            if (!writeOptionalBytesToFile(optionBlock, outputPropertyFile)) {
+            if (!writeOptionalBytesToFile(optionBlock, outputProofFile)) {
                 return false;
             }
         } else {

@@ -14,8 +14,8 @@
  */
 #include "signature_block_types.h"
 
-using namespace OHOS::SignatureTools;
-
+namespace OHOS {
+namespace SignatureTools {
 char SignatureBlockTypes::GetProfileBlockTypes(const std::string& isSigned)
 {
     if (!isSigned.empty() && 0 == isSigned.compare("0")) {
@@ -26,3 +26,5 @@ char SignatureBlockTypes::GetProfileBlockTypes(const std::string& isSigned)
     }
     return PROFILE_NOSIGNED_BLOCK;
 }
+} // namespace SignatureTools
+} // namespace OHOS
