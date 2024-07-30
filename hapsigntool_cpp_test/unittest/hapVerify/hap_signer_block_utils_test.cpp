@@ -632,7 +632,7 @@ HWTEST_F(HapSignerBlockUtilsTest, VerifyHapError004, TestSize.Level1)
     PKCS7* pkcs7 = PKCS7_new();
     PKCS7_set_type(pkcs7, NID_pkcs7_signed);
     PKCS7_content_new(pkcs7, NID_pkcs7_data);
-    unsigned char* p = NULL;
+    unsigned char* p = nullptr;
     int len = i2d_PKCS7(pkcs7, &p);
     Pkcs7Context pkcs7Context;
     bool ret = VerifyHapOpensslUtils::ParsePkcs7Package(p, len, pkcs7Context);
