@@ -86,7 +86,10 @@ bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
     m_codeSignBlock.GetHapInfoSegment().SetSignInfo(hapSignInfoAndMerkleTreeBytesPair.first);
     m_codeSignBlock.AddOneMerkleTree(HAP_SIGNATURE_ENTRY_NAME,
                                      hapSignInfoAndMerkleTreeBytesPair.second);
-    SignNativeLibs(input, ownerID);
+    if (!SignNativeLibs(input, ownerID)) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Failed to sign the contents in the compressed file.");
+        return false;
+    }
     UpdateCodeSignBlock();
     m_codeSignBlock.GenerateCodeSignBlockByte(fsvTreeOffset, ret);
     SIGNATURE_TOOLS_LOGI("Sign successfully.");
@@ -347,11 +350,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
     bool handleFlag = DoNativeLibSignOrVerify(std::string(fileName), sb, param, readFileSize);
     if (!handleFlag) {
         SIGNATURE_TOOLS_LOGE("%s native libs handle failed", fileName);
-        if(!zFile) {
-            unzClose(zFile);
-            zFile = nullptr;
-            return false;
-        }
+        return false;
     }
     return true;
 }
