@@ -19,7 +19,8 @@
 
 #include "sign_block_info.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class SignBlockInfoTest : public testing::Test {
 public:
@@ -131,3 +132,5 @@ HWTEST_F(SignBlockInfoTest, GetNeedGenerateDigest, testing::ext::TestSize.Level1
 
     EXPECT_EQ(needGenerateDigest, true);
 }
+} // namespace SignatureTools
+} // namespace OHOS

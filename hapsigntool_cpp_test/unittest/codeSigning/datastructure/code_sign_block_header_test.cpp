@@ -17,11 +17,8 @@
 #include <gtest/gtest.h>
 #include "code_sign_block_header.h"
 
-using namespace OHOS::SignatureTools;
-
-/*
-* 测试套件,固定写法
-*/
+namespace OHOS {
+namespace SignatureTools {
 class CodeSignBlockHeaderTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
@@ -308,3 +305,5 @@ HWTEST_F(CodeSignBlockHeaderTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 32);
 }
+} // namespace SignatureTools
+} // namespace OHOS

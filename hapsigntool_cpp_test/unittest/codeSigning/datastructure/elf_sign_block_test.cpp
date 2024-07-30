@@ -20,7 +20,8 @@
 #include "elf_sign_block.h"
 #include "byte_buffer.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class ElfSignBlockTest : public testing::Test {
 public:
@@ -74,3 +75,5 @@ HWTEST_F(ElfSignBlockTest, FromByteArray002, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(flag, false);
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -19,7 +19,8 @@
 
 #include "signature_block_types.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class SignatureBlockTypesTest : public testing::Test {
 public:
@@ -92,3 +93,5 @@ HWTEST_F(SignatureBlockTypesTest, GetProfileBlockTypes004, testing::ext::TestSiz
 
     EXPECT_EQ(flag, true);
 }
+} // namespace SignatureTools
+} // namespace OHOS

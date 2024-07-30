@@ -18,8 +18,10 @@
 #include <gtest/gtest.h>
 #include "verify_code_signature.h"
 #include "verify_hap.h"
+#include "hap_utils.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -489,13 +491,69 @@ HWTEST_F(VerifyCodeSignatureTest, VerifyNativeLib002, testing::ext::TestSize.Lev
  */
 HWTEST_F(VerifyCodeSignatureTest, CheckCodeSign001, testing::ext::TestSize.Level1)
 {
-    Options options;
-    options.emplace(Options::IN_FILE, std::string("./codeSigning/hap_no_suffix_err"));
-    options.emplace(Options::OUT_CERT_CHAIN, std::string("./codeSigning/xx.cer"));
-    options.emplace(Options::OUT_PROFILE, std::string("./codeSigning/xx.p7b"));
+    std::string file = "hap";
+    std::vector<OptionalBlock> optionalBlocks;
+    OptionalBlock block;
+    block.optionalType = HapUtils::HAP_PROPERTY_BLOCK_ID;
+    ByteBuffer bf(8);
+    bf.PutByte('a');
+    block.optionalBlockValue = bf;
+    optionalBlocks.push_back(block);
 
-    VerifyHap hapVerifyV2;
-    int32_t ret = hapVerifyV2.Verify(options.GetString(Options::IN_FILE), &options);
+    VerifyHap hapVerify;
+    int32_t ret = hapVerify.CheckCodeSign(file, optionalBlocks);
 
-    EXPECT_NE(ret, 0);
+    EXPECT_EQ(ret, 0);
 }
+
+/**
+ * @tc.name: CheckCodeSign002
+ * @tc.desc: Test function of VerifyCodeSignatureTest::CheckCodeSign() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyCodeSignatureTest, CheckCodeSign002, testing::ext::TestSize.Level1)
+{
+    std::string file = "test.hap";
+    std::vector<OptionalBlock> optionalBlocks;
+    OptionalBlock block;
+    block.optionalType = HapUtils::HAP_PROPERTY_BLOCK_ID;
+    ByteBuffer bf(8);
+    bf.PutByte('a');
+    block.optionalBlockValue = bf;
+    optionalBlocks.push_back(block);
+
+    VerifyHap hapVerify;
+    int32_t ret = hapVerify.CheckCodeSign(file, optionalBlocks);
+
+    EXPECT_EQ(ret, 0);
+}
+
+/**
+ * @tc.name: CheckCodeSign003
+ * @tc.desc: Test function of VerifyCodeSignatureTest::CheckCodeSign() interface for SUCCESS.
+ * @tc.size: MEDIUM
+ * @tc.type: FUNC
+ * @tc.level Level 1
+ * @tc.require: SR000H63TL
+ */
+HWTEST_F(VerifyCodeSignatureTest, CheckCodeSign003, testing::ext::TestSize.Level1)
+{
+    std::string file = "test.hap";
+    std::vector<OptionalBlock> optionalBlocks;
+    OptionalBlock block;
+    block.optionalType = HapUtils::HAP_PROPERTY_BLOCK_ID;
+    ByteBuffer bf(16);
+    bf.PutByte('a');
+    block.optionalBlockValue = bf;
+    optionalBlocks.push_back(block);
+
+    VerifyHap hapVerify;
+    int32_t ret = hapVerify.CheckCodeSign(file, optionalBlocks);
+
+    EXPECT_EQ(ret, 0);
+}
+} // namespace SignatureTools
+} // namespace OHOS

@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "signed_file_pos.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -152,3 +153,5 @@ HWTEST_F(SignedFilePosTest, increaseSignInfoOffset, testing::ext::TestSize.Level
 
     EXPECT_EQ(true, 1);
 }
+} // namespace SignatureTools
+} // namespace OHOS

@@ -21,8 +21,8 @@
 #include "hap_info_segment.h"
 #include "sign_info.h"
 
-using namespace OHOS::SignatureTools;
-
+namespace OHOS {
+namespace SignatureTools {
 /*
 * 测试套件,固定写法
 */
@@ -426,3 +426,5 @@ HWTEST_F(CodeSignBlockTest, setSoInfoSegment, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(true, 1);
 }
+} // namespace SignatureTools
+} // namespace OHOS

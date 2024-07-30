@@ -19,7 +19,8 @@
 
 #include "fs_verity_descriptor_with_sign.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 class FsVerityDescriptorWithSignTest : public testing::Test {
 public:
@@ -144,3 +145,5 @@ HWTEST_F(FsVerityDescriptorWithSignTest, GetSignature, testing::ext::TestSize.Le
 
     EXPECT_EQ(size, 4);
 }
+} // namespace SignatureTools
+} // namespace OHOS

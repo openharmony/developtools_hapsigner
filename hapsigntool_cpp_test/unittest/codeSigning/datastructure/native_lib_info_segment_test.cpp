@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "native_lib_info_segment.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -305,12 +306,5 @@ HWTEST_F(NativeLibInfoSegmentTest, size, testing::ext::TestSize.Level1)
 
     EXPECT_NE(nativeLibInfoSegmentSize, 0);
 }
-
-// /**
-//  * @tc.name: toByteArray001
-//  * @tc.desc: Test function of NativeLibInfoSegmentTest::GenerateCsr() interface for SUCCESS.
-//  * @tc.size: MEDIUM
-//  * @tc.type: FUNC
-//  * @tc.level Level 1
-//  * @tc.require: SR000H63TL
-//  */
+} // namespace SignatureTools
+} // namespace OHOS

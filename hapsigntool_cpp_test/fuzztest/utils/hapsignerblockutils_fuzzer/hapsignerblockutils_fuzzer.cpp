@@ -19,7 +19,6 @@
 
 #include "hap_signer_block_utils.h"
 
-using namespace OHOS::SignatureTools;
 namespace OHOS {
 namespace SignatureTools {
 const std::string pathFile = "./zip/tmp.hap";

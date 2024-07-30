@@ -17,7 +17,8 @@
 #include <gtest/gtest.h>
 #include "fs_verity_info_segment.h"
 
-using namespace OHOS::SignatureTools;
+namespace OHOS {
+namespace SignatureTools {
 
 /*
  * 测试套件,固定写法
@@ -243,3 +244,5 @@ HWTEST_F(FsVerityInfoSegmentTest, toByteArray, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(byteArray.size(), 64);
 }
+} // namespace SignatureTools
+} // namespace OHOS
