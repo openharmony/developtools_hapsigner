@@ -19,7 +19,7 @@
 namespace OHOS {
 namespace SignatureTools {
 
-int g_checkDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs)
+int g_checkDn(const std::string &nameString, std::vector<pair<std::string, std::string>>& pairs)
 {
     if (nameString.size() == 0) {
         return FORMAT_ERROR;
@@ -43,7 +43,7 @@ int g_checkDn(std::string nameString, std::vector<pair<std::string, std::string>
     return 0;
 }
 
-X509_NAME* BuildDN(std::string nameString, X509_REQ* req)
+X509_NAME* BuildDN(const std::string &nameString, X509_REQ* req)
 {
     std::vector<pair<std::string, std::string>> pairs;
     std::ostringstream oss;

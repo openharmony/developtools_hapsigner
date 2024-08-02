@@ -177,7 +177,6 @@ int PKCS7Data::GetContent(std::string& originalRawData) const
     BIO* oriBio = PKCS7_dataDecode(m_p7, NULL, NULL, NULL);
     if (oriBio == NULL) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "pkcs7 get content data failed!");
-        BIO_free_all(oriBio);
         return INVALIDPARAM_ERROR;
     }
     char buf[BUFFER_SIZE]{0};

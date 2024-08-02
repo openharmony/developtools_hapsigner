@@ -108,7 +108,7 @@ bool VerifyElf::VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap
 {
     if (signBlockMap.find(PROFILE_NOSIGNED_BLOCK) != signBlockMap.end()) {
         // verify unsigned profile
-        std::vector<int8_t>& profileByte = signBlockMap.find(PROFILE_NOSIGNED_BLOCK)->second.GetValue();
+        const std::vector<int8_t>& profileByte = signBlockMap.find(PROFILE_NOSIGNED_BLOCK)->second.GetValue();
         std::string fromByteStr(profileByte.begin(), profileByte.end());
         profileJson = fromByteStr;
         profileVec = profileByte;
@@ -116,7 +116,7 @@ bool VerifyElf::VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap
     } else if (signBlockMap.find(PROFILE_SIGNED_BLOCK) != signBlockMap.end()) {
         // verify signed profile
         SigningBlock profileSign = signBlockMap.find(PROFILE_SIGNED_BLOCK)->second;
-        std::vector<int8_t>& profileByte = profileSign.GetValue();
+        const std::vector<int8_t>& profileByte = profileSign.GetValue();
         bool getRawContentFlag = GetRawContent(profileByte, profileJson);
         if (!getRawContentFlag) {
             SIGNATURE_TOOLS_LOGE("get profile content failed on verify elf!");
@@ -153,6 +153,7 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
     if (fileStream.fail() && !fileStream.eof()) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "Error occurred while reading data");
         fileStream.close();
+        delete fileBytes;
         return false;
     }
     fileStream.close();
@@ -173,7 +174,7 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
     // get bin file digest
     bool needGenerateDigest = signBlockInfo.GetNeedGenerateDigest();
     if (needGenerateDigest) {
-        std::vector<int8_t>& signatrue = signBlockInfo.GetSignBlockMap().find(0)->second.GetValue();
+        const std::vector<int8_t>& signatrue = signBlockInfo.GetSignBlockMap().find(0)->second.GetValue();
         bool getFileDigest = GetFileDigest(*((std::vector<int8_t>*)fileBytes), signatrue, signBlockInfo);
         if (!getFileDigest) {
             SIGNATURE_TOOLS_LOGE("getFileDigest failed on verify bin file %s", file.c_str());
@@ -185,7 +186,7 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
     return true;
 }
 
-bool VerifyElf::GetFileDigest(std::vector<int8_t>& fileBytes, std::vector<int8_t>& signatrue,
+bool VerifyElf::GetFileDigest(std::vector<int8_t>& fileBytes, const std::vector<int8_t>& signatrue,
                               SignBlockInfo& signBlockInfo)
 {
     std::string binDigest;
@@ -386,7 +387,7 @@ bool VerifyElf::CheckSignFile(const std::string& signedFile)
     return true;
 }
 
-bool VerifyElf::GetRawContent(std::vector<int8_t>& contentVec, std::string& rawContent)
+bool VerifyElf::GetRawContent(const std::vector<int8_t>& contentVec, std::string& rawContent)
 {
     PKCS7Data p7Data;
     int parseFlag = p7Data.Parse(contentVec);

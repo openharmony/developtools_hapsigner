@@ -227,37 +227,37 @@ SignInfo SignInfo::FromByteArray(std::vector<int8_t> bytes)
     bf->PutData(bytes.data(), bytes.size());
     bf->Flip();
     int32_t inSaltSize = 0;
-    bf->GetInt32(inSaltSize);
+    bool flag = bf->GetInt32(inSaltSize);
     int32_t inSigSize = 0;
-    bf->GetInt32(inSigSize);
-    if (inSaltSize < 0 || inSigSize < 0) {
+    bool ret = bf->GetInt32(inSigSize);
+    if (!flag || !ret || inSaltSize < 0 || inSigSize < 0) {
         SIGNATURE_TOOLS_LOGE("Invalid saltSize or sigSize of SignInfo, saltSize: %d, sigSize: %d",
             inSaltSize, inSigSize);
         return SignInfo();
     }
     int32_t inFlags = 0;
-    bf->GetInt32(inFlags);
-    if (inFlags != 0 && inFlags != SignInfo::FLAG_MERKLE_TREE_INCLUDED) {
+    flag = bf->GetInt32(inFlags);
+    if (!flag || (inFlags != 0 && inFlags != SignInfo::FLAG_MERKLE_TREE_INCLUDED)) {
         SIGNATURE_TOOLS_LOGE("Invalid flags of SignInfo: %d", inFlags);
         return SignInfo();
     }
     int64_t inDataSize = 0;
-    bf->GetInt64(inDataSize);
-    if (inDataSize < 0) {
+    flag = bf->GetInt64(inDataSize);
+    if (!flag || (inDataSize < 0)) {
         SIGNATURE_TOOLS_LOGE("Invalid dataSize of SignInfo");
         return SignInfo();
     }
     std::vector<int8_t> inSalt(SignInfo::SALT_BUFFER_LENGTH, 0);
     bf->GetByte(inSalt.data(), SignInfo::SALT_BUFFER_LENGTH);
     int32_t inExtensionNum = 0;
-    bf->GetInt32(inExtensionNum);
-    if (inExtensionNum < 0 || inExtensionNum > SignInfo::MAX_EXTENSION_NUM) {
+    flag = bf->GetInt32(inExtensionNum);
+    if (!flag || inExtensionNum < 0 || inExtensionNum > SignInfo::MAX_EXTENSION_NUM) {
         SIGNATURE_TOOLS_LOGE("Invalid extensionNum of SignInfo: %d", inExtensionNum);
         return SignInfo();
     }
     int32_t inExtensionOffset = 0;
-    bf->GetInt32(inExtensionOffset);
-    if (inExtensionOffset < 0 || inExtensionOffset % SignInfo::SIGNATURE_ALIGNMENT != 0) {
+    flag = bf->GetInt32(inExtensionOffset);
+    if (!flag || inExtensionOffset < 0 || inExtensionOffset % SignInfo::SIGNATURE_ALIGNMENT != 0) {
         SIGNATURE_TOOLS_LOGE("Invalid extensionOffset of SignInfo: %d", inExtensionOffset);
         return SignInfo();
     }

@@ -28,9 +28,9 @@ public:
 
 public:
     FsVerityDescriptorWithSign();
-    FsVerityDescriptorWithSign(FsVerityDescriptor fsVerityDescriptor, std::vector<int8_t> &signature);
+    FsVerityDescriptorWithSign(FsVerityDescriptor fsVerityDescriptor, const std::vector<int8_t> &signature);
     FsVerityDescriptorWithSign(int32_t type, int32_t length, FsVerityDescriptor fsVerityDescriptor,
-                               std::vector<int8_t> &signature);
+                               const std::vector<int8_t> &signature);
     int32_t Size();
     void ToByteArray(std::vector<int8_t> &ret);
     FsVerityDescriptor GetFsVerityDescriptor();

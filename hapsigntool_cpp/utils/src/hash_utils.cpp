@@ -113,9 +113,9 @@ std::vector<int8_t> HashUtils::GetDigestFromBytes(const std::vector<int8_t>& fil
     }
     std::map<int, std::vector<int8_t>> hashMap;
     int64_t readLength = 0;
-    int32_t num = 0;
+    int64_t num = 0;
     while (readLength < length) {
-        int32_t blockLength = length - readLength > HASH_LEN ? HASH_LEN : (length - readLength);
+        int64_t blockLength = length - readLength > HASH_LEN ? HASH_LEN : (length - readLength);
         std::string readStr(fileBytes.begin() + readLength, fileBytes.begin() + readLength + blockLength);
         std::vector<int8_t> dig = GetByteDigest(readStr, readStr.size(), algName);
         hashMap.emplace(num, dig);
