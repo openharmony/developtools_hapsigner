@@ -217,8 +217,7 @@ bool SignElf::GenerateSignBlockHead(std::list<SignBlockData>& signDataList)
     int64_t offset = BlockHead::GetElfBlockLen() * signDataList.size();
     for (std::list<SignBlockData>::iterator it = signDataList.begin(); it != signDataList.end(); ++it) {
         std::vector<int8_t> tmp = BlockHead::GetBlockHeadLittleEndian(it->GetType(),
-                                                                        SignatureBlockTags::DEFAULT,
-                                                                        it->GetLen(), offset);
+            SignatureBlockTags::DEFAULT, it->GetLen(), offset);
         it->SetBlockHead(tmp);
         offset += it->GetLen();
         bool checkIsLongOverflowIntegerFlag = IsLongOverflowInteger(offset);
