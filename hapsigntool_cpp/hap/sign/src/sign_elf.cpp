@@ -18,8 +18,8 @@
 #include "string_utils.h"
 #include "code_signing.h"
 #include "param_constants.h"
-#include "hw_block_head.h"
-#include "hw_sign_head.h"
+#include "block_head.h"
+#include "sign_head.h"
 #include "signature_block_types.h"
 #include "signature_block_tags.h"
 
@@ -214,9 +214,9 @@ bool SignElf::WriteSignBlockData(std::list<SignBlockData>& signBlockList, std::o
 
 bool SignElf::GenerateSignBlockHead(std::list<SignBlockData>& signDataList)
 {
-    int64_t offset = HwBlockHead::GetElfBlockLen() * signDataList.size();
+    int64_t offset = BlockHead::GetElfBlockLen() * signDataList.size();
     for (std::list<SignBlockData>::iterator it = signDataList.begin(); it != signDataList.end(); ++it) {
-        std::vector<int8_t> tmp = HwBlockHead::GetBlockHeadLittleEndian(it->GetType(),
+        std::vector<int8_t> tmp = BlockHead::GetBlockHeadLittleEndian(it->GetType(),
                                                                         SignatureBlockTags::DEFAULT,
                                                                         it->GetLen(), offset);
         it->SetBlockHead(tmp);
@@ -250,7 +250,7 @@ bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::map<st
         return false;
     }
     CodeSigning codeSigning(&signerConfig);
-    long offset = binFileLen + (long)HwBlockHead::GetElfBlockLen() * blockNum;
+    long offset = binFileLen + (long)BlockHead::GetElfBlockLen() * blockNum;
     std::string profileContent;
     if (signParams.find(ParamConstants::PARAM_PROFILE_JSON_CONTENT) != signParams.end()) {
         profileContent = signParams.at(ParamConstants::PARAM_PROFILE_JSON_CONTENT);
@@ -276,7 +276,7 @@ bool SignElf::WriteSignHeadDataToOutputFile(const std::string& inputFile, const 
                             "[SignElf] The length exceeds the maximum limit.");
         return false;
     }
-    HwSignHead signHeadData;
+    SignHead signHeadData;
     std::vector<int8_t> signHeadByte = signHeadData.GetSignHeadLittleEndian((int)size, blockNum);
     std::ofstream fileOutputStream(outputFile, std::ios::app | std::ios::binary);
     return FileUtils::WriteByteToOutFile(signHeadByte, fileOutputStream);
