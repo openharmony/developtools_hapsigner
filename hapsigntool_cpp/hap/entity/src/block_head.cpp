@@ -46,7 +46,7 @@ std::string BlockHead::GetBlockHead(const char type, const char tag, const short
 }
 
 std::vector<int8_t> BlockHead::GetBlockHeadLittleEndian(const char type, const char tag,
-                                                          const int length, const int offset)
+    const int length, const int offset)
 {
     ByteBuffer bf = ByteBuffer(BlockHead::ELF_BLOCK_LEN);
     bf.PutByte(type);
