@@ -86,8 +86,8 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
     bf.PutData((const char*)bytes.data(), bytes.size());
     bf.Flip();
     int64_t inMagic;
-    bf.GetInt64(inMagic);
-    if (inMagic != MAGIC_NUM) {
+    bool flag = bf.GetInt64(inMagic);
+    if (!flag || inMagic != MAGIC_NUM) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
                             "The magic number in the code signature block header is incorrect.");
         return nullptr;

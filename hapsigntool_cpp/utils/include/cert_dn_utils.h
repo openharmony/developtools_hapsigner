@@ -39,14 +39,14 @@ namespace SignatureTools {
 * @param nameString nameString
 * @return X500Name
 */
-X509_NAME* BuildDN(std::string nameString, X509_REQ* req);
+X509_NAME* BuildDN(const std::string &nameString, X509_REQ* req);
 /**
 * To verify the format of subject or issuer.
 * Refer to X509_NAMEStyle.fromstring().
 *
 * @param nameString subject or issuer
 */
-int g_checkDn(std::string nameString, std::vector<pair<std::string, std::string>>& pairs);
+int g_checkDn(const std::string &nameString, std::vector<pair<std::string, std::string>>& pairs);
 } // namespace SignatureTools
 } // namespace OHOS
 #endif // SIGNATRUETOOLS_CERTUTILS_H

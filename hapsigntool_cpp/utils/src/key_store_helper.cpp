@@ -152,6 +152,11 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     X509_NAME* issuerName = X509_NAME_new();
     const EVP_MD* md = EVP_sha256();
     X509_NAME* subjectName = nullptr;
+    if (!bnSerial || !issuerName || !md) {
+        KeyPairFree(bnSerial, issuerName, subjectName, nullptr,
+                    "Failed to initialize the x509 info.");
+        return false;
+    }
     ASN1_INTEGER* ai = BN_to_ASN1_INTEGER(bnSerial, NULL);
     if (ai == NULL || issuerName == NULL) {
         KeyPairFree(bnSerial, issuerName, subjectName, ai,

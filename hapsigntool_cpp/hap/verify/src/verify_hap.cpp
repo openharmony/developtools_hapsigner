@@ -30,7 +30,6 @@
 #include "param_constants.h"
 #include "file_utils.h"
 #include "nlohmann/json.hpp"
-#include "hap_utils.h"
 #include "cert_tools.h"
 #include "verify_hap.h"
 

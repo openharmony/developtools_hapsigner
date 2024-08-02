@@ -122,6 +122,10 @@ bool VerifyCodeSignature::VerifyCodeSign(std::string file, std::pair<std::string
     Extension* ext = csb.GetHapInfoSegment().GetSignInfo()
         .GetExtensionByType(MerkleTreeExtension::MERKLE_TREE_INLINED);
     MerkleTreeExtension* mte = new MerkleTreeExtension(0, 0, std::vector<int8_t>());
+    if (nullptr == mte) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "system failed to allocate memory for MerkleTreeExtension");
+        return false;
+    }
     if (ext != nullptr) {
         delete mte;
         mte = (MerkleTreeExtension*)(ext);

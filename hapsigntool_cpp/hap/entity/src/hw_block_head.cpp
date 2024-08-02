@@ -55,7 +55,7 @@ std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(const char type, const
     bf.PutByte(0);
     bf.PutInt32(length);
     bf.PutInt32(offset);
-    int8_t ret[HwBlockHead::ELF_BLOCK_LEN];
+    int8_t ret[HwBlockHead::ELF_BLOCK_LEN] = {0};
     bf.GetData(0, ret, HwBlockHead::ELF_BLOCK_LEN);
     std::vector<int8_t> byte(ret, ret + HwBlockHead::ELF_BLOCK_LEN);
     return byte;

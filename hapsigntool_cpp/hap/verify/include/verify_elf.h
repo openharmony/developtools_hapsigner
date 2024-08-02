@@ -43,9 +43,9 @@ public:
         const std::string fileType);
     static bool GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlockInfo,
         const std::string fileType);
-    static bool GetFileDigest(std::vector<int8_t>& fileBytes, std::vector<int8_t>& signatrue,
+    static bool GetFileDigest(std::vector<int8_t>& fileBytes, const std::vector<int8_t>& signatrue,
         SignBlockInfo& signBlockInfo);
-    static bool GetRawContent(std::vector<int8_t>& contentVec, std::string& rawContent);
+    static bool GetRawContent(const std::vector<int8_t>& contentVec, std::string& rawContent);
     static bool VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap, Options* options,
         Pkcs7Context& pkcs7Context, std::vector<int8_t>& profileVec, std::string& profileJson);
 

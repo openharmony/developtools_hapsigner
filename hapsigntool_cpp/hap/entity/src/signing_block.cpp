@@ -22,14 +22,14 @@ SigningBlock::SigningBlock(const int32_t type, const std::vector<int8_t> &value)
 {
     m_type = type;
     m_length = value.size();
-    m_value = value;
+    m_value = std::move(value);
 }
 
 SigningBlock::SigningBlock(const int32_t type, const std::vector<int8_t> &value, const int64_t offset)
 {
     m_type = type;
     m_length = value.size();
-    m_value = value;
+    m_value = std::move(value);
     m_offset = offset;
 }
 
@@ -38,7 +38,7 @@ int32_t SigningBlock::GetLength()
     return m_length;
 }
 
-std::vector<int8_t>& SigningBlock::GetValue()
+const std::vector<int8_t>& SigningBlock::GetValue()
 {
     return m_value;
 }

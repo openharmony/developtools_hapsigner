@@ -44,7 +44,7 @@ public:
     };
     explicit DigestUtils(HashType type);
     ~DigestUtils();
-    void AddData(std::string data);
+    void AddData(const std::string &data);
     void AddData(const char* data, int length);
     std::string Result(Type type = Type::HEX);
 
