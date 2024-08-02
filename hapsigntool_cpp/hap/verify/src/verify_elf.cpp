@@ -18,8 +18,8 @@
 
 #include "constant.h"
 #include "file_utils.h"
-#include "hw_sign_head.h"
-#include "hw_block_head.h"
+#include "sign_head.h"
+#include "block_head.h"
 #include "verify_hap.h"
 #include "verify_code_signature.h"
 #include "hash_utils.h"
@@ -157,9 +157,9 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
         return false;
     }
     fileStream.close();
-    // get HwBlockData
-    HwBlockData hwBlockData(0, 0);
-    bool getSignBlockData = GetSignBlockData(*((std::vector<int8_t>*)fileBytes), hwBlockData, fileType);
+    // get BlockData
+    BlockData blockData(0, 0);
+    bool getSignBlockData = GetSignBlockData(*((std::vector<int8_t>*)fileBytes), blockData, fileType);
     if (!getSignBlockData) {
         SIGNATURE_TOOLS_LOGE("get signBlockData failed on verify elf/bin file %s", file.c_str());
         delete fileBytes;
@@ -167,9 +167,9 @@ bool VerifyElf::GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlo
     }
     // get SignBlockMap
     if (fileType == ELF) {
-        GetElfSignBlock(*((std::vector<int8_t>*)fileBytes), hwBlockData, signBlockInfo.GetSignBlockMap());
+        GetElfSignBlock(*((std::vector<int8_t>*)fileBytes), blockData, signBlockInfo.GetSignBlockMap());
     } else {
-        GetBinSignBlock(*((std::vector<int8_t>*)fileBytes), hwBlockData, signBlockInfo.GetSignBlockMap());
+        GetBinSignBlock(*((std::vector<int8_t>*)fileBytes), blockData, signBlockInfo.GetSignBlockMap());
     }
     // get bin file digest
     bool needGenerateDigest = signBlockInfo.GetNeedGenerateDigest();
@@ -231,7 +231,7 @@ bool VerifyElf::GenerateFileDigest(std::vector<int8_t>& fileBytes, SignBlockInfo
     return true;
 }
 
-bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
+bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, BlockData& blockData,
                                  const std::string fileType)
 {
     int64_t offset = 0;
@@ -262,21 +262,21 @@ bool VerifyElf::GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBloc
     if (fileType == BIN) {
         blockStart = bytes.size() - blockSize;
     } else {
-        blockStart = bytes.size() - HwSignHead::SIGN_HEAD_LEN - blockSize;
+        blockStart = bytes.size() - SignHead::SIGN_HEAD_LEN - blockSize;
     }
-    hwBlockData.SetBlockNum(blockNum);
-    hwBlockData.SetBlockStart(blockStart);
+    blockData.SetBlockNum(blockNum);
+    blockData.SetBlockStart(blockStart);
     return true;
 }
 
 bool VerifyElf::CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset, const std::string fileType)
 {
-    std::string magicStr = (fileType == ELF ? HwSignHead::ELF_MAGIC : HwSignHead::MAGIC);
-    offset = bytes.size() - HwSignHead::SIGN_HEAD_LEN;
+    std::string magicStr = (fileType == ELF ? SignHead::ELF_MAGIC : SignHead::MAGIC);
+    offset = bytes.size() - SignHead::SIGN_HEAD_LEN;
     std::vector<int8_t> magicByte(bytes.begin() + offset, bytes.begin() + offset + magicStr.size());
     offset += magicStr.size();
-    std::vector<int8_t> versionByte(bytes.begin() + offset, bytes.begin() + offset + HwSignHead::VERSION.size());
-    offset += HwSignHead::VERSION.size();
+    std::vector<int8_t> versionByte(bytes.begin() + offset, bytes.begin() + offset + SignHead::VERSION.size());
+    offset += SignHead::VERSION.size();
     std::vector<int8_t> magicVec(magicStr.begin(), magicStr.end());
     for (int i = 0; i < magicStr.size(); i++) {
         if (magicVec[i] != magicByte[i]) {
@@ -284,8 +284,8 @@ bool VerifyElf::CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset
             return false;
         }
     }
-    std::vector<int8_t> versionVec(HwSignHead::VERSION.begin(), HwSignHead::VERSION.end());
-    for (int i = 0; i < HwSignHead::VERSION.size(); i++) {
+    std::vector<int8_t> versionVec(SignHead::VERSION.begin(), SignHead::VERSION.end());
+    for (int i = 0; i < SignHead::VERSION.size(); i++) {
         if (versionVec[i] != versionByte[i]) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "sign version verify failed!");
             return false;
@@ -294,12 +294,12 @@ bool VerifyElf::CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset
     return true;
 }
 
-void VerifyElf::GetElfSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
+void VerifyElf::GetElfSignBlock(std::vector<int8_t>& bytes, BlockData& blockData,
                                 std::unordered_map<int8_t, SigningBlock>& signBlockMap)
 {
-    int32_t headBlockLen = HwSignHead::ELF_BLOCK_LEN;
-    int64_t offset = hwBlockData.GetBlockStart();
-    for (int i = 0; i < hwBlockData.GetBlockNum(); i++) {
+    int32_t headBlockLen = SignHead::ELF_BLOCK_LEN;
+    int64_t offset = blockData.GetBlockStart();
+    for (int i = 0; i < blockData.GetBlockNum(); i++) {
         std::vector<int8_t> blockByte(bytes.begin() + offset, bytes.begin() + offset + headBlockLen);
         std::unique_ptr<ByteBuffer> blockBuffer = std::make_unique<ByteBuffer>(blockByte.size());
         blockBuffer->PutData(blockByte.data(), blockByte.size());
@@ -314,20 +314,20 @@ void VerifyElf::GetElfSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlock
         blockBuffer->GetInt16(empValue);
         blockBuffer->GetInt32(length);
         blockBuffer->GetInt32(blockOffset);
-        std::vector<int8_t> value(bytes.begin() + hwBlockData.GetBlockStart() + blockOffset,
-                                  bytes.begin() + hwBlockData.GetBlockStart() + blockOffset + length);
-        SigningBlock signingBlock(type, value, hwBlockData.GetBlockStart() + blockOffset);
+        std::vector<int8_t> value(bytes.begin() + blockData.GetBlockStart() + blockOffset,
+                                  bytes.begin() + blockData.GetBlockStart() + blockOffset + length);
+        SigningBlock signingBlock(type, value, blockData.GetBlockStart() + blockOffset);
         signBlockMap.insert(std::make_pair(type, signingBlock));
         offset += headBlockLen;
     }
 }
 
-void VerifyElf::GetBinSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
+void VerifyElf::GetBinSignBlock(std::vector<int8_t>& bytes, BlockData& blockData,
                                 std::unordered_map<int8_t, SigningBlock>& signBlockMap)
 {
-    int32_t headBlockLen = HwSignHead::BIN_BLOCK_LEN;
-    int32_t offset = hwBlockData.GetBlockStart();
-    for (int i = 0; i < hwBlockData.GetBlockNum(); i++) {
+    int32_t headBlockLen = SignHead::BIN_BLOCK_LEN;
+    int32_t offset = blockData.GetBlockStart();
+    for (int i = 0; i < blockData.GetBlockNum(); i++) {
         std::vector<int8_t> blockByte(bytes.begin() + offset, bytes.begin() + offset + headBlockLen);
         std::unique_ptr<ByteBuffer> blockBuffer = std::make_unique<ByteBuffer>(blockByte.size());
         blockBuffer->PutData(blockByte.data(), blockByte.size());
@@ -344,7 +344,7 @@ void VerifyElf::GetBinSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlock
         length = static_cast<int16_t>(be16toh(*reinterpret_cast<const int16_t*>(bufferPtr + bfLengthIdx)));
         blockOffset = static_cast<int32_t>(be32toh(*reinterpret_cast<const int32_t*>(bufferPtr + bfBlockIdx)));
         if (length == 0) {
-            length = bytes.size() - HwSignHead::SIGN_HEAD_LEN - blockOffset;
+            length = bytes.size() - SignHead::SIGN_HEAD_LEN - blockOffset;
         }
         std::vector<int8_t> value(bytes.begin() + blockOffset, bytes.begin() + blockOffset + length);
         SigningBlock signingBlock(type, value, blockOffset);

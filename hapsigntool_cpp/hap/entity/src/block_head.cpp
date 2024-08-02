@@ -13,24 +13,24 @@
  * limitations under the License.
  */
 
-#include "hw_block_head.h"
+#include "block_head.h"
 #include "byte_buffer.h"
-#include "hw_sign_head.h"
+#include "sign_head.h"
 
 namespace OHOS {
 namespace SignatureTools {
 
-int HwBlockHead::GetBlockLen()
+int BlockHead::GetBlockLen()
 {
     return BLOCK_LEN;
 }
 
-int HwBlockHead::GetElfBlockLen()
+int BlockHead::GetElfBlockLen()
 {
     return ELF_BLOCK_LEN;
 }
 
-std::string HwBlockHead::GetBlockHead(const char type, const char tag, const short length, const int offset)
+std::string BlockHead::GetBlockHead(const char type, const char tag, const short length, const int offset)
 {
     std::vector<int8_t> tmpVec;
     tmpVec.push_back(type);
@@ -45,19 +45,19 @@ std::string HwBlockHead::GetBlockHead(const char type, const char tag, const sho
     return std::string(tmpVec.begin(), tmpVec.end());
 }
 
-std::vector<int8_t> HwBlockHead::GetBlockHeadLittleEndian(const char type, const char tag,
+std::vector<int8_t> BlockHead::GetBlockHeadLittleEndian(const char type, const char tag,
                                                           const int length, const int offset)
 {
-    ByteBuffer bf = ByteBuffer(HwBlockHead::ELF_BLOCK_LEN);
+    ByteBuffer bf = ByteBuffer(BlockHead::ELF_BLOCK_LEN);
     bf.PutByte(type);
     bf.PutByte(tag);
     bf.PutByte(0);
     bf.PutByte(0);
     bf.PutInt32(length);
     bf.PutInt32(offset);
-    int8_t ret[HwBlockHead::ELF_BLOCK_LEN] = {0};
-    bf.GetData(0, ret, HwBlockHead::ELF_BLOCK_LEN);
-    std::vector<int8_t> byte(ret, ret + HwBlockHead::ELF_BLOCK_LEN);
+    int8_t ret[BlockHead::ELF_BLOCK_LEN] = {0};
+    bf.GetData(0, ret, BlockHead::ELF_BLOCK_LEN);
+    std::vector<int8_t> byte(ret, ret + BlockHead::ELF_BLOCK_LEN);
     return byte;
 }
 
