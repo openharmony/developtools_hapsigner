@@ -30,8 +30,8 @@ public:
 
 public:
     ElfSignBlock();
-    ElfSignBlock(int32_t paddingSize, std::vector<int8_t> &merkleTreeData,
-                 FsVerityDescriptorWithSign &descriptorWithSign);
+    ElfSignBlock(int32_t paddingSize, const std::vector<int8_t> &merkleTreeData,
+                 const FsVerityDescriptorWithSign &descriptorWithSign);
     int32_t Size();
     std::vector<int8_t>& GetMerkleTreeWithPadding();
     int64_t GetDataSize();

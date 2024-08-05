@@ -60,7 +60,6 @@ bool LocalSignProvider::CheckPublicKeyPath()
     flag = !publicKeyFile.is_open();
     if (flag) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, publicCertsFile + " open failed ");
-        publicKeyFile.close();
         return false;
     }
     publicKeyFile.close();

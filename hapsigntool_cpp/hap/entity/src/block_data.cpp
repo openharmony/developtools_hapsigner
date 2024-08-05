@@ -13,33 +13,33 @@
  * limitations under the License.
  */
 
-#include "hw_block_data.h"
+#include "block_data.h"
 
 namespace OHOS {
 namespace SignatureTools {
 
-HwBlockData::HwBlockData(const int32_t blockNum, const int64_t blockStart)
+BlockData::BlockData(const int32_t blockNum, const int64_t blockStart)
 {
     m_blockNum = blockNum;
     m_blockStart = blockStart;
 }
 
-int32_t HwBlockData::GetBlockNum()
+int32_t BlockData::GetBlockNum()
 {
     return m_blockNum;
 }
 
-void HwBlockData::SetBlockNum(const int32_t blockNum)
+void BlockData::SetBlockNum(const int32_t blockNum)
 {
     m_blockNum = blockNum;
 }
 
-int64_t HwBlockData::GetBlockStart()
+int64_t BlockData::GetBlockStart()
 {
     return m_blockStart;
 }
 
-void HwBlockData::SetBlockStart(const int64_t blockStart)
+void BlockData::SetBlockStart(const int64_t blockStart)
 {
     m_blockStart = blockStart;
 }

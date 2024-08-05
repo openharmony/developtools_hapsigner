@@ -30,7 +30,7 @@ class StringUtils {
 public:
     StringUtils() = delete;
     static bool IsEmpty(const std::string& cs);
-    static bool ContainsCase(std::vector<std::string> strs, const std::string& str);
+    static bool ContainsCase(const std::vector<std::string> &strs, const std::string& str);
     static bool CaseCompare(const std::string& str1, const std::string& str2);
     static std::vector<std::string> SplitString(const std::string& str, char delimiter);
     static std::string Trim(const std::string& str);

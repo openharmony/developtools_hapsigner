@@ -13,29 +13,31 @@
  * limitations under the License.
  */
 
-#ifndef SIGNATRUETOOLS_HW_BLOCK_HEAD_H
-#define SIGNATRUETOOLS_HW_BLOCK_HEAD_H
+#ifndef SIGNATRUETOOLS_SIGN_HEAD_H
+#define SIGNATRUETOOLS_SIGN_HEAD_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace OHOS {
 namespace SignatureTools {
-class HwBlockHead {
+class SignHead {
 public:
-    static const int BLOCK_LEN = 8;
-    static const int ELF_BLOCK_LEN = 12;
-    static const int BIT_SIZE = 8;
-    static const int DOUBLE_BIT_SIZE = 16;
-    static const int TRIPLE_BIT_SIZE = 24;
-    static const int32_t SIGN_HEAD_LEN = 32;
+    SignHead();
 
-public:
-    static int GetBlockLen();
-    static int GetElfBlockLen();
-    static std::string GetBlockHead(const char type, const char tag, const short length, const int offset);
-    static std::vector<int8_t> GetBlockHeadLittleEndian(const char type, const char tag,
-                                                        const int length, const int offset);
+    std::vector<int8_t> GetSignHead(const int subBlockSize);
+    static const int SIGN_HEAD_LEN;
+    static const std::string MAGIC;
+    static const std::string ELF_MAGIC;
+    static const std::string VERSION;
+    static const int32_t ELF_BLOCK_LEN;
+    static const int32_t BIN_BLOCK_LEN;
+    static std::vector<int8_t> GetSignHeadLittleEndian(const int subBlockSize, const int subBlockNum);
+
+private:
+    static const int NUM_OF_BLOCK;
+    static const int RESERVE_LENGTH;
+    static std::vector<int8_t> m_reserve;
 };
 } // namespace SignatureTools
 } // namespace OHOS

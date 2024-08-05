@@ -25,7 +25,7 @@ bool StringUtils::IsEmpty(const std::string& cs)
     return cs.empty();
 }
 
-bool StringUtils::ContainsCase(const std::vector<std::string> strs, const std::string& str)
+bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::string& str)
 {
     for (const std::string& val : strs) {
         if (val == str)

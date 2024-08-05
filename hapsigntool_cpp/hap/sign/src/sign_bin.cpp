@@ -16,12 +16,12 @@
 #include "sign_bin.h"
 #include "param_constants.h"
 #include "file_utils.h"
-#include "hw_block_head.h"
+#include "block_head.h"
 #include "signature_block_types.h"
 #include "signature_block_tags.h"
 #include "hash_utils.h"
 #include "sign_content_info.h"
-#include "hw_sign_head.h"
+#include "sign_head.h"
 #include "bc_pkcs7_generator.h"
 #include "params.h"
 
@@ -75,7 +75,7 @@ bool SignBin::WriteBlockDataToFile(const std::string& inputFile, const std::stri
                             "lld, profileDataLen: " + std::to_string(profileDataLen) + "lld");
         return false;
     }
-    int64_t offset = binFileLen + HwBlockHead::GetBlockLen() + HwBlockHead::GetBlockLen();
+    int64_t offset = binFileLen + BlockHead::GetBlockLen() + BlockHead::GetBlockLen();
     bool isOver = IsLongOverflowInteger(offset);
     if (isOver) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
@@ -85,7 +85,7 @@ bool SignBin::WriteBlockDataToFile(const std::string& inputFile, const std::stri
     }
     char isSigned = SignatureBlockTypes::GetProfileBlockTypes(profileSigned);
     std::string proBlockByte =
-        HwBlockHead::GetBlockHead(isSigned, SignatureBlockTags::DEFAULT, (short)profileDataLen, (int)offset);
+        BlockHead::GetBlockHead(isSigned, SignatureBlockTags::DEFAULT, (short)profileDataLen, (int)offset);
     offset += profileDataLen;
     isOver = IsLongOverflowInteger(offset);
     if (isOver) {
@@ -94,7 +94,7 @@ bool SignBin::WriteBlockDataToFile(const std::string& inputFile, const std::stri
             + std::to_string(offset));
         return false;
     }
-    std::string signBlockByte = HwBlockHead::GetBlockHead(
+    std::string signBlockByte = BlockHead::GetBlockHead(
         SignatureBlockTypes::SIGNATURE_BLOCK, SignatureBlockTags::DEFAULT, (short)0, (int)offset);
     return WriteSignedBin(inputFile, proBlockByte, signBlockByte, profileFile, outputFile);
 }
@@ -146,14 +146,14 @@ bool SignBin::WriteSignDataToOutputFile(SignerConfig& SignerConfig, const std::s
 
 bool SignBin::WriteSignHeadDataToOutputFile(const std::string& inputFile, const std::string& outputFile)
 {
-    int64_t size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile) + HwSignHead::SIGN_HEAD_LEN;
+    int64_t size = FileUtils::GetFileLen(outputFile) - FileUtils::GetFileLen(inputFile) + SignHead::SIGN_HEAD_LEN;
     bool isOver = IsLongOverflowInteger(size);
     if (isOver) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
             "File size is Overflow integer range, size: " + std::to_string(size));
         return false;
     }
-    HwSignHead signHeadData;
+    SignHead signHeadData;
     std::vector<int8_t> signHeadByte = signHeadData.GetSignHead(size);
     if (signHeadByte.empty()) {
         SIGNATURE_TOOLS_LOGE("Failed to get sign head data!");

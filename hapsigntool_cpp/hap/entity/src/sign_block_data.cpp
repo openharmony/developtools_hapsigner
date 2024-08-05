@@ -20,7 +20,7 @@ namespace SignatureTools {
 
 SignBlockData::SignBlockData(const std::vector<int8_t>& signData, const char type)
 {
-    m_signData = signData;
+    m_signData = std::move(signData);
     m_type = type;
     m_len = signData.size();
     m_isByte = true;
@@ -28,7 +28,7 @@ SignBlockData::SignBlockData(const std::vector<int8_t>& signData, const char typ
 
 SignBlockData::SignBlockData(const std::string& signFile, const char type)
 {
-    m_signFile = signFile;
+    m_signFile = std::move(signFile);
     m_type = type;
     m_len = FileUtils::GetFileLen(signFile);
     m_isByte = false;
@@ -46,7 +46,7 @@ std::vector<int8_t>& SignBlockData::GetBlockHead()
 
 void SignBlockData::SetBlockHead(const std::vector<int8_t>& blockHead)
 {
-    m_blockHead = blockHead;
+    m_blockHead = std::move(blockHead);
 }
 
 std::vector<int8_t>& SignBlockData::GetSignData()

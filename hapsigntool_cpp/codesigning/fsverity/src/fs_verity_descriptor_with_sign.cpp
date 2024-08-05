@@ -23,7 +23,7 @@ FsVerityDescriptorWithSign::FsVerityDescriptorWithSign()
 }
 
 FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(FsVerityDescriptor fsVerityDescriptor,
-    std::vector<int8_t> &signature)
+    const std::vector<int8_t> &signature)
 {
     this->fsVerityDescriptor = fsVerityDescriptor;
     if (!signature.empty()) {
@@ -33,7 +33,7 @@ FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(FsVerityDescriptor fsVeri
 }
 
 FsVerityDescriptorWithSign::FsVerityDescriptorWithSign(int32_t type, int32_t length,
-    FsVerityDescriptor fsVerityDescriptor, std::vector<int8_t> &signature)
+    FsVerityDescriptor fsVerityDescriptor, const std::vector<int8_t> &signature)
 {
     this->type = type;
     this->length = length;

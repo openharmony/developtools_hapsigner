@@ -15,7 +15,7 @@
 #include "fs_digest_utils.h"
 #include "securec.h"
 
-void DigestUtils::AddData(std::string data)
+void DigestUtils::AddData(const std::string &data)
 {
     AddData(data.data(), (int)data.size());
 }

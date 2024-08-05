@@ -37,7 +37,7 @@ bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
     } else {
         merkleTree = GenerateMerkleTree(inputStream, size, FS_SHA256);
     }
-    if (nullptr == merkleTree) {
+    if (merkleTree == nullptr) {
         return false;
     }
     int flags = fsvTreeOffset == 0 ? 0 : FsVerityDescriptor::FLAG_STORE_MERKLE_TREE_OFFSET;
