@@ -515,7 +515,7 @@ ByteBuffer& ByteBuffer::Slice()
     }
     int32_t newCapacity = limit - position;
     auto newBuffer = make_shared_array<char>(newCapacity);
-    if (nullptr == newBuffer) {
+    if (newBuffer == nullptr) {
         SIGNATURE_TOOLS_LOGE("make_shared_array failed");
         return *this;
     }
