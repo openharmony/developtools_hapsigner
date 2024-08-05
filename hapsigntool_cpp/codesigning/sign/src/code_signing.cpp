@@ -161,7 +161,7 @@ bool CodeSigning::SignFile(std::istream& inputStream, int64_t fileSize, bool sto
         MerkleTreeExtension* merkleTreeExtension = new MerkleTreeExtension(merkleTreeSize,
                                                                            fsvTreeOffset,
                                                                            fsVerityGenerator->GetRootHash());
-        if (nullptr == merkleTreeExtension) {
+        if (merkleTreeExtension == nullptr) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "system failed to allocate memory for MerkleTreeExtension");
             return false;
         }
