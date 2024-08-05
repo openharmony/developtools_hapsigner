@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "options.h"
-#include "hw_block_data.h"
+#include "block_data.h"
 #include "signing_block.h"
 #include "pkcs7_context.h"
 #include "sign_block_info.h"
@@ -39,13 +39,13 @@ public:
     bool Verify(Options* options);
     static bool CheckParams(Options* options);
     static bool CheckSignFile(const std::string& signedFile);
-    static bool GetSignBlockData(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
+    static bool GetSignBlockData(std::vector<int8_t>& bytes, BlockData& blockData,
         const std::string fileType);
     static bool GetSignBlockInfo(const std::string& file, SignBlockInfo& signBlockInfo,
         const std::string fileType);
-    static bool GetFileDigest(std::vector<int8_t>& fileBytes, std::vector<int8_t>& signatrue,
+    static bool GetFileDigest(std::vector<int8_t>& fileBytes, const std::vector<int8_t>& signatrue,
         SignBlockInfo& signBlockInfo);
-    static bool GetRawContent(std::vector<int8_t>& contentVec, std::string& rawContent);
+    static bool GetRawContent(const std::vector<int8_t>& contentVec, std::string& rawContent);
     static bool VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap, Options* options,
         Pkcs7Context& pkcs7Context, std::vector<int8_t>& profileVec, std::string& profileJson);
 
@@ -54,9 +54,9 @@ private:
         Options* options, Pkcs7Context& pkcs7Context);
     static bool CheckMagicAndVersion(std::vector<int8_t>& bytes, int64_t& offset,
         const std::string fileType);
-    static void GetElfSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
+    static void GetElfSignBlock(std::vector<int8_t>& bytes, BlockData& blockData,
         std::unordered_map<int8_t, SigningBlock>& signBlockMap);
-    static void GetBinSignBlock(std::vector<int8_t>& bytes, HwBlockData& hwBlockData,
+    static void GetBinSignBlock(std::vector<int8_t>& bytes, BlockData& blockData,
         std::unordered_map<int8_t, SigningBlock>& signBlockMap);
     static bool GenerateFileDigest(std::vector<int8_t>& fileBytes, SignBlockInfo& signBlockInfo);
 };

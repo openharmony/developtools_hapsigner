@@ -89,11 +89,12 @@ bool ParamsRunTool::CallGenerators(const ParamsSharedPtr& params, SignToolServic
 {
     bool isSuccess = false;
     std::string method = params->GetMethod();
-    if (GENERATOR_RUN_METHOD.count(method) == 0) {
+    auto it = GENERATOR_RUN_METHOD.find(method);
+    if (it == GENERATOR_RUN_METHOD.end()) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "Unsupported method: " + method);
         return false;
     } else {
-        isSuccess=GENERATOR_RUN_METHOD[method](params->GetOptions(), api);
+        isSuccess = it->second(params->GetOptions(), api);
     }
     return isSuccess;
 }
@@ -171,10 +172,11 @@ bool ParamsRunTool::DispatchParams(const ParamsSharedPtr& params, SignToolServic
 {
     bool isSuccess = false;
     std::string method = params->GetMethod();
-    if (DISPATCH_RUN_METHOD.count(method) == 0) {
+    auto it = DISPATCH_RUN_METHOD.find(method);
+    if (it == DISPATCH_RUN_METHOD.end()) {
         isSuccess = ParamsRunTool::CallGenerators(params, api);
     } else {
-        isSuccess = DISPATCH_RUN_METHOD[method](params->GetOptions(), api);
+        isSuccess = it->second(params->GetOptions(), api);
     }
     return isSuccess;
 }

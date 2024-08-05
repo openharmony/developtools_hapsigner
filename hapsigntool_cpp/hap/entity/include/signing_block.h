@@ -29,7 +29,7 @@ public:
     SigningBlock(const int32_t type, const std::vector<int8_t> &value, const int64_t offset);
 
     int32_t GetLength();
-    std::vector<int8_t>& GetValue();
+    const std::vector<int8_t>& GetValue();
     int64_t GetOffset();
 
 private:

@@ -18,26 +18,26 @@
 #include "byte_buffer.h"
 #include "byte_array_utils.h"
 #include "signature_tools_log.h"
-#include "hw_sign_head.h"
+#include "sign_head.h"
 
 namespace OHOS {
 namespace SignatureTools {
 
-const int HwSignHead::SIGN_HEAD_LEN = 32;
-const std::string HwSignHead::MAGIC = "hw signed app   ";
-const std::string HwSignHead::ELF_MAGIC = "elf sign block  ";
-const std::string HwSignHead::VERSION = "1000";
-const int HwSignHead::NUM_OF_BLOCK = 2;
-const int HwSignHead::RESERVE_LENGTH = 4;
-const int32_t HwSignHead::ELF_BLOCK_LEN = 12;
-const int32_t HwSignHead::BIN_BLOCK_LEN = 8;
-std::vector<int8_t> HwSignHead::m_reserve = std::vector<int8_t>(HwSignHead::RESERVE_LENGTH, 0);
+const int SignHead::SIGN_HEAD_LEN = 32;
+const std::string SignHead::MAGIC = "hw signed app   ";
+const std::string SignHead::ELF_MAGIC = "elf sign block  ";
+const std::string SignHead::VERSION = "1000";
+const int SignHead::NUM_OF_BLOCK = 2;
+const int SignHead::RESERVE_LENGTH = 4;
+const int32_t SignHead::ELF_BLOCK_LEN = 12;
+const int32_t SignHead::BIN_BLOCK_LEN = 8;
+std::vector<int8_t> SignHead::m_reserve = std::vector<int8_t>(SignHead::RESERVE_LENGTH, 0);
 
-HwSignHead::HwSignHead()
+SignHead::SignHead()
 {
 }
 
-std::vector<int8_t> HwSignHead::GetSignHead(const int subBlockSize)
+std::vector<int8_t> SignHead::GetSignHead(const int subBlockSize)
 {
     int size = subBlockSize;
     std::vector<int8_t> signHead(SIGN_HEAD_LEN, 0);
@@ -70,23 +70,23 @@ std::vector<int8_t> HwSignHead::GetSignHead(const int subBlockSize)
     return signHead;
 }
 
-std::vector<int8_t> HwSignHead::GetSignHeadLittleEndian(const int subBlockSize, const int subBlockNum)
+std::vector<int8_t> SignHead::GetSignHeadLittleEndian(const int subBlockSize, const int subBlockNum)
 {
-    ByteBuffer bf = ByteBuffer(HwSignHead::SIGN_HEAD_LEN);
-    for (char c : HwSignHead::ELF_MAGIC) {
+    ByteBuffer bf = ByteBuffer(SignHead::SIGN_HEAD_LEN);
+    for (char c : SignHead::ELF_MAGIC) {
         bf.PutByte(c);
     }
-    for (char c : HwSignHead::VERSION) {
+    for (char c : SignHead::VERSION) {
         bf.PutByte(c);
     }
     bf.PutInt32(subBlockSize);
     bf.PutInt32(subBlockNum);
-    for (char c : HwSignHead::m_reserve) {
+    for (char c : SignHead::m_reserve) {
         bf.PutByte(c);
     }
-    int8_t ret[HwSignHead::SIGN_HEAD_LEN];
-    bf.GetData(0, ret, HwSignHead::SIGN_HEAD_LEN);
-    std::vector<int8_t> byte(ret, ret + HwSignHead::SIGN_HEAD_LEN);
+    int8_t ret[SignHead::SIGN_HEAD_LEN];
+    bf.GetData(0, ret, SignHead::SIGN_HEAD_LEN);
+    std::vector<int8_t> byte(ret, ret + SignHead::SIGN_HEAD_LEN);
 
     return byte;
 }

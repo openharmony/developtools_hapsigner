@@ -13,16 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef SIGNATRUETOOLS_HW_BLOCK_DATA_H
-#define SIGNATRUETOOLS_HW_BLOCK_DATA_H
+#ifndef SIGNATRUETOOLS_BLOCK_DATA_H
+#define SIGNATRUETOOLS_BLOCK_DATA_H
 
 #include <string>
 
 namespace OHOS {
 namespace SignatureTools {
-class HwBlockData {
+class BlockData {
 public:
-    HwBlockData(const int32_t blockNum, const int64_t blockStart);
+    BlockData(const int32_t blockNum, const int64_t blockStart);
 
     int32_t GetBlockNum();
     void SetBlockNum(const int32_t blockNum);

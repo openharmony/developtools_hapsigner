@@ -23,8 +23,8 @@ ElfSignBlock::ElfSignBlock()
     type = MERKLE_TREE_INLINED;
 }
 
-ElfSignBlock::ElfSignBlock(int32_t paddingSize, std::vector<int8_t> &merkleTreeData,
-                           FsVerityDescriptorWithSign &descriptorWithSign)
+ElfSignBlock::ElfSignBlock(int32_t paddingSize, const std::vector<int8_t> &merkleTreeData,
+                           const FsVerityDescriptorWithSign &descriptorWithSign)
 {
     std::vector<int8_t> inMerkleTreeData;
     if (!merkleTreeData.empty()) {
