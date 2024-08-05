@@ -122,7 +122,7 @@ bool VerifyCodeSignature::VerifyCodeSign(std::string file, std::pair<std::string
     Extension* ext = csb.GetHapInfoSegment().GetSignInfo()
         .GetExtensionByType(MerkleTreeExtension::MERKLE_TREE_INLINED);
     MerkleTreeExtension* mte = new MerkleTreeExtension(0, 0, std::vector<int8_t>());
-    if (nullptr == mte) {
+    if (mte == nullptr) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "system failed to allocate memory for MerkleTreeExtension");
         return false;
     }
@@ -193,7 +193,7 @@ bool VerifyCodeSignature::GenerateCodeSignBlock(const std::string& file, int64_t
     fileReadOffset += signedHap.gcount();
     CodeSignBlockHeader* pCodeSignBlockHeader =
         CodeSignBlockHeader::FromByteArray(*(std::vector<int8_t>*) &codeSignBlockHeaderByteArray);
-    if (nullptr == pCodeSignBlockHeader) {
+    if (pCodeSignBlockHeader == nullptr) {
         SIGNATURE_TOOLS_LOGE("Invalid code Sign block header");
         signedHap.close();
         return false;
