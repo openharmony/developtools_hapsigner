@@ -17,9 +17,9 @@
 #include <gtest/gtest.h>
 #include "fs_digest_utils.h"
 
- /*
-  * 测试套件,固定写法
-  */
+namespace OHOS {
+namespace SignatureTools {
+
 class DigestUtilsTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
@@ -93,3 +93,5 @@ HWTEST_F(DigestUtilsTest, result, testing::ext::TestSize.Level1)
 
     EXPECT_EQ(str.size(), 64);
 }
+} // namespace SignatureTools
+} // namespace OHOS
