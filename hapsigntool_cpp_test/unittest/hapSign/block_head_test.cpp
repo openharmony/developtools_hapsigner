@@ -14,7 +14,7 @@
  */
 #include <memory>
 #include <gtest/gtest.h>
-#include "hw_block_head.h"
+#include "block_head.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -22,7 +22,7 @@ namespace SignatureTools {
 /*
 * 测试套件,固定写法
 */
-class HwBlockHeadTest : public testing::Test {
+class BlockHeadTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
@@ -46,9 +46,9 @@ public:
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockHeadTest, GetBlockHead, testing::ext::TestSize.Level1)
+HWTEST_F(BlockHeadTest, GetBlockHead, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockHead> api = std::make_shared<HwBlockHead>();
+    std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
     std::string blockHead = api->GetBlockHead(0, 0, 0, 29148868);
     EXPECT_NE(blockHead.size(), 0);
 }
@@ -61,9 +61,9 @@ HWTEST_F(HwBlockHeadTest, GetBlockHead, testing::ext::TestSize.Level1)
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockHeadTest, GetBlockHeadLittleEndian, testing::ext::TestSize.Level1)
+HWTEST_F(BlockHeadTest, GetBlockHeadLittleEndian, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockHead> api = std::make_shared<HwBlockHead>();
+    std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
     api->GetBlockHeadLittleEndian(0, 0, 0, 29148868);
     EXPECT_EQ(true, 1);
 }
@@ -76,9 +76,9 @@ HWTEST_F(HwBlockHeadTest, GetBlockHeadLittleEndian, testing::ext::TestSize.Level
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockHeadTest, getBlockHeadLittleEndian, testing::ext::TestSize.Level1)
+HWTEST_F(BlockHeadTest, getBlockHeadLittleEndian, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockHead> api = std::make_shared<HwBlockHead>();
+    std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
     api->GetBlockHeadLittleEndian(0, 0, 0, 29148868);
     EXPECT_EQ(true, 1);
 }
@@ -91,9 +91,9 @@ HWTEST_F(HwBlockHeadTest, getBlockHeadLittleEndian, testing::ext::TestSize.Level
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockHeadTest, GetBlockLen, testing::ext::TestSize.Level1)
+HWTEST_F(BlockHeadTest, GetBlockLen, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockHead> api = std::make_shared<HwBlockHead>();
+    std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
     int blockLen = api->GetBlockLen();
     EXPECT_EQ(blockLen, 8);
 }
@@ -106,9 +106,9 @@ HWTEST_F(HwBlockHeadTest, GetBlockLen, testing::ext::TestSize.Level1)
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockHeadTest, GetElfBlockLen, testing::ext::TestSize.Level1)
+HWTEST_F(BlockHeadTest, GetElfBlockLen, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockHead> api = std::make_shared<HwBlockHead>();
+    std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
     int elfBlockLen = api->GetElfBlockLen();
     EXPECT_EQ(elfBlockLen, 12);
 }

@@ -14,7 +14,7 @@
  */
 #include <memory>
 #include <gtest/gtest.h>
-#include "hw_block_data.h"
+#include "block_data.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -22,7 +22,7 @@ namespace SignatureTools {
 /*
 * 测试套件,固定写法
 */
-class HwBlockDataTest : public testing::Test {
+class BlockDataTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
@@ -40,60 +40,60 @@ public:
 
 /**
  * @tc.name: GetBlockNum
- * @tc.desc: Test function of HwBlockDataTest::GetBlockNum() interface for SUCCESS.
+ * @tc.desc: Test function of BlockDataTest::GetBlockNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockDataTest, GetBlockNum, testing::ext::TestSize.Level1)
+HWTEST_F(BlockDataTest, GetBlockNum, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockData> api = std::make_shared<HwBlockData>(2, 0);
+    std::shared_ptr<BlockData> api = std::make_shared<BlockData>(2, 0);
     int32_t blockNum = api->GetBlockNum();
     EXPECT_EQ(blockNum, 2);
 }
 
 /**
  * @tc.name: GetBlockStart
- * @tc.desc: Test function of HwBlockDataTest::GetBlockStart() interface for SUCCESS.
+ * @tc.desc: Test function of BlockDataTest::GetBlockStart() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockDataTest, GetBlockStart, testing::ext::TestSize.Level1)
+HWTEST_F(BlockDataTest, GetBlockStart, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockData> api = std::make_shared<HwBlockData>(2, 0);
+    std::shared_ptr<BlockData> api = std::make_shared<BlockData>(2, 0);
     int32_t blockStart = api->GetBlockStart();
     EXPECT_EQ(blockStart, 0);
 }
 
 /**
  * @tc.name: SetBlockNum
- * @tc.desc: Test function of HwBlockDataTest::SetBlockNum() interface for SUCCESS.
+ * @tc.desc: Test function of BlockDataTest::SetBlockNum() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockDataTest, SetBlockNum, testing::ext::TestSize.Level1)
+HWTEST_F(BlockDataTest, SetBlockNum, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockData> api = std::make_shared<HwBlockData>(2, 0);
+    std::shared_ptr<BlockData> api = std::make_shared<BlockData>(2, 0);
     api->SetBlockNum(3);
     EXPECT_EQ(true, 1);
 }
 
 /**
  * @tc.name: SetBlockStart
- * @tc.desc: Test function of HwBlockDataTest::SetBlockStart() interface for SUCCESS.
+ * @tc.desc: Test function of BlockDataTest::SetBlockStart() interface for SUCCESS.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwBlockDataTest, SetBlockStart, testing::ext::TestSize.Level1)
+HWTEST_F(BlockDataTest, SetBlockStart, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwBlockData> api = std::make_shared<HwBlockData>(2, 0);
+    std::shared_ptr<BlockData> api = std::make_shared<BlockData>(2, 0);
     api->SetBlockStart(1);
     EXPECT_EQ(true, 1);
 }
