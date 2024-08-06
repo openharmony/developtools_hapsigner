@@ -14,7 +14,7 @@
  */
 #include <memory>
 #include <gtest/gtest.h>
-#include "hw_sign_head.h"
+#include "sign_head.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -22,7 +22,7 @@ namespace SignatureTools {
 /*
 * 测试套件,固定写法
 */
-class HwSignHeadTest : public testing::Test {
+class SignHeadTest : public testing::Test {
 public:
     static void SetUpTestCase(void)
     {
@@ -46,9 +46,9 @@ public:
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwSignHeadTest, GetSignHead, testing::ext::TestSize.Level1)
+HWTEST_F(SignHeadTest, GetSignHead, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwSignHead> api = std::make_shared<HwSignHead>();
+    std::shared_ptr<SignHead> api = std::make_shared<SignHead>();
     std::vector<int8_t> signHead = api->GetSignHead(5254);
     EXPECT_EQ(signHead.size(), 32);
 }
@@ -61,9 +61,9 @@ HWTEST_F(HwSignHeadTest, GetSignHead, testing::ext::TestSize.Level1)
  * @tc.level Level 1
  * @tc.require: SR000H63TL
  */
-HWTEST_F(HwSignHeadTest, getSignHeadLittleEndian, testing::ext::TestSize.Level1)
+HWTEST_F(SignHeadTest, getSignHeadLittleEndian, testing::ext::TestSize.Level1)
 {
-    std::shared_ptr<HwSignHead> api = std::make_shared<HwSignHead>();
+    std::shared_ptr<SignHead> api = std::make_shared<SignHead>();
     std::vector<int8_t> signHeadLittleEndian = api->GetSignHeadLittleEndian(1024, 1);
     EXPECT_EQ(signHeadLittleEndian.size(), 32);
 }

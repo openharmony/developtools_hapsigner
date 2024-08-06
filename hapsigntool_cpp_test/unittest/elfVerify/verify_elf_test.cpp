@@ -18,7 +18,7 @@
 #include <gtest/gtest.h>
 
 #include "verify_elf.h"
-#include "hw_block_data.h"
+#include "block_data.h"
 #include "sign_provider.h"
 #include "verify_hap.h"
 
@@ -369,9 +369,9 @@ HWTEST_F(VerifyElfTest, CheckSignFile, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyElfTest, GetSignBlockData, testing::ext::TestSize.Level1)
 {
     std::vector<int8_t> bytes = { 1, 1, 1, 1, 1, 1, 1, 1 };
-    HwBlockData hwBlockData(0, 0);
+    BlockData blockData(0, 0);
 
-    bool flag = VerifyElf::GetSignBlockData(bytes, hwBlockData, "elf");
+    bool flag = VerifyElf::GetSignBlockData(bytes, blockData, "elf");
 
     EXPECT_EQ(flag, false);
 }
