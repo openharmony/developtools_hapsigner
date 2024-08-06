@@ -369,9 +369,9 @@ HWTEST_F(VerifyElfTest, CheckSignFile, testing::ext::TestSize.Level1)
 HWTEST_F(VerifyElfTest, GetSignBlockData, testing::ext::TestSize.Level1)
 {
     std::vector<int8_t> bytes = { 1, 1, 1, 1, 1, 1, 1, 1 };
-    BlockData BlockData(0, 0);
+    BlockData blockData(0, 0);
 
-    bool flag = VerifyElf::GetSignBlockData(bytes, BlockData, "elf");
+    bool flag = VerifyElf::GetSignBlockData(bytes, blockData, "elf");
 
     EXPECT_EQ(flag, false);
 }
