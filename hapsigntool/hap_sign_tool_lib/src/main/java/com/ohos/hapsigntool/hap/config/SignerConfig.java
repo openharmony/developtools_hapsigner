@@ -160,7 +160,7 @@ public class SignerConfig {
      *
      * @param params params map
      */
-    public void fillParameters(Map<String, String> params) {
+    public void setParameters(Map<String, String> params) {
         this.signParamMap = params;
     }
 
@@ -209,7 +209,7 @@ public class SignerConfig {
      */
     public SignerConfig copy() {
         SignerConfig signerConfig = new SignerConfig();
-        signerConfig.fillParameters(signParamMap);
+        signerConfig.setParameters(signParamMap);
         signerConfig.setCertificates(certificates);
         signerConfig.setOptions(options);
         signerConfig.setSignatureAlgorithms(signatureAlgorithms);

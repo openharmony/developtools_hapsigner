@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 
 import org.apache.logging.log4j.LogManager;
@@ -214,6 +215,11 @@ public final class FileUtils {
      * @throws IOException Write failed
      */
     public static void write(byte[] content, File output) throws IOException {
+        boolean canWrite = output.canWrite();
+        if (!canWrite) {
+            CustomException.throwException(ERROR.WRITE_FILE_ERROR, "no permission write file " +
+                    output.getCanonicalPath());
+        }
         try (FileOutputStream out = new FileOutputStream(output)) {
             for (byte con : content) {
                 out.write(con);

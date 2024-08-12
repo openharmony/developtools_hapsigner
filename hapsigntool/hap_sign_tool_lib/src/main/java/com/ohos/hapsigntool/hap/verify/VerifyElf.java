@@ -20,8 +20,8 @@ import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
 import com.ohos.hapsigntool.hap.entity.ElfBlockData;
-import com.ohos.hapsigntool.hap.entity.HwBlockHead;
-import com.ohos.hapsigntool.hap.entity.HwSignHead;
+import com.ohos.hapsigntool.hap.entity.BlockHead;
+import com.ohos.hapsigntool.hap.entity.SignHead;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.ProfileException;
@@ -247,18 +247,18 @@ public class VerifyElf {
     }
 
     private ElfBlockData getElfSignBlockData(byte[] bytes) throws IOException {
-        int offset = bytes.length - HwSignHead.SIGN_HEAD_LEN;
-        byte[] magicByte = readByteArrayOffset(bytes, offset, HwSignHead.ELF_MAGIC.length);
-        offset += HwSignHead.ELF_MAGIC.length;
-        byte[] versionByte = readByteArrayOffset(bytes, offset, HwSignHead.VERSION.length);
-        offset += HwSignHead.VERSION.length;
-        for (int i = 0; i < HwSignHead.ELF_MAGIC.length; i++) {
-            if (HwSignHead.ELF_MAGIC[i] != magicByte[i]) {
+        int offset = bytes.length - SignHead.SIGN_HEAD_LEN;
+        byte[] magicByte = readByteArrayOffset(bytes, offset, SignHead.ELF_MAGIC.length);
+        offset += SignHead.ELF_MAGIC.length;
+        byte[] versionByte = readByteArrayOffset(bytes, offset, SignHead.VERSION.length);
+        offset += SignHead.VERSION.length;
+        for (int i = 0; i < SignHead.ELF_MAGIC.length; i++) {
+            if (SignHead.ELF_MAGIC[i] != magicByte[i]) {
                 throw new IOException("elf magic verify failed");
             }
         }
-        for (int i = 0; i < HwSignHead.VERSION.length; i++) {
-            if (HwSignHead.VERSION[i] != versionByte[i]) {
+        for (int i = 0; i < SignHead.VERSION.length; i++) {
+            if (SignHead.VERSION[i] != versionByte[i]) {
                 throw new IOException("elf sign version verify failed");
             }
         }
@@ -272,7 +272,7 @@ public class VerifyElf {
         ByteBuffer blockSizeBf = ByteBuffer.wrap(blockSizeByte).order(ByteOrder.LITTLE_ENDIAN);
         int blockSize = blockSizeBf.getInt();
 
-        int blockStart = bytes.length - HwSignHead.SIGN_HEAD_LEN - blockSize;
+        int blockStart = bytes.length - SignHead.SIGN_HEAD_LEN - blockSize;
         return new ElfBlockData(blockNum, blockStart);
     }
 
@@ -281,7 +281,7 @@ public class VerifyElf {
 
         Map<Character, SigningBlock> blockMap = new HashMap<>();
         for (int i = 0; i < elfBlockData.getBlockNum(); i++) {
-            byte[] blockByte = readByteArrayOffset(bytes, offset, HwBlockHead.ELF_BLOCK_LEN);
+            byte[] blockByte = readByteArrayOffset(bytes, offset, BlockHead.ELF_BLOCK_LEN);
             ByteBuffer blockBuffer = ByteBuffer.wrap(blockByte).order(ByteOrder.LITTLE_ENDIAN);
             char type = blockBuffer.getChar();
             char tag = blockBuffer.getChar();
@@ -289,7 +289,7 @@ public class VerifyElf {
             int blockOffset = blockBuffer.getInt();
             byte[] value = readByteArrayOffset(bytes, elfBlockData.getBlockStart() + blockOffset, length);
             blockMap.put(type, new SigningBlock(type, value, elfBlockData.getBlockStart() + blockOffset));
-            offset += HwBlockHead.ELF_BLOCK_LEN;
+            offset += BlockHead.ELF_BLOCK_LEN;
         }
         return blockMap;
     }

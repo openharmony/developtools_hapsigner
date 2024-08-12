@@ -41,6 +41,9 @@ public class ByteArrayUtils {
      * @return end of position of inserting, if successfully
      */
     public static int insertIntToByteArray(byte[] desByte, int index, int num) {
+        if (desByte == null) {
+            return -1;
+        }
         if (index + Integer.BYTES > desByte.length) {
             return -1;
         }
@@ -66,6 +69,9 @@ public class ByteArrayUtils {
      * @return end of position of inserting, if successfully
      */
     public static int insertShortToByteArray(byte[] desByte, int desByteLen, int index, short num) {
+        if (desByte == null) {
+            return -1;
+        }
         if (index + HALF_INTEGER_BYTES > desByteLen) {
             return -1;
         }
@@ -103,6 +109,9 @@ public class ByteArrayUtils {
      * @return end of position of inserting, if successfully
      */
     public static int insertCharToByteArray(byte[] des, int start, char[] src) {
+        if (des == null) {
+            return -1;
+        }
         if (start > des.length - src.length) {
             return -1;
         }

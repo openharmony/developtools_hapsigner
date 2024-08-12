@@ -23,7 +23,7 @@ import java.nio.ByteOrder;
  *
  * @since 2023/11/07
  */
-public class HwBlockHead {
+public class BlockHead {
     /**
      * bin file sign block length is 8 byte
      */
@@ -90,7 +90,7 @@ public class HwBlockHead {
      * @return Byte array after serialization of HwBlockHead
      */
     public static byte[] getBlockHeadLittleEndian(char type, char tag, int length, int offset) {
-        ByteBuffer bf = ByteBuffer.allocate(HwBlockHead.ELF_BLOCK_LEN).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bf = ByteBuffer.allocate(BlockHead.ELF_BLOCK_LEN).order(ByteOrder.LITTLE_ENDIAN);
         bf.putChar(type);
         bf.putChar(tag);
         bf.putInt(length);

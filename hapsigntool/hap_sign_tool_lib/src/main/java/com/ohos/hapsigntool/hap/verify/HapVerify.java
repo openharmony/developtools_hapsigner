@@ -75,6 +75,8 @@ import java.util.Set;
 public class HapVerify {
     private static final Logger LOGGER = LogManager.getLogger(HapVerify.class);
 
+    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private ZipDataInput beforeApkSigningBlock;
 
     private ByteBuffer signatureSchemeBlock;
@@ -282,7 +284,7 @@ public class HapVerify {
         Store<X509CertificateHolder> certificates = cmsSignedData.getCertificates();
         try {
             List<X509Certificate> certificateList = certStoreToCertList(certificates);
-            if (certificateList == null || certificateList.size() == 0) {
+            if (certificateList.isEmpty()) {
                 throw new VerifyHapException("Certificate chain is empty!");
             }
             if (isPrintCert) {
@@ -357,18 +359,18 @@ public class HapVerify {
             LOGGER.info("version is: {}, number of block is: {}", signBlockVersion, signBlockCount);
             int digestBlockLen = digestDatas.getInt();
             int signatureAlgId = digestDatas.getInt();
-            int digestDatalen = digestDatas.getInt();
-            if (digestBlockLen != digestDatalen + 8) {
-                throw new SignatureException("digestBlockLen: " + digestBlockLen + ", digestDatalen: " + digestDatalen);
+            int digestDataLen = digestDatas.getInt();
+            if (digestBlockLen != digestDataLen + 8) {
+                throw new SignatureException("digestBlockLen: " + digestBlockLen + ", digestDataLen: " + digestDataLen);
             }
-            ByteBuffer degestBuffer = HapUtils.sliceBuffer(digestDatas, digestDatalen);
-            byte[] degisetData = new byte[degestBuffer.remaining()];
-            degestBuffer.get(degisetData);
+            ByteBuffer digestBuffer = HapUtils.sliceBuffer(digestDatas, digestDataLen);
+            byte[] digestData = new byte[digestBuffer.remaining()];
+            digestBuffer.get(digestData);
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.findById(signatureAlgId);
             if (signatureAlgorithm == null) {
                 throw new SignatureException("Unsupported SignatureAlgorithm ID : " + signatureAlgId);
             }
-            digestMap.put(signatureAlgorithm.getContentDigestAlgorithm(), degisetData);
+            digestMap.put(signatureAlgorithm.getContentDigestAlgorithm(), digestData);
         }
 
         Set<ContentDigestAlgorithm> keySet = digestMap.keySet();
@@ -382,7 +384,7 @@ public class HapVerify {
             if (!Arrays.equals(actualDigest, exceptDigest)) {
                 isResult = false;
                 LOGGER.error(
-                        "degist data do not match! DigestAlgorithm: {}, actualDigest: <{}> VS exceptDigest : <{}>",
+                        "digest data do not match! DigestAlgorithm: {}, actualDigest: <{}> VS exceptDigest : <{}>",
                         digestAlg.getDigestAlgorithm(),
                         HapUtils.toHex(actualDigest, ""),
                         HapUtils.toHex(exceptDigest, ""));
@@ -425,7 +427,6 @@ public class HapVerify {
 
     private String formatDateTime(Date date) {
         if (date != null) {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             return format.format(date);
         }
         return "";

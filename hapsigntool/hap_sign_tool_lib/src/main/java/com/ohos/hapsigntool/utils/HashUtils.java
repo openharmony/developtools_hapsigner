@@ -49,20 +49,18 @@ public class HashUtils {
      * @return algorithm ID
      */
     public static int getHashAlgsId(String algMethod) {
-        int result = HashAlgs.USE_NONE;
-        if ("SHA-224".equals(algMethod)) {
-            result = HashAlgs.USE_SHA224;
+        switch (algMethod) {
+            case "SHA-224":
+                return HashAlgs.USE_SHA224;
+            case "SHA-256":
+                return HashAlgs.USE_SHA256;
+            case "SHA-384":
+                return HashAlgs.USE_SHA384;
+            case "SHA-512":
+                return HashAlgs.USE_SHA512;
+            default:
+                return HashAlgs.USE_NONE;
         }
-        if ("SHA-256".equals(algMethod)) {
-            result = HashAlgs.USE_SHA256;
-        }
-        if ("SHA-384".equals(algMethod)) {
-            result = HashAlgs.USE_SHA384;
-        }
-        if ("SHA-512".equals(algMethod)) {
-            result = HashAlgs.USE_SHA512;
-        }
-        return result;
     }
 
     private static MessageDigest getMessageDigest(String algMethod) {
