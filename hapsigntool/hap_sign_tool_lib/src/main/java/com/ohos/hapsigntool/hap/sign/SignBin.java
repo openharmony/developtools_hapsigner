@@ -16,8 +16,8 @@
 package com.ohos.hapsigntool.hap.sign;
 
 import com.ohos.hapsigntool.hap.config.SignerConfig;
-import com.ohos.hapsigntool.hap.entity.HwBlockHead;
-import com.ohos.hapsigntool.hap.entity.HwSignHead;
+import com.ohos.hapsigntool.hap.entity.BlockHead;
+import com.ohos.hapsigntool.hap.entity.SignHead;
 import com.ohos.hapsigntool.hap.entity.SignContentInfo;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTags;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
@@ -102,21 +102,21 @@ public class SignBin {
                 throw new IOException();
             }
 
-            long offset = binFileLen + HwBlockHead.getBlockLen() + HwBlockHead.getBlockLen();
+            long offset = binFileLen + BlockHead.getBlockLen() + BlockHead.getBlockLen();
             if (isLongOverflowInteger(offset)) {
-                LOGGER.error("The profile block head offset is overflow interger range, offset: " + offset);
+                LOGGER.error("The profile block head offset is overflow integer range, offset: " + offset);
                 throw new IOException();
             }
             char isSigned = SignatureBlockTypes.getProfileBlockTypes(profileSigned);
             byte[] proBlockByte =
-                HwBlockHead.getBlockHead(isSigned, SignatureBlockTags.DEFAULT, (short) profileDataLen, (int) offset);
+                BlockHead.getBlockHead(isSigned, SignatureBlockTags.DEFAULT, (short) profileDataLen, (int) offset);
 
             offset += profileDataLen;
             if (isLongOverflowInteger(offset)) {
                 LOGGER.error("The sign block head offset is overflow integer range, offset: " + offset);
                 throw new IOException();
             }
-            byte[] signBlockByte = HwBlockHead.getBlockHead(
+            byte[] signBlockByte = BlockHead.getBlockHead(
                     SignatureBlockTypes.SIGNATURE_BLOCK, SignatureBlockTags.DEFAULT, (short) 0, (int) offset);
 
             return writeSignedBin(inputFile, proBlockByte, signBlockByte, profileFile, outputFile);
@@ -132,7 +132,7 @@ public class SignBin {
              DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);) {
             // 1. write the input file to the output file.
             if (!FileUtils.writeFileToDos(inputFile, dataOutputStream)) {
-                LOGGER.error("Failed to write infomation of input file: " + inputFile +
+                LOGGER.error("Failed to write information of input file: " + inputFile +
                         " to outputFile: " + outputFile);
                 throw new IOException();
             }
@@ -166,12 +166,12 @@ public class SignBin {
     }
 
     private static boolean writeSignHeadDataToOutputFile(String inputFile, String outputFile) {
-        long size = FileUtils.getFileLen(outputFile) - FileUtils.getFileLen(inputFile) + HwSignHead.SIGN_HEAD_LEN;
+        long size = FileUtils.getFileLen(outputFile) - FileUtils.getFileLen(inputFile) + SignHead.SIGN_HEAD_LEN;
         if (isLongOverflowInteger(size)) {
             LOGGER.error("File size is Overflow integer range.");
             return false;
         }
-        HwSignHead signHeadData = new HwSignHead();
+        SignHead signHeadData = new SignHead();
         byte[] signHeadByte = signHeadData.getSignHead((int) size);
         if (signHeadByte == null || signHeadByte.length == 0) {
             LOGGER.error("Failed to get sign head data.");

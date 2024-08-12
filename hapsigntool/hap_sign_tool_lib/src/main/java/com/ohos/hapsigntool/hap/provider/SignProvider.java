@@ -224,7 +224,7 @@ public abstract class SignProvider {
     public SignerConfig createSignerConfigs(List<X509Certificate> certificates, Optional<X509CRL> crl, Options options)
             throws InvalidKeyException {
         SignerConfig signerConfig = new SignerConfig();
-        signerConfig.fillParameters(this.signParams);
+        signerConfig.setParameters(this.signParams);
         signerConfig.setCertificates(certificates);
         signerConfig.setOptions(options);
 

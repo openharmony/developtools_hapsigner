@@ -32,6 +32,7 @@ public class CustomException extends RuntimeException {
      * @param message Error msg to throw
      */
     CustomException(ERROR error, String message) {
+        super(message);
         this.error = error;
         this.message = message;
     }

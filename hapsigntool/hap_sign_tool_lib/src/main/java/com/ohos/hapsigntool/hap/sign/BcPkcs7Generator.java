@@ -115,10 +115,10 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         ASN1Set crls = null;
         byte[] signBlock;
         try {
-            if (checkListNotNullOrEmty(signerConfig.getCertificates())) {
+            if (checkListNotNullOrEmpty(signerConfig.getCertificates())) {
                 certs = createBerSetFromCerts(signerConfig.getCertificates());
             }
-            if (checkListNotNullOrEmty(signerConfig.getX509CRLs())) {
+            if (checkListNotNullOrEmpty(signerConfig.getX509CRLs())) {
                 crls = createBerSetFromCrls(signerConfig.getX509CRLs());
             }
             SignedData signedData = new SignedData(
@@ -157,7 +157,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         if (signatureBytes == null) {
             throw new SignatureException("Generate signature bytes error");
         }
-        if (!checkListNotNullOrEmty(signerConfig.getCertificates())) {
+        if (!checkListNotNullOrEmpty(signerConfig.getCertificates())) {
             throw new SignatureException("No certificates configured for signer");
         }
 
@@ -206,7 +206,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
     }
 
     private ASN1Set createBerSetFromCrls(List<X509CRL> crls) throws CRLException {
-        if (crls == null || crls.size() == 0) {
+        if (crls == null || crls.isEmpty()) {
             return null;
         }
         ASN1EncodableVector vector = new ASN1EncodableVector();
@@ -217,7 +217,7 @@ public class BcPkcs7Generator implements Pkcs7Generator {
     }
 
     private ASN1Set createBerSetFromCerts(List<X509Certificate> certs) throws CertificateEncodingException {
-        if (certs == null || certs.size() == 0) {
+        if (certs == null || certs.isEmpty()) {
             return null;
         }
         ASN1EncodableVector vector = new ASN1EncodableVector();
@@ -228,8 +228,8 @@ public class BcPkcs7Generator implements Pkcs7Generator {
         return new BERSet(vector);
     }
 
-    private boolean checkListNotNullOrEmty(List<?> lists) {
-        return (lists != null) && (lists.size() > 0);
+    private boolean checkListNotNullOrEmpty(List<?> lists) {
+        return (lists != null) && (!lists.isEmpty());
     }
 
     private boolean verifySignatureFromServer(

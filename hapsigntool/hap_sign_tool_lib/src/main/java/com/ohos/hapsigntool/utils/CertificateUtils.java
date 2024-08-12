@@ -54,7 +54,7 @@ public class CertificateUtils {
      */
     public static void verifyCertChain(List<X509Certificate> certs) throws VerifyCertificateChainException {
         if (certs.size() <= 1) {
-            return;
+            throw new VerifyCertificateChainException("certificate chain is empty") ;
         }
         for (int i = 1; i < certs.size(); i++) {
             try {
@@ -91,7 +91,7 @@ public class CertificateUtils {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             Collection<X509Certificate> certificates =
                 (Collection<X509Certificate>) cf.generateCertificates(fileInputStream);
-            if (certificates != null && certificates.size() > 0) {
+            if (certificates != null && !certificates.isEmpty()) {
                 List<X509Certificate> certs = new ArrayList<X509Certificate>(certificates);
                 CertUtils.sortCertificateChain(certs);
                 verifyCertChain(certs);

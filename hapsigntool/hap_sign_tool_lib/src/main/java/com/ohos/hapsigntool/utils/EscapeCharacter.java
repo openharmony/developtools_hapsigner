@@ -59,7 +59,7 @@ public class EscapeCharacter {
      * @return string after unescape.
      */
     public static String unescape(String src) {
-        StringBuffer tmp = new StringBuffer();
+        StringBuilder tmp = new StringBuilder();
         tmp.ensureCapacity(src.length());
         int lastPos = 0;
         int pos = 0;
