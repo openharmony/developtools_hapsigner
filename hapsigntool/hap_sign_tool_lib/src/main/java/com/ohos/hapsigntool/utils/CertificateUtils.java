@@ -54,7 +54,7 @@ public class CertificateUtils {
      */
     public static void verifyCertChain(List<X509Certificate> certs) throws VerifyCertificateChainException {
         if (certs.size() <= 1) {
-            throw new VerifyCertificateChainException("certificate chain is empty") ;
+            return;
         }
         for (int i = 1; i < certs.size(); i++) {
             try {

@@ -59,7 +59,7 @@ class SignContentHash {
     /**
      * the length of content
      */
-    protected int  contentHashLen;
+    protected int contentHashLen;
 
     SignContentHash(char type, char tag, short algId, int length, byte[] hash) {
         this.type = type;

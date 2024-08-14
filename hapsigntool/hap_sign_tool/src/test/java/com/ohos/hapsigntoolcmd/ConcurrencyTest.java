@@ -154,7 +154,7 @@ public class ConcurrencyTest {
             isFinished = countDownLatch.await(KEEP_ALIVE_TIMES, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             isFinished = false;
-            log.error("concurrency test interrupted");
+            log.error("concurrency test interrupted", e);
         }
         if (!isFinished) {
             executor.shutdownNow();

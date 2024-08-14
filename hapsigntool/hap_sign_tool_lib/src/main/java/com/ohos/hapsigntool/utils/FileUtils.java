@@ -215,8 +215,7 @@ public final class FileUtils {
      * @throws IOException Write failed
      */
     public static void write(byte[] content, File output) throws IOException {
-        boolean canWrite = output.canWrite();
-        if (!canWrite) {
+         if (output.exists() && !output.canWrite()) {
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, "no permission write file " +
                     output.getCanonicalPath());
         }
