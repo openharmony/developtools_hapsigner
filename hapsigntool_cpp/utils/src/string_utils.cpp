@@ -14,6 +14,7 @@
  */
 #include "string_utils.h"
 #include <cstring>
+#include <algorithm>
 
 #include "securec.h"
 
@@ -27,8 +28,12 @@ bool StringUtils::IsEmpty(const std::string& cs)
 
 bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::string& str)
 {
+    std::string fileSuffix = str;
+    std::transform(fileSuffix.begin(), fileSuffix.end(), fileSuffix.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
     for (const std::string& val : strs) {
-        if (val == str)
+        if (val == fileSuffix)
             return true;
     }
     return false;
