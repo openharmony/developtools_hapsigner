@@ -83,7 +83,7 @@
 **特别说明**：
 
 1.使用c++版本签名工具时，仅支持**ECC**密钥算法，不支持RSA。
-2.在java版本签名工具中支持PKCS#12和JKS两种密钥库格式，C++工具仅支持PKCS#12密钥库格式。
+2.在java版本签名工具中支持PKCS#12和JKS两种密钥库格式，C++工具仅支持PKCS#12密钥库格式。支持的密钥库文件后缀为.p12或.jks。
 
 ****
 #### 说明
@@ -137,7 +137,7 @@ hap-sign-tool sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withEC
          ├── -profileCertFile   #Profile签名证书（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -inFile            #输入的原始Provision Profile文件，必填项
          ├── -signAlg           #签名算法，必填项，包括 SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
+         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的Provision Profile文件，p7b格式，必填项
 
@@ -169,7 +169,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -inForm            #输入的原始文件的格式，枚举值：zip、elf或bin；zip应用包对应zip，二进制工具对应elf，bin应用包为bin，默认zip；可选项
          ├── -inFile            #输入的原始文件，应用包、elf或bin文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项，JKS或P12格式
+         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后的包文件，必填项
          ├── -signCode          #是否启用代码签名，1表示开启代码签名，0表示关闭代码签名，可选项。默认对hap、hsp、hqf、elf开启代码签名，通过参数配置为0关闭。
@@ -211,7 +211,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -keyPwd            # 密钥口令，可选项
          ├── -keyAlg            # 密钥算法，必填项，包括RSA/ECC
          ├── -keySize           # 密钥长度，必填项，RSA算法的长度为2048/3072/4096，ECC算法的长度NIST-P-256/NIST-P-384
-         ├── -keystoreFile      # 密钥库文件，必填项，JKS或P12格式
+         ├── -keystoreFile      # 密钥库文件，必填项
          ├── -keystorePwd       # 密钥库口令，可选项
 
 2.生成证书签名请求
@@ -221,7 +221,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -keyPwd            # 密钥口令，可选项
          ├── -subject           # 证书主题，必填项
          ├── -signAlg           # 签名算法，必填项，包括SHA256withRSA / SHA384withRSA / SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      # 密钥库文件，必填项，JKS或P12格式
+         ├── -keystoreFile      # 密钥库文件，必填项
          ├── -keystorePwd       # 密钥库口令，可选项
          ├── -outFile           # 输出文件，可选项，如果不填，则直接输出到控制台
 
@@ -239,9 +239,9 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -validity                        # 证书有效期，可选项，默认为3650天
          ├── -signAlg                         # 签名算法，必填项，包括SHA256withRSA / SHA384withRSA / SHA256withECDSA / SHA384withECDSA
          ├── -basicConstraintsPathLen         # 路径长度，可选项，默认为0
-         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项，JKS或P12格式
+         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项
          ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
-         ├── -keystoreFile                    # 密钥库文件，必填项，JKS或P12格式
+         ├── -keystoreFile                    # 密钥库文件，必填项
          ├── -keystorePwd                     # 密钥库口令，可选项
          ├── -outFile                         # 输出文件，可选项，如果不填，则直接输出到控制台
 
@@ -256,9 +256,9 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -subject                         # 证书主题，必填项
          ├── -validity                        # 证书有效期，可选项，默认为3650天
          ├── -signAlg                         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA；
-         ├── -keystoreFile                    # 密钥库文件，必填项，JKS或P12格式
+         ├── -keystoreFile                    # 密钥库文件，必填项
          ├── -keystorePwd                     # 密钥库口令，可选项
-         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项，JKS或P12格式
+         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项
          ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -outForm                         # 输出证书文件的格式，包括 cert / certChain，可选项，默认为certChain
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
@@ -276,9 +276,9 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -subject                         # 证书主题，必填项
          ├── -validity                        # 证书有效期，可选项，默认为3650天
          ├── -signAlg                         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA；
-         ├── -keystoreFile                    # 密钥库文件，必填项，JKS或P12格式
+         ├── -keystoreFile                    # 密钥库文件，必填项
          ├── -keystorePwd                     # 密钥库口令，可选项
-         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项，JKS或P12格式
+         ├── -issuerKeystoreFile              # 签发者密钥库文件，可选项
          ├── -issuerKeystorePwd               # 签发者密钥库口令，可选项
          ├── -outForm                         # 输出证书文件的格式，包括 cert / certChain，可选项，默认为certChain
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
@@ -307,9 +307,9 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
           ├── -basicConstraintsCritical          # basicConstraints是否包含为关键项，可选项，默认为否
           ├── -basicConstraintsCa                # 是否为CA，可选项，默认为否
           ├── -basicConstraintsPathLen           # 路径长度，可选项，默认为0
-          ├── -issuerKeystoreFile                # 签发者密钥库文件，可选项，JKS或P12格式
+          ├── -issuerKeystoreFile                # 签发者密钥库文件，可选项
           ├── -issuerKeystorePwd                 # 签发者密钥库口令，可选项
-          ├── -keystoreFile                      # 密钥库文件，必填项，JKS或P12格式
+          ├── -keystoreFile                      # 密钥库文件，必填项
           ├── -keystorePwd                       # 密钥库口令，可选项
           ├── -outFile                           # 输出证书文件，可选项，如果不填，则直接输出到控制台
 
@@ -322,7 +322,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
           ├── -profileCertFile # Profile签名证书（证书链，顺序为实体证书-中间CA证书-根证书），必填项
           ├── -inFile          # 输入的原始Provision Profile文件，必填项
           ├── -signAlg         # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-          ├── -keystoreFile    # 密钥库文件，localSign模式时为必填项，JKS或P12格式
+          ├── -keystoreFile    # 密钥库文件，localSign模式时为必填项
           ├── -keystorePwd     # 密钥库口令，可选项
           ├── -outFile         # 输出签名后的Provision Profile文件，p7b格式，必填项
 
@@ -344,7 +344,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
           ├── -inForm        # 输入的原始文件的格式，枚举值：zip、elf或bin；zip应用包对应zip，二进制工具对应elf，bin应用包为bin，默认zip；可选项
           ├── -inFile        # 输入的原始文件，应用包、elf或bin文件，必填项
           ├── -signAlg       # 签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-          ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项，JKS或P12格式
+          ├── -keystoreFile  # 密钥库文件，localSign模式时为必填项
           ├── -keystorePwd   # 密钥库口令，可选项
           ├── -outFile       # 输出签名后的包文件，必填项
           ├── -signCode      # 是否启用代码签名，1表示开启代码签名，0表示关闭代码签名。可选项。默认对hap、hsp、hqf、elf开启代码签名，通过参数配置为0关闭。
