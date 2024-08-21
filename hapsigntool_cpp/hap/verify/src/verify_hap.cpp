@@ -17,6 +17,7 @@
 #include <regex>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 
 #include "securec.h"
 #include "hap_signer_block_utils.h"
@@ -168,10 +169,13 @@ bool VerifyHap::CheckFilePath(const std::string& filePath, std::string& standard
         return false;
     }
     standardFilePath = std::string(path);
-    bool ret = (!std::regex_match(standardFilePath, std::regex(HAP_APP_PATTERN)) &&
-                !std::regex_match(standardFilePath, std::regex(HSP_APP_PATTERN)) &&
-                !std::regex_match(standardFilePath, std::regex(APP_APP_PATTERN)) &&
-                !std::regex_match(standardFilePath, std::regex(HQF_APP_PATTERN)));
+    std::string standardFilePathTmp = std::string(path);
+    std::transform(standardFilePathTmp.begin(), standardFilePathTmp.end(), standardFilePathTmp.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    bool ret = (!std::regex_match(standardFilePathTmp, std::regex(HAP_APP_PATTERN)) &&
+                !std::regex_match(standardFilePathTmp, std::regex(HSP_APP_PATTERN)) &&
+                !std::regex_match(standardFilePathTmp, std::regex(APP_APP_PATTERN)) &&
+                !std::regex_match(standardFilePathTmp, std::regex(HQF_APP_PATTERN)));
     if (ret) {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "only support format is [hap, hqf, hsp, app]");
