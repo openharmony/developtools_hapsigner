@@ -20,6 +20,7 @@
 #include <cstdio>
 #include <cinttypes>
 #include <filesystem>
+#include <algorithm>
 
 #include "nlohmann/json.hpp"
 #include "string_utils.h"
@@ -348,9 +349,11 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
 {
     if (signParams.at(ParamConstants::PARAM_SIGN_CODE) == CodeSigning::ENABLE_SIGN_CODE_VALUE) {
         SIGNATURE_TOOLS_LOGI("start code signing.");
+        std::string suffixTmp = suffix;
+        std::transform(suffixTmp.begin(), suffixTmp.end(), suffixTmp.begin(), ::tolower);
         if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
-                      suffix) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-            SIGNATURE_TOOLS_LOGI("no need to sign code for %s", suffix.c_str());
+                      suffixTmp) == CodeSigning::SUPPORT_FILE_FORM.end()) {
+            SIGNATURE_TOOLS_LOGI("no need to sign code for %s", suffixTmp.c_str());
             return true;
         }
         // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
@@ -358,7 +361,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
         // create CodeSigning Object
         CodeSigning codeSigning(signerConfig);
         std::vector<int8_t> codeSignArray;
-        if (!codeSigning.GetCodeSignBlock(outputFilePath, codeSignOffset, suffix, profileContent, zip,
+        if (!codeSigning.GetCodeSignBlock(outputFilePath, codeSignOffset, suffixTmp, profileContent, zip,
                                           codeSignArray)) {
             SIGNATURE_TOOLS_LOGE("Codesigning getCodeSignBlock Fail.");
             return false;

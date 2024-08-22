@@ -21,9 +21,12 @@ namespace SignatureTools {
 bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t length,
                                     std::string fileFormat, std::string profileContent)
 {
+    std::string fileFromatTmp = fileFormat;
+    std::transform(fileFromatTmp.begin(), fileFromatTmp.end(), fileFromatTmp.begin(), ::tolower);
     if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
-        fileFormat) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify, file type: %s", fileFormat.c_str());
+        fileFromatTmp) == CodeSigning::SUPPORT_FILE_FORM.end()) {
+        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify, file type: %s",
+            fileFromatTmp.c_str());
         return true;
     }
     // 1) generate CodeSignBlock
