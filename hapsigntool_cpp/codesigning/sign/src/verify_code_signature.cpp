@@ -25,7 +25,8 @@ bool VerifyCodeSignature::VerifyHap(std::string file, int64_t offset, int64_t le
     std::transform(fileFromatTmp.begin(), fileFromatTmp.end(), fileFromatTmp.begin(), ::tolower);
     if (std::find(CodeSigning::SUPPORT_FILE_FORM.begin(), CodeSigning::SUPPORT_FILE_FORM.end(),
         fileFromatTmp) == CodeSigning::SUPPORT_FILE_FORM.end()) {
-        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify, file type: %s", fileFromatTmp.c_str());
+        SIGNATURE_TOOLS_LOGI("Not hap, hsp or hqf file, skip code signing verify, file type: %s",
+            fileFromatTmp.c_str());
         return true;
     }
     // 1) generate CodeSignBlock
