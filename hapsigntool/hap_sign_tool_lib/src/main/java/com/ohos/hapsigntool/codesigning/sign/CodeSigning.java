@@ -321,6 +321,7 @@ public class CodeSigning {
         } finally {
             try {
                 Files.deleteIfExists(tempHnp.toPath());
+                LOGGER.debug("delete temp hnp file {}", tempHnp.getName());
             } catch (IOException e) {
                 LOGGER.error("delete temp hnp file error ", e);
             }
@@ -346,17 +347,13 @@ public class CodeSigning {
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
             FileOutputStream fos = new FileOutputStream(tempHnp)) {
             int read;
-            byte[] bytes = new byte[4096];
+            // buffered 32k
+            byte[] bytes = new byte[4096 * 32];
             while ((read = inputStream.read(bytes)) != -1) {
                 fos.write(bytes, 0, read);
             }
         } catch (IOException e) {
             LOGGER.error("write temp hnp file error ", e);
-            try {
-                Files.deleteIfExists(tempHnp.toPath());
-            } catch (IOException e1) {
-                LOGGER.error("delete temp hnp file error ", e1);
-            }
         }
     }
 
