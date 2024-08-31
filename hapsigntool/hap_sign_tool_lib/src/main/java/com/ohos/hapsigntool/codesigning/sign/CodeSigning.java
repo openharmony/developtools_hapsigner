@@ -326,18 +326,18 @@ public class CodeSigning {
     }
 
     private List<JarEntry> getHnpLibEntries(JarFile hnp) throws IOException {
-        List<JarEntry> elfEntryNames = new ArrayList<>();
+        List<JarEntry> elfEntries = new ArrayList<>();
         for (Enumeration<JarEntry> e = hnp.entries(); e.hasMoreElements(); ) {
             JarEntry entry = e.nextElement();
             try (InputStream inputStream = hnp.getInputStream(entry)) {
                 byte[] bytes = new byte[4];
                 inputStream.read(bytes);
                 if (ElfHeader.isElfFile(bytes)) {
-                    elfEntryNames.add(entry);
+                    elfEntries.add(entry);
                 }
             }
         }
-        return elfEntryNames;
+        return elfEntries;
     }
 
     private void writeTempHnpFile(JarFile inputJar, JarEntry hnpEntry, File tempHnp) {
