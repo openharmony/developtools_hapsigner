@@ -50,17 +50,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
-import java.util.zip.ZipInputStream;
 
 /**
  * core functions of code signing
@@ -298,10 +295,9 @@ public class CodeSigning {
             throw new CodeSignException("extract hnp file error");
         }
         try (JarFile hnp = new JarFile(tempHnp, false)) {
-            List<String> elfEntryNames = getHnpLibsName(hnp);
-            LOGGER.debug("{} elf num : {}", hnp.getName(), elfEntryNames.size());
-            List<Pair<String, SignInfo>> nativeLibInfoList = elfEntryNames.stream().parallel().map(name -> {
-                JarEntry entry = hnp.getJarEntry(name);
+            List<JarEntry> elfEntries = getHnpLibEntries(hnp);
+            LOGGER.debug("{} elf num : {}", hnp.getName(), elfEntries.size());
+            List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.stream().parallel().map(entry -> {
                 String hnpElfPath = hnpEntry.getName() + "!/" + entry.getName();
                 try (InputStream inputStream = hnp.getInputStream(entry)) {
                     // We don't store merkle tree in code signing of native libs
@@ -329,15 +325,15 @@ public class CodeSigning {
         }
     }
 
-    private List<String> getHnpLibsName(JarFile hnp) throws IOException {
-        List<String> elfEntryNames = new ArrayList<>();
+    private List<JarEntry> getHnpLibEntries(JarFile hnp) throws IOException {
+        List<JarEntry> elfEntryNames = new ArrayList<>();
         for (Enumeration<JarEntry> e = hnp.entries(); e.hasMoreElements(); ) {
             JarEntry entry = e.nextElement();
             try (InputStream inputStream = hnp.getInputStream(entry)) {
                 byte[] bytes = new byte[4];
                 inputStream.read(bytes);
                 if (ElfHeader.isElfFile(bytes)) {
-                    elfEntryNames.add(entry.getName());
+                    elfEntryNames.add(entry);
                 }
             }
         }
