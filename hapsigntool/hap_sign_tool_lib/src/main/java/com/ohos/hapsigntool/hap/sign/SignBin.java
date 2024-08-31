@@ -168,7 +168,7 @@ public class SignBin {
     private static boolean writeSignHeadDataToOutputFile(String inputFile, String outputFile) {
         long size = FileUtils.getFileLen(outputFile) - FileUtils.getFileLen(inputFile) + SignHead.SIGN_HEAD_LEN;
         if (isLongOverflowInteger(size)) {
-            LOGGER.error("File size is Overflow integer range.");
+            LOGGER.error("File size is overflow integer range.");
             return false;
         }
         SignHead signHeadData = new SignHead();

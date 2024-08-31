@@ -258,7 +258,7 @@ public class SignElf {
     private static boolean writeSignHeadDataToOutputFile(String inputFile, String outputFile, int blockNum) {
         long size = FileUtils.getFileLen(outputFile) - FileUtils.getFileLen(inputFile);
         if (isLongOverflowInteger(size)) {
-            LOGGER.error("File size is Overflow integer range.");
+            LOGGER.error("File size is overflow integer range.");
             return false;
         }
         SignHead signHeadData = new SignHead();
