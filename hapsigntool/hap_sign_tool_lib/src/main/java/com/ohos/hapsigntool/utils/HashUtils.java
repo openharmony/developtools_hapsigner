@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The utils function used to get hash value.
@@ -35,6 +36,14 @@ import java.util.HashMap;
 public class HashUtils {
     private static final Logger LOGGER = LogManager.getLogger(HashUtils.class);
     private static final int HASH_LEN = 4096;
+    private static final Map<String, Integer> ALG_METHOD = new HashMap<>();
+
+    static {
+        ALG_METHOD.put("SHA-224", HashAlgs.USE_SHA224);
+        ALG_METHOD.put("SHA-256", HashAlgs.USE_SHA256);
+        ALG_METHOD.put("SHA-384", HashAlgs.USE_SHA384);
+        ALG_METHOD.put("SHA-512", HashAlgs.USE_SHA512);
+    }
 
     /**
      * Constructor of Method
@@ -49,18 +58,10 @@ public class HashUtils {
      * @return algorithm ID
      */
     public static int getHashAlgsId(String algMethod) {
-        switch (algMethod) {
-            case "SHA-224":
-                return HashAlgs.USE_SHA224;
-            case "SHA-256":
-                return HashAlgs.USE_SHA256;
-            case "SHA-384":
-                return HashAlgs.USE_SHA384;
-            case "SHA-512":
-                return HashAlgs.USE_SHA512;
-            default:
-                return HashAlgs.USE_NONE;
+        if (ALG_METHOD.containsKey(algMethod)) {
+            return ALG_METHOD.get(algMethod);
         }
+        return HashAlgs.USE_NONE;
     }
 
     private static MessageDigest getMessageDigest(String algMethod) {
