@@ -319,11 +319,12 @@ public class CodeSigning {
             }
             return nativeLibInfoList;
         } finally {
-            try {
-                Files.deleteIfExists(tempHnp.toPath());
-                LOGGER.debug("delete temp hnp file {}", tempHnp.getName());
-            } catch (IOException e) {
-                LOGGER.error("delete temp hnp file error ", e);
+            if (tempHnp.exists()) {
+                if (tempHnp.delete()) {
+                    LOGGER.debug("delete temp hnp file {}", tempHnp.getName());
+                } else {
+                    LOGGER.error("delete temp hnp file error {}", tempHnp.getName());
+                }
             }
         }
     }
