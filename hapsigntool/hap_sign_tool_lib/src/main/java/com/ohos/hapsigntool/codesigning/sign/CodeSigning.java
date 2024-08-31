@@ -344,8 +344,8 @@ public class CodeSigning {
         try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
             FileOutputStream fos = new FileOutputStream(tempHnp)) {
             int read;
-            // buffered 32k
-            byte[] bytes = new byte[4096 * 32];
+            // buffered 64k
+            byte[] bytes = new byte[1024 * 64];
             while ((read = inputStream.read(bytes)) != -1) {
                 fos.write(bytes, 0, read);
             }
