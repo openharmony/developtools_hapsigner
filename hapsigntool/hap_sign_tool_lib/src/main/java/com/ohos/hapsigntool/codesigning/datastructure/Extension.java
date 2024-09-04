@@ -38,7 +38,7 @@ public class Extension {
 
     private final int type;
 
-    private int size;
+    private final int size;
 
     public Extension(int type, int size) {
         this.type = type;
@@ -47,10 +47,6 @@ public class Extension {
 
     public int size() {
         return EXTENSION_HEADER_SIZE;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     public boolean isType(int type) {
