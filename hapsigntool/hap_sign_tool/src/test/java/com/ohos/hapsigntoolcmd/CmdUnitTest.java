@@ -831,7 +831,6 @@ public class CmdUnitTest {
         multiBundleTest(".hqf");
     }
 
-
     private void multiBundleTest(String bundleSuffix) throws IOException {
         for (FileType abcFile : FileType.values()) {
             for (FileType soFile : FileType.values()) {
