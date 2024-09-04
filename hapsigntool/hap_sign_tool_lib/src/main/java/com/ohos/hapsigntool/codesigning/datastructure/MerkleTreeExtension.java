@@ -16,7 +16,6 @@
 package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
-import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -99,7 +98,8 @@ public class MerkleTreeExtension extends Extension {
      */
     @Override
     public byte[] toByteArray() {
-        ByteBuffer bf = ByteBuffer.allocate(size()).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bf = ByteBuffer.allocate(Extension.EXTENSION_HEADER_SIZE + MERKLE_TREE_EXTENSION_DATA_SIZE)
+            .order(ByteOrder.LITTLE_ENDIAN);
         bf.put(super.toByteArray());
         bf.putLong(this.merkleTreeSize);
         bf.putLong(this.merkleTreeOffset);
@@ -119,11 +119,11 @@ public class MerkleTreeExtension extends Extension {
         bf.put(bytes);
         bf.rewind();
         long inMerkleTreeSize = bf.getLong();
-        if (!NumberUtils.isMultiple4K(inMerkleTreeSize)) {
+        if (inMerkleTreeSize % CodeSignBlock.PAGE_SIZE_4K != 0) {
             throw new VerifyCodeSignException("merkleTreeSize is not a multiple of 4096");
         }
         long inMerkleTreeOffset = bf.getLong();
-        if (!NumberUtils.isMultiple4K(inMerkleTreeOffset)) {
+        if (inMerkleTreeOffset % CodeSignBlock.PAGE_SIZE_4K != 0) {
             throw new VerifyCodeSignException("merkleTreeOffset is not a aligned to 4096");
         }
         byte[] inRootHash = new byte[ROOT_HASH_SIZE];

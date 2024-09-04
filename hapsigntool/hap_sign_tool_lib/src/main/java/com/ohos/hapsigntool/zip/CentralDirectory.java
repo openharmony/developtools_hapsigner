@@ -156,13 +156,6 @@ public class CentralDirectory {
     private int length;
 
     /**
-     * updateLength
-     */
-    public void updateLength() {
-        length = CD_LENGTH + fileNameLength + extraLength + commentLength;
-    }
-
-    /**
      * get Central Directory
      *
      * @param bf ByteBuffer
@@ -206,7 +199,7 @@ public class CentralDirectory {
             bf.get(readComment);
             cd.setComment(readComment);
         }
-        cd.updateLength();
+        cd.setLength(CD_LENGTH + cd.getFileNameLength() + cd.getExtraLength() + cd.getCommentLength());
         return cd;
     }
 
