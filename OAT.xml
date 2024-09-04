@@ -31,7 +31,7 @@
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-                <filteritem type="filename" name="ohnull.p12"/>
+				<filteritem type="filename" name="ohnull.p12"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
             </filefilter>
@@ -42,7 +42,7 @@
                 <filteritem type="filename" name="README"/>
                 <filteritem type="filename" name="README.md"/>
                 <filteritem type="filename" name="README_zh.md"/>
-                <filteritem type="filename" name="ohnull.p12"/>
+				<filteritem type="filename" name="ohnull.p12"/>
                 <filteritem type="filename" name="*.bat" desc="script file"/>
                 <filteritem type="filename" name="*.sh" desc="script file"/>
             </filefilter>
@@ -55,11 +55,11 @@
             <filefilter name="readmeOpenSourcefileNamePolicyFilter" desc="">
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
-                <filteritem type="filename" name="OpenHarmony.p12" desc="Keystore used in OpenHarmony app sign"/>
-                <filteritem type="filename" name="ohnull.p12" desc="Keystore used in OpenHarmony app sign of test case"/>
-                <filteritem type="filename" name="ohtest_nopass.jks" desc="Keystore used in OpenHarmony app sign of test case"/>
-                <filteritem type="filename" name="ohtest_pass.jks" desc="Keystore used in OpenHarmony app sign of test case"/>
-                <filteritem type="filename" name="app1-unsigned.hap" desc="Keystore used in OpenHarmony app sign of test case"/>
+				<filteritem type="filename" name="OpenHarmony.p12" desc="Keystore used in OpenHarmony app sign"/>
+				<filteritem type="filename" name="ohnull.p12" desc="Keystore used in OpenHarmony app sign of test case"/>
+				<filteritem type="filename" name="ohtest_nopass.jks" desc="Keystore used in OpenHarmony app sign of test case"/>
+				<filteritem type="filename" name="ohtest_pass.jks" desc="Keystore used in OpenHarmony app sign of test case"/>
+				<filteritem type="filename" name="app1-unsigned.hap" desc="Keystore used in OpenHarmony app sign of test case"/>
                 <filteritem type="filename" name="*.pem" desc="OpenHarmony app sign certificates"/>
                 <filteritem type="filename" name="*.jar" desc="OpenHarmony app sign tool"/>
                 <filteritem type="filename" name="*.png" desc="readme picture"/>
