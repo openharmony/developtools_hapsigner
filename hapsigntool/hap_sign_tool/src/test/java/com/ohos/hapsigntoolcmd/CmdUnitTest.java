@@ -358,11 +358,6 @@ public class CmdUnitTest {
     public static final String CMD_VERIFY_PROFILE_RESULT_PATH = "test_verify_profile_result.json";
 
     /**
-     * Command line parameter cer file is test_verify_profile.
-     */
-    public static final String CMD_TEST_HAP_FILE_PATH = "entry-default-unsigned.hap";
-
-    /**
      * Command line parameter oh-profile-key-v1.
      */
     public static final String CMD_OH_PROFILE_KEY_V1 = "oh-profile-key-v1";
