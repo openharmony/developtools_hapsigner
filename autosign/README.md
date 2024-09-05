@@ -16,38 +16,30 @@ Below config must be replaced:
 
 ### 1. For Windows
 
-1. Run the `create_root.bat` file in the terminal to generate root certs.
+1. Run the `start_creat.bat` file in the terminal to generate certs.
 2. Prepare your unsigned app and provision profile. Make sure correct config file location.
-3. Run the `create_appcert_sign_profile.bat` file in the terminal to generate app certs.
-4. Run the `sign_hap.bat` file in the terminal to start signing.
-5. The generated artifacts will be saved in the folder you set in `config.targetDir` as default.
+3. Run the `start_sign.bat` file in the terminal to start signing.
+4. The generated artifacts will be saved in the folder you set in `config.targetDir` as default.
 
 ### 2. For Linux or MacOS
 
 
-1. Add executable permission into `create_root.sh`, `create_appcert_sign_profile.sh` and `sign_hap.sh`.
+1. Add executable permission into `start_create.sh` and `start_sign.sh`.
 
    ```bash
-   chmod a+x create_root.sh
+   chmod a+x start_sign.sh
    
-   chmod a+x create_appcert_sign_profile.sh
-
-   chmod a+x sign_hap.sh
-
+   chmod a+x start_create.sh
    ```
 
-2. Run the `create_root.sh` file in the terminal to generate root certs.
+2. Run the `start_create.sh` file in the terminal to generate certs.
 
    ```bash
-   ./create_root.sh
+   ./start_create.sh
    ```
 3. Prepare your unsigned app and provision profile. Make sure correct config file location.
-4. Run the `create_appcert_sign_profile.sh` file in the terminal to generate app certs.
-    ```bash
-    ./create_appcert_sign_profile.sh
-    ```
-5. Run the `sign_hap.sh` file in the terminal to start signing.
+4. Run the `start_sign.sh` file in the terminal to start signing.
    ```bash
-   ./sign_hap.sh
+   ./start_sign.sh
    ```
-6. The generated artifacts will be saved in the folder you set in `config.targetDir` as default.
+5. The generated artifacts will be saved in the folder you set in `config.targetDir` as default.
