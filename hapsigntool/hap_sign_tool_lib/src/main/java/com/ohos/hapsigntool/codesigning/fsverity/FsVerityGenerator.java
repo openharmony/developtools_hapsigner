@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.codesigning.fsverity;
 
-import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
 
@@ -43,22 +42,9 @@ public class FsVerityGenerator {
 
     private byte[] fsVerityDigest = null;
 
-    private byte[] fsVerityDigestV2 = null;
-
     private byte[] treeBytes = null;
 
     private byte[] rootHash = null;
-
-    private PageInfoExtension pageInfoExtension;
-
-    /**
-     * Constructor for FsVerityGenerator
-     *
-     * @param pg PageInfoExtension
-     */
-    public void setPageInfoExtension(PageInfoExtension pg) {
-        this.pageInfoExtension = pg;
-    }
 
     /**
      * generate merkle tree of given input
@@ -108,25 +94,14 @@ public class FsVerityGenerator {
             .setRawRootHash(merkleTree.rootHash)
             .setFlags(flags)
             .setMerkleTreeOffset(fsvTreeOffset);
+        byte[] fsVerityDescriptor = builder.build().getByteForGenerateDigest();
+        byte[] digest;
         try {
-            byte[] fsVerityDescriptor = builder.build().getDiscByte();
-            byte[] digest = DigestUtils.computeDigest(fsVerityDescriptor, FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
-            fsVerityDigest = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
+            digest = DigestUtils.computeDigest(fsVerityDescriptor, FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
         } catch (NoSuchAlgorithmException e) {
             throw new FsVerityDigestException("Invalid algorithm" + e.getMessage(), e);
         }
-        if (pageInfoExtension != null && flags != 0) {
-            try {
-                byte[] fsVerityDescriptorV2 = builder.build()
-                    .getDiscByteCsv2(pageInfoExtension.getMapOffset(), pageInfoExtension.getMapSize(),
-                        pageInfoExtension.getUnitSize());
-                byte[] digest = DigestUtils.computeDigest(fsVerityDescriptorV2,
-                    FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
-                fsVerityDigestV2 = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
-            } catch (NoSuchAlgorithmException e) {
-                throw new FsVerityDigestException("Invalid algorithm" + e.getMessage(), e);
-            }
-        }
+        fsVerityDigest = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
         treeBytes = merkleTree.tree;
         rootHash = merkleTree.rootHash;
     }
@@ -138,15 +113,6 @@ public class FsVerityGenerator {
      */
     public byte[] getFsVerityDigest() {
         return fsVerityDigest;
-    }
-
-    /**
-     * Get FsVerity digest
-     *
-     * @return bytes of FsVerity digest
-     */
-    public byte[] getFsVerityDigestV2() {
-        return fsVerityDigestV2;
     }
 
     /**

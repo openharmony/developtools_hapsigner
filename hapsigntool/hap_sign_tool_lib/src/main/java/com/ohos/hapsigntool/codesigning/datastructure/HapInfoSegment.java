@@ -16,10 +16,6 @@
 package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
-import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -37,8 +33,6 @@ import java.util.Locale;
  * @since 2023/09/08
  */
 public class HapInfoSegment {
-    private static final Logger LOGGER = LogManager.getLogger(HapInfoSegment.class);
-
     private static final int MAGIC_NUM_BYTES = 4;
 
     /**
@@ -122,10 +116,13 @@ public class HapInfoSegment {
         byte[] hapSignInfoByteArray = new byte[bytes.length - MAGIC_NUM_BYTES];
         bf.get(hapSignInfoByteArray);
         SignInfo inHapSignInfo = SignInfo.fromByteArray(hapSignInfoByteArray);
-        if (!NumberUtils.isMultiple4K(inHapSignInfo.getDataSize())) {
+        if (inHapSignInfo.getDataSize() % CodeSignBlock.PAGE_SIZE_4K != 0) {
             throw new VerifyCodeSignException(
                 String.format(Locale.ROOT, "Invalid dataSize number of HapInfoSegment, not a multiple of 4096: %d",
                     inHapSignInfo.getDataSize()));
+        }
+        if (inHapSignInfo.getExtensionNum() != SignInfo.MAX_EXTENSION_NUM) {
+            throw new VerifyCodeSignException("Invalid extensionNum of HapInfoSegment");
         }
         if (inHapSignInfo.getExtensionByType(MerkleTreeExtension.MERKLE_TREE_INLINED) == null) {
             throw new VerifyCodeSignException("No merkle tree extension is found in HapInfoSegment");
