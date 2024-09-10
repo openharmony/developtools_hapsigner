@@ -279,8 +279,8 @@ HWTEST_F(SignProfileTest, print_cert_chain_sub_test001, testing::ext::TestSize.L
     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
     STACK_OF(X509)* certs = signer->GetCertificates();
     PKCS7Data::PrintCertChainSub(certs);
-    PKCS7Data::SortX509Stack(certs);
-    EXPECT_TRUE(true);
+    int ret = PKCS7Data::SortX509Stack(certs);
+    EXPECT_EQ(ret, RET_OK);
 }
 
 /**
