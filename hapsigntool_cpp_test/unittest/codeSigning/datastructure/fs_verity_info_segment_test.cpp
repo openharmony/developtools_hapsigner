@@ -47,7 +47,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level
     std::vector<int8_t> bytes;
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**
@@ -73,7 +73,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Level
     
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**
@@ -100,7 +100,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Level
     
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**
@@ -128,7 +128,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Level
     
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**
@@ -157,7 +157,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray005, testing::ext::TestSize.Level
     
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**
@@ -186,7 +186,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray006, testing::ext::TestSize.Level
     
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**
@@ -207,7 +207,7 @@ HWTEST_F(FsVerityInfoSegmentTest, fromByteArray, testing::ext::TestSize.Level1)
         38, 29, 12, 45, 58, -12, 38, 29, 13, 26 };
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->Size(), 64);
 }
 
 /**

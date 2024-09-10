@@ -34,24 +34,6 @@ public:
     void TearDown() {};
 };
 
-/**
- * @tc.name: addOneMerkleTree001
- * @tc.desc: Test function of CodeSignBlockTest::addOneMerkleTree001() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, addOneMerkleTree001, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    const std::string key;
-    std::vector<int8_t> merkleTree;
-    api->AddOneMerkleTree(key, merkleTree);  // 返回值void
-
-    EXPECT_EQ(true, true);
-}
 
 /**
  * @tc.name: addOneMerkleTree002
@@ -65,11 +47,13 @@ HWTEST_F(CodeSignBlockTest, addOneMerkleTree002, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
-    const std::string key = "111";
+    const std::string key;
     std::vector<int8_t> merkleTree;
-    api->AddOneMerkleTree(key, merkleTree);
-
-    EXPECT_EQ(true, true);
+    api->AddOneMerkleTree(key, merkleTree);  // 返回值void
+    
+    api->AddOneMerkleTree("111", merkleTree);
+    std::vector<int8_t> merkleTreeTemp = api->GetOneMerkleTreeByFileName(key);
+    EXPECT_EQ(merkleTree.empty(), merkleTreeTemp.empty());
 }
 
 /**
@@ -86,8 +70,8 @@ HWTEST_F(CodeSignBlockTest, addToSegmentList, testing::ext::TestSize.Level1)
    
     SegmentHeader sh(SegmentHeader::CSB_NATIVE_LIB_INFO_SEG, 0);
     api->AddToSegmentList(sh);
-
-    EXPECT_EQ(true, true);
+    std::vector<SegmentHeader> header = api->GetSegmentHeaderList();
+    EXPECT_EQ(header[0].GetType(), sh.GetType());
 }
 
 /**
@@ -127,57 +111,6 @@ HWTEST_F(CodeSignBlockTest, computeMerkleTreeOffset001, testing::ext::TestSize.L
 }
 
 /**
- * @tc.name: computeSegmentOffset
- * @tc.desc: Test function of CodeSignBlockTest::computeSegmentOffset() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, computeSegmentOffset, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-    
-    api->ComputeSegmentOffset();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: getCodeSignBlockHeader
- * @tc.desc: Test function of CodeSignBlockTest::getCodeSignBlockHeader() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, getCodeSignBlockHeader, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-    
-    api->GetCodeSignBlockHeader();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: getHapInfoSegment
- * @tc.desc: Test function of CodeSignBlockTest::getHapInfoSegment() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, getHapInfoSegment, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    api->GetHapInfoSegment();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
  * @tc.name: getOneMerkleTreeByFileName001
  * @tc.desc: Test function of CodeSignBlockTest::getOneMerkleTreeByFileName001() interface for SUCCESS.
  * @tc.size: MEDIUM
@@ -189,10 +122,13 @@ HWTEST_F(CodeSignBlockTest, getOneMerkleTreeByFileName001, testing::ext::TestSiz
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
+    api->ComputeSegmentOffset();
+    api->GetCodeSignBlockHeader();
+    api->GetHapInfoSegment();
     std::string key = "test.so";
     std::vector<int8_t> name = api->GetOneMerkleTreeByFileName(key);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(name.size(), 0);
 }
 
 /**
@@ -242,40 +178,7 @@ HWTEST_F(CodeSignBlockTest, getSegmentHeaderList, testing::ext::TestSize.Level1)
 HWTEST_F(CodeSignBlockTest, getSoInfoSegment, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
-    api->GetSoInfoSegment();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: setCodeSignBlockFlag
- * @tc.desc: Test function of CodeSignBlockTest::setCodeSignBlockFlag() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
     api->SetCodeSignBlockFlag();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: setCodeSignBlockFlag001
- * @tc.desc: Test function of CodeSignBlockTest::setCodeSignBlockFlag001() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag001, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
 
     NativeLibInfoSegment nativeLibInfoSegment(0,
     0,
@@ -288,7 +191,7 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockFlag001, testing::ext::TestSize.Leve
     api->SetSoInfoSegment(nativeLibInfoSegment);
     api->SetCodeSignBlockFlag();
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSoInfoSegment().GetSectionNum(), 0);
 }
 
 /**
@@ -314,27 +217,8 @@ HWTEST_F(CodeSignBlockTest, setCodeSignBlockHeader, testing::ext::TestSize.Level
     CodeSignBlockHeader codeSignBlockHeader(build);
 
     api->SetCodeSignBlockHeader(codeSignBlockHeader);
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: setFsVerityInfoSegment
- * @tc.desc: Test function of CodeSignBlockTest::setFsVerityInfoSegment() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, setFsVerityInfoSegment, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-    
-    FsVerityInfoSegment fsVeritySeg(1, 1, 12);
-
-    api->SetFsVerityInfoSegment(fsVeritySeg);
-
-    EXPECT_EQ(true, 1);
+    CodeSignBlockHeader tmp = api->GetCodeSignBlockHeader();
+    EXPECT_NE(tmp.GetBlockSize(), 0);
 }
 
 /**
@@ -362,8 +246,8 @@ HWTEST_F(CodeSignBlockTest, setHapInfoSegment, testing::ext::TestSize.Level1)
     SignInfo signInfo(saltSize, flags, dataSize, salt, sig);
     HapInfoSegment hapInfoSegment(10945, signInfo);
     api->SetHapInfoSegment(hapInfoSegment);
-
-    EXPECT_EQ(true, 1);
+    HapInfoSegment tmp = api->GetHapInfoSegment();
+    EXPECT_NE(tmp.GetSize(), 0);
 }
 
 /**
@@ -377,40 +261,11 @@ HWTEST_F(CodeSignBlockTest, setHapInfoSegment, testing::ext::TestSize.Level1)
 HWTEST_F(CodeSignBlockTest, setSegmentHeaders, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-    
-    api->SetSegmentHeaders();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: setSegmentNum
- * @tc.desc: Test function of CodeSignBlockTest::setSegmentNum() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, setSegmentNum, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
-
     api->SetSegmentNum();
-
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: setSoInfoSegment
- * @tc.desc: Test function of CodeSignBlockTest::setSoInfoSegment() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSignBlockTest, setSoInfoSegment, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<CodeSignBlock> api = std::make_shared<CodeSignBlock>();
+    api->SetSegmentHeaders();
+    FsVerityInfoSegment fsVeritySeg(1, 1, 12);
+    api->SetFsVerityInfoSegment(fsVeritySeg);
+    std::vector<SegmentHeader>list = api->GetSegmentHeaderList();
 
     int32_t magic = 248702752;
     int32_t segmentSize = 0;
@@ -424,7 +279,8 @@ HWTEST_F(CodeSignBlockTest, setSoInfoSegment, testing::ext::TestSize.Level1)
         fileNameList, signInfoList, zeroPadding);
     api->SetSoInfoSegment(soSeg);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(list.size(), 0);
 }
+
 } // namespace SignatureTools
 } // namespace OHOS

@@ -64,23 +64,8 @@ HWTEST_F(BlockHeadTest, GetBlockHead, testing::ext::TestSize.Level1)
 HWTEST_F(BlockHeadTest, GetBlockHeadLittleEndian, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
-    api->GetBlockHeadLittleEndian(0, 0, 0, 29148868);
-    EXPECT_EQ(true, 1);
-}
-
-/**
- * @tc.name: getBlockHeadLittleEndian
- * @tc.desc: Test get block head by little endian for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(BlockHeadTest, getBlockHeadLittleEndian, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<BlockHead> api = std::make_shared<BlockHead>();
-    api->GetBlockHeadLittleEndian(0, 0, 0, 29148868);
-    EXPECT_EQ(true, 1);
+    std::vector<int8_t> head = api->GetBlockHeadLittleEndian(0, 0, 0, 29148868);
+    EXPECT_NE(head.size(), 0);
 }
 
 /**

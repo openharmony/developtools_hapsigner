@@ -1127,7 +1127,8 @@ HWTEST_F(GenerateCaTest, save_cert_to_file_test_002, testing::ext::TestSize.Leve
 {
     X509* cert = X509_new();
     std::string rootoutFile = "";
-    CertTools::SaveCertTofile(rootoutFile, cert);
+    bool ret = CertTools::SaveCertTofile(rootoutFile, cert);
+    EXPECT_EQ(ret, false);
 }
 
 /**

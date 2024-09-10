@@ -276,6 +276,7 @@ HWTEST_F(CodeSigningTest, getTimestamp, testing::ext::TestSize.Level1)
     signerConfig.SetOptions(&options);
 
     CodeSigning codeSigning(&signerConfig);
+    codeSigning.UpdateCodeSignBlock();
     int64_t timeStamp = codeSigning.GetTimestamp();
     EXPECT_NE(timeStamp, 0);
 }
@@ -454,61 +455,6 @@ HWTEST_F(CodeSigningTest, signNativeLibs, testing::ext::TestSize.Level1)
     std::string ownerID;
     bool flag = codeSigning.SignNativeLibs(input, ownerID);
     EXPECT_EQ(flag, false);
-}
-
-/**
- * @tc.name: updateCodeSignBlock
- * @tc.desc: Test function of CodeSigningTest::updateCodeSignBlock() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(CodeSigningTest, updateCodeSignBlock, testing::ext::TestSize.Level1)
-{
-    SignerConfig signerConfig;
-    signerConfig.SetCompatibleVersion(9);
-
-    std::map<std::string, std::string> params;
-    params["keyPwd"] = "123456";
-    params["mode"] = "localSign";
-    params["keyAlias"] = "oh-app1-key-v1";
-    params["signAlg"] = "SHA256withECDSA";
-    params["appCertFile"] = "./codeSigning/app-release1.pem";
-    params["signCode"] = "1";
-    params["compatibleVersion"] = "9";
-    params["outFile"] = "./codeSigning/entry-default-signed-so.hap";
-    params["profileFile"] = "./codeSigning/signed-profile.p7b";
-    params["keystorePwd"] = "123456";
-    params["keystoreFile"] = "./codeSigning/ohtest.jks";
-    params["inFile"] = "./codeSigning/entry-default-unsigned-so.hap";
-    params["profileSigned"] = "1";
-    signerConfig.FillParameters(params);
-
-    ContentDigestAlgorithm contentDigestAlgorithm("SHA-256", 32);
-    std::pair<std::string, void*> signatureAlgAndParams("SHA256withECDSA", nullptr);
-    SignatureAlgorithmHelper signatureAlgorithm(SignatureAlgorithmId::DSA_WITH_SHA256, "ECDSA_WITH_SHA256",
-                                                contentDigestAlgorithm, signatureAlgAndParams);
-    std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
-    signatureAlgorithms.push_back(signatureAlgorithm);
-    signerConfig.SetSignatureAlgorithms(signatureAlgorithms);
-
-    Options options;
-    options.emplace("mode", std::string("localSign"));
-    options.emplace("keyPwd", std::string("123456"));
-    options.emplace("outFile", std::string("./codeSigning/entry-default-signed-so.hap"));
-    options.emplace("keyAlias", std::string("oh-app1-key-v1"));
-    options.emplace("profileFile", std::string("./codeSigning/signed-profile.p7b"));
-    options.emplace("signAlg", std::string("SHA256withECDSA"));
-    options.emplace("keystorePwd", std::string("123456"));
-    options.emplace("keystoreFile", std::string("./codeSigning/ohtest.jks"));
-    options.emplace("appCertFile", std::string("./codeSigning/app-release1.pem"));
-    options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
-    signerConfig.SetOptions(&options);
-
-    CodeSigning codeSigning(&signerConfig);
-    codeSigning.UpdateCodeSignBlock();
-    EXPECT_EQ(true, 1);
 }
 
 /**

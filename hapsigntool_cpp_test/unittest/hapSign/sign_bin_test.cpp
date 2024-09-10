@@ -182,8 +182,8 @@ HWTEST_F(SignBinTest, Sign001, testing::ext::TestSize.Level1)
     signParams["signCode"] = signCode;
     signParams["mode"] = mode;
 
-    api->Sign(signerConfig, signParams);
-    EXPECT_EQ(true, 1);
+    bool flag = api->Sign(signerConfig, signParams);
+    EXPECT_EQ(flag, false);
 }
 
 /**
@@ -208,8 +208,8 @@ HWTEST_F(SignBinTest, Sign002, testing::ext::TestSize.Level1)
     std::map<std::string, std::string> signParams;
     ConstructSignParams(signParams);
 
-    api->Sign(signerConfig, signParams);
-    EXPECT_EQ(true, 1);
+    bool flag = api->Sign(signerConfig, signParams);
+    EXPECT_EQ(flag, false);
 }
 
 /**

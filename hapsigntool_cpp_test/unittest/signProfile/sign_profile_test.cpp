@@ -297,7 +297,8 @@ HWTEST_F(SignProfileTest, run_verify_profile_test001, testing::ext::TestSize.Lev
     options[Options::IN_FILE] = VERIFY_PROFILE_IN_FILE;
     options[Options::OUT_FILE] = VERIFY_PROFILE_OUT_FILE;
     SignToolServiceImpl api;
-    ParamsRunTool::RunVerifyProfile(&options, api);
+    bool ret = ParamsRunTool::RunVerifyProfile(&options, api);
+    EXPECT_EQ(ret, true);
 }
 
 /**

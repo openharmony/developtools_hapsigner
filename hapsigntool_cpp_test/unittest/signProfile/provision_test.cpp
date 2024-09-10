@@ -386,6 +386,7 @@ HWTEST_F(ProvisionTest, provision_test021, testing::ext::TestSize.Level1)
     ProfileInfo info2;
     info2.profileBlockLength = 0;
     info = info2;
+    EXPECT_EQ(info.profileBlockLength, info2.profileBlockLength);
 }
 
 /**
@@ -403,6 +404,7 @@ HWTEST_F(ProvisionTest, provision_test023, testing::ext::TestSize.Level1)
     info2.profileBlockLength = 5;
     info2.profileBlock = NULL;
     info = info2;
+    EXPECT_EQ(info.profileBlockLength, info2.profileBlockLength);
 }
 
 /**
@@ -659,6 +661,7 @@ HWTEST_F(ProvisionTest, provision_test032, testing::ext::TestSize.Level1)
     STACK_OF(X509)* certs = NULL;
     std::shared_ptr<Signer> signer = NULL;
     signer = std::make_shared<LocalSigner>(pkey, certs);
+    EXPECT_NE(signer, nullptr);
 }
 
 /**
@@ -696,6 +699,7 @@ HWTEST_F(ProvisionTest, provision_test033, testing::ext::TestSize.Level1)
     LocalizationAdapter adapter(&options);
     pkey = adapter.GetAliasKey(false);
     std::shared_ptr<Signer> signer = std::make_shared<LocalSigner>(pkey, certs);
+    EXPECT_NE(signer, nullptr);
 }
 
 /**
@@ -733,6 +737,7 @@ HWTEST_F(ProvisionTest, provision_test034, testing::ext::TestSize.Level1)
     LocalizationAdapter adapter(&options);
     pkey = adapter.GetAliasKey(false);
     std::shared_ptr<Signer> signer = std::make_shared<LocalSigner>(pkey, certs);
+    EXPECT_NE(signer, nullptr);
 }
 
 /**
@@ -776,6 +781,7 @@ HWTEST_F(ProvisionTest, provision_test035, testing::ext::TestSize.Level1)
     sk_X509_push(certsDup, cert);
     std::shared_ptr<Signer> signer2 = std::make_shared<LocalSigner>(pkey, certsDup);
     std::string signature = signer2->GetSignature("content", "SHA384withECDSA");
+    EXPECT_NE(signer, nullptr);
 }
 
 /**
