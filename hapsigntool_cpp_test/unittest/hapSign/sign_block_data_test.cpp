@@ -50,9 +50,11 @@ public:
 HWTEST_F(SignBlockDataTest, getBlockHead, testing::ext::TestSize.Level1)
 {
     std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
+    std::vector<int8_t> blockHead(std::vector<int8_t>(32, 0));
     std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
-    api->GetBlockHead();
-    EXPECT_EQ(true, 1);
+    api->SetBlockHead(blockHead);
+    std::vector<int8_t> head = api->GetBlockHead();
+    EXPECT_EQ(head.size(), blockHead.size());
 }
 
 /**
@@ -148,7 +150,8 @@ HWTEST_F(SignBlockDataTest, setBlockHead, testing::ext::TestSize.Level1)
     std::vector<int8_t> signData(std::vector<int8_t>(32, 0));
     std::shared_ptr<SignBlockData> api = std::make_shared<SignBlockData>(signData, 3);
     api->SetBlockHead(signData);
-    EXPECT_EQ(true, 1);
+    std::vector<int8_t> head = api->GetBlockHead();
+    EXPECT_EQ(head.size(), signData.size());
 }
 
 /**

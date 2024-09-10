@@ -195,7 +195,8 @@ HWTEST_F(MerkleTreeExtensionTest, setMerkleTreeOffset, testing::ext::TestSize.Le
     int64_t offset = 927046;
     api->SetMerkleTreeOffset(offset);
 
-    EXPECT_EQ(true, 1);
+    int64_t flag = api->GetMerkleTreeOffset();
+    EXPECT_EQ(flag, offset);
 }
 
 /**

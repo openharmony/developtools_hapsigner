@@ -54,7 +54,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Level1)
 
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSize(), 0);
 }
 
 /**
@@ -91,7 +91,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Level1)
 
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSize(), 0);
 }
 
 /**
@@ -128,7 +128,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Level1)
 
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSize(), 0);
 }
 
 /**
@@ -165,7 +165,7 @@ HWTEST_F(HapInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Level1)
 
     api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSize(), 0);
 }
 
 
@@ -183,7 +183,7 @@ HWTEST_F(HapInfoSegmentTest, getSignInfo, testing::ext::TestSize.Level1)
 
     api->GetSignInfo();
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSize(), 0);
 }
 
 /**
@@ -228,7 +228,7 @@ HWTEST_F(HapInfoSegmentTest, setSignInfo, testing::ext::TestSize.Level1)
     SignInfo signInfo(saltSize, flags, dataSize, salt, sig);
     api->SetSignInfo(signInfo);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(api->GetSize(), 0);
 }
 
 /**

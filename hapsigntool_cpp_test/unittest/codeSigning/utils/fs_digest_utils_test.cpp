@@ -53,7 +53,10 @@ HWTEST_F(DigestUtilsTest, addData001, testing::ext::TestSize.Level1)
     std::string data(charData);
     api->AddData(data);
 
-    EXPECT_EQ(true, 1);
+    DigestUtils::Type type = DigestUtils::Type::HEX;
+    std::string str = api->Result(type);
+
+    EXPECT_NE(str.size(), 0);
 }
 
 /**
@@ -73,7 +76,10 @@ HWTEST_F(DigestUtilsTest, addData002, testing::ext::TestSize.Level1)
     int length = 32;
     api->AddData(pData, length);
 
-    EXPECT_EQ(true, 1);
+    DigestUtils::Type type = DigestUtils::Type::HEX;
+    std::string str = api->Result(type);
+
+    EXPECT_NE(str.size(), 0);
 }
 
 /**

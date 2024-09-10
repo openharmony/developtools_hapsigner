@@ -593,12 +593,13 @@ HWTEST_F(FileUtilsTest, DelDir, testing::ext::TestSize.Level1)
 
     // create dir and file again
     std::filesystem::path dir_path(fileName);
-    std::filesystem::create_directories(dir_path);
+    bool ret = std::filesystem::create_directories(dir_path);
 
     std::filesystem::path file_path = dir_path / "example.txt";
     std::ofstream file(file_path, std::ios::binary | std::ios::out);
     file.close();
     FileUtils::DelDir(fileName);
+    EXPECT_EQ(ret, true);
 }
 
 /**
@@ -642,7 +643,8 @@ HWTEST_F(FileUtilsTest, GCheckDn001, testing::ext::TestSize.Level1)
 {
     std::vector<std::pair<std::string, std::string>> pairs;
     pairs.push_back({ "1111", "2222" });
-    g_checkDn(std::string(","), pairs);
+    int ret = g_checkDn(std::string(","), pairs);
+    EXPECT_NE(ret, 0);
 }
 
 /**
@@ -657,7 +659,8 @@ HWTEST_F(FileUtilsTest, GCheckDn002, testing::ext::TestSize.Level1)
 {
     std::vector<std::pair<std::string, std::string>> pairs;
     pairs.push_back({ "1111", "2222" });
-    g_checkDn(std::string("hello=="), pairs);
+    int ret = g_checkDn(std::string("hello=="), pairs);
+    EXPECT_NE(ret, 0);
 }
 } // namespace SignatureTools
 } // namespace OHOS

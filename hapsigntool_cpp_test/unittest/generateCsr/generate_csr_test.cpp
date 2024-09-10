@@ -717,6 +717,7 @@ HWTEST_F(GenerateCsrTest, process_cmd_test_004, testing::ext::TestSize.Level1)
 {
     char arg0[] = "", arg1[] = "-v";
     char* args[] = { arg0, arg1 };
+    ParamsRunTool::Version();
     EXPECT_EQ(ParamsRunTool::ProcessCmd(args, sizeof(args) / sizeof((char*)arg0)), true);
 }
 
@@ -731,17 +732,6 @@ HWTEST_F(GenerateCsrTest, is_valid_file_test_001, testing::ext::TestSize.Level1)
     EXPECT_EQ(FileUtils::IsValidFile("/data/test/generateCsr/ohtest.p12"), true);
     EXPECT_EQ(FileUtils::IsValidFile("/data/test/generateCsr/ohtest.p11"), false);
     EXPECT_EQ(FileUtils::IsValidFile("/data/test/generateCsr/"), false);
-}
-
-/**
- * @tc.name: version_test_001
- * @tc.desc: Test function of ParamsRunTool::Version() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCsrTest, version_test_001, testing::ext::TestSize.Level1)
-{
-    ParamsRunTool::Version();
 }
 
 /**
@@ -890,7 +880,8 @@ HWTEST_F(GenerateCsrTest, get_hash_algs_id_test_001, testing::ext::TestSize.Leve
     HashUtils::GetHashAlgsId("SHA-224");
     HashUtils::GetHashAlgsId("SHA-384");
     HashUtils::GetHashAlgsId("SHA-512");
-    HashUtils::GetHashAlgsId("SHA-1024");
+    int ret = HashUtils::GetHashAlgsId("SHA-1024");
+    EXPECT_EQ(ret, 0);
 }
 
 /**
@@ -904,19 +895,8 @@ HWTEST_F(GenerateCsrTest, get_hash_algs_name_test_001, testing::ext::TestSize.Le
     HashUtils::GetHashAlgName(5);
     HashUtils::GetHashAlgName(7);
     HashUtils::GetHashAlgName(8);
-    HashUtils::GetHashAlgName(9);
-}
-
-/**
- * @tc.name: get_digest_from_bytes_test_001
- * @tc.desc: Test function of HashUtils::GetDigestFromBytes() interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCsrTest, get_digest_from_bytes_test_001, testing::ext::TestSize.Level1)
-{
-    HashUtils::GetDigestFromBytes({}, 1, "");
-    HashUtils::GetDigestFromBytes({ 'a' }, 0, "");
+    std::string ret = HashUtils::GetHashAlgName(9);
+    EXPECT_EQ(ret, "");
 }
 
 /**
@@ -927,10 +907,14 @@ HWTEST_F(GenerateCsrTest, get_digest_from_bytes_test_001, testing::ext::TestSize
  */
 HWTEST_F(GenerateCsrTest, read_data_and_digest_update_test_001, testing::ext::TestSize.Level1)
 {
+    HashUtils::GetDigestFromBytes({}, 1, "");
+    HashUtils::GetDigestFromBytes({ 'a' }, 0, "");
+
     RandomAccessFile file;
     FileDataSource src(file, 0, 0, 0);
     DigestParameter param;
-    src.ReadDataAndDigestUpdate(param, -1);
+    bool ret = src.ReadDataAndDigestUpdate(param, -1);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -944,7 +928,8 @@ HWTEST_F(GenerateCsrTest, read_data_and_digest_update_test_002, testing::ext::Te
     ByteBuffer buffer;
     ByteBufferDataSource src(buffer);
     DigestParameter param;
-    src.ReadDataAndDigestUpdate(param, -1);
+    bool ret = src.ReadDataAndDigestUpdate(param, -1);
+    EXPECT_EQ(ret, false);
 }
 
 } // namespace SignatureTools

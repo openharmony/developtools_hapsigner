@@ -80,7 +80,8 @@ HWTEST_F(BlockDataTest, SetBlockNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<BlockData> api = std::make_shared<BlockData>(2, 0);
     api->SetBlockNum(3);
-    EXPECT_EQ(true, 1);
+    int32_t blockNum = api->GetBlockNum();
+    EXPECT_EQ(blockNum, 3);
 }
 
 /**
@@ -95,7 +96,8 @@ HWTEST_F(BlockDataTest, SetBlockStart, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<BlockData> api = std::make_shared<BlockData>(2, 0);
     api->SetBlockStart(1);
-    EXPECT_EQ(true, 1);
+    int32_t blockStart = api->GetBlockStart();
+    EXPECT_EQ(blockStart, 1);
 }
 } // namespace SignatureTools
 } // namespace OHOS
