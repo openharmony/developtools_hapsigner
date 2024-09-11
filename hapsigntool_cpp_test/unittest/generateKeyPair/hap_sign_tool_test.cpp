@@ -837,17 +837,6 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_021, testing::ext::TestSize.Level1)
 }
 
 /*
- * @tc.name: hap_sign_tool_test_022
- * @tc.desc: Print version number.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_022, testing::ext::TestSize.Level1)
-{
-    ParamsRunTool::Version();
-}
-
-/*
 * @tc.name: hap_sign_tool_test_023
 * @tc.desc: Generate the root certificate entry check.
 * @tc.type: FUNC

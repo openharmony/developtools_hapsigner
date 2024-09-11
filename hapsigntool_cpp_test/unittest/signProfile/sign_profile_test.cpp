@@ -279,8 +279,8 @@ HWTEST_F(SignProfileTest, print_cert_chain_sub_test001, testing::ext::TestSize.L
     std::shared_ptr<Signer> signer = factory.GetSigner(adapter);
     STACK_OF(X509)* certs = signer->GetCertificates();
     PKCS7Data::PrintCertChainSub(certs);
-    PKCS7Data::SortX509Stack(certs);
-    EXPECT_TRUE(true);
+    int ret = PKCS7Data::SortX509Stack(certs);
+    EXPECT_EQ(ret, RET_OK);
 }
 
 /**
@@ -297,7 +297,8 @@ HWTEST_F(SignProfileTest, run_verify_profile_test001, testing::ext::TestSize.Lev
     options[Options::IN_FILE] = VERIFY_PROFILE_IN_FILE;
     options[Options::OUT_FILE] = VERIFY_PROFILE_OUT_FILE;
     SignToolServiceImpl api;
-    ParamsRunTool::RunVerifyProfile(&options, api);
+    bool ret = ParamsRunTool::RunVerifyProfile(&options, api);
+    EXPECT_EQ(ret, true);
 }
 
 /**

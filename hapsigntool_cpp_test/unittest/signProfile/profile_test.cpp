@@ -496,6 +496,7 @@ HWTEST_F(ProfileTest, profile_test015, testing::ext::TestSize.Level1)
     ProfileInfo info2;
     info = &info2;
     info2 = *info;
+    EXPECT_EQ(info2.profileBlockLength, info->profileBlockLength);
 }
 
 /**
@@ -566,6 +567,7 @@ HWTEST_F(ProfileTest, profile_test019, testing::ext::TestSize.Level1)
 {
     STACK_OF(X509)* certs = nullptr;
     PKCS7Data::PrintCertChainSub(certs);
+    EXPECT_EQ(certs, nullptr);
 }
 
 /**

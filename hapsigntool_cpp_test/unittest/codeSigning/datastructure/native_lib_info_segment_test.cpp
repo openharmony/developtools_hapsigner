@@ -60,9 +60,9 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray001, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 4);
     std::vector<int8_t> bytes(readComment, readComment + 4);
 
-    api->FromByteArray(bytes);
+    NativeLibInfoSegment segment = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(segment.Size(), 0);
 }
 
 /**
@@ -87,9 +87,9 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray002, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 8);
     std::vector<int8_t> bytes(readComment, readComment + 8);
 
-    api->FromByteArray(bytes);
+    NativeLibInfoSegment segment = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(segment.Size(), 0);
 }
 
 /**
@@ -115,9 +115,9 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray003, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 12);
     std::vector<int8_t> bytes(readComment, readComment + 12);
 
-    api->FromByteArray(bytes);
+    NativeLibInfoSegment segment = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(segment.GetSectionNum(), -1);
 }
 
 /**
@@ -155,9 +155,9 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray004, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 36);
     std::vector<int8_t> bytes(readComment, readComment + 36);
 
-    api->FromByteArray(bytes);
+    NativeLibInfoSegment segment = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(segment.GetSectionNum(), 1);
 }
 
 /**
@@ -195,9 +195,9 @@ HWTEST_F(NativeLibInfoSegmentTest, fromByteArray005, testing::ext::TestSize.Leve
     byteBuffer.GetData(readComment, 36);
     std::vector<int8_t> bytes(readComment, readComment + 36);
 
-    api->FromByteArray(bytes);
+    NativeLibInfoSegment segment = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(segment.GetFileNameList()[0], "");
 }
 
 /**
@@ -228,9 +228,9 @@ HWTEST_F(NativeLibInfoSegmentTest, getFileNameList, testing::ext::TestSize.Level
 HWTEST_F(NativeLibInfoSegmentTest, getSectionNum, testing::ext::TestSize.Level1)
 {
     std::shared_ptr<NativeLibInfoSegment> api = std::make_shared<NativeLibInfoSegment>();
-    api->GetSectionNum();
+    int32_t num = api->GetSectionNum();
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(num, 0);
 }
 
 /**
@@ -287,7 +287,7 @@ HWTEST_F(NativeLibInfoSegmentTest, setSoInfoList, testing::ext::TestSize.Level1)
 
     api->SetSoInfoList(soInfoList);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(api->GetSectionNum(), 2);
 }
 
 /**

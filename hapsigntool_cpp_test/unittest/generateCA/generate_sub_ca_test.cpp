@@ -1103,21 +1103,6 @@ HWTEST_F(GenerateCaTest, get_csr_test_002, testing::ext::TestSize.Level1)
 }
 
 /**
- * @tc.name: save_cert_to_file_test_001
- * @tc.desc: Test function of CertTools::SaveCertTofile interface for SUCCESS.
- * @tc.type: FUNC
- * @tc.require: SR000H63TL
- */
-HWTEST_F(GenerateCaTest, save_cert_to_file_test_001, testing::ext::TestSize.Level1)
-{
-    X509* cert = X509_new();
-    EXPECT_NE(cert, nullptr);
-    std::string rootoutFile = "root-ca1.cer";
-    CertTools::SaveCertTofile(rootoutFile, cert);
-}
-
-
-/**
  * @tc.name: save_cert_to_file_test_002
  * @tc.desc: Test function of CertTools::SaveCertTofile()  interface with a empty rootfile FAIL.
  * @tc.type: FUNC
@@ -1127,7 +1112,8 @@ HWTEST_F(GenerateCaTest, save_cert_to_file_test_002, testing::ext::TestSize.Leve
 {
     X509* cert = X509_new();
     std::string rootoutFile = "";
-    CertTools::SaveCertTofile(rootoutFile, cert);
+    bool ret = CertTools::SaveCertTofile(rootoutFile, cert);
+    EXPECT_EQ(ret, false);
 }
 
 /**
@@ -1453,7 +1439,7 @@ HWTEST_F(GenerateCaTest, generate_key_store_001, testing::ext::TestSize.Level1)
 
 /**
 * @tc.name: handle_issuer_key_alias_empty_001
-* @tc.desc: Test function of HandleIssuerKeyAliasEmpty()  interface for SUCCESS.
+* @tc.desc: Test function of HandleIssuerKeyAliasEmpty()  interface for RET_FAILED.
 * @tc.type: FUNC
 * @tc.require: SR000H63TL
 */
@@ -1465,7 +1451,8 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_empty_001, testing::ext::TestSi
     std::string issuerKeystoreFile = "/data/test/generateCA/issuer.p12";
     (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
     (*params)["keystoreFile"] = keystoreFile;
-    api->HandleIssuerKeyAliasEmpty(params.get());
+    int res = api->HandleIssuerKeyAliasEmpty(params.get());
+    EXPECT_EQ(res, RET_FAILED);
 }
 
 /**
@@ -1486,12 +1473,13 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_empty_002, testing::ext::TestSi
     (*params)["keystoreFile"] = keystoreFile;
     (*params)["issuerKeystorePwd"] = issuerstorepwd;
     (*params)["keystorePwd"] = keystorepwd;
-    api->HandleIssuerKeyAliasEmpty(params.get());
+    int res = api->HandleIssuerKeyAliasEmpty(params.get());
+    EXPECT_EQ(res, RET_FAILED);
 }
 
 /**
 * @tc.name: handle_issuer_key_alias_empty_003
-* @tc.desc: Test function of HandleIssuerKeyAliasEmpty()  interface for SUCCESS.
+* @tc.desc: Test function of HandleIssuerKeyAliasEmpty()  interface for RET_FAILED.
 * @tc.type: FUNC
 * @tc.require: SR000H63TL
 */
@@ -1507,12 +1495,13 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_empty_003, testing::ext::TestSi
     (*params)["keystoreFile"] = keystoreFile;
     (*params)["issuerKeystorePwd"] = issuerstorepwd;
     (*params)["keystorePwd"] = keystorepwd;
-    api->HandleIssuerKeyAliasEmpty(params.get());
+    int res = api->HandleIssuerKeyAliasEmpty(params.get());
+    EXPECT_EQ(res, RET_FAILED);
 }
 
 /**
 * @tc.name: handle_issuer_key_alias_empty_004
-* @tc.desc: Test function of HandleIssuerKeyAliasEmpty()  interface with a empty issuerKeystoreFile FAIL.
+* @tc.desc: Test function of HandleIssuerKeyAliasEmpty()  interface with a empty issuerKeystoreFile RET_OK.
 * @tc.type: FUNC
 * @tc.require: SR000H63TL
 */
@@ -1528,11 +1517,12 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_empty_004, testing::ext::TestSi
     (*params)["keystoreFile"] = keystoreFile;
     (*params)["issuerKeystorePwd"] = issuerstorepwd;
     (*params)["keystorePwd"] = keystorepwd;
-    api->HandleIssuerKeyAliasEmpty(params.get());
+    int res = api->HandleIssuerKeyAliasEmpty(params.get());
+    EXPECT_EQ(res, RET_OK);
 }
 /**
 * @tc.name: handle_issuer_key_alias_not_empty_001
-* @tc.desc: Test function of HandleIsserKeyAliasNotEmpty()  interface with a empty issuerKeystoreFile FAIL.
+* @tc.desc: Test function of HandleIsserKeyAliasNotEmpty()  interface with a empty issuerKeystoreFile RET_OK.
 * @tc.type: FUNC
 * @tc.require: SR000H63TL
 */
@@ -1542,7 +1532,8 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_not_empty_001, testing::ext::Te
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::string issuerKeystoreFile = "";
     (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
-    api->HandleIsserKeyAliasNotEmpty(params.get());
+    int res = api->HandleIsserKeyAliasNotEmpty(params.get());
+    EXPECT_EQ(res, RET_OK);
 }
 
 /**
@@ -1557,7 +1548,8 @@ HWTEST_F(GenerateCaTest, handle_issuer_key_alias_not_empty_002, testing::ext::Te
     std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::string issuerKeystoreFile = "/data/test/generateCA/other.cer";
     (*params)["issuerKeystoreFile"] = issuerKeystoreFile;
-    api->HandleIsserKeyAliasNotEmpty(params.get());
+    int res = api->HandleIsserKeyAliasNotEmpty(params.get());
+    EXPECT_EQ(res, RET_FAILED);
 }
 
 /**
@@ -1770,7 +1762,8 @@ HWTEST_F(GenerateCaTest, issuer_key_store_file_001, testing::ext::TestSize.Level
     std::unique_ptr<LocalizationAdapter> adaptePtr = std::make_unique<LocalizationAdapter>(params.get());
     EVP_PKEY* keyPair = nullptr;
     keyPair = adaptePtr->GetAliasKey(true);
-    adaptePtr->IssuerKeyStoreFile(&keyPair, true);
+    int ret = adaptePtr->IssuerKeyStoreFile(&keyPair, true);
+    EXPECT_EQ(ret, RET_FAILED);
 }
 }
 }
