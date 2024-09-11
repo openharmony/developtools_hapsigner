@@ -48,9 +48,9 @@ HWTEST_F(SignInfoTest, fromByteArray, testing::ext::TestSize.Level1)
         -71, -126, 60, 116, 60, 10, 15, -125, 107, 127, -123, 81, 68, 28, -121, -20,
         -42, -116, -81, -6, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    api->FromByteArray(bytes);
+    SignInfo signInfo = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(signInfo.GetSize(), 0);
 }
 
 /**
@@ -72,7 +72,7 @@ HWTEST_F(SignInfoTest, getDataSize, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: getExtensionByType
- * @tc.desc: Test function of SignInfoTest::GenerateCsr() interface for SUCCESS.
+ * @tc.desc: Test function of SignInfoTest::getExtensionByType() interface for nullptr.
  * @tc.size: MEDIUM
  * @tc.type: FUNC
  * @tc.level Level 1

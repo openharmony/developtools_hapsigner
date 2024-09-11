@@ -320,26 +320,12 @@ HWTEST_F(BCSignedDataGeneratorTest, GetSigAlg003, testing::ext::TestSize.Level1)
     options.emplace("inFile", std::string("./codeSigning/entry-default-unsigned-so.hap"));
     signerConfig.SetOptions(&options);
 
+    std::string ownerID;
+    api->SetOwnerId(ownerID);
+
     std::string sigAlg;
     int ret = api->GetSigAlg(&signerConfig, sigAlg);
     EXPECT_EQ(ret, 0);
-}
-
-/**
- * @tc.name: SetOwnerId
- * @tc.desc: Test function of SignToolServiceImpl::GenerateCsr() interface for SUCCESS.
- * @tc.size: MEDIUM
- * @tc.type: FUNC
- * @tc.level Level 1
- * @tc.require: SR000H63TL
- */
-HWTEST_F(BCSignedDataGeneratorTest, SetOwnerId, testing::ext::TestSize.Level1)
-{
-    std::shared_ptr<BCSignedDataGenerator> api = std::make_shared<BCSignedDataGenerator>();
-
-    std::string ownerID;
-    api->SetOwnerId(ownerID);
-    EXPECT_EQ(true, 1);
 }
 } // namespace SignatureTools
 } // namespace OHOS

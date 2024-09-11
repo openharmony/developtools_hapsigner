@@ -47,9 +47,9 @@ HWTEST_F(SignedFilePosTest, fromByteArray, testing::ext::TestSize.Level1)
         -126, 60, 116, 60, 10, 15, -125, 107, 127, -123, 81, 68, 28, -121, -20, -42, -116,
         -81, -6, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    api->FromByteArray(bytes);
+    SignedFilePos pos = api->FromByteArray(bytes);
 
-    EXPECT_EQ(true, 1);
+    EXPECT_NE(pos.GetFileNameOffset(), 0);
 }
 
 /**
@@ -133,8 +133,9 @@ HWTEST_F(SignedFilePosTest, increaseFileNameOffset, testing::ext::TestSize.Level
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
     api->IncreaseFileNameOffset(1);
+    int32_t offset = api->GetFileNameOffset();
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(offset, 109);
 }
 
 /**
@@ -150,8 +151,9 @@ HWTEST_F(SignedFilePosTest, increaseSignInfoOffset, testing::ext::TestSize.Level
     std::shared_ptr<SignedFilePos> api = std::make_shared<SignedFilePos>(108, 31, 280, 2068);
 
     api->IncreaseSignInfoOffset(2);
+    int32_t offset = api->GetSignInfoOffset();
 
-    EXPECT_EQ(true, 1);
+    EXPECT_EQ(offset, 282);
 }
 } // namespace SignatureTools
 } // namespace OHOS
