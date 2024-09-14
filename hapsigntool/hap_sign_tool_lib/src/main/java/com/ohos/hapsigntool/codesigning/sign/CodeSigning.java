@@ -47,18 +47,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
-import java.util.zip.ZipInputStream;
 
 /**
  * core functions of code signing
@@ -290,74 +289,69 @@ public class CodeSigning {
 
     private List<Pair<String, SignInfo>> signHnpLibs(JarFile inputJar, JarEntry hnpEntry, String ownerID)
         throws IOException, CodeSignException {
-        Map<String, Long> elfEntries = getElfEntriesFromHnp(inputJar, hnpEntry);
-        List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.entrySet().stream().parallel().map(elf -> {
-            String hnpElfPath = hnpEntry.getName() + "!/" + elf.getKey();
-            try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
-                ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
-                return signHnpElf(hnpInputStream, hnpElfPath, ownerID, elf);
-            } catch (IOException | FsVerityDigestException | CodeSignException e) {
-                LOGGER.error("Sign hnp lib error, entry name = {}, msg : {}", hnpElfPath, e.getMessage());
-            }
-            return null;
-        }).collect(Collectors.toList());
-        if (nativeLibInfoList.contains(null)) {
-            throw new CodeSignException("Sign hnp lib error");
+        File tempHnp = File.createTempFile("tmp-", ".hnp");
+        writeTempHnpFile(inputJar, hnpEntry, tempHnp);
+        if (!tempHnp.exists() || tempHnp.length() == 0) {
+            throw new CodeSignException("extract hnp file error");
         }
-        return nativeLibInfoList;
-    }
-
-    /**
-     * sign hnp's elf
-     *
-     * @param hnpInputStream hnp entry input stream
-     * @param hnpElfPath hnp's elf path
-     * @param ownerID ownerId
-     * @param elf elf entry
-     * @return native lib info
-     * @throws IOException             io error
-     * @throws FsVerityDigestException computing FsVerity digest error
-     * @throws CodeSignException       code signing exception
-     */
-    public Pair<String, SignInfo> signHnpElf(ZipInputStream hnpInputStream, String hnpElfPath, String ownerID,
-        Map.Entry<String, Long> elf) throws IOException, FsVerityDigestException, CodeSignException {
-        java.util.zip.ZipEntry libEntry = null;
-        while ((libEntry = hnpInputStream.getNextEntry()) != null) {
-            if (elf.getKey().equals(libEntry.getName())) {
-                long fileSize = elf.getValue();
-                // We don't store merkle tree in code signing of native libs
-                // Therefore, the second value of pair returned is ignored
-                Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(hnpInputStream, fileSize, false, 0,
-                    ownerID);
-                return (Pair.create(hnpElfPath, pairSignInfoAndMerkleTreeBytes.getFirst()));
-            }
-        }
-        return null;
-    }
-
-    private Map<String, Long> getElfEntriesFromHnp(JarFile inputJar, JarEntry hnpEntry) throws IOException {
-        Map<String, Long> elfEntries = new HashMap<>();
-        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
-            ZipInputStream hnpInputStream = new ZipInputStream(inputStream)) {
-            java.util.zip.ZipEntry libEntry = null;
-            while ((libEntry = hnpInputStream.getNextEntry()) != null) {
-                byte[] bytes = new byte[4];
-                hnpInputStream.read(bytes, 0, 4);
-                if (!ElfHeader.isElfFile(bytes)) {
-                    hnpInputStream.closeEntry();
-                    continue;
+        try (JarFile hnp = new JarFile(tempHnp, false)) {
+            List<JarEntry> elfEntries = getHnpLibEntries(hnp);
+            LOGGER.debug("{} elf num : {}", hnp.getName(), elfEntries.size());
+            List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.stream().parallel().map(entry -> {
+                String hnpElfPath = hnpEntry.getName() + "!/" + entry.getName();
+                try (InputStream inputStream = hnp.getInputStream(entry)) {
+                    // We don't store merkle tree in code signing of native libs
+                    // Therefore, the second value of pair returned is ignored
+                    Pair<SignInfo, byte[]> pairSignInfoAndMerkleTreeBytes = signFile(inputStream, entry.getSize(),
+                        false, 0, ownerID);
+                    return (Pair.create(hnpElfPath, pairSignInfoAndMerkleTreeBytes.getFirst()));
+                } catch (IOException | FsVerityDigestException | CodeSignException e) {
+                    LOGGER.error("Sign hnp lib error, entry name = {}, msg : {}", hnpElfPath, e.getMessage());
                 }
-                // read input stream end to get entry size, can be adjusted based on performance testing
-                byte[] tmp = new byte[4096];
-                int readLen;
-                do {
-                    readLen = hnpInputStream.read(tmp, 0, 4096);
-                } while (readLen > 0);
-                elfEntries.put(libEntry.getName(), libEntry.getSize());
-                hnpInputStream.closeEntry();
+                return null;
+            }).collect(Collectors.toList());
+            if (nativeLibInfoList.contains(null)) {
+                throw new CodeSignException("Sign hnp lib error");
+            }
+            return nativeLibInfoList;
+        } finally {
+            if (tempHnp.exists()) {
+                if (tempHnp.delete()) {
+                    LOGGER.debug("delete temp hnp file {}", tempHnp.getName());
+                } else {
+                    LOGGER.error("delete temp hnp file error {}", tempHnp.getName());
+                }
+            }
+        }
+    }
+
+    private List<JarEntry> getHnpLibEntries(JarFile hnp) throws IOException {
+        List<JarEntry> elfEntries = new ArrayList<>();
+        for (Enumeration<JarEntry> e = hnp.entries(); e.hasMoreElements(); ) {
+            JarEntry entry = e.nextElement();
+            try (InputStream inputStream = hnp.getInputStream(entry)) {
+                byte[] bytes = new byte[4];
+                inputStream.read(bytes);
+                if (ElfHeader.isElfFile(bytes)) {
+                    elfEntries.add(entry);
+                }
             }
         }
         return elfEntries;
+    }
+
+    private void writeTempHnpFile(JarFile inputJar, JarEntry hnpEntry, File tempHnp) {
+        try (InputStream inputStream = inputJar.getInputStream(hnpEntry);
+            FileOutputStream fos = new FileOutputStream(tempHnp)) {
+            int read;
+            // buffered 64k
+            byte[] bytes = new byte[1024 * 64];
+            while ((read = inputStream.read(bytes)) != -1) {
+                fos.write(bytes, 0, read);
+            }
+        } catch (IOException e) {
+            LOGGER.error("write temp hnp file error ", e);
+        }
     }
 
     /**
