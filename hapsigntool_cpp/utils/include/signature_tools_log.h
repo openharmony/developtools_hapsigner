@@ -33,7 +33,7 @@ static const int PLACEHOLDERLEN = 3;
 static const int SCALE = 1000;
 
 #define SIGNATURE_LOG(level, fmt, ...) \
-    printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__) \
+    printf("[%s] [%s] [%s] [%d] " fmt "\n", level, __FILE_NAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__) \
 
 #ifdef SIGNATURE_LOG_DEBUG
 #define SIGNATURE_TOOLS_LOGI(fmt, ...) SIGNATURE_LOG("Info", fmt, ##__VA_ARGS__)
