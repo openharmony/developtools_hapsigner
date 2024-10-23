@@ -25,7 +25,6 @@
 #include "openssl/asn1.h"
 #include "signature_tools_log.h"
 #include "constant.h"
-#include "cmd_util.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -76,7 +75,7 @@ bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
 static bool UpdateConstraint(Options* options)
 {
     if (options->count(Options::BASIC_CONSTRAINTS)) {
-        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
+        if (!CertTools::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
             return false;
         }
     } else {
@@ -84,7 +83,7 @@ static bool UpdateConstraint(Options* options)
     }
 
     if (options->count(Options::BASIC_CONSTRAINTS_CRITICAL)) {
-        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
+        if (!CertTools::String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
             return false;
         }
     } else {
@@ -92,7 +91,7 @@ static bool UpdateConstraint(Options* options)
     }
 
     if (options->count(Options::BASIC_CONSTRAINTS_CA)) {
-        if (!CmdUtil::String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
+        if (!CertTools::String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
             return false;
         }
     } else {
@@ -853,30 +852,44 @@ err:
     return nullptr;
 }
 
-bool CertTools::PrintCertChainToCmd(std::vector<X509*>& certChain)
+bool CertTools::String2Bool(Options* options, const std::string& option)
 {
-    BIO* outFd = BIO_new_fp(stdout, BIO_NOCLOSE);
-    if (!outFd) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "The stdout stream may have errors");
+    std::string val = options->GetString(option);
+    if (val == "1" || val == "true" || val == "TRUE") {
+        (*options)[option] = true;
+    } else if (val == "0" || val == "false" || val == "FALSE") {
+        (*options)[option] = false;
+    } else {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            val + "is not valid value for " + "-" + option);
         return false;
     }
-    uint64_t format = XN_FLAG_SEP_COMMA_PLUS; // Print according to RFC2253
-    uint64_t content = X509_FLAG_NO_EXTENSIONS | X509_FLAG_NO_ATTRIBUTES | X509_FLAG_NO_HEADER | X509_FLAG_NO_SIGDUMP;
-    int num = 0;
-    for (auto& cert : certChain) {
-        PrintMsg("+++++++++++++++++++++++++++++++++certificate #" + std::to_string(num) +
-                 "+++++++++++++++++++++++++++++++++++++");
-        if (!X509_print_ex(outFd, cert, format, content)) {
-            VerifyHapOpensslUtils::GetOpensslErrorMessage();
-            SIGNATURE_TOOLS_LOGE("print x509 cert to cmd failed");
-            BIO_free(outFd);
-            return false;
-        }
-        ++num;
-    }
-    BIO_free(outFd);
     return true;
 }
+// bool CertTools::PrintCertChainToCmd(std::vector<X509*>& certChain)
+// {
+//     BIO* outFd = BIO_new_fp(stdout, BIO_NOCLOSE);
+//     if (!outFd) {
+//         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "The stdout stream may have errors");
+//         return false;
+//     }
+//     uint64_t format = XN_FLAG_SEP_COMMA_PLUS; // Print according to RFC2253
+//     uint64_t content = X509_FLAG_NO_EXTENSIONS | X509_FLAG_NO_ATTRIBUTES | X509_FLAG_NO_HEADER | X509_FLAG_NO_SIGDUMP;
+//     int num = 0;
+//     for (auto& cert : certChain) {
+//         PrintMsg("+++++++++++++++++++++++++++++++++certificate #" + std::to_string(num) +
+//                  "+++++++++++++++++++++++++++++++++++++");
+//         if (!X509_print_ex(outFd, cert, format, content)) {
+//             VerifyHapOpensslUtils::GetOpensslErrorMessage();
+//             SIGNATURE_TOOLS_LOGE("print x509 cert to cmd failed");
+//             BIO_free(outFd);
+//             return false;
+//         }
+//         ++num;
+//     }
+//     BIO_free(outFd);
+//     return true;
+// }
 } // namespace SignatureTools
 } // namespace OHOS
 

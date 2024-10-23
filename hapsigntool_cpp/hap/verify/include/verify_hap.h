@@ -67,6 +67,7 @@ public:
 
     bool VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const ByteBuffer& hapSignatureBlock);
     DLL_EXPORT bool GetDigestAndAlgorithm(Pkcs7Context& digest);
+    static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
 
 private:
     bool isPrintCert;
