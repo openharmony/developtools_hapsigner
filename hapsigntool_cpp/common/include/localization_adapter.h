@@ -26,7 +26,8 @@
 #include "key_store_helper.h"
 #include "cert_dn_utils.h"
 #include "signature_tools_log.h"
-#include "verify_hap_openssl_utils.h"
+#include "digest_common.h"
+
 namespace OHOS {
 namespace SignatureTools {
 class LocalizationAdapter {

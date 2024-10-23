@@ -14,6 +14,7 @@
  */
 #ifndef SIGNATRUETOOLS_CERT_TOOLS_H
 #define SIGNATRUETOOLS_CERT_TOOLS_H
+#include <string>
 
 #include "cert_dn_utils.h"
 #include "openssl/x509v3.h"
@@ -63,7 +64,8 @@ public:
     static bool SetExpandedInformation(X509* cert, Options* options);
     static bool SetPubkeyAndSignCert(X509* cert, X509_REQ* issuercsr,
                                      X509_REQ* certReq, EVP_PKEY* keyPair, Options* options);
-    static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
+    static bool String2Bool(Options* options, const std::string& option);
+    //static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
     CertTools() = default;
     ~CertTools() = default;
 };

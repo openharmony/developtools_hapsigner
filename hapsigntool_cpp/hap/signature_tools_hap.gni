@@ -44,5 +44,6 @@ signature_tools_hap_src = [
   "${signature_tools_hap}/sign/src/sign_bin.cpp",
   "${signature_tools_hap}/sign/src/sign_elf.cpp",
   "${signature_tools_hap}/utils/src/hap_utils.cpp",
+  "${signature_tools_hap}/utils/src/dynamic_library_handle.cpp",
   "${signature_tools_hap}/sign/src/bc_pkcs7_generator.cpp",
 ]

@@ -18,7 +18,8 @@
 #include "securec.h"
 #include "signature_info.h"
 #include "signature_tools_log.h"
-#include "verify_hap_openssl_utils.h"
+#include "digest_common.h"
+//#include "verify_hap_openssl_utils.h"
 #include "random_access_file.h"
 
 namespace OHOS {
@@ -196,7 +197,7 @@ bool RandomAccessFile::ReadFileFromOffsetAndDigestUpdate(const DigestParameter& 
         return false;
     }
     unsigned char* content = reinterpret_cast<unsigned char*>(mmapInfo.mapAddr + mmapInfo.readMoreLen);
-    bool res = VerifyHapOpensslUtils::DigestUpdate(digestParam, content, chunkSize);
+    bool res = DigestCommon::DigestUpdate(digestParam, content, chunkSize);
     munmap(mmapInfo.mapAddr, mmapInfo.mmapSize);
     return res;
 }
