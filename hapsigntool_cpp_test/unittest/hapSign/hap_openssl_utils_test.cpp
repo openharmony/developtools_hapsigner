@@ -30,7 +30,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_001, testing::ext::TestSize
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     DigestParameter parameter;
 
-    bool ret = VerifyHapOpensslUtils::DigestInit(parameter);
+    bool ret = DigestCommon::DigestInit(parameter);
     EXPECT_EQ(ret, false);
 }
 
@@ -45,7 +45,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_002, testing::ext::TestSize
     SIGNATURE_TOOLS_LOGI("hello world !!!");
     DigestParameter parameter;
     parameter.md = EVP_sha256();
-    bool ret = VerifyHapOpensslUtils::DigestInit(parameter);
+    bool ret = DigestCommon::DigestInit(parameter);
     EXPECT_EQ(ret, false);
 }
 
@@ -61,7 +61,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_003, testing::ext::TestSize
     parameter.md = EVP_sha256();
     const unsigned char content[] = "123";
     int32_t len = 5;
-    bool ret = VerifyHapOpensslUtils::DigestUpdate(parameter, content, len);
+    bool ret = DigestCommon::DigestUpdate(parameter, content, len);
     EXPECT_EQ(ret, false);
 }
 
@@ -76,7 +76,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_004, testing::ext::TestSize
     DigestParameter parameter;
     parameter.md = EVP_sha256();
     int32_t len = 5;
-    bool ret = VerifyHapOpensslUtils::DigestUpdate(parameter, nullptr, len);
+    bool ret = DigestCommon::DigestUpdate(parameter, nullptr, len);
     EXPECT_EQ(ret, false);
 }
 
@@ -90,7 +90,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_005, testing::ext::TestSize
 {
     DigestParameter parameter;
     unsigned char dig[EVP_MAX_MD_SIZE];
-    int32_t ret = VerifyHapOpensslUtils::GetDigest(parameter, dig);
+    int32_t ret = DigestCommon::GetDigest(parameter, dig);
     EXPECT_EQ(ret, 0);
 }
 
@@ -107,7 +107,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_006, testing::ext::TestSize
     ByteBuffer chunk;
     std::vector<OptionalBlock> optionalBlocks;
     unsigned char out[EVP_MAX_MD_SIZE];
-    int32_t ret = VerifyHapOpensslUtils::GetDigest(chunk, optionalBlocks, parameter, out);
+    int32_t ret = DigestCommon::GetDigest(chunk, optionalBlocks, parameter, out);
     EXPECT_EQ(ret, 0);
 }
 
@@ -127,7 +127,7 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_007, testing::ext::TestSize
     ByteBuffer chunk;
     std::vector<OptionalBlock> optionalBlocks;
     unsigned char out[EVP_MAX_MD_SIZE];
-    int32_t ret = VerifyHapOpensslUtils::GetDigest(chunk, optionalBlocks, parameter, out);
+    int32_t ret = DigestCommon::GetDigest(chunk, optionalBlocks, parameter, out);
     EXPECT_EQ(ret, 0);
 }
 
@@ -139,9 +139,9 @@ HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_007, testing::ext::TestSize
  */
 HWTEST_F(HapOpensslUtilsTest, hap_openssl_utils_test_008, testing::ext::TestSize.Level1)
 {
-    int32_t digId = VerifyHapOpensslUtils::GetDigestAlgorithmId(ALGORITHM_SHA384_WITH_ECDSA);
+    int32_t digId = DigestCommon::GetDigestAlgorithmId(ALGORITHM_SHA384_WITH_ECDSA);
     EXPECT_EQ(digId, NID_sha384);
-    digId = VerifyHapOpensslUtils::GetDigestAlgorithmId(ALGORITHM_SHA512_WITH_ECDSA);
+    digId = DigestCommon::GetDigestAlgorithmId(ALGORITHM_SHA512_WITH_ECDSA);
     EXPECT_EQ(digId, NID_sha512);
 }
 
