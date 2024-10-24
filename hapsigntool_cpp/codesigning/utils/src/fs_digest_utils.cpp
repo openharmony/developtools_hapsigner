@@ -15,6 +15,9 @@
 #include "fs_digest_utils.h"
 #include "securec.h"
 
+namespace OHOS {
+namespace SignatureTools {
+
 void DigestUtils::AddData(const std::string &data)
 {
     AddData(data.data(), (int)data.size());
@@ -82,3 +85,6 @@ DigestUtils::~DigestUtils()
         EVP_MD_CTX_free(m_ctx);
     }
 }
+
+} // namespace SignatureTools
+} // namespace OHOS

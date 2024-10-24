@@ -12,25 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_REMOTE_SIGN_PROVIDER_H
-#define SIGNATRUETOOLS_REMOTE_SIGN_PROVIDER_H
+
+#ifndef SIGNATRUETOOLS_DYNAMIC_LIBRARY_HANDLE_H
+#define SIGNATRUETOOLS_DYNAMIC_LIBRARY_HANDLE_H
 
 #include <dlfcn.h>
 
-#include "sign_provider.h"
+#include "signature_tools_log.h"
 #include "params.h"
 
 namespace OHOS {
 namespace SignatureTools {
-class RemoteSignProvider : public SignProvider {
+class DynamicLibraryHandle {
 public:
-    //static void* handle;
-
-    RemoteSignProvider() = default;
-    ~RemoteSignProvider() = default;
-    bool CheckParams(Options* options) override;
-    bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const override;
+    static void* handle;
+    DynamicLibraryHandle() = default;
+    ~DynamicLibraryHandle();
 };
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // SIGNATRUETOOLS_REMOTE_SIGN_PROVIDER_H
+#endif
