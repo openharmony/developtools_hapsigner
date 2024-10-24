@@ -32,7 +32,7 @@ bool DigestCommon::CheckDigestParameter(const DigestParameter& digestParameter)
         return false;
     }
     if (digestParameter.ctxPtr == nullptr) {
-        SIGNATURE_TOOLS_LOGE("ptrCtx is nullptr");
+        SIGNATURE_TOOLS_LOGE("ctxPtr is nullptr");
         return false;
     }
     return true;
@@ -64,7 +64,7 @@ bool DigestCommon::DigestUpdate(const DigestParameter& digestParameter,
     }
     if (EVP_DigestUpdate(digestParameter.ctxPtr, content, len) <= 0) {
         GetOpensslErrorMessage();
-        SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate chunk failed");
+        SIGNATURE_TOOLS_LOGE("EVP_DigestUpdate failed");
         return false;
     }
     return true;
@@ -97,7 +97,7 @@ int32_t DigestCommon::GetDigest(const ByteBuffer& chunk,
         return outLen;
     }
     if (digestParameter.ctxPtr == nullptr) {
-        SIGNATURE_TOOLS_LOGE("ptrCtx is nullprt");
+        SIGNATURE_TOOLS_LOGE("ctxPtr is nullprt");
         return outLen;
     }
     if (EVP_DigestInit(digestParameter.ctxPtr, digestParameter.md) <= 0) {

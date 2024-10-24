@@ -31,15 +31,6 @@
 namespace OHOS {
 namespace SignatureTools {
 
-// enum SignatureAlgorithm {
-//     ALGORITHM_SHA256_WITH_ECDSA = 0x00000201,
-//     ALGORITHM_SHA384_WITH_ECDSA,
-//     ALGORITHM_SHA512_WITH_ECDSA,
-//     ALGORITHM_SHA256_WITH_DSA = 0x00000301,
-//     ALGORITHM_SHA384_WITH_DSA,
-//     ALGORITHM_SHA512_WITH_DSA,
-// };
-
 class VerifyHapOpensslUtils {
 public:
     VerifyHapOpensslUtils() = delete;
@@ -50,15 +41,6 @@ public:
     DLL_EXPORT static bool GetCrlStack(PKCS7* p7, STACK_OF(X509_CRL)* x509Crl);
     DLL_EXPORT static bool VerifyPkcs7(Pkcs7Context& pkcs7Context);
 
-    //static int32_t GetDigest(const ByteBuffer& chunk, const std::vector<OptionalBlock>& optionalBlocks,
-    //                         const DigestParameter& digestParameter, unsigned char(&out)[EVP_MAX_MD_SIZE]);
-    //static bool DigestInit(const DigestParameter& digestParameter);
-    //static bool DigestUpdate(const DigestParameter& digestParameter,
-    //                         const unsigned char content[], int32_t len);
-    //static int32_t GetDigest(const DigestParameter& digestParameter, unsigned char(&out)[EVP_MAX_MD_SIZE]);
-    //static int32_t GetDigestAlgorithmOutputSizeBytes(int32_t nId);
-    //DLL_EXPORT static int32_t GetDigestAlgorithmId(int32_t signAlgorithm);
-    //static std::string GetDigestAlgorithmString(int32_t signAlgorithm);
     static void GetOpensslErrorMessage();
 
 private:
@@ -69,8 +51,6 @@ private:
                                 Pkcs7Context& pkcs7Context, CertSign& certVisitSign);
     static bool GetContentInfo(const PKCS7* p7ContentInfo, ByteBuffer& content);
     static bool CheckPkcs7SignedDataIsValid(const PKCS7* p7);
-
-    //static bool CheckDigestParameter(const DigestParameter& digestParameter);
 
     static const int32_t OPENSSL_PKCS7_VERIFY_SUCCESS;
     static const int32_t OPENSSL_ERR_MESSAGE_MAX_LEN;
