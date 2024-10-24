@@ -19,6 +19,8 @@
 #include "signature_algorithm_helper.h"
 #include "bc_signeddata_generator.h"
 #include "signer_config.h"
+#include "signer_factory.h"
+#include "localization_adapter.h"
 #include "signature_tools_errno.h"
 #include "bc_pkcs7_generator.h"
 
@@ -41,7 +43,10 @@ int BCPkcs7Generator::GenerateSignedData(const std::string& content,
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "signerConfig is NULL");
         return INVALIDPARAM_ERROR;
     }
-    std::shared_ptr<Signer> signer(signerConfig->GetSigner());
+    Options* options = signerConfig->GetOptions();
+    SignerFactory factory;
+    LocalizationAdapter adapter(options);
+    std::shared_ptr<Signer> signer(factory.GetSigner(adapter));
     if (signer == NULL) {
         SIGNATURE_TOOLS_LOGE("signer is NULL");
         return INVALIDPARAM_ERROR;

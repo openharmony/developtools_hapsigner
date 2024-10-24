@@ -30,6 +30,9 @@
 
 #include "signature_tools_log.h"
 
+namespace OHOS {
+namespace SignatureTools {
+
 using hashFunc = const EVP_MD* (*)(void);
 
 enum HashType {
@@ -52,4 +55,6 @@ private:
     EVP_MD_CTX* m_ctx = NULL;
     HashType m_type;
 };
+} // namespace SignatureTools
+} // namespace OHOS
 #endif // SIGNATURETOOLS_FS_DIGEST_UTILS_H
