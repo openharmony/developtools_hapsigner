@@ -20,7 +20,6 @@
 #include "sign_tool_service_impl.h"
 #include "signature_tools_log.h"
 #include "verify_hap_openssl_utils.h"
-#include "digest_common.h"
 #include <gtest/gtest.h>
 
 namespace OHOS {

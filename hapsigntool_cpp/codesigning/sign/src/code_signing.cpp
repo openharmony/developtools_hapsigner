@@ -20,8 +20,6 @@
 #include "fs_verity_descriptor_with_sign.h"
 #include "verify_code_signature.h"
 #include "code_signing.h"
-#include "signer_factory.h"
-#include "localization_adapter.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -509,13 +507,9 @@ bool CodeSigning::IsNativeFile(const std::string& input)
 bool CodeSigning::GenerateSignature(const std::vector<int8_t>& signedData, const std::string& ownerID,
                                     std::vector<int8_t>& ret)
 {
-    Options* options = m_signConfig->GetOptions();
-    SignerFactory factory;
-    LocalizationAdapter adapter(options);
-    std::shared_ptr<Signer> signer(factory.GetSigner(adapter));
-    if (signer != nullptr) {
+    if (m_signConfig->GetSigner() != nullptr) {
         STACK_OF(X509)* certs = NULL;
-        certs = signer->GetCertificates();
+        certs = m_signConfig->GetSigner()->GetCertificates();
         if (certs == nullptr) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                                 "No certificates configured for sign.");

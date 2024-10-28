@@ -16,15 +16,15 @@
 
 namespace OHOS {
 namespace SignatureTools {
-//void* RemoteSignProvider::handle = nullptr;
-// RemoteSignProvider::~RemoteSignProvider()
-// {
-//     if (handle) {
-//         if (dlclose(handle) != 0) {
-//             SIGNATURE_TOOLS_LOGE("dlclose() %s", dlerror());
-//         }
-//     }
-// }
+void* RemoteSignProvider::handle = nullptr;
+RemoteSignProvider::~RemoteSignProvider()
+{
+    if (handle) {
+        if (dlclose(handle) != 0) {
+            SIGNATURE_TOOLS_LOGE("dlclose() %s", dlerror());
+        }
+    }
+}
 
 bool RemoteSignProvider::CheckParams(Options* options)
 {
