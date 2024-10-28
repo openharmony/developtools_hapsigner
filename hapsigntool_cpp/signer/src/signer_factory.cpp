@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 #include "signer_factory.h"
-#include "dynamic_library_handle.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -52,8 +51,8 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     char* userPwd = adapter.GetOptions()->GetChars(ParamConstants::PARAM_REMOTE_USERPWD);
 
     // open so
-    DynamicLibraryHandle::handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_GLOBAL);
-    if (!DynamicLibraryHandle::handle) {
+    RemoteSignProvider::handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_GLOBAL);
+    if (!RemoteSignProvider::handle) {
         PrintErrorNumberMsg("LoadRemoteSigner", RET_FAILED, dlerror());
         return nullptr;
     }
@@ -62,7 +61,7 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     dlerror();
 
     // get "Create" function
-    RemoteSignerCreator remoteSignerCreator = (RemoteSignerCreator)dlsym(DynamicLibraryHandle::handle, "Create");
+    RemoteSignerCreator remoteSignerCreator = (RemoteSignerCreator)dlsym(RemoteSignProvider::handle, "Create");
     char* error = nullptr;
     if ((error = dlerror()) != NULL) {
         SIGNATURE_TOOLS_LOGE("%s", error);

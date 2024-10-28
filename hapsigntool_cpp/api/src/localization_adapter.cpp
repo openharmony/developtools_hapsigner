@@ -262,7 +262,7 @@ std::vector<X509*> LocalizationAdapter::GetCertsFromFile(std::string& certPath, 
     BIO* bio = BIO_new_file(certPath.c_str(), "rb");
     if (!bio) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "open file:" + certPath + "failed");
-        DigestCommon::GetOpensslErrorMessage();
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
         BIO_free(bio);
         return certs;
     }
@@ -282,7 +282,7 @@ const std::string LocalizationAdapter::GetInFile()
 bool LocalizationAdapter::IsRemoteSigner()
 {
     std::string mode = options->GetString(Options::MODE, LOCAL_SIGN);
-    return mode == REMOTE_SIGN;
+    return StringUtils::CaseCompare(mode, REMOTE_SIGN);
 }
 
 Options* LocalizationAdapter::GetOptions()

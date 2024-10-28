@@ -15,8 +15,8 @@
 #include <iostream>
 #include <openssl/x509_vfy.h>
 
-// #include "signer_factory.h"
-// #include "localization_adapter.h"
+#include "signer_factory.h"
+#include "localization_adapter.h"
 #include "signer_config.h"
 
 namespace OHOS {
@@ -100,11 +100,11 @@ void SignerConfig::FillParameters(const std::map<std::string, std::string>& para
 
 std::shared_ptr<Signer> SignerConfig::GetSigner()
 {
-//     if (signer == nullptr) {
-//         SignerFactory factory;
-//         LocalizationAdapter adapter(options);
-//         signer = factory.GetSigner(adapter);
-//     }
+    if (signer == nullptr) {
+        SignerFactory factory;
+        LocalizationAdapter adapter(options);
+        signer = factory.GetSigner(adapter);
+    }
     return signer;
 }
 

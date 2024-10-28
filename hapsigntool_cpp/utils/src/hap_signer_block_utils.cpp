@@ -24,8 +24,7 @@
 #include "securec.h"
 #include "byte_buffer_data_source.h"
 #include "file_data_source.h"
-#include "digest_common.h"
-//#include "verify_hap_openssl_utils.h"
+#include "verify_hap_openssl_utils.h"
 #include "signature_tools_log.h"
 #include "signature_tools_errno.h"
 
@@ -454,7 +453,7 @@ bool HapSignerBlockUtils::VerifyHapIntegrity(
     FileDataSource centralDir(hapFile, signInfo.hapCentralDirOffset, centralDirSize, 0);
     ByteBufferDataSource eocd(signInfo.hapEocd);
     DataSource* content[ZIP_BLOCKS_NUM_NEED_DIGEST] = {&contentsZip, &centralDir, &eocd};
-    int32_t nId = DigestCommon::GetDigestAlgorithmId(digestInfo.digestAlgorithm);
+    int32_t nId = VerifyHapOpensslUtils::GetDigestAlgorithmId(digestInfo.digestAlgorithm);
     DigestParameter digestParam = GetDigestParameter(nId);
     ByteBuffer chunkDigest;
     if (!ComputeDigestsForEachChunk(digestParam, content, ZIP_BLOCKS_NUM_NEED_DIGEST, chunkDigest)) {
@@ -473,7 +472,7 @@ bool HapSignerBlockUtils::VerifyHapIntegrity(
         return false;
     }
     PrintMsg(std::string("Digest verify result: ") + "success" + ", DigestAlgorithm: "
-             + DigestCommon::GetDigestAlgorithmString(digestInfo.digestAlgorithm));
+             + VerifyHapOpensslUtils::GetDigestAlgorithmString(digestInfo.digestAlgorithm));
 
     return true;
 }
@@ -484,7 +483,7 @@ bool HapSignerBlockUtils::ComputeDigestsWithOptionalBlock(const DigestParameter&
                                                           ByteBuffer& finalDigest)
 {
     unsigned char out[EVP_MAX_MD_SIZE];
-    int32_t digestLen = DigestCommon::GetDigest(chunkDigest, optionalBlocks, digestParam, out);
+    int32_t digestLen = VerifyHapOpensslUtils::GetDigest(chunkDigest, optionalBlocks, digestParam, out);
     if (digestLen != digestParam.digestOutputSizeBytes) {
         SIGNATURE_TOOLS_LOGE("GetDigest failed, outLen is not right, %u, %d",
                              digestLen, digestParam.digestOutputSizeBytes);
@@ -559,7 +558,7 @@ bool HapSignerBlockUtils::ComputeDigestsForEachChunk(const DigestParameter& dige
                 return false;
             }
 
-            int32_t digestLen = DigestCommon::GetDigest(digestParam, outBlock);
+            int32_t digestLen = VerifyHapOpensslUtils::GetDigest(digestParam, outBlock);
             if (digestLen != digestParam.digestOutputSizeBytes) {
                 SIGNATURE_TOOLS_LOGE("GetDigest failed len: %d digestSizeBytes: %d",
                                      digestLen, digestParam.digestOutputSizeBytes);
@@ -576,7 +575,7 @@ bool HapSignerBlockUtils::ComputeDigestsForEachChunk(const DigestParameter& dige
 DigestParameter HapSignerBlockUtils::GetDigestParameter(int32_t nId)
 {
     DigestParameter digestParam;
-    digestParam.digestOutputSizeBytes = DigestCommon::GetDigestAlgorithmOutputSizeBytes(nId);
+    digestParam.digestOutputSizeBytes = VerifyHapOpensslUtils::GetDigestAlgorithmOutputSizeBytes(nId);
     digestParam.md = EVP_get_digestbynid(nId);
     digestParam.ctxPtr = EVP_MD_CTX_create();
     EVP_MD_CTX_init(digestParam.ctxPtr);
@@ -607,12 +606,12 @@ bool HapSignerBlockUtils::InitDigestPrefix(const DigestParameter& digestParam,
         return false;
     }
 
-    if (!DigestCommon::DigestInit(digestParam)) {
+    if (!VerifyHapOpensslUtils::DigestInit(digestParam)) {
         SIGNATURE_TOOLS_LOGE("DigestInit failed");
         return false;
     }
 
-    if (!DigestCommon::DigestUpdate(digestParam, chunkContentPrefix, ZIP_CHUNK_DIGEST_PRIFIX_LEN)) {
+    if (!VerifyHapOpensslUtils::DigestUpdate(digestParam, chunkContentPrefix, ZIP_CHUNK_DIGEST_PRIFIX_LEN)) {
         SIGNATURE_TOOLS_LOGE("DigestUpdate failed");
         return false;
     }

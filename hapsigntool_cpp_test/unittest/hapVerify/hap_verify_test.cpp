@@ -34,7 +34,6 @@
 #include "hap_utils.h"
 #include "cert_dn_utils.h"
 #include "signer_config.h"
-#include "digest_common.h"
 
 using namespace testing::ext;
 
@@ -900,15 +899,15 @@ HWTEST_F(VerifyHapTest, VerifyHapError018, TestSize.Level0)
 HWTEST_F(VerifyHapTest, VerifyHapError019, TestSize.Level0)
 {
     int32_t signAlgorithm = ALGORITHM_SHA256_WITH_ECDSA;
-    std::string ret = DigestCommon::GetDigestAlgorithmString(signAlgorithm);
+    std::string ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
 
     signAlgorithm = ALGORITHM_SHA384_WITH_ECDSA;
-    ret = DigestCommon::GetDigestAlgorithmString(signAlgorithm);
+    ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
     signAlgorithm = ALGORITHM_SHA512_WITH_ECDSA;
-    ret = DigestCommon::GetDigestAlgorithmString(signAlgorithm);
+    ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
 
     signAlgorithm = ALGORITHM_SHA512_WITH_DSA;
-    ret = DigestCommon::GetDigestAlgorithmString(signAlgorithm);
+    ret = VerifyHapOpensslUtils::GetDigestAlgorithmString(signAlgorithm);
 
     EXPECT_EQ(ret, "");
 }
