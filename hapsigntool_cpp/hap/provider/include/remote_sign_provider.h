@@ -24,10 +24,10 @@ namespace OHOS {
 namespace SignatureTools {
 class RemoteSignProvider : public SignProvider {
 public:
-    //static void* handle;
+    static void* handle;
 
     RemoteSignProvider() = default;
-    ~RemoteSignProvider() = default;
+    ~RemoteSignProvider();
     bool CheckParams(Options* options) override;
     bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)const override;
 };
