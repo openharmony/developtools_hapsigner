@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 #include "byte_buffer_data_source.h"
-#include "digest_common.h"
-//#include "verify_hap_openssl_utils.h"
+#include "verify_hap_openssl_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -47,7 +46,7 @@ bool ByteBufferDataSource::ReadDataAndDigestUpdate(const DigestParameter& digest
 {
     const unsigned char* chunk = reinterpret_cast<const unsigned char*>(bytebuffer.GetBufferPtr() +
                                                                         bytebuffer.GetPosition());
-    bool res = DigestCommon::DigestUpdate(digestParam, chunk, chunkSize);
+    bool res = VerifyHapOpensslUtils::DigestUpdate(digestParam, chunk, chunkSize);
     if (res) {
         bytebuffer.SetPosition(bytebuffer.GetPosition() + chunkSize);
     }

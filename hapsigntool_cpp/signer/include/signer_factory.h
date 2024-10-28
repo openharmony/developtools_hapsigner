@@ -20,6 +20,7 @@
 #include "local_signer.h"
 #include "localization_adapter.h"
 #include "param_constants.h"
+#include "remote_sign_provider.h"
 
 namespace OHOS {
 namespace SignatureTools {

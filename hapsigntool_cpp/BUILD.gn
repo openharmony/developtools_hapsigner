@@ -49,6 +49,7 @@ signature_tools_main_include = [
 
 signature_tools_main_src = [
   "main.cpp",
+  "${signature_tools_api}/src/localization_adapter.cpp",
   "${signature_tools_api}/src/sign_tool_service_impl.cpp",
   "${signature_tools_api}/src/cert_tools.cpp",
   "${signature_tools_signer}/src/signer_factory.cpp",
@@ -105,7 +106,7 @@ ohos_executable("hap-sign-tool") {
   ]
 
   install_images = [ "system" ]
-  install_enable = false
+  install_enable = true
   part_name = "hapsigner"
   subsystem_name = "developtools"
 }
