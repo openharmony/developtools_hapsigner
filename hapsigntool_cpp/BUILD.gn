@@ -87,12 +87,12 @@ ohos_executable("hap-sign-tool") {
     "//third_party/bzip2:libbz2",
     "//third_party/openssl:libcrypto_shared",
     "//third_party/openssl:libssl_shared",
-    "//third_party/zlib:shared_libz",
   ]
 
   external_deps = [
     "c_utils:utils",
     "json:nlohmann_json_static",
+    "zlib:shared_libz",
   ]
 
   cflags_cc = [
