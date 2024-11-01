@@ -32,13 +32,13 @@
         "deps": {
             "components": [
                 "c_utils",
-                "json"
+                "json",
+                "zlib"
             ],
             "third_party": [
                 "bzip2",
                 "openssl",
-                "jsoncpp",
-                "zlib"
+                "jsoncpp"
             ]
         },
         "build": {
