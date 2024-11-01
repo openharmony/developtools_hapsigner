@@ -63,7 +63,6 @@ config("service_include") {
 ohos_source_set("service_target") {
   sources_obj = [
     "${signature_tools_api}/src/sign_tool_service_impl.cpp",
-    "${signature_tools_api}/src/localization_adapter.cpp",
     "${signature_tools_api}/src/cert_tools.cpp",
     "${signature_tools_signer}/src/signer_factory.cpp",
     "${signature_tools_signer}/src/local_signer.cpp",

@@ -20,6 +20,7 @@
 #include "sign_tool_service_impl.h"
 #include "remote_sign_provider.h"
 #include "hap_sign_test.h"
+#include "digest_common.h"
 #include <unistd.h>
 
 namespace OHOS {
@@ -543,7 +544,7 @@ HWTEST_F(HapSignTest, hap_sign_test_012, testing::ext::TestSize.Level1)
     ByteBuffer dig_context;
 
     SignatureAlgorithm algo = SignatureAlgorithm::ALGORITHM_SHA256_WITH_ECDSA;
-    int32_t nId = VerifyHapOpensslUtils::GetDigestAlgorithmId(algo);
+    int32_t nId = DigestCommon::GetDigestAlgorithmId(algo);
     DigestParameter digestParam = HapSignerBlockUtils::GetDigestParameter(nId);
 
     bool ret = SignHap::ComputeDigests(digestParam, contents, len, optionalBlocks, dig_context);
@@ -1133,7 +1134,7 @@ HWTEST_F(HapSignTest, hap_sign_test_026, testing::ext::TestSize.Level1)
     ByteBuffer dig_context;
 
     SignatureAlgorithm algo = SignatureAlgorithm::ALGORITHM_SHA256_WITH_ECDSA;
-    int32_t nId = VerifyHapOpensslUtils::GetDigestAlgorithmId(algo);
+    int32_t nId = DigestCommon::GetDigestAlgorithmId(algo);
     DigestParameter digestParam = HapSignerBlockUtils::GetDigestParameter(nId);
 
     SignerConfig config;

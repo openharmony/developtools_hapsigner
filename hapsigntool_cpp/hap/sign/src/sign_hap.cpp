@@ -15,6 +15,7 @@
 #include "signature_tools_log.h"
 #include "signature_algorithm_helper.h"
 #include "bc_pkcs7_generator.h"
+#include "digest_common.h"
 #include "sign_hap.h"
 
 namespace OHOS {
@@ -34,7 +35,7 @@ bool SignHap::Sign(DataSource* contents[], int32_t len, SignerConfig& config,
     }
     SignatureAlgorithm algo = static_cast<SignatureAlgorithm>(algoClass[0].m_id);
     SIGNATURE_TOOLS_LOGI("[SignHap] Signature Algorithm  is %d", algo);
-    int32_t nId = VerifyHapOpensslUtils::GetDigestAlgorithmId(algo);
+    int32_t nId = DigestCommon::GetDigestAlgorithmId(algo);
     DigestParameter digestParam = HapSignerBlockUtils::GetDigestParameter(nId);
     ByteBuffer digContext;
     std::vector<std::pair<int32_t, ByteBuffer>> nidAndcontentDigestsVec;
