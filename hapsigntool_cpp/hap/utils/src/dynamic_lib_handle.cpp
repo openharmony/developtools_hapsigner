@@ -12,27 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef OHOS_HAP_SIGN_TEST_H
-#define OHOS_HAP_SIGN_TEST_H
-#include "openssl/err.h"
-#include "openssl/pem.h"
-#include "openssl/ssl.h"
-#include "sign_tool_service_impl.h"
-#include "signature_tools_log.h"
-#include "verify_hap_openssl_utils.h"
-#include "digest_common.h"
-#include <gtest/gtest.h>
+
+#include "dynamic_lib_handle.h"
 
 namespace OHOS {
 namespace SignatureTools {
-class HapOpensslUtilsTest : public testing::Test {
-public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
-    void SetUp() {};
-    void TearDown() {};
-};
+void* DynamicLibHandle::handle = nullptr;
+DynamicLibHandle::~DynamicLibHandle()
+{
+    if (handle) {
+        if (dlclose(handle) != 0) {
+            SIGNATURE_TOOLS_LOGE("dlclose() %s", dlerror());
+        }
+    }
+}
 } // namespace SignatureTools
 } // namespace OHOS
-
-#endif // OHOS_HAP_SIGN_TEST_H
