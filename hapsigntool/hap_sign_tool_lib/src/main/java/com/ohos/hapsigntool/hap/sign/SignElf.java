@@ -19,8 +19,8 @@ import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
-import com.ohos.hapsigntool.hap.entity.HwBlockHead;
-import com.ohos.hapsigntool.hap.entity.HwSignHead;
+import com.ohos.hapsigntool.hap.entity.BlockHead;
+import com.ohos.hapsigntool.hap.entity.SignHead;
 import com.ohos.hapsigntool.hap.entity.SignBlockData;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTags;
 import com.ohos.hapsigntool.hap.entity.SignatureBlockTypes;
@@ -214,12 +214,12 @@ public class SignElf {
 
     private static void generateSignBlockHead(List<SignBlockData> signDataList)
             throws IOException {
-        long offset = (long) HwBlockHead.getElfBlockLen() * signDataList.size();
+        long offset = (long) BlockHead.getElfBlockLen() * signDataList.size();
 
         for (int i = 0; i < signDataList.size(); i++) {
             SignBlockData signBlockData = signDataList.get(i);
 
-            signBlockData.setBlockHead(HwBlockHead.getBlockHeadLittleEndian(signBlockData.getType(),
+            signBlockData.setBlockHead(BlockHead.getBlockHeadLittleEndian(signBlockData.getType(),
                     SignatureBlockTags.DEFAULT, (int) signBlockData.getLen(), (int) offset));
             offset += signBlockData.getLen();
             if (isLongOverflowInteger(offset)) {
@@ -248,7 +248,7 @@ public class SignElf {
             return null;
         }
         CodeSigning codeSigning = new CodeSigning(signerConfig);
-        long offset = binFileLen + (long) HwBlockHead.getElfBlockLen() * blockNum;
+        long offset = binFileLen + (long) BlockHead.getElfBlockLen() * blockNum;
         String profileContent = signParams.get(ParamConstants.PARAM_PROFILE_JSON_CONTENT);
         byte[] codesignData = codeSigning.getElfCodeSignBlock(new File(inputFile), offset,
                 signParams.get(ParamConstants.PARAM_IN_FORM), profileContent);
@@ -258,10 +258,10 @@ public class SignElf {
     private static boolean writeSignHeadDataToOutputFile(String inputFile, String outputFile, int blockNum) {
         long size = FileUtils.getFileLen(outputFile) - FileUtils.getFileLen(inputFile);
         if (isLongOverflowInteger(size)) {
-            LOGGER.error("File size is Overflow integer range.");
+            LOGGER.error("File size is overflow integer range.");
             return false;
         }
-        HwSignHead signHeadData = new HwSignHead();
+        SignHead signHeadData = new SignHead();
         byte[] signHeadByte = signHeadData.getSignHeadLittleEndian((int) size, blockNum);
         if (signHeadByte == null) {
             LOGGER.error("Failed to get sign head data.");

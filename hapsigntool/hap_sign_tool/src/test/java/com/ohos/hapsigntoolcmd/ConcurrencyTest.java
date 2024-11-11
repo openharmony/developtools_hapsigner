@@ -27,6 +27,8 @@ import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.FileUtils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,6 +77,7 @@ public class ConcurrencyTest {
     private static final File TMP_DIR = new File("concurrentTest");
 
     private static final List<Cleanable> tmpSource = new ArrayList<>();
+    private static final Logger log = LogManager.getLogger(ConcurrencyTest.class);
 
     /**
      * before test
@@ -140,13 +143,19 @@ public class ConcurrencyTest {
         CountDownLatch countDownLatch = new CountDownLatch(CONCURRENT_TASK_COUNT);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(CONCURRENT_TASK_COUNT, CONCURRENT_TASK_COUNT,
                 KEEP_ALIVE_TIMES, TimeUnit.SECONDS, new ArrayBlockingQueue<>(CONCURRENT_TASK_COUNT),
-                new ThreadPoolExecutor.AbortPolicy());
+                new ThreadPoolExecutor.DiscardPolicy());
         List<Future<Boolean>> futures = new ArrayList<>(CONCURRENT_TASK_COUNT);
         for (int i = 0; i < CONCURRENT_TASK_COUNT; i++) {
             futures.add(executor.submit(generateSignHapTask(countDownLatch)));
         }
         executor.shutdown();
-        boolean isFinished = countDownLatch.await(KEEP_ALIVE_TIMES, TimeUnit.SECONDS);
+        boolean isFinished;
+        try {
+            isFinished = countDownLatch.await(KEEP_ALIVE_TIMES, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            isFinished = false;
+            log.error("concurrency test interrupted", e);
+        }
         if (!isFinished) {
             executor.shutdownNow();
         }

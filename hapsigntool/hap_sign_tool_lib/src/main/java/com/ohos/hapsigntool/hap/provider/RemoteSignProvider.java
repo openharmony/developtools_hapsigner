@@ -35,6 +35,6 @@ public class RemoteSignProvider extends SignProvider {
 
     @Override
     protected boolean checkInputCertMatchWithProfile(X509Certificate inputCert, X509Certificate certInProfile) {
-        return inputCert == null ? false : inputCert.equals(certInProfile);
+        return inputCert != null && inputCert.equals(certInProfile);
     }
 }
