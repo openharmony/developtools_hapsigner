@@ -98,11 +98,9 @@ public class SignContentInfo {
     }
 
     private void addHashData(SignContentHash signInfo) {
-        if (hashData != null) {
-            hashData.add(signInfo);
-            numOfBlocks++;
-            size += signInfo.contentHashLen;
-        }
+        hashData.add(signInfo);
+        numOfBlocks++;
+        size += signInfo.contentHashLen;
     }
 
     /**

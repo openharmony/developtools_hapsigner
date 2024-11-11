@@ -80,13 +80,13 @@ public class HapSignToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
 
         VerifyAppParameters verifyAppParameters = new VerifyAppParameters();
         verifyAppParameters.setInFile(outputFile.getCanonicalPath());
         verifyAppParameters.setOutCertChain("out.cer");
         verifyAppParameters.setOutProfile("out.p7b");
-        Assertions.assertSame(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertEquals(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
@@ -111,14 +111,14 @@ public class HapSignToolTest {
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
         signAppParameters.setInForm(InForm.ELF);
-        Assertions.assertSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
 
         VerifyAppParameters verifyAppParameters = new VerifyAppParameters();
         verifyAppParameters.setInFile(outputFile.getCanonicalPath());
         verifyAppParameters.setOutCertChain("out.cer");
         verifyAppParameters.setOutProfile("out.p7b");
         verifyAppParameters.setInForm(InForm.ELF);
-        Assertions.assertSame(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertEquals(HapSignTool.verifyApp(verifyAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
@@ -144,7 +144,7 @@ public class HapSignToolTest {
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
         signAppParameters.setProfileSigned(ProFileSigned.UNSIGNED);
         signAppParameters.setInForm(InForm.ELF);
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertNotEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
@@ -167,7 +167,7 @@ public class HapSignToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertNotEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
@@ -190,7 +190,7 @@ public class HapSignToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertNotEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
 
@@ -214,7 +214,7 @@ public class HapSignToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertNotEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
@@ -237,7 +237,7 @@ public class HapSignToolTest {
         signAppParameters.setKeyStoreFile("../../tools/ohtest_pass.jks");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertNotEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     /**
@@ -260,7 +260,7 @@ public class HapSignToolTest {
         signAppParameters.setAppCertFile("../../tools/app1.pem");
         signAppParameters.setKeystorePwd("123456".toCharArray());
         signAppParameters.setOutFile(outputFile.getCanonicalPath());
-        Assertions.assertNotSame(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
+        Assertions.assertNotEquals(HapSignTool.signApp(signAppParameters).getErrCode(), ERROR.SUCCESS_CODE);
     }
 
     private static class Cleanable {

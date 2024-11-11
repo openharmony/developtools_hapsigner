@@ -26,7 +26,7 @@ import java.nio.ByteOrder;
  *
  * @since 2021-12-13
  */
-public class HwSignHead {
+public class SignHead {
     /**
      * length of sign head
      */

@@ -22,6 +22,7 @@ import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 
+import com.ohos.hapsigntool.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,10 +48,10 @@ public class LocalJKSSignProvider extends SignProvider {
     public Optional<X509CRL> getCrl() {
         X509CRL crl = null;
         String crlPath = signParams.get(ParamConstants.PARAM_BASIC_CRL);
-        if (crlPath == null || "".equals(crlPath)) {
+        if (StringUtils.isEmpty(crlPath)) {
             return Optional.ofNullable(crl);
         }
-        try (FileInputStream input = new FileInputStream(new File(crlPath));) {
+        try (FileInputStream input = new FileInputStream(crlPath)) {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             CRL baseCrl = cf.generateCRL(input);
             if (!(baseCrl instanceof X509CRL)) {

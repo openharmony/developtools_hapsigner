@@ -50,8 +50,6 @@ import java.util.List;
  * @since 2021/12/28
  */
 public class CertChainUtils {
-    private static final Logger LOGGER = LogManager.getLogger(CertUtils.class);
-
     private CertChainUtils() {
     }
 
