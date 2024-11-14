@@ -20,7 +20,7 @@ namespace SignatureTools {
 void* DynamicLibHandle::handle = nullptr;
 DynamicLibHandle::~DynamicLibHandle()
 {
-    if (handle) {
+    if (handle != nullptr) {
         if (dlclose(handle) != 0) {
             SIGNATURE_TOOLS_LOGE("dlclose() %s", dlerror());
         }

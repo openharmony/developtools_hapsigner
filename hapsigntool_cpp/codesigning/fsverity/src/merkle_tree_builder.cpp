@@ -247,25 +247,25 @@ MerkleTree* MerkleTreeBuilder::GetMerkleTree(ByteBuffer* dataBuffer, long inputD
     std::vector<int8_t> tree;
     if (inputDataSize < FSVERITY_HASH_PAGE_SIZE) {
         ByteBuffer* fsVerityHashPageBuffer = Slice(dataBuffer, 0, digestSize);
-        rootHash = std::vector<int8_t>(digestSize);
-        fsVerityHashPageBuffer->GetByte((int8_t*)rootHash.data(), digestSize);
         if (fsVerityHashPageBuffer != nullptr) {
+            rootHash = std::vector<int8_t>(digestSize);
+            fsVerityHashPageBuffer->GetByte(rootHash.data(), digestSize);
             delete fsVerityHashPageBuffer;
             fsVerityHashPageBuffer = nullptr;
         }
     } else {
         tree = std::vector<int8_t>(dataBuffer->GetBufferPtr(), dataBuffer->GetBufferPtr() + dataBuffer->GetCapacity());
         ByteBuffer* fsVerityHashPageBuffer = Slice(dataBuffer, 0, FSVERITY_HASH_PAGE_SIZE);
-        std::vector<int8_t> fsVerityHashPage(FSVERITY_HASH_PAGE_SIZE);
-        fsVerityHashPageBuffer->GetData(0, fsVerityHashPage.data(), FSVERITY_HASH_PAGE_SIZE);
-        DigestUtils digestUtils(HASH_SHA256);
-        std::string fsVerityHashPageStr(fsVerityHashPage.begin(), fsVerityHashPage.end());
-        digestUtils.AddData(fsVerityHashPageStr);
-        std::string result = digestUtils.Result(DigestUtils::Type::BINARY);
-        for (int i = 0; i < static_cast<int>(result.size()); i++) {
-            rootHash.push_back(result[i]);
-        }
         if (fsVerityHashPageBuffer != nullptr) {
+            std::vector<int8_t> fsVerityHashPage(FSVERITY_HASH_PAGE_SIZE);
+            fsVerityHashPageBuffer->GetData(0, fsVerityHashPage.data(), FSVERITY_HASH_PAGE_SIZE);
+            DigestUtils digestUtils(HASH_SHA256);
+            std::string fsVerityHashPageStr(fsVerityHashPage.begin(), fsVerityHashPage.end());
+            digestUtils.AddData(fsVerityHashPageStr);
+            std::string result = digestUtils.Result(DigestUtils::Type::BINARY);
+            for (int i = 0; i < static_cast<int>(result.size()); i++) {
+                rootHash.push_back(result[i]);
+            }
             delete fsVerityHashPageBuffer;
             fsVerityHashPageBuffer = nullptr;
         }
@@ -279,7 +279,6 @@ void MerkleTreeBuilder::DataRoundupChunkSize(ByteBuffer* data, long originalData
     long fullChunkSize = GetFullChunkSize(originalDataSize, CHUNK_SIZE, digestSize);
     int diffValue = (int)(fullChunkSize % CHUNK_SIZE);
     if (diffValue > 0) {
-        std::vector<int8_t> padding(CHUNK_SIZE - diffValue);
         data->SetPosition(data->GetPosition() + (CHUNK_SIZE - diffValue));
     }
 }

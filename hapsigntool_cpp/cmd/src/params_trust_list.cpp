@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#include <algorithm>
+
 #include "params_trust_list.h"
 #include "constant.h"
 #include "params.h"
@@ -68,14 +70,11 @@ void ParamsTrustList::ReadHelpParam(std::istringstream& fd)
         if (params.empty()) {
             continue;
         }
-        for (const auto& it : commands) {
-            if (it == params) {
-                cmdStandBy = params;
-                isExists = true;
-                break;
-            }
-        }
-        if (!isExists) {
+        isExists = std::any_of(commands.begin(), commands.end(), 
+                               [params](const std::string& cmd) {return cmd == params; });
+        if (isExists) {
+            cmdStandBy = params;
+        } else {
             PutTrustMap(cmdStandBy, params);
         }
     }

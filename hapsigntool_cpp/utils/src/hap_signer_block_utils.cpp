@@ -343,6 +343,7 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
         ByteBuffer hapBlockHead(ZIP_CD_SIZE_OFFSET_IN_EOCD);
         int64_t ret = hapFile.ReadFileFullyFromOffset(hapBlockHead, readHeadOffset);
         if (ret < 0) {
+            SIGNATURE_TOOLS_LOGE("read %dst head error: %" PRId64, i, ret);
             return false;
         }
         HapSubSignBlockHead subSignBlockHead;
@@ -587,8 +588,6 @@ int32_t HapSignerBlockUtils::GetChunkCount(int64_t inputSize, int64_t chunkSize)
     if (chunkSize <= 0 || inputSize > LLONG_MAX - chunkSize) {
         return 0;
     }
-    if (chunkSize == 0)
-        return 0;
     int64_t res = (inputSize + chunkSize - 1) / chunkSize;
     if (res > INT_MAX || res < 0) {
         return 0;

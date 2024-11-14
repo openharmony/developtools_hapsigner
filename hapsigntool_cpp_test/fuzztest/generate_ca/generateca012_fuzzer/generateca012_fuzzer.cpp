@@ -33,7 +33,6 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-    std::shared_ptr<SignToolServiceImpl> api = std::make_shared<SignToolServiceImpl>();
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-app-sign-srv-ca-key-v1";
     std::string issuerkeyAlias = "oh-root-ca-key-v1";

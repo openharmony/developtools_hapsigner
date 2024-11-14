@@ -43,8 +43,8 @@ std::string DigestUtils::Result(DigestUtils::Type type)
         printf("Failed to Calculate Hash Relsult\n");
     }
     int temporaryVariableFirst = 2;
-    int temporaryVariableSecond = 3;
     if (type == Type::HEX) {
+        int temporaryVariableSecond = 3;
         char* res = new char[len * temporaryVariableFirst + 1];
         for (unsigned int i = 0; i < len; i++) {
             snprintf_s(&res[i * temporaryVariableFirst], temporaryVariableSecond,

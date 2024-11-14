@@ -131,7 +131,7 @@ bool VerifyCodeSignature::VerifyCodeSign(std::string file, std::pair<std::string
     }
     if (ext != nullptr) {
         delete mte;
-        mte = (MerkleTreeExtension*)(ext);
+        mte = static_cast<MerkleTreeExtension*>(ext);
     } else {
         std::shared_ptr<MerkleTreeExtension> merkleTreeExt(mte);
     }
@@ -292,16 +292,14 @@ bool VerifyCodeSignature::ParseMerkleTree(CodeSignBlock& csb, int32_t readOffset
         SIGNATURE_TOOLS_LOGE("Missing merkleTreeExtension in verifycation");
         return false;
     }
-    MerkleTreeExtension* mte = (MerkleTreeExtension*)(extension);
-    if (mte) {
-        bool merkleTreeFlag = computedTreeOffset != mte->GetMerkleTreeOffset() ||
-            merkleTreeBytes.size() != mte->GetMerkleTreeSize();
-        if (merkleTreeFlag) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Invalid merkle tree offset or tree size");
-            return false;
-        }
-        csb.AddOneMerkleTree(CodeSigning::HAP_SIGNATURE_ENTRY_NAME, *(std::vector<int8_t> *) &merkleTreeBytes);
+    MerkleTreeExtension* mte = static_cast<MerkleTreeExtension*>(extension);
+    bool merkleTreeFlag = computedTreeOffset != mte->GetMerkleTreeOffset() ||
+        merkleTreeBytes.size() != mte->GetMerkleTreeSize();
+    if (merkleTreeFlag) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Invalid merkle tree offset or tree size");
+        return false;
     }
+    csb.AddOneMerkleTree(CodeSigning::HAP_SIGNATURE_ENTRY_NAME, *(std::vector<int8_t> *) &merkleTreeBytes);
     return true;
 }
 

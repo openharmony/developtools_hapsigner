@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <numeric>
+
 #include "signature_tools_log.h"
 #include "signature_algorithm_helper.h"
 #include "bc_pkcs7_generator.h"
@@ -98,6 +100,9 @@ void SignHap::EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
     for (const auto& pair : nidAndcontentDigests) {
         encodeSize += INT_SIZE + INT_SIZE + INT_SIZE + pair.second.GetCapacity();
     }
+    encodeSize = std::accumulate(nidAndcontentDigests.begin(), nidAndcontentDigests.end(), encodeSize,
+                                 [](int sum, const std::pair<int32_t, ByteBuffer>& pair) {
+        return sum + INT_SIZE + INT_SIZE + pair.second.GetCapacity(); });
     result.SetCapacity(encodeSize);
     result.PutInt32(CONTENT_VERSION); // version
     result.PutInt32(BLOCK_NUMBER); // block number
@@ -141,7 +146,9 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     // uint128: magic
     // uint32: version
     long optionalBlockSize = 0L;
-    for (const auto& elem : optionalBlocks) optionalBlockSize += elem.optionalBlockValue.GetCapacity();
+    optionalBlockSize = std::accumulate(optionalBlocks.begin(), optionalBlocks.end(), optionalBlockSize,
+                                        [](int64_t sum, const auto& elem) { 
+        return sum + elem.optionalBlockValue.GetCapacity(); });
     long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) *
                        (optionalBlocks.size() + 1)) +
         optionalBlockSize +
@@ -184,7 +191,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     result.PutInt32(optionalBlocks.size() + 1); // Signing block count
     result.PutInt64(resultSize); // length of hap signing block
     std::vector<int8_t> signingBlockMagic = HapUtils::GetHapSigningBlockMagic(compatibleVersion);
-    result.PutData((const char*)signingBlockMagic.data(), signingBlockMagic.size()); // magic
+    result.PutData(reinterpret_cast<const char*>(signingBlockMagic.data()), signingBlockMagic.size()); // magic
     result.PutInt32(HapUtils::GetHapSigningBlockVersion(compatibleVersion)); // version
     return true;
 }

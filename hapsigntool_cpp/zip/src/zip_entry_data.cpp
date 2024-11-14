@@ -31,12 +31,12 @@ ZipEntryData* ZipEntryData::GetZipEntry(std::ifstream& input, uint32_t entryOffs
 {
     uint32_t offset = entryOffset;
     /* read entry header by file and offset. */
-    std::string retStr;
-    if (FileUtils::ReadInputByOffsetAndLength(input, entryOffset, ZipEntryHeader::HEADER_LENGTH, retStr) != 0) {
+    std::string headStr;
+    if (FileUtils::ReadInputByOffsetAndLength(input, entryOffset, ZipEntryHeader::HEADER_LENGTH, headStr) != 0) {
         SIGNATURE_TOOLS_LOGE("read zip entry head failed in file");
         return nullptr;
     }
-    ZipEntryHeader* entryHeader = ZipEntryHeader::GetZipEntryHeader(retStr);
+    ZipEntryHeader* entryHeader = ZipEntryHeader::GetZipEntryHeader(headStr);
     if (!entryHeader) {
         return nullptr;
     }

@@ -124,7 +124,7 @@ bool VerifyElf::VerifyP7b(std::unordered_map<int8_t, SigningBlock>& signBlockMap
         }
         VerifyHap hapVerify(false);
         std::unique_ptr<ByteBuffer> profileBuffer =
-            std::make_unique<ByteBuffer>((char*)profileByte.data(), profileByte.size());
+            std::make_unique<ByteBuffer>(reinterpret_cast<const char*>(profileByte.data()), profileByte.size());
         bool resultFlag = hapVerify.VerifyAppPkcs7(pkcs7Context, *profileBuffer);
         if (!resultFlag) {
             SIGNATURE_TOOLS_LOGE("verify elf profile failed on verify elf!");

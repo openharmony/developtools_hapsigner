@@ -71,7 +71,7 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
     }
 
     ByteBuffer bf(bytes.size());
-    bf.PutData((const char*)bytes.data(), bytes.size());
+    bf.PutData(reinterpret_cast<const char*>(bytes.data()), bytes.size());
     bf.SetPosition(0);
     int inMagic;
     bf.GetInt32(inMagic);
@@ -105,7 +105,6 @@ FsVerityInfoSegment FsVerityInfoSegment::FromByteArray(const std::vector<int8_t>
         return FsVerityInfoSegment();
     }
 
-    std::vector<int8_t> inReservedBytes(RESERVED_BYTE_ARRAY_LENGTH);
     char reverseArr[RESERVED_BYTE_ARRAY_LENGTH];
     bf.GetData(reverseArr, RESERVED_BYTE_ARRAY_LENGTH);
     std::vector<int8_t> reverseData(reverseArr, reverseArr + RESERVED_BYTE_ARRAY_LENGTH);

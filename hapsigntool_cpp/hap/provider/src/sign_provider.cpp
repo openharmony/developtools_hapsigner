@@ -646,7 +646,7 @@ bool SignProvider::CheckSignatureAlg()
     // Remove trailing spaces
     size_t end = signAlg.find_last_not_of(" ");
     if (end != std::string::npos) {
-        signAlg = signAlg.substr(0, end + 1);
+        signAlg.resize(end + 1);
     }
     for (auto it = VALID_SIGN_ALG_NAME.begin(); it != VALID_SIGN_ALG_NAME.end(); it++) {
         if (StringUtils::CaseCompare(*it, signAlg)) {

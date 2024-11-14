@@ -68,10 +68,10 @@ bool RandomAccessFileInput::CopyTo(int64_t offset, int size, ByteBuffer& buffer)
     int originalLimit = buffer.GetLimit();
 
     buffer.SetLimit(buffer.GetPosition() + size);
-    int64_t readSize;
     while (remaining > 0) {
-        {
-            std::mutex tmpMutex;
+        int64_t readSize;
+        std::mutex tmpMutex;
+        { 
             std::scoped_lock lock(tmpMutex);
             readSize = file.ReadFileFullyFromOffset(buffer, offsetInFile);
         }
