@@ -28,11 +28,6 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
 {
     std::unique_ptr<SignerFactory> signerFactory = std::make_unique<SignerFactory>();
     int result = RET_OK;
-    if (signerFactory == NULL) {
-        PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
-                            "signerFactory is NULL, create signerFactor failed");
-        return INVALIDPARAM_ERROR;
-    }
     std::shared_ptr<Signer> signer(signerFactory->GetSigner(adapter));
     if (signer == NULL) {
         SIGNATURE_TOOLS_LOGE("signer is NULL, get signer failed");
@@ -40,7 +35,7 @@ int ProfileSignTool::GenerateP7b(LocalizationAdapter& adapter, const std::string
     }
     const std::string sigAlg = adapter.GetSignAlg();
     // ret is the generated p7b data
-    result = SignProfile(content, signer, sigAlg, ret) < 0;
+    result = SignProfile(content, signer, sigAlg, ret);
     if (result < 0) {
         SIGNATURE_TOOLS_LOGE("generate p7b failed");
         return SIGN_ERROR;

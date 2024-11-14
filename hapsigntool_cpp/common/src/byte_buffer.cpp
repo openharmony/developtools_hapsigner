@@ -27,7 +27,7 @@ const int32_t ByteBuffer::HEX_PRINT_LENGTH = 3;
 template<typename T>
 std::shared_ptr<T> make_shared_array(size_t size)
 {
-    if (size <= 0) {
+    if (size == 0) {
         return NULL;
     }
     T* buffer = new (std::nothrow)T[size];
@@ -514,6 +514,10 @@ ByteBuffer& ByteBuffer::Slice()
         return *this;
     }
     int32_t newCapacity = limit - position;
+    if(newCapacity < 0) {
+        SIGNATURE_TOOLS_LOGE("newCapacity %d is too small", newCapacity);
+        return *this;
+    }
     auto newBuffer = make_shared_array<char>(newCapacity);
     if (newBuffer == nullptr) {
         SIGNATURE_TOOLS_LOGE("make_shared_array failed");

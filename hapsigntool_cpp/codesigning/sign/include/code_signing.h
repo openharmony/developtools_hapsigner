@@ -58,7 +58,7 @@ public:
 
 public:
     static bool IsNativeFile(const std::string& input);
-    uint32_t ComputeDataSize(ZipSigner& zip);
+    int64_t ComputeDataSize(ZipSigner& zip);
     int64_t GetTimestamp();
     bool SignNativeLibs(const std::string &input, std::string &ownerID);
     void UpdateCodeSignBlock();

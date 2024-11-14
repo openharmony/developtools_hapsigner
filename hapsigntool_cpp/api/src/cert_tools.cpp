@@ -14,6 +14,7 @@
  */
 #include <cassert>
 #include <string>
+#include <numeric>
 #include <unordered_map>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
@@ -72,10 +73,10 @@ bool CertTools::SaveCertTofile(const std::string& filename, X509* cert)
     return true;
 }
 
-static bool UpdateConstraint(Options* options)
+bool CertTools::UpdateConstraint(Options* options)
 {
     if (options->count(Options::BASIC_CONSTRAINTS)) {
-        if (!CertTools::String2Bool(options, Options::BASIC_CONSTRAINTS)) {
+        if (!String2Bool(options, Options::BASIC_CONSTRAINTS)) {
             return false;
         }
     } else {
@@ -83,7 +84,7 @@ static bool UpdateConstraint(Options* options)
     }
 
     if (options->count(Options::BASIC_CONSTRAINTS_CRITICAL)) {
-        if (!CertTools::String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
+        if (!String2Bool(options, Options::BASIC_CONSTRAINTS_CRITICAL)) {
             return false;
         }
     } else {
@@ -91,7 +92,7 @@ static bool UpdateConstraint(Options* options)
     }
 
     if (options->count(Options::BASIC_CONSTRAINTS_CA)) {
-        if (!CertTools::String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
+        if (!String2Bool(options, Options::BASIC_CONSTRAINTS_CA)) {
             return false;
         }
     } else {
@@ -223,6 +224,10 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
 {
     bool result = false;
     X509* cert = X509_new();
+    if (cert == NULL) {
+        SIGNATURE_TOOLS_LOGE("create X509 cert failed");
+        return nullptr;
+    }
     int validity = options->GetInt(Options::VALIDITY);
     result = (!SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert));
@@ -273,6 +278,10 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
 {
     bool result = false;
     X509* cert = X509_new();
+    if (cert == NULL) {
+        SIGNATURE_TOOLS_LOGE("create X509 cert failed");
+        return nullptr;
+    }
     int validity = options->GetInt(Options::VALIDITY);
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     result = (!SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
@@ -353,9 +362,8 @@ bool CertTools::SetKeyUsage(X509* cert, Options* options)
         bool keyUsageCritical = options->GetBool(Options::KEY_USAGE_CRITICAL);
         int crit = keyUsageCritical > 0 ? 1 : 0;
         std::vector<std::string> vecs = StringUtils::SplitString(keyUsage.c_str(), ',');
-        for (auto &vec : vecs) {
-            key |= externDic[vec];
-        }
+        key = std::accumulate(vecs.begin(), vecs.end(), key, [&](long key, const std::string& vec) {
+                              return key | externDic[vec]; });
         if (keyUsageInt == NULL || !ASN1_INTEGER_set(keyUsageInt, key)) {
             SIGNATURE_TOOLS_LOGE("failed to set asn1_integer");
             ASN1_INTEGER_free(keyUsageInt);
@@ -447,6 +455,9 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
     }
 
     X509* cert = X509_new();
+    if (cert == NULL) {
+        goto err;
+    }
     result = (!SetCertVersion(cert, DEFAULT_CERT_VERSION) ||
               !SetCertSerialNum(cert) ||
               !SetKeyIdentifierExt(cert));
@@ -549,6 +560,13 @@ X509* CertTools::ReadfileToX509(const std::string& filename)
     }
 
     X509* cert = X509_new();
+    if (cert == NULL) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
+        SIGNATURE_TOOLS_LOGE("create X509 cert failed");
+        X509_free(cert);
+        BIO_free(certBio);
+        return nullptr;
+    }
     if (!PEM_read_bio_X509(certBio, &cert, NULL, NULL)) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("PEM_read_bio_X509 failed");
@@ -765,7 +783,7 @@ bool CertTools::SetAuthorizeKeyIdentifierExt(X509* cert)
 bool CertTools::SetSignCapacityExt(X509* cert, const char signCapacity[], int capacityLen)
 {
     ASN1_OCTET_STRING* certSignCapacityData = ASN1_OCTET_STRING_new();
-    if (!ASN1_OCTET_STRING_set(certSignCapacityData, (const unsigned char*)signCapacity, capacityLen)) {
+    if (!ASN1_OCTET_STRING_set(certSignCapacityData, reinterpret_cast<const unsigned char*>(signCapacity), capacityLen)) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("failed to set pubkey digst into ASN1 object");
         ASN1_OCTET_STRING_free(certSignCapacityData);
@@ -836,6 +854,14 @@ X509* CertTools::GenerateEndCert(X509_REQ* csr, EVP_PKEY* issuerKeyPair,
     int validity = adapter.options->GetInt(adapter.options->VALIDITY);
     std::string signAlg = adapter.options->GetString(adapter.options->SIGN_ALG);
 
+    if(cert == NULL) {
+        SIGNATURE_TOOLS_LOGE("create X509 cert failed");
+        goto err;
+    }
+    if(issuerReq == NULL) {
+        SIGNATURE_TOOLS_LOGE("create X509 req failed");
+        goto err;
+    }
     result = (!SetCertVersion(cert, DEFAULT_CERT_VERSION) || !SetCertSerialNum(cert));
     if (result) {
         goto err;

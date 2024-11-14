@@ -136,8 +136,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int argc = 30;
 
     bool ret = false;
-    ret = ParamsRunTool::ProcessCmd(argv, argc);
-    ret = GenerateAppCertTest2();
+    ParamsRunTool::ProcessCmd(argv, argc);
+    GenerateAppCertTest2();
     ret = GenerateAppCertTest3();
 
     return ret;

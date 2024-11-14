@@ -89,7 +89,7 @@ SignInfo::SignInfo(const SignInfo& other)
     this->signature = other.signature;
     this->zeroPadding = other.zeroPadding;
     for (MerkleTreeExtension* ext : other.extensionList) {
-        MerkleTreeExtension* extTmp = new MerkleTreeExtension(*(MerkleTreeExtension*)(ext));
+        MerkleTreeExtension* extTmp = new MerkleTreeExtension(*ext);
         this->extensionList.push_back(extTmp);
     }
 }
@@ -108,8 +108,8 @@ SignInfo& SignInfo::operator=(const SignInfo& other)
     this->extensionOffset = other.extensionOffset;
     this->signature = other.signature;
     this->zeroPadding = other.zeroPadding;
-    for (Extension* ext : other.extensionList) {
-        MerkleTreeExtension* extTmp = new MerkleTreeExtension(*(MerkleTreeExtension*)(ext));
+    for (MerkleTreeExtension* ext : other.extensionList) {
+        MerkleTreeExtension* extTmp = new MerkleTreeExtension(*ext);
         this->extensionList.push_back(extTmp);
     }
     return *this;

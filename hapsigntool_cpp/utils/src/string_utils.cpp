@@ -32,11 +32,8 @@ bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::
     std::transform(fileSuffix.begin(), fileSuffix.end(), fileSuffix.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
-    for (const std::string& val : strs) {
-        if (val == fileSuffix)
-            return true;
-    }
-    return false;
+    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {
+                       return val == fileSuffix; });
 }
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)
@@ -72,11 +69,7 @@ std::string StringUtils::FormatLoading(std::string& dealStr)
         del.insert(position + 1, " ");
         position++;
     }
-    for (auto& ch : del) {
-        if (ch == slash) {
-            ch = comma;
-        }
-    }
+    std::replace(del.begin(), del.end(), slash, comma);
     return del.append("\n");
 }
 std::string StringUtils::Pkcs7ToString(PKCS7* p7)

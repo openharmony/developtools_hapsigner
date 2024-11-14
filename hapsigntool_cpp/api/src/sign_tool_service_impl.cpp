@@ -71,7 +71,6 @@ bool SignToolServiceImpl::GenerateRootCertToFile(Options* options, EVP_PKEY* roo
 {
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     std::string subject = options->GetString(Options::SUBJECT);
-    std::string outFile;
     X509* certPtr = nullptr;
     X509_REQ* csr = nullptr;
     bool result = false;
@@ -231,6 +230,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
 err:
     if (result == false)
         SIGNATURE_TOOLS_LOGE("generate cert failed!");
+    adapter->ResetPwd();
     X509_free(cert);
     X509_REQ_free(csr);
     EVP_PKEY_free(rootKeyPair);
@@ -393,6 +393,7 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
     
 err:
     adapter->AppAndProfileAssetsRealse({issuerKeyPairPtr, keyPairPtr}, {csrPtr}, {x509CertificatePtr});
+    adapter->ResetPwd();
     return false;
 }
 
@@ -437,6 +438,7 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
     
 err:
     adapter->AppAndProfileAssetsRealse({issuerKeyPair, keyPair}, {csr}, {x509Certificate});
+    adapter->ResetPwd();
     return false;
 }
 
@@ -446,8 +448,8 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
     bool successflag = false;
     X509* subCaCert = nullptr;
     X509* rootCaCert = nullptr;
-    std::vector<X509*> certificates;
     if (adapter.IsOutFormChain()) {
+        std::vector<X509*> certificates;
         certificates.emplace_back(cert); // add entity cert
         successflag = (!(subCaCert = adapter.GetSubCaCertFile()) ||
                        !(rootCaCert = adapter.GetCaCertFile()));

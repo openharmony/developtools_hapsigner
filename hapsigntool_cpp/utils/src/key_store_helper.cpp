@@ -167,9 +167,12 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     X509_set_serialNumber(&cert, ai);
     X509_gmtime_adj(X509_get_notBefore(&cert), 0);
     X509_gmtime_adj(X509_get_notAfter(&cert), (long)DEFAULT_VALIDITY_DAYS * ONE_DAY_TIME);
-    if (!X509_NAME_add_entry_by_txt(issuerName, "C", MBSTRING_ASC, (unsigned char*)"US", -1, -1, 0)
-        || !X509_NAME_add_entry_by_txt(issuerName, "O", MBSTRING_ASC, (unsigned char*)"My Company", -1, -1, 0)
-        || !X509_NAME_add_entry_by_txt(issuerName, "CN", MBSTRING_ASC, (unsigned char*)"My Issuer", -1, -1, 0)) {
+    if (!X509_NAME_add_entry_by_txt(issuerName, "C", 
+        MBSTRING_ASC, reinterpret_cast<const unsigned char*>("US"), -1, -1, 0)
+        || !X509_NAME_add_entry_by_txt(issuerName, "O", 
+        MBSTRING_ASC, reinterpret_cast<const unsigned char*>("My Company"), -1, -1, 0)
+        || !X509_NAME_add_entry_by_txt(issuerName, "CN", 
+        MBSTRING_ASC, reinterpret_cast<const unsigned char*>("My Issuer"), -1, -1, 0)) {
         KeyPairFree(bnSerial, issuerName, subjectName, ai,
                     "Failed to initialize the x509 structure.X509_NAME type");
         return false;
@@ -743,8 +746,8 @@ err:
 
 bool KeyStoreHelper::SetX509Alias(int len, X509* x509, unsigned char* data)
 {
-    int r;
     if (len >= 0) {
+        int r;
         r = X509_alias_set1(x509, data, len);
         OPENSSL_free(data);
         if (!r) {

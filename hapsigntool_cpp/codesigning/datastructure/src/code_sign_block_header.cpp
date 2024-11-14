@@ -71,7 +71,7 @@ void CodeSignBlockHeader::ToByteArray(std::vector<int8_t>& ret)
     bf.PutInt32(blockSize);
     bf.PutInt32(segmentNum);
     bf.PutInt32(flags);
-    bf.PutData((const char*)reserved.data(), reserved.size());
+    bf.PutData(reinterpret_cast<const char*>(reserved.data()), reserved.size());
     ret = std::vector<int8_t>(bf.GetBufferPtr(), bf.GetBufferPtr() + bf.GetPosition());
 }
 
@@ -83,7 +83,7 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
         return nullptr;
     }
     ByteBuffer bf(bytes.size());
-    bf.PutData((const char*)bytes.data(), bytes.size());
+    bf.PutData(reinterpret_cast<const char*>(bytes.data()), bytes.size());
     bf.Flip();
     int64_t inMagic;
     bool flag = bf.GetInt64(inMagic);
@@ -117,7 +117,12 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
     }
     std::vector<int8_t> inReserved(RESERVED_BYTE_ARRAY_LENGTH);
     bf.GetByte(inReserved.data(), RESERVED_BYTE_ARRAY_LENGTH);
-    CodeSignBlockHeader::Builder* tempVar = new CodeSignBlockHeader::Builder();
+    CodeSignBlockHeader::Builder* tempVar = new(std::nothrow) CodeSignBlockHeader::Builder();
+    if(tempVar == nullptr) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+                            "create  CodeSignBlockHeader::Builder failed");
+        return nullptr;
+    }
     CodeSignBlockHeader* codeSignBlockHeader = tempVar->SetMagic(inMagic)->SetVersion(inVersion)->
         SetBlockSize(inBlockSize)->SetSegmentNum(inSegmentNum)->
         SetFlags(inFlags)->SetReserved(inReserved)->Build();

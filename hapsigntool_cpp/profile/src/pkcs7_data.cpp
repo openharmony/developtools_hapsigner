@@ -521,7 +521,7 @@ int PKCS7Data::Pkcs7SignAttr(PKCS7_SIGNER_INFO* info)
     unsigned char* sigRet = NULL;
     int sigLen = 0;
 
-    attrLen = ASN1_item_i2d((ASN1_VALUE*)info->auth_attr, &attrBuf,
+    attrLen = ASN1_item_i2d(reinterpret_cast<ASN1_VALUE*>(info->auth_attr), &attrBuf,
                             ASN1_ITEM_rptr(PKCS7_ATTR_SIGN));
     if (!attrBuf) {
         OPENSSL_free(attrBuf);
@@ -683,7 +683,7 @@ static int PKCS7DataFinalSetContent(PKCS7* pkcs7, ASN1_OCTET_STRING* asn1Str, BI
 
             BIO_set_flags(ioTmp, BIO_FLAGS_MEM_RDONLY);
             BIO_set_mem_eof_return(ioTmp, 0);
-            ASN1_STRING_set0(asn1Str, (unsigned char*)contentData, contentLen);
+            ASN1_STRING_set0(asn1Str, reinterpret_cast<unsigned char*>(contentData), contentLen);
         }
     }
     return 1;
