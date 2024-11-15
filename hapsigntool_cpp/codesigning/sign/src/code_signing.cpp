@@ -56,6 +56,7 @@ bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
     }
     int64_t dataSizeInt64 = ComputeDataSize(zip);
     if (dataSizeInt64 < 0) {
+        SIGNATURE_TOOLS_LOGE("SignFile Failed because dataSize is invalid");
         return false;
     }
     uint32_t dataSize = static_cast<uint32_t>(dataSizeInt64);

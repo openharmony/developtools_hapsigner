@@ -128,9 +128,8 @@ bool VerifyHap::HapOutPutCertChain(std::vector<X509*>& certs, const std::string&
         certStr.emplace_back(StringUtils::SubjectToString(cert));
         certStr.emplace_back(StringUtils::x509CertToString(cert));
     }
-    std::string outPutCertChainContent;
-    outPutCertChainContent = std::accumulate(certStr.begin(), certStr.end(), std::string(),
-                                             [](std::string sum, const std::string& certstr) { 
+    std::string outPutCertChainContent = std::accumulate(certStr.begin(), certStr.end(), std::string(),
+                                                         [](std::string sum, const std::string& certstr) { 
         return sum + certstr; });
 
     if (FileUtils::Write(outPutCertChainContent, outPutPath) < 0) {
