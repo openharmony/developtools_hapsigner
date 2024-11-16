@@ -747,8 +747,7 @@ err:
 bool KeyStoreHelper::SetX509Alias(int len, X509* x509, unsigned char* data)
 {
     if (len >= 0) {
-        int r;
-        r = X509_alias_set1(x509, data, len);
+        int r = X509_alias_set1(x509, data, len);
         OPENSSL_free(data);
         if (!r) {
             X509_free(x509);
