@@ -31,9 +31,7 @@ bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::
     std::string fileSuffix = str;
     std::transform(fileSuffix.begin(), fileSuffix.end(), fileSuffix.begin(),
                    [](unsigned char c) { return std::tolower(c); });
-
-    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {
-                       return val == fileSuffix; });
+    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {return val == fileSuffix; });
 }
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)

@@ -97,8 +97,7 @@ void SignHap::EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
 {
     int encodeSize = INT_SIZE * 2  + INT_SIZE * 3 * nidAndcontentDigests.size();
     encodeSize += std::accumulate(nidAndcontentDigests.begin(), nidAndcontentDigests.end(), 0,
-                                  [](int sum, const std::pair<int32_t, ByteBuffer>& pair) {
-        return sum + pair.second.GetCapacity(); });
+        [](int sum, const std::pair<int32_t, ByteBuffer>& pair) { return sum + pair.second.GetCapacity(); });
     result.SetCapacity(encodeSize);
     result.PutInt32(CONTENT_VERSION); // version
     result.PutInt32(BLOCK_NUMBER); // block number
@@ -142,8 +141,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     // uint128: magic
     // uint32: version
     long optionalBlockSize = std::accumulate(optionalBlocks.begin(), optionalBlocks.end(), 0L,
-                                             [](int64_t sum, const auto& elem) { 
-        return sum + elem.optionalBlockValue.GetCapacity(); });
+        [](int64_t sum, const auto& elem) { return sum + elem.optionalBlockValue.GetCapacity(); });
     long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) *
                        (optionalBlocks.size() + 1)) + optionalBlockSize + hapSignatureSchemeBlock.size() +
         BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC + BLOCK_VERSION;

@@ -78,16 +78,14 @@ void CodeSignBlockHeader::ToByteArray(std::vector<int8_t>& ret)
 CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t>& bytes)
 {
     if (bytes.size() != Size()) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The size of code signature block is incorrect.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "The size of code signature block is incorrect.");
         return nullptr;
     }
     ByteBuffer bf(bytes.size());
     bf.PutData(reinterpret_cast<const char*>(bytes.data()), bytes.size());
     bf.Flip();
     int64_t inMagic;
-    bool flag = bf.GetInt64(inMagic);
-    if (!flag || inMagic != MAGIC_NUM) {
+    if (!bf.GetInt64(inMagic) || inMagic != MAGIC_NUM) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
                             "The magic number in the code signature block header is incorrect.");
         return nullptr;
@@ -111,16 +109,14 @@ CodeSignBlockHeader* CodeSignBlockHeader::FromByteArray(const std::vector<int8_t
     int inFlags;
     bf.GetInt32(inFlags);
     if (inFlags < 0 || inFlags >(FLAG_MERKLE_TREE_INLINED + FLAG_NATIVE_LIB_INCLUDED)) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The flag in the code signature block header is incorrect.");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "The flag in the code signature block header is incorrect.");
         return nullptr;
     }
     std::vector<int8_t> inReserved(RESERVED_BYTE_ARRAY_LENGTH);
     bf.GetByte(inReserved.data(), RESERVED_BYTE_ARRAY_LENGTH);
     CodeSignBlockHeader::Builder* tempVar = new(std::nothrow) CodeSignBlockHeader::Builder();
-    if(tempVar == nullptr) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "create  CodeSignBlockHeader::Builder failed");
+    if (tempVar == nullptr) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "create  CodeSignBlockHeader::Builder failed");
         return nullptr;
     }
     CodeSignBlockHeader* codeSignBlockHeader = tempVar->SetMagic(inMagic)->SetVersion(inVersion)->

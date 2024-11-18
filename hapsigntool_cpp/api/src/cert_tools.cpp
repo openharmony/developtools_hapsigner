@@ -236,14 +236,14 @@ X509* CertTools::SignCsrGenerateCert(X509_REQ* rootcsr, X509_REQ* subcsr,
             SIGNATURE_TOOLS_LOGE("failed to generate X509 cert cause of set validity failed");
             break;
         }
-        if (!SetBisicConstraintsPathLen(options, cert) || 
-            !SetKeyIdentifierExt(cert) || 
-            !SetAuthorizeKeyIdentifierExt(cert) || 
-            !SetKeyUsage(cert, options) || 
+        if (!SetBisicConstraintsPathLen(options, cert) ||
+            !SetKeyIdentifierExt(cert) ||
+            !SetAuthorizeKeyIdentifierExt(cert) ||
+            !SetKeyUsage(cert, options) ||
             !SignForSubCert(cert, subcsr, rootcsr, keyPair, options)) {
             SIGNATURE_TOOLS_LOGE("failed to generate X509 cert cause of other reasons");
             break;
-        } 
+        }
         return cert;
     } while (0);
 
@@ -292,9 +292,9 @@ X509* CertTools::GenerateRootCertificate(EVP_PKEY* keyPair, X509_REQ* certReq, O
             SIGNATURE_TOOLS_LOGE("failed to generate X509 cert cause of set validity failed");
             break;
         }
-        if (!SetBisicConstraintsPathLen(options, cert) || 
+        if (!SetBisicConstraintsPathLen(options, cert) ||
             !SetSubjectForCert(certReq, cert) ||
-            !SetCertPublickKey(cert, certReq) || 
+            !SetCertPublickKey(cert, certReq) ||
             !SetKeyIdentifierExt(cert) ||
             !SetKeyUsage(cert, options)) {
             SIGNATURE_TOOLS_LOGE("failed to generate X509 cert cause of other reasons");
@@ -366,8 +366,8 @@ bool CertTools::SetKeyUsage(X509* cert, Options* options)
         bool keyUsageCritical = options->GetBool(Options::KEY_USAGE_CRITICAL);
         int crit = keyUsageCritical > 0 ? 1 : 0;
         std::vector<std::string> vecs = StringUtils::SplitString(keyUsage.c_str(), ',');
-        key = std::accumulate(vecs.begin(), vecs.end(), key, [&](long key, const std::string& vec) {
-                              return key | externDic[vec]; });
+        key = std::accumulate(vecs.begin(), vecs.end(), key,
+            [&](long key, const std::string& vec) { return key | externDic[vec]; });
         if (keyUsageInt == NULL || ASN1_INTEGER_set(keyUsageInt, key) == 0) {
             SIGNATURE_TOOLS_LOGE("failed to set asn1_integer");
             ASN1_INTEGER_free(keyUsageInt);
@@ -478,14 +478,14 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
             !SetPubkeyAndSignCert(cert, issuercsr, certReq, keyPair, options)) {
             SIGNATURE_TOOLS_LOGE("failed to generate cert cause of other reasons");
             break;
-        } 
+        }
         X509_REQ_free(issuercsr);
         return cert;
     } while (0);
 
     X509_REQ_free(issuercsr);
     X509_free(cert);
-    return nullptr;  
+    return nullptr;
 }
 
 X509_REQ* CertTools::GenerateCsr(EVP_PKEY* evpPkey, std::string signAlgorithm, std::string subject)
@@ -528,7 +528,7 @@ X509_REQ* CertTools::GenerateCsr(EVP_PKEY* evpPkey, std::string signAlgorithm, s
 
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
     X509_REQ_free(req);
-    return nullptr;    
+    return nullptr;
 }
 
 std::string CertTools::CsrToString(X509_REQ* csr)
@@ -791,7 +791,7 @@ bool CertTools::SetAuthorizeKeyIdentifierExt(X509* cert)
 bool CertTools::SetSignCapacityExt(X509* cert, const char signCapacity[], int capacityLen)
 {
     ASN1_OCTET_STRING* certSignCapacityData = ASN1_OCTET_STRING_new();
-    if (ASN1_OCTET_STRING_set(certSignCapacityData, 
+    if (ASN1_OCTET_STRING_set(certSignCapacityData,
         reinterpret_cast<const unsigned char*>(signCapacity), capacityLen) == 0) {
         VerifyHapOpensslUtils::GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("failed to set pubkey digst into ASN1 object");
