@@ -53,12 +53,11 @@ bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
         SIGNATURE_TOOLS_LOGE("only support format is [hap, hqf, hsp, app]");
         return false;
     }
-    int64_t dataSizeInt64 = ComputeDataSize(zip);
-    if (dataSizeInt64 < 0) {
+    int64_t dataSize = ComputeDataSize(zip);
+    if (dataSize < 0) {
         SIGNATURE_TOOLS_LOGE("SignFile Failed because dataSize is invalid");
         return false;
     }
-    uint32_t dataSize = static_cast<uint32_t>(dataSizeInt64);
     m_timestamp = GetTimestamp();
     int64_t fsvTreeOffset = m_codeSignBlock.ComputeMerkleTreeOffset(offset);
     std::unique_ptr<FsVerityInfoSegment> fsVerityInfoSegment =
