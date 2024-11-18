@@ -48,9 +48,8 @@ bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
                                    ZipSigner& zip, std::vector<int8_t>& ret)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign code.");
-    bool formatFlag = std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm)
-        == SUPPORT_FILE_FORM.end();
-    if (formatFlag) {
+    bool flag = std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm) == SUPPORT_FILE_FORM.end();
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("only support format is [hap, hqf, hsp, app]");
         return false;
     }

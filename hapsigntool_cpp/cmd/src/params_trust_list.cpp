@@ -70,7 +70,7 @@ void ParamsTrustList::ReadHelpParam(std::istringstream& fd)
         if (params.empty()) {
             continue;
         }
-        isExists = std::any_of(commands.begin(), commands.end(), 
+        isExists = std::any_of(commands.begin(), commands.end(),
                                [params](const std::string& cmd) {return cmd == params; });
         if (isExists) {
             cmdStandBy = params;
