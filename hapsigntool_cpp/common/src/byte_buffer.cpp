@@ -23,7 +23,7 @@ namespace SignatureTools {
 
 const int32_t ByteBuffer::MAX_PRINT_LENGTH = 200;
 const int32_t ByteBuffer::HEX_PRINT_LENGTH = 3;
-const int32_t MAX_MEMORY = 2 * 1024 * 1024 * 1024;
+const int64_t MAX_MEMORY = 2L * 1024L * 1024L * 1024L;
 
 template<typename T>
 std::shared_ptr<T> make_shared_array(size_t size)
