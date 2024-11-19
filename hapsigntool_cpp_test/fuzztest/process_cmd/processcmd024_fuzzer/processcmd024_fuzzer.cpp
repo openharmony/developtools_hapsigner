@@ -33,33 +33,25 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     Params param;
     std::string str;
-    std::string  retStr;
     std::string  algName;
-    bool retBool = false;
     int algId = 256;
     std::vector<std::string> paramFields;
     std::vector<int8_t> fileBytes;
-    std::unordered_set<std::string> unordered;
-    std::vector<int8_t> vec;
     int64_t length = 0;
     SignatureAlgorithmHelper out;
-    ByteBuffer crlBuffer;
-    std::ofstream crlFile;
     CertChain certsChain;
     Pkcs7Context pkcs7Context;
-    Options* options = nullptr;
-    X509_CRL* x509Crl = nullptr;
 
     param.SetMethod(str);
-    retStr = param.GetMethod();
-    options = param.GetOptions();
-    unordered = param.InitParamField(paramFields);
-    retBool = param.GetSignatureAlgorithm(str, out);
-    retStr = HashUtils::GetHashAlgName(algId);
-    vec = HashUtils::GetDigestFromBytes(fileBytes, length, algName);
-    retBool = VerifyCertOpensslUtils::VerifyCrl(certsChain, nullptr, pkcs7Context);
-    x509Crl = VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(nullptr, nullptr);
-    retBool = VerifyCertOpensslUtils::GetIssuerFromX509(nullptr, str);
+    param.GetMethod();
+    param.GetOptions();
+    param.InitParamField(paramFields);
+    param.GetSignatureAlgorithm(str, out);
+    algName = HashUtils::GetHashAlgName(algId);
+    HashUtils::GetDigestFromBytes(fileBytes, length, algName);
+    VerifyCertOpensslUtils::VerifyCrl(certsChain, nullptr, pkcs7Context);
+    VerifyCertOpensslUtils::GetCrlBySignedCertIssuer(nullptr, nullptr);
+    VerifyCertOpensslUtils::GetIssuerFromX509(nullptr, str);
 
     return true;
 }

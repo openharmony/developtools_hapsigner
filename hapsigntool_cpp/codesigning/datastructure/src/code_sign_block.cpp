@@ -186,7 +186,7 @@ void CodeSignBlock::GenerateCodeSignBlockByte(int64_t fsvTreeOffset, std::vector
         + nativeLibInfoSegment.Size();
     Extension* ext = hapInfoSegment.GetSignInfo().GetExtensionByType(MerkleTreeExtension::MERKLE_TREE_INLINED);
     if (ext != nullptr) {
-        MerkleTreeExtension* merkleTreeExtension = (MerkleTreeExtension*)(ext);
+        MerkleTreeExtension* merkleTreeExtension = static_cast<MerkleTreeExtension*>(ext);
         merkleTreeExtension->SetMerkleTreeOffset(fsvTreeOffset);
     }
     codeSignBlockHeader.SetBlockSize(csbSize);

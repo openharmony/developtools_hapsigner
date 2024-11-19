@@ -44,7 +44,6 @@ bool SignToolServiceImpl::GenerateCA(Options* options)
         SIGNATURE_TOOLS_LOGE("failed to get subKey!");
         return false;
     }
-    EVP_PKEY* rootKey = nullptr;
     if (isEmpty) {
         if (HandleIssuerKeyAliasEmpty(options) == RET_FAILED) {
             EVP_PKEY_free(subKey);
@@ -53,6 +52,7 @@ bool SignToolServiceImpl::GenerateCA(Options* options)
         flag = GenerateRootCertToFile(options, subKey);
         EVP_PKEY_free(subKey);
     } else {
+        EVP_PKEY* rootKey = nullptr;
         if (HandleIsserKeyAliasNotEmpty(options) == RET_FAILED) {
             EVP_PKEY_free(subKey);
             return false;
@@ -69,70 +69,77 @@ bool SignToolServiceImpl::GenerateCA(Options* options)
 
 bool SignToolServiceImpl::GenerateRootCertToFile(Options* options, EVP_PKEY* rootKey)
 {
+    if (rootKey == nullptr) {
+        SIGNATURE_TOOLS_LOGE("generate root cert failed because rootKey is nullptr!");
+        return false;
+    }
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     std::string subject = options->GetString(Options::SUBJECT);
-    std::string outFile;
     X509* certPtr = nullptr;
     X509_REQ* csr = nullptr;
-    bool result = false;
-    if (rootKey == nullptr) {
-        goto err;
-    }
-    csr = CertTools::GenerateCsr(rootKey, signAlg, subject);
-    if (!csr) {
-        goto err;
-    }
-    certPtr = CertTools::GenerateRootCertificate(rootKey, csr, options);
-    if (!certPtr) {
-        goto err;
-    }
-    if (!X509CertVerify(certPtr, rootKey)) {
-        goto err;
-    }
+    do {
+        csr = CertTools::GenerateCsr(rootKey, signAlg, subject);
+        if (!csr) {
+            break;
+        }
+        certPtr = CertTools::GenerateRootCertificate(rootKey, csr, options);
+        if (!certPtr) {
+            break;
+        }
+        if (!X509CertVerify(certPtr, rootKey)) {
+            break;
+        }
+        if (!OutputModeOfCert(certPtr, options)) {
+            break;
+        }
+        X509_free(certPtr);
+        X509_REQ_free(csr);
+        return true;
+    } while (0);
 
-    if (!OutputModeOfCert(certPtr, options)) {
-        goto err;
-    }
-    result = true;
-err:
-    if (result == false)
-        SIGNATURE_TOOLS_LOGE("generate root cert failed!");
+    SIGNATURE_TOOLS_LOGE("generate root cert failed!");
     X509_free(certPtr);
     X509_REQ_free(csr);
-    return result;
+    return false;
 }
 
 bool SignToolServiceImpl::GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey)
 {
+    if (rootKey == nullptr) {
+        SIGNATURE_TOOLS_LOGE("generate sub cert failed because rootKey is nullptr!");
+        return false;
+    }
     std::string signAlg = options->GetString(Options::SIGN_ALG);
     std::string issuer = options->GetString(Options::ISSUER);
     X509* cert = nullptr;
     X509_REQ* csr = nullptr;
-    bool result = false;
-    if (rootKey == nullptr) {
-        goto err;
-    }
-    csr = CertTools::GenerateCsr(rootKey, signAlg, issuer);
-    if (!csr) {
-        goto err;
-    }
-    cert = CertTools::GenerateSubCert(rootKey, csr, options);
-    if (!cert) {
-        goto err;
-    }
-    if (!X509CertVerify(cert, rootKey)) {
-        goto err;
-    }
-    if (!OutputModeOfCert(cert, options)) {
-        goto err;
-    }
-    result = true;
-err:
-    if (result == false)
-        SIGNATURE_TOOLS_LOGE("generate sub cert failed!");
+    do {
+        if (rootKey == nullptr) {
+            break;
+        }
+        csr = CertTools::GenerateCsr(rootKey, signAlg, issuer);
+        if (!csr) {
+            break;
+        }
+        cert = CertTools::GenerateSubCert(rootKey, csr, options);
+        if (!cert) {
+            break;
+        }
+        if (!X509CertVerify(cert, rootKey)) {
+            break;
+        }
+        if (!OutputModeOfCert(cert, options)) {
+            break;
+        }
+        X509_free(cert);
+        X509_REQ_free(csr);
+        return true;
+    } while (0);
+
     X509_free(cert);
     X509_REQ_free(csr);
-    return result;
+    SIGNATURE_TOOLS_LOGE("generate sub cert failed!");
+    return false;
 }
 
 int SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
@@ -231,6 +238,7 @@ bool SignToolServiceImpl::GenerateCert(Options* options)
 err:
     if (result == false)
         SIGNATURE_TOOLS_LOGE("generate cert failed!");
+    adapter->ResetPwd();
     X509_free(cert);
     X509_REQ_free(csr);
     EVP_PKEY_free(rootKeyPair);
@@ -393,6 +401,7 @@ bool SignToolServiceImpl::GenerateAppCert(Options* options)
     
 err:
     adapter->AppAndProfileAssetsRealse({issuerKeyPairPtr, keyPairPtr}, {csrPtr}, {x509CertificatePtr});
+    adapter->ResetPwd();
     return false;
 }
 
@@ -437,6 +446,7 @@ bool SignToolServiceImpl::GenerateProfileCert(Options* options)
     
 err:
     adapter->AppAndProfileAssetsRealse({issuerKeyPair, keyPair}, {csr}, {x509Certificate});
+    adapter->ResetPwd();
     return false;
 }
 
@@ -446,8 +456,8 @@ bool SignToolServiceImpl::GetAndOutPutCert(LocalizationAdapter& adapter, X509* c
     bool successflag = false;
     X509* subCaCert = nullptr;
     X509* rootCaCert = nullptr;
-    std::vector<X509*> certificates;
     if (adapter.IsOutFormChain()) {
+        std::vector<X509*> certificates;
         certificates.emplace_back(cert); // add entity cert
         successflag = (!(subCaCert = adapter.GetSubCaCertFile()) ||
                        !(rootCaCert = adapter.GetCaCertFile()));

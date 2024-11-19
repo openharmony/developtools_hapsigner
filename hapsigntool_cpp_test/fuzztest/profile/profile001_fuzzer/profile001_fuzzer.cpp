@@ -55,7 +55,6 @@ bool SignProfileTest001(const uint8_t* data, size_t size)
 
 bool SignProfileTest002(const uint8_t* data, size_t size)
 {
-    std::string content(data, data + size);
     Options options;
     std::string mode = SIGN_PROFILE_MODE;
     std::string keyAlias = SIGN_PROFILE_KEY_ALIAS;

@@ -17,6 +17,11 @@
 
 #include "localization_adapter.h"
 #include "constant.h"
+#include <openssl/evp.h>
+#include <openssl/types.h>
+#include <openssl/x509.h>
+#include <openssl/x509v3.h>
+#include <openssl/err.h>
 
 namespace OHOS {
 namespace SignatureTools {

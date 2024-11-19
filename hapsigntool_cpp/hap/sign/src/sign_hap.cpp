@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <numeric>
+
 #include "signature_tools_log.h"
 #include "signature_algorithm_helper.h"
 #include "bc_pkcs7_generator.h"
@@ -93,11 +95,9 @@ void SignHap::EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
                                            const std::vector<std::pair<int32_t,
                                            ByteBuffer>>&nidAndcontentDigests, ByteBuffer& result)
 {
-    int encodeSize = 0;
-    encodeSize += INT_SIZE + INT_SIZE;
-    for (const auto& pair : nidAndcontentDigests) {
-        encodeSize += INT_SIZE + INT_SIZE + INT_SIZE + pair.second.GetCapacity();
-    }
+    int encodeSize = INT_SIZE * 2  + INT_SIZE * 3 * nidAndcontentDigests.size();
+    encodeSize += std::accumulate(nidAndcontentDigests.begin(), nidAndcontentDigests.end(), 0,
+        [](int sum, const std::pair<int32_t, ByteBuffer>& pair) { return sum + pair.second.GetCapacity(); });
     result.SetCapacity(encodeSize);
     result.PutInt32(CONTENT_VERSION); // version
     result.PutInt32(BLOCK_NUMBER); // block number
@@ -140,12 +140,10 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     // uint64: size
     // uint128: magic
     // uint32: version
-    long optionalBlockSize = 0L;
-    for (const auto& elem : optionalBlocks) optionalBlockSize += elem.optionalBlockValue.GetCapacity();
+    long optionalBlockSize = std::accumulate(optionalBlocks.begin(), optionalBlocks.end(), 0L,
+        [](int64_t sum, const auto& elem) { return sum + elem.optionalBlockValue.GetCapacity(); });
     long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) *
-                       (optionalBlocks.size() + 1)) +
-        optionalBlockSize +
-        hapSignatureSchemeBlock.size() +
+                       (optionalBlocks.size() + 1)) + optionalBlockSize + hapSignatureSchemeBlock.size() +
         BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC + BLOCK_VERSION;
     if (resultSize > INT_MAX) {
         SIGNATURE_TOOLS_LOGE("Illegal Argument. HapSigningBlock out of range: %ld", resultSize);
@@ -184,7 +182,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     result.PutInt32(optionalBlocks.size() + 1); // Signing block count
     result.PutInt64(resultSize); // length of hap signing block
     std::vector<int8_t> signingBlockMagic = HapUtils::GetHapSigningBlockMagic(compatibleVersion);
-    result.PutData((const char*)signingBlockMagic.data(), signingBlockMagic.size()); // magic
+    result.PutData(reinterpret_cast<const char*>(signingBlockMagic.data()), signingBlockMagic.size()); // magic
     result.PutInt32(HapUtils::GetHapSigningBlockVersion(compatibleVersion)); // version
     return true;
 }

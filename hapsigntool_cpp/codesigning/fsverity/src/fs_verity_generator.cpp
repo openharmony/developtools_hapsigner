@@ -30,9 +30,9 @@ MerkleTree* FsVerityGenerator::GenerateMerkleTree(std::istream& inputStream, lon
 
 bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long size, long fsvTreeOffset)
 {
-    std::vector<int8_t> emptyVector;
     MerkleTree* merkleTree = nullptr;
     if (size == 0) {
+        std::vector<int8_t> emptyVector;
         merkleTree = new MerkleTree(emptyVector, emptyVector, FS_SHA256);
     } else {
         merkleTree = GenerateMerkleTree(inputStream, size, FS_SHA256);

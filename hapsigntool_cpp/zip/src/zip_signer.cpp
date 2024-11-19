@@ -157,7 +157,7 @@ bool ZipSigner::GetZipCentralDirectory(std::ifstream& input)
 
 std::string ZipSigner::GetSigningBlock(std::ifstream& file)
 {
-    uint64_t size = m_cDOffset - m_signingOffset;
+    int64_t size = static_cast<int64_t>(m_cDOffset) - static_cast<int64_t>(m_signingOffset);
     if (size < 0) {
         SIGNATURE_TOOLS_LOGE("signing offset in front of entry end");
         return "";

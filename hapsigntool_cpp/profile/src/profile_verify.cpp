@@ -232,7 +232,7 @@ AppProvisionVerifyResult ReturnIfIntIsNonPositive(int num, const std::string& er
     return PROVISION_OK;
 }
 
-static AppProvisionVerifyResult CheckProfileValidType(ProfileInfo& info)
+static AppProvisionVerifyResult CheckProfileValidType(const ProfileInfo& info)
 {
     if (info.type == ProvisionType::DEBUG) {
         if (ReturnIfStringIsEmpty(info.bundleInfo.developmentCertificate,
