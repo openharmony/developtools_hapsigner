@@ -23,11 +23,16 @@ namespace SignatureTools {
 
 const int32_t ByteBuffer::MAX_PRINT_LENGTH = 200;
 const int32_t ByteBuffer::HEX_PRINT_LENGTH = 3;
+const int32_t MAX_MEMORY = 2 * 1024 * 1024 * 1024;
 
 template<typename T>
 std::shared_ptr<T> make_shared_array(size_t size)
 {
     if (size == 0) {
+        return NULL;
+    }
+    if (size > MAX_MEMORY) {
+        SIGNATURE_TOOLS_LOGE("size %zu is too large", size);
         return NULL;
     }
     T* buffer = new (std::nothrow)T[size];
