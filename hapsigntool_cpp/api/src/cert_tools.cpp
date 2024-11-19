@@ -335,14 +335,11 @@ X509* CertTools::GenerateSubCert(EVP_PKEY* keyPair, X509_REQ* rootcsr, Options* 
             SIGNATURE_TOOLS_LOGE("failed to generate the subCert");
             break;
         }
-        EVP_PKEY_free(subKey);
-        X509_REQ_free(subcsr);
-        return subCert;
     } while (0);
 
     EVP_PKEY_free(subKey);
     X509_REQ_free(subcsr);
-    return nullptr;
+    return subCert;
 }
 
 bool CertTools::SetKeyUsage(X509* cert, Options* options)
@@ -458,6 +455,7 @@ X509* CertTools::GenerateCert(EVP_PKEY* keyPair, X509_REQ* certReq, Options* opt
     X509* cert = X509_new();
     if (cert == nullptr) {
         SIGNATURE_TOOLS_LOGE("failed to create X509 cert");
+        X509_REQ_free(issuercsr);
         return nullptr;
     }
     do {
@@ -503,7 +501,7 @@ X509_REQ* CertTools::GenerateCsr(EVP_PKEY* evpPkey, std::string signAlgorithm, s
         }
 
         name = BuildDN(subject, req);
-        if (!name) {
+        if (name == nullptr) {
             SIGNATURE_TOOLS_LOGE("failed to add subject into cert");
             break;
         }

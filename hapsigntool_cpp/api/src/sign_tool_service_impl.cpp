@@ -77,30 +77,32 @@ bool SignToolServiceImpl::GenerateRootCertToFile(Options* options, EVP_PKEY* roo
     std::string subject = options->GetString(Options::SUBJECT);
     X509* certPtr = nullptr;
     X509_REQ* csr = nullptr;
+    bool result = false;
     do {
         csr = CertTools::GenerateCsr(rootKey, signAlg, subject);
-        if (!csr) {
+        if (csr == nullptr) {
+            SIGNATURE_TOOLS_LOGE("generate root cert failed because csr is nullptr!");
             break;
         }
         certPtr = CertTools::GenerateRootCertificate(rootKey, csr, options);
-        if (!certPtr) {
+        if (certPtr == nullptr) {
+            SIGNATURE_TOOLS_LOGE("generate root cert failed because certPtr is nullptr!");
             break;
         }
         if (!X509CertVerify(certPtr, rootKey)) {
+            SIGNATURE_TOOLS_LOGE("generate root cert failed because verify failed!");
             break;
         }
         if (!OutputModeOfCert(certPtr, options)) {
+            SIGNATURE_TOOLS_LOGE("generate root cert failed because output failed!");
             break;
         }
-        X509_free(certPtr);
-        X509_REQ_free(csr);
-        return true;
+        result = true;
     } while (0);
 
-    SIGNATURE_TOOLS_LOGE("generate root cert failed!");
     X509_free(certPtr);
     X509_REQ_free(csr);
-    return false;
+    return result;
 }
 
 bool SignToolServiceImpl::GenerateSubCertToFile(Options* options, EVP_PKEY* rootKey)
@@ -113,33 +115,32 @@ bool SignToolServiceImpl::GenerateSubCertToFile(Options* options, EVP_PKEY* root
     std::string issuer = options->GetString(Options::ISSUER);
     X509* cert = nullptr;
     X509_REQ* csr = nullptr;
+    bool result = false;
     do {
-        if (rootKey == nullptr) {
-            break;
-        }
         csr = CertTools::GenerateCsr(rootKey, signAlg, issuer);
-        if (!csr) {
+        if (csr == nullptr) {
+            SIGNATURE_TOOLS_LOGE("generate sub cert failed because csr is nullptr!");
             break;
         }
         cert = CertTools::GenerateSubCert(rootKey, csr, options);
-        if (!cert) {
+        if (cert == nullptr) {
+            SIGNATURE_TOOLS_LOGE("generate sub cert failed because cert is nullptr!");
             break;
         }
         if (!X509CertVerify(cert, rootKey)) {
+            SIGNATURE_TOOLS_LOGE("generate sub cert failed because verify failed!");
             break;
         }
         if (!OutputModeOfCert(cert, options)) {
+            SIGNATURE_TOOLS_LOGE("generate sub cert failed because output failed!");
             break;
         }
-        X509_free(cert);
-        X509_REQ_free(csr);
-        return true;
+        result = true;
     } while (0);
 
     X509_free(cert);
     X509_REQ_free(csr);
-    SIGNATURE_TOOLS_LOGE("generate sub cert failed!");
-    return false;
+    return result;
 }
 
 int SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
