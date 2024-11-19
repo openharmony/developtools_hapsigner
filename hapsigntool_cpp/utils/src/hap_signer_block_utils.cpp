@@ -330,11 +330,8 @@ bool HapSignerBlockUtils::ParseSubSignBlockHead(HapSubSignBlockHead& subSignBloc
  * This function reads the head of the HapSubSignBlocks,
  * and then reads the corresponding data of each block according to the offset provided by the head
  */
-bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
-                                                 int32_t blockCount,
-                                                 int64_t blockArrayLen,
-                                                 int64_t hapSignBlockOffset,
-                                                 SignatureInfo& signInfo)
+bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile, int32_t blockCount, int64_t blockArrayLen,
+                                                 int64_t hapSignBlockOffset, SignatureInfo& signInfo)
 {
     int64_t offsetMax = hapSignBlockOffset + blockArrayLen;
     int64_t readLen = 0;
@@ -343,6 +340,7 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
         ByteBuffer hapBlockHead(ZIP_CD_SIZE_OFFSET_IN_EOCD);
         int64_t ret = hapFile.ReadFileFullyFromOffset(hapBlockHead, readHeadOffset);
         if (ret < 0) {
+            SIGNATURE_TOOLS_LOGE("read %dst head error: %" PRId64, i, ret);
             return false;
         }
         HapSubSignBlockHead subSignBlockHead;
@@ -351,25 +349,18 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
             return false;
         }
         readLen += sizeof(HapSubSignBlockHead);
-
         readHeadOffset += sizeof(HapSubSignBlockHead);
         if (readHeadOffset > offsetMax) {
             SIGNATURE_TOOLS_LOGE("find %dst next head offset error", i);
             return false;
         }
-
         int64_t headOffset = static_cast<int64_t>(subSignBlockHead.offset);
         int64_t headLength = static_cast<int64_t>(subSignBlockHead.length);
         /* check subSignBlockHead */
-        if ((offsetMax - headOffset) < hapSignBlockOffset) {
-            SIGNATURE_TOOLS_LOGE("Find %dst subblock data offset error", i);
+        if ((offsetMax - headOffset) < hapSignBlockOffset || (blockArrayLen - headLength) < readLen) {
+            SIGNATURE_TOOLS_LOGE("failed to find data offset or enough data for %dst subblock error", i);
             return false;
         }
-        if ((blockArrayLen - headLength) < readLen) {
-            SIGNATURE_TOOLS_LOGE("no enough data to be read for %dst subblock", i);
-            return false;
-        }
-
         int64_t dataOffset = hapSignBlockOffset + headOffset;
         ByteBuffer signBuffer(subSignBlockHead.length);
         if ((ret = hapFile.ReadFileFullyFromOffset(signBuffer, dataOffset)) < 0) {
@@ -377,17 +368,14 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile,
             return false;
         }
         readLen += headLength;
-
         if (!ClassifyHapSubSigningBlock(signInfo, signBuffer, subSignBlockHead.type)) {
             SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", subSignBlockHead.type);
             return false;
         }
     }
-
     /* size of block must be equal to the sum of all subblocks length */
     if (readLen != blockArrayLen) {
-        SIGNATURE_TOOLS_LOGE("Len: %" PRId64 " is not equal blockArrayLen: %" PRId64,
-                             readLen, blockArrayLen);
+        SIGNATURE_TOOLS_LOGE("Len: %" PRId64 " is not equal blockArrayLen: %" PRId64, readLen, blockArrayLen);
         return false;
     }
     return true;
@@ -587,8 +575,6 @@ int32_t HapSignerBlockUtils::GetChunkCount(int64_t inputSize, int64_t chunkSize)
     if (chunkSize <= 0 || inputSize > LLONG_MAX - chunkSize) {
         return 0;
     }
-    if (chunkSize == 0)
-        return 0;
     int64_t res = (inputSize + chunkSize - 1) / chunkSize;
     if (res > INT_MAX || res < 0) {
         return 0;

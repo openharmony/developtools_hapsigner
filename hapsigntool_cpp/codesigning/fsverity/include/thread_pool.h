@@ -66,7 +66,7 @@ public:
         {
             std::unique_lock<std::mutex> lock(m_queueMutex);
             while (m_stop == false && m_tasks.size() >= TASK_NUM) {
-                m_conditionMax.wait(lock);
+                m_conditionMax.wait(lock, [this] { return m_stop || m_tasks.size() < TASK_NUM; });
             }
             m_tasks.emplace([task] () { (*task)(); });
             m_condition.notify_one();

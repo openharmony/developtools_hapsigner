@@ -70,7 +70,7 @@ X509_NAME* BuildDN(const std::string &nameString, X509_REQ* req)
             return nullptr;
         }
         X509_NAME_add_entry_by_txt(subject, idx->first.c_str(), MBSTRING_ASC,
-                                   (const unsigned char*)idx->second.c_str(), -1, -1, 0);
+                                   reinterpret_cast<const unsigned char*>(idx->second.c_str()), -1, -1, 0);
     }
     return subject;
 }

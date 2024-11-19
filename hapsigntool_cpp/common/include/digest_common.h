@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_DIGEST_UTILS_H
-#define SIGNATRUETOOLS_DIGEST_UTILS_H
+#ifndef SIGNATRUETOOLS_DIGESTCOMMON_H
+#define SIGNATRUETOOLS_DIGESTCOMMON_H
 #include <string>
 #include <vector>
 
@@ -61,4 +61,4 @@ private:
 };
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // SIGNATRUETOOLS_VERIFY_OPENSSL_UTILS_H
+#endif // SIGNATRUETOOLS_DIGESTCOMMON_H

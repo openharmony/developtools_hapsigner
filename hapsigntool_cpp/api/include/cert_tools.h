@@ -64,6 +64,7 @@ public:
     static bool SetExpandedInformation(X509* cert, Options* options);
     static bool SetPubkeyAndSignCert(X509* cert, X509_REQ* issuercsr,
                                      X509_REQ* certReq, EVP_PKEY* keyPair, Options* options);
+    static bool UpdateConstraint(Options* options);
     static bool String2Bool(Options* options, const std::string& option);
     CertTools() = default;
     ~CertTools() = default;

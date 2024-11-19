@@ -48,14 +48,14 @@ bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
                                    ZipSigner& zip, std::vector<int8_t>& ret)
 {
     SIGNATURE_TOOLS_LOGI("Start to sign code.");
-    bool formatFlag = std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm)
-        == SUPPORT_FILE_FORM.end();
-    if (formatFlag) {
+    bool flag = std::find(SUPPORT_FILE_FORM.begin(), SUPPORT_FILE_FORM.end(), inForm) == SUPPORT_FILE_FORM.end();
+    if (flag) {
         SIGNATURE_TOOLS_LOGE("only support format is [hap, hqf, hsp, app]");
         return false;
     }
-    uint32_t dataSize = ComputeDataSize(zip);
+    int64_t dataSize = ComputeDataSize(zip);
     if (dataSize < 0) {
+        SIGNATURE_TOOLS_LOGE("SignFile Failed because dataSize is invalid");
         return false;
     }
     m_timestamp = GetTimestamp();
@@ -96,7 +96,7 @@ bool CodeSigning::GetCodeSignBlock(const std::string &input, int64_t offset,
     return true;
 }
 
-uint32_t CodeSigning::ComputeDataSize(ZipSigner& zip)
+int64_t CodeSigning::ComputeDataSize(ZipSigner& zip)
 {
     uint32_t dataSize = 0L;
     for (const auto& entry : zip.GetZipEntries()) {
@@ -120,7 +120,8 @@ uint32_t CodeSigning::ComputeDataSize(ZipSigner& zip)
                             "Invalid dataSize, the dataSize must be an integer multiple of 4096");
         return -1;
     }
-    return dataSize;
+    int64_t dataSizeInt64 = static_cast<int64_t>(dataSize);
+    return dataSizeInt64;
 }
 
 int64_t CodeSigning::GetTimestamp()

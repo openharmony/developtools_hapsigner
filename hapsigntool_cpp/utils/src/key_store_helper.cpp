@@ -153,28 +153,27 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
     const EVP_MD* md = EVP_sha256();
     X509_NAME* subjectName = nullptr;
     if (!bnSerial || !issuerName || !md) {
-        KeyPairFree(bnSerial, issuerName, subjectName, nullptr,
-                    "Failed to initialize the x509 info.");
+        KeyPairFree(bnSerial, issuerName, subjectName, nullptr, "Failed to initialize the x509 info.");
         return false;
     }
     ASN1_INTEGER* ai = BN_to_ASN1_INTEGER(bnSerial, NULL);
     if (ai == NULL || issuerName == NULL) {
-        KeyPairFree(bnSerial, issuerName, subjectName, ai,
-                    "Failed to initialize the x509 structure.");
+        KeyPairFree(bnSerial, issuerName, subjectName, ai, "Failed to initialize the x509 structure.");
         return false;
     }
-
     X509_set_serialNumber(&cert, ai);
     X509_gmtime_adj(X509_get_notBefore(&cert), 0);
     X509_gmtime_adj(X509_get_notAfter(&cert), (long)DEFAULT_VALIDITY_DAYS * ONE_DAY_TIME);
-    if (!X509_NAME_add_entry_by_txt(issuerName, "C", MBSTRING_ASC, (unsigned char*)"US", -1, -1, 0)
-        || !X509_NAME_add_entry_by_txt(issuerName, "O", MBSTRING_ASC, (unsigned char*)"My Company", -1, -1, 0)
-        || !X509_NAME_add_entry_by_txt(issuerName, "CN", MBSTRING_ASC, (unsigned char*)"My Issuer", -1, -1, 0)) {
+    if (!X509_NAME_add_entry_by_txt(issuerName, "C",
+        MBSTRING_ASC, reinterpret_cast<const unsigned char*>("US"), -1, -1, 0)
+        || !X509_NAME_add_entry_by_txt(issuerName, "O",
+        MBSTRING_ASC, reinterpret_cast<const unsigned char*>("My Company"), -1, -1, 0)
+        || !X509_NAME_add_entry_by_txt(issuerName, "CN",
+        MBSTRING_ASC, reinterpret_cast<const unsigned char*>("My Issuer"), -1, -1, 0)) {
         KeyPairFree(bnSerial, issuerName, subjectName, ai,
                     "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
-
     X509_set_issuer_name(&cert, issuerName);
     subjectName = X509_NAME_dup(issuerName);
     if (subjectName == NULL) {
@@ -182,21 +181,18 @@ bool KeyStoreHelper::InitX509(X509& cert, EVP_PKEY& evpPkey)
                     "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
-
     X509_set_subject_name(&cert, subjectName);
     if (!X509_set_pubkey(&cert, &evpPkey)) {
         KeyPairFree(bnSerial, issuerName, subjectName, ai,
                     "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
-
     X509_set_version(&cert, DEFAULT_CERT_VERSION);
     if (!X509_sign(&cert, &evpPkey, md)) {
         KeyPairFree(bnSerial, issuerName, subjectName, ai,
                     "Failed to initialize the x509 structure.X509_NAME type");
         return false;
     }
-
     KeyPairFree(bnSerial, issuerName, subjectName, ai, "");
     return true;
 }
@@ -743,9 +739,8 @@ err:
 
 bool KeyStoreHelper::SetX509Alias(int len, X509* x509, unsigned char* data)
 {
-    int r;
     if (len >= 0) {
-        r = X509_alias_set1(x509, data, len);
+        int r = X509_alias_set1(x509, data, len);
         OPENSSL_free(data);
         if (!r) {
             X509_free(x509);

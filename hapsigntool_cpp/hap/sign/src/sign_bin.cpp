@@ -114,7 +114,6 @@ std::vector<int8_t> SignBin::GenerateFileDigest(const std::string& outputFile,
         SIGNATURE_TOOLS_LOGE("GetFileDigest failed.");
         return std::vector<int8_t>();
     }
-    std::vector<int8_t> outputChunk;
     SignContentInfo contentInfo;
     contentInfo.AddContentHashData(0, SignatureBlockTags::HASH_ROOT_4K, HashUtils::GetHashAlgsId(alg),
                                    data.size(), data);
