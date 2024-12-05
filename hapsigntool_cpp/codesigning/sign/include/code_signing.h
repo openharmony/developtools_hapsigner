@@ -77,7 +77,7 @@ public:
 
 private:
     static bool CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo, char fileName[], size_t* nameLen);
-    static bool CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen);
+    static bool CheckFileName(char fileName[], size_t* nameLen);
     bool HandleZipGlobalInfo(const std::string& packageName, unzFile& zFile,
                              unz_global_info& zGlobalInfo, UnzipHandleParam& param);
     bool DoNativeLibVerify(std::string fileName, std::stringbuf& sb,
