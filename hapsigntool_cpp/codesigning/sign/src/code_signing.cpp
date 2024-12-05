@@ -279,14 +279,21 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
                                              unz_file_info &zFileInfo,
                                              int &readFileSize, std::stringbuf &sb)
 {
-    char szReadBuffer[BUFFER_SIZE] = { 0 };
+    if (UNZ_OK != unzOpenCurrentFile(zFile)) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+                            "unzOpenCurrentFile zipFile error");
+        unzClose(zFile);
+        return false;
+    }
 
+    char szReadBuffer[BUFFER_SIZE] = { 0 };
     long fileLength = zFileInfo.uncompressed_size;
     int nReadFileSize;
     do {
         nReadFileSize = 0;
         if (memset_s(szReadBuffer, BUFFER_SIZE, 0, BUFFER_SIZE) != EOK) {
             SIGNATURE_TOOLS_LOGE("memset_s failed");
+            unzCloseCurrentFile(zFile);
             unzClose(zFile);
             return false;
         }
@@ -300,6 +307,7 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
     if (fileLength) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib read stream from "
                             + std::string(fileName) + " failed.");
+        unzCloseCurrentFile(zFile);
         unzClose(zFile);
         return false;
     }
@@ -314,14 +322,6 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
     unzFile zFile = unzOpen(packageName.c_str());
     if (zFile == NULL) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "zlib open file: " + packageName + " failed.");
-        return false;
-    }
-    // get zipFile all paramets
-    unz_global_info zGlobalInfo;
-    int getRet = unzGetGlobalInfo(zFile, &zGlobalInfo);
-    if (getRet != UNZ_OK) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib get global info failed.");
-        unzClose(zFile);
         return false;
     }
     for (uLong i = 0; i < index; ++i) {
@@ -344,7 +344,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
         unzClose(zFile);
         return false;
     }
-    if (!CheckFileName(zFile, fileName, &nameLen)) {
+    if (!CheckFileName(fileName, &nameLen)) {
         unzClose(zFile);
         return true;
     }
@@ -365,9 +365,26 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
 {
     std::vector<std::future<bool>> thread_results;
     SIGNATURE_TOOLS_LOGI("zGlobalInfo.number_entry = %lu", zGlobalInfo.number_entry);
+
     for (uLong i = 0; i < zGlobalInfo.number_entry; ++i) {
-        thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
-            std::ref(packageName), std::ref(param), i));
+        unz_file_info zFileInfo;
+        char fileName[FILE_NAME_SIZE];
+        size_t nameLen = 0;
+        if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
+            return false;
+        }
+        if (!CheckUnzParam(zFile, zFileInfo, fileName, &nameLen)) {
+            return false;
+        }
+        if (CheckFileName(fileName, &nameLen)) {
+            thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
+                std::ref(packageName), std::ref(param), i));
+        }
+        
+        int ret = unzGoToNextFile(zFile);
+        if (ret != UNZ_OK && i != zGlobalInfo.number_entry - 1) {
+            return false;
+        }
     }
 
     bool result = true;
@@ -460,28 +477,19 @@ bool CodeSigning::CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo,
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Open zipFile fileName is null");
         return false;
     }
-    if (UNZ_OK != unzOpenCurrentFile(zFile)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "unzOpenCurrentFile zipFile error");
-        return false;
-    }
     return true;
 }
 
-bool CodeSigning::CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen)
+bool CodeSigning::CheckFileName(char fileName[], size_t* nameLen)
 {
     if (fileName[*nameLen - 1] == '/') {
         SIGNATURE_TOOLS_LOGI("It is dictionary.");
-        unzCloseCurrentFile(zFile);
-        unzGoToNextFile(zFile);
         return false;
     }
     std::string str(fileName);
     bool nativeFileFlag = IsNativeFile(str);
     if (!nativeFileFlag) {
         SIGNATURE_TOOLS_LOGI("Suffix mismatched.");
-        unzCloseCurrentFile(zFile);
-        unzGoToNextFile(zFile);
         return false;
     }
     return true;
