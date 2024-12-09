@@ -279,15 +279,20 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
                                              unz_file_info &zFileInfo,
                                              int &readFileSize, std::stringbuf &sb)
 {
-    char szReadBuffer[BUFFER_SIZE] = { 0 };
+    if (UNZ_OK != unzOpenCurrentFile(zFile)) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+                            "unzOpenCurrentFile zipFile error");
+        return false;
+    }
 
+    char szReadBuffer[BUFFER_SIZE] = { 0 };
     long fileLength = zFileInfo.uncompressed_size;
     int nReadFileSize;
     do {
         nReadFileSize = 0;
         if (memset_s(szReadBuffer, BUFFER_SIZE, 0, BUFFER_SIZE) != EOK) {
             SIGNATURE_TOOLS_LOGE("memset_s failed");
-            unzClose(zFile);
+            unzCloseCurrentFile(zFile);
             return false;
         }
         nReadFileSize = unzReadCurrentFile(zFile, szReadBuffer, BUFFER_SIZE);
@@ -300,12 +305,11 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
     if (fileLength) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib read stream from "
                             + std::string(fileName) + " failed.");
-        unzClose(zFile);
+        unzCloseCurrentFile(zFile);
         return false;
     }
 
     unzCloseCurrentFile(zFile);
-    unzClose(zFile);
     return true;
 }
 
@@ -316,17 +320,10 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "zlib open file: " + packageName + " failed.");
         return false;
     }
-    // get zipFile all paramets
-    unz_global_info zGlobalInfo;
-    int getRet = unzGetGlobalInfo(zFile, &zGlobalInfo);
-    if (getRet != UNZ_OK) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib get global info failed.");
-        unzClose(zFile);
-        return false;
-    }
     for (uLong i = 0; i < index; ++i) {
         int ret = unzGoToNextFile(zFile);
         if (ret != UNZ_OK) {
+            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
             unzClose(zFile);
             return false;
         }
@@ -336,6 +333,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
     int readFileSize = 0;
     std::stringbuf sb;
     if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
+        SIGNATURE_TOOLS_LOGE("memory of fileName memset_s failed");
         unzClose(zFile);
         return false;
     }
@@ -344,11 +342,12 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
         unzClose(zFile);
         return false;
     }
-    if (!CheckFileName(zFile, fileName, &nameLen)) {
+    if (!CheckFileName(fileName, &nameLen)) {
         unzClose(zFile);
         return true;
     }
     bool flag = GetSingleFileStreamFromZip(zFile, fileName, zFileInfo, readFileSize, sb);
+    unzClose(zFile);
     if (!flag) {
         return false;
     }
@@ -365,9 +364,29 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
 {
     std::vector<std::future<bool>> thread_results;
     SIGNATURE_TOOLS_LOGI("zGlobalInfo.number_entry = %lu", zGlobalInfo.number_entry);
+
     for (uLong i = 0; i < zGlobalInfo.number_entry; ++i) {
-        thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
-            std::ref(packageName), std::ref(param), i));
+        unz_file_info zFileInfo;
+        char fileName[FILE_NAME_SIZE];
+        size_t nameLen = 0;
+        if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
+            SIGNATURE_TOOLS_LOGE("memory of fileName memset_s failed");
+            return false;
+        }
+        if (!CheckUnzParam(zFile, zFileInfo, fileName, &nameLen)) {
+            return false;
+        }
+        if (CheckFileName(fileName, &nameLen)) {
+            thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
+                std::ref(packageName), std::ref(param), i));
+        }
+        if (i != zGlobalInfo.number_entry - 1) {
+            int ret = unzGoToNextFile(zFile);
+            if (ret != UNZ_OK) {
+                PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
+                return false;
+            }
+        }
     }
 
     bool result = true;
@@ -460,28 +479,19 @@ bool CodeSigning::CheckUnzParam(unzFile& zFile, unz_file_info& zFileInfo,
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Open zipFile fileName is null");
         return false;
     }
-    if (UNZ_OK != unzOpenCurrentFile(zFile)) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
-                            "unzOpenCurrentFile zipFile error");
-        return false;
-    }
     return true;
 }
 
-bool CodeSigning::CheckFileName(unzFile& zFile, char fileName[], size_t* nameLen)
+bool CodeSigning::CheckFileName(char fileName[], size_t* nameLen)
 {
     if (fileName[*nameLen - 1] == '/') {
         SIGNATURE_TOOLS_LOGI("It is dictionary.");
-        unzCloseCurrentFile(zFile);
-        unzGoToNextFile(zFile);
         return false;
     }
     std::string str(fileName);
     bool nativeFileFlag = IsNativeFile(str);
     if (!nativeFileFlag) {
         SIGNATURE_TOOLS_LOGI("Suffix mismatched.");
-        unzCloseCurrentFile(zFile);
-        unzGoToNextFile(zFile);
         return false;
     }
     return true;
