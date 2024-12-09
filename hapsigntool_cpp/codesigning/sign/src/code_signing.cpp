@@ -323,6 +323,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
     for (uLong i = 0; i < index; ++i) {
         int ret = unzGoToNextFile(zFile);
         if (ret != UNZ_OK) {
+            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
             unzClose(zFile);
             return false;
         }
@@ -382,6 +383,7 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
         
         int ret = unzGoToNextFile(zFile);
         if (ret != UNZ_OK && i != zGlobalInfo.number_entry - 1) {
+            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
             return false;
         }
     }
