@@ -282,7 +282,6 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
     if (UNZ_OK != unzOpenCurrentFile(zFile)) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
                             "unzOpenCurrentFile zipFile error");
-        unzClose(zFile);
         return false;
     }
 
@@ -294,7 +293,6 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
         if (memset_s(szReadBuffer, BUFFER_SIZE, 0, BUFFER_SIZE) != EOK) {
             SIGNATURE_TOOLS_LOGE("memset_s failed");
             unzCloseCurrentFile(zFile);
-            unzClose(zFile);
             return false;
         }
         nReadFileSize = unzReadCurrentFile(zFile, szReadBuffer, BUFFER_SIZE);
@@ -308,12 +306,10 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib read stream from "
                             + std::string(fileName) + " failed.");
         unzCloseCurrentFile(zFile);
-        unzClose(zFile);
         return false;
     }
 
     unzCloseCurrentFile(zFile);
-    unzClose(zFile);
     return true;
 }
 
@@ -336,6 +332,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
     int readFileSize = 0;
     std::stringbuf sb;
     if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
+        SIGNATURE_TOOLS_LOGE("memory of fileName memset_s failed");
         unzClose(zFile);
         return false;
     }
@@ -349,6 +346,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
         return true;
     }
     bool flag = GetSingleFileStreamFromZip(zFile, fileName, zFileInfo, readFileSize, sb);
+    unzClose(zFile);
     if (!flag) {
         return false;
     }
@@ -371,6 +369,7 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
         char fileName[FILE_NAME_SIZE];
         size_t nameLen = 0;
         if (memset_s(fileName, FILE_NAME_SIZE, 0, FILE_NAME_SIZE) != 0) {
+            SIGNATURE_TOOLS_LOGE("memory of fileName memset_s failed");
             return false;
         }
         if (!CheckUnzParam(zFile, zFileInfo, fileName, &nameLen)) {
