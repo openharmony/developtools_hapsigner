@@ -380,11 +380,12 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
             thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
                 std::ref(packageName), std::ref(param), i));
         }
-        
-        int ret = unzGoToNextFile(zFile);
-        if (ret != UNZ_OK && i != zGlobalInfo.number_entry - 1) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
-            return false;
+        if (i != zGlobalInfo.number_entry - 1) {
+            int ret = unzGoToNextFile(zFile);
+            if (ret != UNZ_OK) {
+                PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
+                return false;
+            }
         }
     }
 
