@@ -23,13 +23,11 @@ import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
 import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.zip.EntryType;
 import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipEntry;
 import com.ohos.hapsigntool.zip.ZipEntryHeader;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +53,7 @@ public class PageInfoGenerator {
 
     private static final byte ELF_M_CODE = 1;
 
-    private static final Logger LOGGER = LogManager.getLogger(PageInfoGenerator.class);
+    private static final LogUtils LOGGER = new LogUtils(PageInfoGenerator.class);
 
     private long maxEntryDataOffset = 0L;
 
@@ -106,7 +104,7 @@ public class PageInfoGenerator {
             try (InputStream stream = hap.getInputStream(libEntry)) {
                 ElfFile elfFile = new ElfFile(stream);
                 if (!elfFile.isElfFile()) {
-                    LOGGER.info("{} not ELF file", libFileName);
+                    LOGGER.info(libFileName + " not ELF file");
                     return;
                 }
                 List<ElfProgramHeader> elfPHeaders = elfFile.filterExecPHeaders();

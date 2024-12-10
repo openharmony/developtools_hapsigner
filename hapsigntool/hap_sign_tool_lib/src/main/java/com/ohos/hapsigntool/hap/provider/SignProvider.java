@@ -46,6 +46,7 @@ import com.ohos.hapsigntool.utils.EscapeCharacter;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
@@ -57,8 +58,6 @@ import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -93,7 +92,7 @@ import java.util.Set;
  * @since 2021-12-14
  */
 public abstract class SignProvider {
-    private static final Logger LOGGER = LogManager.getLogger(SignProvider.class);
+    private static final LogUtils LOGGER = new LogUtils(SignProvider.class);
     private static final List<String> VALID_SIGN_ALG_NAME = new ArrayList<String>();
     private static final List<String> PARAMETERS_NEED_ESCAPE = new ArrayList<String>();
     private static final long TIMESTAMP = 1230768000000L;
@@ -480,13 +479,13 @@ public abstract class SignProvider {
 
     private void printErrorLog(Exception exception) {
         if (exception != null) {
-            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage(), exception);
+            LOGGER.error("hap-sign-tool: error: " + exception.getMessage(), exception);
         }
     }
 
     private void printErrorLogWithoutStack(Exception exception) {
         if (exception != null) {
-            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage());
+            LOGGER.error("hap-sign-tool: error: " + exception.getMessage());
         }
     }
 
@@ -518,7 +517,7 @@ public abstract class SignProvider {
         long start = System.currentTimeMillis();
         zip.toFile(tmpOutput.getCanonicalPath());
         long end = System.currentTimeMillis();
-        LOGGER.debug("zip to file use {} ms", end - start);
+        LOGGER.debug("zip to file use " + (end - start) + " ms");
         return zip;
     }
 
@@ -650,7 +649,7 @@ public abstract class SignProvider {
             throw new ProfileException("input certificates do not match with profile!");
         }
         String cn = getCertificateCN(certInProfile);
-        LOGGER.info("certificate in profile: {}", cn);
+        LOGGER.info("certificate in profile: " + cn);
         if (cn.isEmpty()) {
             throw new ProfileException("Common name of certificate is empty!");
         }

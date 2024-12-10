@@ -18,7 +18,7 @@ package com.ohos.hapsigntoolcmd;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.FileUtils;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ public final class HelpDocument {
      *
      * @param logger log4j
      */
-    public static void printHelp(Logger logger) {
+    public static void printHelp(LogUtils logger) {
         ClassLoader classLoader = HelpDocument.class.getClassLoader();
         if (classLoader == null) {
             return;

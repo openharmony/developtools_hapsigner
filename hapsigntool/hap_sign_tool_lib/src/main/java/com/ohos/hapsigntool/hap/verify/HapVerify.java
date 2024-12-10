@@ -20,10 +20,9 @@ import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.utils.DigestUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
@@ -73,7 +72,7 @@ import java.util.Set;
  * @since 2021/12/22
  */
 public class HapVerify {
-    private static final Logger LOGGER = LogManager.getLogger(HapVerify.class);
+    private static final LogUtils LOGGER = new LogUtils(HapVerify.class);
 
     private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -154,8 +153,8 @@ public class HapVerify {
             }
             X509CRLEntry entry = crl.getRevokedCertificate(cert);
             if (entry != null) {
-                LOGGER.info("cert(subject DN = {}) is revoked by crl (IssuerDN = {})",
-                        cert.getSubjectDN().getName(), crl.getIssuerDN().getName());
+                LOGGER.info("cert(subject DN = " + cert.getSubjectDN().getName() +
+                        ") is revoked by crl (IssuerDN = " + crl.getIssuerDN().getName() + ")");
                 isRet = false;
                 break;
             }
@@ -289,7 +288,8 @@ public class HapVerify {
             }
             if (isPrintCert) {
                 for (int i = 0; i < certificateList.size(); i++) {
-                    LOGGER.info("+++++++++++++++++++++++++++certificate #{} +++++++++++++++++++++++++++++++", i);
+                    LOGGER.info("+++++++++++++++++++++++++++certificate #"
+                            + i + "+++++++++++++++++++++++++++++++");
                     printCert(certificateList.get(i));
                 }
             }
@@ -356,7 +356,7 @@ public class HapVerify {
              */
             int signBlockVersion = digestDatas.getInt();
             int signBlockCount = digestDatas.getInt();
-            LOGGER.info("version is: {}, number of block is: {}", signBlockVersion, signBlockCount);
+            LOGGER.info("version is: " + signBlockVersion + " , number of block is: {}" + signBlockCount);
             int digestBlockLen = digestDatas.getInt();
             int signatureAlgId = digestDatas.getInt();
             int digestDataLen = digestDatas.getInt();
@@ -384,12 +384,13 @@ public class HapVerify {
             if (!Arrays.equals(actualDigest, exceptDigest)) {
                 isResult = false;
                 LOGGER.error(
-                        "digest data do not match! DigestAlgorithm: {}, actualDigest: <{}> VS exceptDigest : <{}>",
-                        digestAlg.getDigestAlgorithm(),
-                        HapUtils.toHex(actualDigest, ""),
-                        HapUtils.toHex(exceptDigest, ""));
+                        "digest data do not match! DigestAlgorithm: "
+                                + digestAlg.getDigestAlgorithm() + ", actualDigest: <"
+                                + HapUtils.toHex(actualDigest, "")
+                                + "> VS exceptDigest : <" + HapUtils.toHex(exceptDigest, "") +">");
             }
-            LOGGER.info("Digest verify result: {}, DigestAlgorithm: {}", isResult, digestAlg.getDigestAlgorithm());
+            LOGGER.info("Digest verify result: " + isResult
+                    + ", DigestAlgorithm: " + digestAlg.getDigestAlgorithm());
         }
         return isResult;
     }
@@ -397,15 +398,16 @@ public class HapVerify {
     private void printCert(X509Certificate cert) throws CertificateEncodingException {
         byte[] encodedCert = cert.getEncoded();
 
-        LOGGER.info("Subject: {}", cert.getSubjectX500Principal());
-        LOGGER.info("Issuer: {}", cert.getIssuerX500Principal());
-        LOGGER.info("SerialNumber: {}", cert.getSerialNumber().toString(16));
-        LOGGER.info("Validity: {} ~ {}", formatDateTime(cert.getNotBefore()), formatDateTime(cert.getNotAfter()));
-        LOGGER.info("SHA256: {}", HapUtils.toHex(DigestUtils.sha256Digest(encodedCert), ":"));
-        LOGGER.info("Signature Algorithm: {}", cert.getSigAlgName());
+        LOGGER.info("Subject: " + cert.getSubjectX500Principal());
+        LOGGER.info("Issuer: " + cert.getIssuerX500Principal());
+        LOGGER.info("SerialNumber: " + cert.getSerialNumber().toString(16));
+        LOGGER.info("Validity: " + formatDateTime(cert.getNotBefore())
+                + " ~ " + formatDateTime(cert.getNotAfter()));
+        LOGGER.info("SHA256: " + HapUtils.toHex(DigestUtils.sha256Digest(encodedCert), ":"));
+        LOGGER.info("Signature Algorithm: " + cert.getSigAlgName());
         PublicKey publicKey = cert.getPublicKey();
-        LOGGER.info("Key: {}, key length: {} bits", publicKey.getAlgorithm(), getKeySize(publicKey));
-        LOGGER.info("Cert Version: V{}", cert.getVersion());
+        LOGGER.info("Key: " + publicKey.getAlgorithm() + ", key length: {} bits" + getKeySize(publicKey));
+        LOGGER.info("Cert Version: V" + cert.getVersion());
     }
 
     private int getKeySize(PublicKey publicKey) {

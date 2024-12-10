@@ -28,11 +28,9 @@ import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -55,7 +53,7 @@ public class SignElf {
      */
     public static final char CODESIGN_BLOCK_TYPE = 3;
 
-    private static final Logger LOGGER = LogManager.getLogger(SignElf.class);
+    private static final LogUtils LOGGER = new LogUtils(SignElf.class);
 
     private static final String CODESIGN_OFF = "0";
 

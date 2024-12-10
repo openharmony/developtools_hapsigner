@@ -22,8 +22,7 @@ import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -72,7 +71,7 @@ import java.util.List;
  * @since 2021/12/21
  */
 public class BcPkcs7Generator implements Pkcs7Generator {
-    private static final Logger LOGGER = LogManager.getLogger(BcPkcs7Generator.class);
+    private static final LogUtils LOGGER = new LogUtils(BcPkcs7Generator.class);
     private static final SignatureAlgorithmIdentifierFinder SIGN_ALG_FINDER =
         new DefaultSignatureAlgorithmIdentifierFinder();
     private static final DigestAlgorithmIdentifierFinder DIGEST_ALG_FINDER =

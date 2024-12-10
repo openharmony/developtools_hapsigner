@@ -22,8 +22,8 @@ import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.CertUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import com.ohos.hapsigntool.utils.LogUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
@@ -58,7 +58,7 @@ public final class CertTools {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = LogManager.getLogger(ServiceApi.class);
+    private static final LogUtils LOGGER = new LogUtils(ServiceApi.class);
 
     private CertTools() {
     }

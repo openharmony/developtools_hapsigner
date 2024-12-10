@@ -22,9 +22,9 @@ import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.signer.ISigner;
 import com.ohos.hapsigntool.signer.SignerFactory;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.BERSet;
@@ -73,7 +73,7 @@ public final class ProfileSignTool {
     /**
      * logger
      */
-    private static final Logger LOGGER = LogManager.getLogger(ProfileSignTool.class);
+    private static final LogUtils LOGGER = new LogUtils(ProfileSignTool.class);
 
     private ProfileSignTool() {
     }

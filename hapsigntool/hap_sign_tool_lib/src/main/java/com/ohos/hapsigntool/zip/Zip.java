@@ -20,8 +20,7 @@ import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +37,7 @@ import java.util.Optional;
  * @since 2023/12/02
  */
 public class Zip {
-    private static final Logger LOGGER = LogManager.getLogger(Zip.class);
+    private static final LogUtils LOGGER = new LogUtils(Zip.class);
 
     /**
      * file is uncompress file flag
@@ -80,11 +79,11 @@ public class Zip {
             endOfCentralDirectory = getZipEndOfCentralDirectory(inputFile);
             cDOffset = endOfCentralDirectory.getOffset();
             long eocdEnd = System.currentTimeMillis();
-            LOGGER.debug("getZipEndOfCentralDirectory use {} ms", eocdEnd - start);
+            LOGGER.debug("getZipEndOfCentralDirectory use " + (eocdEnd - start) + "ms");
             // 2. use eocd's cd offset, get cd data
             getZipCentralDirectory(inputFile);
             long cdEnd = System.currentTimeMillis();
-            LOGGER.debug("getZipCentralDirectory use {} ms", cdEnd - start);
+            LOGGER.debug("getZipCentralDirectory use " + (cdEnd - start) +" ms");
             // 3. use cd's entry offset and file size, get entry data
             getZipEntries(inputFile);
             ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
@@ -92,7 +91,7 @@ public class Zip {
             ZipEntryData endEntryData = endEntry.getZipEntryData();
             signingOffset = endCD.getOffset() + endEntryData.getLength();
             long entryEnd = System.currentTimeMillis();
-            LOGGER.debug("getZipEntries use {} ms", entryEnd - start);
+            LOGGER.debug("getZipEntries use " + (entryEnd - start) +" ms");
             // 4. file all data - eocd - cd - entry = sign block
             signingBlock = getSigningBlock(inputFile);
         } catch (IOException e) {
