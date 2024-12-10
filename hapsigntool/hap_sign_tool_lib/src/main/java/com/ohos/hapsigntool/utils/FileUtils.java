@@ -20,9 +20,6 @@ import com.google.gson.GsonBuilder;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -47,7 +44,7 @@ public final class FileUtils {
     /**
      * LOGGER.
      */
-    private static final Logger LOGGER = LogManager.getLogger(FileUtils.class);
+    private static final LogUtils LOGGER = new LogUtils(FileUtils.class);
 
     /**
      * add GSON static.
@@ -499,7 +496,7 @@ public final class FileUtils {
             try {
                 Files.delete(file.toPath());
             } catch (IOException e) {
-                LOGGER.warn("delete file '{}' error, error message: {}", file, e.getMessage());
+                LOGGER.warn("delete file '" + file + "' error, error message: " + e.getMessage());
             }
         }
     }

@@ -17,8 +17,7 @@ package com.ohos.hapsigntool.signer;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -41,7 +40,7 @@ public class LocalSigner implements ISigner {
     /**
      * logger of LocalSigner
      */
-    private static final Logger logger = LogManager.getLogger(LocalSigner.class);
+    private static final LogUtils logger = new LogUtils(LocalSigner.class);
 
     /**
      * PrivateKey.

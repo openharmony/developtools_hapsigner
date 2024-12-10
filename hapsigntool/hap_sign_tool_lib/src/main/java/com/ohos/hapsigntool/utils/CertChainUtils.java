@@ -18,8 +18,6 @@ package com.ohos.hapsigntool.utils;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;

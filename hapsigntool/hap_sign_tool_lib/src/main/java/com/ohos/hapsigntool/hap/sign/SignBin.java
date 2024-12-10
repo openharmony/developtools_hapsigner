@@ -25,10 +25,8 @@ import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.HashUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -42,7 +40,7 @@ import java.util.Map;
  * @since 2021/12/21
  */
 public class SignBin {
-    private static final Logger LOGGER = LogManager.getLogger(SignBin.class);
+    private static final LogUtils LOGGER = new LogUtils(SignBin.class);
 
     /**
      * Constructor of Method

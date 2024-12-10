@@ -24,9 +24,9 @@ import com.ohos.hapsigntool.profile.model.VerificationResult;
 import com.ohos.hapsigntool.utils.CertChainUtils;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -67,7 +67,7 @@ public class VerifyHelper implements IProvisionVerifier {
     /**
      * LOGGER.
      */
-    private static final Logger LOGGER = LogManager.getLogger(VerifyHelper.class);
+    private static final LogUtils LOGGER = new LogUtils(VerifyHelper.class);
 
     /**
      * Signed provision profile verifier.

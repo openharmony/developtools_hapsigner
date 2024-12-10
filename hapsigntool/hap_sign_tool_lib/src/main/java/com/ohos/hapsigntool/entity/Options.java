@@ -17,8 +17,7 @@ package com.ohos.hapsigntool.entity;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.util.HashMap;
 
@@ -248,7 +247,7 @@ public class Options extends HashMap<String, Object> {
     /**
      * Logger.
      */
-    private static final Logger logger = LogManager.getLogger(Options.class);
+    private static final LogUtils logger = new LogUtils(Options.class);
 
 
     /**

@@ -28,10 +28,9 @@ import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.sign.SignElf;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -58,7 +57,7 @@ import java.util.Map;
  * @since 2023/11/23
  */
 public class VerifyElf {
-    private static final Logger LOGGER = LogManager.getLogger(VerifyElf.class);
+    private static final LogUtils LOGGER = new LogUtils(VerifyElf.class);
 
     static {
         Security.addProvider(new BouncyCastleProvider());
@@ -89,15 +88,15 @@ public class VerifyElf {
      */
     public boolean checkParams(Options options) {
         if (!options.containsKey(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE)) {
-            LOGGER.error("Missing parameter: {}", ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
+            LOGGER.error("Missing parameter: " + ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
             return false;
         }
         if (!options.containsKey(ParamConstants.PARAM_VERIFY_PROFILE_FILE)) {
-            LOGGER.error("Missing parameter: {}", ParamConstants.PARAM_VERIFY_PROFILE_FILE);
+            LOGGER.error("Missing parameter: " + ParamConstants.PARAM_VERIFY_PROFILE_FILE);
             return false;
         }
         if (!options.containsKey(ParamConstants.PARAM_VERIFY_PROOF_FILE)) {
-            LOGGER.warn("Missing parameter: {}", ParamConstants.PARAM_VERIFY_PROOF_FILE);
+            LOGGER.warn("Missing parameter: " + ParamConstants.PARAM_VERIFY_PROOF_FILE);
         }
         return true;
     }
@@ -127,7 +126,7 @@ public class VerifyElf {
             }
             verifyResult = verifyElf(filePath);
             if (!verifyResult.isVerified()) {
-                LOGGER.error("verify: {}", verifyResult.getMessage());
+                LOGGER.error("verify: " + verifyResult.getMessage());
                 throw new IOException();
             }
             String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
@@ -147,7 +146,7 @@ public class VerifyElf {
             return false;
         }
 
-        LOGGER.info("verify: {}", verifyResult.getMessage());
+        LOGGER.info("verify: " + verifyResult.getMessage());
         return true;
     }
 
