@@ -116,6 +116,9 @@ public class FsVerityGenerator {
             throw new FsVerityDigestException("Invalid algorithm" + e.getMessage(), e);
         }
         if (pageInfoExtension != null && flags != 0) {
+            if (pageInfoExtension.getMapOffset() > size - pageInfoExtension.getMapSize() / Byte.SIZE){
+                throw new FsVerityDigestException("Invalid page info offset/size");
+            }
             try {
                 byte[] fsVerityDescriptorV2 = builder.build()
                     .getDiscByteCsv2(pageInfoExtension.getMapOffset(), pageInfoExtension.getMapSize(),

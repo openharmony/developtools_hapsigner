@@ -260,7 +260,7 @@ public class SignInfo {
             % SIGNATURE_ALIGNMENT];
         bf.get(inZeroPadding);
         // parse merkle tree extension
-        List<Extension> inExtensionList = parseExtensionList(bf, inExtensionNum);
+        List<Extension> inExtensionList = parseExtensionList(bf, inExtensionNum, inDataSize);
         return new SignInfoBuilder().setSaltSize(inSaltSize)
             .setSigSize(inSigSize)
             .setFlags(inFlags)
@@ -274,7 +274,7 @@ public class SignInfo {
             .build();
     }
 
-    private static List<Extension> parseExtensionList(ByteBuffer bf, int inExtensionNum)
+    private static List<Extension> parseExtensionList(ByteBuffer bf, int inExtensionNum, long inDataSize)
         throws VerifyCodeSignException {
         List<Extension> inExtensionList = new ArrayList<>();
         for (int i = 0; i < inExtensionNum; i++) {
@@ -296,7 +296,11 @@ public class SignInfo {
                 }
                 byte[] pageInfoExtension = new byte[extensionSize];
                 bf.get(pageInfoExtension);
-                inExtensionList.add(PageInfoExtension.fromByteArray(pageInfoExtension));
+                PageInfoExtension pageInfoExtension1 = PageInfoExtension.fromByteArray(pageInfoExtension);
+                if (pageInfoExtension1.getMapOffset() > inDataSize - pageInfoExtension1.getMapSize() / Byte.SIZE) {
+                    throw new VerifyCodeSignException("Invalid page info offset/size");
+                }
+                inExtensionList.add(pageInfoExtension1);
             } else {
                 LOGGER.info("Invalid extensionType {} of SignInfo", extensionType);
             }
