@@ -148,7 +148,8 @@ public class PageInfoGenerator {
             }
         }
         long[] longArray = bitmap.toLongArray();
-        ByteBuffer buffer = ByteBuffer.allocate(longArray.length * 8).order(ByteOrder.LITTLE_ENDIAN);
+        int byteLen = bitmap.size() / Byte.SIZE;
+        ByteBuffer buffer = ByteBuffer.allocate(byteLen).order(ByteOrder.LITTLE_ENDIAN);
         for (long l : longArray) {
             buffer.putLong(l);
         }
