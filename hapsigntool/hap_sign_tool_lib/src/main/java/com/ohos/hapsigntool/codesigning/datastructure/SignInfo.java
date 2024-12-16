@@ -294,13 +294,13 @@ public class SignInfo {
                 if (extensionSize < (PageInfoExtension.PAGE_INFO_EXTENSION_DATA_SIZE_WITHOUT_SIGN)) {
                     throw new VerifyCodeSignException("Invalid PageInfo extensionSize of SignInfo");
                 }
-                byte[] pageInfoExtension = new byte[extensionSize];
-                bf.get(pageInfoExtension);
-                PageInfoExtension pageInfoExtension1 = PageInfoExtension.fromByteArray(pageInfoExtension);
-                if (pageInfoExtension1.getMapOffset() > inDataSize - pageInfoExtension1.getMapSize() / Byte.SIZE) {
+                byte[] extensionBytes = new byte[extensionSize];
+                bf.get(extensionBytes);
+                PageInfoExtension pageInfoExtension = PageInfoExtension.fromByteArray(extensionBytes);
+                if (pageInfoExtension.getMapOffset() > inDataSize - pageInfoExtension.getMapSize() / Byte.SIZE) {
                     throw new VerifyCodeSignException("Invalid page info offset/size");
                 }
-                inExtensionList.add(pageInfoExtension1);
+                inExtensionList.add(pageInfoExtension);
             } else {
                 LOGGER.info("Invalid extensionType {} of SignInfo", extensionType);
             }
