@@ -159,19 +159,27 @@ int FileUtils::ReadInputByLength(std::ifstream& input, size_t length, std::strin
         return -1;
     }
     ret.clear();
-    std::string buffer(FILE_BUFFER_BLOCK, 0);
+
+    char* buffer = new (std::nothrow)char[FILE_BUFFER_BLOCK];
+    if (buffer == NULL) {
+        SIGNATURE_TOOLS_LOGE("create buffer error!");
+        return -1;
+    }
     size_t hasReadLen = 0;
+
     while (hasReadLen < length && input) {
         int readLen = static_cast<int>(std::min(length - hasReadLen, (size_t)FILE_BUFFER_BLOCK));
-        input.read(&buffer[0], readLen);
+        input.read(buffer, readLen);
         bool flag = (input.gcount() != readLen);
         if (flag) {
+            delete[] buffer;
             SIGNATURE_TOOLS_LOGE("read %zu bytes data less than %zu", hasReadLen, length);
             return -1;
         }
-        ret.append(&buffer[0], readLen);
-        hasReadLen += input.gcount();
+        ret.append(buffer, readLen);
+        hasReadLen += readLen;
     }
+    delete[] buffer;
     if (hasReadLen != length) {
         SIGNATURE_TOOLS_LOGE("read %zu bytes data less than %zu", hasReadLen, length);
         return -1;
@@ -247,46 +255,33 @@ bool FileUtils::AppendWriteByteToFile(const std::string& bytes, const std::strin
 
 int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, size_t length)
 {
-    static Uscript::ThreadPool readPool(1);
-    static Uscript::ThreadPool writePool(1);
-    std::future<void> readTask;
-    std::vector<std::future<void>> writeTasks;
     int result = RET_OK;
-    auto writeFunc = [&result] (std::ofstream& outStream, char* data, int dataSize) {
-        outStream.write(data, dataSize);
-        if (!outStream.good()) {
-            result = IO_ERROR;
-            delete[] data;
-            return;
-        }
-        delete[] data;
-        };
-    auto readFunc = [&output, &writeFunc, &writeTasks, &result] (std::ifstream& in, int dataSize) {
-        while (in) {
-            char* buf = new (std::nothrow)char[FILE_BUFFER_BLOCK];
-            if (buf == NULL) {
-                result = RET_FAILED;
-                return;
-            }
-            int min = std::min(dataSize, FILE_BUFFER_BLOCK);
-            in.read(buf, min);
-            dataSize -= in.gcount();
-            writeTasks.push_back(writePool.Enqueue(writeFunc, std::ref(output), buf, min));
-            if (dataSize <= 0) {
-                break;
-            }
-        }
-        // After the file is written, datasize must be 0, so the if condition will never hold
-        if (dataSize != 0) {
+    char* buf = new (std::nothrow)char[FILE_BUFFER_BLOCK];
+    if (buf == NULL) {
+        SIGNATURE_TOOLS_LOGE("create buffer error!");
+        return RET_FAILED;
+    }
+
+    while (input) {
+        int min = std::min(static_cast<int>(length), FILE_BUFFER_BLOCK);
+        input.read(buf, min);
+        length -= input.gcount();
+        output.write(buf, min);
+        if (!output.good()) {
             SIGNATURE_TOOLS_LOGE("write error!");
-            result = IO_ERROR;
-            return;
+            delete[] buf;
+            return IO_ERROR;
         }
-        };
-    readTask = readPool.Enqueue(readFunc, std::ref(input), length);
-    readTask.wait();
-    for (std::future<void>& task : writeTasks) {
-        task.wait();
+        
+        if (length <= 0) {
+            break;
+        }
+    }
+    delete[] buf;
+    // After the file is written, datasize must be 0, so the if condition will never hold
+    if (length != 0) {
+        SIGNATURE_TOOLS_LOGE("written length error!");
+        return IO_ERROR;
     }
     return result;
 }
