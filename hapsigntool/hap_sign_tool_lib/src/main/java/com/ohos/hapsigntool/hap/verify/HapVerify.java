@@ -74,7 +74,7 @@ import java.util.Set;
 public class HapVerify {
     private static final LogUtils LOGGER = new LogUtils(HapVerify.class);
 
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private ZipDataInput beforeApkSigningBlock;
 
@@ -429,7 +429,7 @@ public class HapVerify {
 
     private String formatDateTime(Date date) {
         if (date != null) {
-            return format.format(date);
+            return FORMAT.format(date);
         }
         return "";
     }
