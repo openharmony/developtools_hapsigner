@@ -302,7 +302,7 @@ public class SignInfo {
                 }
                 if (pageInfoExtension.getMapSize() / pageInfoExtension.getUnitSize()
                     > inDataSize / CodeSignBlock.PAGE_SIZE_4K) {
-                    throw new VerifyCodeSignException("page info size is not consistent data page ");
+                    throw new VerifyCodeSignException("page info size is not consistent with data page ");
                 }
                 inExtensionList.add(pageInfoExtension);
             } else {

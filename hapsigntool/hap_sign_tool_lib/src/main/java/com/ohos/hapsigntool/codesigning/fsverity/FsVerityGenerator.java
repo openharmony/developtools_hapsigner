@@ -121,7 +121,7 @@ public class FsVerityGenerator {
                 throw new FsVerityDigestException("Invalid page info offset/size");
             }
             if (pageInfoExtension.getMapSize() / pageInfoExtension.getUnitSize() > size / CodeSignBlock.PAGE_SIZE_4K) {
-                throw new FsVerityDigestException("page info size is not consistent data page ");
+                throw new FsVerityDigestException("page info size is not consistent with data page ");
             }
             try {
                 byte[] fsVerityDescriptorV2 = builder.build()
