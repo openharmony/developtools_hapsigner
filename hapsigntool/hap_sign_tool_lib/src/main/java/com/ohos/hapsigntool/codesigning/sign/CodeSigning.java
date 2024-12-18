@@ -213,7 +213,6 @@ public class CodeSigning {
             .getZipEntryHeader()
             .getExtraLength();
         long bitmapSize = bitmapOff / CodeSignBlock.PAGE_SIZE_4K * PageInfoExtension.DEFAULT_UNIT_SIZE;
-        bitmapSize = ((bitmapSize - 1) / Long.SIZE + 1) * Long.SIZE;
         pageInfoExtension = new PageInfoExtension(bitmapOff, bitmapSize);
     }
 

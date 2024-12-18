@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.fsverity;
 
+import com.ohos.hapsigntool.codesigning.datastructure.CodeSignBlock;
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
@@ -116,8 +117,12 @@ public class FsVerityGenerator {
             throw new FsVerityDigestException("Invalid algorithm" + e.getMessage(), e);
         }
         if (pageInfoExtension != null && flags != 0) {
-            if (pageInfoExtension.getMapOffset() > size - pageInfoExtension.getMapSize() / Byte.SIZE){
+            if (pageInfoExtension.getMapOffset() > size - pageInfoExtension.getMapSize() / Byte.SIZE) {
                 throw new FsVerityDigestException("Invalid page info offset/size");
+            }
+            if (pageInfoExtension.getMapSize() / PageInfoExtension.DEFAULT_UNIT_SIZE
+                > size / CodeSignBlock.PAGE_SIZE_4K) {
+                throw new FsVerityDigestException("page info size is not consistent data page ");
             }
             try {
                 byte[] fsVerityDescriptorV2 = builder.build()

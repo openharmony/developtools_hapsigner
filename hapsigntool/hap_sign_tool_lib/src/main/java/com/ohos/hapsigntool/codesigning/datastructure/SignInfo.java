@@ -300,6 +300,10 @@ public class SignInfo {
                 if (pageInfoExtension.getMapOffset() > inDataSize - pageInfoExtension.getMapSize() / Byte.SIZE) {
                     throw new VerifyCodeSignException("Invalid page info offset/size");
                 }
+                if (pageInfoExtension.getMapSize() / pageInfoExtension.getUnitSize()
+                    > inDataSize / CodeSignBlock.PAGE_SIZE_4K) {
+                    throw new VerifyCodeSignException("page info size is not consistent data page ");
+                }
                 inExtensionList.add(pageInfoExtension);
             } else {
                 LOGGER.info("Invalid extensionType {} of SignInfo", extensionType);
