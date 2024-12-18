@@ -356,7 +356,7 @@ public class HapVerify {
              */
             int signBlockVersion = digestDatas.getInt();
             int signBlockCount = digestDatas.getInt();
-            LOGGER.info("version is: " + signBlockVersion + " , number of block is: {}" + signBlockCount);
+            LOGGER.info("version is: " + signBlockVersion + " , number of block is:" + signBlockCount);
             int digestBlockLen = digestDatas.getInt();
             int signatureAlgId = digestDatas.getInt();
             int digestDataLen = digestDatas.getInt();
@@ -406,7 +406,7 @@ public class HapVerify {
         LOGGER.info("SHA256: " + HapUtils.toHex(DigestUtils.sha256Digest(encodedCert), ":"));
         LOGGER.info("Signature Algorithm: " + cert.getSigAlgName());
         PublicKey publicKey = cert.getPublicKey();
-        LOGGER.info("Key: " + publicKey.getAlgorithm() + ", key length: {} bits" + getKeySize(publicKey));
+        LOGGER.info("Key: " + publicKey.getAlgorithm() + ", key length: " + + getKeySize(publicKey) + " bits" );
         LOGGER.info("Cert Version: V" + cert.getVersion());
     }
 
