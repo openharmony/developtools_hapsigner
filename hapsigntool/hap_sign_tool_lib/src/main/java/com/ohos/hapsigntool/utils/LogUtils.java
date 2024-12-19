@@ -267,7 +267,7 @@ public class LogUtils {
         }
         for (Object arg : args) {
             Matcher m = PATTERN.matcher(result);
-            result = m.replaceFirst(arg.toString());
+            result = m.replaceFirst(String.valueOf(arg));
         }
         return result;
     }
