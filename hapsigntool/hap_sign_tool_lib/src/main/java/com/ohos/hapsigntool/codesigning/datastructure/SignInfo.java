@@ -301,7 +301,7 @@ public class SignInfo {
                     throw new VerifyCodeSignException("Invalid page info offset/size");
                 }
                 if (pageInfoExtension.getMapSize() / pageInfoExtension.getUnitSize()
-                    > inDataSize / CodeSignBlock.PAGE_SIZE_4K) {
+                    >= inDataSize / CodeSignBlock.PAGE_SIZE_4K) {
                     throw new VerifyCodeSignException("page info size is not consistent with data page ");
                 }
                 inExtensionList.add(pageInfoExtension);

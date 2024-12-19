@@ -207,11 +207,15 @@ public class CodeSigning {
         return generated;
     }
 
-    private void createPageInfoExtension(ZipEntry entry) {
+    private void createPageInfoExtension(ZipEntry entry) throws HapFormatException {
         long bitmapOff = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
             + entry.getZipEntryData().getZipEntryHeader().getFileNameLength() + entry.getZipEntryData()
             .getZipEntryHeader()
             .getExtraLength();
+        if (!NumberUtils.isMultiple4K(bitmapOff)) {
+            throw new HapFormatException(
+                String.format(Locale.ROOT, "Invalid bitmapOff(%d), not a multiple of 4096", bitmapOff));
+        }
         long bitmapSize = bitmapOff / CodeSignBlock.PAGE_SIZE_4K * PageInfoExtension.DEFAULT_UNIT_SIZE;
         pageInfoExtension = new PageInfoExtension(bitmapOff, bitmapSize);
     }
