@@ -258,10 +258,6 @@ public class LogUtils {
         logger.severe(" ERROR - " +  replaceArgs(log, arg1, arg2, arg3));
     }
 
-    public static void main(String[] args) {
-        new LogUtils(LogUtils.class).error("aaa {} bbb {} {}", "a", "b", "c");
-    }
-
     private static String replaceArgs(String line, Object... args) {
 
         Matcher matcher = PATTERN.matcher(line);
