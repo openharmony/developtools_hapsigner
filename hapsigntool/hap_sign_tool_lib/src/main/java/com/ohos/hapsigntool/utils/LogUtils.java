@@ -30,6 +30,8 @@ import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Hap Sign Tool LogUtils
@@ -41,6 +43,7 @@ public class LogUtils {
     private static Level level;
     private static final Map<String, Level> LEVEL_MAP = new HashMap<>();
     private static final String DEFAULT_LEVEL = "info";
+    private static final Pattern PATTERN = Pattern.compile("\\{}");
 
     static {
         LEVEL_MAP.put(DEFAULT_LEVEL, Level.INFO);
@@ -54,6 +57,223 @@ public class LogUtils {
         } catch (LogConfigException e) {
             level = LEVEL_MAP.get(getResourceConfig(configFileName));
         }
+    }
+
+    /**
+     * format log utils constructor.
+     *
+     * @param clazz class
+     */
+    public LogUtils(Class<?> clazz) {
+        logger = Logger.getLogger(clazz.getName());
+        logger.setUseParentHandlers(false);
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        SignToolFormatter signToolFormatter = new SignToolFormatter();
+        consoleHandler.setFormatter(signToolFormatter);
+        logger.addHandler(consoleHandler);
+        logger.setLevel(level);
+    }
+
+    /**
+     * print info log
+     *
+     * @param log log string
+     */
+    public void info(String log) {
+        logger.info(" INFO - " + log);
+    }
+
+    /**
+     * print info log
+     *
+     * @param log log string
+     * @param arg arg
+     */
+    public void info(String log, Object arg) {
+        logger.info(" INFO - " + replaceArgs(log, arg));
+    }
+
+    /**
+     * print info log
+     *
+     * @param log log string
+     * @param arg1 arg
+     * @param arg2 arg
+     */
+    public void info(String log, Object arg1, Object arg2) {
+        logger.info(" INFO - " + replaceArgs(log, arg1, arg2));
+    }
+
+    /**
+     * print warn log
+     *
+     * @param log log string
+     */
+    public void warn(String log) {
+        logger.warning(" WARN - " +  log);
+    }
+
+    /**
+     * print warn log
+     *
+     * @param log log string
+     * @param arg arg
+     */
+    public void warn(String log, Object arg) {
+        logger.warning(" WARN - " +  replaceArgs(log, arg));
+    }
+
+    /**
+     * print warn log
+     *
+     * @param log log string
+     * @param arg arg
+     * @param e throwable
+     */
+    public void warn(String log, Object arg, Throwable e) {
+        logger.log(Level.WARNING, e, () -> " DEBUG - " + replaceArgs(log, arg));
+    }
+
+    /**
+     * print warn log
+     *
+     * @param log log string
+     * @param arg1 arg
+     * @param arg2 arg
+     */
+    public void warn(String log, Object arg1, Object arg2) {
+        logger.warning(" WARN - " +  replaceArgs(log, arg1, arg2));
+    }
+
+    /**
+     * print warn log
+     *
+     * @param log log string
+     * @param e throwable
+     */
+    public void warn(String log, Throwable e) {
+        logger.log(Level.WARNING, e, () -> " DEBUG - " + log);
+    }
+
+    /**
+     * print debug log
+     *
+     * @param log log string
+     */
+    public void debug(String log) {
+        logger.config(" DEBUG - " +  log);
+    }
+
+    /**
+     * print debug log
+     *
+     * @param log log string
+     * @param arg1 arg
+     * @param arg2 arg
+     */
+    public void debug(String log, Object arg1, Object arg2) {
+        logger.warning(" WARN - " +  replaceArgs(log, arg1, arg2));
+    }
+
+    /**
+     * print debug log
+     *
+     * @param log log string
+     * @param e throwable
+     */
+    public void debug(String log, Throwable e) {
+        logger.log(Level.CONFIG, e, () -> " DEBUG - " + log);
+    }
+
+    /**
+     * print debug log
+     *
+     * @param log log string
+     * @param arg arg
+     */
+    public void debug(String log, Object arg) {
+        logger.config(" DEBUG - " +  replaceArgs(log, arg));
+    }
+
+    /**
+     * print error log
+     *
+     * @param log log string
+     */
+    public void error(String log) {
+        logger.severe(" ERROR - " +  log);
+    }
+
+    /**
+     * print error log
+     *
+     * @param log log string
+     * @param e throwable
+     */
+    public void error(String log, Throwable e) {
+        logger.log(Level.SEVERE, e, () -> " ERROR - " + log);
+    }
+
+    /**
+     * print error log
+     *
+     * @param log log string
+     * @param arg arg
+     * @param e throwable
+     */
+    public void error(String log, Object arg, Throwable e) {
+        logger.log(Level.SEVERE, e, () -> " ERROR - " + replaceArgs(log, arg));
+    }
+
+    /**
+     * print error log
+     *
+     * @param log log string
+     * @param arg arg
+     */
+    public void error(String log, Object arg) {
+        logger.severe(" ERROR - " +  replaceArgs(log, arg));
+    }
+
+    /**
+     * print error log
+     *
+     * @param log log string
+     * @param arg1 arg
+     * @param arg2 arg
+     */
+    public void error(String log, Object arg1, Object arg2) {
+        logger.severe(" ERROR - " +  replaceArgs(log, arg1, arg2));
+    }
+
+    /**
+     * print error log
+     *
+     * @param log log string
+     * @param arg1 arg
+     * @param arg2 arg
+     * @param arg3 arg
+     */
+    public void error(String log, Object arg1, Object arg2, Object arg3) {
+        logger.severe(" ERROR - " +  replaceArgs(log, arg1, arg2, arg3));
+    }
+
+    public static void main(String[] args) {
+        new LogUtils(LogUtils.class).error("aaa {} bbb {} {}", "a", "b", "c");
+    }
+
+    private static String replaceArgs(String line, Object... args) {
+
+        Matcher matcher = PATTERN.matcher(line);
+        String result = line;
+        if (!matcher.find()) {
+            return line;
+        }
+        for (Object arg : args) {
+            Matcher m = PATTERN.matcher(result);
+            result = m.replaceFirst(arg.toString());
+        }
+        return result;
     }
 
     private static String getJarConfig(String configFileName) throws LogConfigException {
@@ -114,85 +334,4 @@ public class LogUtils {
         return DEFAULT_LEVEL;
     }
 
-
-    /**
-     * format log utils constructor.
-     *
-     * @param clazz class
-     */
-    public LogUtils(Class<?> clazz) {
-        logger = Logger.getLogger(clazz.getName());
-        logger.setUseParentHandlers(false);
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        SignToolFormatter signToolFormatter = new SignToolFormatter();
-        consoleHandler.setFormatter(signToolFormatter);
-        logger.addHandler(consoleHandler);
-        logger.setLevel(level);
-    }
-
-    /**
-     * print info log
-     *
-     * @param log log string
-     */
-    public void info(String log) {
-        logger.info(" INFO - " + log);
-    }
-
-    /**
-     * print warn log
-     *
-     * @param log log string
-     */
-    public void warn(String log) {
-        logger.warning(" WARN - " +  log);
-    }
-
-    /**
-     * print warn log
-     *
-     * @param log log string
-     * @param e throwable
-     */
-    public void warn(String log, Throwable e) {
-        logger.log(Level.WARNING, e, () -> " DEBUG - " + log);
-    }
-
-    /**
-     * print debug log
-     *
-     * @param log log string
-     */
-    public void debug(String log) {
-        logger.config(" DEBUG - " +  log);
-    }
-
-    /**
-     * print debug log
-     *
-     * @param log log string
-     * @param e throwable
-     */
-    public void debug(String log, Throwable e) {
-        logger.log(Level.CONFIG, e, () -> " DEBUG - " + log);
-    }
-
-    /**
-     * print error log
-     *
-     * @param log log string
-     */
-    public void error(String log) {
-        logger.severe(" ERROR - " +  log);
-    }
-
-    /**
-     * print error log
-     *
-     * @param log log string
-     * @param e throwable
-     */
-    public void error(String log, Throwable e) {
-        logger.log(Level.SEVERE, e, () -> " ERROR - " + log);
-    }
 }

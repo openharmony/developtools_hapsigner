@@ -104,7 +104,7 @@ public class PageInfoGenerator {
             try (InputStream stream = hap.getInputStream(libEntry)) {
                 ElfFile elfFile = new ElfFile(stream);
                 if (!elfFile.isElfFile()) {
-                    LOGGER.info(libFileName + " not ELF file");
+                    LOGGER.info("{} not ELF file", libFileName);
                     return;
                 }
                 List<ElfProgramHeader> elfPHeaders = elfFile.filterExecPHeaders();

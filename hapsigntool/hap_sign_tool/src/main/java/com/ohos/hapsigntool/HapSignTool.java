@@ -125,7 +125,7 @@ public final class HapSignTool {
             ServiceApi api = new SignToolServiceImpl();
             Params params = CmdUtil.convert2Params(args);
             LOGGER.debug(params.toString());
-            LOGGER.info("Start " + params.getMethod());
+            LOGGER.info("Start {}", params.getMethod());
             boolean isSuccess = dispatchParams(params, api);
             if (isSuccess) {
                 LOGGER.info(String.format("%s %s", params.getMethod(), "success"));

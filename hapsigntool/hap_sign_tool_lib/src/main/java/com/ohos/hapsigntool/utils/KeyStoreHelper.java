@@ -116,7 +116,7 @@ public class KeyStoreHelper {
         FileInputStream fis = null;
         try {
             if (FileUtils.isFileExist(keyStorePath)) {
-                logger.info(keyStorePath + " is exist. Try to load it with given passwd");
+                logger.info("{} is exist. Try to load it with given passwd", keyStorePath);
                 fis = new FileInputStream(keyStorePath);
                 keyStore.load(fis, pwd);
             } else {

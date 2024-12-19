@@ -518,7 +518,7 @@ public class HapUtils {
                 hapSignBlockMagicLo, hapSignBlockMagicHi, version, centralDirectoryStartOffset);
         ByteBuffer hapSigningBlockByteBuffer = hap.createByteBuffer(hapSigningBlockOffset, (int) hapSigBlockSize)
                 .order(ByteOrder.LITTLE_ENDIAN);
-        LOGGER.info("Find Hap Signing Block success, version: " + version + ", block count: " + blockCount);
+        LOGGER.info("Find Hap Signing Block success, version: {}, block count: {}", version, blockCount);
         return new HapSignBlockInfo(hapSigningBlockOffset, version, hapSigningBlockByteBuffer);
     }
 
