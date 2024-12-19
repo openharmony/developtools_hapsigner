@@ -479,7 +479,7 @@ public abstract class SignProvider {
 
     private void printErrorLog(Exception exception) {
         if (exception != null) {
-            LOGGER.error("hap-sign-tool: error: " + exception.getMessage(), exception);
+            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage(), exception);
         }
     }
 
