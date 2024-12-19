@@ -81,7 +81,7 @@ public class SignerFactory {
             plugin = new File(classLocation, signerPlugin);
         }
         if (!plugin.exists() || !plugin.isFile()) {
-            LOGGER.warn("can not find signerPlugin or not a file by param signerPlugin = " + signerPlugin);
+            LOGGER.warn("can not find signerPlugin or not a file by param signerPlugin = {}", signerPlugin);
             return Optional.empty();
         }
         Optional<URL> url = fileToUrl(plugin);
@@ -92,14 +92,14 @@ public class SignerFactory {
             ClassLoader classLoader = generateSignerClassLoader(url.get());
             try (InputStream inputStream = classLoader.getResourceAsStream("signer.properties")) {
                 if (inputStream == null) {
-                    LOGGER.warn("can not find entry signer.properties in " + plugin);
+                    LOGGER.warn("can not find entry signer.properties in {}", plugin);
                     return Optional.empty();
                 }
                 Properties properties = new Properties();
                 properties.load(inputStream);
                 String implClassName = properties.getProperty(ISigner.class.getName());
                 if (StringUtils.isEmpty(implClassName)) {
-                    LOGGER.warn("can not find " + ISigner.class.getName() + " in signer.properties");
+                    LOGGER.warn("can not find {} in signer.properties", ISigner.class.getName());
                     return Optional.empty();
                 }
                 Class<?> implClass = classLoader.loadClass(implClassName);
@@ -111,20 +111,20 @@ public class SignerFactory {
             }
         } catch (IOException | ClassNotFoundException | NoSuchMethodException
             | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            LOGGER.warn("load remote signer from " + signerPlugin + " failed, msg: " + e.getMessage());
+            LOGGER.warn("load remote signer from {} failed, msg: {}", signerPlugin, e.getMessage());
         }
         return Optional.empty();
     }
 
     private Optional<URL> fileToUrl(File file) {
         if (!file.exists()) {
-            LOGGER.warn(file + " is not exists");
+            LOGGER.warn("{} is not exists", file);
             return Optional.empty();
         }
         try {
             return Optional.of(file.toURI().toURL());
         } catch (MalformedURLException e) {
-            LOGGER.warn(file + " can not convert to valid url, msg: " + e.getMessage());
+            LOGGER.warn("{} can not convert to valid url, msg: {}", file, e.getMessage());
         }
         return Optional.empty();
     }
@@ -137,7 +137,7 @@ public class SignerFactory {
         try {
             jarPath = URLDecoder.decode(URLEncoder.encode(jarPath, "utf-8"), "utf-8");
         } catch (UnsupportedEncodingException | IllegalArgumentException e) {
-            LOGGER.warn("decode class location failed, will ignored. msg :" + e.getMessage());
+            LOGGER.warn("decode class location failed, will ignored. msg :{}", e.getMessage());
         }
         File jarFile = new File(jarPath);
         if (!jarFile.exists()) {

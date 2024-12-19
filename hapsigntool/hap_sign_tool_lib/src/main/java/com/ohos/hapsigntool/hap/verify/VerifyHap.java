@@ -110,15 +110,15 @@ public class VerifyHap {
      */
     public boolean checkParams(Options options) {
         if (!options.containsKey(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE)) {
-            LOGGER.error("Missing parameter: " + ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
+            LOGGER.error("Missing parameter: {}", ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
             return false;
         }
         if (!options.containsKey(ParamConstants.PARAM_VERIFY_PROFILE_FILE)) {
-            LOGGER.error("Missing parameter: " + ParamConstants.PARAM_VERIFY_PROFILE_FILE);
+            LOGGER.error("Missing parameter: {}", ParamConstants.PARAM_VERIFY_PROFILE_FILE);
             return false;
         }
         if (!options.containsKey(ParamConstants.PARAM_VERIFY_PROOF_FILE)) {
-            LOGGER.warn("Missing parameter: " + ParamConstants.PARAM_VERIFY_PROOF_FILE);
+            LOGGER.warn("Missing parameter: {}", ParamConstants.PARAM_VERIFY_PROOF_FILE);
         }
         return true;
     }
@@ -148,7 +148,7 @@ public class VerifyHap {
             }
             verifyResult = verifyHap(filePath);
             if (!verifyResult.isVerified()) {
-                LOGGER.error("verify:  " + verifyResult.getMessage());
+                LOGGER.error("verify: {}", verifyResult.getMessage());
                 throw new IOException();
             }
             String outputCertPath = options.getString(ParamConstants.PARAM_VERIFY_CERTCHAIN_FILE);
@@ -170,7 +170,7 @@ public class VerifyHap {
             return false;
         }
 
-        LOGGER.info("verify: "+ verifyResult.getMessage());
+        LOGGER.info("verify: {}", verifyResult.getMessage());
         return true;
     }
 

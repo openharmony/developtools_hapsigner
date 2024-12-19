@@ -273,7 +273,7 @@ public class CodeSigning {
                 if (!hnpTypeMap.containsKey(hnpFileName)) {
                     throw new CodeSignException("hnp should be described in module.json");
                 }
-                LOGGER.debug("Sign hnp name = " + entryName);
+                LOGGER.debug("Sign hnp name = {}", entryName);
                 String type = hnpTypeMap.get(hnpFileName);
                 String hnpOwnerId = ownerID;
                 if ("public".equals(type)) {
@@ -294,7 +294,7 @@ public class CodeSigning {
         }
         try (JarFile hnp = new JarFile(tempHnp, false)) {
             List<JarEntry> elfEntries = getHnpLibEntries(hnp);
-            LOGGER.debug(hnp.getName() + " elf num : " + elfEntries.size());
+            LOGGER.debug("{} elf num : {}", hnp.getName(), elfEntries.size());
             List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.stream().parallel().map(entry -> {
                 String hnpElfPath = hnpEntry.getName() + "!/" + entry.getName();
                 try (InputStream inputStream = hnp.getInputStream(entry)) {
@@ -304,7 +304,7 @@ public class CodeSigning {
                         false, 0, ownerID);
                     return (Pair.create(hnpElfPath, pairSignInfoAndMerkleTreeBytes.getFirst()));
                 } catch (IOException | FsVerityDigestException | CodeSignException e) {
-                    LOGGER.error("Sign hnp lib error, entry name = " + hnpElfPath + ", msg : " + e.getMessage());
+                    LOGGER.error("Sign hnp lib error, entry name = {}, msg : {}", hnpElfPath, e.getMessage());
                 }
                 return null;
             }).collect(Collectors.toList());
@@ -315,9 +315,9 @@ public class CodeSigning {
         } finally {
             if (tempHnp.exists()) {
                 if (tempHnp.delete()) {
-                    LOGGER.debug("delete temp hnp file " + tempHnp.getName());
+                    LOGGER.debug("delete temp hnp file {}", tempHnp.getName());
                 } else {
-                    LOGGER.error("delete temp hnp file error " + tempHnp.getName());
+                    LOGGER.error("delete temp hnp file error {}", tempHnp.getName());
                 }
             }
         }
@@ -403,7 +403,7 @@ public class CodeSigning {
     private List<Pair<String, SignInfo>> signFilesFromJar(List<String> entryNames, JarFile hap, String ownerID)
         throws CodeSignException {
         List<Pair<String, SignInfo>> nativeLibInfoList = entryNames.stream().parallel().map(name -> {
-            LOGGER.debug("Sign entry name = " + name);
+            LOGGER.debug("Sign entry name = {}", name);
             JarEntry inEntry = hap.getJarEntry(name);
             try (InputStream inputStream = hap.getInputStream(inEntry)) {
                 long fileSize = inEntry.getSize();
@@ -413,7 +413,7 @@ public class CodeSigning {
                     ownerID);
                 return Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst());
             } catch (FsVerityDigestException | CodeSignException | IOException e) {
-                LOGGER.error("Sign lib error, entry name = " + name + ", msg : " + e.getMessage());
+                LOGGER.error("Sign lib error, entry name = {}, msg : {}", name, e.getMessage());
             }
             return null;
         }).collect(Collectors.toList());

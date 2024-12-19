@@ -496,7 +496,7 @@ public final class FileUtils {
             try {
                 Files.delete(file.toPath());
             } catch (IOException e) {
-                LOGGER.warn("delete file '" + file + "' error, error message: " + e.getMessage());
+                LOGGER.warn("delete file '{}' error, error message: {}", file, e.getMessage());
             }
         }
     }

@@ -485,7 +485,7 @@ public abstract class SignProvider {
 
     private void printErrorLogWithoutStack(Exception exception) {
         if (exception != null) {
-            LOGGER.error("hap-sign-tool: error: " + exception.getMessage());
+            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage());
         }
     }
 
@@ -517,7 +517,7 @@ public abstract class SignProvider {
         long start = System.currentTimeMillis();
         zip.toFile(tmpOutput.getCanonicalPath());
         long end = System.currentTimeMillis();
-        LOGGER.debug("zip to file use " + (end - start) + " ms");
+        LOGGER.debug("zip to file use {} ms", end - start);
         return zip;
     }
 
@@ -649,7 +649,7 @@ public abstract class SignProvider {
             throw new ProfileException("input certificates do not match with profile!");
         }
         String cn = getCertificateCN(certInProfile);
-        LOGGER.info("certificate in profile: " + cn);
+        LOGGER.info("certificate in profile: {}", cn);
         if (cn.isEmpty()) {
             throw new ProfileException("Common name of certificate is empty!");
         }

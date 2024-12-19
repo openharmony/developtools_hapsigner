@@ -192,7 +192,7 @@ public class HapUtils {
             LOGGER.error(e.getMessage());
             throw new ProfileException("profile json is invalid");
         }
-        LOGGER.info("profile type is: " + profileType);
+        LOGGER.info("profile type is: {}", profileType);
         return Pair.create(ownerID, profileType);
     }
 

@@ -79,11 +79,11 @@ public class Zip {
             endOfCentralDirectory = getZipEndOfCentralDirectory(inputFile);
             cDOffset = endOfCentralDirectory.getOffset();
             long eocdEnd = System.currentTimeMillis();
-            LOGGER.debug("getZipEndOfCentralDirectory use " + (eocdEnd - start) + "ms");
+            LOGGER.debug("getZipEndOfCentralDirectory use {} ms", eocdEnd - start);
             // 2. use eocd's cd offset, get cd data
             getZipCentralDirectory(inputFile);
             long cdEnd = System.currentTimeMillis();
-            LOGGER.debug("getZipCentralDirectory use " + (cdEnd - start) +" ms");
+            LOGGER.debug("getZipCentralDirectory use {} ms", cdEnd - start);
             // 3. use cd's entry offset and file size, get entry data
             getZipEntries(inputFile);
             ZipEntry endEntry = zipEntries.get(zipEntries.size() - 1);
@@ -91,7 +91,7 @@ public class Zip {
             ZipEntryData endEntryData = endEntry.getZipEntryData();
             signingOffset = endCD.getOffset() + endEntryData.getLength();
             long entryEnd = System.currentTimeMillis();
-            LOGGER.debug("getZipEntries use " + (entryEnd - start) +" ms");
+            LOGGER.debug("getZipEntries use {} ms", entryEnd - start);
             // 4. file all data - eocd - cd - entry = sign block
             signingBlock = getSigningBlock(inputFile);
         } catch (IOException e) {
