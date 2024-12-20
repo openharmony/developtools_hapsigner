@@ -259,7 +259,6 @@ public class LogUtils {
     }
 
     private static String replaceArgs(String line, Object... args) {
-
         Matcher matcher = PATTERN.matcher(line);
         String result = line;
         if (!matcher.find()) {
