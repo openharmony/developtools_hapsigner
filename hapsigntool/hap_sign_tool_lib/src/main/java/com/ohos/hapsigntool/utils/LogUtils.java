@@ -275,31 +275,31 @@ public class LogUtils {
     private static String getJarConfig(String configFileName) throws LogConfigException {
         String parent = getJarDirectory();
         if (parent == null) {
-            throw new LogConfigException("read jar path failed");
+            throw new LogConfigException("get jar Parent failed");
         }
         File config = new File(parent, configFileName);
         if (!config.exists()) {
-            throw new LogConfigException("read jar path failed");
+            throw new LogConfigException("can not find config file");
         }
         try (FileInputStream fis = new FileInputStream(config)) {
             return getLogLevel(fis);
         } catch (IOException e) {
-            throw new LogConfigException("read jar path failed");
+            throw new LogConfigException("read config file failed");
         }
     }
 
     private static String getJarDirectory() throws LogConfigException {
         ProtectionDomain protectionDomain = LogUtils.class.getProtectionDomain();
         if (protectionDomain == null) {
-            throw new LogConfigException("read jar path failed");
+            throw new LogConfigException("get jar protect domain failed");
         }
         CodeSource codeSource = protectionDomain.getCodeSource();
         if (codeSource == null) {
-            throw new LogConfigException("read jar path failed");
+            throw new LogConfigException("read jar code path failed");
         }
         URL location = codeSource.getLocation();
         if (location == null) {
-            throw new LogConfigException("read jar path failed");
+            throw new LogConfigException("read jar code source location failed");
         }
         String jarPath = location.getFile();
         if (jarPath == null) {
