@@ -16,7 +16,6 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.LogConfigException;
-import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +27,6 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +40,6 @@ import java.util.regex.Pattern;
  * @since 2024/12/08
  */
 public class LogUtils {
-    private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(LogUtils.class);
     private static Level level;
     private static final Map<String, Level> LEVEL_MAP = new HashMap<>();
     private static final String DEFAULT_LEVEL = "info";
