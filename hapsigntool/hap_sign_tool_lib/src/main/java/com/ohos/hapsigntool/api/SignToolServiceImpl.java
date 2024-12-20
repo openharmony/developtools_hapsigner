@@ -68,7 +68,7 @@ public class SignToolServiceImpl implements ServiceApi {
     /**
      * Logger.
      */
-    private static final LogUtils logger = new LogUtils(ServiceApi.class);
+    private static final LogUtils LOGGER = new LogUtils(ServiceApi.class);
 
     static {
         Security.addProvider(new BouncyCastleProvider());
@@ -256,8 +256,8 @@ public class SignToolServiceImpl implements ServiceApi {
             FileUtils.write(p7b, new File(adapter.getOutFile()));
             isSuccess = true;
         } catch (IOException exception) {
-            logger.debug(exception.getMessage(), exception);
-            logger.error(exception.getMessage());
+            LOGGER.debug(exception.getMessage(), exception);
+            LOGGER.error(exception.getMessage());
             isSuccess = false;
         }
         return isSuccess;
@@ -279,12 +279,12 @@ public class SignToolServiceImpl implements ServiceApi {
             VerificationResult verificationResult = verifyHelper.verify(p7b);
             isSign = verificationResult.isVerifiedPassed();
             if (!isSign) {
-                logger.error(verificationResult.getMessage());
+                LOGGER.error(verificationResult.getMessage());
             }
             outputString(FileUtils.GSON_PRETTY_PRINT.toJson(verificationResult), adapter.getOutFile());
         } catch (IOException exception) {
-            logger.debug(exception.getMessage(), exception);
-            logger.error(exception.getMessage());
+            LOGGER.debug(exception.getMessage(), exception);
+            LOGGER.error(exception.getMessage());
             isSign = false;
         } catch (VerifyException e) {
             CustomException.throwException(ERROR.VERIFY_ERROR, "Verify Profile Failed! " + e.getMessage());
@@ -309,7 +309,7 @@ public class SignToolServiceImpl implements ServiceApi {
         } else if ("remoteSign".equalsIgnoreCase(mode)) {
             signProvider = new RemoteSignProvider();
         } else {
-            logger.info("Resign mode. But not implement yet");
+            LOGGER.info("Resign mode. But not implement yet");
             return false;
         }
 
@@ -343,12 +343,12 @@ public class SignToolServiceImpl implements ServiceApi {
      */
     public void outputString(String content, String file) {
         if (StringUtils.isEmpty(file)) {
-            logger.info(content);
+            LOGGER.info(content);
         } else {
             try {
                 FileUtils.write(content.getBytes(StandardCharsets.UTF_8), new File(file));
             } catch (IOException exception) {
-                logger.debug(exception.getMessage(), exception);
+                LOGGER.debug(exception.getMessage(), exception);
                 CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             }
         }
@@ -364,14 +364,14 @@ public class SignToolServiceImpl implements ServiceApi {
     public boolean outputCert(X509Certificate certificate, String file) {
         try {
             if (StringUtils.isEmpty(file)) {
-                logger.info(CertUtils.generateCertificateInCer(certificate));
+                LOGGER.info(CertUtils.generateCertificateInCer(certificate));
             } else {
                 FileUtils.write(CertUtils.generateCertificateInCer(certificate).getBytes(StandardCharsets.UTF_8),
                         new File(file));
             }
             return true;
         } catch (CertificateException | IOException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }
@@ -391,13 +391,13 @@ public class SignToolServiceImpl implements ServiceApi {
                 stringBuilder.append(CertUtils.generateCertificateInCer(cert));
             }
             if (StringUtils.isEmpty(file)) {
-                logger.info(stringBuilder.toString());
+                LOGGER.info(stringBuilder.toString());
             } else {
                 FileUtils.write(stringBuilder.toString().getBytes(StandardCharsets.UTF_8), new File(file));
             }
             return true;
         } catch (CertificateException | IOException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }

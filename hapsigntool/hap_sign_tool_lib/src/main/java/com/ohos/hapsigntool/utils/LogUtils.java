@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
  * @since 2024/12/08
  */
 public class LogUtils {
-    private static Logger logger;
     private static Level level;
     private static final Map<String, Level> LEVEL_MAP = new HashMap<>();
     private static final String DEFAULT_LEVEL = "info";
@@ -58,6 +57,8 @@ public class LogUtils {
             level = LEVEL_MAP.get(getDefaultLogLevel(configFileName));
         }
     }
+
+    private final Logger logger;
 
     /**
      * format log utils constructor.
@@ -110,7 +111,7 @@ public class LogUtils {
      * @param log log string
      */
     public void warn(String log) {
-        logger.warning(" WARN - " +  log);
+        logger.warning(" WARN - " + log);
     }
 
     /**
@@ -120,7 +121,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void warn(String log, Object arg) {
-        logger.warning(" WARN - " +  replaceArgs(log, arg));
+        logger.warning(" WARN - " + replaceArgs(log, arg));
     }
 
     /**
@@ -142,7 +143,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void warn(String log, Object arg1, Object arg2) {
-        logger.warning(" WARN - " +  replaceArgs(log, arg1, arg2));
+        logger.warning(" WARN - " + replaceArgs(log, arg1, arg2));
     }
 
     /**
@@ -161,7 +162,7 @@ public class LogUtils {
      * @param log log string
      */
     public void debug(String log) {
-        logger.config(" DEBUG - " +  log);
+        logger.config(" DEBUG - " + log);
     }
 
     /**
@@ -172,7 +173,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void debug(String log, Object arg1, Object arg2) {
-        logger.warning(" WARN - " +  replaceArgs(log, arg1, arg2));
+        logger.warning(" WARN - " + replaceArgs(log, arg1, arg2));
     }
 
     /**
@@ -192,7 +193,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void debug(String log, Object arg) {
-        logger.config(" DEBUG - " +  replaceArgs(log, arg));
+        logger.config(" DEBUG - " + replaceArgs(log, arg));
     }
 
     /**
@@ -201,7 +202,7 @@ public class LogUtils {
      * @param log log string
      */
     public void error(String log) {
-        logger.severe(" ERROR - " +  log);
+        logger.severe(" ERROR - " + log);
     }
 
     /**
@@ -232,7 +233,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void error(String log, Object arg) {
-        logger.severe(" ERROR - " +  replaceArgs(log, arg));
+        logger.severe(" ERROR - " + replaceArgs(log, arg));
     }
 
     /**
@@ -255,7 +256,7 @@ public class LogUtils {
      * @param arg3 arg
      */
     public void error(String log, Object arg1, Object arg2, Object arg3) {
-        logger.severe(" ERROR - " +  replaceArgs(log, arg1, arg2, arg3));
+        logger.severe(" ERROR - " + replaceArgs(log, arg1, arg2, arg3));
     }
 
     private static String replaceArgs(String line, Object... args) {
