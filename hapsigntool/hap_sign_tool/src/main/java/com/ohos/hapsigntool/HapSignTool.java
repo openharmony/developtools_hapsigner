@@ -27,14 +27,12 @@ import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ParamException;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntoolcmd.CmdUtil;
 import com.ohos.hapsigntoolcmd.CmdUtil.Method;
 import com.ohos.hapsigntoolcmd.HelpDocument;
 import com.ohos.hapsigntoolcmd.Params;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +47,7 @@ public final class HapSignTool {
     /**
      * Add log info.
      */
-    private static final Logger LOGGER = LogManager.getLogger(HapSignTool.class);
+    private static final LogUtils LOGGER = new LogUtils(HapSignTool.class);
 
     /**
      * Tool version.

@@ -15,9 +15,6 @@
 
 package com.ohos.hapsigntool.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,7 +31,7 @@ import java.util.Map;
  * @since 2021/12/21
  */
 public class HashUtils {
-    private static final Logger LOGGER = LogManager.getLogger(HashUtils.class);
+    private static final LogUtils LOGGER = new LogUtils(HashUtils.class);
     private static final int HASH_LEN = 4096;
     private static final Map<String, Integer> ALG_METHOD = new HashMap<>();
 

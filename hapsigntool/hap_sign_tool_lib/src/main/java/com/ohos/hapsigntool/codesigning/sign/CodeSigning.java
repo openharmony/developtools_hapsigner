@@ -36,14 +36,12 @@ import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.signer.LocalSigner;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.EntryType;
 import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipEntry;
 import com.ohos.hapsigntool.zip.ZipEntryHeader;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,7 +78,7 @@ public class CodeSigning {
      */
     public static final String HAP_SIGNATURE_ENTRY_NAME = "Hap";
 
-    private static final Logger LOGGER = LogManager.getLogger(CodeSigning.class);
+    private static final LogUtils LOGGER = new LogUtils(CodeSigning.class);
 
     private final SignerConfig signConfig;
 

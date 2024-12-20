@@ -15,9 +15,6 @@
 
 package com.ohos.hapsigntool.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -37,7 +34,7 @@ import java.util.Base64;
  * @since 2021-12-13
  */
 public class DigestUtils {
-    private static final Logger LOGGER = LogManager.getLogger(DigestUtils.class);
+    private static final LogUtils LOGGER = new LogUtils(DigestUtils.class);
 
     /**
      * Constructor of Method

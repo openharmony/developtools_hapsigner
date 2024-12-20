@@ -25,8 +25,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.ProfileException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +58,7 @@ public class HapUtils {
      */
     public static final String HAP_SHARED_OWNER_ID = "SHARED_LIB_ID";
 
-    private static final Logger LOGGER = LogManager.getLogger(HapUtils.class);
+    private static final LogUtils LOGGER = new LogUtils(HapUtils.class);
 
     private static final String COMPRESS_NATIVE_LIBS_OPTION = "compressNativeLibs";
 

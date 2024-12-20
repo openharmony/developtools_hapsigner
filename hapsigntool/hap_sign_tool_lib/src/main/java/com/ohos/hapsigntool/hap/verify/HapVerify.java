@@ -20,10 +20,9 @@ import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 import com.ohos.hapsigntool.utils.DigestUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
@@ -73,9 +72,9 @@ import java.util.Set;
  * @since 2021/12/22
  */
 public class HapVerify {
-    private static final Logger LOGGER = LogManager.getLogger(HapVerify.class);
+    private static final LogUtils LOGGER = new LogUtils(HapVerify.class);
 
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private ZipDataInput beforeApkSigningBlock;
 
@@ -427,7 +426,7 @@ public class HapVerify {
 
     private String formatDateTime(Date date) {
         if (date != null) {
-            return format.format(date);
+            return FORMAT.format(date);
         }
         return "";
     }

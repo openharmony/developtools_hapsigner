@@ -23,10 +23,9 @@ import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.KeyStoreHelper;
 import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
@@ -54,7 +53,7 @@ public class LocalizationAdapter {
     /**
      * Logger
      */
-    private static final Logger logger = LogManager.getLogger(LocalizationAdapter.class);
+    private static final LogUtils logger = new LogUtils(LocalizationAdapter.class);
 
     /**
      * Params

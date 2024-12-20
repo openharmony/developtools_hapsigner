@@ -17,8 +17,6 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +31,7 @@ import java.util.Set;
  * @since 2021/12/21
  */
 public class ParamProcessUtil {
-    private static final Logger LOGGER = LogManager.getLogger(ParamProcessUtil.class);
+    private static final LogUtils LOGGER = new LogUtils(ParamProcessUtil.class);
 
     private ParamProcessUtil() {
     }
