@@ -68,8 +68,8 @@ public class LogUtils {
         logger = Logger.getLogger(clazz.getName());
         logger.setUseParentHandlers(false);
         ConsoleHandler consoleHandler = new ConsoleHandler();
-        SignToolFormatter signToolFormatter = new SignToolFormatter();
-        consoleHandler.setFormatter(signToolFormatter);
+        LogFormatter logFormatter = new LogFormatter();
+        consoleHandler.setFormatter(logFormatter);
         logger.addHandler(consoleHandler);
         logger.setLevel(level);
     }

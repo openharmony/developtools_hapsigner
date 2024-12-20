@@ -27,7 +27,7 @@ import java.util.logging.LogRecord;
  *
  * @since 2024/12/08
  */
-public class SignToolFormatter extends Formatter {
+public class LogFormatter extends Formatter {
     private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
 
 
