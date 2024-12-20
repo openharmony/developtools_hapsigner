@@ -26,6 +26,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.NativeLibInfoSegment;
 import com.ohos.hapsigntool.codesigning.datastructure.SegmentHeader;
 import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
 import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
@@ -384,7 +385,12 @@ public class VerifyCodeSignature {
      */
     public static void verifySingleFile(InputStream input, long length, byte[] signature, long merkleTreeOffset,
         byte[] inMerkleTreeBytes) throws FsVerityDigestException, CMSException, VerifyCodeSignException {
-        Pair<byte[], byte[]> pairResult = generateFsVerityDigest(input, length, merkleTreeOffset);
+        Pair<byte[], byte[]> pairResult = null;
+        try {
+            pairResult = generateFsVerityDigest(input, length, merkleTreeOffset);
+        } catch (PageInfoException e) {
+            throw new VerifyCodeSignException(e.getMessage());
+        }
         byte[] generatedMerkleTreeBytes = pairResult.getSecond();
         if (generatedMerkleTreeBytes == null) {
             generatedMerkleTreeBytes = new byte[0];
@@ -397,7 +403,7 @@ public class VerifyCodeSignature {
     }
 
     private static Pair<byte[], byte[]> generateFsVerityDigest(InputStream inputStream, long size,
-        long merkleTreeOffset) throws FsVerityDigestException {
+        long merkleTreeOffset) throws FsVerityDigestException, PageInfoException {
         FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
         fsVerityGenerator.generateFsVerityDigest(inputStream, size, merkleTreeOffset);
         return Pair.create(fsVerityGenerator.getFsVerityDigest(), fsVerityGenerator.getTreeBytes());

@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.datastructure;
 
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 
 import org.apache.logging.log4j.LogManager;
@@ -297,12 +298,10 @@ public class SignInfo {
                 byte[] extensionBytes = new byte[extensionSize];
                 bf.get(extensionBytes);
                 PageInfoExtension pageInfoExtension = PageInfoExtension.fromByteArray(extensionBytes);
-                if (pageInfoExtension.getMapOffset() > inDataSize - pageInfoExtension.getMapSize() / Byte.SIZE) {
-                    throw new VerifyCodeSignException("Invalid page info offset/size");
-                }
-                if (pageInfoExtension.getMapSize() / pageInfoExtension.getUnitSize()
-                    >= inDataSize / CodeSignBlock.PAGE_SIZE_4K) {
-                    throw new VerifyCodeSignException("page info size is not consistent with data page ");
+                try {
+                    PageInfoExtension.valid(pageInfoExtension, inDataSize);
+                } catch (PageInfoException e) {
+                    throw new VerifyCodeSignException(e.getMessage());
                 }
                 inExtensionList.add(pageInfoExtension);
             } else {
