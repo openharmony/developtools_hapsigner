@@ -15,9 +15,9 @@
 
 package com.ohos.hapsigntool.codesigning.fsverity;
 
-import com.ohos.hapsigntool.codesigning.datastructure.CodeSignBlock;
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
 
 import java.io.IOException;
@@ -92,7 +92,7 @@ public class FsVerityGenerator {
      * @throws FsVerityDigestException if error
      */
     public void generateFsVerityDigest(InputStream inputStream, long size, long fsvTreeOffset)
-        throws FsVerityDigestException {
+        throws FsVerityDigestException, PageInfoException {
         MerkleTree merkleTree;
         if (size == 0) {
             merkleTree = new MerkleTree(null, null, FS_VERITY_HASH_ALGORITHM);
@@ -117,13 +117,7 @@ public class FsVerityGenerator {
             throw new FsVerityDigestException("Invalid algorithm" + e.getMessage(), e);
         }
         if (pageInfoExtension != null && flags != 0) {
-            if (pageInfoExtension.getMapOffset() > size - pageInfoExtension.getMapSize() / Byte.SIZE) {
-                throw new FsVerityDigestException("Invalid page info offset/size");
-            }
-            if (pageInfoExtension.getMapSize() / pageInfoExtension.getUnitSize()
-                >= size / CodeSignBlock.PAGE_SIZE_4K) {
-                throw new FsVerityDigestException("page info size is not consistent with data page ");
-            }
+            PageInfoExtension.valid(pageInfoExtension,size);
             try {
                 byte[] fsVerityDescriptorV2 = builder.build()
                     .getDiscByteCsv2(pageInfoExtension.getMapOffset(), pageInfoExtension.getMapSize(),
