@@ -40,7 +40,7 @@ public class LocalSigner implements ISigner {
     /**
      * logger of LocalSigner
      */
-    private static final LogUtils logger = new LogUtils(LocalSigner.class);
+    private static final LogUtils LOGGER = new LogUtils(LocalSigner.class);
 
     /**
      * PrivateKey.
@@ -84,7 +84,7 @@ public class LocalSigner implements ISigner {
             signData = signature.sign();
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException
                 | SignatureException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
         }
         return signData;

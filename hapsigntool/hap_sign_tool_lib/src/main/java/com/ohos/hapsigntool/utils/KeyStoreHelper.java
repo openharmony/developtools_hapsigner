@@ -80,7 +80,7 @@ public class KeyStoreHelper {
     /**
      * Use LogManager to show log instead of use "System.out.print" to show log.
      */
-    private static final LogUtils logger = new LogUtils(KeyStoreHelper.class);
+    private static final LogUtils LOGGER = new LogUtils(KeyStoreHelper.class);
 
     /**
      * Field keyStorePath.
@@ -116,14 +116,14 @@ public class KeyStoreHelper {
         FileInputStream fis = null;
         try {
             if (FileUtils.isFileExist(keyStorePath)) {
-                logger.info("{} is exist. Try to load it with given passwd", keyStorePath);
+                LOGGER.info("{} is exist. Try to load it with given passwd", keyStorePath);
                 fis = new FileInputStream(keyStorePath);
                 keyStore.load(fis, pwd);
             } else {
                 keyStore.load(null, null);
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
              CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage()
                     + "\nSolutions:"
                     + "\n> The key store file does not exist, please check the key store file path."
@@ -168,7 +168,7 @@ public class KeyStoreHelper {
         try {
             return keyStore.containsAlias(alias);
         } catch (KeyStoreException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
             return false;
         }
@@ -205,10 +205,10 @@ public class KeyStoreHelper {
                 return (PrivateKey) key;
             }
         } catch (KeyStoreException | NoSuchAlgorithmException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
         } catch (UnrecoverableKeyException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, "Password error of '" + alias + "'");
         }
         return null;
@@ -228,7 +228,7 @@ public class KeyStoreHelper {
         try {
             cert.checkValidity();
         } catch (CertificateExpiredException | CertificateNotYetValidException exception) {
-            logger.info("p12's certificates is not valid");
+            LOGGER.info("p12's certificates is not valid");
         }
         certificates.add(cert);
     }
@@ -257,7 +257,7 @@ public class KeyStoreHelper {
                 }
             }
         } catch (KeyStoreException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
         }
 
@@ -292,7 +292,7 @@ public class KeyStoreHelper {
             keyStore.store(fos, keyStorePwd);
             fos.flush();
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
             return false;
         }
@@ -319,7 +319,7 @@ public class KeyStoreHelper {
             return new JcaX509CertificateConverter().setProvider("BC")
                     .getCertificate(certificateBuilder.build(contentSigner));
         } catch (CertificateException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
             return null;
         }
@@ -343,7 +343,7 @@ public class KeyStoreHelper {
                 typeKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             }
         } catch (KeyStoreException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
         }
         return typeKeyStore;
