@@ -55,7 +55,7 @@ public class LogUtils {
         try {
             level = LEVEL_MAP.get(getJarConfig(configFileName));
         } catch (LogConfigException e) {
-            level = LEVEL_MAP.get(getResourceConfig(configFileName));
+            level = LEVEL_MAP.get(getDefaultLogLevel(configFileName));
         }
     }
 
@@ -273,7 +273,7 @@ public class LogUtils {
     }
 
     private static String getJarConfig(String configFileName) throws LogConfigException {
-        String parent = getString();
+        String parent = getJarDirectory();
         if (parent == null) {
             throw new LogConfigException("read jar path failed");
         }
@@ -282,13 +282,13 @@ public class LogUtils {
             throw new LogConfigException("read jar path failed");
         }
         try (FileInputStream fis = new FileInputStream(config)) {
-            return getLevelByInStream(fis);
+            return getLogLevel(fis);
         } catch (IOException e) {
             throw new LogConfigException("read jar path failed");
         }
     }
 
-    private static String getString() throws LogConfigException {
+    private static String getJarDirectory() throws LogConfigException {
         ProtectionDomain protectionDomain = LogUtils.class.getProtectionDomain();
         if (protectionDomain == null) {
             throw new LogConfigException("read jar path failed");
@@ -308,19 +308,19 @@ public class LogUtils {
         return new File(jarPath).getParent();
     }
 
-    private static String getResourceConfig(String configFileName) {
+    private static String getDefaultLogLevel(String configFileName) {
         try (InputStream inputStream = LogUtils.class.getClassLoader().getResourceAsStream(configFileName)) {
             if (inputStream == null) {
                 return DEFAULT_LEVEL;
             } else {
-                return getLevelByInStream(inputStream);
+                return getLogLevel(inputStream);
             }
         } catch (IOException e) {
             return DEFAULT_LEVEL;
         }
     }
 
-    private static String getLevelByInStream(InputStream is) throws IOException {
+    private static String getLogLevel(InputStream is) throws IOException {
         Properties prop = new Properties();
         prop.load(is);
         Object levelConfig = prop.get("level");
