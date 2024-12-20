@@ -32,10 +32,9 @@ import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.ProfileException;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -64,7 +63,7 @@ import java.util.zip.ZipInputStream;
  * @since 2023/09/08
  */
 public class VerifyCodeSignature {
-    private static final Logger LOGGER = LogManager.getLogger(VerifyCodeSignature.class);
+    private static final LogUtils LOGGER = new LogUtils(VerifyCodeSignature.class);
 
     private static void checkOwnerID(byte[] signature, String profileOwnerID, String profileType)
         throws CMSException, VerifyCodeSignException {

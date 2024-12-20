@@ -18,8 +18,7 @@ package com.ohos.hapsigntool.utils;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.VerifyCertificateChainException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
@@ -56,7 +55,7 @@ public final class CertUtils {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = LogManager.getLogger(CertUtils.class);
+    private static final LogUtils LOGGER = new LogUtils(CertUtils.class);
 
     /**
      * Max length to print certificate string.

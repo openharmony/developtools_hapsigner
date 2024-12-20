@@ -27,8 +27,7 @@ import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.FileUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -77,7 +76,7 @@ public class ConcurrencyTest {
     private static final File TMP_DIR = new File("concurrentTest");
 
     private static final List<Cleanable> tmpSource = new ArrayList<>();
-    private static final Logger log = LogManager.getLogger(ConcurrencyTest.class);
+    private static final LogUtils log = new LogUtils(ConcurrencyTest.class);
 
     /**
      * before test

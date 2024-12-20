@@ -27,6 +27,7 @@ import com.ohos.hapsigntool.error.SignatureNotFoundException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
@@ -35,8 +36,6 @@ import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -67,7 +66,7 @@ import java.util.stream.Collectors;
  * @since 2021/12/23
  */
 public class VerifyHap {
-    private static final Logger LOGGER = LogManager.getLogger(VerifyHap.class);
+    private static final LogUtils LOGGER = new LogUtils(VerifyHap.class);
     private static final int ZIP_HEAD_OF_SIGNING_BLOCK_LENGTH = 32;
     private static final int ZIP_HEAD_OF_SIGNING_BLOCK_COUNT_OFFSET_REVERSE = 28;
     private static final int ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH = 12;

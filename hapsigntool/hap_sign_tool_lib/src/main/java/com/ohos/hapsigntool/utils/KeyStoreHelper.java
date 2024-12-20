@@ -17,8 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -81,7 +80,7 @@ public class KeyStoreHelper {
     /**
      * Use LogManager to show log instead of use "System.out.print" to show log.
      */
-    private static final Logger logger = LogManager.getLogger(KeyStoreHelper.class);
+    private static final LogUtils logger = new LogUtils(KeyStoreHelper.class);
 
     /**
      * Field keyStorePath.

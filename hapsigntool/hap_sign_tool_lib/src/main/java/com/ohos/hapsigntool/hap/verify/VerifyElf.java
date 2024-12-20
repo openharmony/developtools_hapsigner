@@ -28,10 +28,9 @@ import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.sign.SignElf;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -58,7 +57,7 @@ import java.util.Map;
  * @since 2023/11/23
  */
 public class VerifyElf {
-    private static final Logger LOGGER = LogManager.getLogger(VerifyElf.class);
+    private static final LogUtils LOGGER = new LogUtils(VerifyElf.class);
 
     static {
         Security.addProvider(new BouncyCastleProvider());

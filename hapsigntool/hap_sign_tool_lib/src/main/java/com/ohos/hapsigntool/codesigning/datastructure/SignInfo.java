@@ -16,9 +16,7 @@
 package com.ohos.hapsigntool.codesigning.datastructure;
 
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -63,7 +61,7 @@ public class SignInfo {
      */
     public static final int MAX_EXTENSION_NUM = 2;
 
-    private static final Logger LOGGER = LogManager.getLogger(SignInfo.class);
+    private static final LogUtils LOGGER = new LogUtils(SignInfo.class);
 
     /**
      * sign info structure without signature in bytes, refer to toByteArray() method

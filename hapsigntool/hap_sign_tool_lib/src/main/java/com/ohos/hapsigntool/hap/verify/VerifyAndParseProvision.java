@@ -16,8 +16,8 @@
 package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.utils.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import com.ohos.hapsigntool.utils.LogUtils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 
@@ -32,7 +32,7 @@ import java.security.SignatureException;
  * @since 2021/12/21
  */
 public class VerifyAndParseProvision {
-    private static final Logger LOGGER = LogManager.getLogger(VerifyAndParseProvision.class);
+    private static final LogUtils LOGGER = new LogUtils(VerifyAndParseProvision.class);
 
     /**
      * verify signatures of provision and output unsigned provision

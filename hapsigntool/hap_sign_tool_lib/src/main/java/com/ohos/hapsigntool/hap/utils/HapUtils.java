@@ -19,13 +19,12 @@ import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.SignatureNotFoundException;
 import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.zip.MessageDigestZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
 
 import java.io.ByteArrayOutputStream;
@@ -50,7 +49,7 @@ import java.util.Set;
  * @since 2021/12/20
  */
 public class HapUtils {
-    private static final Logger LOGGER = LogManager.getLogger(HapUtils.class);
+    private static final LogUtils LOGGER = new LogUtils(HapUtils.class);
 
     /**
      * ID of hap signature blocks of version 1

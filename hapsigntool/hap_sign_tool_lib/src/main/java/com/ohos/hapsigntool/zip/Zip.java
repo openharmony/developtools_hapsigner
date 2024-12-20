@@ -20,8 +20,7 @@ import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +37,7 @@ import java.util.Optional;
  * @since 2023/12/02
  */
 public class Zip {
-    private static final Logger LOGGER = LogManager.getLogger(Zip.class);
+    private static final LogUtils LOGGER = new LogUtils(Zip.class);
 
     /**
      * file is uncompress file flag

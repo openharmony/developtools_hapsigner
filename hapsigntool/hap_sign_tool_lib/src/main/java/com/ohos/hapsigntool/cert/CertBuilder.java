@@ -19,8 +19,8 @@ import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.utils.CertUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import com.ohos.hapsigntool.utils.LogUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -58,7 +58,7 @@ public class CertBuilder {
     /**
      * Logger.
      */
-    private static final Logger logger = LogManager.getLogger(ServiceApi.class);
+    private static final LogUtils logger = new LogUtils(ServiceApi.class);
 
     /**
      * issuer keyPair.

@@ -23,8 +23,7 @@ import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ohos.hapsigntool.utils.LogUtils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -75,7 +74,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
      */
     public static final String SIGNER_OID = "1.3.6.1.4.1.2011.2.376.1.4.1";
 
-    private static final Logger LOGGER = LogManager.getLogger(BcSignedDataGenerator.class);
+    private static final LogUtils LOGGER = new LogUtils(BcSignedDataGenerator.class);
 
     private static final SignatureAlgorithmIdentifierFinder SIGN_ALG_ID_FINDER
         = new DefaultSignatureAlgorithmIdentifierFinder();

@@ -46,6 +46,7 @@ import com.ohos.hapsigntool.utils.EscapeCharacter;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
@@ -57,8 +58,6 @@ import com.ohos.hapsigntool.zip.ZipDataOutput;
 import com.ohos.hapsigntool.zip.ZipFileInfo;
 import com.ohos.hapsigntool.zip.ZipUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -93,7 +92,7 @@ import java.util.Set;
  * @since 2021-12-14
  */
 public abstract class SignProvider {
-    private static final Logger LOGGER = LogManager.getLogger(SignProvider.class);
+    private static final LogUtils LOGGER = new LogUtils(SignProvider.class);
     private static final List<String> VALID_SIGN_ALG_NAME = new ArrayList<String>();
     private static final List<String> PARAMETERS_NEED_ESCAPE = new ArrayList<String>();
     private static final long TIMESTAMP = 1230768000000L;

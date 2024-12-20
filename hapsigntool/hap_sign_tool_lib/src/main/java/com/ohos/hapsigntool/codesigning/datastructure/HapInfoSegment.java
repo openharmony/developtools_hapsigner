@@ -18,9 +18,6 @@ package com.ohos.hapsigntool.codesigning.datastructure;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Locale;
@@ -37,8 +34,6 @@ import java.util.Locale;
  * @since 2023/09/08
  */
 public class HapInfoSegment {
-    private static final Logger LOGGER = LogManager.getLogger(HapInfoSegment.class);
-
     private static final int MAGIC_NUM_BYTES = 4;
 
     /**

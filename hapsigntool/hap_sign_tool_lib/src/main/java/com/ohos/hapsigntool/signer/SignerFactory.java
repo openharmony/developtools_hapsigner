@@ -18,10 +18,8 @@ package com.ohos.hapsigntool.signer;
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.StringUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +44,7 @@ import java.util.Properties;
  * @since 2021/12/28
  */
 public class SignerFactory {
-    private static final Logger LOGGER = LogManager.getLogger(SignerFactory.class);
+    private static final LogUtils LOGGER = new LogUtils(SignerFactory.class);
 
     private static final Map<URL, ClassLoader> SIGNER_LOADERS = new HashMap<>();
 

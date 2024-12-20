@@ -20,11 +20,10 @@ import com.ohos.hapsigntool.error.InvalidParamsException;
 import com.ohos.hapsigntool.error.MissingParamsException;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.utils.LogUtils;
 import com.ohos.hapsigntool.utils.ParamProcessUtil;
 
 import com.ohos.hapsigntool.utils.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,7 +41,7 @@ import java.util.Set;
  * @since 2021/12/22
  */
 public class LocalJKSSignProvider extends SignProvider {
-    private static final Logger LOGGER = LogManager.getLogger(LocalJKSSignProvider.class);
+    private static final LogUtils LOGGER = new LogUtils(LocalJKSSignProvider.class);
 
     @Override
     public Optional<X509CRL> getCrl() {
