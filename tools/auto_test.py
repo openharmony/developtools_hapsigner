@@ -21,8 +21,8 @@ import sys
 import time
 import ast
 import re
+import tempfile
 from subprocess import Popen
-from subprocess import PIPE
 
 
 def print_help():
@@ -274,29 +274,29 @@ def run_target(case, cmd):
     case_result['times'] = case_result['times'] + 1
     start = time.time()
 
-    command = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False)
+    out_temp = tempfile.TemporaryFile(mode='w+')
+    command = Popen(cmd, stdout=out_temp, stderr=out_temp, stdin=out_temp, shell=False)
+    success = True
+    code = command.wait()
+    if code != 0:
+        success = False
 
-    out = command.stdout.readlines()
-    with open("log.txt", mode='a+', encoding='utf-8') as f:
+    log_name = "log.txt"
+    if not success:
+        log_name = "error.txt"
+
+    out_temp.seek(0)
+    out = out_temp.readlines()
+    with open(log_name, mode='a+', encoding='utf-8') as f:
         if len(out) > 0:
             f.writelines(' '.join(cmd) + "\r\n")
         for line in out:
             f.writelines(str(line.strip()) + "\r\n")
+    out_temp.close()
 
-    success = True
-    error = command.stderr.readlines()
-    with open("error.txt", mode='a+', encoding='utf-8') as f:
-        if len(error) > 0:
-            f.writelines(' '.join(cmd) + "\r\n")
-        for line in error:
-            f.writelines(str(line.strip()) + "\r\n")
-
-    code = command.wait()
-    if code != 0:
-        success = False
     end = time.time()
     case_result['total_cost'] = case_result['total_cost'] + (end - start)
-
+    out_temp.close()
     if success:
         case_result['success'] = case_result['success'] + 1
     else:
