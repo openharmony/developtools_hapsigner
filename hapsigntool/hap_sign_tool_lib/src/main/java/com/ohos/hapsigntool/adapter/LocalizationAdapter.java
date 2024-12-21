@@ -53,7 +53,7 @@ public class LocalizationAdapter {
     /**
      * Logger
      */
-    private static final LogUtils logger = new LogUtils(LocalizationAdapter.class);
+    private static final LogUtils LOGGER = new LogUtils(LocalizationAdapter.class);
 
     /**
      * Params
@@ -270,7 +270,7 @@ public class LocalizationAdapter {
         try {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
         } catch (IOException | CertificateException | VerifyCertificateChainException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage()
                 + "\nSolutions:"
                 + "\n> The certificate format is incorrect, please check your appCertFile parameter.");
