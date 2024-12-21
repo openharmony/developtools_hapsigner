@@ -53,7 +53,7 @@ public class LogUtils {
         LEVEL_MAP.put("debug", Level.CONFIG);
         LEVEL_MAP.put("warn", Level.WARNING);
         LEVEL_MAP.put("error", Level.SEVERE);
-        String configFileName = "log.config";
+        String configFileName = "log.properties";
 
         try {
             level = LEVEL_MAP.get(getJarConfig(configFileName));
@@ -64,8 +64,9 @@ public class LogUtils {
         LogFormatter logFormatter = new LogFormatter();
         OUT_HANDLER = new StreamHandler(System.out, logFormatter);
         OUT_HANDLER.setFilter(record -> record.getLevel() != Level.SEVERE && record.getLevel() != Level.WARNING);
+        OUT_HANDLER.setLevel(level);
         ERR_HANDLER = new StreamHandler(System.err, logFormatter);
-        ERR_HANDLER.setFilter(record -> record.getLevel() == Level.SEVERE || record.getLevel() == Level.WARNING);
+        ERR_HANDLER.setLevel(Level.WARNING);
     }
 
     private final Logger logger;
