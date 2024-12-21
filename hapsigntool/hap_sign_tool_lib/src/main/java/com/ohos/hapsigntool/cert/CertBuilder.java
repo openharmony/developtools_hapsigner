@@ -58,7 +58,7 @@ public class CertBuilder {
     /**
      * Logger.
      */
-    private static final LogUtils logger = new LogUtils(ServiceApi.class);
+    private static final LogUtils LOGGER = new LogUtils(ServiceApi.class);
 
     /**
      * issuer keyPair.
@@ -87,7 +87,7 @@ public class CertBuilder {
         try {
             request = new PKCS10CertificationRequest(csr);
         } catch (IOException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.IO_CSR_ERROR, exception.getMessage());
         }
         x509v3CertificateBuilder = new X509v3CertificateBuilder(
@@ -99,10 +99,10 @@ public class CertBuilder {
             x509v3CertificateBuilder.addExtension(Extension.subjectKeyIdentifier, false,
                     extUtils.createSubjectKeyIdentifier(request.getSubjectPublicKeyInfo()));
         } catch (NoSuchAlgorithmException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         } catch (CertIOException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
     }
@@ -122,10 +122,10 @@ public class CertBuilder {
                                 .getInstance(keyPair.getPublic().getEncoded())));
             }
         } catch (NoSuchAlgorithmException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         } catch (CertIOException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
         }
         return this;
@@ -216,16 +216,16 @@ public class CertBuilder {
                     .getCertificate(x509v3CertificateBuilder.build(contentSigner));
             cert.verify(keyPair.getPublic());
         } catch (InvalidKeyException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.KEY_ERROR, exception.getMessage());
         } catch (SignatureException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
         } catch (CertificateException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.CERTIFICATE_ERROR, exception.getMessage());
         } catch (NoSuchAlgorithmException | NoSuchProviderException exception) {
-            logger.debug(exception.getMessage(), exception);
+            LOGGER.debug(exception.getMessage(), exception);
             CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
         }
         return cert;

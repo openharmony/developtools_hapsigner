@@ -15,7 +15,6 @@
 
 package com.ohos.hapsigntool.utils;
 
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,8 +27,7 @@ import java.util.logging.LogRecord;
  * @since 2024/12/08
  */
 public class LogFormatter extends Formatter {
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
-
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
 
     /**
      * format log.
