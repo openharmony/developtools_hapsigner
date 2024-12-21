@@ -16,9 +16,9 @@
 package com.ohos.hapsigntool.codesigning.exception;
 
 /**
- * CodeSign exception
+ * PageInfo exception
  *
- * @since 2023/06/05
+ * @since 2024/12/20
  */
 public class PageInfoException extends Exception {
     private static final long serialVersionUID = -6814492423615912290L;
