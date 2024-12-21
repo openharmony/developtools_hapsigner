@@ -210,7 +210,7 @@ public class CodeSigning {
         return generated;
     }
 
-    private void createPageInfoExtension(ZipEntry entry) throws HapFormatException {
+    private void createPageInfoExtension(ZipEntry entry) {
         long bitmapOff = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
             + entry.getZipEntryData().getZipEntryHeader().getFileNameLength() + entry.getZipEntryData()
             .getZipEntryHeader()
