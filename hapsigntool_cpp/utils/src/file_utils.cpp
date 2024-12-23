@@ -101,6 +101,10 @@ int FileUtils::Read(std::ifstream& input, std::string& ret)
     std::string buffer(FileUtils::FILE_BUFFER_BLOCK, 0);
     while (input) {
         input.read(&buffer[0], buffer.size());
+        if (input.fail() && !input.eof()) {
+            SIGNATURE_TOOLS_LOGE("error occurred while reading data");
+            return IO_ERROR;
+        }
         ret.append(&buffer[0], input.gcount());
     }
     return RET_OK;
@@ -265,6 +269,11 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
     while (input) {
         int min = std::min(static_cast<int>(length), FILE_BUFFER_BLOCK);
         input.read(buf, min);
+        if (input.fail() && !input.eof()) {
+            SIGNATURE_TOOLS_LOGE("read error!");
+            delete[] buf;
+            return IO_ERROR;
+        }
         length -= input.gcount();
         output.write(buf, min);
         if (!output.good()) {
