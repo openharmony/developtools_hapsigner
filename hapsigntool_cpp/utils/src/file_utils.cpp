@@ -275,7 +275,7 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
             return IO_ERROR;
         }
         length -= input.gcount();
-        output.write(buf, min);
+        output.write(buf, input.gcount());
         if (!output.good()) {
             SIGNATURE_TOOLS_LOGE("write error!");
             delete[] buf;
