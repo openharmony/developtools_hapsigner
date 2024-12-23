@@ -89,7 +89,8 @@ public class FsVerityGenerator {
      * @param inputStream   input stream for generate FsVerity digest
      * @param size          total size of input stream
      * @param fsvTreeOffset merkle tree raw bytes offset based on the start of file
-     * @throws FsVerityDigestException if error
+     * @throws FsVerityDigestException fsVerity digest error
+     * @throws PageInfoException page info error
      */
     public void generateFsVerityDigest(InputStream inputStream, long size, long fsvTreeOffset)
         throws FsVerityDigestException, PageInfoException {
