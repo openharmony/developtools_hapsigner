@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.codesigning.fsverity;
 
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
 
 import java.io.IOException;
@@ -88,10 +89,11 @@ public class FsVerityGenerator {
      * @param inputStream   input stream for generate FsVerity digest
      * @param size          total size of input stream
      * @param fsvTreeOffset merkle tree raw bytes offset based on the start of file
-     * @throws FsVerityDigestException if error
+     * @throws FsVerityDigestException fsVerity digest error
+     * @throws PageInfoException page info error
      */
     public void generateFsVerityDigest(InputStream inputStream, long size, long fsvTreeOffset)
-        throws FsVerityDigestException {
+        throws FsVerityDigestException, PageInfoException {
         MerkleTree merkleTree;
         if (size == 0) {
             merkleTree = new MerkleTree(null, null, FS_VERITY_HASH_ALGORITHM);
@@ -116,6 +118,7 @@ public class FsVerityGenerator {
             throw new FsVerityDigestException("Invalid algorithm" + e.getMessage(), e);
         }
         if (pageInfoExtension != null && flags != 0) {
+            PageInfoExtension.valid(pageInfoExtension, size);
             try {
                 byte[] fsVerityDescriptorV2 = builder.build()
                     .getDiscByteCsv2(pageInfoExtension.getMapOffset(), pageInfoExtension.getMapSize(),

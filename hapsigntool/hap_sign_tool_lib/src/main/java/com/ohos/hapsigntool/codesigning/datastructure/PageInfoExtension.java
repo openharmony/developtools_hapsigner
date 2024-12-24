@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.datastructure;
 
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 
@@ -169,6 +170,38 @@ public class PageInfoExtension extends Extension {
         extension.unitSize = inUnitSize;
         extension.setSignature(inSignature);
         return extension;
+    }
+
+    /**
+     * validate PageInfoExtension with dataSize
+     *
+     * @param pgExtension  PageInfoExtension
+     * @param dataSize     signed data size
+     * @return true while PageInfoExtension filed value is valid
+     * @throws PageInfoException error while filed value is invalid
+     */
+    public static boolean valid(PageInfoExtension pgExtension, long dataSize) throws PageInfoException {
+        if (!NumberUtils.isMultiple4K(pgExtension.getMapOffset())) {
+            throw new PageInfoException(String.format(Locale.ROOT, "Invalid bitmapOff(%d), not a multiple of 4096",
+                pgExtension.getMapOffset()));
+        }
+        if (pgExtension.getUnitSize() != PageInfoExtension.DEFAULT_UNIT_SIZE) {
+            throw new PageInfoException("Invalid page info unitSize : " + pgExtension.getUnitSize());
+        }
+        if (pgExtension.getMapOffset() < 0 || pgExtension.getMapSize() < 0) {
+            throw new PageInfoException("Page info offset/size is negative number");
+        }
+        if (pgExtension.getMapSize() % pgExtension.getUnitSize() != 0) {
+            throw new PageInfoException("Page info size is not multiple of unit");
+        }
+
+        if (pgExtension.getMapOffset() > dataSize - pgExtension.getMapSize() / Byte.SIZE) {
+            throw new PageInfoException("Page info is out of dataSize");
+        }
+        if (pgExtension.getMapSize() / pgExtension.getUnitSize() >= dataSize / CodeSignBlock.PAGE_SIZE_4K) {
+            throw new PageInfoException("page info size is not consistent with data page ");
+        }
+        return true;
     }
 
     @Override

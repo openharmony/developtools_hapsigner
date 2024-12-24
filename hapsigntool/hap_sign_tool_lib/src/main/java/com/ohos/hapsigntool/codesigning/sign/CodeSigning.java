@@ -25,6 +25,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
 import com.ohos.hapsigntool.codesigning.elf.ElfHeader;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptor;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityDescriptorWithSign;
 import com.ohos.hapsigntool.codesigning.fsverity.FsVerityGenerator;
@@ -144,6 +145,8 @@ public class CodeSigning {
             ElfSignBlock signBlock = new ElfSignBlock(paddingSize, treeBytes, fsVerityDescriptorWithSign);
             LOGGER.info("Sign elf successfully.");
             return signBlock.toByteArray();
+        } catch (PageInfoException e) {
+            throw new CodeSignException(e.getMessage());
         }
     }
 
@@ -439,7 +442,11 @@ public class CodeSigning {
         long fsvTreeOffset, String ownerID) throws FsVerityDigestException, CodeSignException {
         FsVerityGenerator fsVerityGenerator = new FsVerityGenerator();
         fsVerityGenerator.setPageInfoExtension(pageInfoExtension);
-        fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
+        try {
+            fsVerityGenerator.generateFsVerityDigest(inputStream, fileSize, fsvTreeOffset);
+        } catch (PageInfoException e) {
+            throw new CodeSignException(e.getMessage());
+        }
         byte[] fsVerityDigest = fsVerityGenerator.getFsVerityDigest();
         byte[] signature = generateSignature(fsVerityDigest, ownerID);
         int flags = 0;

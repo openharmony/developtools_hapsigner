@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.datastructure;
 
+import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.utils.LogUtils;
 
@@ -258,7 +259,7 @@ public class SignInfo {
             % SIGNATURE_ALIGNMENT];
         bf.get(inZeroPadding);
         // parse merkle tree extension
-        List<Extension> inExtensionList = parseExtensionList(bf, inExtensionNum);
+        List<Extension> inExtensionList = parseExtensionList(bf, inExtensionNum, inDataSize);
         return new SignInfoBuilder().setSaltSize(inSaltSize)
             .setSigSize(inSigSize)
             .setFlags(inFlags)
@@ -272,7 +273,7 @@ public class SignInfo {
             .build();
     }
 
-    private static List<Extension> parseExtensionList(ByteBuffer bf, int inExtensionNum)
+    private static List<Extension> parseExtensionList(ByteBuffer bf, int inExtensionNum, long inDataSize)
         throws VerifyCodeSignException {
         List<Extension> inExtensionList = new ArrayList<>();
         for (int i = 0; i < inExtensionNum; i++) {
@@ -292,9 +293,15 @@ public class SignInfo {
                 if (extensionSize < (PageInfoExtension.PAGE_INFO_EXTENSION_DATA_SIZE_WITHOUT_SIGN)) {
                     throw new VerifyCodeSignException("Invalid PageInfo extensionSize of SignInfo");
                 }
-                byte[] pageInfoExtension = new byte[extensionSize];
-                bf.get(pageInfoExtension);
-                inExtensionList.add(PageInfoExtension.fromByteArray(pageInfoExtension));
+                byte[] extensionBytes = new byte[extensionSize];
+                bf.get(extensionBytes);
+                PageInfoExtension pageInfoExtension = PageInfoExtension.fromByteArray(extensionBytes);
+                try {
+                    PageInfoExtension.valid(pageInfoExtension, inDataSize);
+                } catch (PageInfoException e) {
+                    throw new VerifyCodeSignException(e.getMessage());
+                }
+                inExtensionList.add(pageInfoExtension);
             } else {
                 LOGGER.info("Invalid extensionType {} of SignInfo", extensionType);
             }
