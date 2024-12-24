@@ -264,14 +264,7 @@ public class Zip {
      * @throws ZipException ZipException
      */
     public void addBitMap(byte[] data) throws ZipException {
-        for (ZipEntry e : zipEntries) {
-            if (e.getZipEntryData().getType() == EntryType.BIT_MAP) {
-                e.getZipEntryData().setData(data);
-                e.getZipEntryData().getZipEntryHeader().setUnCompressedSize(data.length);
-                e.getZipEntryData().getZipEntryHeader().setCompressedSize(data.length);
-                return;
-            }
-        }
+        zipEntries.removeIf(e -> e.getZipEntryData().getType() == EntryType.BIT_MAP);
         ZipEntry entry = new ZipEntry.Builder().setMethod(FILE_UNCOMPRESS_METHOD_FLAG)
                 .setUncompressedSize(data.length)
                 .setCompressedSize(data.length)
