@@ -42,16 +42,6 @@ public class Validity {
      */
     public Validity() {}
 
-    /**
-     * Validate attribute.
-     */
-    public void enforceValid() {
-        ValidateUtils.throwIfMatches(this.notBefore == 0L, ERROR.SIGN_ERROR, "Require notBefore in validity!");
-        ValidateUtils.throwIfMatches(this.notAfter == 0L, ERROR.SIGN_ERROR, "Require notAfter in validity!");
-        ValidateUtils.throwIfMatches(this.notBefore >= this.notAfter, ERROR.SIGN_ERROR,
-                "Require notBefore less than notAfter in validity!");
-    }
-
     public Long getNotBefore() {
         return notBefore;
     }
