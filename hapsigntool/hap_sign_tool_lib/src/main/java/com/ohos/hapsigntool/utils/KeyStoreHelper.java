@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.utils;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -105,8 +106,8 @@ public class KeyStoreHelper {
      */
     public KeyStoreHelper(String keyStorePath, char[] storePwd) {
         char[] pwd = storePwd;
-        ValidateUtils.throwIfMatches(StringUtils.isEmpty(keyStorePath), ERROR.COMMAND_ERROR,
-                "Missed params: 'keyStorePath'");
+        ValidateUtils.throwIfMatches(StringUtils.isEmpty(keyStorePath),
+                ERROR.COMMAND_ERROR, SignToolErrMsg.MISSING_PARAM.toString("keyStorePath"));
         if (pwd == null) {
             pwd = new char[0];
         }
@@ -124,11 +125,8 @@ public class KeyStoreHelper {
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-             CustomException.throwException(ERROR.ACCESS_ERROR, "Init keystore failed: " + exception.getMessage()
-                    + "\nSolutions:"
-                    + "\n> The key store file does not exist, please check the key store file path."
-                    + "\n> Incorrect keystore password, please input the correct plaintext password."
-                    + "\n> The keystore was created by a newer JDK version, please use the same JDK version");
+             CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.INIT_KEYSTORE_FAILED
+                     .toString(exception.getMessage()));
         } finally {
             FileUtils.close(fis);
         }
@@ -144,8 +142,8 @@ public class KeyStoreHelper {
      * @param alias alias of key
      */
     public void errorOnExist(String alias) {
-        ValidateUtils.throwIfMatches(this.hasAlias(alias), ERROR.ACCESS_ERROR,
-                String.format("Could not overwrite! Already exist '%s' in %s", alias, this.keyStorePath));
+        ValidateUtils.throwIfMatches(this.hasAlias(alias),
+                ERROR.ACCESS_ERROR, SignToolErrMsg.KEY_ALIAS_EXIST.toString(alias, this.keyStorePath));
     }
 
     /**
@@ -154,8 +152,8 @@ public class KeyStoreHelper {
      * @param alias alias of key
      */
     public void errorIfNotExist(String alias) {
-        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), ERROR.FILE_NOT_FOUND,
-                String.format("Not exist '%s' in %s", alias, this.keyStorePath));
+        ValidateUtils.throwIfNotMatches(this.hasAlias(alias),
+                ERROR.FILE_NOT_FOUND, SignToolErrMsg.KEY_ALIAS_NOT_FOUND.toString(alias, this.keyStorePath));
     }
 
     /**
@@ -169,7 +167,8 @@ public class KeyStoreHelper {
             return keyStore.containsAlias(alias);
         } catch (KeyStoreException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.KEYSTORE_ERROR
+                    .toString(exception.getMessage()));
             return false;
         }
     }
@@ -206,10 +205,11 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException | NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.NO_SUCH_SIGNATURE
+                    .toString(exception.getMessage()));
         } catch (UnrecoverableKeyException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, "Password error of '" + alias + "'");
+            CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.KEY_PASSWORD_ERROR.toString(alias));
         }
         return null;
     }
@@ -240,8 +240,8 @@ public class KeyStoreHelper {
      * @return certificates of alias
      */
     public List<X509Certificate> loadCertificates(String alias) {
-        ValidateUtils.throwIfNotMatches(this.hasAlias(alias), ERROR.FILE_NOT_FOUND,
-                String.format("Not found '%s' in %s", alias, this.keyStorePath));
+        ValidateUtils.throwIfNotMatches(this.hasAlias(alias),
+                ERROR.FILE_NOT_FOUND, SignToolErrMsg.KEY_ALIAS_NOT_FOUND.toString(alias, this.keyStorePath));
 
         List<X509Certificate> certificates = new ArrayList<>();
         try {
@@ -258,11 +258,12 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, SignToolErrMsg.KEYSTORE_ERROR
+                    .toString(exception.getMessage()));
         }
 
-        ValidateUtils.throwIfNotMatches(certificates.size() > 0, ERROR.ACCESS_ERROR,
-                "No usable cert found in " + this.keyStorePath);
+        ValidateUtils.throwIfNotMatches(!certificates.isEmpty(), ERROR.ACCESS_ERROR, SignToolErrMsg.NO_USABLE_CERT
+                .toString(this.keyStorePath));
         return certificates;
     }
 
@@ -293,7 +294,8 @@ public class KeyStoreHelper {
             fos.flush();
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.FILE_WRITE_FAILED
+                    .toString(exception.getMessage()));
             return false;
         }
         return true;
@@ -320,7 +322,8 @@ public class KeyStoreHelper {
                     .getCertificate(certificateBuilder.build(contentSigner));
         } catch (CertificateException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
             return null;
         }
     }
@@ -344,7 +347,8 @@ public class KeyStoreHelper {
             }
         } catch (KeyStoreException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEYSTORE_OPERATION_ERROR, SignToolErrMsg.KEYSTORE_ERROR
+                    .toString(exception.getMessage()));
         }
         return typeKeyStore;
     }

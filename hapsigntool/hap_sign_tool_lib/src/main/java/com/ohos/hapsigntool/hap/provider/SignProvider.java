@@ -27,6 +27,7 @@ import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.HapFormatException;
@@ -263,7 +264,7 @@ public abstract class SignProvider {
 
         /* 6. make signed file into output file. */
         if (!SignBin.sign(signerConfig, signParams)) {
-            LOGGER.error("hap-sign-tool: error: Sign bin internal failed.");
+            LOGGER.error("Sign bin internal failed.");
             return false;
         }
         LOGGER.info("Sign success");
@@ -295,7 +296,7 @@ public abstract class SignProvider {
 
         if (ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(
                 signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED))) {
-            LOGGER.error("hap-sign-tool: error: Sign elf can not use unsigned profile.");
+            LOGGER.error("Sign elf can not use unsigned profile.");
             return false;
         }
 
@@ -304,7 +305,7 @@ public abstract class SignProvider {
         }
         /* 6. make signed file into output file. */
         if (!SignElf.sign(signerConfig, signParams)) {
-            LOGGER.error("hap-sign-tool: error: Sign elf internal failed.");
+            LOGGER.error("Sign elf internal failed.");
             return false;
         }
         LOGGER.info("Sign success");
@@ -479,13 +480,13 @@ public abstract class SignProvider {
 
     private void printErrorLog(Exception exception) {
         if (exception != null) {
-            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage(), exception);
+            LOGGER.error(exception.getMessage(), exception);
         }
     }
 
     private void printErrorLogWithoutStack(Exception exception) {
         if (exception != null) {
-            LOGGER.error("hap-sign-tool: error: {}", exception.getMessage());
+            LOGGER.error(exception.getMessage());
         }
     }
 
@@ -578,7 +579,8 @@ public abstract class SignProvider {
         X500Name name = new X500Name(nameStr);
         RDN[] commonName = name.getRDNs(BCStyle.CN);
         if (commonName.length <= 0) {
-            CustomException.throwException(ERROR.CERTIFICATE_ERROR, "subject without common name");
+            CustomException.throwException(ERROR.CERTIFICATE_ERROR, SignToolErrMsg.CERTIFICATE_ERROR
+                    .toString("subject without common name"));
         }
         return commonName[0].getFirst().getValue().toString();
     }

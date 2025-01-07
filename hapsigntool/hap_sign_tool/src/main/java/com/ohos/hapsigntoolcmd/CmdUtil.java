@@ -17,6 +17,7 @@ package com.ohos.hapsigntoolcmd;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 
@@ -51,20 +52,22 @@ public final class CmdUtil {
      * @return Params
      */
     public static Params convert2Params(String[] args) {
-        ValidateUtils.throwIfNotMatches(args.length >= ARGS_MIN_LEN, ERROR.COMMAND_ERROR, "");
+        ValidateUtils.throwIfNotMatches(args.length >= ARGS_MIN_LEN, ERROR.COMMAND_ERROR,
+                SignToolErrMsg.PARAM_NUM_ERROR.toString());
 
         Params params = new Params();
-        params.setMethod(args[0]);
+        String method = args[0];
+        params.setMethod(method);
         String keyStandBy = null;
         boolean readKey = true;
-        List<String> trustList = ParamsTrustlist.getTrustList(args[0]);
-        if (trustList.size() == 0) {
-            CustomException.throwException(ERROR.COMMAND_ERROR, "Unsupported cmd");
+        List<String> trustList = ParamsTrustlist.getTrustList(method);
+        if (trustList.isEmpty()) {
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.UNSUPPORTED_METHOD.toString(method));
         }
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
             if (StringUtils.isEmpty(value)) {
-                CustomException.throwException(ERROR.COMMAND_ERROR, "param value could not be empty");
+                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_VALUE_EMPTY.toString(value));
             }
             if (readKey) {
                 // prepare key
@@ -72,12 +75,12 @@ public final class CmdUtil {
                     value = value.equals("-signcode") ? "-signCode" : value;
                     boolean isTrust = trustList.contains(value);
                     ValidateUtils.throwIfNotMatches(isTrust,
-                            ERROR.COMMAND_PARAM_ERROR, "Not support command param");
+                            ERROR.COMMAND_PARAM_ERROR, SignToolErrMsg.PARAM_NOT_TRUSTED.toString(value));
                     keyStandBy = value.substring(1);
                     readKey = false;
                 } else {
-                    ValidateUtils.throwIfNotMatches(false,
-                            ERROR.COMMAND_PARAM_ERROR, "param key value must in pairs");
+                    CustomException.throwException(ERROR.COMMAND_PARAM_ERROR, SignToolErrMsg
+                            .PARAM_NOT_IN_PAIRS.toString(value));
                 }
             } else {
                 // prepare value
@@ -97,11 +100,10 @@ public final class CmdUtil {
             result = false;
         } else if (StringUtils.isEmpty(value)) {
             CustomException.throwException(ERROR.COMMAND_ERROR,
-                    String.format("Command -%s could not be empty", key));
+                    SignToolErrMsg.PARAM_VALUE_EMPTY.toString(key));
             result = false;
         } else if (params.getOptions().containsKey(key)) {
-            CustomException.throwException(ERROR.COMMAND_ERROR,
-                    String.format("Duplicate param '%s'. Stop processing", key));
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_DUPLICATE.toString(key));
             result = false;
         } else if (key.toLowerCase(Locale.ROOT).endsWith("pwd")) {
             params.getOptions().put(key, value.toCharArray());
@@ -120,8 +122,8 @@ public final class CmdUtil {
      */
     public static void judgeAlgType(String alg) {
         if (!"RSA".equalsIgnoreCase(alg) && !"ECC".equalsIgnoreCase(alg)) {
-            CustomException.throwException(ERROR.COMMAND_ERROR,
-                    "KeyAlg params is incorrect");
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                            .toString("keyAlg", "key algorithms include  ECC/RSA"));
         }
     }
 
@@ -135,18 +137,19 @@ public final class CmdUtil {
         String[] array = {"2048", "3072", "4096", "NIST-P-256", "NIST-P-384"};
         List<String> arrayList = Arrays.asList(array);
         if (!arrayList.contains(size)) {
-            CustomException.throwException(ERROR.COMMAND_ERROR, String.format("KeySize '%s' is incorrect", size));
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString("KeySize", "Key size include " + arrayList));
         }
 
         if ("RSA".equalsIgnoreCase(alg)) {
             if (!"2048".equals(size) && !"3072".equals(size) && !"4096".equals(size)) {
-                CustomException.throwException(ERROR.COMMAND_ERROR,
-                        String.format("KeySize of '%s' is incorrect", alg));
+                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                        .toString("KeySize", "Key size include " + arrayList));
             }
         } else {
             if (!"NIST-P-256".equalsIgnoreCase(size) && !"NIST-P-384".equalsIgnoreCase(size)) {
-                CustomException.throwException(ERROR.COMMAND_ERROR,
-                        String.format("KeySize of '%s' is incorrect", alg));
+                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                        .toString("KeySize", "Key size include " + arrayList));
             }
         }
     }
@@ -160,8 +163,8 @@ public final class CmdUtil {
         List<String> arrayList = Arrays.asList("SHA256withRSA", "SHA384withRSA", "SHA256withECDSA",
                 "SHA384withECDSA");
         if (!arrayList.contains(signAlg)) {
-            CustomException.throwException(ERROR.COMMAND_ERROR,
-                    "SignAlg params is incorrect");
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString("SignAlg", "signature algorithms include " + arrayList));
         }
     }
 
@@ -173,8 +176,8 @@ public final class CmdUtil {
     public static void judgeEndSignAlgType(String signAlg) {
         List<String> arrayList = Arrays.asList("SHA256withECDSA", "SHA384withECDSA");
         if (!arrayList.contains(signAlg)) {
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR,
-                    "SignAlg params is incorrect, signature algorithms include SHA256withECDSA,SHA384withECDSA");
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString("SignAlg", "signature algorithms include SHA256withECDSA,SHA384withECDSA"));
         }
     }
 
@@ -192,8 +195,8 @@ public final class CmdUtil {
                 continue;
             }
             if (!supportList.contains(type.trim())) {
-                CustomException.throwException(ERROR.COMMAND_ERROR,
-                        "'" + type + "' in params '" + inputType + "' is not support");
+                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg
+                        .PARAM_NOT_TRUSTED.toString(inputType));
             }
         }
     }
@@ -210,8 +213,8 @@ public final class CmdUtil {
         } else if (INTEGER_PATTERN.matcher(size).matches()) {
             return size;
         } else {
-            CustomException.throwException(ERROR.COMMAND_ERROR,
-                    String.format("KeySize '%s' is incorrect", size));
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString("KeySize", "Key size is incorrect"));
             return size;
         }
     }

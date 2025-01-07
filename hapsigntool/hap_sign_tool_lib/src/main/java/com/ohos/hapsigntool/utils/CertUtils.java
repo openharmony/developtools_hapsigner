@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 
 import org.bouncycastle.asn1.x500.X500Name;
@@ -180,7 +181,7 @@ public final class CertUtils {
      * @param nameString subject or issuer
      */
     private static void checkDN(String nameString) {
-        String errorMsg = String.format("Format error, must be \"X=xx,XX=xxx,...\", please check: \"%s\"", nameString);
+        String errorMsg = SignToolErrMsg.CERT_DN_FORMAT_FAILED.toString(nameString);
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(nameString), ERROR.COMMAND_ERROR, errorMsg);
         String[] pairs = nameString.split(",");
         for (String pair : pairs) {
@@ -277,7 +278,8 @@ public final class CertUtils {
      */
     public static ContentSigner createFixedContentSigner(PrivateKey privateKey, String signAlgorithm) {
         Matcher matcher = SIGN_ALGORITHM_PATTERN.matcher(signAlgorithm);
-        ValidateUtils.throwIfNotMatches(matcher.matches(), ERROR.NOT_SUPPORT_ERROR, "Not Support " + signAlgorithm);
+        ValidateUtils.throwIfNotMatches(matcher.matches(), ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.ALGORITHM_NOT_SUPPORT
+                .toString("Not Support " + signAlgorithm));
         String signAlg = signAlgorithm;
         // Auto fix signAlgorithm error
         if (privateKey instanceof ECPrivateKey && signAlgorithm.contains("RSA")) {
@@ -294,7 +296,8 @@ public final class CertUtils {
             return jcaContentSignerBuilder.build(privateKey);
         } catch (OperatorCreationException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.OPERATOR_CREATION_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.OPERATOR_CREATION_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
         return null;
     }

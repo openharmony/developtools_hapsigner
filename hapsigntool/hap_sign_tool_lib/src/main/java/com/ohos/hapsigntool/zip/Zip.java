@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.error.ZipException;
 import com.ohos.hapsigntool.utils.FileUtils;
 
@@ -95,7 +96,7 @@ public class Zip {
             // 4. file all data - eocd - cd - entry = sign block
             signingBlock = getSigningBlock(inputFile);
         } catch (IOException e) {
-            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
+            CustomException.throwException(ERROR.ZIP_ERROR, SignToolErrMsg.READ_ZIP_FAILED.toString(e.getMessage()));
         }
     }
 
@@ -213,7 +214,7 @@ public class Zip {
             }
             FileUtils.writeByteToOutFile(endOfCentralDirectory.toBytes(), fos);
         } catch (IOException e) {
-            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
+            CustomException.throwException(ERROR.ZIP_ERROR, SignToolErrMsg.WRITE_ZIP_FAILED.toString(e.getMessage()));
         }
     }
 
@@ -253,7 +254,8 @@ public class Zip {
                 }
             }
         } catch (ZipException e) {
-            CustomException.throwException(ERROR.ZIP_ERROR, e.getMessage());
+            CustomException.throwException(ERROR.ZIP_ERROR, SignToolErrMsg.ALIGNMENT_ZIP_FAILED
+                    .toString(e.getMessage()));
         }
     }
 

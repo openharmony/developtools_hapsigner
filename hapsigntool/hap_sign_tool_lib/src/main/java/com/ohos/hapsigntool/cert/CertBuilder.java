@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.cert;
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.CertUtils;
 
 import com.ohos.hapsigntool.utils.LogUtils;
@@ -88,7 +89,8 @@ public class CertBuilder {
             request = new PKCS10CertificationRequest(csr);
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CSR_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CSR_ERROR, SignToolErrMsg.IO_CSR_ERROR
+                    .toString(exception.getMessage()));
         }
         x509v3CertificateBuilder = new X509v3CertificateBuilder(
                 issuer, CertUtils.randomSerial(), Date.from(notBefore.atZone(ZoneId.systemDefault()).toInstant()),
@@ -100,10 +102,12 @@ public class CertBuilder {
                     extUtils.createSubjectKeyIdentifier(request.getSubjectPublicKeyInfo()));
         } catch (NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.NO_SUCH_SIGNATURE
+                    .toString(exception.getMessage()));
         } catch (CertIOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
     }
 
@@ -123,10 +127,12 @@ public class CertBuilder {
             }
         } catch (NoSuchAlgorithmException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.NO_SUCH_SIGNATURE
+                    .toString(exception.getMessage()));
         } catch (CertIOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
         return this;
     }
@@ -217,16 +223,20 @@ public class CertBuilder {
             cert.verify(keyPair.getPublic());
         } catch (InvalidKeyException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.KEY_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.KEY_ERROR, SignToolErrMsg.INVALID_KEY
+                    .toString(exception.getMessage()));
         } catch (SignatureException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.SIGN_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.SIGN_ERROR, SignToolErrMsg.SIGNATURE_FAILED
+                    .toString(exception.getMessage()));
         } catch (CertificateException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.CERTIFICATE_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.CERTIFICATE_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         } catch (NoSuchAlgorithmException | NoSuchProviderException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.NO_SUCH_SIGNATURE
+                    .toString(exception.getMessage()));
         }
         return cert;
     }
