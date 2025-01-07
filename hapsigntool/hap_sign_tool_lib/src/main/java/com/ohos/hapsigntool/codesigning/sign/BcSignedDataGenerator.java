@@ -15,14 +15,14 @@
 
 package com.ohos.hapsigntool.codesigning.sign;
 
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.utils.CmsUtils;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
-import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
-
+import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.utils.LogUtils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
@@ -87,6 +87,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
     public void setOwnerID(String ownerID) {
         this.ownerID = ownerID;
     }
+
     @Override
     public byte[] generateSignedData(byte[] content, SignerConfig signConfig) throws CodeSignException {
         if (content == null) {
@@ -124,7 +125,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
             throw new CodeSignException("get signature failed");
         }
         if (signConfig.getCertificates().isEmpty()) {
-            throw new CodeSignException("No certificates configured for sign");
+            throw new CodeSignException(CodeSignErrMsg.CERTIFICATES_CONFIGURE_EMPTY_ERROR.toString());
         }
         X509Certificate cert = signConfig.getCertificates().get(0);
         if (!verifySignFromServer(cert.getPublicKey(), signBytes, signPair, codeAuthed)) {
@@ -142,7 +143,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         try {
             digest = DigestUtils.computeDigest(unsignedDataDigest, algorithm);
         } catch (NoSuchAlgorithmException e) {
-            throw new CodeSignException("Invalid algorithm" + e.getMessage(), e);
+            throw new CodeSignException(CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(algorithm), e);
         }
         return digest;
     }

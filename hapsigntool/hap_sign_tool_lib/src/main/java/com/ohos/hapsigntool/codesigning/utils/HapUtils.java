@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.LogUtils;
@@ -144,7 +145,7 @@ public class HapUtils {
         } else if ("release".equals(profileType)) {
             return ownerID;
         } else {
-            throw new ProfileException("unsupported profile type");
+            throw new ProfileException(CodeSignErrMsg.PROFILE_TYPE_UNSUPPORTED_ERROR.toString());
         }
     }
 
@@ -163,34 +164,32 @@ public class HapUtils {
             JsonObject profileJson = parser.getAsJsonObject();
             String profileTypeKey = "type";
             if (!profileJson.has(profileTypeKey)) {
-                throw new ProfileException("profile has no type key");
+                throw new ProfileException(CodeSignErrMsg.PROFILE_TYPE_NOT_EXISTED_ERROR.toString());
             }
 
             profileType = profileJson.get(profileTypeKey).getAsString();
-            if (profileType == null || profileType.length() == 0) {
-                throw new ProfileException("Get profile type error");
+            if (profileType == null || profileType.isEmpty()) {
+                throw new ProfileException(CodeSignErrMsg.PROFILE_TYPE_NOT_EXISTED_ERROR.toString());
             }
 
             String appIdentifier = "app-identifier";
             String buildInfoMember = "bundle-info";
             JsonObject buildInfoObject = profileJson.getAsJsonObject(buildInfoMember);
             if (buildInfoObject == null) {
-                throw new ProfileException("can not find bundle-info");
+                throw new ProfileException(CodeSignErrMsg.PROFILE_BUNDLE_INFO_NOT_EXISTED_ERROR.toString());
             }
             if (buildInfoObject.has(appIdentifier)) {
                 JsonElement ownerIDElement = buildInfoObject.get(appIdentifier);
                 if (!ownerIDElement.getAsJsonPrimitive().isString()) {
-                    throw new ProfileException("value of app-identifier is not string");
+                    throw new ProfileException(CodeSignErrMsg.PROFILE_APPID_VALUE_TYPE_ERROR.toString());
                 }
                 ownerID = ownerIDElement.getAsString();
                 if (ownerID.isEmpty() || ownerID.length() > MAX_APP_ID_LEN) {
-                    throw new ProfileException("app-id length in profile is invalid");
+                    throw new ProfileException(CodeSignErrMsg.PROFILE_APPID_VALUE_LENGTH_ERROR.toString());
                 }
-
             }
         } catch (JsonSyntaxException | UnsupportedOperationException e) {
-            LOGGER.error(e.getMessage());
-            throw new ProfileException("profile json is invalid");
+            throw new ProfileException(CodeSignErrMsg.PROFILE_JSON_PARSE_ERROR.toString(), e);
         }
         LOGGER.info("profile type is: {}", profileType);
         return Pair.create(ownerID, profileType);
@@ -260,7 +259,7 @@ public class HapUtils {
             JsonObject moduleObject = jsonObject.getAsJsonObject("module");
             JsonArray hnpPackageArr = moduleObject.getAsJsonArray("hnpPackages");
             if (hnpPackageArr == null || hnpPackageArr.isEmpty()) {
-                LOGGER.debug("profile has no hnpPackages key or hnpPackages value is empty");
+                LOGGER.debug("module.json has no hnpPackages key or hnpPackages value is empty");
                 return hnpNameMap;
             }
             hnpPackageArr.iterator().forEachRemaining((element) -> {
@@ -276,8 +275,7 @@ public class HapUtils {
                 }
             });
         } catch (JsonParseException e) {
-            LOGGER.error(e.getMessage());
-            throw new ProfileException("profile json is invalid");
+            throw new ProfileException(CodeSignErrMsg.MODULE_JSON_PARSE_ERROR.toString(), e);
         }
         return hnpNameMap;
     }
