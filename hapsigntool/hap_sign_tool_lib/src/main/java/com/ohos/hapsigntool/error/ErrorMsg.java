@@ -27,20 +27,21 @@ import java.util.Locale;
  * @since 2025/01/06
  */
 public class ErrorMsg {
-    private String code;
+    private final String code;
 
-    private String description;
+    private final String description;
 
-    private String cause;
+    private final String cause;
 
-    private String position;
+    private final String position;
 
-    private List<String> solutions;
+    private final List<String> solutions;
 
     private MoreInfo moreInfo;
 
     /**
      * ErrorMsg constructor
+     *
      * @param code code
      * @param description description
      * @param cause cause
@@ -77,7 +78,7 @@ public class ErrorMsg {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append(code)
             .append(" ")
             .append(description)
@@ -126,6 +127,7 @@ public class ErrorMsg {
 
         /**
          * Builder Constructor
+         *
          * @param sysCode sysCode
          */
         public Builder(String sysCode) {
@@ -134,6 +136,7 @@ public class ErrorMsg {
 
         /**
          * addErrCode
+         *
          * @param errCode errCode
          * @return Builder
          */
@@ -206,6 +209,4 @@ public class ErrorMsg {
             return new ErrorMsg(sysCode + typeCode + errCode, description, cause, position, solutions);
         }
     }
-
-
 }
