@@ -23,6 +23,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.MerkleTreeExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.datastructure.SignInfo;
 import com.ohos.hapsigntool.codesigning.elf.ElfHeader;
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
@@ -113,7 +114,7 @@ public class CodeSigning {
         throws CodeSignException, FsVerityDigestException, IOException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (!SUPPORT_BIN_FILE_FORM.equalsIgnoreCase(inForm)) {
-            throw new CodeSignException("file's format is unsupported");
+            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString());
         }
         long fileSize = input.length();
         int paddingSize = ElfSignBlock.computeMerkleTreePaddingLength(offset);
@@ -169,7 +170,7 @@ public class CodeSigning {
         throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (!StringUtils.containsIgnoreCase(SUPPORT_FILE_FORM, inForm)) {
-            throw new CodeSignException("file's format is unsupported");
+            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(SUPPORT_FILE_FORM));
         }
         long dataSize = computeDataSize(zip);
         // generate CodeSignBlock
@@ -240,8 +241,7 @@ public class CodeSigning {
             break;
         }
         if (!NumberUtils.isMultiple4K(dataSize)) {
-            throw new HapFormatException(
-                String.format(Locale.ROOT, "Invalid dataSize(%d), not a multiple of 4096", dataSize));
+            throw new HapFormatException(CodeSignErrMsg.FILE_4K_ALIGNMENT_ERROR.toString(dataSize));
         }
         return dataSize;
     }
@@ -274,7 +274,7 @@ public class CodeSigning {
                 }
                 String hnpFileName = HapUtils.parseHnpPath(entryName);
                 if (!hnpTypeMap.containsKey(hnpFileName)) {
-                    throw new CodeSignException("hnp should be described in module.json");
+                    throw new CodeSignException(CodeSignErrMsg.HNP_FILE_DESCRIPTION_ERROR.toString(entryName));
                 }
                 LOGGER.debug("Sign hnp name = {}", entryName);
                 String type = hnpTypeMap.get(hnpFileName);
@@ -293,7 +293,7 @@ public class CodeSigning {
         File tempHnp = File.createTempFile("tmp-", ".hnp");
         writeTempHnpFile(inputJar, hnpEntry, tempHnp);
         if (!tempHnp.exists() || tempHnp.length() == 0) {
-            throw new CodeSignException("extract hnp file error");
+            throw new CodeSignException(CodeSignErrMsg.EXTRACT_HNP_FILE_ERROR.toString(hnpEntry.getName()));
         }
         try (JarFile hnp = new JarFile(tempHnp, false)) {
             List<JarEntry> elfEntries = getHnpLibEntries(hnp);
@@ -315,6 +315,8 @@ public class CodeSigning {
                 throw new CodeSignException("Sign hnp lib error");
             }
             return nativeLibInfoList;
+        } catch (IOException e) {
+            throw new IOException(CodeSignErrMsg.EXTRACT_HNP_FILE_ERROR.toString(hnpEntry.getName()), e);
         } finally {
             if (tempHnp.exists()) {
                 if (tempHnp.delete()) {
@@ -477,7 +479,7 @@ public class CodeSigning {
         // signConfig is created by SignerFactory
         if ((copiedConfig.getSigner() instanceof LocalSigner)) {
             if (copiedConfig.getCertificates().isEmpty()) {
-                throw new CodeSignException("No certificates configured for sign");
+                throw new CodeSignException(CodeSignErrMsg.CERTIFICATES_CONFIGURE_EMPTY_ERROR.toString());
             }
             BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
             bcSignedDataGenerator.setOwnerID(ownerID);

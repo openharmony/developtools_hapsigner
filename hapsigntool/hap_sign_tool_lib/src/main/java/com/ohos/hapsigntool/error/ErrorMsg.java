@@ -79,13 +79,18 @@ public class ErrorMsg {
     public String toString() {
         final StringBuffer sb = new StringBuffer();
         sb.append(code)
-                .append(" ").append(description).append(System.lineSeparator()).append("Error Message: ").append(cause);
+            .append(" ")
+            .append(description)
+            .append(System.lineSeparator())
+            .append("Error Message: ")
+            .append(cause)
+            .append(System.lineSeparator());
 
         if (!StringUtils.isEmpty(position)) {
             sb.append(" At ").append(position).append(System.lineSeparator());
         }
 
-        if (solutions != null && solutions.isEmpty()) {
+        if (solutions != null && !solutions.isEmpty()) {
             sb.append("* Try the following: ").append(System.lineSeparator());
             for (String s : solutions) {
                 sb.append(" > ").append(s).append(System.lineSeparator());
