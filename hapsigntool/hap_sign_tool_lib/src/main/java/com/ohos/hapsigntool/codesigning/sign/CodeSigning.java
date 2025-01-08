@@ -297,7 +297,7 @@ public class CodeSigning {
         }
         try (JarFile hnp = new JarFile(tempHnp, false)) {
             List<JarEntry> elfEntries = getHnpLibEntries(hnp);
-            LOGGER.debug("{} elf num : {}", hnp.getName(), elfEntries.size());
+            LOGGER.debug("{} elf num : {}", hnpEntry.getName(), elfEntries.size());
             List<Pair<String, SignInfo>> nativeLibInfoList = elfEntries.stream().parallel().map(entry -> {
                 String hnpElfPath = hnpEntry.getName() + "!/" + entry.getName();
                 try (InputStream inputStream = hnp.getInputStream(entry)) {
@@ -316,7 +316,7 @@ public class CodeSigning {
             }
             return nativeLibInfoList;
         } catch (IOException e) {
-            throw new IOException(CodeSignErrMsg.EXTRACT_HNP_FILE_ERROR.toString(hnpEntry.getName()), e);
+            throw new CodeSignException(CodeSignErrMsg.EXTRACT_HNP_FILE_ERROR.toString(hnpEntry.getName()), e);
         } finally {
             if (tempHnp.exists()) {
                 if (tempHnp.delete()) {
