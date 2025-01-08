@@ -387,4 +387,63 @@ public class CodeSignErrMsg {
         .addSolution("Failed to parse the elf file, please check whether the file header information is correct")
         .build();
 
+    /**
+     * BITMAP_OFF_4K_ALIGNMENT_ERROR
+     */
+    public static final ErrorMsg BITMAP_OFF_4K_ALIGNMENT_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("17")
+        .addErrCode("001")
+        .addDescription("Page Info Error")
+        .addCause("Invalid bitmap offset {%d}, not a multiple of 4096")
+        .build();
+
+    /**
+     * PAGE_INFO_UNIT_SIZE_ERROR
+     */
+    public static final ErrorMsg PAGE_INFO_UNIT_SIZE_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("17")
+        .addErrCode("002")
+        .addDescription("Page Info Error")
+        .addCause("Invalid page info unitSize : {%d}")
+        .build();
+
+    /**
+     * PAGE_INFO_SIZE_AND_UNIT_ERROR
+     */
+    public static final ErrorMsg PAGE_INFO_SIZE_AND_UNIT_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("17")
+        .addErrCode("003")
+        .addDescription("Page Info Error")
+        .addCause("Page info size is not multiple of unit")
+        .build();
+
+    /**
+     * PAGE_INFO_OFFSET_SIZE_ERROR
+     */
+    public static final ErrorMsg PAGE_INFO_NEGATIVE_NUMBER_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("17")
+        .addErrCode("004")
+        .addDescription("Page Info Error")
+        .addCause("Page info offset/size is negative number")
+        .build();
+
+    /**
+     * PAGE_INFO_OUT_DATA_ERROR
+     */
+    public static final ErrorMsg PAGE_INFO_OUT_DATA_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("17")
+        .addErrCode("005")
+        .addDescription("Page Info Error")
+        .addCause("Page info is out of dataSize")
+        .build();
+
+    /**
+     * BIT_MAP_PAGE_NOT_LESS_DATA_PAGE_ERROR
+     */
+    public static final ErrorMsg BIT_MAP_PAGE_NOT_LESS_DATA_PAGE_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("17")
+        .addErrCode("006")
+        .addDescription("Page Info Error")
+        .addCause("page info size is not consistent with data page ")
+        .build();
 }

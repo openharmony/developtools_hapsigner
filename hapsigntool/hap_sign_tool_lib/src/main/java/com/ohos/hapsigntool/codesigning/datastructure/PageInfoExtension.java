@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.datastructure;
 
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.exception.PageInfoException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
@@ -182,24 +183,24 @@ public class PageInfoExtension extends Extension {
      */
     public static boolean valid(PageInfoExtension pgExtension, long dataSize) throws PageInfoException {
         if (!NumberUtils.isMultiple4K(pgExtension.getMapOffset())) {
-            throw new PageInfoException(String.format(Locale.ROOT, "Invalid bitmapOff(%d), not a multiple of 4096",
-                pgExtension.getMapOffset()));
+            throw new PageInfoException(
+                CodeSignErrMsg.BITMAP_OFF_4K_ALIGNMENT_ERROR.toString(pgExtension.getMapOffset()));
         }
         if (pgExtension.getUnitSize() != PageInfoExtension.DEFAULT_UNIT_SIZE) {
-            throw new PageInfoException("Invalid page info unitSize : " + pgExtension.getUnitSize());
+            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_UNIT_SIZE_ERROR.toString(pgExtension.getUnitSize()));
         }
         if (pgExtension.getMapOffset() < 0 || pgExtension.getMapSize() < 0) {
-            throw new PageInfoException("Page info offset/size is negative number");
+            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_NEGATIVE_NUMBER_ERROR.toString());
         }
         if (pgExtension.getMapSize() % pgExtension.getUnitSize() != 0) {
-            throw new PageInfoException("Page info size is not multiple of unit");
+            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_SIZE_AND_UNIT_ERROR.toString());
         }
 
         if (pgExtension.getMapOffset() > dataSize - pgExtension.getMapSize() / Byte.SIZE) {
-            throw new PageInfoException("Page info is out of dataSize");
+            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_OUT_DATA_ERROR.toString());
         }
         if (pgExtension.getMapSize() / pgExtension.getUnitSize() >= dataSize / CodeSignBlock.PAGE_SIZE_4K) {
-            throw new PageInfoException("page info size is not consistent with data page ");
+            throw new PageInfoException(CodeSignErrMsg.BIT_MAP_PAGE_NOT_LESS_DATA_PAGE_ERROR.toString());
         }
         return true;
     }
