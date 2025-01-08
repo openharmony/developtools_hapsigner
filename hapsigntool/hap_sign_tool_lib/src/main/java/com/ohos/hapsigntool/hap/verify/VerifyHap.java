@@ -20,6 +20,7 @@ import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.sign.VerifyCodeSignature;
 import com.ohos.hapsigntool.entity.Pair;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.ProfileException;
@@ -89,11 +90,12 @@ public class VerifyHap {
         try {
             CMSSignedData cmsSignedData = new CMSSignedData(profile);
             if (!VerifyUtils.verifyCmsSignedData(cmsSignedData)) {
-                throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid");
+                throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_INVALID.toString());
             }
             Object contentObj = cmsSignedData.getSignedContent().getContent();
             if (!(contentObj instanceof byte[])) {
-                throw new ProfileException("Check profile failed, signed profile content is not byte array!");
+                throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_FAILED
+                        .toString("Check profile failed, signed profile content is not byte array!"));
             }
             return new String((byte[]) contentObj, StandardCharsets.UTF_8);
         } catch (CMSException e) {

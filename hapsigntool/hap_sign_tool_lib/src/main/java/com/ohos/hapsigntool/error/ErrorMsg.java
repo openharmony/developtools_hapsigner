@@ -16,6 +16,8 @@
 package com.ohos.hapsigntool.error;
 
 import com.ohos.hapsigntool.utils.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.Locale;
  * @since 2025/01/06
  */
 public class ErrorMsg {
+    private static final Logger log = LogManager.getLogger(ErrorMsg.class);
     private final String code;
 
     private final String description;
@@ -101,7 +104,12 @@ public class ErrorMsg {
     }
 
     public String toString(Object... args) {
-        return String.format(Locale.ROOT, this.toString(), args);
+        try {
+            return String.format(Locale.ROOT, this.toString(), args);
+        } catch (RuntimeException e) {
+            log.error("args format failed: " + args);
+            return this.toString();
+        }
     }
 
     static class MoreInfo {

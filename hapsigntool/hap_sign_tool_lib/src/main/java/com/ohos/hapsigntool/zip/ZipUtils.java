@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.zip;
 
 import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.HapFormatException;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -192,24 +193,28 @@ public class ZipUtils {
     public static ZipFileInfo findZipInfo(ZipDataInput in) throws IOException, HapFormatException {
         Pair<Long, ByteBuffer> eocdOffsetAndBuffer = findEocdInHap(in);
         if (eocdOffsetAndBuffer == null) {
-            throw new HapFormatException("ZIP End of Central Directory not found");
+            throw new HapFormatException(SignToolErrMsg.ZIP_FORMAT_FAILED
+                    .toString("ZIP End of Central Directory not found"));
         }
         long eocdOffset = eocdOffsetAndBuffer.getFirst();
         ByteBuffer eocdBuffer = eocdOffsetAndBuffer.getSecond().order(ByteOrder.LITTLE_ENDIAN);
         long centralDirectoryStartOffset = ZipUtils.getCentralDirectoryOffset(eocdBuffer);
         if (centralDirectoryStartOffset > eocdOffset) {
-            throw new HapFormatException("ZIP Central Directory start offset(" + centralDirectoryStartOffset
-                + ") larger than ZIP End of Central Directory offset(" + eocdOffset + ")");
+            throw new HapFormatException(SignToolErrMsg.ZIP_FORMAT_FAILED
+                    .toString("ZIP Central Directory start offset(" + centralDirectoryStartOffset
+                + ") larger than ZIP End of Central Directory offset(" + eocdOffset + ")"));
         }
         long centralDirectorySizeLong = ZipUtils.getCentralDirectorySize(eocdBuffer);
         if (centralDirectorySizeLong > Integer.MAX_VALUE) {
-            throw new HapFormatException("ZIP Central Directory out of range: " + centralDirectorySizeLong);
+            throw new HapFormatException(SignToolErrMsg.ZIP_FORMAT_FAILED
+                    .toString("ZIP Central Directory out of range: " + centralDirectorySizeLong));
         }
         int centralDirectorySize = (int) centralDirectorySizeLong;
         long centralDirectoryEndOffset = centralDirectoryStartOffset + centralDirectorySizeLong;
         if (centralDirectoryEndOffset != eocdOffset) {
-            throw new HapFormatException("ZIP Central Directory end offset(" + centralDirectoryEndOffset + ") "
-                + " different from ZIP End of Central Directory offset(" + eocdOffset + ")");
+            throw new HapFormatException(SignToolErrMsg.ZIP_FORMAT_FAILED
+                    .toString("ZIP Central Directory end offset(" + centralDirectoryEndOffset + ") "
+                + " different from ZIP End of Central Directory offset(" + eocdOffset + ")"));
         }
         int centralDirectoryCount = ZipUtils.getCentralDirectoryCount(eocdBuffer);
         return new ZipFileInfo(centralDirectoryStartOffset, centralDirectorySize, centralDirectoryCount, eocdOffset,

@@ -176,6 +176,16 @@ public class SignToolErrMsg {
             .addCause("Not support file: %s")
             .build();
 
+    /**
+     * FILE_IO_FAILED
+     */
+    public static final ErrorMsg FILE_IO_FAILED = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("12")
+            .addErrCode("006")
+            .addDescription("File IO failed")
+            .addCause("%s")
+            .build();
+
     // cert error
     /**
      * CERT_DN_FORMAT_FAILED
@@ -390,6 +400,31 @@ public class SignToolErrMsg {
             .addCause("%s")
             .build();
 
+    /**
+     * VERIFY_PROFILE_INVALID
+     */
+    public static final ErrorMsg VERIFY_PROFILE_INVALID = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("15")
+            .addErrCode("005")
+            .addDescription("Verify profile failed")
+            .addCause("Verify profile pkcs7 failed! Profile is invalid")
+            .addSolution("Check if the profile is legal")
+            .addSolution("Maybe Failed during transmission, please download profile again")
+            .build();
+
+    /**
+     * VERIFY_PROFILE_FAILED
+     */
+    public static final ErrorMsg PROFILE_CERT_MATCH_FAILED = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("15")
+            .addErrCode("005")
+            .addDescription("Profile certificate match failed")
+            .addCause("input certificates do not match with profile")
+            .addSolution("Profile include signature certificate info, please ensure it same as your appCertFile")
+            .addSolution("When applying for profile, need to select a certificate, please choose your appCertFile")
+            .build();
+
+
     // zip error
     /**
      * READ_ZIP_FAILED
@@ -422,6 +457,16 @@ public class SignToolErrMsg {
             .addTypeCode("17")
             .addErrCode("003")
             .addDescription("Alignment zip file failed")
+            .addCause("%s")
+            .build();
+
+    /**
+     * ZIP_FORMAT_FAILED
+     */
+    public static final ErrorMsg ZIP_FORMAT_FAILED = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("17")
+            .addErrCode("004")
+            .addDescription("Zip format failed")
             .addCause("%s")
             .build();
 }
