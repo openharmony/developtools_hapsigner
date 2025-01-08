@@ -88,6 +88,28 @@ public class CodeSignErrMsg {
         .build();
 
     /**
+     * CERTIFICATES_MATCHED_EMPTY_ERROR
+     */
+    public static final ErrorMsg CERTIFICATES_MATCHED_EMPTY_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("11")
+        .addErrCode("002")
+        .addDescription("Certificates Error")
+        .addCause("No matched cert")
+        .addSolution("Please check whether the certificate is correct")
+        .build();
+
+    /**
+     * CERTIFICATES_MATCHED_MORE_ERROR
+     */
+    public static final ErrorMsg CERTIFICATES_MATCHED_MORE_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("11")
+        .addErrCode("003")
+        .addDescription("Certificates Error")
+        .addCause("More than one matched certs, matched certs size: {%d}")
+        .addSolution("Please check whether the certificate is correct")
+        .build();
+
+    /**
      * PROFILE_TYPE_UNSUPPORTED_ERROR
      */
     public static final ErrorMsg PROFILE_TYPE_UNSUPPORTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
@@ -289,6 +311,36 @@ public class CodeSignErrMsg {
         .addErrCode("011")
         .addDescription("Code Sign Error")
         .addCause("Signature verify failed")
+        .build();
+
+    /**
+     * VERIFY_BC_SIGNATURE_FAILED_ERROR
+     */
+    public static final ErrorMsg VERIFY_BC_SIGNATURE_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("15")
+        .addErrCode("012")
+        .addDescription("Code Sign Error")
+        .addCause("Verify BC signatures failed: %s")
+        .build();
+
+    /**
+     * VERIFY_SIGNATURE_DATA_FAILED_ERROR
+     */
+    public static final ErrorMsg VERIFY_SIGNATURE_DATA_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("15")
+        .addErrCode("013")
+        .addDescription("Code Sign Error")
+        .addCause("Failed to verify signed data and unsigned data digest")
+        .build();
+
+    /**
+     * VERIFY_PKCS_DATA_FAILED_ERROR
+     */
+    public static final ErrorMsg VERIFY_PKCS_DATA_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("15")
+        .addErrCode("014")
+        .addDescription("Code Sign Error")
+        .addCause("PKCS cms data did not verify")
         .build();
 
     /**
