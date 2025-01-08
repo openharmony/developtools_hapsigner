@@ -79,8 +79,8 @@ public class FsVerityGenerator {
         } catch (IOException e) {
             throw new FsVerityDigestException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
-            String msg = CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(fsVerityHashAlgorithm.getHashAlgorithm());
-            throw new FsVerityDigestException(msg, e);
+            throw new FsVerityDigestException(
+                CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(fsVerityHashAlgorithm.getHashAlgorithm()), e);
         }
         return merkleTree;
     }
@@ -117,8 +117,8 @@ public class FsVerityGenerator {
             byte[] digest = DigestUtils.computeDigest(fsVerityDescriptor, FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
             fsVerityDigest = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
         } catch (NoSuchAlgorithmException e) {
-            String msg = CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
-            throw new FsVerityDigestException(msg, e);
+            throw new FsVerityDigestException(
+                CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm()), e);
         }
         if (pageInfoExtension != null && flags != 0) {
             PageInfoExtension.valid(pageInfoExtension, size);
@@ -130,8 +130,8 @@ public class FsVerityGenerator {
                     FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
                 fsVerityDigestV2 = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
             } catch (NoSuchAlgorithmException e) {
-                String msg = CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm());
-                throw new FsVerityDigestException(msg, e);
+                throw new FsVerityDigestException(
+                    CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm()), e);
             }
         }
         treeBytes = merkleTree.tree;
