@@ -80,56 +80,6 @@ public class HapUtils {
     }
 
     /**
-     * Check configuration in hap to find out whether the native libs are compressed
-     *
-     * @param hapFile the given hap
-     * @return boolean value of parsing result
-     * @throws IOException io error
-     */
-    public static boolean checkCompressNativeLibs(File hapFile) throws IOException {
-        try (JarFile inputJar = new JarFile(hapFile, false)) {
-            for (String configFile : HAP_CONFIG_FILES) {
-                JarEntry entry = inputJar.getJarEntry(configFile);
-                if (entry == null) {
-                    continue;
-                }
-                try (InputStream data = inputJar.getInputStream(entry)) {
-                    String jsonString = new String(InputStreamUtils.toByteArray(data, (int) entry.getSize()),
-                        StandardCharsets.UTF_8);
-                    return checkCompressNativeLibs(jsonString);
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Check whether the native libs are compressed by parsing config json
-     *
-     * @param jsonString the config json string
-     * @return boolean value of parsing result
-     */
-    public static boolean checkCompressNativeLibs(String jsonString) {
-        JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-        Queue<JsonObject> queue = new LinkedList<>();
-        queue.offer(jsonObject);
-        while (queue.size() > 0) {
-            JsonObject curJsonObject = queue.poll();
-            JsonElement jsonElement = curJsonObject.get(COMPRESS_NATIVE_LIBS_OPTION);
-            if (jsonElement != null) {
-                return jsonElement.getAsBoolean();
-            }
-            for (Map.Entry<String, JsonElement> entry : curJsonObject.entrySet()) {
-                if (entry.getValue().isJsonObject()) {
-                    queue.offer(entry.getValue().getAsJsonObject());
-                }
-            }
-        }
-        // default to compress native libs
-        return true;
-    }
-
-    /**
      * get app-id from profile
      *
      * @param profileContent the content of profile

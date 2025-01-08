@@ -91,7 +91,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
     @Override
     public byte[] generateSignedData(byte[] content, SignerConfig signConfig) throws CodeSignException {
         if (content == null) {
-            throw new CodeSignException("Verity digest is null");
+            throw new CodeSignException(CodeSignErrMsg.SIGN_CONTENT_EMPTY_ERROR.toString());
         }
         Pair<DERSet, DERSet> pairDigestAndSignInfo = getSignInfo(content, signConfig);
         // Unsupported certificate revocation, SignedData's _crls is null
@@ -122,14 +122,14 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         Pair<String, ? extends AlgorithmParameterSpec> signPair = signAlgorithm.getSignatureAlgAndParams();
         byte[] signBytes = signConfig.getSigner().getSignature(codeAuthed, signPair.getFirst(), signPair.getSecond());
         if (signBytes == null) {
-            throw new CodeSignException("get signature failed");
+            throw new CodeSignException(CodeSignErrMsg.SIGNER_SIGN_ERROR.toString());
         }
         if (signConfig.getCertificates().isEmpty()) {
             throw new CodeSignException(CodeSignErrMsg.CERTIFICATES_CONFIGURE_EMPTY_ERROR.toString());
         }
         X509Certificate cert = signConfig.getCertificates().get(0);
         if (!verifySignFromServer(cert.getPublicKey(), signBytes, signPair, codeAuthed)) {
-            throw new CodeSignException("verifySignatureFromServer failed");
+            throw new CodeSignException(CodeSignErrMsg.VERIFY_SIGNATURE_FROM_SERVER_ERROR.toString());
         }
         JcaX509CertificateHolder certificateHolder = getJcaX509CertificateHolder(cert);
         return new SignerInfo(new ASN1Integer(1),
@@ -153,7 +153,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         try {
             codeAuthed = authed.getEncoded();
         } catch (IOException e) {
-            throw new CodeSignException("cannot encode authed", e);
+            throw new CodeSignException(CodeSignErrMsg.ENCODE_DATA_ERROR.toString(), e);
         }
         return codeAuthed;
     }
@@ -163,7 +163,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         try {
             crlHolder = new JcaX509CRLHolder(crl);
         } catch (CRLException e) {
-            throw new CodeSignException("Create crl failed", e);
+            throw new CodeSignException(CodeSignErrMsg.CREATE_CRL_ERROR.toString(), e);
         }
         return crlHolder;
     }
@@ -173,7 +173,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         try {
             certificateHolder = new JcaX509CertificateHolder(cert);
         } catch (CertificateEncodingException e) {
-            throw new CodeSignException("Create sign info failed", e);
+            throw new CodeSignException(CodeSignErrMsg.CERTIFICATE_ENCODING_ERROR.toString(), e);
         }
         return certificateHolder;
     }
@@ -207,7 +207,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
             }
             signature.update(authed);
             if (!signature.verify(signBytes)) {
-                throw new CodeSignException("Signature verify failed");
+                throw new CodeSignException(CodeSignErrMsg.SIGNATURE_VERIFY_FAILED_ERROR.toString());
             }
             return true;
         } catch (InvalidKeyException | SignatureException e) {
@@ -244,7 +244,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
             ContentInfo contentInfo = new ContentInfo(PKCSObjectIdentifiers.signedData, signedData);
             signResult = contentInfo.getEncoded(ASN1Encoding.DER);
         } catch (IOException e) {
-            throw new CodeSignException("failed to encode unsigned data!", e);
+            throw new CodeSignException(CodeSignErrMsg.ENCODE_DATA_ERROR.toString(), e);
         }
         verifySignResult(unsignedDataDigest, signResult);
         return signResult;
