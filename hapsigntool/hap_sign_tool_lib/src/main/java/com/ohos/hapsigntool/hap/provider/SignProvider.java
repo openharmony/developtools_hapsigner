@@ -152,7 +152,8 @@ public abstract class SignProvider {
         }
         if (!checkFile(file)) {
             LOGGER.error("check file failed");
-            throw new InvalidParamsException("Invalid file: " + file + ", filetype: " + type);
+            throw new InvalidParamsException(SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString(file, "Invalid file: " + file + ", filetype: " + type));
         }
         try {
             byte[] optionalBlockBytes = HapUtils.readFileToByte(file);
@@ -162,8 +163,7 @@ public abstract class SignProvider {
             }
             optionalBlocks.add(new SigningBlock(type, optionalBlockBytes));
         } catch (IOException e) {
-            LOGGER.error("read file error", e);
-            throw new InvalidParamsException("Invalid file: " + file + " is not readable. filetype: " + type);
+            throw new InvalidParamsException(SignToolErrMsg.FILE_READ_FAILED.toString(file));
         }
     }
 
@@ -219,10 +219,9 @@ public abstract class SignProvider {
      * @param crl certificate revocation list
      * @param options options
      * @return Object of SignerConfig
-     * @throws InvalidKeyException on error when the key is invalid.
      */
-    public SignerConfig createSignerConfigs(List<X509Certificate> certificates, Optional<X509CRL> crl, Options options)
-            throws InvalidKeyException {
+    public SignerConfig createSignerConfigs(List<X509Certificate> certificates,
+                                            Optional<X509CRL> crl, Options options) {
         SignerConfig signerConfig = new SignerConfig();
         signerConfig.setParameters(this.signParams);
         signerConfig.setCertificates(certificates);
@@ -256,7 +255,7 @@ public abstract class SignProvider {
 
             // Create signer configs, which contains public cert and crl info.
             signerConfig = createSignerConfigs(publicCert, crl, options);
-        } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
+        } catch (InvalidParamsException | ProfileException e) {
             LOGGER.error("create signer configs failed.", e);
             printErrorLogWithoutStack(e);
             return false;
@@ -288,7 +287,7 @@ public abstract class SignProvider {
 
             // Create signer configs, which contains public cert and crl info.
             signerConfig = createSignerConfigs(publicCert, crl, options);
-        } catch (InvalidKeyException | InvalidParamsException | MissingParamsException | ProfileException e) {
+        } catch (InvalidParamsException | ProfileException e) {
             LOGGER.error("create signer configs failed.", e);
             printErrorLogWithoutStack(e);
             return false;
@@ -361,10 +360,11 @@ public abstract class SignProvider {
                 outputSignedFile(outputHap, centralDirectoryOffset, signingBlock, centralDirectory, eocdBuffer);
                 isRet = true;
             }
-        } catch (FsVerityDigestException | InvalidKeyException | HapFormatException | MissingParamsException
-                | InvalidParamsException | ProfileException | NumberFormatException | CustomException | IOException
-                | CodeSignException | ElfFormatException e) {
+        } catch (FsVerityDigestException | HapFormatException | InvalidParamsException | ProfileException
+                 | CustomException | CodeSignException | ElfFormatException e) {
             printErrorLogWithoutStack(e);
+        } catch (IOException e) {
+            LOGGER.error(SignToolErrMsg.FILE_IO_FAILED.toString(e.getMessage()));
         } catch (SignatureException e) {
             printErrorLog(e);
         }
@@ -420,7 +420,8 @@ public abstract class SignProvider {
     private String getFileSuffix(File output) throws HapFormatException {
         String[] fileNameArray = output.getName().split("\\.");
         if (fileNameArray.length < ParamConstants.FILE_NAME_MIN_LENGTH) {
-            throw new HapFormatException("hap format error :" + output);
+            throw new HapFormatException(SignToolErrMsg.ZIP_FORMAT_FAILED
+                    .toString("suffix format error" + output));
         }
         return fileNameArray[fileNameArray.length - 1];
     }
@@ -434,8 +435,7 @@ public abstract class SignProvider {
      * @throws InvalidParamsException Exception occurs when the required parameters are invalid.
      * @throws ProfileException Exception occurs when profile is invalid.
      */
-    private List<X509Certificate> getX509Certificates(Options options) throws MissingParamsException,
-            InvalidParamsException, ProfileException {
+    private List<X509Certificate> getX509Certificates(Options options) throws InvalidParamsException, ProfileException {
         List<X509Certificate> publicCerts;
         // 1. check the parameters
         checkParams(options);
@@ -535,7 +535,8 @@ public abstract class SignProvider {
             }
         }
         LOGGER.error("Unsupported signature algorithm :" + signAlg);
-        throw new InvalidParamsException("Invalid parameter: Sign Alg");
+        throw new InvalidParamsException(SignToolErrMsg.PARAM_CHECK_FAILED
+                .toString(ParamConstants.PARAM_BASIC_SIGANTURE_ALG, "Invalid parameter: Sign Alg"));
     }
 
     /**
@@ -611,11 +612,12 @@ public abstract class SignProvider {
                 CMSSignedData cmsSignedData = new CMSSignedData(profile);
                 boolean isVerify = VerifyUtils.verifyCmsSignedData(cmsSignedData);
                 if (!isVerify) {
-                    throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid.");
+                    throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_INVALID.toString());
                 }
                 Object contentObj = cmsSignedData.getSignedContent().getContent();
                 if (!(contentObj instanceof byte[])) {
-                    throw new ProfileException("Check profile failed, signed profile content is not byte array!");
+                    throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_FAILED
+                            .toString("Check profile failed, signed profile content is not byte array!"));
                 }
                 profileContent = new String((byte[]) contentObj, StandardCharsets.UTF_8);
             } else {
@@ -625,9 +627,10 @@ public abstract class SignProvider {
             JsonObject profileJson = parser.getAsJsonObject();
             checkProfileInfo(profileJson, inputCerts);
         } catch (CMSException e) {
-            throw new ProfileException("Verify profile pkcs7 failed! Profile is invalid.", e);
+            throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_INVALID.toString());
         } catch (JsonParseException e) {
-            throw new ProfileException("Invalid parameter: profile content is not a JSON.", e);
+            throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_FAILED
+                    .toString("Invalid parameter: profile content is not a JSON.", e));
         }
     }
 
@@ -635,7 +638,7 @@ public abstract class SignProvider {
         String profileTypeKey = "type";
         String profileType = profileJson.get(profileTypeKey).getAsString();
         if (profileType == null || profileType.length() == 0) {
-            throw new ProfileException("Get profile type error!");
+            throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_FAILED.toString("Get profile type error!"));
         }
         String buildInfoMember = "bundle-info";
         JsonObject buildInfoObject = profileJson.getAsJsonObject(buildInfoMember);
@@ -645,15 +648,16 @@ public abstract class SignProvider {
         } else if (profileType.equalsIgnoreCase("debug")) {
             certInProfile = getDevelopmentCertificate(buildInfoObject);
         } else {
-            throw new ProfileException("Unsupported profile type!");
+            throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_FAILED.toString("Unsupported profile type!"));
         }
         if (!inputCerts.isEmpty() && !checkInputCertMatchWithProfile(inputCerts.get(0), certInProfile)) {
-            throw new ProfileException("input certificates do not match with profile!");
+            throw new ProfileException(SignToolErrMsg.PROFILE_CERT_MATCH_FAILED.toString());
         }
         String cn = getCertificateCN(certInProfile);
         LOGGER.info("certificate in profile: {}", cn);
         if (cn.isEmpty()) {
-            throw new ProfileException("Common name of certificate is empty!");
+            throw new ProfileException(SignToolErrMsg.VERIFY_PROFILE_FAILED
+                    .toString("Common name of certificate is empty!"));
         }
     }
 
@@ -672,10 +676,9 @@ public abstract class SignProvider {
      * Check input parameters is valid. And put valid parameters into signParams.
      *
      * @param options parameters inputted by user.
-     * @throws MissingParamsException Exception occurs when the required parameters are not entered.
      * @throws InvalidParamsException Exception occurs when the required parameters are invalid.
      */
-    public void checkParams(Options options) throws MissingParamsException, InvalidParamsException {
+    public void checkParams(Options options) throws InvalidParamsException {
         String[] paramFileds = {
                 ParamConstants.PARAM_BASIC_ALIGNMENT,
                 ParamConstants.PARAM_BASIC_SIGANTURE_ALG,
@@ -724,7 +727,8 @@ public abstract class SignProvider {
         String codeSign = signParams.get(ParamConstants.PARAM_SIGN_CODE);
         if (!codeSign.equals(ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag())
                 && !codeSign.equals(ParamConstants.SignCodeFlag.DISABLE_SIGN_CODE.getSignCodeFlag())) {
-            throw new InvalidParamsException("Invalid parameter: " + ParamConstants.PARAM_SIGN_CODE);
+            throw new InvalidParamsException(SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString(ParamConstants.PARAM_SIGN_CODE, "Invalid parameter"));
         }
     }
 
@@ -732,9 +736,8 @@ public abstract class SignProvider {
      * Check compatible version, if param do not have compatible version default 9.
      *
      * @throws InvalidParamsException invalid param
-     * @throws MissingParamsException missing param
      */
-    protected void checkCompatibleVersion() throws InvalidParamsException, MissingParamsException {
+    protected void checkCompatibleVersion() throws InvalidParamsException {
         if (!signParams.containsKey(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION)) {
             signParams.put(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION, "9");
             return;
@@ -743,7 +746,8 @@ public abstract class SignProvider {
         try {
             int compatibleApiVersion = Integer.parseInt(compatibleApiVersionVal);
         } catch (NumberFormatException e) {
-            throw new InvalidParamsException("Invalid parameter: " + ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION);
+            throw new InvalidParamsException(SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString(ParamConstants.PARAM_BASIC_COMPATIBLE_VERSION, "Invalid parameter"));
         }
     }
 

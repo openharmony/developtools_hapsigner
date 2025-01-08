@@ -28,7 +28,7 @@ import java.security.cert.X509Certificate;
  */
 public class RemoteSignProvider extends SignProvider {
     @Override
-    public void checkParams(Options options) throws MissingParamsException, InvalidParamsException {
+    public void checkParams(Options options) throws InvalidParamsException {
         super.checkParams(options);
         // add remote params check here
     }
