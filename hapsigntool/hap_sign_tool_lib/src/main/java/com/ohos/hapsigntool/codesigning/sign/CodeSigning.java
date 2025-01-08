@@ -312,7 +312,7 @@ public class CodeSigning {
                 return null;
             }).collect(Collectors.toList());
             if (nativeLibInfoList.contains(null)) {
-                throw new CodeSignException("Sign hnp lib error");
+                throw new CodeSignException(CodeSignErrMsg.SIGN_HNP_ERROR.toString());
             }
             return nativeLibInfoList;
         } catch (IOException e) {
@@ -423,7 +423,7 @@ public class CodeSigning {
             return null;
         }).collect(Collectors.toList());
         if (nativeLibInfoList.contains(null)) {
-            throw new CodeSignException("Sign lib error");
+            throw new CodeSignException(CodeSignErrMsg.SIGN_LIBS_ERROR.toString());
         }
         return nativeLibInfoList;
     }

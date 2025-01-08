@@ -77,7 +77,7 @@ public class FsVerityGenerator {
         try (MerkleTreeBuilder builder = new MerkleTreeBuilder()) {
             merkleTree = builder.generateMerkleTree(inputStream, size, fsVerityHashAlgorithm);
         } catch (IOException e) {
-            throw new FsVerityDigestException("IOException: " + e.getMessage());
+            throw new FsVerityDigestException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
             String msg = CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(fsVerityHashAlgorithm.getHashAlgorithm());
             throw new FsVerityDigestException(msg, e);
