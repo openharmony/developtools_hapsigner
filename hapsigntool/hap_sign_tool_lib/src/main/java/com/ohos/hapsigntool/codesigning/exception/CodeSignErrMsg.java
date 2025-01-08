@@ -200,7 +200,7 @@ public class CodeSignErrMsg {
         .addTypeCode("15")
         .addErrCode("001")
         .addDescription("Code Sign Error")
-        .addCause("The file size in bundle is 0")
+        .addCause("Input file size to hash is 0")
         .build();
 
     /**
@@ -210,7 +210,7 @@ public class CodeSignErrMsg {
         .addTypeCode("15")
         .addErrCode("002")
         .addDescription("Code Sign Error")
-        .addCause("The file size in bundle is over limit")
+        .addCause("Input file size to hash is over limit")
         .build();
 
     /**
