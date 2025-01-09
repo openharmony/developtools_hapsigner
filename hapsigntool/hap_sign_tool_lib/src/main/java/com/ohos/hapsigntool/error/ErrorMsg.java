@@ -97,7 +97,7 @@ public class ErrorMsg {
         }
 
         if (solutions != null && !solutions.isEmpty()) {
-            sb.append("* Try the following: ").append(System.lineSeparator());
+            sb.append(System.lineSeparator()).append("* Try the following: ").append(System.lineSeparator());
             for (String s : solutions) {
                 sb.append(" > ").append(s).append(System.lineSeparator());
             }
