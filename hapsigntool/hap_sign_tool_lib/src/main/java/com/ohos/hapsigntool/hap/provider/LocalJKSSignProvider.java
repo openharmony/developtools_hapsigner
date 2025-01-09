@@ -17,7 +17,6 @@ package com.ohos.hapsigntool.hap.provider;
 
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.InvalidParamsException;
-import com.ohos.hapsigntool.error.MissingParamsException;
 import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;

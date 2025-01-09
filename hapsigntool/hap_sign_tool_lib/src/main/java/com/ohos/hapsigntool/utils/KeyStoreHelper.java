@@ -126,7 +126,7 @@ public class KeyStoreHelper {
         } catch (IOException | NoSuchAlgorithmException | CertificateException exception) {
             LOGGER.debug(exception.getMessage(), exception);
              CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.INIT_KEYSTORE_FAILED
-                     .toString(exception.getMessage()));
+                    .toString(exception.getMessage()));
         } finally {
             FileUtils.close(fis);
         }
@@ -209,7 +209,8 @@ public class KeyStoreHelper {
                     .toString(exception.getMessage()));
         } catch (UnrecoverableKeyException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.KEY_PASSWORD_ERROR.toString(alias, exception));
+            CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.KEY_PASSWORD_ERROR
+                    .toString(alias, exception));
         }
         return null;
     }
