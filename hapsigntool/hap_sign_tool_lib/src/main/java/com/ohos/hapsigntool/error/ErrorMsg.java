@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingFormatArgumentException;
 
 /**
  * ErrorMsg
@@ -110,10 +111,16 @@ public class ErrorMsg {
         return sb.toString();
     }
 
+    /**
+     * to String
+     *
+     * @param args args
+     * @return String
+     */
     public String toString(Object... args) {
         try {
             return String.format(Locale.ROOT, this.toString(), args);
-        } catch (RuntimeException e) {
+        } catch (MissingFormatArgumentException e) {
             log.error("args format failed: " + args);
             return this.toString();
         }
@@ -125,6 +132,11 @@ public class ErrorMsg {
         private String en;
     }
 
+    /**
+     * Builder
+     *
+     * @since 2025/01/06
+     */
     public static class Builder {
         private String sysCode;
 
