@@ -32,7 +32,6 @@ import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.error.HapFormatException;
 import com.ohos.hapsigntool.error.InvalidParamsException;
-import com.ohos.hapsigntool.error.MissingParamsException;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.error.SignatureException;
 import com.ohos.hapsigntool.error.VerifyCertificateChainException;
@@ -430,7 +429,6 @@ public abstract class SignProvider {
      *
      * @param options parameters used to sign hap file
      * @return list of type x509certificate
-     * @throws MissingParamsException Exception occurs when the required parameters are not entered.
      * @throws InvalidParamsException Exception occurs when the required parameters are invalid.
      * @throws ProfileException Exception occurs when profile is invalid.
      */
