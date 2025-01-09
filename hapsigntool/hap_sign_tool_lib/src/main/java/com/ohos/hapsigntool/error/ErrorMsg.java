@@ -32,9 +32,9 @@ import java.util.MissingFormatArgumentException;
 public class ErrorMsg {
     private static final Logger log = LogManager.getLogger(ErrorMsg.class);
 
-    private static final String CODE_SIGN_ERR_CODE = "111";
+    private static final String CODE_SIGN_SUB_SYSTEM_CODE = "111";
 
-    private static final String SIGN_TOOL_ERR_CODE = "110";
+    private static final String SIGN_TOOL_SUB_SYSTEM_CODE = "110";
 
     private final String code;
 
@@ -73,7 +73,7 @@ public class ErrorMsg {
      * @return Builder
      */
     public static Builder getCodeSignErrBuilder() {
-        return new Builder(CODE_SIGN_ERR_CODE);
+        return new Builder(CODE_SIGN_SUB_SYSTEM_CODE);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ErrorMsg {
      * @return Builder
      */
     public static Builder getSignToolErrBuilder() {
-        return new Builder(SIGN_TOOL_ERR_CODE);
+        return new Builder(SIGN_TOOL_SUB_SYSTEM_CODE);
     }
 
     @Override
