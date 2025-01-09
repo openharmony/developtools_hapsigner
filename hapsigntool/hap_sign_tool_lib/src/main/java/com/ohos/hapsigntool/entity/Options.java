@@ -248,7 +248,7 @@ public class Options extends HashMap<String, Object> {
     /**
      * Logger.
      */
-    private static final LogUtils logger = new LogUtils(Options.class);
+    private static final LogUtils LOGGER = new LogUtils(Options.class);
 
 
     /**
@@ -357,7 +357,7 @@ public class Options extends HashMap<String, Object> {
             try {
                 return Integer.parseInt((String) value);
             } catch (NumberFormatException exception) {
-                logger.debug(exception.getMessage(), exception);
+                LOGGER.debug(exception.getMessage(), exception);
             }
         }
         return defValue;
