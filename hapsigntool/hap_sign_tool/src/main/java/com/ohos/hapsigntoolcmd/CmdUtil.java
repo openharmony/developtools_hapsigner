@@ -67,7 +67,8 @@ public final class CmdUtil {
         for (int i = 1; i < args.length; i++) {
             String value = args[i];
             if (StringUtils.isEmpty(value)) {
-                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_VALUE_EMPTY.toString(value));
+                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_VALUE_EMPTY
+                        .toString("first param"));
             }
             if (readKey) {
                 // prepare key
@@ -75,12 +76,12 @@ public final class CmdUtil {
                     value = value.equals("-signcode") ? "-signCode" : value;
                     boolean isTrust = trustList.contains(value);
                     ValidateUtils.throwIfNotMatches(isTrust,
-                            ERROR.COMMAND_PARAM_ERROR, SignToolErrMsg.PARAM_NOT_TRUSTED.toString(value));
+                            ERROR.COMMAND_PARAM_ERROR, SignToolErrMsg.PARAM_NOT_TRUSTED.toString());
                     keyStandBy = value.substring(1);
                     readKey = false;
                 } else {
                     CustomException.throwException(ERROR.COMMAND_PARAM_ERROR, SignToolErrMsg
-                            .PARAM_NOT_IN_PAIRS.toString(value));
+                            .PARAM_NOT_IN_PAIRS.toString());
                 }
             } else {
                 // prepare value
@@ -123,7 +124,7 @@ public final class CmdUtil {
     public static void judgeAlgType(String alg) {
         if (!"RSA".equalsIgnoreCase(alg) && !"ECC".equalsIgnoreCase(alg)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                            .toString("keyAlg", "key algorithms include  ECC/RSA"));
+                            .toString("keyAlg", "Key algorithm only allowed to be ECC or RSA."));
         }
     }
 
@@ -138,18 +139,18 @@ public final class CmdUtil {
         List<String> arrayList = Arrays.asList(array);
         if (!arrayList.contains(size)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                    .toString("KeySize", "Key size include " + arrayList));
+                    .toString("KeySize", "Key size include in set of " + arrayList));
         }
 
         if ("RSA".equalsIgnoreCase(alg)) {
             if (!"2048".equals(size) && !"3072".equals(size) && !"4096".equals(size)) {
                 CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                        .toString("KeySize", "Key size include " + arrayList));
+                        .toString("KeySize", "Key size of RSA include in set of {2048, 3072, 4096}"));
             }
         } else {
             if (!"NIST-P-256".equalsIgnoreCase(size) && !"NIST-P-384".equalsIgnoreCase(size)) {
                 CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                        .toString("KeySize", "Key size include " + arrayList));
+                        .toString("KeySize", "Key size include in set of " + arrayList));
             }
         }
     }
