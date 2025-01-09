@@ -82,7 +82,9 @@ public class ErrorMsg {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(code)
+        sb.append(System.lineSeparator())
+            .append("ERROR: ")
+            .append(code)
             .append(" ")
             .append(description)
             .append(System.lineSeparator())
