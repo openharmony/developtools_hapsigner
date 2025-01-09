@@ -30,6 +30,11 @@ import java.util.Locale;
  */
 public class ErrorMsg {
     private static final Logger log = LogManager.getLogger(ErrorMsg.class);
+
+    private static final String CODE_SIGN_ERR_CODE = "111";
+
+    private static final String SIGN_TOOL_ERR_CODE = "110";
+
     private final String code;
 
     private final String description;
@@ -67,7 +72,7 @@ public class ErrorMsg {
      * @return Builder
      */
     public static Builder getCodeSignErrBuilder() {
-        return new Builder("111");
+        return new Builder(CODE_SIGN_ERR_CODE);
     }
 
     /**
@@ -76,7 +81,7 @@ public class ErrorMsg {
      * @return Builder
      */
     public static Builder getSignToolErrBuilder() {
-        return new Builder("110");
+        return new Builder(SIGN_TOOL_ERR_CODE);
     }
 
     @Override

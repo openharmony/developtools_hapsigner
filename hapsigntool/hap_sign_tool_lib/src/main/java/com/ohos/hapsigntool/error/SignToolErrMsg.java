@@ -41,7 +41,7 @@ public class SignToolErrMsg {
             .addErrCode("001")
             .addDescription("Unsupported command method")
             .addCause("Can not find method {%s}")
-            .addSolution("Please check input the first param")
+            .addSolution("Please run java -jar hap-sign-tool.jar -h to see more help message.")
             .build();
 
     /**
@@ -61,7 +61,7 @@ public class SignToolErrMsg {
             .addTypeCode("11")
             .addErrCode("003")
             .addDescription("Check param num failed")
-            .addCause("Please input at least two params")
+            .addCause("Please run java -jar hap-sign-tool.jar -h to see more help message.")
             .build();
 
     /**
@@ -70,7 +70,7 @@ public class SignToolErrMsg {
     public static final ErrorMsg PARAM_VALUE_EMPTY = ErrorMsg.getSignToolErrBuilder()
             .addTypeCode("11")
             .addErrCode("004")
-            .addDescription("Check param num failed")
+            .addDescription("Check param failed")
             .addCause("Param {%s} value could not be empty")
             .build();
 
@@ -81,7 +81,7 @@ public class SignToolErrMsg {
             .addTypeCode("11")
             .addErrCode("005")
             .addDescription("Param is not trusted")
-            .addCause("Param {%s} value is not trusted")
+            .addCause("Please run java -jar hap-sign-tool.jar -h to see more help message.")
             .build();
 
     /**
@@ -91,7 +91,7 @@ public class SignToolErrMsg {
             .addTypeCode("11")
             .addErrCode("006")
             .addDescription("Param {-key value} must in pairs")
-            .addCause("Check param {%s} failed")
+            .addCause("Please run java -jar hap-sign-tool.jar -h to see more help message.")
             .build();
 
     /**
@@ -206,7 +206,7 @@ public class SignToolErrMsg {
             .addErrCode("002")
             .addDescription("Certificate format is in correct, please check your appCertFile parameter.")
             .addCause("%s")
-            .addSolution("{-appCertFile} should input a file ending in .cer")
+            .addSolution("{-appCertFile} should input a cert chain file，This file is usually suffixed with .cer.")
             .build();
 
     /**

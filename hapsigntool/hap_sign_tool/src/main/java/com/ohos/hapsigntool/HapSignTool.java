@@ -286,7 +286,7 @@ public final class HapSignTool {
                 && !REMOTE_SIGN.equalsIgnoreCase(mode)
                 && !"remoteResign".equalsIgnoreCase(mode)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                    .toString(Options.MODE, "value must is localSign/remoteSign/remoteResign"));
+                    .toString(Options.MODE, "value must be localSign/remoteSign/remoteResign"));
         }
 
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
@@ -297,7 +297,7 @@ public final class HapSignTool {
         String inForm = params.getString(Options.IN_FORM, "zip");
         if (!StringUtils.isEmpty(inForm) && !containsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                    .toString(Options.IN_FORM, "value must is " + informList));
+                    .toString(Options.IN_FORM, "value must be " + informList));
         }
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeEndSignAlgType(signAlg);
@@ -315,7 +315,7 @@ public final class HapSignTool {
         }
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                    .toString(Options.PROFILE_SIGNED, "value must is 1/0"));
+                    .toString(Options.PROFILE_SIGNED, "value must be 1/0"));
         }
         if (SIGNED.equals(profileSigned)) {
             FileUtils.validFileType(profileFile, "p7b");
@@ -329,7 +329,7 @@ public final class HapSignTool {
         String mode = params.getString(Options.MODE);
         if (!LOCAL_SIGN.equalsIgnoreCase(mode) && !REMOTE_SIGN.equalsIgnoreCase(mode)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                    .toString(Options.MODE, "value must is localSign/remoteSign/remoteResign"));
+                    .toString(Options.MODE, "value must be localSign/remoteSign/remoteResign"));
         }
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.PROFILE_CERT_FILE);
@@ -350,7 +350,7 @@ public final class HapSignTool {
         String inForm = params.getString(Options.IN_FORM, "zip");
         if (!containsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
-                    .toString(Options.IN_FORM, "value must is " + informList));
+                    .toString(Options.IN_FORM, "value must be " + informList));
         }
         FileUtils.validFileType(params.getString(Options.OUT_CERT_CHAIN), "cer");
         FileUtils.validFileType(params.getString(Options.OUT_PROFILE), "p7b");
