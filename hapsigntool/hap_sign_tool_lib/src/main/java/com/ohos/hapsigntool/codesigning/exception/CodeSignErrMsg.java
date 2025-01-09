@@ -322,7 +322,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg VERIFY_BC_SIGNATURE_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("15")
-        .addErrCode("012")
+        .addErrCode("013")
         .addDescription("Code Sign Error")
         .addCause("Verify BC signatures failed: %s")
         .build();
@@ -332,7 +332,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg VERIFY_SIGNATURE_DATA_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("15")
-        .addErrCode("013")
+        .addErrCode("014")
         .addDescription("Code Sign Error")
         .addCause("Failed to verify signed data and unsigned data digest")
         .build();
@@ -342,7 +342,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg VERIFY_PKCS_DATA_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("15")
-        .addErrCode("014")
+        .addErrCode("015")
         .addDescription("Code Sign Error")
         .addCause("PKCS cms data did not verify")
         .build();
