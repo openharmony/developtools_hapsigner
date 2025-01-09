@@ -74,7 +74,6 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.security.InvalidKeyException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
@@ -361,7 +360,7 @@ public abstract class SignProvider {
                 isRet = true;
             }
         } catch (FsVerityDigestException | HapFormatException | InvalidParamsException | ProfileException
-                 | CustomException | CodeSignException | ElfFormatException e) {
+            | CustomException | CodeSignException | ElfFormatException e) {
             printErrorLogWithoutStack(e);
         } catch (IOException e) {
             LOGGER.error(SignToolErrMsg.FILE_IO_FAILED.toString(e.getMessage()));
