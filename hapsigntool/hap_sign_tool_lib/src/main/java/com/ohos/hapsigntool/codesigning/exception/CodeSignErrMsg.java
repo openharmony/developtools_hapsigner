@@ -52,7 +52,7 @@ public class CodeSignErrMsg {
         .addErrCode("003")
         .addDescription("File Read Error")
         .addCause("Hnp {%s} is not described in module.json")
-        .addSolution("Hnp should be described in module.json")
+        .addSolution("Hnp file should be described in module.json")
         .build();
 
     /**
@@ -117,7 +117,7 @@ public class CodeSignErrMsg {
         .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Unsupported profile type")
-        .addSolution("Profile type should be debug or release")
+        .addSolution("Value of 'type' in profile should be debug or release")
         .build();
 
     /**
@@ -128,6 +128,7 @@ public class CodeSignErrMsg {
         .addErrCode("002")
         .addDescription("Profile Content Error")
         .addCause("Key named 'type' does not exist in profile")
+        .addSolution("Add 'type' to the profile")
         .build();
 
     /**
@@ -138,6 +139,7 @@ public class CodeSignErrMsg {
         .addErrCode("003")
         .addDescription("Profile Content Error")
         .addCause("Key named 'bundle-info' does not exist in profile")
+        .addSolution("Add 'bundle-info' to the profile")
         .build();
 
     /**
@@ -159,6 +161,7 @@ public class CodeSignErrMsg {
         .addErrCode("005")
         .addDescription("Profile Content Error")
         .addCause("Value length of app-identifier is invalid")
+        .addSolution("Modify to a valid app-identifier")
         .build();
 
     /**
@@ -308,9 +311,10 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg SIGNATURE_VERIFY_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("15")
-        .addErrCode("011")
+        .addErrCode("012")
         .addDescription("Code Sign Error")
         .addCause("Signature verify failed")
+        .addSolution("Please check whether the keyAlias is correct")
         .build();
 
     /**

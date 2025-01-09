@@ -191,7 +191,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void debug(String log, Object arg1, Object arg2) {
-        logger.warning(" WARN - " + replaceArgs(log, arg1, arg2));
+        logger.config(" DEBUG - " + replaceArgs(log, arg1, arg2));
         OUT_HANDLER.flush();
     }
 
