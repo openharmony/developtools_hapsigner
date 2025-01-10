@@ -204,6 +204,7 @@ public class CodeSignErrMsg {
         .addErrCode("001")
         .addDescription("Code Sign Error")
         .addCause("Input file size to hash is 0")
+        .addSolution("File size should be greater than 0")
         .build();
 
     /**
@@ -214,12 +215,13 @@ public class CodeSignErrMsg {
         .addErrCode("002")
         .addDescription("Code Sign Error")
         .addCause("Input file size to hash is over limit")
+        .addSolution("File size should be less than 4GB")
         .build();
 
     /**
-     * SALT_SIZE_LENGTH_ERROR
+     * SALT_LENGTH_ERROR
      */
-    public static final ErrorMsg SALT_SIZE_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
+    public static final ErrorMsg SALT_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("15")
         .addErrCode("003")
         .addDescription("Code Sign Error")
@@ -234,6 +236,7 @@ public class CodeSignErrMsg {
         .addErrCode("004")
         .addDescription("Code Sign Error")
         .addCause("Sign libs error")
+        .addSolution("Please check the lib file")
         .build();
 
     /**
@@ -244,6 +247,7 @@ public class CodeSignErrMsg {
         .addErrCode("005")
         .addDescription("Code Sign Error")
         .addCause("Sign hnp error")
+        .addSolution("Please check the hnp file")
         .build();
 
     /**
@@ -428,7 +432,7 @@ public class CodeSignErrMsg {
         .addTypeCode("17")
         .addErrCode("004")
         .addDescription("Page Info Error")
-        .addCause("Page info offset/size is negative number")
+        .addCause("Page info offset or size is negative number")
         .build();
 
     /**
