@@ -196,7 +196,8 @@ public class MerkleTreeBuilder implements AutoCloseable {
                 try {
                     hashes[index++] = DigestUtils.computeDigest(tempByte, this.mAlgorithm);
                 } catch (NoSuchAlgorithmException e) {
-                    throw new IllegalStateException(CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(this.mAlgorithm), e);
+                    throw new IllegalStateException(
+                        CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(this.mAlgorithm), e);
                 }
                 offset += CHUNK_SIZE;
             }

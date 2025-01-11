@@ -146,7 +146,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         try {
             digest = DigestUtils.computeDigest(unsignedDataDigest, algorithm);
         } catch (NoSuchAlgorithmException e) {
-            throw new CodeSignException(CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(algorithm), e);
+            throw new CodeSignException(CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(algorithm), e);
         }
         return digest;
     }

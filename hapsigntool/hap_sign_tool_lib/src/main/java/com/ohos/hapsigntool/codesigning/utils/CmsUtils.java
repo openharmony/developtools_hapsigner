@@ -51,10 +51,10 @@ public class CmsUtils {
         throws OperatorCreationException {
         if (collection == null) {
             throw new OperatorCreationException(
-                CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No matched cert"));
+                CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("No matched cert"));
         }
         if (collection.size() != 1) {
-            throw new OperatorCreationException(CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString(
+            throw new OperatorCreationException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString(
                 "More than one matched certs, matched certs size: " + collection.size()));
         }
     }
