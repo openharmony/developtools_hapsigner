@@ -132,7 +132,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         X509Certificate cert = signConfig.getCertificates().get(0);
         if (!verifySignFromServer(cert.getPublicKey(), signBytes, signPair, codeAuthed)) {
             throw new CodeSignException(
-                CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Verify signature from server failed"));
+                CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Verify signature failed"));
         }
         JcaX509CertificateHolder certificateHolder = getJcaX509CertificateHolder(cert);
         return new SignerInfo(new ASN1Integer(1),
