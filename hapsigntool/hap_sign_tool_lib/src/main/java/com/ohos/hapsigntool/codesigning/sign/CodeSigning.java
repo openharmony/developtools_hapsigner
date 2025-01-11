@@ -482,7 +482,7 @@ public class CodeSigning {
         if ((copiedConfig.getSigner() instanceof LocalSigner)) {
             if (copiedConfig.getCertificates().isEmpty()) {
                 throw new CodeSignException(
-                    CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No certificates configured for sign"));
+                    CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No certificate is configured for sign"));
             }
             BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
             bcSignedDataGenerator.setOwnerID(ownerID);
