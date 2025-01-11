@@ -35,24 +35,24 @@ public class CodeSignErrMsg {
         .build();
 
     /**
-     * FILE_4K_ALIGNMENT_ERROR
-     */
-    public static final ErrorMsg FILE_4K_ALIGNMENT_ERROR = ErrorMsg.getCodeSignErrBuilder()
-        .addTypeCode("10")
-        .addErrCode("002")
-        .addDescription("File Alignment Error")
-        .addCause("Invalid data size {%d}, not a multiple of 4096")
-        .build();
-
-    /**
      * EXTRACT_HNP_FILE_ERROR
      */
     public static final ErrorMsg EXTRACT_HNP_FILE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("10")
-        .addErrCode("003")
-        .addDescription("Extract File Error")
+        .addErrCode("002")
+        .addDescription("File Format Error")
         .addCause("Extract hnp file {%s} error")
         .addSolution("Check whether the hnp file is packaged correctly")
+        .build();
+
+    /**
+     * FILE_4K_ALIGNMENT_ERROR
+     */
+    public static final ErrorMsg FILE_4K_ALIGNMENT_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("10")
+        .addErrCode("003")
+        .addDescription("File Alignment Error")
+        .addCause("Invalid data size {%d}, not a multiple of 4096")
         .build();
 
     /**
@@ -92,7 +92,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg PROFILE_TYPE_NOT_EXISTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
-        .addErrCode("002")
+        .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Key named 'type' does not exist in profile")
         .addSolution("Add 'type' to the profile")
@@ -103,7 +103,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg PROFILE_BUNDLE_INFO_NOT_EXISTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
-        .addErrCode("003")
+        .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Key named 'bundle-info' does not exist in profile")
         .addSolution("Add 'bundle-info' to the profile")
@@ -114,7 +114,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg PROFILE_APPID_VALUE_TYPE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
-        .addErrCode("004")
+        .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Value type of app-identifier is not string")
         .addSolution("Value type of app-identifier should be string")
@@ -125,7 +125,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg PROFILE_APPID_VALUE_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
-        .addErrCode("005")
+        .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Value length of app-identifier is invalid")
         .addSolution("Modify to a valid app-identifier")
@@ -136,7 +136,7 @@ public class CodeSignErrMsg {
      */
     public static final ErrorMsg PROFILE_JSON_PARSE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
-        .addErrCode("006")
+        .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Profile json content is invalid")
         .addSolution("Please check whether the profile json is correct")
