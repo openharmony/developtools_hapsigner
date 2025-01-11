@@ -139,7 +139,7 @@ public class ElfHeader {
         } else if (eiClass == ElfDefine.ELF_64_CLASS) {
             len = ElfDefine.ELF_HEADER_64_LEN - ElfDefine.EI_NIDENT_LEN;
         } else {
-            throw new ElfFormatException(CodeSignErrMsg.ELF_EI_CLASS_ERROR.toString());
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("ei_class"));
         }
         ByteOrder bo;
         if (eiData == ElfDefine.ELF_DATA_2_LSB) {
@@ -147,12 +147,12 @@ public class ElfHeader {
         } else if (eiData == ElfDefine.ELF_DATA_2_MSB) {
             bo = ByteOrder.BIG_ENDIAN;
         } else {
-            throw new ElfFormatException(CodeSignErrMsg.ELF_EI_DATA_ERROR.toString());
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("ei_data"));
         }
         byte[] bytes = new byte[len];
         read = is.read(bytes);
         if (read != len) {
-            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString());
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("header"));
         }
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         byteBuffer.order(bo);

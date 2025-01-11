@@ -307,12 +307,13 @@ public class CodeSigning {
                         false, 0, ownerID);
                     return (Pair.create(hnpElfPath, pairSignInfoAndMerkleTreeBytes.getFirst()));
                 } catch (IOException | FsVerityDigestException | CodeSignException e) {
-                    LOGGER.error("Sign hnp lib error, entry name = {}, msg : {}", hnpElfPath, e.getMessage());
+                    LOGGER.error("Sign hnp lib error msg : {} AT entry : {}" + System.lineSeparator(), e.getMessage(),
+                        hnpElfPath);
                 }
                 return null;
             }).collect(Collectors.toList());
             if (nativeLibInfoList.contains(null)) {
-                throw new CodeSignException(CodeSignErrMsg.SIGN_HNP_ERROR.toString());
+                throw new CodeSignException("Sign hnp error");
             }
             return nativeLibInfoList;
         } catch (IOException e) {
@@ -418,12 +419,12 @@ public class CodeSigning {
                     ownerID);
                 return Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst());
             } catch (FsVerityDigestException | CodeSignException | IOException e) {
-                LOGGER.error("Sign lib error, entry name = {}, msg : {}", name, e.getMessage());
+                LOGGER.error("Sign lib error msg : {} AT entry : {}" + System.lineSeparator(), e.getMessage(), name);
             }
             return null;
         }).collect(Collectors.toList());
         if (nativeLibInfoList.contains(null)) {
-            throw new CodeSignException(CodeSignErrMsg.SIGN_LIBS_ERROR.toString());
+            throw new CodeSignException("Sign libs error");
         }
         return nativeLibInfoList;
     }
@@ -479,7 +480,8 @@ public class CodeSigning {
         // signConfig is created by SignerFactory
         if ((copiedConfig.getSigner() instanceof LocalSigner)) {
             if (copiedConfig.getCertificates().isEmpty()) {
-                throw new CodeSignException(CodeSignErrMsg.CERTIFICATES_CONFIGURE_EMPTY_ERROR.toString());
+                throw new CodeSignException(
+                    CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No certificates configured for sign"));
             }
             BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
             bcSignedDataGenerator.setOwnerID(ownerID);
