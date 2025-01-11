@@ -29,9 +29,9 @@ public class CodeSignErrMsg {
     public static final ErrorMsg FILE_FORMAT_UNSUPPORTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("06")
         .addErrCode("001")
-        .addDescription("File Format Error")
-        .addCause("Code sign does not support the file format")
-        .addSolution("Code sign supports {%s} format")
+        .addDescription("Invalid File Format")
+        .addCause("Unsupported file to sign")
+        .addSolution("Support file format: %s")
         .build();
 
     /**
@@ -62,7 +62,7 @@ public class CodeSignErrMsg {
         .addTypeCode("11")
         .addErrCode("002")
         .addDescription("Certificates Error")
-        .addCause("Signature failed")
+        .addCause("Signing failed")
         .addSolution("Please check whether the keyAlias is correct")
         .build();
 
@@ -74,7 +74,7 @@ public class CodeSignErrMsg {
         .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Unsupported profile type")
-        .addSolution("Value of 'type' in profile should be debug or release")
+        .addSolution("Value of 'type' in profile file should be debug or release")
         .build();
 
     /**
@@ -84,8 +84,8 @@ public class CodeSignErrMsg {
         .addTypeCode("12")
         .addErrCode("001")
         .addDescription("Profile Content Error")
-        .addCause("Key named 'type' does not exist in profile")
-        .addSolution("Add 'type' to the profile")
+        .addCause("'type' not found in profile file")
+        .addSolution("Add 'type' to the profile file")
         .build();
 
     /**
@@ -95,8 +95,8 @@ public class CodeSignErrMsg {
         .addTypeCode("12")
         .addErrCode("001")
         .addDescription("Profile Content Error")
-        .addCause("Key named 'bundle-info' does not exist in profile")
-        .addSolution("Add 'bundle-info' to the profile")
+        .addCause("'bundle-info' not found in profile file")
+        .addSolution("Add 'bundle-info' to the profile file")
         .build();
 
     /**
@@ -118,7 +118,7 @@ public class CodeSignErrMsg {
         .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Value length of app-identifier is invalid")
-        .addSolution("Modify to a valid app-identifier")
+        .addSolution("Modify to a valid app-identifier in profile file")
         .build();
 
     /**
@@ -129,7 +129,7 @@ public class CodeSignErrMsg {
         .addErrCode("001")
         .addDescription("Profile Content Error")
         .addCause("Profile json content is invalid")
-        .addSolution("Please check whether the profile json is correct")
+        .addSolution("Please check whether the profile file is correct")
         .build();
 
     /**
@@ -138,9 +138,9 @@ public class CodeSignErrMsg {
     public static final ErrorMsg MODULE_JSON_PARSE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("002")
-        .addDescription("Module Content Error")
-        .addCause("Module json content is invalid")
-        .addSolution("Please check whether the module json is correct")
+        .addDescription("module.json Content Error")
+        .addCause("module.json content is invalid")
+        .addSolution("Please check whether the module.json is correct")
         .build();
 
     /**
@@ -149,7 +149,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg HNP_FILE_DESCRIPTION_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("002")
-        .addDescription("Module Content Error")
+        .addDescription("module.json Content Error")
         .addCause("Hnp {%s} is not described in module.json")
         .addSolution("Hnp file should be described in module.json")
         .build();
@@ -184,7 +184,7 @@ public class CodeSignErrMsg {
         .addErrCode("001")
         .addDescription("Digest Algorithm Error")
         .addCause("Invalid algorithm {%s}")
-        .addSolution("Using SHA-256 algorithm, if an error occurs, please check the JDK version you are using")
+        .addSolution("Support SHA-256 and SHA-512, if an error occurs, please check the JDK version")
         .build();
 
     /**
