@@ -20,6 +20,7 @@ import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.error.VerifyException;
 import com.ohos.hapsigntool.hap.provider.LocalJKSSignProvider;
 import com.ohos.hapsigntool.hap.provider.RemoteSignProvider;
@@ -151,16 +152,15 @@ public class SignToolServiceImpl implements ServiceApi {
         String iksFile = options.getString(Options.ISSUER_KEY_STORE_FILE);
         if (isEmpty) {
             if (!StringUtils.isEmpty(iksFile) && !ksFile.equals(iksFile)) {
-                CustomException.throwException(ERROR.WRITE_FILE_ERROR,
-                        String.format("Parameter '%s' and parameter '%s' are inconsistent", ksFile, iksFile));
+                CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.GENERATE_CA_FAILED
+                        .toString(ksFile, iksFile));
             }
             if (options.containsKey(Options.ISSUER_KEY_STORE_RIGHTS)) {
                 boolean isEqual = Arrays.equals(options.getChars(Options.KEY_STORE_RIGHTS),
                         options.getChars(Options.ISSUER_KEY_STORE_RIGHTS));
                 if (!isEqual) {
-                    CustomException.throwException(ERROR.WRITE_FILE_ERROR,
-                            String.format("Parameter '%s' and parameter '%s' are inconsistent",
-                                    Options.KEY_STORE_RIGHTS, Options.ISSUER_KEY_STORE_RIGHTS));
+                    CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.GENERATE_CA_FAILED
+                            .toString(Options.KEY_STORE_RIGHTS, Options.ISSUER_KEY_STORE_RIGHTS));
                 }
             }
             rootKey = subKey;
@@ -287,7 +287,8 @@ public class SignToolServiceImpl implements ServiceApi {
             LOGGER.error(exception.getMessage());
             isSign = false;
         } catch (VerifyException e) {
-            CustomException.throwException(ERROR.VERIFY_ERROR, "Verify Profile Failed! " + e.getMessage());
+            CustomException.throwException(ERROR.VERIFY_ERROR, SignToolErrMsg.VERIFY_PROFILE_FAILED
+                    .toString(e.getMessage()));
             isSign = false;
         }
         return isSign;
@@ -349,7 +350,8 @@ public class SignToolServiceImpl implements ServiceApi {
                 FileUtils.write(content.getBytes(StandardCharsets.UTF_8), new File(file));
             } catch (IOException exception) {
                 LOGGER.debug(exception.getMessage(), exception);
-                CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+                CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.FILE_WRITE_FAILED
+                        .toString(exception.getMessage()));
             }
         }
     }
@@ -372,7 +374,8 @@ public class SignToolServiceImpl implements ServiceApi {
             return true;
         } catch (CertificateException | IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.FILE_WRITE_FAILED
+                    .toString(exception.getMessage()));
             return false;
         }
     }
@@ -398,7 +401,8 @@ public class SignToolServiceImpl implements ServiceApi {
             return true;
         } catch (CertificateException | IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.FILE_WRITE_FAILED
+                    .toString(exception.getMessage()));
             return false;
         }
     }

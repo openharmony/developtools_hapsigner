@@ -17,6 +17,7 @@ package com.ohos.hapsigntoolcmd;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.LogUtils;
 
@@ -55,7 +56,7 @@ public final class HelpDocument {
             logger.info(helpStr);
         } catch (IOException ioe) {
             logger.debug(ioe.getMessage(), ioe);
-            CustomException.throwException(ERROR.READ_FILE_ERROR, "Failed to read " + page + " resource");
+            CustomException.throwException(ERROR.READ_FILE_ERROR, SignToolErrMsg.FILE_READ_FAILED.toString(page));
         }
     }
 }

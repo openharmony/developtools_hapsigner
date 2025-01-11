@@ -17,7 +17,6 @@ package com.ohos.hapsigntool.hap.provider;
 
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.InvalidParamsException;
-import com.ohos.hapsigntool.error.MissingParamsException;
 
 import java.security.cert.X509Certificate;
 
@@ -28,7 +27,7 @@ import java.security.cert.X509Certificate;
  */
 public class RemoteSignProvider extends SignProvider {
     @Override
-    public void checkParams(Options options) throws MissingParamsException, InvalidParamsException {
+    public void checkParams(Options options) throws InvalidParamsException {
         super.checkParams(options);
         // add remote params check here
     }

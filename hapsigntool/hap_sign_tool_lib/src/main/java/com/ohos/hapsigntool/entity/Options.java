@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.entity;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.util.HashMap;
@@ -247,7 +248,7 @@ public class Options extends HashMap<String, Object> {
     /**
      * Logger.
      */
-    private static final LogUtils logger = new LogUtils(Options.class);
+    private static final LogUtils LOGGER = new LogUtils(Options.class);
 
 
     /**
@@ -258,7 +259,7 @@ public class Options extends HashMap<String, Object> {
     public void required(String... keys) {
         for (String key : keys) {
             if (!isEmpty(key) && !this.containsKey(key)) {
-                CustomException.throwException(ERROR.COMMAND_ERROR, String.format("Params '%s' is required", key));
+                CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_REQUIRED.toString(key));
             }
         }
     }
@@ -356,7 +357,7 @@ public class Options extends HashMap<String, Object> {
             try {
                 return Integer.parseInt((String) value);
             } catch (NumberFormatException exception) {
-                logger.debug(exception.getMessage(), exception);
+                LOGGER.debug(exception.getMessage(), exception);
             }
         }
         return defValue;

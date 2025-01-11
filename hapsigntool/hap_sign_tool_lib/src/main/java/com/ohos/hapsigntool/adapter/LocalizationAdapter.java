@@ -18,6 +18,7 @@ package com.ohos.hapsigntool.adapter;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.KeyStoreHelper;
@@ -185,7 +186,8 @@ public class LocalizationAdapter {
         if (keyStoreHelper == null) {
             initKeyStore();
         }
-        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(alias), ERROR.ACCESS_ERROR, "Alias could not be empty");
+        ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(alias), ERROR.ACCESS_ERROR,
+                SignToolErrMsg.PARAM_VALUE_EMPTY.toString("KeyAlias"));
         KeyPair keyPair = null;
         if (keyStoreHelper.hasAlias(alias)) {
             keyPair = keyStoreHelper.loadKeyPair(alias, keyPwd);
@@ -198,8 +200,7 @@ public class LocalizationAdapter {
             }
         }
         ValidateUtils.throwIfNotMatches(keyPair != null, ERROR.PARAM_NOT_EXIST_ERROR,
-                String.format("%s: '%s' is not exist in %s", Options.KEY_ALIAS, alias,
-                        keyStoreHelper.getKeyStorePath()));
+                SignToolErrMsg.KEY_ALIAS_NOT_FOUND.toString(alias, keyStoreHelper.getKeyStorePath()));
         return keyPair;
     }
 
@@ -217,8 +218,7 @@ public class LocalizationAdapter {
 
         ValidateUtils.throwIfNotMatches(
                 certificates.size() >= MIN_CERT_CHAIN_SIZE && certificates.size() <= MAX_CERT_CHAIN_SIZE,
-                ERROR.NOT_SUPPORT_ERROR, String.format("Profile cert '%s' must a cert chain", certPath)
-        );
+                ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.CERT_CHAIN_FORMAT_FAILED.toString(certPath));
         return certificates;
     }
 
@@ -261,22 +261,21 @@ public class LocalizationAdapter {
      */
     public List<X509Certificate> getCertsFromFile(String certPath, String logTitle) {
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(certPath), ERROR.PARAM_NOT_EXIST_ERROR,
-                String.format("Params '%s' not exist", logTitle));
+                SignToolErrMsg.FILE_NOT_EXIST.toString(logTitle));
 
         File certFile = new File(certPath);
         ValidateUtils.throwIfNotMatches(certFile.exists(), ERROR.FILE_NOT_FOUND,
-                String.format("%s: '%s' not exist", logTitle, certPath));
+                SignToolErrMsg.FILE_NOT_EXIST.toString(certPath));
         List<X509Certificate> certificates = null;
         try {
             certificates = CertUtils.generateCertificates(FileUtils.readFile(certFile));
         } catch (IOException | CertificateException | VerifyCertificateChainException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.ACCESS_ERROR, exception.getMessage()
-                + "\nSolutions:"
-                + "\n> The certificate format is incorrect, please check your appCertFile parameter.");
+            CustomException.throwException(ERROR.ACCESS_ERROR, SignToolErrMsg.CERT_FORMAT_FAILED
+                    .toString(exception.getMessage()));
         }
-        ValidateUtils.throwIfNotMatches(certificates != null && certificates.size() > 0, ERROR.READ_FILE_ERROR,
-                String.format("Read fail from %s, bot found certificates", certPath));
+        ValidateUtils.throwIfNotMatches(certificates != null && !certificates.isEmpty(), ERROR.READ_FILE_ERROR,
+                SignToolErrMsg.CERT_FORMAT_FAILED.toString("can not found certificates in file " + certPath));
         return certificates;
     }
 
@@ -388,8 +387,8 @@ public class LocalizationAdapter {
      */
     public String getInFile() {
         String file = options.getString(Options.IN_FILE);
-        ValidateUtils.throwIfNotMatches(new File(file).exists(), ERROR.FILE_NOT_FOUND,
-                String.format("Required %s: '%s' not exist", Options.IN_FILE, file));
+        ValidateUtils.throwIfNotMatches(new File(file).exists(),
+                ERROR.FILE_NOT_FOUND, SignToolErrMsg.FILE_NOT_EXIST.toString(file));
         return file;
     }
 

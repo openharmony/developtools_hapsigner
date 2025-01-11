@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.elf;
 
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
 import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 
@@ -138,7 +139,7 @@ public class ElfHeader {
         } else if (eiClass == ElfDefine.ELF_64_CLASS) {
             len = ElfDefine.ELF_HEADER_64_LEN - ElfDefine.EI_NIDENT_LEN;
         } else {
-            throw new ElfFormatException("ELF eiClass is incorrect");
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("ei_class"));
         }
         ByteOrder bo;
         if (eiData == ElfDefine.ELF_DATA_2_LSB) {
@@ -146,19 +147,19 @@ public class ElfHeader {
         } else if (eiData == ElfDefine.ELF_DATA_2_MSB) {
             bo = ByteOrder.BIG_ENDIAN;
         } else {
-            throw new ElfFormatException("ELF eiData is incorrect");
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("ei_data"));
         }
         byte[] bytes = new byte[len];
         read = is.read(bytes);
         if (read != len) {
-            throw new ElfFormatException("ELF file header is incorrect");
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("header"));
         }
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         byteBuffer.order(bo);
         initHeader(byteBuffer);
     }
 
-    private void initHeader(ByteBuffer byteBuffer) throws ElfFormatException {
+    private void initHeader(ByteBuffer byteBuffer) {
         eType = byteBuffer.getShort();
         eMachine = byteBuffer.getShort();
         eVersion = byteBuffer.getInt();

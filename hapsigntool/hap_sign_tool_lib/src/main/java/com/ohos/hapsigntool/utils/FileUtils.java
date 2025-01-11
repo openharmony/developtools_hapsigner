@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -213,8 +214,8 @@ public final class FileUtils {
      */
     public static void write(byte[] content, File output) throws IOException {
         if (output.exists() && !output.canWrite()) {
-            CustomException.throwException(ERROR.WRITE_FILE_ERROR, "No permission to write file " +
-                    output.getCanonicalPath());
+            CustomException.throwException(ERROR.WRITE_FILE_ERROR, SignToolErrMsg.FILE_WRITE_FAILED
+                    .toString("No permission write to file " + output));
         }
         try (FileOutputStream out = new FileOutputStream(output)) {
             for (byte con : content) {
@@ -265,7 +266,7 @@ public final class FileUtils {
     public static void validFileType(String filePath, String... types) {
         String suffix = getSuffix(filePath);
         ValidateUtils.throwIfNotMatches(!StringUtils.isEmpty(suffix),
-                ERROR.NOT_SUPPORT_ERROR, "Not support file: " + filePath);
+                ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.NOT_SUPPORT_FILE.toString(filePath));
         boolean isMatches = false;
         for (String type : types) {
             if (StringUtils.isEmpty(type)) {
@@ -276,7 +277,8 @@ public final class FileUtils {
                 break;
             }
         }
-        ValidateUtils.throwIfNotMatches(isMatches, ERROR.NOT_SUPPORT_ERROR, "Not support file: " + filePath);
+        ValidateUtils.throwIfNotMatches(isMatches,
+                ERROR.NOT_SUPPORT_ERROR, SignToolErrMsg.NOT_SUPPORT_FILE.toString(filePath));
     }
 
     /**
