@@ -170,7 +170,8 @@ public class CodeSigning {
         throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (!StringUtils.containsIgnoreCase(SUPPORT_FILE_FORM, inForm)) {
-            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(SUPPORT_FILE_FORM));
+            throw new CodeSignException(
+                CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(String.join(",", SUPPORT_FILE_FORM)));
         }
         long dataSize = computeDataSize(zip);
         // generate CodeSignBlock
