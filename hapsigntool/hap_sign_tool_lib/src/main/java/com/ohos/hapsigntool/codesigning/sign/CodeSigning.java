@@ -114,7 +114,7 @@ public class CodeSigning {
         throws CodeSignException, FsVerityDigestException, IOException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (!SUPPORT_BIN_FILE_FORM.equalsIgnoreCase(inForm)) {
-            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString());
+            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(SUPPORT_BIN_FILE_FORM));
         }
         long fileSize = input.length();
         int paddingSize = ElfSignBlock.computeMerkleTreePaddingLength(offset);
@@ -313,7 +313,7 @@ public class CodeSigning {
                 return null;
             }).collect(Collectors.toList());
             if (nativeLibInfoList.contains(null)) {
-                throw new CodeSignException("Sign hnp error");
+                throw new CodeSignException("Sign hnp lib error");
             }
             return nativeLibInfoList;
         } catch (IOException e) {
@@ -424,7 +424,7 @@ public class CodeSigning {
             return null;
         }).collect(Collectors.toList());
         if (nativeLibInfoList.contains(null)) {
-            throw new CodeSignException("Sign libs error");
+            throw new CodeSignException("Sign lib error");
         }
         return nativeLibInfoList;
     }
