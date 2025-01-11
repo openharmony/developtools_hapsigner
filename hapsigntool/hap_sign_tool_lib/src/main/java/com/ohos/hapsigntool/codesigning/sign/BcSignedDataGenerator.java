@@ -127,7 +127,7 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         }
         if (signConfig.getCertificates().isEmpty()) {
             throw new CodeSignException(
-                CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No certificates configured for sign"));
+                CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No certificate is configured for sign"));
         }
         X509Certificate cert = signConfig.getCertificates().get(0);
         if (!verifySignFromServer(cert.getPublicKey(), signBytes, signPair, codeAuthed)) {
