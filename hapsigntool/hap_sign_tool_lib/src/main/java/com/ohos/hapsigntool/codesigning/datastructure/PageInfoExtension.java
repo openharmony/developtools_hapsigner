@@ -183,24 +183,28 @@ public class PageInfoExtension extends Extension {
      */
     public static boolean valid(PageInfoExtension pgExtension, long dataSize) throws PageInfoException {
         if (!NumberUtils.isMultiple4K(pgExtension.getMapOffset())) {
-            throw new PageInfoException(
-                CodeSignErrMsg.BITMAP_OFF_4K_ALIGNMENT_ERROR.toString(pgExtension.getMapOffset()));
+            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_ERROR.toString(
+                "Invalid bitmapOff { " + pgExtension.getMapOffset() + " }, not a multiple of 4096"));
         }
         if (pgExtension.getUnitSize() != PageInfoExtension.DEFAULT_UNIT_SIZE) {
-            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_UNIT_SIZE_ERROR.toString(pgExtension.getUnitSize()));
+            throw new PageInfoException(
+                CodeSignErrMsg.PAGE_INFO_ERROR.toString("Invalid page info unitSize : " + pgExtension.getUnitSize()));
         }
         if (pgExtension.getMapOffset() < 0 || pgExtension.getMapSize() < 0) {
-            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_NEGATIVE_NUMBER_ERROR.toString());
+            throw new PageInfoException(
+                CodeSignErrMsg.PAGE_INFO_ERROR.toString("Page info offset or size is negative number"));
         }
         if (pgExtension.getMapSize() % pgExtension.getUnitSize() != 0) {
-            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_SIZE_AND_UNIT_ERROR.toString());
+            throw new PageInfoException(
+                CodeSignErrMsg.PAGE_INFO_ERROR.toString("Page info size is not multiple of unit"));
         }
 
         if (pgExtension.getMapOffset() > dataSize - pgExtension.getMapSize() / Byte.SIZE) {
-            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_OUT_DATA_ERROR.toString());
+            throw new PageInfoException(CodeSignErrMsg.PAGE_INFO_ERROR.toString("Page info is out of dataSize"));
         }
         if (pgExtension.getMapSize() / pgExtension.getUnitSize() >= dataSize / CodeSignBlock.PAGE_SIZE_4K) {
-            throw new PageInfoException(CodeSignErrMsg.BIT_MAP_PAGE_NOT_LESS_DATA_PAGE_ERROR.toString());
+            throw new PageInfoException(
+                CodeSignErrMsg.PAGE_INFO_ERROR.toString("Page info size is not consistent with data page "));
         }
         return true;
     }

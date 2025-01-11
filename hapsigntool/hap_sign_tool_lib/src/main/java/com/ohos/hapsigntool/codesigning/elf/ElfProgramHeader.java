@@ -86,13 +86,13 @@ public class ElfProgramHeader {
         } else if (eiData == ElfDefine.ELF_DATA_2_MSB) {
             bo = ByteOrder.BIG_ENDIAN;
         } else {
-            throw new ElfFormatException(CodeSignErrMsg.ELF_EI_DATA_ERROR.toString());
+            throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("ei_data"));
         }
         if (eiClass == ElfDefine.ELF_32_CLASS) {
             byte[] bytes = new byte[ElfDefine.ELF_PHEADER_32_LEN];
             int read = is.read(bytes);
             if (read != ElfDefine.ELF_PHEADER_32_LEN) {
-                throw new ElfFormatException(CodeSignErrMsg.ELF_PROGRAM_HEADER_ERROR.toString());
+                throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("program header"));
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
             byteBuffer.order(bo);
@@ -108,7 +108,7 @@ public class ElfProgramHeader {
             byte[] bytes = new byte[ElfDefine.ELF_PHEADER_64_LEN];
             int read = is.read(bytes);
             if (read != ElfDefine.ELF_PHEADER_64_LEN) {
-                throw new ElfFormatException(CodeSignErrMsg.ELF_PROGRAM_HEADER_ERROR.toString());
+                throw new ElfFormatException(CodeSignErrMsg.ELF_FILE_HEADER_ERROR.toString("program header"));
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
             byteBuffer.order(bo);
