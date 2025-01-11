@@ -258,8 +258,8 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
         try {
             result = CmsUtils.verifySignDataWithUnsignedDataDigest(unsignedDataDigest, signResult);
         } catch (CMSException e) {
-            throw new CodeSignException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString(
-                "Failed to verify signed data and unsigned data digest"), e);
+            throw new CodeSignException(
+                CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("PKCS cms data verify failed"), e);
         }
         if (!result) {
             throw new CodeSignException(

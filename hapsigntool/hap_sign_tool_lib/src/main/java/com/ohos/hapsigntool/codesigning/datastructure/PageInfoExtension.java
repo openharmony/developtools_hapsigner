@@ -204,7 +204,7 @@ public class PageInfoExtension extends Extension {
         }
         if (pgExtension.getMapSize() / pgExtension.getUnitSize() >= dataSize / CodeSignBlock.PAGE_SIZE_4K) {
             throw new PageInfoException(
-                CodeSignErrMsg.PAGE_INFO_ERROR.toString("Page info size is not consistent with data page "));
+                CodeSignErrMsg.PAGE_INFO_ERROR.toString("Page info size is not less than data page "));
         }
         return true;
     }
