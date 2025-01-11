@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.profile.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.ValidateUtils;
 
 import java.util.List;
@@ -73,9 +74,9 @@ public class DebugInfo {
     public void enforceValid() {
         if (this.deviceIds != null) {
             ValidateUtils.throwIfMatches(this.deviceIds.size() > MAX_DEBUG_DEVICE_NUM, ERROR.SIGN_ERROR,
-                    "Support at most: 100 devices!");
-            ValidateUtils.throwIfMatches(!this.isDeviceIdTypeValid(), ERROR.SIGN_ERROR,
-                    "Device id type must be sn or udid, current is " + this.deviceIdType);
+                    SignToolErrMsg.SIGNATURE_FAILED.toString("Support at most: 100 devices!"));
+            ValidateUtils.throwIfMatches(!this.isDeviceIdTypeValid(), ERROR.SIGN_ERROR, SignToolErrMsg.SIGNATURE_FAILED
+                    .toString("Device id type must be sn or udid, current is " + this.deviceIdType));
         }
     }
 

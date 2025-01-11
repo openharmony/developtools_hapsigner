@@ -17,6 +17,7 @@ package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.error.VerifyException;
 
 import javax.security.auth.x500.X500Principal;
@@ -102,14 +103,16 @@ public class CertChainUtils {
             CertPathValidator validator = CertPathValidator.getInstance("PKIX");
             CertPathValidatorResult validatorResult = validator.validate(certPath, params);
             ValidateUtils.throwIfNotMatches(validatorResult instanceof PKIXCertPathValidatorResult,
-                    ERROR.VERIFY_ERROR, "Validator result not target type");
+                ERROR.VERIFY_ERROR, SignToolErrMsg.VERIFY_FAILED.toString("Validator result not target type"));
             if (validatorResult instanceof PKIXCertPathValidatorResult) {
                 PKIXCertPathValidatorResult pkixValidatorResult = (PKIXCertPathValidatorResult) validatorResult;
                 ValidateUtils.throwIfNotMatches(params.getTrustAnchors().contains(pkixValidatorResult.getTrustAnchor()),
-                        ERROR.VERIFY_ERROR, "Anchor is not trusted: " + Base64.getEncoder().encodeToString(
-                                pkixValidatorResult.getTrustAnchor().getTrustedCert().getEncoded()));
+                        ERROR.VERIFY_ERROR, SignToolErrMsg.VERIFY_FAILED.toString(
+                                "Anchor is not trusted: " + Base64.getEncoder().encodeToString(
+                                pkixValidatorResult.getTrustAnchor().getTrustedCert().getEncoded())));
             } else {
-                CustomException.throwException(ERROR.VERIFY_ERROR, "Validator result not target type");
+                CustomException.throwException(ERROR.VERIFY_ERROR, SignToolErrMsg.VERIFY_FAILED
+                        .toString("Validator result not target type"));
             }
         } catch (IOException | GeneralSecurityException exception) {
             throw new VerifyException("Cert chain verify failed! " + exception.getMessage());

@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.fsverity;
 
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.utils.DigestUtils;
 
 import java.io.IOException;
@@ -80,9 +81,9 @@ public class MerkleTreeBuilder implements AutoCloseable {
     private void transInputStreamToHashData(InputStream inputStream, long size, ByteBuffer outputBuffer)
         throws IOException {
         if (size == 0) {
-            throw new IOException("Input size is empty");
+            throw new IOException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Input size is empty"));
         } else if (size > INPUTSTREAM_MAX_SIZE) {
-            throw new IOException("Input size is too long");
+            throw new IOException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Input size is too long"));
         }
         int count = (int) getChunkCount(size, MAX_READ_SIZE);
         int chunks = (int) getChunkCount(size, CHUNK_SIZE);
@@ -98,7 +99,7 @@ public class MerkleTreeBuilder implements AutoCloseable {
                 ByteBuffer byteBuffer = ByteBuffer.allocate(fullChunkSize);
                 int readDataLen = readIs(inputStream, byteBuffer, readSize);
                 if (readDataLen != readSize) {
-                    throw new IOException("IOException read buffer from input errorLHJ.");
+                    throw new IOException(CodeSignErrMsg.READ_INPUT_STREAM_ERROR.toString());
                 }
                 byteBuffer.flip();
                 int readChunkIndex = (int) getFullChunkSize(MAX_READ_SIZE, CHUNK_SIZE, i);
@@ -195,7 +196,8 @@ public class MerkleTreeBuilder implements AutoCloseable {
                 try {
                     hashes[index++] = DigestUtils.computeDigest(tempByte, this.mAlgorithm);
                 } catch (NoSuchAlgorithmException e) {
-                    throw new IllegalStateException(e);
+                    throw new IllegalStateException(
+                        CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(this.mAlgorithm), e);
                 }
                 offset += CHUNK_SIZE;
             }

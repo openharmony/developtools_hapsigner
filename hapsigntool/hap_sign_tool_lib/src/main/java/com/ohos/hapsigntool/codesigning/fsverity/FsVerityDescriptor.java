@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool.codesigning.fsverity;
 
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.exception.VerifyCodeSignException;
 import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
@@ -195,7 +196,7 @@ public class FsVerityDescriptor {
         buffer.put(hashAlgorithm);
         buffer.put(log2BlockSize);
         if (this.saltSize > SALT_SIZE) {
-            throw new FsVerityDigestException("Salt is too long");
+            throw new FsVerityDigestException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Salt is too long"));
         }
         buffer.put(this.saltSize);
         buffer.putInt(signSize);
@@ -223,7 +224,7 @@ public class FsVerityDescriptor {
         buffer.put(hashAlgorithm);
         buffer.put(log2BlockSize);
         if (this.saltSize > SALT_SIZE) {
-            throw new FsVerityDigestException("Salt is too long");
+            throw new FsVerityDigestException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Salt is too long"));
         }
         buffer.put(this.saltSize);
         buffer.putInt(0);
@@ -251,7 +252,7 @@ public class FsVerityDescriptor {
         buffer.put(hashAlgorithm);
         buffer.put(log2BlockSize);
         if (this.saltSize > SALT_SIZE) {
-            throw new FsVerityDigestException("Salt is too long");
+            throw new FsVerityDigestException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Salt is too long"));
         }
         buffer.put(this.saltSize);
         buffer.putInt(0);

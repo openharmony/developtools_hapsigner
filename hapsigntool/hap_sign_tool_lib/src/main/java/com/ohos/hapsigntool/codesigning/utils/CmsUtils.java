@@ -15,6 +15,8 @@
 
 package com.ohos.hapsigntool.codesigning.utils;
 
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
+
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -48,11 +50,12 @@ public class CmsUtils {
     private static void isCollectionValid(Collection<X509CertificateHolder> collection)
         throws OperatorCreationException {
         if (collection == null) {
-            throw new OperatorCreationException("No matched cert: " + collection);
+            throw new OperatorCreationException(
+                CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("No matched cert"));
         }
         if (collection.size() != 1) {
-            throw new OperatorCreationException(
-                "More than one matched certs, matched certs size: " + collection.size());
+            throw new OperatorCreationException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString(
+                "More than one matched certs, matched certs size: " + collection.size()));
         }
     }
 
@@ -65,7 +68,9 @@ public class CmsUtils {
             try {
                 return new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert);
             } catch (CertificateException e) {
-                throw new OperatorCreationException("Verify BC signatures failed: " + e.getMessage(), e);
+                throw new OperatorCreationException(
+                    CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Verify BC signatures failed: " + e.getMessage()),
+                    e);
             }
         });
     }

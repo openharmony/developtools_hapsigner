@@ -17,7 +17,7 @@ package com.ohos.hapsigntool.hap.provider;
 
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.InvalidParamsException;
-import com.ohos.hapsigntool.error.MissingParamsException;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.utils.LogUtils;
@@ -80,12 +80,13 @@ public class LocalJKSSignProvider extends SignProvider {
             FileUtils.isValidFile(publicKeyFile);
         } catch (IOException e) {
             LOGGER.error("file is invalid: " + publicCertsFile + System.lineSeparator(), e);
-            throw new InvalidParamsException("Invalid file: " + publicCertsFile);
+            throw new InvalidParamsException(SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString(ParamConstants.PARAM_LOCAL_PUBLIC_CERT, "Invalid file: " + publicCertsFile));
         }
     }
 
     @Override
-    public void checkParams(Options options) throws InvalidParamsException, MissingParamsException {
+    public void checkParams(Options options) throws InvalidParamsException {
         super.checkParams(options);
         String[] paramFileds = {
                 ParamConstants.PARAM_LOCAL_JKS_KEYSTORE,

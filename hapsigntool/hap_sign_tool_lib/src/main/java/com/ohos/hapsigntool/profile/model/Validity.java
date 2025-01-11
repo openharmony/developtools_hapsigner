@@ -16,8 +16,6 @@
 package com.ohos.hapsigntool.profile.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.ohos.hapsigntool.error.ERROR;
-import com.ohos.hapsigntool.utils.ValidateUtils;
 
 /**
  * Sub dto of Provision.
@@ -41,16 +39,6 @@ public class Validity {
      * Sub dto of Provision.
      */
     public Validity() {}
-
-    /**
-     * Validate attribute.
-     */
-    public void enforceValid() {
-        ValidateUtils.throwIfMatches(this.notBefore == 0L, ERROR.SIGN_ERROR, "Require notBefore in validity!");
-        ValidateUtils.throwIfMatches(this.notAfter == 0L, ERROR.SIGN_ERROR, "Require notAfter in validity!");
-        ValidateUtils.throwIfMatches(this.notBefore >= this.notAfter, ERROR.SIGN_ERROR,
-                "Require notBefore less than notAfter in validity!");
-    }
 
     public Long getNotBefore() {
         return notBefore;

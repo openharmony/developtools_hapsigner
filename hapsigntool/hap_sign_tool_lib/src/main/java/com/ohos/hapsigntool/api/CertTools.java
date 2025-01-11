@@ -21,6 +21,7 @@ import com.ohos.hapsigntool.adapter.LocalizationAdapter;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
+import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.CertUtils;
 
 import com.ohos.hapsigntool.utils.LogUtils;
@@ -83,7 +84,8 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
         return null;
     }
@@ -107,7 +109,8 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
         return null;
     }
@@ -135,7 +138,8 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
         return null;
     }
@@ -162,7 +166,8 @@ public final class CertTools {
                     .build(adapter.getSignAlg());
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CERT_ERROR, exception.getMessage());
+            CustomException.throwException(ERROR.IO_CERT_ERROR, SignToolErrMsg.CERT_IO_FAILED
+                    .toString(exception.getMessage()));
         }
         return null;
     }
@@ -184,7 +189,8 @@ public final class CertTools {
             return csr.getEncoded();
         } catch (IOException exception) {
             LOGGER.debug(exception.getMessage(), exception);
-            CustomException.throwException(ERROR.IO_CSR_ERROR, "Not support " + subject);
+            CustomException.throwException(ERROR.IO_CSR_ERROR, SignToolErrMsg.IO_CSR_ERROR
+                    .toString("Not support " + subject));
             return NO_CSR;
         }
     }

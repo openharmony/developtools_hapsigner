@@ -19,6 +19,7 @@ import com.ohos.hapsigntool.codesigning.datastructure.CodeSignBlock;
 import com.ohos.hapsigntool.codesigning.datastructure.PageInfoExtension;
 import com.ohos.hapsigntool.codesigning.elf.ElfFile;
 import com.ohos.hapsigntool.codesigning.elf.ElfProgramHeader;
+import com.ohos.hapsigntool.codesigning.exception.CodeSignErrMsg;
 import com.ohos.hapsigntool.codesigning.exception.ElfFormatException;
 import com.ohos.hapsigntool.codesigning.utils.NumberUtils;
 import com.ohos.hapsigntool.error.HapFormatException;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -75,8 +75,7 @@ public class PageInfoGenerator {
             long entryDataOffset = entry.getCentralDirectory().getOffset() + ZipEntryHeader.HEADER_LENGTH
                 + zipEntryHeader.getFileNameLength() + zipEntryHeader.getExtraLength();
             if (!NumberUtils.isMultiple4K(entryDataOffset)) {
-                throw new HapFormatException(
-                    String.format(Locale.ROOT, "Invalid entryDataOffset(%d), not a multiple of 4096", entryDataOffset));
+                throw new HapFormatException(CodeSignErrMsg.FILE_4K_ALIGNMENT_ERROR.toString(entryDataOffset));
             }
             if (EntryType.RUNNABLE_FILE.equals(entry.getZipEntryData().getType())
                     && Zip.FILE_UNCOMPRESS_METHOD_FLAG == entry.getZipEntryData().getZipEntryHeader().getMethod()) {
@@ -127,8 +126,7 @@ public class PageInfoGenerator {
      */
     public byte[] generateBitMap() throws HapFormatException {
         if (!NumberUtils.isMultiple4K(maxEntryDataOffset)) {
-            throw new HapFormatException(
-                String.format(Locale.ROOT, "Invalid maxEndOff(%d), not a multiple of 4096", maxEntryDataOffset));
+            throw new HapFormatException(CodeSignErrMsg.FILE_4K_ALIGNMENT_ERROR.toString(maxEntryDataOffset));
         }
         int len = (int) (maxEntryDataOffset / CodeSignBlock.PAGE_SIZE_4K * PageInfoExtension.DEFAULT_UNIT_SIZE);
         BitSet bitmap = new BitSet(len);
