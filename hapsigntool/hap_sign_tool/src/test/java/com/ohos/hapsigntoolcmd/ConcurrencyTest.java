@@ -76,7 +76,7 @@ public class ConcurrencyTest {
     private static final File TMP_DIR = new File("concurrentTest");
 
     private static final List<Cleanable> tmpSource = new ArrayList<>();
-    private static final LogUtils log = new LogUtils(ConcurrencyTest.class);
+    private static final LogUtils LOG = new LogUtils(ConcurrencyTest.class);
 
     /**
      * before test
@@ -153,7 +153,7 @@ public class ConcurrencyTest {
             isFinished = countDownLatch.await(KEEP_ALIVE_TIMES, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             isFinished = false;
-            log.error("concurrency test interrupted", e);
+            LOG.error("concurrency test interrupted", e);
         }
         if (!isFinished) {
             executor.shutdownNow();
