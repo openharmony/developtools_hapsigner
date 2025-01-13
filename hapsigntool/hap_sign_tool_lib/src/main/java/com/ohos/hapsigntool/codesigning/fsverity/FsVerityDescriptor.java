@@ -196,7 +196,7 @@ public class FsVerityDescriptor {
         buffer.put(hashAlgorithm);
         buffer.put(log2BlockSize);
         if (this.saltSize > SALT_SIZE) {
-            throw new FsVerityDigestException(CodeSignErrMsg.SALT_SIZE_LENGTH_ERROR.toString());
+            throw new FsVerityDigestException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Salt is too long"));
         }
         buffer.put(this.saltSize);
         buffer.putInt(signSize);
@@ -224,7 +224,7 @@ public class FsVerityDescriptor {
         buffer.put(hashAlgorithm);
         buffer.put(log2BlockSize);
         if (this.saltSize > SALT_SIZE) {
-            throw new FsVerityDigestException(CodeSignErrMsg.SALT_SIZE_LENGTH_ERROR.toString());
+            throw new FsVerityDigestException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Salt is too long"));
         }
         buffer.put(this.saltSize);
         buffer.putInt(0);
@@ -252,7 +252,7 @@ public class FsVerityDescriptor {
         buffer.put(hashAlgorithm);
         buffer.put(log2BlockSize);
         if (this.saltSize > SALT_SIZE) {
-            throw new FsVerityDigestException(CodeSignErrMsg.SALT_SIZE_LENGTH_ERROR.toString());
+            throw new FsVerityDigestException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Salt is too long"));
         }
         buffer.put(this.saltSize);
         buffer.putInt(0);

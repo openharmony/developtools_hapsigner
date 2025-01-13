@@ -81,9 +81,9 @@ public class MerkleTreeBuilder implements AutoCloseable {
     private void transInputStreamToHashData(InputStream inputStream, long size, ByteBuffer outputBuffer)
         throws IOException {
         if (size == 0) {
-            throw new IOException(CodeSignErrMsg.SIGN_SIZE_ZERO_ERROR.toString());
+            throw new IOException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Input size is empty"));
         } else if (size > INPUTSTREAM_MAX_SIZE) {
-            throw new IOException(CodeSignErrMsg.SIGN_SIZE_OVER_LIMIT_ERROR.toString());
+            throw new IOException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Input size is too long"));
         }
         int count = (int) getChunkCount(size, MAX_READ_SIZE);
         int chunks = (int) getChunkCount(size, CHUNK_SIZE);
@@ -196,7 +196,8 @@ public class MerkleTreeBuilder implements AutoCloseable {
                 try {
                     hashes[index++] = DigestUtils.computeDigest(tempByte, this.mAlgorithm);
                 } catch (NoSuchAlgorithmException e) {
-                    throw new IllegalStateException(CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(this.mAlgorithm), e);
+                    throw new IllegalStateException(
+                        CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(this.mAlgorithm), e);
                 }
                 offset += CHUNK_SIZE;
             }

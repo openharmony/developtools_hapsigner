@@ -114,7 +114,7 @@ public class CodeSigning {
         throws CodeSignException, FsVerityDigestException, IOException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (!SUPPORT_BIN_FILE_FORM.equalsIgnoreCase(inForm)) {
-            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString());
+            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(SUPPORT_BIN_FILE_FORM));
         }
         long fileSize = input.length();
         int paddingSize = ElfSignBlock.computeMerkleTreePaddingLength(offset);
@@ -170,7 +170,8 @@ public class CodeSigning {
         throws CodeSignException, IOException, HapFormatException, FsVerityDigestException, ProfileException {
         LOGGER.info("Start to sign code.");
         if (!StringUtils.containsIgnoreCase(SUPPORT_FILE_FORM, inForm)) {
-            throw new CodeSignException(CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(SUPPORT_FILE_FORM));
+            throw new CodeSignException(
+                CodeSignErrMsg.FILE_FORMAT_UNSUPPORTED_ERROR.toString(String.join(",", SUPPORT_FILE_FORM)));
         }
         long dataSize = computeDataSize(zip);
         // generate CodeSignBlock
@@ -307,12 +308,13 @@ public class CodeSigning {
                         false, 0, ownerID);
                     return (Pair.create(hnpElfPath, pairSignInfoAndMerkleTreeBytes.getFirst()));
                 } catch (IOException | FsVerityDigestException | CodeSignException e) {
-                    LOGGER.error("Sign hnp lib error, entry name = {}, msg : {}", hnpElfPath, e.getMessage());
+                    LOGGER.error("Sign hnp lib error msg : {} AT entry : {}" + System.lineSeparator(), e.getMessage(),
+                        hnpElfPath);
                 }
                 return null;
             }).collect(Collectors.toList());
             if (nativeLibInfoList.contains(null)) {
-                throw new CodeSignException(CodeSignErrMsg.SIGN_HNP_ERROR.toString());
+                throw new CodeSignException("Sign hnp lib error");
             }
             return nativeLibInfoList;
         } catch (IOException e) {
@@ -418,12 +420,12 @@ public class CodeSigning {
                     ownerID);
                 return Pair.create(name, pairSignInfoAndMerkleTreeBytes.getFirst());
             } catch (FsVerityDigestException | CodeSignException | IOException e) {
-                LOGGER.error("Sign lib error, entry name = {}, msg : {}", name, e.getMessage());
+                LOGGER.error("Sign lib error msg : {} AT entry : {}" + System.lineSeparator(), e.getMessage(), name);
             }
             return null;
         }).collect(Collectors.toList());
         if (nativeLibInfoList.contains(null)) {
-            throw new CodeSignException(CodeSignErrMsg.SIGN_LIBS_ERROR.toString());
+            throw new CodeSignException("Sign lib error");
         }
         return nativeLibInfoList;
     }
@@ -479,7 +481,8 @@ public class CodeSigning {
         // signConfig is created by SignerFactory
         if ((copiedConfig.getSigner() instanceof LocalSigner)) {
             if (copiedConfig.getCertificates().isEmpty()) {
-                throw new CodeSignException(CodeSignErrMsg.CERTIFICATES_CONFIGURE_EMPTY_ERROR.toString());
+                throw new CodeSignException(
+                    CodeSignErrMsg.CERTIFICATES_CONFIGURE_ERROR.toString("No certificate is configured for sign"));
             }
             BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
             bcSignedDataGenerator.setOwnerID(ownerID);
