@@ -80,7 +80,7 @@ public class FsVerityGenerator {
             throw new FsVerityDigestException(e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
             throw new FsVerityDigestException(
-                CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(fsVerityHashAlgorithm.getHashAlgorithm()), e);
+                CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(fsVerityHashAlgorithm.getHashAlgorithm()), e);
         }
         return merkleTree;
     }
@@ -118,7 +118,7 @@ public class FsVerityGenerator {
             fsVerityDigest = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
         } catch (NoSuchAlgorithmException e) {
             throw new FsVerityDigestException(
-                CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm()), e);
+                CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm()), e);
         }
         if (pageInfoExtension != null && flags != 0) {
             PageInfoExtension.valid(pageInfoExtension, size);
@@ -131,7 +131,8 @@ public class FsVerityGenerator {
                 fsVerityDigestV2 = FsVerityDigest.getFsVerityDigest(FS_VERITY_HASH_ALGORITHM.getId(), digest);
             } catch (NoSuchAlgorithmException e) {
                 throw new FsVerityDigestException(
-                    CodeSignErrMsg.DIGEST_ALGORITHM_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm()), e);
+                    CodeSignErrMsg.ALGORITHM_NOT_SUPPORT_ERROR.toString(FS_VERITY_HASH_ALGORITHM.getHashAlgorithm()),
+                    e);
             }
         }
         treeBytes = merkleTree.tree;

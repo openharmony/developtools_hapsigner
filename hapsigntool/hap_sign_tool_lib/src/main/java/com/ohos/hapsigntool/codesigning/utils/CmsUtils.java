@@ -50,11 +50,12 @@ public class CmsUtils {
     private static void isCollectionValid(Collection<X509CertificateHolder> collection)
         throws OperatorCreationException {
         if (collection == null) {
-            throw new OperatorCreationException(CodeSignErrMsg.CERTIFICATES_MATCHED_EMPTY_ERROR.toString());
+            throw new OperatorCreationException(
+                CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("No matched cert"));
         }
         if (collection.size() != 1) {
-            throw new OperatorCreationException(
-                CodeSignErrMsg.CERTIFICATES_MATCHED_MORE_ERROR.toString(collection.size()));
+            throw new OperatorCreationException(CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString(
+                "More than one matched certs, matched certs size: " + collection.size()));
         }
     }
 
@@ -68,7 +69,8 @@ public class CmsUtils {
                 return new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert);
             } catch (CertificateException e) {
                 throw new OperatorCreationException(
-                    CodeSignErrMsg.VERIFY_BC_SIGNATURE_FAILED_ERROR.toString(e.getMessage()), e);
+                    CodeSignErrMsg.CODE_SIGN_INTERNAL_ERROR.toString("Verify BC signatures failed: " + e.getMessage()),
+                    e);
             }
         });
     }
