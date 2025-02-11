@@ -394,13 +394,7 @@ HWTEST_F(OptionsCmdTest, Options_test_019, testing::ext::TestSize.Level1)
 
     ParamsTrustList params_trust_list;
     std::vector<std::string> trustList = params_trust_list.GetTrustList(argv[1]);
-    if (trustList.empty()) {
-        bool ret = false;
-        EXPECT_EQ(ret, false);
-    } else {
-        bool ret = true;
-        EXPECT_EQ(ret, true);
-    }
+    EXPECT_EQ(trustList.empty(), true);
 }
 
 /*
@@ -1877,8 +1871,7 @@ HWTEST_F(OptionsCmdTest, Options_test_066, testing::ext::TestSize.Level1)
     ParamsSharedPtr param = std::make_shared<Params>();
     param->SetMethod(argv[1]);
     bool ret = true;
-    EXPECT_EQ(ret, true);
-}
+ }
 
 /*
  * @tc.name: Options_test_067
@@ -1890,13 +1883,8 @@ HWTEST_F(OptionsCmdTest, Options_test_067, testing::ext::TestSize.Level1)
 {
     std::string str = "  123456  ";
     std::string params = StringUtils::Trim(str);
-    if (params == "123456") {
-        bool ret = true;
-        EXPECT_EQ(ret, true);
-    } else {
-        bool ret = false;
-        EXPECT_EQ(ret, false);
-    }
+    bool ret = params == "123456";
+    EXPECT_EQ(ret, true);
 }
 
 /*
@@ -1918,14 +1906,8 @@ HWTEST_F(OptionsCmdTest, Options_test_068, testing::ext::TestSize.Level1)
 
     ParamsSharedPtr param = std::make_shared<Params>();
     param->SetMethod(argv[1]);
-
-    if (param->GetMethod().empty()) {
-        bool ret = false;
-        EXPECT_EQ(ret, false);
-    } else {
-        bool ret = true;
-        EXPECT_EQ(ret, true);
-    }
+    bool ret = param->GetMethod().empty();
+    EXPECT_EQ(ret, true);
 }
 
 /*

@@ -648,10 +648,9 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_024, testing::ext::TestSize.
     int nidKey = 1;
     int iter = 1;
     int maIter = 1;
-    bool ret = true;
     KeyStoreHelper keyhelper;
     keyhelper.SetNidMac(nidKey, iter, maIter);
-    EXPECT_EQ(ret, true);
+    EXPECT_NE(nidKey, 1);
 }
 
 /*
@@ -665,10 +664,9 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_025, testing::ext::TestSize.
     int nidKey = 0;
     int iter = 0;
     int macIter = 0;
-    bool ret = true;
     KeyStoreHelper keyhelper;
     keyhelper.SetNidMac(nidKey, iter, macIter);
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(macIter, 0);
 }
 
 /*
