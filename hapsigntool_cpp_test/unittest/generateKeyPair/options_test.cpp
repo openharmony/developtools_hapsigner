@@ -392,15 +392,11 @@ HWTEST_F(OptionsCmdTest, Options_test_019, testing::ext::TestSize.Level1)
                      "-keystorePwd", "123456"
     };
 
+    ParamsSharedPtr param = std::make_shared<Params>();
+    param->SetMethod(argv[1]);
     ParamsTrustList params_trust_list;
     std::vector<std::string> trustList = params_trust_list.GetTrustList(argv[1]);
-    if (trustList.empty()) {
-        bool ret = false;
-        EXPECT_EQ(ret, false);
-    } else {
-        bool ret = true;
-        EXPECT_EQ(ret, true);
-    }
+    EXPECT_EQ(trustList.empty(), true);
 }
 
 /*
@@ -1856,30 +1852,6 @@ HWTEST_F(OptionsCmdTest, Options_test_065, testing::ext::TestSize.Level1)
     EXPECT_EQ(ret, false);
 }
 
-
-/*
- * @tc.name: Options_test_066
- * @tc.desc: Set the first parameter of the command.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(OptionsCmdTest, Options_test_066, testing::ext::TestSize.Level1)
-{
-    char argv[][100] = { "generate-keypair",
-                     "-keyAlias", "oh-app1-key-v1",
-                     "-keyPwd", "123456",
-                     "-keyAlg", "ECC",
-                     "-keySize", "NIST-P-384",
-                     "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
-                     "-keystorePwd", "123456"
-    };
-
-    ParamsSharedPtr param = std::make_shared<Params>();
-    param->SetMethod(argv[1]);
-    bool ret = true;
-    EXPECT_EQ(ret, true);
-}
-
 /*
  * @tc.name: Options_test_067
  * @tc.desc: Remove the white space.
@@ -1890,13 +1862,7 @@ HWTEST_F(OptionsCmdTest, Options_test_067, testing::ext::TestSize.Level1)
 {
     std::string str = "  123456  ";
     std::string params = StringUtils::Trim(str);
-    if (params == "123456") {
-        bool ret = true;
-        EXPECT_EQ(ret, true);
-    } else {
-        bool ret = false;
-        EXPECT_EQ(ret, false);
-    }
+    EXPECT_EQ(params, "123456");
 }
 
 /*
@@ -1918,14 +1884,7 @@ HWTEST_F(OptionsCmdTest, Options_test_068, testing::ext::TestSize.Level1)
 
     ParamsSharedPtr param = std::make_shared<Params>();
     param->SetMethod(argv[1]);
-
-    if (param->GetMethod().empty()) {
-        bool ret = false;
-        EXPECT_EQ(ret, false);
-    } else {
-        bool ret = true;
-        EXPECT_EQ(ret, true);
-    }
+    EXPECT_EQ(param->GetMethod().empty(), false);
 }
 
 /*

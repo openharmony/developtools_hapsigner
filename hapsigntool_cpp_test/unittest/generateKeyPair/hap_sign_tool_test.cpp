@@ -813,6 +813,7 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_020, testing::ext::TestSize.Level1)
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                      arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 };
     int argc = 22;
+    ParamsRunTool::PrintHelp();
 
     ParamsSharedPtr param = std::make_shared<Params>();
     CmdUtil cmdUtil;
@@ -821,19 +822,6 @@ HWTEST_F(HapSignToolTest, hap_sign_tool_test_020, testing::ext::TestSize.Level1)
 
     bool ret = ParamsRunTool::DispatchParams(param, *api.get());
     EXPECT_EQ(ret, false);
-}
-
-/*
- * @tc.name: hap_sign_tool_test_021
- * @tc.desc: Print help document.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(HapSignToolTest, hap_sign_tool_test_021, testing::ext::TestSize.Level1)
-{
-    ParamsRunTool::PrintHelp();
-    bool ret = true;
-    EXPECT_EQ(ret, true);
 }
 
 /*
