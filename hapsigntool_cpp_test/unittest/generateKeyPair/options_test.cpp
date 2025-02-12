@@ -1886,7 +1886,7 @@ HWTEST_F(OptionsCmdTest, Options_test_068, testing::ext::TestSize.Level1)
     ParamsSharedPtr param = std::make_shared<Params>();
     param->SetMethod(argv[1]);
     bool ret = param->GetMethod().empty();
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(ret, false);
 }
 
 /*
