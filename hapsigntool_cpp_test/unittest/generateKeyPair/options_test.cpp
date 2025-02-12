@@ -1862,8 +1862,7 @@ HWTEST_F(OptionsCmdTest, Options_test_067, testing::ext::TestSize.Level1)
 {
     std::string str = "  123456  ";
     std::string params = StringUtils::Trim(str);
-    bool ret = params == "123456";
-    EXPECT_EQ(ret, true);
+    EXPECT_EQ(params, "123456");
 }
 
 /*
@@ -1885,8 +1884,7 @@ HWTEST_F(OptionsCmdTest, Options_test_068, testing::ext::TestSize.Level1)
 
     ParamsSharedPtr param = std::make_shared<Params>();
     param->SetMethod(argv[1]);
-    bool ret = param->GetMethod().empty();
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(param->GetMethod().empty(), false);
 }
 
 /*
