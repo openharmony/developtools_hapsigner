@@ -392,6 +392,8 @@ HWTEST_F(OptionsCmdTest, Options_test_019, testing::ext::TestSize.Level1)
                      "-keystorePwd", "123456"
     };
 
+    ParamsSharedPtr param = std::make_shared<Params>();
+    param->SetMethod(argv[1]);
     ParamsTrustList params_trust_list;
     std::vector<std::string> trustList = params_trust_list.GetTrustList(argv[1]);
     EXPECT_EQ(trustList.empty(), true);
@@ -1849,29 +1851,6 @@ HWTEST_F(OptionsCmdTest, Options_test_065, testing::ext::TestSize.Level1)
     bool ret = ParamsRunTool::RunVerifyApp(params.get(), *api);
     EXPECT_EQ(ret, false);
 }
-
-
-/*
- * @tc.name: Options_test_066
- * @tc.desc: Set the first parameter of the command.
- * @tc.type: FUNC
- * @tc.require:
- */
-HWTEST_F(OptionsCmdTest, Options_test_066, testing::ext::TestSize.Level1)
-{
-    char argv[][100] = { "generate-keypair",
-                     "-keyAlias", "oh-app1-key-v1",
-                     "-keyPwd", "123456",
-                     "-keyAlg", "ECC",
-                     "-keySize", "NIST-P-384",
-                     "-keystoreFile", "./generateKeyPair/OpenHarmony.p12",
-                     "-keystorePwd", "123456"
-    };
-
-    ParamsSharedPtr param = std::make_shared<Params>();
-    param->SetMethod(argv[1]);
-    bool ret = true;
- }
 
 /*
  * @tc.name: Options_test_067
