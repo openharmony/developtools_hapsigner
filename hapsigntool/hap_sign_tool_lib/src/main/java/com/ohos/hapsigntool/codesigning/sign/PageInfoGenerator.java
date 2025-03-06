@@ -125,6 +125,9 @@ public class PageInfoGenerator {
      * @throws HapFormatException hap format error
      */
     public byte[] generateBitMap() throws HapFormatException {
+        if (excSegmentList.isEmpty()) {
+            return new byte[0];
+        }
         if (!NumberUtils.isMultiple4K(maxEntryDataOffset)) {
             throw new HapFormatException(CodeSignErrMsg.FILE_4K_ALIGNMENT_ERROR.toString(maxEntryDataOffset));
         }
