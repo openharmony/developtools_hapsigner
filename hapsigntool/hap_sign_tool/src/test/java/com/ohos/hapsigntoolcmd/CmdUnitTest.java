@@ -53,6 +53,7 @@ import java.util.Random;
 import java.util.jar.JarFile;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -895,11 +896,20 @@ public class CmdUnitTest {
 
     @Order(16)
     @Test
-    public void testExistRunnableFileHap() throws IOException {
+    public void testUncompressedRunnableFileHap() throws IOException {
         File unsignedHap = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
             FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
         String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
         assertTrue(existPagesInfoFile(signedHap));
+    }
+
+    @Order(17)
+    @Test
+    public void testCompressedRunnableFileHap() throws IOException {
+        File unsignedHap = generateHapFile(FileType.FILE_COMPRESSED, FileType.FILE_COMPRESSED,
+            FileType.FILE_COMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
+        String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
+        assertFalse(existPagesInfoFile(signedHap));
     }
 
     private void multiBundleTest(String bundleSuffix) throws IOException {
@@ -1026,7 +1036,7 @@ public class CmdUnitTest {
     }
 
     private boolean existPagesInfoFile(String signedHap) throws IOException {
-        try (JarFile inputHap = new JarFile(signedHap, false)) {
+        try (ZipFile inputHap = new ZipFile(signedHap)) {
             ZipEntry entry = inputHap.getEntry(FileUtils.BIT_MAP_FILENAME);
             return entry != null;
         }
