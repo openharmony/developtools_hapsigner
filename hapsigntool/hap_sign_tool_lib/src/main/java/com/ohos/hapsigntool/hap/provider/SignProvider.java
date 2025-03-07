@@ -503,7 +503,9 @@ public abstract class SignProvider {
         throws IOException, HapFormatException, ElfFormatException {
         Zip zip = new Zip(input);
         zip.alignment(alignment);
-        if (StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)) {
+        if (StringUtils.containsIgnoreCase(CodeSigning.SUPPORT_FILE_FORM, suffix)
+            && ParamConstants.SignCodeFlag.ENABLE_SIGN_CODE.getSignCodeFlag()
+            .equals(signParams.get(ParamConstants.PARAM_SIGN_CODE))) {
             PageInfoGenerator pageInfoGenerator = new PageInfoGenerator(zip);
             byte[] bitMap = pageInfoGenerator.generateBitMap();
             if (bitMap != null && bitMap.length > 0) {
