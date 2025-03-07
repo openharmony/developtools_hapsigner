@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
@@ -52,6 +53,7 @@ import java.util.Random;
 import java.util.jar.JarFile;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -61,6 +63,11 @@ import java.util.zip.ZipOutputStream;
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CmdUnitTest {
+    /**
+     * Command line parameter signCode.
+     */
+    public static final String CMD_SIGN_CODE = "-signCode";
+
     /**
      * Command line parameter appCaCertFile.
      */
@@ -848,6 +855,63 @@ public class CmdUnitTest {
         signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
     }
 
+    @Order(14)
+    @Test
+    public void testNoCodeSignHap() throws IOException {
+        File unsignedHap = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
+            FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
+        String signedHap = File.createTempFile("signed-", ".hap", new File("test")).getAbsolutePath();
+
+        boolean result = HapSignTool.processCmd(new String[] {
+            CmdUtil.Method.SIGN_APP,
+            CMD_MODE, CMD_LOCAL_SIGN,
+            CMD_KEY_ALIAS, CMD_OH_APP1_KEY_V1,
+            CMD_KEY_RIGHTS, CMD_RIGHTS_123456,
+            CMD_APP_CERT_FILE, CMD_APP_DEBUG_CERT_PATH,
+            CMD_PROFILE_FILE, CMD_SIGN_PROFILE_PATH,
+            CMD_SIGN_ALG, CMD_SHA_256_WITH_ECDSA,
+            CMD_KEY_STORE_FILE, CMD_KEY_APP_STORE_PATH,
+            CMD_KEY_STORE_RIGHTS, CMD_RIGHTS_123456,
+            CMD_IN_FILE, unsignedHap.getAbsolutePath(),
+            CMD_OUT_FILE, signedHap,
+            CMD_SIGN_CODE, ParamConstants.SignCodeFlag.DISABLE_SIGN_CODE.getSignCodeFlag()
+        });
+        assertTrue(result);
+        result = HapSignTool.processCmd(new String[] {
+            CmdUtil.Method.VERIFY_APP, CMD_IN_FILE, signedHap, CMD_OUT_CERT_CHAIN, "test" + File.separator + "1.cer",
+            CMD_OUT_PROFILE, "test" + File.separator + "1.p7b"
+        });
+        assertTrue(result);
+        assertFalse(existPagesInfoFile(signedHap));
+    }
+
+    @Order(15)
+    @Test
+    public void testNoRunnableFileHap() throws IOException {
+        File unsignedHap = generateHapFile(FileType.FILE_NOT_EXISTED, FileType.FILE_NOT_EXISTED,
+            FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
+        String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
+        assertFalse(existPagesInfoFile(signedHap));
+    }
+
+    @Order(16)
+    @Test
+    public void testUncompressedRunnableFileHap() throws IOException {
+        File unsignedHap = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
+            FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
+        String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
+        assertTrue(existPagesInfoFile(signedHap));
+    }
+
+    @Order(17)
+    @Test
+    public void testCompressedRunnableFileHap() throws IOException {
+        File unsignedHap = generateHapFile(FileType.FILE_COMPRESSED, FileType.FILE_COMPRESSED,
+            FileType.FILE_COMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
+        String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
+        assertFalse(existPagesInfoFile(signedHap));
+    }
+
     private void multiBundleTest(String bundleSuffix) throws IOException {
         for (FileType abcFile : FileType.values()) {
             for (FileType soFile : FileType.values()) {
@@ -924,7 +988,7 @@ public class CmdUnitTest {
         return bytes;
     }
 
-    private void signAndVerifyHap(String unsignedHap, String bundleSuffix) throws IOException {
+    private String signAndVerifyHap(String unsignedHap, String bundleSuffix) throws IOException {
         String signedHap = File.createTempFile("signed-", bundleSuffix, new File("test")).getAbsolutePath();
         // debug
         boolean result = HapSignTool.processCmd(new String[] {
@@ -968,6 +1032,14 @@ public class CmdUnitTest {
             CMD_OUT_PROFILE, "test" + File.separator + "1.p7b"
         });
         assertTrue(result);
+        return signedHap;
+    }
+
+    private boolean existPagesInfoFile(String signedHap) throws IOException {
+        try (ZipFile inputHap = new ZipFile(signedHap)) {
+            ZipEntry entry = inputHap.getEntry(FileUtils.BIT_MAP_FILENAME);
+            return entry != null;
+        }
     }
 
     /**
