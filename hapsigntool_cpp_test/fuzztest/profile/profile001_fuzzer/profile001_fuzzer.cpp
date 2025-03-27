@@ -64,7 +64,7 @@ bool SignProfileTest002(const uint8_t* data, size_t size)
     std::string outFile = SIGN_PROFILE_OUT_FILE;
     std::string inFile = SIGN_PROFILE_IN_FILE;
     char keyStorePwd[] = "123456";
-     std::string keypwd(reinterpret_cast<const char*>(data), size);
+    char keypwd[] = "123456";
     options[Options::KEY_ALIAS] = keyAlias;
     options[Options::MODE] = mode;
     options[Options::PROFILE_CERT_FILE] = profileCertFile;
