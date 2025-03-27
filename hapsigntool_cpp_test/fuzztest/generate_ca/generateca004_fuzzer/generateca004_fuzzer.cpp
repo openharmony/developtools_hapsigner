@@ -39,7 +39,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::string keyAlias = "oh-app1-key-v1";
     std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
     std::string issuerKeyAlias = "oh-app-sign-srv-ca-key-v1";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string subject = std::string(reinterpret_cast<const char*>(data), size);
     std::string signAlg = "SHA384withECDSA";
     std::string keystoreFile = "/data/test/generateCA/OpenHarmony.p12";
     std::string rootCaCertFile = "/data/test/generateCA/root-ca1.cer";

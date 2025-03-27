@@ -37,7 +37,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg8[] = "-issuerKeyAlias";
     char arg9[] = "oh-app-sign-srv-ca-key-v1";
     char arg10[] = "-subject";
-    char arg11[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=App1 Release";
+    char* arg11 = new char[size];
+    memcpy_s(arg11, size, data, size);
     char arg12[] = "-validity";
     char arg13[] = "365";
     char arg14[] = "-signAlg";
@@ -62,6 +63,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int argc = 30;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg11;
     return ret;
 }
 } // namespace SignatureTools

@@ -50,13 +50,15 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg20[] = "-keystorePwd";
     char arg21[] = "123456";
     char arg22[] = "-outFile";
-    char arg23[] = "./generateKeyPair/entry-default-signed-so.hap";
+    char* arg23 = new char[size];
+    memcpy_s(arg23, size, data, size);
     char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23};
     int argc = 24;
     CodeSigning obj;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg23;
     return ret;
 }
 
@@ -91,13 +93,15 @@ bool RemoteSignTest(const uint8_t* data, size_t size)
     char arg18[] = "-onlineAuthMode";
     char arg19[] = "./generateKeyPair/OpenHarmony.p12";
     char arg20[] = "-username";
-    char arg21[] = "123456";
+    char* arg21 = new char[size];
+    memcpy_s(arg23, size, data, size);
     char arg22[] = "-userPwd";
     char arg23[] = "123456";
     char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23};
     int argc = 24;
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg21;
     return ret;
 }
 
@@ -111,7 +115,8 @@ bool SignElf(const uint8_t* data, size_t size)
     char arg2[] = "-keyAlias";
     char arg3[] = "oh-app1-key-v1";
     char arg4[] = "-keyPwd";
-    char arg5[] = "123456";
+    char* arg5 = new char[size];
+    memcpy_s(arg5, size, data, size);
     char arg6[] = "-mode";
     char arg7[] = "localSign";
     char arg8[] = "-signCode";
@@ -136,6 +141,7 @@ bool SignElf(const uint8_t* data, size_t size)
                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25};
     int argc = 26;
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg5;
     return ret;
 }
 
@@ -151,7 +157,8 @@ bool SignBin(const uint8_t* data, size_t size)
     char arg4[] = "-keyPwd";
     char arg5[] = "123456";
     char arg6[] = "-mode";
-    char arg7[] = "localSign";
+    char* arg7 = new char[size];
+    memcpy_s(arg7, size, data, size);
     char arg8[] = "-signCode";
     char arg9[] = "1";
     char arg10[] = "-signAlg";
@@ -174,6 +181,7 @@ bool SignBin(const uint8_t* data, size_t size)
                     arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25};
     int argc = 26;
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg7;
     return ret;
 }
 } // namespace SignatureTools

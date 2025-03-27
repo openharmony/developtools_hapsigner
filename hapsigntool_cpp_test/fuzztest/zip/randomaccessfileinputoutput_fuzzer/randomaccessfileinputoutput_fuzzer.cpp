@@ -41,7 +41,8 @@ void RandomAccessFileReadFileFunc(const uint8_t* data, size_t size)
 void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 {
     RandomAccessFile file;
-    if (!file.Init(UNSIGNED_HAP_FILE_PATH)) {
+    std::string name(reinterpret_cast<const char*>(data), size);
+    if (!file.Init(UNSIGNED_HAP_FILE_PATH + name)) {
         return;
     }
     int64_t fileLength = file.GetLength();
@@ -52,7 +53,8 @@ void RandomAccessFileInputConstructor(const uint8_t* data, size_t size)
 void RandomAccessFileOutputConstructor(const uint8_t* data, size_t size)
 {
     RandomAccessFile file;
-    if (!file.Init(UNSIGNED_HAP_FILE_PATH)) {
+    std::string name(reinterpret_cast<const char*>(data), size);
+    if (!file.Init(UNSIGNED_HAP_FILE_PATH + name)) {
         return;
     }
     RandomAccessFileOutput fileOutput(&file);
