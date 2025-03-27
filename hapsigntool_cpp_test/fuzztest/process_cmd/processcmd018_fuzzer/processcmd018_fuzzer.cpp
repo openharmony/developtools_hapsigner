@@ -94,7 +94,7 @@ bool RemoteSignTest(const uint8_t* data, size_t size)
     char arg19[] = "./generateKeyPair/OpenHarmony.p12";
     char arg20[] = "-username";
     char* arg21 = new char[size];
-    memcpy_s(arg23, size, data, size);
+    memcpy_s(arg21, size, data, size);
     char arg22[] = "-userPwd";
     char arg23[] = "123456";
     char* argv[] = {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,

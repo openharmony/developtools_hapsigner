@@ -269,8 +269,7 @@ void GenUnvaildFuzzHap(const std::string& path)
         SIGNATURE_TOOLS_LOGE("Unable to open file: %s", path.c_str());
         return;
     }
-    std::string text(reinterpret_cast<const char*>(data), size);
-    outfile << text;
+    outfile << "Hello, this is a Unvaild fuzz Hap.\n";
     outfile.flush();
     outfile.close();
     return;
