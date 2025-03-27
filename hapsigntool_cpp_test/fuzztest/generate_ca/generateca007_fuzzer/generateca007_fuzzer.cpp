@@ -38,7 +38,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::shared_ptr<Options> params = std::make_shared<Options>();
     std::string keyAlias = "oh-app1-key-v1";
     std::string keyAlg = "ECC";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string subject = std::string(reinterpret_cast<const char*>(data), size);
     std::string signAlg = "SHA256withECDSA";
     std::string keystoreFile = "/data/test/generateCA/OpenHarmony.p12";
     char keyPwd[] = "123456";

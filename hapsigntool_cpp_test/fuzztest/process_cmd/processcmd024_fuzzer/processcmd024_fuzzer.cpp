@@ -32,8 +32,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     }
 
     Params param;
-    std::string str;
-    std::string  algName;
+    std::string str(reinterpret_cast<const char*>(data), size);
+    std::string  algName(reinterpret_cast<const char*>(data), size);
     int algId = 256;
     std::vector<std::string> paramFields;
     std::vector<int8_t> fileBytes;

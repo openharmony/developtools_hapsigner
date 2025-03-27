@@ -23,7 +23,7 @@ namespace SignatureTools {
 bool SignBlockInfoObjectBuild(const uint8_t* data, size_t size)
 {
     SignBlockInfo object;
-    std::vector<int8_t> sig{ 48, -126, 7, -46, 6, 9, 42, -122, 72, -122, -9, 13, 1 };
+    std::vector<int8_t> sig{data, data + size};
     object.SetFileDigest(sig);
     return true;
 }
@@ -31,7 +31,7 @@ bool SignBlockInfoObjectBuild(const uint8_t* data, size_t size)
 bool SigningBlockObjectBuild(const uint8_t* data, size_t size)
 {
     int32_t type = 1;
-    std::vector<int8_t> sig{ 48, -126, 7, -46, 6, 9, 42, -122, 72, -122, -9, 13, 1 };
+    std::vector<int8_t> sig{data, data + size};
     SigningBlock object(type, sig);
     return true;
 }

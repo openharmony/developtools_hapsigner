@@ -32,7 +32,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     if (!data || !size) {
         return true;
     }
-    std::string path = "/data/test/generateCA/root-ca1.cer";
+    std::string path = std::string(reinterpret_cast<const char*>(data), size);
     CertTools::ReadfileToX509(path);
     return true;
 }
