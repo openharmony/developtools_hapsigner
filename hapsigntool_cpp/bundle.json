@@ -31,11 +31,13 @@
         "ram": "0KB",
         "deps": {
             "components": [
+                "bounds_checking_function",
                 "c_utils",
                 "json",
                 "zlib"
             ],
             "third_party": [
+                "elfio",
                 "bzip2",
                 "openssl",
                 "jsoncpp"
@@ -43,6 +45,7 @@
         },
         "build": {
             "sub_component": [
+                "//developtools/hapsigner/binary_sign_tool:binary-sign-tool",
                 "//developtools/hapsigner/hapsigntool_cpp:hap-sign-tool"
             ],
             "inner_kits": [],
