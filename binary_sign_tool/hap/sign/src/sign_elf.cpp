@@ -69,7 +69,7 @@ bool SignElf::loadModule(std::map<std::string, std::string>& signParams, std::st
         return false;
     }
     if (moduleContent.size() > MAX_SECTION_SIZE) {
-        SIGNATURE_TOOLS_LOGE("[SignElf] moduleContent size exceeds maximum allowed section size (4GB)");
+        SIGNATURE_TOOLS_LOGE("[SignElf] moduleContent size exceeds maximum allowed section size");
         return false;
     }
     return true;
@@ -100,7 +100,7 @@ bool SignElf::loadProfileAndSign(SignerConfig& signerConfig, std::map<std::strin
         p7b = profileContent;
     }
     if (p7b.size() > MAX_SECTION_SIZE) {
-        SIGNATURE_TOOLS_LOGE("[SignElf] profileContent size exceeds maximum allowed section size (4GB)");
+        SIGNATURE_TOOLS_LOGE("[SignElf] profileContent size exceeds maximum allowed section size");
         return false;
     }
     return true;
