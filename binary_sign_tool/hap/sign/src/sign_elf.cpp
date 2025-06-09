@@ -29,6 +29,7 @@ namespace SignatureTools {
 int SignElf::blockNum = 0;
 const std::string SignElf::profileSec = ".profile";
 const std::string SignElf::permissionSec = ".permission";
+constexpr size_t MAX_SECTION_SIZE = static_cast<size_t>(0xFFFFFFFF);
 
 bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string>& signParams)
 {
@@ -67,6 +68,10 @@ bool SignElf::loadModule(std::map<std::string, std::string>& signParams, std::st
         SIGNATURE_TOOLS_LOGE("[SignElf] Failed to find module file");
         return false;
     }
+    if (moduleContent.size() > MAX_SECTION_SIZE) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] moduleContent size exceeds maximum allowed section size");
+        return false;
+    }
     return true;
 }
 
@@ -93,6 +98,10 @@ bool SignElf::loadProfileAndSign(SignerConfig& signerConfig, std::map<std::strin
         }
     } else {
         p7b = profileContent;
+    }
+    if (p7b.size() > MAX_SECTION_SIZE) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] profileContent size exceeds maximum allowed section size");
+        return false;
     }
     return true;
 }
