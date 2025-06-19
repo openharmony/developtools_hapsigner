@@ -12,15 +12,16 @@
 # limitations under the License.
 
 import("cmd/signature_tools_cmd.gni")
+
 # import("codesigning/signature_tools_codesigning.gni")
 import("common/signature_tools_common.gni")
 import("hap/signature_tools_hap.gni")
 import("profile/signature_tools_profile.gni")
 import("signature_tools.gni")
+import("signer/binary_sign_tool_signer.gni")
 import("utils/signature_tools_utils.gni")
 
 import("//build/ohos.gni")
-
 ohos_copy("copy_signature_tools_resource") {
   sources = [
     "../dist/OpenHarmony.p12",
@@ -41,7 +42,6 @@ ohos_copy("copy_signature_tools_resource") {
 
 signature_tools_main_include = [
   "${signature_tools_api}/include",
-  "${signature_tools_signer}/include",
   "//third_party/openssl/include",
   "//third_party/openssl/crypto/pkcs12",
 ]
@@ -49,8 +49,6 @@ signature_tools_main_include = [
 signature_tools_main_src = [
   "main.cpp",
   "${signature_tools_api}/src/sign_tool_service_impl.cpp",
-  "${signature_tools_signer}/src/signer_factory.cpp",
-  "${signature_tools_signer}/src/local_signer.cpp",
 ]
 
 ohos_executable("binary-sign-tool") {
@@ -60,14 +58,17 @@ ohos_executable("binary-sign-tool") {
   signature_tools_main_include += signature_tools_common_include
   signature_tools_main_include += signature_tools_hap_include
   signature_tools_main_include += signature_tools_profile_include
+  signature_tools_main_include += binary_sign_tool_signer_include
   signature_tools_main_include += signature_tools_cmd_include
 
   # 在 //developtools/signaturetools/services/utils 模块里面定义编译脚本 signature_tools_utils.gni
   signature_tools_main_src += signature_tools_utils_src
+
   # signature_tools_main_src += signature_tools_codesigning_src
   signature_tools_main_src += signature_tools_common_src
   signature_tools_main_src += signature_tools_hap_src
   signature_tools_main_src += signature_tools_profile_src
+  signature_tools_main_src += binary_sign_tool_signer_src
   signature_tools_main_src += signature_tools_cmd_src
 
   include_dirs = signature_tools_main_include
