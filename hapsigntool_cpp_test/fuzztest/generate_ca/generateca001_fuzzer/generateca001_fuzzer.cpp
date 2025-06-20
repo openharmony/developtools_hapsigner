@@ -42,7 +42,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::string extKeyUsage = "codeSignature";
     std::string issuer = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Application Signature Service CA";
     std::string keyAlg = "ECC";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA";
+    std::string subject = std::string(reinterpret_cast<const char*>(data), size);
     std::string signAlg = "SHA256withECDSA";
     int basicConstraintsPathLen = 0;
     std::string keystoreFile = "/data/test/generateCA/OpenHarmony.p12";

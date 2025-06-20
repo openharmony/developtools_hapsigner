@@ -22,7 +22,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -31,11 +31,13 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg2[] = "-inFile";
     char arg3[] = "./generateKeyPair/signed-profile.p7b";
     char arg4[] = "-outFile";
-    char arg5[] = "./generateKeyPair/VerifyResult.json";
+    char* arg5 = new char[size];
+    memcpy_s(arg5, size, data, size);
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
     int argc = 6;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg5;
     return ret;
 }
 } // namespace SignatureTools

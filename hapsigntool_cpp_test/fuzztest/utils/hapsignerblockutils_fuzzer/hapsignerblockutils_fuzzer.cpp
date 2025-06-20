@@ -25,7 +25,8 @@ const std::string pathFile = "./zip/tmp.hap";
 void HapSignerBlockUtilsFunc(const uint8_t* data, size_t size)
 {
     SignatureInfo info;
-    HapSignerBlockUtils::CreatTestZipFile(pathFile, info);
+    std::string name(reinterpret_cast<const char*>(data), size);
+    HapSignerBlockUtils::CreatTestZipFile(pathFile + name, info);
 
     HapSubSignBlockHead signBlock;
     HapSubSignBlockHead profileBlock;

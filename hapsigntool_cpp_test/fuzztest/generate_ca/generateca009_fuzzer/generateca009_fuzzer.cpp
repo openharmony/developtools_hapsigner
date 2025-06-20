@@ -40,7 +40,7 @@ bool TestGenerateSubCert(const uint8_t* data, size_t size)
     std::string keystoreFile = "./generateCA/OpenHarmony.p12";
     char keystorePwd[] = "123456";
     std::string signAlg = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
+    std::string subject = std::string(reinterpret_cast<const char*>(data), size);
     std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
     char isksPwd[] = "123456";
     (*params)["keystorePwd"] = keystorePwd;
@@ -72,7 +72,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::string keystoreFile = "./generateCA/OpenHarmony.p12";
     std::string signAlg = "SHA256withECDSA";
     std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN= Openharmony Application CA";
-    std::string issuer = "C=CN,O=OpenHarmony_test,OU=OpenHarmony Community,CN= Openharmony Application SUB  CA";
+    std::string issuer(reinterpret_cast<const char*>(data), size);
     bool keyUsage = true;
     std::string basicConstraints = "true";
     std::string basicConstraintsCritical = "true";

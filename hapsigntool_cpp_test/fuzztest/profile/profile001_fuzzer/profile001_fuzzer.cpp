@@ -85,51 +85,7 @@ bool SignProfileTest002(const uint8_t* data, size_t size)
 
 bool SignProfileTest003(const uint8_t* data, size_t size)
 {
-    ASN1_TIME* time_ = ASN1_TIME_new();
-    time_t now;
-    if (time(&now) < 0) {
-        return false;
-    }
-    ASN1_TIME_set(time_, now);
-    std::string result = PKCS7Data::GetASN1Time(time_);
-    ASN1_TIME_free(time_);
-    return result.empty() == false;
-}
-
-bool SignProfileTest004(const uint8_t* data, size_t size)
-{
-    ProfileInfo info;
-    info.type = ProvisionType::RELEASE;
-    ProfileInfo info2(info);
-    return true;
-}
-
-bool SignProfileTest005(const uint8_t* data, size_t size)
-{
-    std::string  provision = "{\"app-distribution-type\": \"app_gallery\",\"b"
-        "undle-info\":{\"app-feature\":\"hos_system_app\",\"bundle-name\":\"com.Op"
-        "enHarmony.app.test\",\"developer-id\":\"OpenHarmony\",\"distribution-certif"
-        "icate\":\"-----BEGIN CERTIFICATE-----\\n"
-        "MIICMzCCAbegAwIBAgIEaOC/zDAMBggqhkjOPQQDAwUAMGMxCzAJBgNVBAYTAkNO\\n"
-        "MRQwEgYDVQQKEwtPcGVuSGFybW9ueTEZMBcGA1UECxMQT3Blbkhhcm1vbnkgVGVh\\n"
-        "bTEjMCEGA1UEAxMaT3Blbkhhcm1vbnkgQXBwbGljYXRpb24gQ0EwHhcNMjEwMjAy\\n"
-        "MTIxOTMxWhcNNDkxMjMxMTIxOTMxWjBoMQswCQYDVQQGEwJDTjEUMBIGA1UEChML\\n"
-        "T3Blbkhhcm1vbnkxGTAXBgNVBAsTEE9wZW5IYXJtb255IFRlYW0xKDAmBgNVBAMT\\n"
-        "H09wZW5IYXJtb255IEFwcGxpY2F0aW9uIFJlbGVhc2UwWTATBgcqhkjOPQIBBggq\\n"
-        "hkjOPQMBBwNCAATbYOCQQpW5fdkYHN45v0X3AHax12jPBdEDosFRIZ1eXmxOYzSG\\n"
-        "JwMfsHhUU90E8lI0TXYZnNmgM1sovubeQqATo1IwUDAfBgNVHSMEGDAWgBTbhrci\\n"
-        "FtULoUu33SV7ufEFfaItRzAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFPtxruhl\\n"
-        "cRBQsJdwcZqLu9oNUVgaMAwGCCqGSM49BAMDBQADaAAwZQIxAJta0PQ2p4DIu/ps\\n"
-        "LMdLCDgQ5UH1l0B4PGhBlMgdi2zf8nk9spazEQI/0XNwpft8QAIwHSuA2WelVi/o\\n"
-        "zAlF08DnbJrOOtOnQq5wHOPlDYB4OtUzOYJk9scotrEnJxJzGsh/\\n"
-        "-----END CERTIFICATE-----\\n"
-        "\"},\"debug-info\":{\"device-id-type\":\"udid\",\"device-ids\":[\"69C75"
-        "05BE341BDA5948C3C0CB44ABCD530296054159EFE0BD16A16CD0129CC42\",\"7EED0650"
-        "6FCE6325EB2E2FAA019458B856AB10493A6718C7679A73F958732865\"]},\"iss"
-        "uer\":\"pki_internal\",\"permissions\":{\"restricted-permissions\":"
-        "[\"\"]},\"type\":\"release\",\"uuid\":\"fe686e1b-3770-4824-a938-961b140"
-        "a7c98\",\"validity\":{\"not-after\":1705127532,\"not-before\":16105195"
-        "32},\"version-code\":1,\"version-name\":\"1.0.0\"}";
+    std::string  provision(reinterpret_cast<const char*>(data), size);
     ProfileInfo info;
     AppProvisionVerifyResult result = ParseAndVerify(provision, info);
     return result == AppProvisionVerifyResult::PROVISION_OK;
@@ -140,8 +96,6 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     SignProfileTest001(data, size);
     SignProfileTest002(data, size);
     SignProfileTest003(data, size);
-    SignProfileTest004(data, size);
-    SignProfileTest005(data, size);
     return true;
 }
 }

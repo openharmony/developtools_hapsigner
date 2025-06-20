@@ -32,7 +32,7 @@ namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
     Options option;
-    bool ret = CmdUtil::String2Bool(&option, "s");
+    bool ret = CmdUtil::String2Bool(&option, std::string(reinterpret_cast<const char*>(data), size));
     return ret;
 }
 }

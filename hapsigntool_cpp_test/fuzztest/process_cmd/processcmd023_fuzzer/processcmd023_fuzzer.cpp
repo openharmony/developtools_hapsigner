@@ -30,10 +30,10 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     }
     X509* cert = X509_new();
     std::vector<X509*> certChain;
-    std::string inputType = "clientAuthentication";
+    std::string inputType(reinterpret_cast<const char*>(data), size);
     CmdUtil::VerifyType(inputType);
     Options options;
-    std::string key1 = "key1";
+    std::string key1(reinterpret_cast<const char*>(data), size);
     std::string key2 = "key2";
     bool status = true;
     (options)["booltype"] = status;

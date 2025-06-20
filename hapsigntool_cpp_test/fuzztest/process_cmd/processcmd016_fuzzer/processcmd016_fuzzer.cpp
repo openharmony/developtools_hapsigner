@@ -22,7 +22,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -37,7 +37,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg8[] = "-signAlg";
     char arg9[] = "SHA384withECDSA";
     char arg10[] = "-inFile";
-    char arg11[] = "./generateKeyPair/profile.json";
+    char* arg11 = new char[size];
+    memcpy_s(arg11, size, data, size);
     char arg12[] = "-keystoreFile";
     char arg13[] = "./generateKeyPair/OpenHarmony.p12";
     char arg14[] = "-keystorePwd";
@@ -51,6 +52,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int argc = 20;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg11;
     return ret;
 }
 } // namespace SignatureTools

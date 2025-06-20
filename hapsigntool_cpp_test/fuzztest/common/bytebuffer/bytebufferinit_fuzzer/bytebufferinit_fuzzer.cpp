@@ -27,7 +27,7 @@ void ByteBufferTest001(const uint8_t* data, size_t size)
     int32_t type = 4;
     int32_t len = 100;
     int16_t value = 6;
-    uint8_t vValue = 16;
+    uint8_t vValue = *data;
     const char dataTest[] = "hello world!";
 
     ByteBuffer bytebuffer;

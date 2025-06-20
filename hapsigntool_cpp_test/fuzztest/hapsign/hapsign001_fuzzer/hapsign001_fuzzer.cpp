@@ -38,7 +38,7 @@ bool HapSignTest001(const uint8_t* data, size_t size)
 
     std::string mode = "localSign";
     std::string keyAlias = "oh-app1-key-v1";
-    std::string signAlg = "SHA256w";
+    std::string signAlg = std::string(reinterpret_cast<const char*>(data), size);
     std::string signCode = "0";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
@@ -106,12 +106,12 @@ bool HapSignTest003(const uint8_t* data, size_t size)
     X509* cert = X509_new();
     X509* cert1 = X509_new();
     X509_REQ* issuerReq = X509_REQ_new();
-    std::string issuername = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string issuername(reinterpret_cast<const char*>(data), size);
     X509_NAME* issName = BuildDN(issuername, issuerReq);
     CertTools::SetCertIssuerName(cert, issName);
     CertTools::SetCertIssuerName(cert1, issName);
 
-    std::string subjectname = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA";
+    std::string subjectname(reinterpret_cast<const char*>(data), size);
     X509_NAME* subName = BuildDN(subjectname, issuerReq);
     X509_set_subject_name(cert, subName);
     X509_set_subject_name(cert1, subName);
@@ -140,7 +140,7 @@ bool HapSignTest004(const uint8_t* data, size_t size)
     std::shared_ptr<Options> params = std::make_shared<Options>();
 
     std::string mode = "localSign";
-    std::string keyAlias = "oh-app1-key-v1";
+    std::string keyAlias(reinterpret_cast<const char*>(data), size);
     std::string signAlg = "SHA256withECDSA";
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
@@ -195,7 +195,7 @@ bool HapSignTest006(const uint8_t* data, size_t size)
     std::string mode = "remoteSign";
     std::string keyAlias = "oh-app1-key-v1";
     std::string signAlg = "SHA256withECDSA";
-    std::string signCode = "1";
+    std::string signCode(reinterpret_cast<const char*>(data), size);
     std::string profileFile = "./hapSign/signed-profile.p7b";
     std::string inFile = "./hapSign/phone-default-unsigned.hap";
     std::string outFile = "./hapSign/phone-default-signed.hap";
@@ -239,7 +239,7 @@ bool HapSignTest007(const uint8_t* data, size_t size)
     std::string signCode = "1";
     std::string appCertFile = "./hapSign/app-release1.pem";
     std::string profileFile = "./hapSign/signed-profile.p7b";
-    std::string profileSigned = "1";
+    std::string profileSigned(reinterpret_cast<const char*>(data), size);
     std::string inFile = "./hapSign/phone-default-unsigned";
     std::string keystoreFile = "./hapSign/ohtest.p12";
     std::string outFile = "./hapSign/phone-default-signed.hap";

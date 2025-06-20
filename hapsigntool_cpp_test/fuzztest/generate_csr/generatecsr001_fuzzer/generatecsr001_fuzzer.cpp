@@ -25,7 +25,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int keySize = 256;
     std::string algorithm = "ECC";
     std::string signAlgorithm = "SHA256withECDSA";
-    std::string subject = "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release";
+    std::string subject = std::string(reinterpret_cast<const char*>(data), size);
     KeyStoreHelper keyStoreHelper;
     EVP_PKEY* keyPair = keyStoreHelper.GenerateKeyPair(algorithm, keySize);
     if (!keyPair) {

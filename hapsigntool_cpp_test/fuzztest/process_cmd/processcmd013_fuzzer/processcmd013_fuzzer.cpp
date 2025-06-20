@@ -22,7 +22,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -33,7 +33,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg4[] = "-keyPwd";
     char arg5[] = "123456";
     char arg6[] = "-issuer";
-    char arg7[] = "C=CN;O=OpenHarmony;OU=OpenHarmony Community;CN=Application Signature Service CA";
+    char* arg7 = new char[size];
+    memcpy_s(arg7, size, data, size);
     char arg8[] = "-issuerKeyAlias";
     char arg9[] = "oh-app-sign-srv-ca-key-v1";
     char arg10[] = "-subject";
@@ -62,6 +63,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int argc = 30;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg7;
     return ret;
 }
 } // namespace SignatureTools
