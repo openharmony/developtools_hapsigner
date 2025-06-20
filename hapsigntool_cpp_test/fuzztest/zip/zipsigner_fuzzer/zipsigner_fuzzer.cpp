@@ -32,8 +32,9 @@ const char* DATA_DESC_HAP_FILE_PATH = "./zip/data_descriptor_hap.hap";
 
 void ZipSignerCompleteFlowFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(SIGNED_HAP_FILE_PATH, std::ios::binary);
-    std::ofstream outputFile(OUT_HAP_FILE_PATH, std::ios::binary | std::ios::trunc);
+    std::string name(reinterpret_cast<const char*>(data), size);
+    std::ifstream inputFile(SIGNED_HAP_FILE_PATH + name, std::ios::binary);
+    std::ofstream outputFile(OUT_HAP_FILE_PATH + name, std::ios::binary | std::ios::trunc);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -126,7 +127,8 @@ void CentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 
 void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(DATA_DESC_HAP_FILE_PATH, std::ios::binary);
+    std::string name(reinterpret_cast<const char*>(data), size);
+    std::ifstream inputFile(DATA_DESC_HAP_FILE_PATH + name, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;
@@ -148,7 +150,8 @@ void DataDescriptorInfoFunc(const uint8_t* data, size_t size)
 
 void AlignmentFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH, std::ios::binary);
+    std::string name(reinterpret_cast<const char*>(data), size);
+    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH + name, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     int aliBytes = 102400;
     if (!zip->Init(inputFile)) {
@@ -162,7 +165,8 @@ void AlignmentFunc(const uint8_t* data, size_t size)
 
 void EndOfCentralDirectoryInfoFunc(const uint8_t* data, size_t size)
 {
-    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH, std::ios::binary);
+    std::string name(reinterpret_cast<const char*>(data), size);
+    std::ifstream inputFile(UNSIGNED_HAP_FILE_PATH + name, std::ios::binary);
     auto zip = std::make_shared<ZipSigner>();
     if (!zip->Init(inputFile)) {
         return;

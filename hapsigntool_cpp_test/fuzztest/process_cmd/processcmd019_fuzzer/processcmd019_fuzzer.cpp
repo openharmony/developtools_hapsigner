@@ -28,7 +28,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -39,7 +39,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     char arg4[] = "-outCertChain";
     char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
     char arg6[] = "-outProfile";
-    char arg7[] = "./generateKeyPair/app-profile.p7b";
+    char* arg7 = new char[size];
+    memcpy_s(arg7, size, data, size);
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
     int argc = 8;
 
@@ -49,7 +50,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
 bool VerifyElf(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -60,7 +61,8 @@ bool VerifyElf(const uint8_t* data, size_t size)
     char arg4[] = "-outCertChain";
     char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
     char arg6[] = "-outProfile";
-    char arg7[] = "./generateKeyPair/app-profile.p7b";
+    char* arg7 = new char[size];
+    memcpy_s(arg7, size, data, size);
     char arg8[] = "-inForm";
     char arg9[] = "elf";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 };
@@ -72,7 +74,7 @@ bool VerifyElf(const uint8_t* data, size_t size)
 
 bool VerifyBin(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -83,13 +85,15 @@ bool VerifyBin(const uint8_t* data, size_t size)
     char arg4[] = "-outCertChain";
     char arg5[] = "./generateKeyPair/app-sign-srv-ca1.cer";
     char arg6[] = "-outProfile";
-    char arg7[] = "./generateKeyPair/app-profile.p7b";
+    char* arg7 = new char[size];
+    memcpy_s(arg7, size, data, size);
     char arg8[] = "-inForm";
     char arg9[] = "bin";
     char* argv[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 };
     int argc = 10;
 
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg7;
     return ret;
 }
 
@@ -107,7 +111,7 @@ bool TestDatastructure(const uint8_t* data, size_t size)
 
 bool TestFileUtils(const uint8_t* data, size_t size)
 {
-    std::string bytes;
+    std::string bytes(reinterpret_cast<const char*>(data), size);
     std::string file;
     bool flag = FileUtils::WriteByteToOutFile(bytes, file);
     FileUtils::DelDir(file);

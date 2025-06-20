@@ -22,14 +22,15 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size) {
+    if (!data || size <= 0) {
         return true;
     }
 
     char arg0[] = "";
     char arg1[] = "generate-csr";
     char arg2[] = "-keyAlias";
-    char arg3[] = "oh-app1-key-v1";
+    char* arg3 = new char[size];
+    memcpy_s(arg3, size, data, size);
     char arg4[] = "-keyPwd";
     char arg5[] = "123456";
     char arg6[] = "-subject";
@@ -47,6 +48,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     int argc = 16;
     bool ret = ParamsRunTool::ProcessCmd(argv, argc);
+    delete[] arg3;
     return ret;
 }
 } // namespace SignatureTools
