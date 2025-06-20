@@ -24,7 +24,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size || size < 0) {
+    if (!data || size <= 0) {
         return true;
     }
     char arg0[] = "";
@@ -64,7 +64,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
 bool RemoteSignTest(const uint8_t* data, size_t size)
 {
-    if (!data || !size || size < 0) {
+    if (!data || size <= 0) {
         return true;
     }
 
@@ -107,7 +107,7 @@ bool RemoteSignTest(const uint8_t* data, size_t size)
 
 bool SignElf(const uint8_t* data, size_t size)
 {
-    if (!data || !size || size < 0) {
+    if (!data || size <= 0) {
         return true;
     }
     char arg0[] = "";
@@ -147,7 +147,7 @@ bool SignElf(const uint8_t* data, size_t size)
 
 bool SignBin(const uint8_t* data, size_t size)
 {
-    if (!data || !size || size < 0) {
+    if (!data || size <= 0) {
         return true;
     }
     char arg0[] = "";

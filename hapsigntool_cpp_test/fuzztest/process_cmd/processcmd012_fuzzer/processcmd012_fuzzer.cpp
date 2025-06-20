@@ -22,7 +22,7 @@ namespace OHOS {
 namespace SignatureTools {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    if (!data || !size || size < 0) {
+    if (!data || size <= 0) {
         return true;
     }
 
