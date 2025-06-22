@@ -13,7 +13,7 @@
 
 import("../signature_tools.gni")
 signature_tools_hap_include = [
-  "${signature_tools_hap}/verify/include",
+  "${hapsigntool_cpp_hap}/verify/include",
   "${hapsigntool_cpp_hap}/config/include",
   "${signature_tools_hap}/entity/include",
   "${signature_tools_hap}/provider/include",
