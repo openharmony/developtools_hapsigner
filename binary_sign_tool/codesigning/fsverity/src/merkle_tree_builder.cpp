@@ -148,7 +148,7 @@ void MerkleTreeBuilder::RunHashTask(std::vector<std::vector<int8_t>>& hashes,
         ByteBuffer* chunk = Slice(bufferPtr.get(), offset, offset + CHUNK_SIZE);
         std::vector<int8_t> tmpByte(CHUNK_SIZE);
         chunk->GetData(offset + bufStartIdx, tmpByte.data(), CHUNK_SIZE);
-        bool isCsSection = (csOffset / 4096 == index);
+        bool isCsSection = (csOffset != 0 && csOffset / 4096 == index);
         if (isCsSection) {
             SIGNATURE_TOOLS_LOGI("CsSection index = %d", index);
         }
