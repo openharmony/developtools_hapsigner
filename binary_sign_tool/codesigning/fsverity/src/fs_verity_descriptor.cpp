@@ -19,57 +19,6 @@ namespace SignatureTools {
 FsVerityDescriptor::FsVerityDescriptor()
 {}
 
-FsVerityDescriptor FsVerityDescriptor::FromByteArray(std::vector<int8_t>& bytes)
-{
-    std::unique_ptr<ByteBuffer> bf = std::make_unique<ByteBuffer>(ByteBuffer(bytes.size()));
-    bf->PutData(bytes.data(), bytes.size());
-    // after put, rewind is mandatory before get
-    bf->Flip();
-    std::unique_ptr<FsVerityDescriptor::Builder> builder =
-        std::make_unique<FsVerityDescriptor::Builder>(FsVerityDescriptor::Builder());
-    int8_t inFsVersion;
-    bf->GetInt8(inFsVersion);
-    if (FsVerityDescriptor::VERSION != inFsVersion) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The FS descriptor version of FsVerityDescriptor is incorrect");
-        return builder->Build();
-    }
-    int8_t inFsHashAlgorithm;
-    bf->GetInt8(inFsHashAlgorithm);
-    int8_t inLog2BlockSize;
-    bf->GetInt8(inLog2BlockSize);
-    builder->SetVersion(inFsVersion).SetHashAlgorithm(inFsHashAlgorithm).SetLog2BlockSize(inLog2BlockSize);
-    int8_t inSaltSize;
-    bf->GetInt8(inSaltSize);
-    int32_t inSignSize;
-    bf->GetInt32(inSignSize);
-    int64_t inDataSize;
-    bf->GetInt64(inDataSize);
-    char inRootHashArr[FsVerityDescriptor::ROOT_HASH_FILED_SIZE];
-    bf->GetData(inRootHashArr, FsVerityDescriptor::ROOT_HASH_FILED_SIZE);
-    std::vector<int8_t> inRootHash(inRootHashArr, inRootHashArr + FsVerityDescriptor::ROOT_HASH_FILED_SIZE);
-    builder->SetSaltSize(inSaltSize).SetSignSize(inSignSize).SetFileSize(inDataSize).SetRawRootHash(inRootHash);
-    char inSaltArr[FsVerityDescriptor::SALT_SIZE];
-    bf->GetData(inSaltArr, FsVerityDescriptor::SALT_SIZE);
-    std::vector<int8_t> inSalt(inSaltArr, inSaltArr + FsVerityDescriptor::SALT_SIZE);
-    int32_t inFlags;
-    bf->GetInt32(inFlags);
-    bf->SetPosition(bf->GetPosition() + RESERVED_SIZE_AFTER_FLAGS);
-    int64_t inTreeOffset;
-    bf->GetInt64(inTreeOffset);
-    if (inTreeOffset % PAGE_SIZE_4K != 0) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-                            "The offset of merkle tree of FsVerityDescriptor is incorrect");
-        return builder->Build();
-    }
-    int8_t reserve[FsVerityDescriptor::RESERVED_SIZE_AFTER_TREE_OFFSET];
-    bf->GetByte(reserve, sizeof(reserve));
-    int8_t inCsVersion;
-    bf->GetInt8(inCsVersion);
-    builder->SetSalt(inSalt).SetFlags(inFlags).SetMerkleTreeOffset(inTreeOffset).SetCsVersion(inCsVersion);
-    return builder->Build();
-}
-
 void FsVerityDescriptor::ToByteArray(std::vector<int8_t> &ret)
 {
     std::unique_ptr<ByteBuffer> buffer = std::make_unique<ByteBuffer>(ByteBuffer(DESCRIPTOR_SIZE));
