@@ -26,10 +26,7 @@ namespace SignatureTools {
 const std::string options = "[options]:";
 
 const std::vector<std::string> commands = {
-    SIGN_PROFILE + options,
-    VERIFY_PROFILE + options,
     SIGN_ELF + options,
-    VERIFY_APP + options
 };
 
 ParamsTrustList ParamsTrustList::GetInstance()

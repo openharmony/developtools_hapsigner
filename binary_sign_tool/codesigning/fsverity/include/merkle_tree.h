@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
-#define SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
+#ifndef SIGNATURETOOLS_MERKLE_TREE_H
+#define SIGNATURETOOLS_MERKLE_TREE_H
 
-#include "options.h"
-#include "file_utils.h"
-#include "localization_adapter.h"
-#include "signature_tools_log.h"
-#include "service_api.h"
+#include <vector>
+
+#include "fs_verity_hash_algorithm.h"
 
 namespace OHOS {
 namespace SignatureTools {
-
-class SignToolServiceImpl : public ServiceApi {
+class MerkleTree {
 public:
-    static int GetProvisionContent(const std::string& input, std::string& ret);
-    SignToolServiceImpl() = default;
-    virtual ~SignToolServiceImpl() = default;
-    bool Sign(Options* options)override;
+    MerkleTree(const std::vector<int8_t>& rootHash, const std::vector<int8_t>& tree,
+               const SignatureTools::FsVerityHashAlgorithm& fsVerityHashAlgorithm)
+        : rootHash(rootHash),
+        tree(tree),
+        fsVerityHashAlgorithm(fsVerityHashAlgorithm)
+    {
+    }
+    std::vector<int8_t> rootHash;
+    std::vector<int8_t> tree;
+    SignatureTools::FsVerityHashAlgorithm fsVerityHashAlgorithm;
 };
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
+#endif // SIGNATURETOOLS_MERKLE_TREE_H

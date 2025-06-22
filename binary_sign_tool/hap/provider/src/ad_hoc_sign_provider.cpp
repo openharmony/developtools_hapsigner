@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
-#define SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
-
-#include "options.h"
-#include "file_utils.h"
-#include "localization_adapter.h"
-#include "signature_tools_log.h"
-#include "service_api.h"
+#include "ad_hoc_sign_provider.h"
+#include "params.h"
+#include "sign_elf.h"
 
 namespace OHOS {
 namespace SignatureTools {
-
-class SignToolServiceImpl : public ServiceApi {
-public:
-    static int GetProvisionContent(const std::string& input, std::string& ret);
-    SignToolServiceImpl() = default;
-    virtual ~SignToolServiceImpl() = default;
-    bool Sign(Options* options)override;
-};
+bool AdHocSignProvider::SignElf(Options* options)
+{
+    if (!SignProvider::CheckParams(options)) {
+        SIGNATURE_TOOLS_LOGE("Parameter check failed !");
+        return false;
+    }
+    SignerConfig signerConfig;
+    if (!SignElf::Sign(signerConfig, signParams)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] sign elf failed");
+        return false;
+    }
+    return true;
+}
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H

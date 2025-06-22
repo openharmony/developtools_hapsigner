@@ -20,6 +20,7 @@
 #include "profile_info.h"
 #include "profile_verify.h"
 #include "signature_tools_errno.h"
+#include "ad_hoc_sign_provider.h"
 #include "local_sign_provider.h"
 #include "signature_tools_log.h"
 #include "param_constants.h"
@@ -35,12 +36,12 @@ bool SignToolServiceImpl::Sign(Options* options)
         SIGNATURE_TOOLS_LOGE("inFile is not a elf file");
         return false;
     }
-    if (options->GetString(Options::AD_HOC) == ParamConstants::AD_HOC_TYPE_1) {
-        return SignAdHoc(options);
-    }
     std::string mode = options->GetString(Options::MODE);
+    std::string adhoc = options->GetString(Options::AD_HOC);
     std::shared_ptr<SignProvider> signProvider;
-    if (LOCAL_SIGN == mode) {
+    if (ParamConstants::AD_HOC_TYPE_1 == adhoc) {
+        signProvider = std::make_shared<AdHocSignProvider>();
+    } else if (LOCAL_SIGN == mode) {
         signProvider = std::make_shared<LocalSignProvider>();
     } else if (REMOTE_SIGN == mode) {
         signProvider = std::make_shared<RemoteSignProvider>();
@@ -71,22 +72,6 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         return INVALIDPARAM_ERROR;
     }
     return 0;
-}
-
-bool SignToolServiceImpl::SignAdHoc(Options* options)
-{
-    std::string inFile = options->GetString(Options::IN_FILE);
-    std::string outFile = options->GetString(Options::OUT_FILE);
-    std::string tmpOutFile = outFile;
-    if (outFile == inFile) {
-        tmpOutFile = "tmp-signed-elf";
-    }
-    bool ret = std::filesystem::copy_file(inFile, tmpOutFile, std::filesystem::copy_options::overwrite_existing);
-    if (!ret) {
-        SIGNATURE_TOOLS_LOGE("Error: SignAdHoc failed");
-        return false;
-    }
-    return FileUtils::CopyTmpFileAndDel(tmpOutFile, outFile);
 }
 } // namespace SignatureTools
 } // namespace OHOS

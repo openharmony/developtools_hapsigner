@@ -26,6 +26,7 @@ signature_tools_hap_src = [
   "${signature_tools_hap}/entity/src/content_digest_algorithm.cpp",
   "${signature_tools_hap}/entity/src/param_constants.cpp",
   "${signature_tools_hap}/entity/src/signature_algorithm_helper.cpp",
+  "${signature_tools_hap}/provider/src/ad_hoc_sign_provider.cpp",
   "${signature_tools_hap}/provider/src/local_sign_provider.cpp",
   "${signature_tools_hap}/provider/src/remote_sign_provider.cpp",
   "${signature_tools_hap}/provider/src/sign_provider.cpp",

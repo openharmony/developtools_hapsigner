@@ -35,10 +35,8 @@
 #include "signer_config.h"
 #include "param_constants.h"
 #include "byte_buffer.h"
-#include "hap_utils.h"
 #include "pkcs7_data.h"
 #include "profile_verify.h"
-#include "signature_info.h"
 
 typedef std::tuple<std::shared_ptr<std::ifstream>, std::shared_ptr<std::ofstream>, std::string> fileIOTuple;
 namespace OHOS {
@@ -47,8 +45,7 @@ class SignProvider {
 public:
     SignProvider() = default;
     virtual ~SignProvider() = default;
-    bool Sign(Options* options);
-    bool SignElf(Options* options);
+    virtual bool SignElf(Options* options);
     bool SetSignParams(Options* options, std::unordered_set<std::string>& paramSet);
     virtual std::optional<X509_CRL*> GetCrl();
     virtual bool CheckParams(Options* options);
@@ -58,23 +55,15 @@ protected:
     void CheckSignAlignment();
     X509* GetCertificate(const std::string& certificate)const;
     std::string GetCertificateCN(X509* cert)const;
-    std::string FindProfileFromOptionalBlocks()const;
-    int CheckProfileValid(STACK_OF(X509)* inputCerts);
+    int CheckProfileValid(STACK_OF(X509)* inputCerts, const std::string& file);
     int CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inputCerts)const;
-    int LoadOptionalBlocks();
-    std::vector<OptionalBlock> optionalBlocks;
     std::map<std::string, std::string> signParams = std::map<std::string, std::string>();
 
 private:
     bool InitSigerConfig(SignerConfig& signerConfig, STACK_OF(X509)* publicCerts, Options* options);
-
     bool CreateSignerConfigs(STACK_OF(X509)* certificates, const std::optional<X509_CRL*>& crl,
                              Options* options, SignerConfig&);
-
     bool CheckSignatureAlg();
-    int LoadOptionalBlock(const std::string& file, int type);
-    bool CheckFile(const std::string& filePath);
-
     int GetX509Certificates(Options* options, STACK_OF(X509)** ret);
     int GetPublicCerts(Options* options, STACK_OF(X509)** ret);
     int GetCertificateChainFromFile(const std::string& certChianFile, STACK_OF(X509)** ret);
@@ -82,7 +71,6 @@ private:
 
 private:
     static std::vector<std::string> VALID_SIGN_ALG_NAME;
-    static constexpr int FOUR_BYTE = 4;
     std::string profileContent;
 };
 } // namespace SignatureTools

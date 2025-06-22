@@ -24,10 +24,10 @@ namespace OHOS {
 namespace SignatureTools {
 
 const std::string HELP_TXT_HEADER = R"(
-USAGE: <sign|verify-app>[options]
+USAGE: <sign>[options]
 )";
 
-const std::string SIGN_APP_HELP_TXT = R"(
+const std::string SIGN_HELP_TXT = R"(
     sign[options]:
         -mode : signature mode, required fields, including localSign/remoteSign/remoteResign;
         -keyAlias : key alias, required fields;
@@ -62,23 +62,12 @@ const std::string SIGN_APP_HELP_TXT = R"(
 -profileFile "/home/signed-profile.p7b" -inFile "/home/app1-unsigned.hap" -signAlg SHA256withECDSA
 )";
 
-const std::string VERIFY_APP_HELP_TXT = R"(
-    verify-app[options]:
-        -inFile : signed application package file, hap or bin format, required fields;
-        -outCertChain : signed certificate chain file, required fields;
-        -outProfile : profile file in application package, required fields;
-
-    EXAMPLE:
-        verify-app-inFile "/home/app1-signed.hap" -outCertChain "outCertChain.cer" -outProfile "outprofile.p7b"
-)";
-
 const std::string HELP_END_TXT = R"(
 COMMANDS :
     sign : application package signature
-    verify-app : application package file verification
 )";
 /* help.txt all content */
-const std::string HELP_TXT = HELP_TXT_HEADER + SIGN_APP_HELP_TXT + VERIFY_APP_HELP_TXT + HELP_END_TXT;
+const std::string HELP_TXT = HELP_TXT_HEADER + SIGN_HELP_TXT + HELP_END_TXT;
 }
 }
 #endif
