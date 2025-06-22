@@ -16,7 +16,9 @@ signature_tools_codesigning_include = [
   "${signature_tools_codesigning}/fsverity/include",
   #"${signature_tools_codesigning}/utils/include",
   "${signature_tools_codesigning}/sign/include",
+  "${hapsigntool_cpp_codesigning}/sign/include",
   "${hapsigntool_cpp_codesigning}/utils/include",
+  "${hapsigntool_cpp_codesigning}/fsverity/include",
 ]
 
 signature_tools_codesigning_src = [
