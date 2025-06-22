@@ -28,26 +28,25 @@ namespace OHOS {
 namespace SignatureTools {
 class SignElf {
 public:
-    static const char CODESIGN_BLOCK_TYPE = 3;
     static bool Sign(SignerConfig& signerConfig, std::map<std::string, std::string> &signParams);
 
 private:
-    static int blockNum;
-    static constexpr int FILE_PATH_LENGTH = 256;
     static constexpr int PAGE_SIZE = 4096;
-    static constexpr int FILE_BUFFER_BLOCK = 16384;
     static const std::string profileSec;
     static const std::string permissionSec;
+    static const std::string codesignSec;
 
     static bool loadModule(std::map<std::string, std::string>& signParams, std::string& moduleContent);
     static bool loadProfileAndSign(SignerConfig& signerConfig, std::map<std::string, std::string>& signParams,
                             std::string& p7b);
     static bool isExecElf(ELFIO::elfio& reader);
-    static bool WriteCodeSignBlock(SignerConfig& signerConfig, const std::map<std::string, std::string>& signParams,
-                                    long secOffset);
+    static bool WriteCodeSignBlock(ELFIO::elfio& reader, std::string& tmpOutputFilePath, uint64_t& csOffset);
     static bool WriteSection(ELFIO::elfio& reader, const std::string& content, const std::string& secName);
     static bool WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfig,
                                    std::map<std::string, std::string>& signParams);
+    static bool GenerateCodeSignByte(SignerConfig& signerConfig, const std::string& inputFile, uint64_t& csOffset,
+                                     const std::string& adHoc);
+    static bool ReplaceDataOffset(const std::string& filePath, uint64_t& csOffset, const std::vector<int8_t>& csData);
 };
 } // namespace SignatureTools
 } // namespace OHOS

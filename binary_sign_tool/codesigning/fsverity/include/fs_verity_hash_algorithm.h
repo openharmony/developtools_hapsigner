@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
-#define SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
+#ifndef SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H
+#define SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H
 
-#include "options.h"
-#include "file_utils.h"
-#include "localization_adapter.h"
-#include "signature_tools_log.h"
-#include "service_api.h"
+#include <string>
 
 namespace OHOS {
 namespace SignatureTools {
-
-class SignToolServiceImpl : public ServiceApi {
+class FsVerityHashAlgorithm {
 public:
-    static int GetProvisionContent(const std::string& input, std::string& ret);
-    SignToolServiceImpl() = default;
-    virtual ~SignToolServiceImpl() = default;
-    bool Sign(Options* options)override;
+    static const FsVerityHashAlgorithm SHA256;
+    static const FsVerityHashAlgorithm SHA512;
+    FsVerityHashAlgorithm(const uint8_t id, const std::string& hashAlgorithm, const int outputByteSize)
+        : id(id), hashAlgorithm(hashAlgorithm), outputByteSize(outputByteSize)
+    {
+    }
+    char GetId() const;
+    const std::string& GetHashAlgorithm() const;
+    int GetOutputByteSize() const;
+
+private:
+    const uint8_t id;
+    const std::string hashAlgorithm;
+    const int outputByteSize;
 };
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // SIGNATRUETOOLS_SIGNTOOLSERVICELMPL_H
+#endif // SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H

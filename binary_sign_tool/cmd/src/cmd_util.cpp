@@ -87,18 +87,6 @@ static bool UpdateParamForVariantInt(const ParamsSharedPtr& param)
             return false;
         }
     }
-    if (options->count(Options::BASIC_CONSTRAINTS_PATH_LEN)) {
-        int basicConstraintsPathLen = 0;
-        std::string val = options->GetString(Options::BASIC_CONSTRAINTS_PATH_LEN);
-        if (!StringUtils::CheckStringToint(val, basicConstraintsPathLen)) {
-            PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Invalid parameter '"
-                                + val + "', You should fill in the numbers");
-            return false;
-        }
-        (*options)[Options::BASIC_CONSTRAINTS_PATH_LEN] = basicConstraintsPathLen;
-    } else if (param->GetMethod() == GENERATE_CA || param->GetMethod() == GENERATE_CERT) {
-        (*options)[Options::BASIC_CONSTRAINTS_PATH_LEN] = DEFAULT_BASIC_CONSTRAINTS_PATH_LEN;
-    }
     if (!UpdateParamForVariantCertInt(param)) {
         return false;
     }
@@ -278,29 +266,6 @@ static bool UpdateParamForOutform(const ParamsSharedPtr& param)
     return true;
 }
 
-// Check "remoteSign" additional parameters are required
-static bool UpdateParamForCheckRemoteSignProfile(const ParamsSharedPtr& param)
-{
-    Options* options = param->GetOptions();
-    std::set<std::string> signProfileRemoteParams{ParamConstants::PARAM_REMOTE_SERVER,
-                                                ParamConstants::PARAM_REMOTE_USERNAME,
-                                                ParamConstants::PARAM_REMOTE_USERPWD,
-                                                ParamConstants::PARAM_REMOTE_ONLINEAUTHMODE,
-                                                ParamConstants::PARAM_REMOTE_SIGNERPLUGIN};
-
-    if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) &&
-        options->GetString(Options::MODE) == REMOTE_SIGN) {
-        for (const std::string& key : signProfileRemoteParams) {
-            if (options->count(key) == 0) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "sign profile RemoteSign absence param '"
-                                    + key + "'");
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 static bool UpdateParam(const ParamsSharedPtr& param)
 {
     if (!UpdateParamForVariantInt(param)) {
@@ -319,9 +284,6 @@ static bool UpdateParam(const ParamsSharedPtr& param)
         return false;
     }
     if (!UpdateParamForOutform(param)) {
-        return false;
-    }
-    if (!UpdateParamForCheckRemoteSignProfile(param)) {
         return false;
     }
     return true;
