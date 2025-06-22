@@ -19,6 +19,7 @@ namespace SignatureTools {
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
 const int8_t FsVerityGenerator::LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
+const uint8_t ELF_CODE_SIGN_VERSION = 0x3;
 const FsVerityHashAlgorithm FsVerityGenerator::FS_VERITY_HASH_ALGORITHM = FS_SHA256;
 
 MerkleTree* FsVerityGenerator::GenerateMerkleTree(std::istream& inputStream, long size,
@@ -45,7 +46,7 @@ bool FsVerityGenerator::GenerateFsVerityDigest(std::istream& inputStream, long s
         .SetSalt(salt)
         .SetRawRootHash(merkleTree_ptr->rootHash)
         .SetFlags(flags)
-        .SetCsVersion(FsVerityDescriptor::ELF_CODE_SIGN_VERSION);
+        .SetCsVersion(ELF_CODE_SIGN_VERSION);
     std::vector<int8_t> fsVerityDescriptor;
     builder->Build().GetByteForGenerateDigest(fsVerityDescriptor);
     DigestUtils digestUtils(HASH_SHA256);

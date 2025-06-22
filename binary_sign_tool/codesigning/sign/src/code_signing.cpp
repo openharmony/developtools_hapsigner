@@ -25,6 +25,8 @@ namespace SignatureTools {
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
 const int8_t LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
+const int FLAG_AD_HOC = 1 << 4;
+const uint8_t ELF_CODE_SIGN_VERSION = 0x3;
 
 CodeSigning::CodeSigning(SignerConfig* signConfig, bool adHoc)
 {
@@ -46,7 +48,7 @@ bool CodeSigning::GetElfCodeSignBlock(const std::string &input, uint64_t& csOffs
     }
     int flags = 0;
     if (m_adHoc) {
-        flags = flags | FsVerityDescriptor::FLAG_AD_HOC;
+        flags = flags | FLAG_AD_HOC;
     }
     std::streamsize fileSize = inputstream.tellg();
     inputstream.seekg(0, std::ios::beg);
@@ -77,7 +79,7 @@ bool CodeSigning::GetElfCodeSignBlock(const std::string &input, uint64_t& csOffs
               .SetSalt(fsVerityGenerator->GetSalt())
               .SetRawRootHash(fsVerityGenerator->GetRootHash())
               .SetFlags(flags)
-              .SetCsVersion(FsVerityDescriptor::ELF_CODE_SIGN_VERSION);
+              .SetCsVersion(ELF_CODE_SIGN_VERSION);
 
     FsVerityDescriptorWithSign fsVerityDescriptorWithSign =
         FsVerityDescriptorWithSign(FsVerityDescriptor(fsdbuilder), signature);
