@@ -360,3 +360,114 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
   
 #### 相关仓
    不涉及
+
+# 二进制签名工具
+
+* 简介
+* 目录
+* 约束
+* 编译构建
+* 说明
+  * 签名相关文件用法说明
+  * 使用说明
+  * 接口说明
+* 相关仓
+
+#### 简介
+
+为了保证OpenHarmony加载二进制文件的完整性和来源可靠，需要对二进制ELF文件进行签名。经过签名的二进制文件才能在真机设备上运行和调试。本仓提供了二进制签名工具的源码，支持对二进制ELF文件（可执行bin或so文件）进行签名功能。
+在支持强制代码签名机制的设备上，该机制可以为应用提供运行时的合法性校验以及完整性保护，杜绝未经审核的恶意代码在端侧任意执行，或应用代码被攻击者恶意篡改。
+
+
+#### 目录
+
+    developtools_hapsigner
+
+    ├── binary_sign_tool         # 二进制签名工具根目录
+          ├── api                # 签名接口api
+          ├── cmd                # 命令行输入
+          ├── codesigning        # 代码签名模块
+          ├── common             # 公共类
+          ├── hap                # 签名验签
+          ├── main.cpp           # 程序执行入口
+          ├── profile            # profile签名验签
+          ├── signer             # 签名工厂
+          ├── utils              # 工具类
+    ├── dist                     # SDK预置文件
+
+
+#### 约束
+
+二进制签名工具（binary-sign-tool）基于openharmony标准系统编译构建ohos-sdk形态，使用前先配置openharmony开发环境，并使用C++17及以上语言标准。
+
+#### 编译构建
+
+1. 编译ohos-sdk形态签名工具
+   + 编译**release**版本：默认是release版本，直接编译即可。
+   + 编译**debug**版本（增加了调试日志）：在 binary_sign_tool/BUILD.gn 中 添加 defines = [ "SIGNATURE_LOG_DEBUG" ] 即可。
+
+2. 编译命令：./build.sh --product-name ohos-sdk
+
+3. 编译产物路径：/openharmony_master/out/sdk/packages/ohos-sdk/ohos
+
+**特别说明**：
+
+1.工具仅支持**ECC**密钥算法，不支持RSA。
+
+2.工具仅支持PKCS#12密钥库格式，支持的密钥库文件后缀为.p12或.jks。
+
+#### 说明
+##### 签名相关文件用法说明
+
+开发者可在SDK中获得如下签名相关文件：
+
+```
+签名密钥库文件：OpenHarmony.p12
+Profile签名证书：OpenHarmonyProfileRelease.pem、OpenHarmonyProfileDebug.pem
+签名工具：binary-sign-tool
+```
+
+##### 使用说明
+
+（1）二进制签名工具（binary-sign-tool）的命令实例如下：
+
+```shell
+binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -profileSigned "1" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.p12" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -moduleFile "module.json" -adHoc "1"
+```
+
+上述命令的参数说明如下:
+
+    sign : 二进制文件签名
+         ├── -keyAlias          #密钥别名，必填项，不区分大小写
+         ├── -keyPwd            #密钥口令，可选项
+         ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
+         ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
+         ├── -inFile            #输入的原始elf文件，必填项
+         ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
+         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项
+         ├── -keystorePwd       #密钥库口令，可选项
+         ├── -outFile           #输出签名后文件，必填项
+         ├── -moduleFile        #权限module.json文件，可选项
+         ├── -adHoc             #是否本机调试模式，1表示开启，可选项。
+
+##### 接口说明
+
+1.二进制文件签名
+  
+    sign : 二进制文件签名
+         ├── -keyAlias          #密钥别名，必填项，不区分大小写
+         ├── -keyPwd            #密钥口令，可选项
+         ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
+         ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
+         ├── -inFile            #输入的原始elf文件，必填项
+         ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
+         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项
+         ├── -keystorePwd       #密钥库口令，可选项
+         ├── -outFile           #输出签名后文件，必填项
+         ├── -moduleFile        #权限module.json文件，可选项
+         ├── -adHoc             #是否本机调试模式，1表示开启，可选项。
+
+#### 相关仓
+   不涉及
