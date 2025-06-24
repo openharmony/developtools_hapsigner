@@ -12,11 +12,14 @@
 # limitations under the License.
 
 import("../signature_tools.gni")
-signature_tools_cmd_include = [ "${signature_tools_cmd}/include" ]
+signature_tools_cmd_include = [
+  "${signature_tools_cmd}/include",
+  "${hapsigntool_cpp_cmd}/include",
+]
 
 signature_tools_cmd_src = [
   "${signature_tools_cmd}/src/cmd_util.cpp",
   "${signature_tools_cmd}/src/params_run_tool.cpp",
   "${signature_tools_cmd}/src/params_trust_list.cpp",
-  "${signature_tools_cmd}/src/params.cpp",
+  "${hapsigntool_cpp_cmd}/src/params.cpp",
 ]

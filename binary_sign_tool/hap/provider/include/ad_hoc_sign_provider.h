@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef SIGNATRUETOOLS_AD_HOC_SIGN_PROVIDER_H
+#define SIGNATRUETOOLS_AD_HOC_SIGN_PROVIDER_H
 
-#include "dynamic_lib_handle.h"
+#include "sign_provider.h"
 
 namespace OHOS {
 namespace SignatureTools {
-void* DynamicLibHandle::handle = nullptr;
-DynamicLibHandle::~DynamicLibHandle()
-{
-    if (handle != nullptr) {
-        if (dlclose(handle) != 0) {
-            SIGNATURE_TOOLS_LOGE("dlclose() %s", dlerror());
-        }
-    }
-}
+class AdHocSignProvider : public SignProvider {
+public:
+    AdHocSignProvider() = default;
+    ~AdHocSignProvider() = default;
+    bool SignElf(Options* options);
+};
 } // namespace SignatureTools
 } // namespace OHOS
+#endif // SIGNATRUETOOLS_AD_HOC_SIGN_PROVIDER_H

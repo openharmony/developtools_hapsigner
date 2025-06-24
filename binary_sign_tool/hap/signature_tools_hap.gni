@@ -13,8 +13,8 @@
 
 import("../signature_tools.gni")
 signature_tools_hap_include = [
-  "${signature_tools_hap}/verify/include",
-  "${signature_tools_hap}/config/include",
+  "${hapsigntool_cpp_hap}/verify/include",
+  "${hapsigntool_cpp_hap}/config/include",
   "${signature_tools_hap}/entity/include",
   "${signature_tools_hap}/provider/include",
   "${signature_tools_hap}/sign/include",
@@ -22,14 +22,15 @@ signature_tools_hap_include = [
 ]
 
 signature_tools_hap_src = [
-  "${signature_tools_hap}/config/src/signer_config.cpp",
-  "${signature_tools_hap}/entity/src/content_digest_algorithm.cpp",
+  "${hapsigntool_cpp_hap}/config/src/signer_config.cpp",
+  "${hapsigntool_cpp_hap}/entity/src/content_digest_algorithm.cpp",
   "${signature_tools_hap}/entity/src/param_constants.cpp",
-  "${signature_tools_hap}/entity/src/signature_algorithm_helper.cpp",
+  "${hapsigntool_cpp_hap}/entity/src/signature_algorithm_helper.cpp",
+  "${signature_tools_hap}/provider/src/ad_hoc_sign_provider.cpp",
   "${signature_tools_hap}/provider/src/local_sign_provider.cpp",
-  "${signature_tools_hap}/provider/src/remote_sign_provider.cpp",
+  "${hapsigntool_cpp_hap}/provider/src/remote_sign_provider.cpp",
   "${signature_tools_hap}/provider/src/sign_provider.cpp",
   "${signature_tools_hap}/sign/src/sign_elf.cpp",
-  "${signature_tools_hap}/utils/src/dynamic_lib_handle.cpp",
+  "${hapsigntool_cpp_hap}/utils/src/dynamic_lib_handle.cpp",
   "${signature_tools_hap}/sign/src/bc_pkcs7_generator.cpp",
 ]

@@ -78,14 +78,14 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
     if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
         return false;
     }
-    if (params->GetString(Options::AD_HOC) == ParamConstants::AD_HOC_TYPE_1) {
-        return api.Sign(params);
-    }
     std::string mode = params->GetString(Options::MODE);
     if (!StringUtils::CaseCompare(mode, LOCAL_SIGN) &&
         !StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "not support command param '" + mode + "'");
         return false;
+    }
+    if (params->GetString(Options::AD_HOC) == ParamConstants::AD_HOC_TYPE_1) {
+        return api.Sign(params);
     }
     if (StringUtils::CaseCompare(mode, LOCAL_SIGN)) {
         if (!params->Required({Options::KEY_STORE_FILE, Options::KEY_ALIAS, Options::APP_CERT_FILE})) {
@@ -109,6 +109,10 @@ bool ParamsRunTool::CheckProfile(Options& params)
 {
     std::string profileFile = params.GetString(Options::PROFILE_FILE);
     std::string profileSigned = params.GetString(Options::PROFILE_SIGNED);
+    if (profileFile.empty()) {
+        SIGNATURE_TOOLS_LOGI("[SignElf] No profile file");
+        return true;
+    }
     if (profileSigned == DEFAULT_PROFILE_SIGNED_1) {
         if (!FileUtils::ValidFileType(profileFile, {"p7b"})) {
             return false;
