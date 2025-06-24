@@ -66,7 +66,6 @@ bool SignProvider::SignElf(Options* options)
     }
     SignerConfig signerConfig;
     if (!InitSigerConfig(signerConfig, publicCerts, options)) {
-        sk_X509_pop_free(publicCerts, X509_free);
         SIGNATURE_TOOLS_LOGE("SignElf] create Signer Configs failed");
         return false;
     }
