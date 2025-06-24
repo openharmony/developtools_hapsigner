@@ -30,9 +30,6 @@ public:
     SignToolServiceImpl() = default;
     virtual ~SignToolServiceImpl() = default;
     bool Sign(Options* options)override;
-
-private:
-    bool SignAdHoc(Options* options);
 };
 } // namespace SignatureTools
 } // namespace OHOS

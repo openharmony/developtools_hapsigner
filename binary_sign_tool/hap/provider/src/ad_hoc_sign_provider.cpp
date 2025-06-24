@@ -12,27 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_MATCHING_RESULT_H
-#define SIGNATRUETOOLS_MATCHING_RESULT_H
+#include "ad_hoc_sign_provider.h"
+#include "params.h"
+#include "sign_elf.h"
+
 namespace OHOS {
 namespace SignatureTools {
-enum SourcesTrusted {
-    OTHER_TRUSTED_SOURCE = 0,
-    APP_GALLARY,
-    APP_SYSTEM,
-    APP_THIRD_PARTY_PRELOAD,
-};
-enum StatesMatching {
-    DO_NOT_MATCH = 0,
-    MATCH_WITH_SIGN,
-    MATCH_WITH_PROFILE,
-    MATCH_WITH_PROFILE_DEBUG,
-    MATCH_WITH_TICKET,
-};
-struct MatchingResult {
-    StatesMatching matchState;
-    SourcesTrusted source;
-};
+bool AdHocSignProvider::SignElf(Options* options)
+{
+    if (!SignProvider::CheckParams(options)) {
+        SIGNATURE_TOOLS_LOGE("Parameter check failed !");
+        return false;
+    }
+    SignerConfig signerConfig;
+    if (!SignElf::Sign(signerConfig, signParams)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] sign elf failed");
+        return false;
+    }
+    return true;
+}
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // HAP_MATCHING_RESULT_H

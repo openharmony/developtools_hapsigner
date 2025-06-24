@@ -48,6 +48,15 @@ bool SignProvider::InitSigerConfig(SignerConfig& signerConfig, STACK_OF(X509)* p
 
 bool SignProvider::SignElf(Options* options)
 {
+    // 1.check the parameters
+    if (!CheckParams(options)) {
+        SIGNATURE_TOOLS_LOGE("Check Params failed please check");
+        return false;
+    }
+    if (!CheckSignatureAlg()) {
+        SIGNATURE_TOOLS_LOGE("signAlg Parameter is not support");
+        return false;
+    }
     STACK_OF(X509)* publicCerts = nullptr;
     int ret = GetX509Certificates(options, &publicCerts);
     if (ret != RET_OK) {
@@ -64,7 +73,6 @@ bool SignProvider::SignElf(Options* options)
     if (!profileContent.empty()) {
         signParams.insert(std::make_pair(ParamConstants::PARAM_PROFILE_JSON_CONTENT, profileContent));
     }
-
     if (!SignElf::Sign(signerConfig, signParams)) {
         SIGNATURE_TOOLS_LOGE("[SignElf] sign elf failed");
         return false;
@@ -82,8 +90,7 @@ bool SignProvider::CreateSignerConfigs(STACK_OF(X509)* certificates, const std::
     std::vector<SignatureAlgorithmHelper> signatureAlgorithms;
     SignatureAlgorithmHelper alg;
     // Since CheckParmaAndInitConfig has already validated all parameters, it is possible to directly use at
-    if (!Params::GetSignatureAlgorithm(signParams.at(ParamConstants::PARAM_BASIC_SIGANTURE_ALG),
-                                       alg)) {
+    if (!Params::GetSignatureAlgorithm(signParams.at(ParamConstants::PARAM_BASIC_SIGANTURE_ALG), alg)) {
         SIGNATURE_TOOLS_LOGE("[Sign] get Signature Algorithm failed");
         return false;
     }
@@ -96,90 +103,26 @@ bool SignProvider::CreateSignerConfigs(STACK_OF(X509)* certificates, const std::
     return true;
 }
 
-int SignProvider::LoadOptionalBlocks()
-{
-    int ret = RET_OK;
-    if (auto property = signParams.find(ParamConstants::PARAM_BASIC_PROPERTY);
-        property != signParams.end()) {
-        if ((ret = LoadOptionalBlock(property->second, HapUtils::HAP_PROPERTY_BLOCK_ID)) != RET_OK)
-            return ret;
-    }
-    if (auto profile = signParams.find(ParamConstants::PARAM_BASIC_PROFILE); profile != signParams.end()) {
-        if ((ret = LoadOptionalBlock(profile->second, HapUtils::HAP_PROFILE_BLOCK_ID)) != RET_OK)
-            return ret;
-    }
-    if (auto proofOfRotation = signParams.find(ParamConstants::PARAM_BASIC_PROOF);
-        proofOfRotation != signParams.end()) {
-        if ((LoadOptionalBlock(proofOfRotation->second, HapUtils::HAP_PROOF_OF_ROTATION_BLOCK_ID)) != RET_OK)
-            return ret;
-    }
-    return ret;
-}
-
-int SignProvider::LoadOptionalBlock(const std::string& file, int type)
-{
-    if (file.empty())
-        return RET_OK;
-    if (!CheckFile(file)) {
-        SIGNATURE_TOOLS_LOGE("check file failed. Invalid file: %s, file type: %d",
-                             file.c_str(), type);
-        return FILE_NOT_FOUND;
-    }
-    ByteBuffer optionalBlockBuffer;
-    if (!FileUtils::ReadFileToByteBuffer(file, optionalBlockBuffer))
-        return IO_ERROR;
-    if (optionalBlockBuffer.GetCapacity() == 0) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, file + " is empty!");
-        return IO_ERROR;
-    }
-    optionalBlocks.push_back({type, optionalBlockBuffer});
-    return RET_OK;
-}
-
 std::optional<X509_CRL*> SignProvider::GetCrl()
 {
     return std::nullopt;
 }
 
-bool SignProvider::CheckFile(const std::string& filePath)
-{
-    if (filePath.empty()) {
-        PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "file name is null.");
-        return false;
-    }
-    if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, filePath + " not exist or can not read!");
-        return false;
-    }
-    return true;
-}
-
 int SignProvider::GetX509Certificates(Options* options, STACK_OF(X509)** X509Vec)
 {
     int ret = RET_OK;
-    // 1.check the parameters
-    if (!CheckParams(options)) {
-        SIGNATURE_TOOLS_LOGE("Check Params failed please check");
-        return COMMAND_ERROR;
-    }
     // 2.get x509 verify certificate
     ret = GetPublicCerts(options, X509Vec);
     if (ret != RET_OK) {
         SIGNATURE_TOOLS_LOGE("Get Public Certs please check");
         return ret;
     }
-    // 3. load optionalBlocks
-    ret = LoadOptionalBlocks();
-    if (ret != RET_OK) {
-        SIGNATURE_TOOLS_LOGE("Load Optional Blocks please check");
-        return ret;
-    }
     std::string profileFile = options->GetString(Options::PROFILE_FILE);
     if (FileUtils::IsEmpty(profileFile)) {
         return ret;
     }
-    // 4. check Profile Valid
-    if ((ret = CheckProfileValid(*X509Vec)) < 0) {
+    // 3. check Profile Valid
+    if ((ret = CheckProfileValid(*X509Vec, profileFile)) < 0) {
         SIGNATURE_TOOLS_LOGE("profile check error");
         sk_X509_pop_free(*X509Vec, X509_free);
         *X509Vec = nullptr;
@@ -251,8 +194,6 @@ bool SignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
     paramFileds.emplace_back(ParamConstants::PARAM_BASIC_PRIVATE_KEY);
     paramFileds.emplace_back(ParamConstants::PARAM_BASIC_PROFILE);
-    paramFileds.emplace_back(ParamConstants::PARAM_BASIC_PROOF);
-    paramFileds.emplace_back(ParamConstants::PARAM_BASIC_PROPERTY);
     paramFileds.emplace_back(ParamConstants::PARAM_REMOTE_SERVER);
     paramFileds.emplace_back(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
     paramFileds.emplace_back(ParamConstants::PARAM_LOCAL_PUBLIC_CERT);
@@ -275,11 +216,6 @@ bool SignProvider::CheckParams(Options* options)
         || signParams.at(ParamConstants::PARAM_AD_HOC).empty()) {
         signParams[ParamConstants::PARAM_AD_HOC] = ParamConstants::AD_HOC_TYPE_0;
     }
-    if (!CheckSignatureAlg()) {
-        SIGNATURE_TOOLS_LOGE("signAlg Parameter is not support");
-        return false;
-    }
-    CheckSignAlignment();
     return true;
 }
 
@@ -356,21 +292,13 @@ std::string SignProvider::GetCertificateCN(X509* cert)const
     return ret;
 }
 
-std::string SignProvider::FindProfileFromOptionalBlocks()const
+int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts, const std::string& file)
 {
     std::string profile;
-    for (const OptionalBlock& optionalBlock : optionalBlocks) {
-        if (optionalBlock.optionalType == HapUtils::HAP_PROFILE_BLOCK_ID) {
-            profile = std::string(optionalBlock.optionalBlockValue.GetBufferPtr(),
-                                  optionalBlock.optionalBlockValue.GetCapacity());
-        }
+    if (FileUtils::ReadFile(file, profile) < 0) {
+        SIGNATURE_TOOLS_LOGE("profile read faild!");
+        return IO_ERROR;
     }
-    return profile;
-}
-
-int SignProvider::CheckProfileValid(STACK_OF(X509)* inputCerts)
-{
-    std::string profile = FindProfileFromOptionalBlocks();
     std::map<std::string, std::string>::const_iterator ite =
         signParams.find(ParamConstants::PARAM_BASIC_PROFILE_SIGNED);
     if (ite == signParams.end()) {
