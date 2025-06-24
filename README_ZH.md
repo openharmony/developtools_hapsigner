@@ -445,7 +445,7 @@ binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -app
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项
+         ├── -keystoreFile      #密钥库文件，非adHoc模式时为必填项
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
@@ -463,7 +463,7 @@ binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -app
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      #密钥库文件，localSign模式时为必填项
+         ├── -keystoreFile      #密钥库文件，非adHoc模式时为必填项
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
