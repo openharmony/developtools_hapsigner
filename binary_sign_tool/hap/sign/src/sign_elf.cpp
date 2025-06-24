@@ -62,8 +62,10 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         return false;
     }
     std::string adHoc = signParams.at(ParamConstants::PARAM_AD_HOC);
-    GenerateCodeSignByte(signerConfig, tmpOutputFile, csOffset, adHoc);
-
+    bool generateCodeSignFlag = GenerateCodeSignByte(signerConfig, tmpOutputFile, csOffset, adHoc);
+    if  (!generateCodeSignFlag) {
+        return false;
+    }
     return FileUtils::CopyTmpFileAndDel(tmpOutputFile, outputFile);
 }
 
@@ -222,6 +224,11 @@ bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::string
         return false;
     }
     SIGNATURE_TOOLS_LOGD("[SignElf] elf code sign block off %lu: ,len: %lu .", csOffset, codesignData.size());
+
+    if (codesignData.size() > PAGE_SIZE) {
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "signature size is too large.");
+        return false;
+    }
 
     if (!ReplaceDataOffset(inputFile, csOffset, codesignData)) {
         SIGNATURE_TOOLS_LOGE("[SignElf] Failed to replace code sign data in file.");
