@@ -226,7 +226,7 @@ bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::string
     SIGNATURE_TOOLS_LOGD("[SignElf] elf code sign block off %lu: ,len: %lu .", csOffset, codesignData.size());
 
     if (codesignData.size() > PAGE_SIZE) {
-        PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "signature size is too large.");
+        SIGNATURE_TOOLS_LOGE("[SignElf] signature size is too large.");
         return false;
     }
 
