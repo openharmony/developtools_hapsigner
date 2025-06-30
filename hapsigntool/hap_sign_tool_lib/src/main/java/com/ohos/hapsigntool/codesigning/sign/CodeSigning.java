@@ -80,6 +80,11 @@ public class CodeSigning {
      */
     public static final String HAP_SIGNATURE_ENTRY_NAME = "Hap";
 
+    /**
+     * bundle type of plugin
+     */
+    public static final String BUNDLE_TYPE_PLUGIN = "appPlugin";
+
     private static final LogUtils LOGGER = new LogUtils(CodeSigning.class);
 
     private final SignerConfig signConfig;
@@ -87,6 +92,8 @@ public class CodeSigning {
     private CodeSignBlock codeSignBlock;
 
     private PageInfoExtension pageInfoExtension;
+
+    private String pluginId;
 
     /**
      * provide code sign functions to sign a hap
@@ -182,8 +189,11 @@ public class CodeSigning {
         FsVerityInfoSegment fsVerityInfoSegment = new FsVerityInfoSegment(FsVerityDescriptor.VERSION,
             FsVerityGenerator.getFsVerityHashAlgorithm(), FsVerityGenerator.getLog2BlockSize());
         this.codeSignBlock.setFsVerityInfoSegment(fsVerityInfoSegment);
-
-        LOGGER.debug("Sign hap.");
+        String moduleContent = HapUtils.getModuleContent(input);
+        String bundleType = HapUtils.getAppPluginFromJson(moduleContent);
+        if (BUNDLE_TYPE_PLUGIN.equals(bundleType)) {
+            pluginId = HapUtils.parsePluginId(profileContent);
+        }
         String ownerID = HapUtils.getAppIdentifier(profileContent);
         try (FileInputStream inputStream = new FileInputStream(input)) {
             Pair<SignInfo, byte[]> hapSignInfoAndMerkleTreeBytesPair = signFile(inputStream, dataSize, true,
@@ -486,11 +496,13 @@ public class CodeSigning {
             }
             BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
             bcSignedDataGenerator.setOwnerID(ownerID);
+            bcSignedDataGenerator.setPluginId(pluginId);
             return bcSignedDataGenerator.generateSignedData(signedData, copiedConfig);
         } else {
             copiedConfig = signConfig.copy();
             BcSignedDataGenerator bcSignedDataGenerator = new BcSignedDataGenerator();
             bcSignedDataGenerator.setOwnerID(ownerID);
+            bcSignedDataGenerator.setPluginId(pluginId);
             return bcSignedDataGenerator.generateSignedData(signedData, copiedConfig);
         }
     }

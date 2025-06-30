@@ -100,6 +100,17 @@ public class CodeSignErrMsg {
         .build();
 
     /**
+     * PROFILE_PLUGIN_ID_NOT_EXISTED_ERROR
+     */
+    public static final ErrorMsg PROFILE_PLUGIN_ID_NOT_EXISTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("12")
+        .addErrCode("001")
+        .addDescription("Profile Content Error")
+        .addCause("'pluginDistributionIDs' not found in profile file")
+        .addSolution("Add 'pluginDistributionIDs' to the profile file")
+        .build();
+
+    /**
      * PROFILE_APPID_VALUE_TYPE_ERROR
      */
     public static final ErrorMsg PROFILE_APPID_VALUE_TYPE_ERROR = ErrorMsg.getCodeSignErrBuilder()
@@ -111,6 +122,17 @@ public class CodeSignErrMsg {
         .build();
 
     /**
+     * PROFILE_PLUGIN_ID_VALUE_TYPE_ERROR
+     */
+    public static final ErrorMsg PROFILE_PLUGIN_ID_VALUE_TYPE_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("12")
+        .addErrCode("001")
+        .addDescription("Profile Content Error")
+        .addCause("Value type of pluginDistributionIDs is not string")
+        .addSolution("Value type of pluginDistributionIDs should be string")
+        .build();
+
+    /**
      * PROFILE_APPID_VALUE_LENGTH_ERROR
      */
     public static final ErrorMsg PROFILE_APPID_VALUE_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
@@ -119,6 +141,17 @@ public class CodeSignErrMsg {
         .addDescription("Profile Content Error")
         .addCause("Value length of app-identifier is invalid")
         .addSolution("Modify to a valid app-identifier in profile file")
+        .build();
+
+    /**
+     * PROFILE_PLUGIN_ID_VALUE_LENGTH_ERROR
+     */
+    public static final ErrorMsg PROFILE_PLUGIN_ID_VALUE_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
+        .addTypeCode("12")
+        .addErrCode("001")
+        .addDescription("Profile Content Error")
+        .addCause("Value length of pluginDistributionIDs is invalid")
+        .addSolution("Modify to a valid pluginDistributionIDs in profile file")
         .build();
 
     /**
