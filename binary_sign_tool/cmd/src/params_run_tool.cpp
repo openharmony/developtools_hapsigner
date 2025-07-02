@@ -16,8 +16,6 @@
 #include "params_run_tool.h"
 #include <unistd.h>
 #include <memory>
-#include <filesystem>
-
 #include "constant.h"
 #include "help.h"
 
@@ -27,7 +25,8 @@ const std::string ParamsRunTool::VERSION = "1.0.0";
 
 static std::unordered_map <std::string,
                            std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD {
-    {SIGN_ELF, ParamsRunTool::RunSignApp}
+    {SIGN_ELF, ParamsRunTool::RunSignApp},
+    {VERIFY_ELF, ParamsRunTool::RunVerifyApp},
 };
 
 bool ParamsRunTool::ProcessCmd(char** args, size_t size)
@@ -147,6 +146,17 @@ void ParamsRunTool::PrintHelp()
 void  ParamsRunTool::Version()
 {
     PrintMsg(ParamsRunTool::VERSION);
+}
+
+bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)
+{
+    if (!params->Required({Options::IN_FILE})) {
+        return false;
+    }
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::IN_FILE})) {
+        return false;
+    }
+    return api.Verify(params);
 }
 } // namespace SignatureTools
 } // namespace OHOS

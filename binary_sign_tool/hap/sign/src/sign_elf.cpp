@@ -14,7 +14,6 @@
  */
 
 #include "sign_elf.h"
-#include <filesystem>
 #include <unistd.h>
 
 #include "file_utils.h"
