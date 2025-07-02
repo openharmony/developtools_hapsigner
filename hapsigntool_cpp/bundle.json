@@ -34,7 +34,8 @@
                 "bounds_checking_function",
                 "c_utils",
                 "json",
-                "zlib"
+                "zlib",
+                "hilog"
             ],
             "third_party": [
                 "elfio",
