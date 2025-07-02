@@ -26,6 +26,7 @@
 #include "param_constants.h"
 #include "constant.h"
 #include "remote_sign_provider.h"
+#include "verify_elf.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -72,6 +73,17 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         return INVALIDPARAM_ERROR;
     }
     return 0;
+}
+
+bool SignToolServiceImpl::Verify(Options* option)
+{
+    VerifyElf verifyElf;
+    if (!verifyElf.Verify(option)) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "elf verify failed!");
+        return false;
+    }
+    PrintMsg("elf verify successed!");
+    return true;
 }
 } // namespace SignatureTools
 } // namespace OHOS
