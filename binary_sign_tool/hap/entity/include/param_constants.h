@@ -61,13 +61,13 @@ public:
     static const std::string PARAM_RESIGN_CONFIG_FILE;
     static const std::string PARAM_IN_FORM;
     static const std::string PARAM_SIGN_CODE;
-    static const std::string PARAM_AD_HOC;
+    static const std::string PARAM_SELF_SIGN;
     static const std::string PARAM_MODULE_FILE;
     static constexpr int FILE_NAME_MIN_LENGTH = 2;
     static const std::string DISABLE_SIGN_CODE;
     static const std::string ENABLE_SIGN_CODE;
-    static const std::string AD_HOC_TYPE_0;
-    static const std::string AD_HOC_TYPE_1;
+    static const std::string SELF_SIGN_TYPE_0;
+    static const std::string SELF_SIGN_TYPE_1;
 };
 } // namespace SignatureTools
 } // namespace OHOS

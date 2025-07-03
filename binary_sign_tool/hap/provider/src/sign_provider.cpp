@@ -199,7 +199,7 @@ bool SignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_LOCAL_PUBLIC_CERT);
     paramFileds.emplace_back(ParamConstants::PARAM_SIGN_CODE);
     paramFileds.emplace_back(ParamConstants::PARAM_MODULE_FILE);
-    paramFileds.emplace_back(ParamConstants::PARAM_AD_HOC);
+    paramFileds.emplace_back(ParamConstants::PARAM_SELF_SIGN);
 
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
     for (auto it = options->begin(); it != options->end(); it++) {
@@ -212,9 +212,9 @@ bool SignProvider::CheckParams(Options* options)
         || signParams.at(ParamConstants::PARAM_BASIC_PROFILE_SIGNED).empty()) {
         signParams[ParamConstants::PARAM_BASIC_PROFILE_SIGNED] = DEFAULT_PROFILE_SIGNED_1;
     }
-    if (signParams.find(ParamConstants::PARAM_AD_HOC) == signParams.end()
-        || signParams.at(ParamConstants::PARAM_AD_HOC).empty()) {
-        signParams[ParamConstants::PARAM_AD_HOC] = ParamConstants::AD_HOC_TYPE_0;
+    if (signParams.find(ParamConstants::PARAM_SELF_SIGN) == signParams.end()
+        || signParams.at(ParamConstants::PARAM_SELF_SIGN).empty()) {
+        signParams[ParamConstants::PARAM_SELF_SIGN] = ParamConstants::SELF_SIGN_TYPE_0;
     }
     return true;
 }

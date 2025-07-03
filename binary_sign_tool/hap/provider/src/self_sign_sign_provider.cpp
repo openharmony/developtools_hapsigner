@@ -12,19 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SIGNATRUETOOLS_AD_HOC_SIGN_PROVIDER_H
-#define SIGNATRUETOOLS_AD_HOC_SIGN_PROVIDER_H
-
-#include "sign_provider.h"
+#include "self_sign_sign_provider.h"
+#include "params.h"
+#include "sign_elf.h"
 
 namespace OHOS {
 namespace SignatureTools {
-class AdHocSignProvider : public SignProvider {
-public:
-    AdHocSignProvider() = default;
-    ~AdHocSignProvider() = default;
-    bool SignElf(Options* options);
-};
+bool SelfSignSignProvider::SignElf(Options* options)
+{
+    if (!SignProvider::CheckParams(options)) {
+        SIGNATURE_TOOLS_LOGE("Parameter check failed !");
+        return false;
+    }
+    SignerConfig signerConfig;
+    if (!SignElf::Sign(signerConfig, signParams)) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] sign elf failed");
+        return false;
+    }
+    return true;
+}
 } // namespace SignatureTools
 } // namespace OHOS
-#endif // SIGNATRUETOOLS_AD_HOC_SIGN_PROVIDER_H

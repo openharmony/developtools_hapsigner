@@ -83,7 +83,7 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "not support command param '" + mode + "'");
         return false;
     }
-    if (params->GetString(Options::AD_HOC) == ParamConstants::AD_HOC_TYPE_1) {
+    if (params->GetString(Options::SELF_SIGN) == ParamConstants::SELF_SIGN_TYPE_1) {
         return api.Sign(params);
     }
     if (StringUtils::CaseCompare(mode, LOCAL_SIGN)) {

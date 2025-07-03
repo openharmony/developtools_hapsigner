@@ -57,7 +57,7 @@ const std::string Options::PROOF_FILE = "outproof";
 const std::string Options::PROFILE_FILE = "profileFile";
 const std::string Options::PROFILE_SIGNED = "profileSigned";
 const std::string Options::MODULE_FILE = "moduleFile";
-const std::string Options::AD_HOC = "adHoc";
+const std::string Options::SELF_SIGN = "selfSign";
 
 char* Options::GetChars(const std::string& key)
 {
