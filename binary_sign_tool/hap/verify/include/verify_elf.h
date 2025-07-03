@@ -55,12 +55,10 @@ public:
 public:
     bool Verify(Options* options);
     static bool CheckParams(Options* options);
-    static bool GetRawContent(const std::vector<int8_t>& contentVec, std::string& rawContent);
 
 private:
     static bool ParseSignBlock(const ELFIO::elfio& elfReader);
     static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
-    static bool VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const unsigned char* pkcs7Block, uint32_t pkcs7Len);
 };
 } // namespace SignatureTools
 } // namespace OHOS
