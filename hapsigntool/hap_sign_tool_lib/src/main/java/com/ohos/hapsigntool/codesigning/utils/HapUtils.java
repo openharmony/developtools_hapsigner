@@ -230,10 +230,10 @@ public class HapUtils {
     }
 
     /**
-     * parse app-id and profileType from profile
+     * parse pluginDistributionIDs from profile
      *
      * @param profileContent the content of profile
-     * @return Pair value of app-id and profileType
+     * @return value of pluginDistributionIDs
      * @throws ProfileException profile is invalid
      */
     public static String parsePluginId(String profileContent) throws ProfileException {
@@ -271,13 +271,13 @@ public class HapUtils {
     }
 
     /**
-     * get map of hnp name and type from module.json
+     * get bundle type from module.json
      *
      * @param moduleContent module Content
-     * @return packageName-type map
+     * @return bundle type value
      * @throws ProfileException profile is invalid
      */
-    public static String getAppPluginFromJson(String moduleContent) throws ProfileException {
+    public static String getBundleTypeFromJson(String moduleContent) throws ProfileException {
         String bundleType = "";
         if (moduleContent == null || moduleContent.isEmpty()) {
             return bundleType;
@@ -300,6 +300,12 @@ public class HapUtils {
         return bundleType;
     }
 
+    /**
+     * get module.json content from input file
+     * @param input file
+     * @return module.json content
+     * @throws IOException when IO error occurred
+     */
     public static String getModuleContent(File input) throws IOException {
         try (JarFile inputJar = new JarFile(input, false)) {
             JarEntry moduleEntry = inputJar.getJarEntry(HAP_STAGE_MODULE_JSON_FILE);

@@ -190,7 +190,7 @@ public class CodeSigning {
             FsVerityGenerator.getFsVerityHashAlgorithm(), FsVerityGenerator.getLog2BlockSize());
         this.codeSignBlock.setFsVerityInfoSegment(fsVerityInfoSegment);
         String moduleContent = HapUtils.getModuleContent(input);
-        String bundleType = HapUtils.getAppPluginFromJson(moduleContent);
+        String bundleType = HapUtils.getBundleTypeFromJson(moduleContent);
         if (BUNDLE_TYPE_PLUGIN.equals(bundleType)) {
             pluginId = HapUtils.parsePluginId(profileContent);
         }
