@@ -17,14 +17,13 @@
 
 #include <fstream>
 #include "constant.h"
-#include "file_utils.h"
 #include "signature_tools_log.h"
 #include "verify_hap_openssl_utils.h"
-#include "hash_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
 
+const int FLAG_SELF_SIGN = 1 << 4;
 const std::string VerifyElf::codesignSec = ".codesign";
 const std::string VerifyElf::profileSec = ".profile";
 const std::string VerifyElf::permissionSec = ".permission";
@@ -42,11 +41,11 @@ bool VerifyElf::Verify(Options* options)
         SIGNATURE_TOOLS_LOGE("failed to load input ELF file");
         return false;
     }
-
-
     // get codesignSec section
-    ParseSignBlock(elfReader);
-
+    bool signFlag = ParseSignBlock(elfReader);
+    if (!signFlag) {
+        return false;
+    }
     return true;
 }
 
@@ -54,7 +53,7 @@ bool VerifyElf::ParseSignBlock(const ELFIO::elfio& elfReader)
 {
     ELFIO::section* sec = elfReader.sections[codesignSec];
     if (!sec) {
-        SIGNATURE_TOOLS_LOGE("codesign section is not found");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "codesign is not found");
         return false;
     }
     ELFIO::Elf64_Off secOffElf64 = sec->get_offset();
@@ -70,55 +69,24 @@ bool VerifyElf::ParseSignBlock(const ELFIO::elfio& elfReader)
         return false;
     }
     const ElfSignInfo* signInfo = reinterpret_cast<const ElfSignInfo*>(data);
-    PrintMsg("codesign section offset: " + std::to_string(signInfo->dataSize));
-
+    if ((signInfo->flags & FLAG_SELF_SIGN) == FLAG_SELF_SIGN) {
+        PrintMsg("codesign is self-sign");
+        return false;
+    }
     Pkcs7Context pkcs7Context;
+    auto signData = reinterpret_cast<const unsigned char*>(signInfo->signature);
 
-    VerifyAppPkcs7(pkcs7Context, reinterpret_cast<const unsigned char*>(signInfo->signature), signInfo->signSize);
-
-        if (!PrintCertChainToCmd(pkcs7Context.certChain[0])) {
-            SIGNATURE_TOOLS_LOGE("print cert chain to cmd failed\n");
-            return false;
-        }
-
-    return true;
-}
-
-bool VerifyElf::GetRawContent(const std::vector<int8_t>& contentVec, std::string& rawContent)
-{
-    PKCS7Data p7Data;
-    int parseFlag = p7Data.Parse(contentVec);
-    if (parseFlag < 0) {
-        SIGNATURE_TOOLS_LOGE("parse content failed!");
+    PKCS7* p7 = d2i_PKCS7(nullptr, &signData, signInfo->signSize);
+    if (p7 == nullptr || !PKCS7_type_is_signed(p7) || p7->d.sign == nullptr) {
+        SIGNATURE_TOOLS_LOGE("sign data to pcs7 failed");
         return false;
     }
-    int verifyFlag = p7Data.Verify();
-    if (verifyFlag < 0) {
-        SIGNATURE_TOOLS_LOGE("verify content failed!");
+    if (!VerifyHapOpensslUtils::GetCertChains(p7, pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("GetCertChains form pkcs7 failed");
         return false;
     }
-    int getContentFlag = p7Data.GetContent(rawContent);
-    if (getContentFlag < 0) {
-        SIGNATURE_TOOLS_LOGE("get p7Data raw content failed!");
-        return false;
-    }
-    return true;
-}
-
-bool VerifyElf::VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const unsigned char* pkcs7Block, uint32_t pkcs7Len)
-{
-    // const unsigned char* pkcs7Block = reinterpret_cast<const unsigned char*>(hapSignatureBlock.GetBufferPtr());
-    // uint32_t pkcs7Len = static_cast<unsigned int>(hapSignatureBlock.GetCapacity());
-    if (!VerifyHapOpensslUtils::ParsePkcs7Package(pkcs7Block, pkcs7Len, pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("parse pkcs7 failed");
-        return false;
-    }
-    if (!VerifyHapOpensslUtils::GetCertChains(pkcs7Context.p7, pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("GetCertChains from pkcs7 failed");
-        return false;
-    }
-    if (!VerifyHapOpensslUtils::VerifyPkcs7(pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("verify signature failed");
+    if (!PrintCertChainToCmd(pkcs7Context.certChain[0])) {
+        SIGNATURE_TOOLS_LOGE("print cert chain to cmd failed");
         return false;
     }
     return true;
