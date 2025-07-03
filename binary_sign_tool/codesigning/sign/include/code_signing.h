@@ -32,7 +32,7 @@ namespace OHOS {
 namespace SignatureTools {
 class CodeSigning {
 public:
-    CodeSigning(SignerConfig* signConfig, bool adHoc);
+    CodeSigning(SignerConfig* signConfig, bool selfSign);
     CodeSigning();
 
     bool GetElfCodeSignBlock(const std::string &input, uint64_t& csOffset, std::vector<int8_t> &codesignData);
@@ -42,7 +42,7 @@ public:
                            std::vector<int8_t>& ret);
     bool GetOwnerIdFromCert(std::string& ownerID);
     SignerConfig* m_signConfig;
-    bool m_adHoc;
+    bool m_selfSign;
 
 private:
     static constexpr int MIN_CERT_CHAIN_SIZE = 2;

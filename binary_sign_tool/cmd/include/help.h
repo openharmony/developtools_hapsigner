@@ -24,12 +24,11 @@ namespace OHOS {
 namespace SignatureTools {
 
 const std::string HELP_TXT_HEADER = R"(
-USAGE: <sign>[options]
+USAGE: <sign|verify>[options]
 )";
 
 const std::string SIGN_HELP_TXT = R"(
     sign[options]:
-        -mode : signature mode, required fields, including localSign/remoteSign/remoteResign;
         -keyAlias : key alias, required fields;
         -keyPwd : key password, optional fields on localSign mode;
         -appCertFile : application signature certificate file, required fields on localSign mode, optional fields
@@ -37,23 +36,16 @@ const std::string SIGN_HELP_TXT = R"(
         -profileFile : signed Provision Profile file, p7b format, required fields;
         -profileSigned : indicates whether the profile file has a signature.The options are as follows
     : 1 : yes; 0:no; default value:1. optional fields;
-        -inFile : input original application package file, .hap, .bin, and .elf format, required fields;
+        -inFile : input original elf file, required fields;
         -signAlg : signature algorithm, required fields, including SHA256withECDSA/SHA384withECDSA;
         -keystoreFile : keystore file, if signature mode is localSign, required fields on localSign mode,
     JKS or P12 format;
         -keystorePwd : keystore password, optional fields on localSign mode;
         -outFile : output the signed Provision Profile file, required fields;
     application package file format is hap;
-        -signServer : remote signer plugin, required fields on remoteSign mode;
-        -signerPlugin : remote sign service url, required fields on remoteSign mode;
-        -onlineAuthMode : remote sign auth mode, required fields on remoteSign mode, including account;
-        -username : user account for online auth, required fields on remoteSign mode with account auth mode;
-        -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
-        -ext : extend parameters for remote signer plugin, optional fields;
-        -signCode : Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means
-    disable sign code.The default value is 1. It is optional.
+
         -moduleFile : module.json file.
-        -adHoc : Whether the HAP file is ad hoc, The value 1 means enable ad hoc, and value 0 means disable ad hoc.
+        -selfSign : Whether the HAP file is self sign, The value 1 means enable self sign, and value 0 means disable self sign.
     The default value is 0. It is optional.
 
     EXAMPLE :
@@ -62,12 +54,21 @@ const std::string SIGN_HELP_TXT = R"(
 -profileFile "/home/signed-profile.p7b" -inFile "/home/app1-unsigned.hap" -signAlg SHA256withECDSA
 )";
 
+const std::string VERIFY_HELP_TXT = R"(
+    verify[options]:
+        -inFile : verify elf file, required fields;
+
+    EXAMPLE:
+        verify -inFile "/home/app1-signed.hap"
+)";
+
 const std::string HELP_END_TXT = R"(
 COMMANDS :
-    sign : application package signature
+    sign : elf file signature
+    verify : elf file verification
 )";
 /* help.txt all content */
-const std::string HELP_TXT = HELP_TXT_HEADER + SIGN_HELP_TXT + HELP_END_TXT;
+const std::string HELP_TXT = HELP_TXT_HEADER + SIGN_HELP_TXT + VERIFY_HELP_TXT + HELP_END_TXT;
 }
 }
 #endif

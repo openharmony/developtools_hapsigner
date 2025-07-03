@@ -20,7 +20,7 @@
 #include "profile_info.h"
 #include "profile_verify.h"
 #include "signature_tools_errno.h"
-#include "ad_hoc_sign_provider.h"
+#include "self_sign_sign_provider.h"
 #include "local_sign_provider.h"
 #include "signature_tools_log.h"
 #include "param_constants.h"
@@ -38,10 +38,10 @@ bool SignToolServiceImpl::Sign(Options* options)
         return false;
     }
     std::string mode = options->GetString(Options::MODE);
-    std::string adhoc = options->GetString(Options::AD_HOC);
+    std::string selfSign = options->GetString(Options::SELF_SIGN);
     std::shared_ptr<SignProvider> signProvider;
-    if (ParamConstants::AD_HOC_TYPE_1 == adhoc) {
-        signProvider = std::make_shared<AdHocSignProvider>();
+    if (ParamConstants::SELF_SIGN_TYPE_1 == selfSign) {
+        signProvider = std::make_shared<SelfSignSignProvider>();
     } else if (LOCAL_SIGN == mode) {
         signProvider = std::make_shared<LocalSignProvider>();
     } else if (REMOTE_SIGN == mode) {
@@ -82,7 +82,6 @@ bool SignToolServiceImpl::Verify(Options* option)
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "elf verify failed!");
         return false;
     }
-    PrintMsg("elf verify successed!");
     return true;
 }
 } // namespace SignatureTools

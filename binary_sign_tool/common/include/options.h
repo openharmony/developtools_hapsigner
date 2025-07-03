@@ -120,7 +120,7 @@ public:
     static const std::string PROFILE_FILE;
     static const std::string PROFILE_SIGNED;
     static const std::string MODULE_FILE;
-    static const std::string AD_HOC;
+    static const std::string SELF_SIGN;
 };
 } // namespace SignatureTools
 } // namespace OHOS
