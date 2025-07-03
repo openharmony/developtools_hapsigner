@@ -19,7 +19,8 @@
 #include <string>
 #include <vector>
 #include <elfio.hpp>
-
+#include <openssl/x509.h>
+#include "pkcs7_data.h"
 #include "options.h"
 #include "signature_tools_log.h"
 
@@ -47,11 +48,6 @@ struct ElfSignInfo {
 class VerifyElf {
 public:
     static constexpr int PAGE_SIZE = 4096;
-    static const int8_t SIGNATURE_BLOCK;
-    static const int8_t PROFILE_NOSIGNED_BLOCK;
-    static const int8_t PROFILE_SIGNED_BLOCK;
-    static const int8_t KEY_ROTATION_BLOCK;
-    static const int8_t CODESIGNING_BLOCK_TYPE;
     static const std::string profileSec;
     static const std::string permissionSec;
     static const std::string codesignSec;
@@ -63,6 +59,8 @@ public:
 
 private:
     static bool ParseSignBlock(const ELFIO::elfio& elfReader);
+    static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
+    static bool VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const unsigned char* pkcs7Block, uint32_t pkcs7Len);
 };
 } // namespace SignatureTools
 } // namespace OHOS
