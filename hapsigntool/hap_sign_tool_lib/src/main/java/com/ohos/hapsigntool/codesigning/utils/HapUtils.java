@@ -288,9 +288,11 @@ public class HapUtils {
                 throw new ProfileException(CodeSignErrMsg.MODULE_JSON_PARSE_ERROR.toString());
             }
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            JsonObject moduleObject = jsonObject.getAsJsonObject("app");
-
-            JsonPrimitive type = moduleObject.getAsJsonPrimitive("bundleType");
+            JsonObject appObject = jsonObject.getAsJsonObject("app");
+            if (appObject == null || !appObject.isJsonObject() || !appObject.has("bundleType")) {
+                return bundleType;
+            }
+            JsonPrimitive type = appObject.getAsJsonPrimitive("bundleType");
             if (type != null && !type.getAsString().isEmpty()) {
                 bundleType = type.getAsString();
             }
