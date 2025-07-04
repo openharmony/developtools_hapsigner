@@ -14,11 +14,12 @@
  */
 #include "file_utils.h"
 #include <chrono>
-#include <iostream>
-#include <filesystem>
-#include <fstream>
 #include <climits>
-
+#include <fcntl.h>
+#include <fstream>
+#include <iostream>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "string_utils.h"
 #include "signature_tools_errno.h"
 
@@ -227,7 +228,7 @@ int FileUtils::WriteInputToOutPut(std::ifstream& input, std::ofstream& output, s
             delete[] buf;
             return IO_ERROR;
         }
-        
+
         if (length <= 0) {
             break;
         }
@@ -302,61 +303,44 @@ bool FileUtils::IsRunnableFile(const std::string& name)
 
 bool FileUtils::IsValidFile(std::string file)
 {
-    std::filesystem::path filePath = file;
-    bool flag = std::filesystem::exists(filePath);
+    struct stat fileStat;
+    bool flag = (stat(file.c_str(), &fileStat) == 0);
     if (!flag) {
         PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + file + "' file is not exists");
         return false;
     }
-    flag = std::filesystem::is_directory(filePath);
+    flag = S_ISDIR(fileStat.st_mode);
     if (flag) {
         PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + file + "' file is a directory not file");
         return false;
     }
+    SIGNATURE_TOOLS_LOGI("IsValidFile check pass %s", file.c_str());
     return true;
-}
-
-int64_t FileUtils::GetFileLen(const std::string& file)
-{
-    std::filesystem::path filePath = file;
-    bool flag = std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath);
-    if (flag) {
-        return std::filesystem::file_size(filePath);
-    }
-    return -1;
-}
-
-void FileUtils::DelDir(const std::string& file)
-{
-    std::filesystem::path filePath = file;
-    bool flag = std::filesystem::is_directory(filePath);
-    if (flag) {
-        for (auto& p : std::filesystem::recursive_directory_iterator(filePath)) {
-            DelDir(p.path());
-        }
-    }
-    std::filesystem::remove(file);
-    return;
 }
 
 bool FileUtils::CopyTmpFileAndDel(const std::string& tmpFile, const std::string& output)
 {
-    if (!std::filesystem::exists(tmpFile)) {
-        SIGNATURE_TOOLS_LOGE("Error: tmpFile not exists");
-        return false;
-    }
     if (tmpFile == output) {
         return true;
     }
-    bool ret = std::filesystem::copy_file(tmpFile, output, std::filesystem::copy_options::overwrite_existing);
-    if (!ret) {
-        SIGNATURE_TOOLS_LOGE("Error: copy tmpFile to output failed");
+    std::ifstream src(tmpFile, std::ios::binary);
+    if (!src) {
+        PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + tmpFile + "' open failed");
         return false;
     }
-    if (!std::filesystem::remove(tmpFile)) {
+    std::ofstream dst(output, std::ios::binary);
+    if (!dst) {
+        PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + output + "' open failed");
+        return false;
+    }
+    SIGNATURE_TOOLS_LOGI("CopyTmpFileAndDel from %s to %s", tmpFile.c_str(), output.c_str());
+    dst << src.rdbuf();
+
+    if (unlink(tmpFile.c_str()) != 0) {
         SIGNATURE_TOOLS_LOGE("Error: remove tmpFile");
         return false;
     }
+    SIGNATURE_TOOLS_LOGI("CopyTmpFileAndDel finish");
     return true;
 }
 } // namespace SignatureTools
