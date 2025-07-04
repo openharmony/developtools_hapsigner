@@ -71,7 +71,7 @@ bool VerifyElf::ParseSignBlock(const ELFIO::elfio& elfReader)
     const ElfSignInfo* signInfo = reinterpret_cast<const ElfSignInfo*>(data);
     if ((signInfo->flags & FLAG_SELF_SIGN) == FLAG_SELF_SIGN) {
         PrintMsg("codesign is self-sign");
-        return false;
+        return true;
     }
     Pkcs7Context pkcs7Context;
     auto signData = reinterpret_cast<const unsigned char*>(signInfo->signature);
