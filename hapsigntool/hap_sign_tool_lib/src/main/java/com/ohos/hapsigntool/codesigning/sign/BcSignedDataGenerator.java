@@ -74,6 +74,11 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
      */
     public static final String SIGNER_OID = "1.3.6.1.4.1.2011.2.376.1.4.1";
 
+    /**
+     * PLUGIN ID of the signer identity
+     */
+    public static final String SIGNER_PLUGIN_ID = "1.3.6.1.4.1.2011.2.376.1.4.2";
+
     private static final LogUtils LOGGER = new LogUtils(BcSignedDataGenerator.class);
 
     private static final SignatureAlgorithmIdentifierFinder SIGN_ALG_ID_FINDER
@@ -84,8 +89,14 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
 
     private String ownerID;
 
+    private String pluginId;
+
     public void setOwnerID(String ownerID) {
         this.ownerID = ownerID;
+    }
+
+    public void setPluginId(String pluginId) {
+        this.pluginId = pluginId;
     }
 
     @Override
@@ -196,6 +207,11 @@ public class BcSignedDataGenerator implements SignedDataGenerator {
             Attribute ownerIDAttr = new Attribute(new ASN1ObjectIdentifier(SIGNER_OID),
                 new DERSet(new DERUTF8String(ownerID)));
             table.add(ownerIDAttr);
+        }
+        if (pluginId != null) {
+            Attribute pluginIDAttr = new Attribute(new ASN1ObjectIdentifier(SIGNER_PLUGIN_ID),
+                new DERSet(new DERUTF8String(pluginId)));
+            table.add(pluginIDAttr);
         }
         return new DERSet(table);
     }
