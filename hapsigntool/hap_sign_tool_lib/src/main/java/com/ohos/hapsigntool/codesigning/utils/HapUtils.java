@@ -28,7 +28,10 @@ import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.LogUtils;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -194,7 +197,7 @@ public class HapUtils {
     public static Map<String, String> getHnpsFromJson(JarFile inputJar) throws IOException, ProfileException {
         // get module.json
         Map<String, String> hnpNameMap = new HashMap<>();
-        JarEntry moduleEntry = inputJar.getJarEntry("module.json");
+        JarEntry moduleEntry = inputJar.getJarEntry(HAP_STAGE_MODULE_JSON_FILE);
         if (moduleEntry == null) {
             return hnpNameMap;
         }
@@ -224,6 +227,104 @@ public class HapUtils {
             throw new ProfileException(CodeSignErrMsg.MODULE_JSON_PARSE_ERROR.toString(), e);
         }
         return hnpNameMap;
+    }
+
+    /**
+     * parse pluginDistributionIDs from profile
+     *
+     * @param profileContent the content of profile
+     * @return value of pluginDistributionIDs
+     * @throws ProfileException profile is invalid
+     */
+    public static String parsePluginId(String profileContent) throws ProfileException {
+        String pluginID = null;
+        String pluginIDKey = "pluginDistributionIDs";
+        String capabilitiesKey = "app-services-capabilities";
+        String permissionKey = "ohos.permission.kernel.SUPPORT_PLUGIN";
+        try {
+            JsonElement parser = JsonParser.parseString(profileContent);
+            if (parser == null || parser.isJsonNull()) {
+                throw new ProfileException(CodeSignErrMsg.PROFILE_JSON_PARSE_ERROR.toString());
+            }
+            JsonObject profileJson = parser.getAsJsonObject();
+            JsonObject capabilitiesObject = profileJson.getAsJsonObject(capabilitiesKey);
+            if (capabilitiesObject == null || !capabilitiesObject.isJsonObject() || !capabilitiesObject.has(
+                permissionKey)) {
+                throw new ProfileException(CodeSignErrMsg.PROFILE_PLUGIN_ID_NOT_EXISTED_ERROR.toString());
+            }
+            JsonObject permissionObject = capabilitiesObject.getAsJsonObject(permissionKey);
+            if (permissionObject == null || !permissionObject.isJsonObject() || !permissionObject.has(pluginIDKey)) {
+                throw new ProfileException(CodeSignErrMsg.PROFILE_PLUGIN_ID_NOT_EXISTED_ERROR.toString());
+            }
+            JsonElement permissionElement = permissionObject.get(pluginIDKey);
+            if (permissionElement == null || !permissionElement.getAsJsonPrimitive().isString()) {
+                throw new ProfileException(CodeSignErrMsg.PROFILE_PLUGIN_ID_VALUE_TYPE_ERROR.toString());
+            }
+            pluginID = permissionElement.getAsString();
+        } catch (JsonSyntaxException | UnsupportedOperationException e) {
+            throw new ProfileException(CodeSignErrMsg.PROFILE_JSON_PARSE_ERROR.toString(), e);
+        }
+        if (pluginID == null || pluginID.isEmpty()) {
+            throw new ProfileException(CodeSignErrMsg.PROFILE_PLUGIN_ID_VALUE_LENGTH_ERROR.toString());
+        }
+        return pluginID;
+    }
+
+    /**
+     * get bundle type from module.json
+     *
+     * @param moduleContent module Content
+     * @return bundle type value
+     * @throws ProfileException profile is invalid
+     */
+    public static String getBundleTypeFromJson(String moduleContent) throws ProfileException {
+        String bundleType = "";
+        if (moduleContent == null || moduleContent.isEmpty()) {
+            return bundleType;
+        }
+        try {
+            JsonElement jsonElement = JsonParser.parseString(moduleContent);
+            if (jsonElement == null || jsonElement.isJsonNull()) {
+                throw new ProfileException(CodeSignErrMsg.MODULE_JSON_PARSE_ERROR.toString());
+            }
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject appObject = jsonObject.getAsJsonObject("app");
+            if (appObject == null || !appObject.isJsonObject() || !appObject.has("bundleType")) {
+                return bundleType;
+            }
+            JsonPrimitive type = appObject.getAsJsonPrimitive("bundleType");
+            if (type != null && !type.getAsString().isEmpty()) {
+                bundleType = type.getAsString();
+            }
+        } catch (JsonSyntaxException | UnsupportedOperationException e) {
+            throw new ProfileException(CodeSignErrMsg.MODULE_JSON_PARSE_ERROR.toString(), e);
+        }
+        return bundleType;
+    }
+
+    /**
+     * get module.json content from input file
+     * @param input file
+     * @return module.json content
+     * @throws IOException when IO error occurred
+     */
+    public static String getModuleContent(File input) throws IOException {
+        try (JarFile inputJar = new JarFile(input, false)) {
+            JarEntry moduleEntry = inputJar.getJarEntry(HAP_STAGE_MODULE_JSON_FILE);
+            if (moduleEntry == null) {
+                return null;
+            }
+            try (InputStream inputStream = inputJar.getInputStream(moduleEntry);
+                BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                return sb.toString();
+            }
+        }
     }
 
 }
