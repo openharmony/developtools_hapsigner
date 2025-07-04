@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cmd_util.h"
+#include <libgen.h>
 #include <set>
-#include <filesystem>
-
+#include <unistd.h>
+#include "cmd_util.h"
 #include "params_run_tool.h"
 #include "constant.h"
 #include "param_constants.h"
@@ -162,13 +162,53 @@ static bool UpdateParamForVariantBoolAdHoc(const ParamsSharedPtr& param)
     return true;
 }
 
+static std::string GetParentPath(const std::string &outFilePath)
+{
+    if (outFilePath.size() == 0) {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            "get_parent_path realpath error, empty input");
+        return "";
+    }
+
+    if (outFilePath.size() > PATH_MAX) {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            "get_parent_path realpath error, input too long");
+        return "";
+    }
+
+    char resolvedPath[PATH_MAX + 1] = {0x00};
+    if (realpath(outFilePath.c_str(), resolvedPath) == nullptr) {
+        SIGNATURE_TOOLS_LOGI("Get realpath from %s may failed", resolvedPath);
+        return "";
+    }
+    resolvedPath[PATH_MAX] = '\0';
+    SIGNATURE_TOOLS_LOGI("GetParentPath, resolvedPath:%s", resolvedPath);
+    char *parentPath = dirname(resolvedPath);
+    if (parentPath == nullptr) {
+        SIGNATURE_TOOLS_LOGI("Get parentPath of %s may failed", resolvedPath);
+        return "";
+    }
+
+    SIGNATURE_TOOLS_LOGI("GetParentPath :%s", parentPath);
+    return std::string(parentPath);
+}
+
+static std::string GetFileName(const std::string &path)
+{
+    size_t lastSlash = path.find_last_of('/');
+    if (lastSlash == std::string::npos) {
+        return path;
+    }
+
+    return path.substr(lastSlash + 1);
+}
+
 bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initializer_list<std::string>& outFileKeys)
 {
     for (auto& key : outFileKeys) {
         if (options->count(key)) {
             std::string outFilePath = options->GetString(key);
-            std::filesystem::path filePath = outFilePath;
-            std::string parentPath = filePath.parent_path();
+            std::string parentPath = GetParentPath(outFilePath);
 
             // Purpose: To prevent the user output path from passing an empty string. eg "   "
             std::string tmpOutFilePath = outFilePath;
@@ -191,11 +231,13 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
                 return false;
             }
             std::string charStr(realFilePath);
-            std::string fileName = filePath.filename();
+            std::string fileName = GetFileName(outFilePath);
             if (fileName.empty()) {
                 PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The file name cannot be empty '"
                                     + outFilePath + "', parameter name '-" + key + "'");
                 return false;
+            } else {
+                SIGNATURE_TOOLS_LOGI("UpdateParamForCheckOutFile GetFileName:%s", fileName.c_str());
             }
             (*options)[key] = charStr + "/" + fileName;
         }

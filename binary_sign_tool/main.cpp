@@ -12,10 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <openssl/provider.h>
 #include "params_run_tool.h"
 using namespace OHOS::SignatureTools;
 int main(int argc, char** argv)
 {
+    OSSL_PROVIDER *prov = OSSL_PROVIDER_load(nullptr, "default");
+    if (prov == nullptr) {
+        PrintMsg("ssl load default provider failed");
+    }
+    OSSL_PROVIDER *prov2 = OSSL_PROVIDER_load(nullptr, "legacy");
+    if (prov2 == nullptr) {
+        PrintMsg("ssl load legacy provider failed");
+    }
+
     // prepare modes vector by macro DEFINE_MODE which subscribe UPDATER_MAIN_PRE_EVENT event
     bool isSuccess = ParamsRunTool::ProcessCmd(argv, argc);
     if (isSuccess) {
