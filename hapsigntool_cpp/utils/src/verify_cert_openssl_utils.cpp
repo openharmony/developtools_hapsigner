@@ -69,7 +69,7 @@ bool VerifyCertOpensslUtils::GetCertsChain(CertChain& certsChain, CertSign& cert
         cert = issuerCert;
     }
 
-    if (static_cast<int>(cert.size()) < MIN_CERTS_NUM) {
+    if (static_cast<int>(certsChain.size()) < MIN_CERTS_NUM) {
         SIGNATURE_TOOLS_LOGE("certchain length is less than %d.", MIN_CERTS_NUM);
         return false;
     }

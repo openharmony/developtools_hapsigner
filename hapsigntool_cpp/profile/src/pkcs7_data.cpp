@@ -434,7 +434,7 @@ int PKCS7Data::VerifyCertChain() const
 
     for (int i = 0; i < signerCount; i++) {
         PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(skSignerInfo, i);
-        int result = VerifySignerInfoCertChain(m_p7, signerInfo, certs, certChain);
+        int result = VerifySignerInfoCertChain(m_p7, signerInfo, certs);
         if (result != RET_OK) {
             SIGNATURE_TOOLS_LOGE("verify certchain failed");
             return result;
@@ -453,7 +453,7 @@ int PKCS7Data::CheckSignerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* 
     }
     ASN1_TYPE* signTime = PKCS7_get_signed_attribute(signerInfo, NID_pkcs9_signingTime);
     for (int i = 0; i < static_cast<int>(certs.size()); i++) {
-        X509* cert = cert[i];
+        X509* cert = certs[i];
         const ASN1_TIME* notBefore = X509_get0_notBefore(cert);
         const ASN1_TIME* notAfter = X509_get0_notAfter(cert);
         if (CheckSignTimeInValidPeriod(signTime, notBefore, notAfter) < 0) {
@@ -477,7 +477,7 @@ int PKCS7Data::VerifySignerInfoCertChain(PKCS7* pkcs7, PKCS7_SIGNER_INFO* signer
     VerifyCertOpensslUtils::GenerateCertSignFromCertStack(certs, certVisitFlag);
     std::vector<X509*> certChain;
     certChain.emplace_back(X509_dup(sigCert));
-    if (!VerifyCertOpensslUtils::GetCertsChain(certsChain, certVisitFlag)) {
+    if (!VerifyCertOpensslUtils::GetCertsChain(certChain, certVisitFlag)) {
         SIGNATURE_TOOLS_LOGE("get cert chain for signInfo failed");
         ClearCertChain(certChain);
         return VERIFY_ERROR;
@@ -499,7 +499,7 @@ int PKCS7Data::VerifySignerInfoCertChain(PKCS7* pkcs7, PKCS7_SIGNER_INFO* signer
     return RET_OK;
 }
 
-void PKCS7Data::ClearCertChain(std::vector<x509*>& certChain) const
+void PKCS7Data::ClearCertChain(std::vector<X509*>& certChain) const
 {
     for (auto cert : certChain) {
         X509_free(cert);
