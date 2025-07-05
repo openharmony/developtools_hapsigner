@@ -140,23 +140,23 @@ static bool UpdateParamForVariantBoolProfileSigned(const ParamsSharedPtr& param)
     return true;
 }
 
-static bool UpdateParamForVariantBoolAdHoc(const ParamsSharedPtr& param)
+static bool UpdateParamForVariantBoolSelfSign(const ParamsSharedPtr& param)
 {
     Options* options = param->GetOptions();
     // The bool type is used only by the "sign-elf" module
-    if (options->count(Options::AD_HOC)) {
-        std::string val = options->GetString(Options::AD_HOC);
+    if (options->count(Options::SELF_SIGN)) {
+        std::string val = options->GetString(Options::SELF_SIGN);
         if (val == "1" || val == "true" || val == "TRUE") {
-            (*options)[Options::AD_HOC] = ParamConstants::AD_HOC_TYPE_1;
+            (*options)[Options::SELF_SIGN] = ParamConstants::SELF_SIGN_TYPE_1;
         } else if (val == "0" || val == "false" || val == "FALSE") {
-            (*options)[Options::AD_HOC] = ParamConstants::AD_HOC_TYPE_0;
+            (*options)[Options::SELF_SIGN] = ParamConstants::SELF_SIGN_TYPE_0;
         } else {
             PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-                                val + " is not valid value for "+"-" + Options::AD_HOC);
+                                val + " is not valid value for "+"-" + Options::SELF_SIGN);
             return false;
         }
     } else if (param->GetMethod() == SIGN_ELF) {
-        (*options)[Options::AD_HOC] = ParamConstants::AD_HOC_TYPE_0;
+        (*options)[Options::SELF_SIGN] = ParamConstants::SELF_SIGN_TYPE_0;
     }
 
     return true;
@@ -277,7 +277,7 @@ static bool UpdateParam(const ParamsSharedPtr& param)
     if (!UpdateParamForVariantBoolProfileSigned(param)) {
         return false;
     }
-    if (!UpdateParamForVariantBoolAdHoc(param)) {
+    if (!UpdateParamForVariantBoolSelfSign(param)) {
         return false;
     }
     if (!UpdateParamForCheckSignAlg(param)) {

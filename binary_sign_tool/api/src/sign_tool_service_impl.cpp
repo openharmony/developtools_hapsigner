@@ -20,12 +20,13 @@
 #include "profile_info.h"
 #include "profile_verify.h"
 #include "signature_tools_errno.h"
-#include "ad_hoc_sign_provider.h"
+#include "self_sign_sign_provider.h"
 #include "local_sign_provider.h"
 #include "signature_tools_log.h"
 #include "param_constants.h"
 #include "constant.h"
 #include "remote_sign_provider.h"
+#include "verify_elf.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -37,10 +38,10 @@ bool SignToolServiceImpl::Sign(Options* options)
         return false;
     }
     std::string mode = options->GetString(Options::MODE);
-    std::string adhoc = options->GetString(Options::AD_HOC);
+    std::string selfSign = options->GetString(Options::SELF_SIGN);
     std::shared_ptr<SignProvider> signProvider;
-    if (ParamConstants::AD_HOC_TYPE_1 == adhoc) {
-        signProvider = std::make_shared<AdHocSignProvider>();
+    if (ParamConstants::SELF_SIGN_TYPE_1 == selfSign) {
+        signProvider = std::make_shared<SelfSignSignProvider>();
     } else if (LOCAL_SIGN == mode) {
         signProvider = std::make_shared<LocalSignProvider>();
     } else if (REMOTE_SIGN == mode) {
@@ -72,6 +73,15 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         return INVALIDPARAM_ERROR;
     }
     return 0;
+}
+
+bool SignToolServiceImpl::Verify(Options* option)
+{
+    VerifyElf verifyElf;
+    if (!verifyElf.Verify(option)) {
+        return false;
+    }
+    return true;
 }
 } // namespace SignatureTools
 } // namespace OHOS

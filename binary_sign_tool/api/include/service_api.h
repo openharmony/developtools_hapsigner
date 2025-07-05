@@ -27,6 +27,7 @@ public:
     ~ServiceApi() = default;
 
     virtual bool Sign(Options* params) = 0;
+    virtual bool Verify(Options* option) = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

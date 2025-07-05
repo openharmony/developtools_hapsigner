@@ -27,6 +27,7 @@ const std::string options = "[options]:";
 
 const std::vector<std::string> commands = {
     SIGN_ELF + options,
+    VERIFY_ELF + options,
 };
 
 ParamsTrustList ParamsTrustList::GetInstance()

@@ -45,7 +45,7 @@ private:
     static bool WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfig,
                                    std::map<std::string, std::string>& signParams);
     static bool GenerateCodeSignByte(SignerConfig& signerConfig, const std::string& inputFile, uint64_t& csOffset,
-                                     const std::string& adHoc);
+                                     const std::string& selfSign);
     static bool ReplaceDataOffset(const std::string& filePath, uint64_t& csOffset, const std::vector<int8_t>& csData);
 };
 } // namespace SignatureTools

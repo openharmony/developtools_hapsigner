@@ -25,13 +25,13 @@ namespace SignatureTools {
 const FsVerityHashAlgorithm FS_SHA256(1, "SHA-256", 256 / 8);
 const FsVerityHashAlgorithm FS_SHA512(2, "SHA-512", 512 / 8);
 const int8_t LOG_2_OF_FSVERITY_HASH_PAGE_SIZE = 12;
-const int FLAG_AD_HOC = 1 << 4;
+const int FLAG_SELF_SIGN = 1 << 4;
 const uint8_t ELF_CODE_SIGN_VERSION = 0x3;
 
-CodeSigning::CodeSigning(SignerConfig* signConfig, bool adHoc)
+CodeSigning::CodeSigning(SignerConfig* signConfig, bool selfSign)
 {
     m_signConfig = signConfig;
-    m_adHoc = adHoc;
+    m_selfSign = selfSign;
 }
 
 CodeSigning::CodeSigning()
@@ -47,8 +47,8 @@ bool CodeSigning::GetElfCodeSignBlock(const std::string &input, uint64_t& csOffs
         return false;
     }
     int flags = 0;
-    if (m_adHoc) {
-        flags = flags | FLAG_AD_HOC;
+    if (m_selfSign) {
+        flags = flags | FLAG_SELF_SIGN;
     }
     std::streamsize fileSize = inputstream.tellg();
     inputstream.seekg(0, std::ios::beg);
@@ -57,7 +57,7 @@ bool CodeSigning::GetElfCodeSignBlock(const std::string &input, uint64_t& csOffs
     fsVerityGenerator->GenerateFsVerityDigest(inputstream, fileSize, flags);
     std::vector<int8_t> signature;
 
-    if (!m_adHoc) {
+    if (!m_selfSign) {
         std::string ownerID;
         GetOwnerIdFromCert(ownerID);
         std::vector<int8_t> fsVerityDigest = fsVerityGenerator->GetFsVerityDigest();
