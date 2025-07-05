@@ -378,10 +378,35 @@ bool CmdUtil::Convert2Params(char** args, const size_t size, const ParamsSharedP
                             "The last value of parameter cannot be omitted");
         return false;
     }
+
+    TransformKeyAliasWhenLocalSign(params);
     if (!UpdateParam(param)) {
         return false;
     }
     return true;
+}
+
+void CmdUtil::TransformKeyAliasWhenLocalSign(const ParamsSharedPtr& params)
+{
+    Options* options = params->GetOptions();
+    std::string mode = options->GetString(Options::MODE);
+    if (mode != LOCAL_SIGN) {
+        return;
+    }
+
+    std::string keyAlias = options->GetString(Options::KEY_ALIAS);
+    if (!keyAlias.empty()) {
+        std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        (*options)[Options::KEY_ALIAS] = keyAlias;
+    }
+
+    keyAlias = options->GetString(Options::ISSUER_KEY_ALIAS);
+    if (!keyAlias.empty()) {
+        std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        (*options)[Options::ISSUER_KEY_ALIAS] = keyAlias;
+    }
 }
 
 bool CmdUtil::ValidAndPutParam(const ParamsSharedPtr& params, const std::string& key, char* value)
@@ -403,14 +428,7 @@ bool CmdUtil::ValidAndPutParam(const ParamsSharedPtr& params, const std::string&
     } else if (key.length() >= str.length() && key.substr(key.length() - INVALIDCHAR) == str) {
         params->GetOptions()->emplace(key, value);
     } else {
-        if (key == Options::KEY_ALIAS || key == Options::ISSUER_KEY_ALIAS) {
-            std::string keyAlias = value;
-            std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
-                           [](unsigned char c) { return std::tolower(c); });
-            params->GetOptions()->emplace(key, keyAlias);
-        } else {
-            params->GetOptions()->emplace(key, std::string(value));
-        }
+        params->GetOptions()->emplace(key, std::string(value));
     }
     return result;
 }

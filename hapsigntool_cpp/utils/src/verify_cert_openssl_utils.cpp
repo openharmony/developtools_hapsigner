@@ -19,6 +19,8 @@
 
 #include "openssl/pem.h"
 #include "openssl/sha.h"
+
+#include "constant.h"
 #include "signature_tools_log.h"
 #include "securec.h"
 #include "verify_hap_openssl_utils.h"
@@ -66,23 +68,28 @@ bool VerifyCertOpensslUtils::GetCertsChain(CertChain& certsChain, CertSign& cert
         certVisitSign[issuerCert] = true;
         cert = issuerCert;
     }
-    if (CertVerify(cert, cert) == false) {
-        SIGNATURE_TOOLS_LOGE("CertVerify is invalid");
+
+    if (static_cast<int>(cert.size()) < MIN_CERTS_NUM) {
+        SIGNATURE_TOOLS_LOGE("certchain length is less than %d.", MIN_CERTS_NUM);
         return false;
     }
-    {
-        X509_NAME* aName = X509_get_issuer_name(cert);
-        X509_NAME* bName = X509_get_subject_name(cert);
-        if (aName == NULL || bName == NULL) {
-            SIGNATURE_TOOLS_LOGE("NULL X509_NAME");
-            return false;
-        }
-        if (X509_NAME_cmp(aName, bName) != 0) {
-            SIGNATURE_TOOLS_LOGE("compare error!");
-            return false;
-        }
+
+    X509_NAME* aName = X509_get_issuer_name(cert);
+    X509_NAME* bName = X509_get_subject_name(cert);
+    if (aName == NULL || bName == NULL) {
+        SIGNATURE_TOOLS_LOGE("X509_NAME is NULL");
+        return false;
+    }
+    if (X509_NAME_cmp(aName, bName) != 0) {
+        SIGNATURE_TOOLS_LOGD("without root cert, ignore!");
         return true;
     }
+
+    if (CertVerify(cert, cert) == false) {
+        SIGNATURE_TOOLS_LOGE("root cert is invalid");
+        return false;
+    }
+    return true;
 }
 
 X509* VerifyCertOpensslUtils::FindCertOfIssuer(X509* cert, CertSign& certVisitSign)

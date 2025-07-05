@@ -99,7 +99,7 @@ public:
     static std::string GetASN1Time(const ASN1_TIME* tm);
     /* Compare the two, first certificate issuers with the second certificate subject info */
     static bool X509NameCompare(const X509* cert, const X509* issuerCert);
-    /* check pkcs7 sign time in certchain valid period */
+    /* check pkcs7 sign time in certChain valid period */
     static int CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
                                           const ASN1_TIME* notBefore, const ASN1_TIME* notAfter);
 
@@ -111,16 +111,16 @@ private:
     int VerifySign(const std::string& content)const;
     int VerifyCertChain()const;
     /* Verify the validity of the time */
-    int CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* signerInfo, STACK_OF(X509)* certs)const;
+    int CheckSignerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* signerInfo,
+        const std::vector<X509*>& certs) const;
     /* @param cert Entity Certificate
-     * @param certs Certificate chain (without Entity certificates)
-     * @param certChain Certificate chain (with Entity certificates)
-     * @retrun 0 success <0 error
+     * @param certs Certificates in pkcs7
+     * @return 0 success <0 error
      */
-    int VerifySignerInfoCertchain(PKCS7* p7,
+    int VerifySignerInfoCertChain(PKCS7* p7,
                                   PKCS7_SIGNER_INFO* signerInfo,
-                                  STACK_OF(X509)* certs,
-                                  STACK_OF(X509)* certChain)const;
+                                  STACK_OF(X509)* certs) const;
+    void ClearCertChain(std::vector<x509*>& certChain) const;
 
 private:
     /* For ease of reading, the following interface will be as consistent as possible with the OpenSSL

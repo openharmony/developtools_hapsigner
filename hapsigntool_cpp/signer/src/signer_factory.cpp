@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace SignatureTools {
-
 std::shared_ptr<Signer> SignerFactory::GetSigner(LocalizationAdapter& adapter)const
 {
     if (adapter.IsRemoteSigner()) {
@@ -31,7 +30,11 @@ std::shared_ptr<Signer> SignerFactory::GetSigner(LocalizationAdapter& adapter)co
         return NULL;
     }
     adapter.ResetPwd();
-    STACK_OF(X509)*certs = adapter.GetSignCertChain();
+    STACK_OF(X509)* certs = adapter.GetSignCertChain();
+    if (certs == nullptr) {
+        SIGNATURE_TOOLS_LOGE("certs is NULL, please input cert file.");
+        return nullptr;
+    }
     std::shared_ptr<Signer> signer = std::make_shared<LocalSigner>(keyPair, certs);
     return signer;
 }
@@ -46,8 +49,11 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     char* userPwd = adapter.GetOptions()->GetChars(ParamConstants::PARAM_REMOTE_USERPWD);
 
     // open so
-    DynamicLibHandle::handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_GLOBAL);
-    if (!DynamicLibHandle::handle) {
+    if (DynamicLibHandle::handle == nullptr) {
+        DynamicLibHandle::handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_LOCAL);
+    }
+
+    if (DynamicLibHandle::handle == nullptr) {
         PrintErrorNumberMsg("LoadRemoteSigner", RET_FAILED, dlerror());
         return nullptr;
     }
@@ -55,8 +61,8 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     // clear previous error
     dlerror();
 
-    // get "Create" function
-    RemoteSignerCreator remoteSignerCreator = (RemoteSignerCreator)dlsym(DynamicLibHandle::handle, "Create");
+    RemoteSignerCreator remoteSignerCreator =
+        (RemoteSignerCreator)dlsym(DynamicLibHandle::handle, "GetRemoteSignerInstance");
     char* error = nullptr;
     if ((error = dlerror()) != NULL) {
         SIGNATURE_TOOLS_LOGE("%s", error);
@@ -70,6 +76,12 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     RemoteSignerParamType userPwdType{userPwd, strlen(userPwd)};
 
     Signer* signer = remoteSignerCreator(keyAliasType, signServerType, onlineAuthModeType, usernameType, userPwdType);
+
+    // remote sign support input certificate chain file.
+    STACK_OF(X509)* certs = adapter.GetSignCertChain();
+    if (cert != nullptr) {
+        signer->SetCertificates(certs);
+    }
 
     for (size_t i = 0; i < strlen(userPwd); i++) {
         userPwd[i] = 0;

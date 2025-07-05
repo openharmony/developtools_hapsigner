@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "params_run_tool.h"
+
 using namespace OHOS::SignatureTools;
 int main(int argc, char** argv)
 {

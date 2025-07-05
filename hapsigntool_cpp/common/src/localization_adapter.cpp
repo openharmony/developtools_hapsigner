@@ -195,16 +195,21 @@ void LocalizationAdapter::SetIssuerKeyStoreFile(bool issuerKeyStoreFile)
 STACK_OF(X509)* LocalizationAdapter::GetSignCertChain()
 {
     STACK_OF(X509)* certificates = NULL;
-    std::string certPath = options->GetString(Options::PROFILE_CERT_FILE);
+    std::string certType = Options::PROFILE_CERT_FILE;
+    std::string certPath = options->GetString(certType);
     if (certPath.empty()) {
-        certPath = options->GetString(Options::APP_CERT_FILE);
+        certType = Options::APP_CERT_FILE;
+        certPath = options->GetString(certType);
+    }
+    if (certPath.empty()) {
+        return NULL;
     }
     certificates = sk_X509_new(NULL);
     if (certificates == NULL) {
         SIGNATURE_TOOLS_LOGE("sk_X509_new failed");
         return  NULL;
     }
-    std::vector<X509*> certs = GetCertsFromFile(certPath, Options::PROFILE_CERT_FILE);
+    std::vector<X509*> certs = GetCertsFromFile(certPath, certPath);
     for (int i = 0; i < static_cast<int>(certs.size()); i++) {
         sk_X509_push(certificates, certs[i]);
     }

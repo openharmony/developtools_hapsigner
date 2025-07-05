@@ -58,7 +58,7 @@ public:
     EVP_PKEY* GetIssuerKeyByAlias();
     X509* GetSubCaCertFile();
     X509* GetCaCertFile();
-    STACK_OF(X509*) GetSignCertChain();
+    STACK_OF(X509)* GetSignCertChain();
     std::vector<X509*> GetCertsFromFile(std::string& certPath, const std::string& logTitle);
 
 private:
