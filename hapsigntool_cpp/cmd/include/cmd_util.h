@@ -49,6 +49,7 @@ private:
     static int GetCommandParameterKey(const char strChar, std::string& strChars,
                                     std::vector<std::string>& trustList, std::string& keyStandBy);
     static bool ValidAndPutParam(const ParamsSharedPtr& params, const std::string& key, char* value);
+    static void TransformKeyAliasWhenLocalSign(const ParamsSharedPtr& params);
     static const std::regex INTEGER_PATTERN;
 };
 } // namespace SignatureTools

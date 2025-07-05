@@ -419,7 +419,7 @@ HWTEST_F(ProfileTest, profile_test013, testing::ext::TestSize.Level1)
     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
     pkcs7 = d2i_PKCS7(nullptr, &p, static_cast<long>(p7b.size()));
     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
-    sk_X509_delete(certs, 2);
+    sk_X509_delete(certs, 0);
     unsigned char* out = nullptr;
     int len = 0;
     len = i2d_PKCS7(pkcs7, &out);
@@ -466,7 +466,7 @@ HWTEST_F(ProfileTest, profile_test014, testing::ext::TestSize.Level1)
     const unsigned char* p = reinterpret_cast<const unsigned char*>(p7b.data());
     pkcs7 = d2i_PKCS7(nullptr, &p, static_cast<long>(p7b.size()));
     STACK_OF(X509)* certs = pkcs7->d.sign->cert;
-    sk_X509_delete(certs, 2);
+    sk_X509_delete(certs, 0);
     sk_X509_push(certs, sk_X509_value(certs, 1));
     X509_up_ref(sk_X509_value(certs, 1));
     PKCS7Data::PrintCertChainSub(certs);
