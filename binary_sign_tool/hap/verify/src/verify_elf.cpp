@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,24 +53,24 @@ bool VerifyElf::ParseSignBlock(const ELFIO::elfio& elfReader)
 {
     ELFIO::section* sec = elfReader.sections[codesignSec];
     if (!sec) {
-        PrintMsg("codesign is not found");
+        PrintMsg("code signature is not found");
         return true;
     }
     ELFIO::Elf64_Off secOffElf64 = sec->get_offset();
     uint64_t secOff = static_cast<uint64_t>(secOffElf64);
     if (secOff % PAGE_SIZE != 0) {
-        SIGNATURE_TOOLS_LOGE("codesign section offset is not aligned");
+        SIGNATURE_TOOLS_LOGE("code signature section offset is not aligned");
         return false;
     }
     const char* data = sec->get_data();
     uint64_t csBlockSize = sec->get_size();
     if (csBlockSize == 0 || csBlockSize % PAGE_SIZE != 0) {
-        SIGNATURE_TOOLS_LOGE("codesign section size is not aligned");
+        SIGNATURE_TOOLS_LOGE("code signature section size is not aligned");
         return false;
     }
     const ElfSignInfo* signInfo = reinterpret_cast<const ElfSignInfo*>(data);
     if ((signInfo->flags & FLAG_SELF_SIGN) == FLAG_SELF_SIGN) {
-        PrintMsg("codesign is self-sign");
+        PrintMsg("code signature is self-sign");
         return true;
     }
     Pkcs7Context pkcs7Context;

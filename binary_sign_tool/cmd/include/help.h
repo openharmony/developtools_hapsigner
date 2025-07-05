@@ -42,16 +42,14 @@ const std::string SIGN_HELP_TXT = R"(
     JKS or P12 format;
         -keystorePwd : keystore password, optional fields on localSign mode;
         -outFile : output the signed Provision Profile file, required fields;
-    application package file format is hap;
-
         -moduleFile : module.json file.
-        -selfSign : Whether the HAP file is self sign, The value 1 means enable self sign, and value 0 means disable self sign.
+        -selfSign : Whether the elf file is self sign, The value 1 means enable self sign, and value 0 means disable.
     The default value is 0. It is optional.
 
     EXAMPLE :
         sign -keyAlias "oh-app1-key-v1" -appCertFile "/home/app-release-cert.cer" -signCode "1"
--keystoreFile "/home/app-keypair.jks" -keystorePwd ****** -outFile "/home/app1-signed.hap
--profileFile "/home/signed-profile.p7b" -inFile "/home/app1-unsigned.hap" -signAlg SHA256withECDSA
+-keystoreFile "/home/app-keypair.jks" -keystorePwd ****** -outFile "signed.elf"
+-profileFile "/home/signed-profile.p7b" -inFile "unsigned.elf" -signAlg SHA256withECDSA
 )";
 
 const std::string VERIFY_HELP_TXT = R"(
@@ -59,13 +57,13 @@ const std::string VERIFY_HELP_TXT = R"(
         -inFile : display-sign elf file sign information, required fields;
 
     EXAMPLE:
-        display-sign -inFile "/home/app1-signed.hap"
+        display-sign -inFile "signed.elf"
 )";
 
 const std::string HELP_END_TXT = R"(
 COMMANDS :
     sign : elf file signature
-    display-sign : elf file verification
+    display-sign : display elf file signature
 )";
 /* help.txt all content */
 const std::string HELP_TXT = HELP_TXT_HEADER + SIGN_HELP_TXT + VERIFY_HELP_TXT + HELP_END_TXT;
