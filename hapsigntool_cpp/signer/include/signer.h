@@ -27,10 +27,11 @@ namespace SignatureTools {
  */
 class Signer {
 public:
-    virtual STACK_OF(X509_CRL)* GetCrls()const = 0;
-    virtual STACK_OF(X509)* GetCertificates()const = 0;
+    virtual STACK_OF(X509_CRL)* GetCrls() = 0;
+    virtual STACK_OF(X509)* GetCertificates() = 0;
+    virtual void SetCertificates(STACK_OF(X509)* certs) {}
     virtual ~Signer() = default;
-    virtual std::string GetSignature(const std::string& data, const std::string& signAlg)const = 0;
+    virtual std::string GetSignature(const std::string& data, const std::string& signAlg) = 0;
 };
 } // namespace SignatureTools
 } // namespace OHOS

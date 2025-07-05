@@ -23,12 +23,11 @@
 
 namespace OHOS {
 namespace SignatureTools {
-class DynamicLibHandle {
-public:
-    static void* handle;
-    DynamicLibHandle() = default;
-    ~DynamicLibHandle();
-};
+namespace DynamicLibHandle {
+    extern void* handle;
+
+    extern void FreeHandle();
+} // DynamicLibHandle
 } // namespace SignatureTools
 } // namespace OHOS
 #endif
