@@ -18,16 +18,16 @@
 namespace OHOS {
 namespace SignatureTools {
 namespace DynamicLibHandle {
-void* handle = nullptr;
+void* g_handle = nullptr;
 
 void FreeHandle()
 {
-    if (handle != nullptr) {
-        if (dlclose(handle) != 0) {
+    if (g_handle != nullptr) {
+        if (dlclose(g_handle) != 0) {
             SIGNATURE_TOOLS_LOGE("dlclose() %s", dlerror());
             return;
         }
-        handle = nullptr;
+        g_handle = nullptr;
     }
 }
 } // DynamicLibHandle
