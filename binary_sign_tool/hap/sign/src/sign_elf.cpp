@@ -61,8 +61,8 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         SIGNATURE_TOOLS_LOGE("[SignElf] csOffset is not 4K alignment");
         return false;
     }
-    std::string adHoc = signParams.at(ParamConstants::PARAM_AD_HOC);
-    bool generateCodeSignFlag = GenerateCodeSignByte(signerConfig, tmpOutputFile, csOffset, adHoc);
+    std::string selfSign = signParams.at(ParamConstants::PARAM_SELF_SIGN);
+    bool generateCodeSignFlag = GenerateCodeSignByte(signerConfig, tmpOutputFile, csOffset, selfSign);
     if  (!generateCodeSignFlag) {
         return false;
     }
@@ -180,7 +180,7 @@ bool SignElf::WriteSection(ELFIO::elfio& reader, const std::string& content, con
 bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfig,
                                  std::map<std::string, std::string>& signParams)
 {
-    if (signParams.at(ParamConstants::PARAM_AD_HOC) == ParamConstants::AD_HOC_TYPE_1) {
+    if (signParams.at(ParamConstants::PARAM_SELF_SIGN) == ParamConstants::SELF_SIGN_TYPE_1) {
         return true;
     }
     // check elf bin or so
@@ -214,9 +214,9 @@ bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfi
 }
 
 bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::string& inputFile, uint64_t& csOffset,
-                                   const std::string& adHoc)
+                                   const std::string& selfSign)
 {
-    CodeSigning codeSigning(&signerConfig, (adHoc == ParamConstants::AD_HOC_TYPE_1));
+    CodeSigning codeSigning(&signerConfig, (selfSign == ParamConstants::SELF_SIGN_TYPE_1));
     std::vector<int8_t> codesignData;
     bool getElfCodeSignBlockFlag = codeSigning.GetElfCodeSignBlock(inputFile, csOffset, codesignData);
     if (!getElfCodeSignBlockFlag) {

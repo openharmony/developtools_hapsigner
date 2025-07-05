@@ -30,6 +30,7 @@ public:
     SignToolServiceImpl() = default;
     virtual ~SignToolServiceImpl() = default;
     bool Sign(Options* options)override;
+    bool Verify(Options* option)override;
 };
 } // namespace SignatureTools
 } // namespace OHOS

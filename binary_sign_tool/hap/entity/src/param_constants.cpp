@@ -53,11 +53,11 @@ const std::string ParamConstants::PARAM_VERIFY_PROPERTY_FILE = "outproperty";
 const std::string ParamConstants::PARAM_RESIGN_CONFIG_FILE = "resignconfig";
 const std::string ParamConstants::PARAM_IN_FORM = "inForm";
 const std::string ParamConstants::PARAM_SIGN_CODE = "signCode";
-const std::string ParamConstants::PARAM_AD_HOC = "adHoc";
+const std::string ParamConstants::PARAM_SELF_SIGN = "selfSign";
 const std::string ParamConstants::PARAM_MODULE_FILE = "moduleFile";
 const std::string ParamConstants::DISABLE_SIGN_CODE = "0";
 const std::string ParamConstants::ENABLE_SIGN_CODE = "1";
-const std::string ParamConstants::AD_HOC_TYPE_0 = "0";
-const std::string ParamConstants::AD_HOC_TYPE_1 = "1";
+const std::string ParamConstants::SELF_SIGN_TYPE_0 = "0";
+const std::string ParamConstants::SELF_SIGN_TYPE_1 = "1";
 } // namespace SignatureTools
 } // namespace OHOS

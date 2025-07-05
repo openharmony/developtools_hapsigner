@@ -27,7 +27,8 @@ const std::string ParamsRunTool::VERSION = "1.0.0";
 
 static std::unordered_map <std::string,
                            std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD {
-    {SIGN_ELF, ParamsRunTool::RunSignApp}
+    {SIGN_ELF, ParamsRunTool::RunSignApp},
+    {VERIFY_ELF, ParamsRunTool::RunVerifyApp},
 };
 
 bool ParamsRunTool::ProcessCmd(char** args, size_t size)
@@ -52,14 +53,12 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
             PrintMsg(param->GetMethod() + " failed");
             return false;
         }
-        PrintMsg("Start " + param->GetMethod());
         SIGNATURE_TOOLS_LOGD("%s run start time  ", param->GetMethod().c_str());
         if (!DispatchParams(param, *serviceApi)) {
             SIGNATURE_TOOLS_LOGD("%s run end time  ", param->GetMethod().c_str());
             PrintMsg(param->GetMethod() + " failed");
             return false;
         }
-        PrintMsg(param->GetMethod() + " success");
         SIGNATURE_TOOLS_LOGD("%s run end time  ", param->GetMethod().c_str());
     }
     return true;
@@ -84,7 +83,7 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "not support command param '" + mode + "'");
         return false;
     }
-    if (params->GetString(Options::AD_HOC) == ParamConstants::AD_HOC_TYPE_1) {
+    if (params->GetString(Options::SELF_SIGN) == ParamConstants::SELF_SIGN_TYPE_1) {
         return api.Sign(params);
     }
     if (StringUtils::CaseCompare(mode, LOCAL_SIGN)) {
@@ -147,6 +146,17 @@ void ParamsRunTool::PrintHelp()
 void  ParamsRunTool::Version()
 {
     PrintMsg(ParamsRunTool::VERSION);
+}
+
+bool ParamsRunTool::RunVerifyApp(Options* params, SignToolServiceImpl& api)
+{
+    if (!params->Required({Options::IN_FILE})) {
+        return false;
+    }
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::IN_FILE})) {
+        return false;
+    }
+    return api.Verify(params);
 }
 } // namespace SignatureTools
 } // namespace OHOS
