@@ -53,8 +53,8 @@ bool VerifyElf::ParseSignBlock(const ELFIO::elfio& elfReader)
 {
     ELFIO::section* sec = elfReader.sections[codesignSec];
     if (!sec) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "codesign is not found");
-        return false;
+        PrintMsg("codesign is not found");
+        return true;
     }
     ELFIO::Elf64_Off secOffElf64 = sec->get_offset();
     uint64_t secOff = static_cast<uint64_t>(secOffElf64);
