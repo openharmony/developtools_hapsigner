@@ -477,8 +477,8 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -selfSign          #是否本机调试模式，1表示开启，可选项。
 
 2.输出二进制文件签名信息
-  
-    display-sign : 二进制文件签名
+
+    display-sign : 输出二进制文件签名信息
          ├── -inFile            #输入的已签名elf文件，必填项
 
 #### 相关仓
