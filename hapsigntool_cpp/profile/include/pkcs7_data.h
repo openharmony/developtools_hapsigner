@@ -120,7 +120,7 @@ private:
     int VerifySignerInfoCertChain(PKCS7* p7,
                                   PKCS7_SIGNER_INFO* signerInfo,
                                   STACK_OF(X509)* certs) const;
-    void ClearCertChain(std::vector<x509*>& certChain) const;
+    void ClearCertChain(std::vector<X509*>& certChain) const;
 
 private:
     /* For ease of reading, the following interface will be as consistent as possible with the OpenSSL

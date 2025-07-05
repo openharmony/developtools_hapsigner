@@ -79,7 +79,7 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
 
     // remote sign support input certificate chain file.
     STACK_OF(X509)* certs = adapter.GetSignCertChain();
-    if (cert != nullptr) {
+    if (certs != nullptr) {
         signer->SetCertificates(certs);
     }
 

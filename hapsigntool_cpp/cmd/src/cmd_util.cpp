@@ -379,7 +379,7 @@ bool CmdUtil::Convert2Params(char** args, const size_t size, const ParamsSharedP
         return false;
     }
 
-    TransformKeyAliasWhenLocalSign(params);
+    TransformKeyAliasWhenLocalSign(param);
     if (!UpdateParam(param)) {
         return false;
     }
@@ -397,14 +397,14 @@ void CmdUtil::TransformKeyAliasWhenLocalSign(const ParamsSharedPtr& params)
     std::string keyAlias = options->GetString(Options::KEY_ALIAS);
     if (!keyAlias.empty()) {
         std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
-                       [](unsigned char c) { return std::tolower(c); });
+            [](unsigned char c) { return std::tolower(c); });
         (*options)[Options::KEY_ALIAS] = keyAlias;
     }
 
     keyAlias = options->GetString(Options::ISSUER_KEY_ALIAS);
     if (!keyAlias.empty()) {
         std::transform(keyAlias.begin(), keyAlias.end(), keyAlias.begin(),
-                       [](unsigned char c) { return std::tolower(c); });
+            [](unsigned char c) { return std::tolower(c); });
         (*options)[Options::ISSUER_KEY_ALIAS] = keyAlias;
     }
 }
