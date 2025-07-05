@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace SignatureTools {
 namespace DynamicLibHandle {
-    extern void* handle;
+    extern void* g_handle;
 
     extern void FreeHandle();
 } // DynamicLibHandle

@@ -49,11 +49,11 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     char* userPwd = adapter.GetOptions()->GetChars(ParamConstants::PARAM_REMOTE_USERPWD);
 
     // open so
-    if (DynamicLibHandle::handle == nullptr) {
-        DynamicLibHandle::handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_LOCAL);
+    if (DynamicLibHandle::g_handle == nullptr) {
+        DynamicLibHandle::g_handle = dlopen(signerPlugin.c_str(), RTLD_NOW | RTLD_LOCAL);
     }
 
-    if (DynamicLibHandle::handle == nullptr) {
+    if (DynamicLibHandle::g_handle == nullptr) {
         PrintErrorNumberMsg("LoadRemoteSigner", RET_FAILED, dlerror());
         return nullptr;
     }
@@ -62,7 +62,7 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
     dlerror();
 
     RemoteSignerCreator remoteSignerCreator =
-        (RemoteSignerCreator)dlsym(DynamicLibHandle::handle, "GetRemoteSignerInstance");
+        (RemoteSignerCreator)dlsym(DynamicLibHandle::g_handle, "GetRemoteSignerInstance");
     char* error = nullptr;
     if ((error = dlerror()) != NULL) {
         SIGNATURE_TOOLS_LOGE("%s", error);
