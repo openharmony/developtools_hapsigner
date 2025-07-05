@@ -30,20 +30,20 @@ public:
     * @param certificates Cert chain to sign
     */
     LocalSigner(EVP_PKEY* keyPair, STACK_OF(X509)* certificates);
-    ~LocalSigner()override;
+    ~LocalSigner() override;
     /**
     * GetCrls.
     *
     * @return crls
     */
-    STACK_OF(X509_CRL)* GetCrls()const override;
+    STACK_OF(X509_CRL)* GetCrls() override;
     /**
     * GetCertificates.
     *
     * @return Certificates
     */
-    STACK_OF(X509)* GetCertificates()const  override;
-    std::string GetSignature(const std::string& data, const std::string& signAlg)const override;
+    STACK_OF(X509)* GetCertificates() override;
+    std::string GetSignature(const std::string& data, const std::string& signAlg) override;
     
 private:
     /**

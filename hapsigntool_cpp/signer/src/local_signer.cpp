@@ -49,7 +49,7 @@ LocalSigner::~LocalSigner()
         m_certificates = NULL;
     }
 }
-STACK_OF(X509_CRL)* LocalSigner::GetCrls() const
+STACK_OF(X509_CRL)* LocalSigner::GetCrls()
 {
     return NULL;
 }
@@ -59,14 +59,14 @@ static X509* X509Dup(const X509* x509)
     return X509_dup(const_cast<X509*>(x509));
 }
 
-STACK_OF(X509)* LocalSigner::GetCertificates() const
+STACK_OF(X509)* LocalSigner::GetCertificates()
 {
     if (m_certificates == NULL) {
         return m_certificates;
     }
     return sk_X509_deep_copy(m_certificates, X509Dup, X509_free);
 }
-std::string LocalSigner::GetSignature(const std::string& data, const std::string& signAlg) const
+std::string LocalSigner::GetSignature(const std::string& data, const std::string& signAlg)
 {
     EVP_MD_CTX* hashCtx = NULL;
     EVP_PKEY_CTX* privateKeyCtx = NULL;

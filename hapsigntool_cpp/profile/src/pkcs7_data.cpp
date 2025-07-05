@@ -160,10 +160,16 @@ int PKCS7Data::Parse(const unsigned char** in, long len)
 
 int PKCS7Data::Verify(const std::string& content) const
 {
+    if (m_p7 == nullptr || !PKCS7_type_is_signed(m_p7) || m_p7->d.sign == nullptr) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "pkcs7 block is invalid.");
+        return VERIFY_ERROR;
+    }
+
     if (VerifySign(content) < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "signature verify failed");
         return VERIFY_ERROR;
     }
+
     if (VerifyCertChain() < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "cert Chain verify failed");
         PrintCertChainSub(m_p7->d.sign->cert);
@@ -190,15 +196,20 @@ int PKCS7Data::GetContent(std::string& originalRawData) const
 
 static void PKCS7AddCrls(PKCS7* p7, STACK_OF(X509_CRL)* crls)
 {
+    if (crls == nullptr) {
+        return;
+    }
+
     for (int i = 0; i < sk_X509_CRL_num(crls); i++) {
         PKCS7_add_crl(p7, sk_X509_CRL_value(crls, i));
     }
+
+    sk_X509_CRL_free(crls);
 }
 
 int PKCS7Data::InitPkcs7(const std::string& content, const std::shared_ptr<Signer>& signer,
                          const std::string& sigAlg, std::vector<PKCS7Attr> attrs)
 {
-    STACK_OF(X509)* certs = NULL;
     /* hash algorithm */
     const EVP_MD* md = NULL;
     /* entity certificate */
@@ -206,16 +217,16 @@ int PKCS7Data::InitPkcs7(const std::string& content, const std::shared_ptr<Signe
     int result = RET_OK;
     if (signer == NULL) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "signer is NULL , sign failed");
-        result = INVALIDPARAM_ERROR;
-        goto err;
+        return INVALIDPARAM_ERROR;
     }
     m_signer = signer;
     m_sigAlg = sigAlg;
-    certs = signer->GetCertificates();
-    if (SortX509Stack(certs) < 0) {
-        result = RET_FAILED;
-        goto err;
+    STACK_OF(X509)* certs = signer->GetCertificates();
+    if (certs == nullptr) {
+        PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR, "certs is NULL, sign failed.");
+        return CERTIFICATE_ERROR;
     }
+
     if (sigAlg == SIGN_ALG_SHA384) {
         md = EVP_sha384();
     } else if (sigAlg == SIGN_ALG_SHA256) {
@@ -414,49 +425,35 @@ int PKCS7Data::VerifySign(const std::string& content)const
     return RET_OK;
 }
 
-int PKCS7Data::VerifyCertChain()const
+int PKCS7Data::VerifyCertChain() const
 {
     /* Validate the certificate chain */
     STACK_OF(PKCS7_SIGNER_INFO)* skSignerInfo = PKCS7_get_signer_info(m_p7);
     int signerCount = sk_PKCS7_SIGNER_INFO_num(skSignerInfo);
-    int c = signerCount;
-    STACK_OF(X509)* certs = NULL;
-    int result = RET_FAILED;
-    /* Original certificate chain */
-    STACK_OF(X509)* certChain = m_p7->d.sign->cert;
-    /* Copy of the certificate chain, with the entity certificate removed later */
-    certs = sk_X509_dup(certChain);
-    if (SortX509Stack(certs) < 0) {
-        SIGNATURE_TOOLS_LOGE("sort x509 stack failed, verify certchain failed");
-        goto err;
-    }
-    /* Retrieve the certificate chain without the entity certificate */
-    while (c--) {
-        sk_X509_delete(certs, 0);
-    }
+    STACK_OF(X509)* certs = m_p7->d.sign->cert;
+
     for (int i = 0; i < signerCount; i++) {
         PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(skSignerInfo, i);
-        if ((result = VerifySignerInfoCertchain(m_p7, signerInfo, certs, certChain)) < 0) {
+        int result = VerifySignerInfoCertChain(m_p7, signerInfo, certs);
+        if (result != RET_OK) {
             SIGNATURE_TOOLS_LOGE("verify certchain failed");
-            goto err;
+            return result;
         }
     }
-    result = RET_OK;
-err:
-    sk_X509_free(certs);
-    return result;
+
+    return RET_OK;
 }
 
-int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* signerInfo,
-                                                             STACK_OF(X509)* certs) const
+int PKCS7Data::CheckSignerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* signerInfo,
+                                                             const std::vector<X509*>& certs) const
 {
-    if (signerInfo == NULL || certs == NULL) {
+    if (signerInfo == NULL) {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR, "input is NULL, check signtime invalid");
         return INVALIDPARAM_ERROR;
     }
     ASN1_TYPE* signTime = PKCS7_get_signed_attribute(signerInfo, NID_pkcs9_signingTime);
-    for (int i = 0; i < sk_X509_num(certs); i++) {
-        X509* cert = sk_X509_value(certs, i);
+    for (int i = 0; i < static_cast<int>(certs.size()); i++) {
+        X509* cert = certs[i];
         const ASN1_TIME* notBefore = X509_get0_notBefore(cert);
         const ASN1_TIME* notAfter = X509_get0_notAfter(cert);
         if (CheckSignTimeInValidPeriod(signTime, notBefore, notAfter) < 0) {
@@ -467,48 +464,47 @@ int PKCS7Data::CheckSginerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* 
     return RET_OK;
 }
 
-int PKCS7Data::VerifySignerInfoCertchain(PKCS7* pkcs7, PKCS7_SIGNER_INFO* signerInfo,
-                                         STACK_OF(X509)* certs, STACK_OF(X509)* certChain)const
+int PKCS7Data::VerifySignerInfoCertChain(PKCS7* pkcs7, PKCS7_SIGNER_INFO* signerInfo,
+                                         STACK_OF(X509)* certs) const
 {
     X509* sigCert = PKCS7_cert_from_signer_info(pkcs7, signerInfo);
-    int j = 0;
-    /* Trace back through the subject information and validate the signature value of each certificate */
-    if (!X509NameCompare(sigCert, sk_X509_value(certs, 0))) {
-        SIGNATURE_TOOLS_LOGE("entity name compare not equal, verify failed");
+    if (sigCert == nullptr) {
+        SIGNATURE_TOOLS_LOGE("get sign cert from signInfo failed");
         return VERIFY_ERROR;
     }
-    /* verify entity certificate signature value */
-    if (!VerifyCertOpensslUtils::CertVerify(sigCert, sk_X509_value(certs, 0))) {
-        SIGNATURE_TOOLS_LOGE("entity cert signature verify failed");
+
+    CertSign certVisitFlag;
+    VerifyCertOpensslUtils::GenerateCertSignFromCertStack(certs, certVisitFlag);
+    std::vector<X509*> certChain;
+    certChain.emplace_back(X509_dup(sigCert));
+    if (!VerifyCertOpensslUtils::GetCertsChain(certChain, certVisitFlag)) {
+        SIGNATURE_TOOLS_LOGE("get cert chain for signInfo failed");
+        ClearCertChain(certChain);
         return VERIFY_ERROR;
     }
-    for (; j + 1 < sk_X509_num(certs); j++) {
-        if (!X509NameCompare(sk_X509_value(certs, j), sk_X509_value(certs, j + 1))) {
-            SIGNATURE_TOOLS_LOGE("sub cert name compare not equal, verify failed");
-            return VERIFY_ERROR;
-        }
-        /* Verify the signature value of the intermediate certificate */
-        if (!VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j + 1))) {
-            SIGNATURE_TOOLS_LOGE("sub cert signature verify failed");
-            return VERIFY_ERROR;
-        }
-    }
-    if (!X509NameCompare(sk_X509_value(certs, j), sk_X509_value(certs, j))) {
-        SIGNATURE_TOOLS_LOGE("root cert name compare not equal, verify failed");
+    if (certChain.size() < MIN_CERTS_NUM) {
+        SIGNATURE_TOOLS_LOGE("GetCertsChain less than two!");
+        ClearCertChain(certChain);
         return VERIFY_ERROR;
     }
-    /* Verify the signature value of the root certificate */
-    if (!VerifyCertOpensslUtils::CertVerify(sk_X509_value(certs, j), sk_X509_value(certs, j))) {
-        SIGNATURE_TOOLS_LOGE("root cert signature verify failed");
-        return VERIFY_ERROR;
-    }
+
     /* Verify that the signature time in the signature information is within the validity period of
     the certificate chain (entity certificate will be verified in PKCS7_verify) */
-    if (CheckSginerInfoSignTimeInCertChainValidPeriod(signerInfo, certChain) < 0) {
-        SIGNATURE_TOOLS_LOGE("sign time is invalid,verify failed");
+    if (CheckSignerInfoSignTimeInCertChainValidPeriod(signerInfo, certChain) < 0) {
+        SIGNATURE_TOOLS_LOGE("sign time is invalid, verify failed");
+        ClearCertChain(certChain);
         return VERIFY_ERROR;
     }
+    ClearCertChain(certChain);
     return RET_OK;
+}
+
+void PKCS7Data::ClearCertChain(std::vector<X509*>& certChain) const
+{
+    for (auto cert : certChain) {
+        X509_free(cert);
+    }
+    certChain.clear();
 }
 
 int PKCS7Data::Pkcs7SignAttr(PKCS7_SIGNER_INFO* info)
