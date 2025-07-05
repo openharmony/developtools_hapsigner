@@ -79,7 +79,6 @@ bool SignToolServiceImpl::Verify(Options* option)
 {
     VerifyElf verifyElf;
     if (!verifyElf.Verify(option)) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "elf verify failed!");
         return false;
     }
     return true;

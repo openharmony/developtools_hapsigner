@@ -24,7 +24,7 @@ namespace OHOS {
 namespace SignatureTools {
 
 const std::string HELP_TXT_HEADER = R"(
-USAGE: <sign|verify>[options]
+USAGE: <sign|display-sign>[options]
 )";
 
 const std::string SIGN_HELP_TXT = R"(
@@ -55,17 +55,17 @@ const std::string SIGN_HELP_TXT = R"(
 )";
 
 const std::string VERIFY_HELP_TXT = R"(
-    verify[options]:
-        -inFile : verify elf file, required fields;
+    display-sign[options]:
+        -inFile : display-sign elf file sign information, required fields;
 
     EXAMPLE:
-        verify -inFile "/home/app1-signed.hap"
+        display-sign -inFile "/home/app1-signed.hap"
 )";
 
 const std::string HELP_END_TXT = R"(
 COMMANDS :
     sign : elf file signature
-    verify : elf file verification
+    display-sign : elf file verification
 )";
 /* help.txt all content */
 const std::string HELP_TXT = HELP_TXT_HEADER + SIGN_HELP_TXT + VERIFY_HELP_TXT + HELP_END_TXT;
