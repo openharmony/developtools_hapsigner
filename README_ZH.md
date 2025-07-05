@@ -432,7 +432,14 @@ Profile签名证书：OpenHarmonyProfileRelease.pem、OpenHarmonyProfileDebug.pe
 （1）二进制签名工具（binary-sign-tool）的命令实例如下：
 
 ```shell
-binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -profileSigned "1" -inFile "app1-unsigned.zip" -keystoreFile "result\ohtest.p12" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -moduleFile "module.json" -adHoc "1"
+// 证书签名
+binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -profileSigned "1" -inFile "unsigned.elf" -keystoreFile "result\ohtest.p12" -outFile "signed.elf" -keyPwd "123456" -keystorePwd "123456" -moduleFile "module.json"
+
+// 本机自签名
+binary-sign-tool sign -inFile "unsigned.elf" -outFile "signed.elf" -selfSign "1"
+
+// 输出二进制文件签名信息
+binary-sign-tool display-sign -inFile "signed.elf"
 ```
 
 上述命令的参数说明如下:
@@ -440,16 +447,16 @@ binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -app
     sign : 二进制文件签名
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
          ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      #密钥库文件，非adHoc模式时为必填项
+         ├── -keystoreFile      #密钥库文件，非自签名模式时为必填项
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
-         ├── -adHoc             #是否本机调试模式，1表示开启，可选项。
+         ├── -selfSign          #是否本机调试模式，1表示开启，可选项。
 
 ##### 接口说明
 
@@ -458,16 +465,21 @@ binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -app
     sign : 二进制文件签名
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
          ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #应用签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
-         ├── -keystoreFile      #密钥库文件，非adHoc模式时为必填项
+         ├── -keystoreFile      #密钥库文件，非自签名模式时为必填项
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
-         ├── -adHoc             #是否本机调试模式，1表示开启，可选项。
+         ├── -selfSign          #是否本机调试模式，1表示开启，可选项。
+
+2.输出二进制文件签名信息
+  
+    display-sign : 二进制文件签名
+         ├── -inFile            #输入的已签名elf文件，必填项
 
 #### 相关仓
    不涉及
