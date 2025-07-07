@@ -390,7 +390,7 @@ void CmdUtil::TransformKeyAliasWhenLocalSign(const ParamsSharedPtr& params)
 {
     Options* options = params->GetOptions();
     std::string mode = options->GetString(Options::MODE);
-    if (mode != LOCAL_SIGN) {
+    if (mode == REMOTE_SIGN) {
         return;
     }
 
