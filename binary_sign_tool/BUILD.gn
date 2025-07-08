@@ -73,14 +73,14 @@ ohos_executable("binary-sign-tool") {
   sources = signature_tools_main_src
 
   deps = [
-    "//third_party/elfio:elfio",
-    "//third_party/openssl:libcrypto_shared",
-    "//third_party/openssl:libssl_shared",
   ]
 
   external_deps = [
     "bounds_checking_function:libsec_static",
+    "elfio:elfio",
     "json:nlohmann_json_static",
+    "openssl:libcrypto_static",
+    "openssl:libssl_static",
   ]
 
   cflags_cc = [
