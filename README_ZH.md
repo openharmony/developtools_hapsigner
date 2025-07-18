@@ -414,7 +414,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 
 1.工具仅支持**ECC**密钥算法，不支持RSA。
 
-2.工具仅支持PKCS#12密钥库格式，支持的密钥库文件后缀为.p12或.jks。
+2.工具仅支持PKCS#12密钥库格式，支持的密钥库文件后缀为.p12。
 
 #### 说明
 ##### 签名相关文件用法说明
@@ -456,7 +456,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
-         ├── -selfSign          #是否本机调试模式，1表示开启，可选项。
+         ├── -selfSign          #是否本机自签名模式，1表示开启，可选项。
 
 ##### 接口说明
 
@@ -476,9 +476,9 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -moduleFile        #权限module.json文件，可选项
          ├── -selfSign          #是否本机调试模式，1表示开启，可选项。
 
-2.输出二进制文件签名信息
+2.输出二进制文件签名证书链信息
 
-    display-sign : 输出二进制文件签名信息
+    display-sign : 输出二进制文件签名证书链信息
          ├── -inFile            #输入的已签名elf文件，必填项
 
 #### 相关仓
