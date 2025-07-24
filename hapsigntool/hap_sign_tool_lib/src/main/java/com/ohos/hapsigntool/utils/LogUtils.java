@@ -90,7 +90,7 @@ public class LogUtils {
      * @param log log string
      */
     public void info(String log) {
-        logger.info(" INFO - " + log);
+        logger.info(() -> " INFO - " + log);
         OUT_HANDLER.flush();
     }
 
@@ -101,7 +101,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void info(String log, Object arg) {
-        logger.info(" INFO - " + replaceArgs(log, arg));
+        logger.info(() -> " INFO - " + replaceArgs(log, arg));
         OUT_HANDLER.flush();
     }
 
@@ -113,7 +113,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void info(String log, Object arg1, Object arg2) {
-        logger.info(" INFO - " + replaceArgs(log, arg1, arg2));
+        logger.info(() -> " INFO - " + replaceArgs(log, arg1, arg2));
         OUT_HANDLER.flush();
     }
 
@@ -123,7 +123,7 @@ public class LogUtils {
      * @param log log string
      */
     public void warn(String log) {
-        logger.warning(" WARN - " + log);
+        logger.warning(() -> " WARN - " + log);
         ERR_HANDLER.flush();
     }
 
@@ -134,7 +134,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void warn(String log, Object arg) {
-        logger.warning(" WARN - " + replaceArgs(log, arg));
+        logger.warning(() -> " WARN - " + replaceArgs(log, arg));
         ERR_HANDLER.flush();
     }
 
@@ -146,7 +146,7 @@ public class LogUtils {
      * @param e throwable
      */
     public void warn(String log, Object arg, Throwable e) {
-        logger.log(Level.WARNING, e, () -> " DEBUG - " + replaceArgs(log, arg));
+        logger.log(Level.WARNING, e, () -> " WARN - " + replaceArgs(log, arg));
         ERR_HANDLER.flush();
     }
 
@@ -158,7 +158,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void warn(String log, Object arg1, Object arg2) {
-        logger.warning(" WARN - " + replaceArgs(log, arg1, arg2));
+        logger.warning(() -> " WARN - " + replaceArgs(log, arg1, arg2));
         ERR_HANDLER.flush();
     }
 
@@ -169,7 +169,7 @@ public class LogUtils {
      * @param e throwable
      */
     public void warn(String log, Throwable e) {
-        logger.log(Level.WARNING, e, () -> " DEBUG - " + log);
+        logger.log(Level.WARNING, e, () -> " WARN - " + log);
         ERR_HANDLER.flush();
     }
 
@@ -179,7 +179,7 @@ public class LogUtils {
      * @param log log string
      */
     public void debug(String log) {
-        logger.config(" DEBUG - " + log);
+        logger.config(() -> " DEBUG - " + log);
         OUT_HANDLER.flush();
     }
 
@@ -191,7 +191,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void debug(String log, Object arg1, Object arg2) {
-        logger.config(" DEBUG - " + replaceArgs(log, arg1, arg2));
+        logger.config(() -> " DEBUG - " + replaceArgs(log, arg1, arg2));
         OUT_HANDLER.flush();
     }
 
@@ -213,7 +213,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void debug(String log, Object arg) {
-        logger.config(" DEBUG - " + replaceArgs(log, arg));
+        logger.config(() -> " DEBUG - " + replaceArgs(log, arg));
         OUT_HANDLER.flush();
     }
 
@@ -223,7 +223,7 @@ public class LogUtils {
      * @param log log string
      */
     public void error(String log) {
-        logger.severe(" ERROR - " + log);
+        logger.severe(() -> " ERROR - " + log);
         ERR_HANDLER.flush();
     }
 
@@ -257,7 +257,7 @@ public class LogUtils {
      * @param arg arg
      */
     public void error(String log, Object arg) {
-        logger.severe(" ERROR - " + replaceArgs(log, arg));
+        logger.severe(() -> " ERROR - " + replaceArgs(log, arg));
         ERR_HANDLER.flush();
     }
 
@@ -269,7 +269,7 @@ public class LogUtils {
      * @param arg2 arg
      */
     public void error(String log, Object arg1, Object arg2) {
-        logger.severe(" ERROR - " + replaceArgs(log, arg1, arg2));
+        logger.severe(() -> " ERROR - " + replaceArgs(log, arg1, arg2));
         ERR_HANDLER.flush();
     }
 
@@ -282,21 +282,32 @@ public class LogUtils {
      * @param arg3 arg
      */
     public void error(String log, Object arg1, Object arg2, Object arg3) {
-        logger.severe(" ERROR - " + replaceArgs(log, arg1, arg2, arg3));
+        logger.severe(() -> " ERROR - " + replaceArgs(log, arg1, arg2, arg3));
         ERR_HANDLER.flush();
     }
 
     private static String replaceArgs(String line, Object... args) {
+        if (line == null || args == null || args.length == 0) {
+            return line;
+        }
         Matcher matcher = PATTERN.matcher(line);
-        String result = line;
         if (!matcher.find()) {
             return line;
         }
-        for (Object arg : args) {
-            Matcher m = PATTERN.matcher(result);
-            result = m.replaceFirst(String.valueOf(arg));
+        matcher.reset();
+        StringBuffer result = new StringBuffer();
+        int index = 0;
+        while (matcher.find()) {
+            matcher.appendReplacement(result, "");
+            if (index < args.length) {
+                result.append(args[index++]);
+            } else {
+                result.append(matcher.group());
+                break;
+            }
         }
-        return result;
+        matcher.appendTail(result);
+        return result.toString();
     }
 
     private static String getJarConfig(String configFileName) throws LogConfigException {
