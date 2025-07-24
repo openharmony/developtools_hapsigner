@@ -408,7 +408,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 
 2. 编译命令：./build.sh --product-name ohos-sdk
 
-3. 编译产物路径：/openharmony_master/out/sdk/packages/ohos-sdk/ohos
+3. 编译产物路径：/openharmony_master/out/sdk/packages/ohos-sdk
 
 **特别说明**：
 
