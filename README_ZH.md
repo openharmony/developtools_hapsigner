@@ -456,7 +456,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
-         ├── -selfSign          #是否本机自签名模式，1表示开启，可选项。
+         ├── -selfSign          # 是否本机自签名模式，1表示自签名，0表示证书签名，默认为0，可选项
 
 ##### 接口说明
 
@@ -474,7 +474,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -keystorePwd       #密钥库口令，可选项
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
-         ├── -selfSign          #是否本机调试模式，1表示开启，可选项。
+         ├── -selfSign          # 是否本机自签名模式，1表示自签名，0表示证书签名，默认为0，可选项
 
 2.输出二进制文件签名证书链信息
 
