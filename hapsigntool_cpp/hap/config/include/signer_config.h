@@ -14,7 +14,9 @@
  */
 #ifndef SIGNATRUETOOLS_SIGNER_CONFIG_H
 #define SIGNATRUETOOLS_SIGNER_CONFIG_H
+
 #include <map>
+#include <mutex>
 #include <vector>
 #include <string>
 #include <memory>
@@ -54,6 +56,7 @@ private:
     std::map<std::string, std::string> signParamMap;
     std::shared_ptr<Signer> signer;
     int compatibleVersion;
+    std::mutex signerMtx;
 };
 } // namespace SignatureTools
 } // namespace OHOS
