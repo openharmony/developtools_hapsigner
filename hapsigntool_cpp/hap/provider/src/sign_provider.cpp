@@ -25,6 +25,7 @@
 #include "nlohmann/json.hpp"
 #include "string_utils.h"
 #include "file_utils.h"
+#include "pkcs7_data.h"
 #include "sign_elf.h"
 #include "sign_bin.h"
 #include "params.h"
@@ -532,6 +533,11 @@ int SignProvider::GetCertListFromFile(const std::string& certsFile, STACK_OF(X50
         if (cert == nullptr)
             break;
         sk_X509_push(*ret, cert);
+    }
+    if (PKCS7Data::SortX509Stack(*ret) != RET_OK) {
+        PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
+            "Input certificate file do not include a valid certificate chains");
+        return CERTIFICATE_ERROR;
     }
     BIO_free(certBio);
     return RET_OK;
