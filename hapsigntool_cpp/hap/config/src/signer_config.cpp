@@ -100,6 +100,7 @@ void SignerConfig::FillParameters(const std::map<std::string, std::string>& para
 
 std::shared_ptr<Signer> SignerConfig::GetSigner()
 {
+    std::lock_guard<std::mutex> lockGuard(signerMtx);
     if (signer == nullptr) {
         SignerFactory factory;
         LocalizationAdapter adapter(options);
