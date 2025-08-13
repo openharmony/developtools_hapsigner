@@ -330,7 +330,7 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
     if (ASN1_TIME_compare(notBefore, signTime->value.asn1_string) > 0 ||
         ASN1_TIME_compare(notAfter, signTime->value.asn1_string) < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
-            "The certificate has expired! NotAfter:" + GetASN1Time(notAfter));
+            "The certificate has expired! NotAfter: " + GetASN1Time(notAfter));
         ASN1_TIME_free(tm);
         return VERIFY_ERROR;
     }
