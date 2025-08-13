@@ -327,8 +327,14 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
     }
     ASN1_TIME* tm = ASN1_TIME_new();
     ASN1_TIME_set_string(tm, (reinterpret_cast<const char*>(signTime->value.asn1_string->data)));
-    if (ASN1_TIME_compare(notBefore, signTime->value.asn1_string) > 0 ||
-        ASN1_TIME_compare(notAfter, signTime->value.asn1_string) < 0) {
+    if (ASN1_TIME_compare(notBefore, signTime->value.asn1_string) > 0) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+            "The system time of the device running sign tool is inaccurate! The signTime is " + GetASN1Time(signTime) +
+            " and earlier than notBefore which is " + GetASN1Time(notBefore));
+        ASN1_TIME_free(tm);
+        return VERIFY_ERROR;
+    }
+    if (ASN1_TIME_compare(notAfter, signTime->value.asn1_string) < 0) {
         PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
             "The certificate has expired! NotAfter: " + GetASN1Time(notAfter));
         ASN1_TIME_free(tm);
