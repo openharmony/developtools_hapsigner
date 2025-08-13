@@ -171,7 +171,7 @@ int PKCS7Data::Verify(const std::string& content) const
     }
 
     if (VerifyCertChain() < 0) {
-        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "cert Chain verify failed");
+        SIGNATURE_TOOLS_LOGE("Cert Chain verify failed.");
         PrintCertChainSub(m_p7->d.sign->cert);
         return VERIFY_ERROR;
     }
@@ -327,13 +327,18 @@ int PKCS7Data::CheckSignTimeInValidPeriod(const ASN1_TYPE* signTime,
     }
     ASN1_TIME* tm = ASN1_TIME_new();
     ASN1_TIME_set_string(tm, (reinterpret_cast<const char*>(signTime->value.asn1_string->data)));
-    if (ASN1_TIME_compare(notBefore, signTime->value.asn1_string) > 0 ||
-        ASN1_TIME_compare(notAfter, signTime->value.asn1_string) < 0) {
-        SIGNATURE_TOOLS_LOGE("sign time invalid, signTime: %s, notBefore: %s, "
-                             "notAfter: %s", GetASN1Time(tm).c_str(),
-                             GetASN1Time(notBefore).c_str(), GetASN1Time(notAfter).c_str());
+    if (ASN1_TIME_compare(notBefore, signTime->value.asn1_string) > 0) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+            "The system time of the device running sign tool is inaccurate! The signTime is " + GetASN1Time(tm) +
+            " and earlier than notBefore which is " + GetASN1Time(notBefore));
         ASN1_TIME_free(tm);
-        return RET_FAILED;
+        return VERIFY_ERROR;
+    }
+    if (ASN1_TIME_compare(notAfter, signTime->value.asn1_string) < 0) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR,
+            "The certificate has expired! NotAfter: " + GetASN1Time(notAfter));
+        ASN1_TIME_free(tm);
+        return VERIFY_ERROR;
     }
     ASN1_TIME_free(tm);
     return RET_OK;
@@ -469,7 +474,7 @@ int PKCS7Data::VerifySignerInfoCertChain(PKCS7* pkcs7, PKCS7_SIGNER_INFO* signer
 {
     X509* sigCert = PKCS7_cert_from_signer_info(pkcs7, signerInfo);
     if (sigCert == nullptr) {
-        SIGNATURE_TOOLS_LOGE("get sign cert from signInfo failed");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Get sign cert from signInfo failed");
         return VERIFY_ERROR;
     }
 
@@ -478,12 +483,12 @@ int PKCS7Data::VerifySignerInfoCertChain(PKCS7* pkcs7, PKCS7_SIGNER_INFO* signer
     std::vector<X509*> certChain;
     certChain.emplace_back(X509_dup(sigCert));
     if (!VerifyCertOpensslUtils::GetCertsChain(certChain, certVisitFlag)) {
-        SIGNATURE_TOOLS_LOGE("get cert chain for signInfo failed");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "Get cert chain for signInfo failed");
         ClearCertChain(certChain);
         return VERIFY_ERROR;
     }
     if (certChain.size() < MIN_CERTS_NUM) {
-        SIGNATURE_TOOLS_LOGE("GetCertsChain less than two!");
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "GetCertsChain less than two!");
         ClearCertChain(certChain);
         return VERIFY_ERROR;
     }
