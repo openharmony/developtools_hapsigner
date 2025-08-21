@@ -313,20 +313,17 @@ bool CodeSigning::GetSingleFileStreamFromZip(unzFile &zFile, char fileName[],
     return true;
 }
 
-bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandleParam& param, uLong index)
+bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandleParam& param, unz_file_pos pos)
 {
     unzFile zFile = unzOpen(packageName.c_str());
     if (zFile == NULL) {
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "zlib open file: " + packageName + " failed.");
         return false;
     }
-    for (uLong i = 0; i < index; ++i) {
-        int ret = unzGoToNextFile(zFile);
-        if (ret != UNZ_OK) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to next file failed.");
-            unzClose(zFile);
-            return false;
-        }
+    if (unzGotoFilePos(zFile, &pos) != UNZ_OK) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to file failed.");
+        unzClose(zFile);
+        return false;
     }
     unz_file_info zFileInfo;
     char fileName[FILE_NAME_SIZE];
@@ -377,8 +374,10 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
             return false;
         }
         if (CheckFileName(fileName, &nameLen)) {
+            unz_file_pos pos;
+            unzGetFilePos(zFile, &pos);
             thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
-                std::ref(packageName), std::ref(param), i));
+                std::ref(packageName), std::ref(param), pos));
         }
         if (i != zGlobalInfo.number_entry - 1) {
             int ret = unzGoToNextFile(zFile);
