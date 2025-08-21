@@ -320,7 +320,7 @@ bool CodeSigning::RunParseZipInfo(const std::string& packageName, UnzipHandlePar
         PrintErrorNumberMsg("IO_ERROR", IO_ERROR, "zlib open file: " + packageName + " failed.");
         return false;
     }
-    if (unzGotoFilePos(zFile, &pos) != UNZ_OK) {
+    if (unzGoToFilePos(zFile, &pos) != UNZ_OK) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "zlib go to file failed.");
         unzClose(zFile);
         return false;
