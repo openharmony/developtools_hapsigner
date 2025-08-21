@@ -375,7 +375,10 @@ bool CodeSigning::HandleZipGlobalInfo(const std::string& packageName, unzFile& z
         }
         if (CheckFileName(fileName, &nameLen)) {
             unz_file_pos pos;
-            unzGetFilePos(zFile, &pos);
+            if (unzGetFilePos(zFile, &pos) != UNZ_OK) {
+                SIGNATURE_TOOLS_LOGE("unzGetFilePos failed, fileName = %s", fileName);
+                return false;
+            }
             thread_results.push_back(mPools->Enqueue(&CodeSigning::RunParseZipInfo, this,
                 std::ref(packageName), std::ref(param), pos));
         }
