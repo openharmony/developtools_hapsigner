@@ -66,7 +66,7 @@ public:
     bool GetSingleFileStreamFromZip(unzFile& zFile, char fileName[],
                                     unz_file_info& zFileInfo,
                                     int& readFileSize, std::stringbuf& sb);
-    bool RunParseZipInfo(const std::string& packageName, UnzipHandleParam& param, uLong index);
+    bool RunParseZipInfo(const std::string& packageName, UnzipHandleParam& param, unz_file_pos pos);
     bool GenerateSignature(const std::vector<int8_t>& signedData, const std::string&,
                            std::vector<int8_t>&);
     int64_t m_timestamp = 0;
