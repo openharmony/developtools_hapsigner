@@ -160,7 +160,7 @@ int SignToolServiceImpl::HandleIssuerKeyAliasEmpty(Options* options)
             goto err;
         } else if (keyStoreRights == nullptr && issuerKeyStoreRights == nullptr) {
             return RET_OK;
-        } else {
+        } else if (keyStoreRights != nullptr && issuerKeyStoreRights != nullptr) {
             if (std::strcmp(keyStoreRights, issuerKeyStoreRights) != 0) {
                 goto err;
             }
