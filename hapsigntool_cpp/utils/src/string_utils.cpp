@@ -62,7 +62,7 @@ std::string StringUtils::FormatLoading(std::string& dealStr)
     char comma = ',';
     char slash = '/';
     std::string del = dealStr.substr(dealStr.find_first_of("/") + 1, dealStr.size());
-    size_t position = 0;
+    std::string::size_type position = 0;
     while ((position = del.find(slash, position)) != std::string::npos) {
         del.insert(position + 1, " ");
         position++;
