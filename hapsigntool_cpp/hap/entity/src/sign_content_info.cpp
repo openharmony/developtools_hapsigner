@@ -76,21 +76,19 @@ std::vector<int8_t> SignContentInfo::GetByteContent()
     }
 
     for (const auto& tmp : m_hashData) {
+        if (index >= ret.size()) {
+            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
+            return std::vector<int8_t>();
+        }
         ret[index] = tmp.m_type;
-
         index++;
-        if (index < 0) {
+
+        if (index >= ret.size()) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
             return std::vector<int8_t>();
         }
-
         ret[index] = tmp.m_tag;
-
         index++;
-        if (index < 0) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
-            return std::vector<int8_t>();
-        }
 
         index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, tmp.m_algId);
         if (index < 0) {
