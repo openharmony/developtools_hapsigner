@@ -361,7 +361,7 @@ bool CertTools::SetKeyUsage(X509* cert, Options* options)
         }
     } else {
         bool keyUsageCritical = options->GetBool(Options::KEY_USAGE_CRITICAL);
-        int crit = keyUsageCritical > 0 ? 1 : 0;
+        int crit = keyUsageCritical ? 1 : 0;
         std::vector<std::string> vecs = StringUtils::SplitString(keyUsage.c_str(), ',');
         key = std::accumulate(vecs.begin(), vecs.end(), key,
             [&](long key, const std::string& vec) { return key | externDic[vec]; });
