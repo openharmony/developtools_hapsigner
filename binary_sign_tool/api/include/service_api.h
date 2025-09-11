@@ -24,7 +24,7 @@ namespace SignatureTools {
 class ServiceApi {
 public:
     ServiceApi() = default;
-    ~ServiceApi() = default;
+    virtual ~ServiceApi() = default;
 
     virtual bool Sign(Options* params) = 0;
     virtual bool Verify(Options* option) = 0;
