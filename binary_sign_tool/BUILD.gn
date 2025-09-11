@@ -93,6 +93,7 @@ ohos_executable("binary-sign-tool") {
     "-Wno-c++20-extensions",
   ]
 
+  remove_configs = [ "//build/config:executable_config" ]
   install_images = [ "system" ]
   install_enable = false
   part_name = "hapsigner"
