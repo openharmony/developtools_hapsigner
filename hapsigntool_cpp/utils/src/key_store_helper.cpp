@@ -415,7 +415,10 @@ int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath
             BIO_free_all(bioOut);
             return RET_FAILED;
         }
-        safes = PKCS12_unpack_authsafes(acceptP12);
+        if ((safes = PKCS12_unpack_authsafes(acceptP12)) == NULL) {
+            sk_PKCS7_pop_free(safes, PKCS7_free);
+            return RET_FAILED;
+        }
     }
 
     BIO_free_all(bioOut);
@@ -583,7 +586,6 @@ PKCS12* KeyStoreHelper::CreatePKCS12(const char* keyStorePwd, const char* keyPwd
     if (!p12) {
         goto err;
     }
-    safes = NULL;
     if ((macStatus != -1) && !PKCS12_set_mac(p12, keyStorePwd, -1, NULL, 0, macStatus, NULL)) {
         goto err;
     }

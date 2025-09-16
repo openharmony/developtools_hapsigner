@@ -81,7 +81,7 @@ std::string LocalSigner::GetSignature(const std::string& data, const std::string
         hash = EVP_sha384();
     } else {
         PrintErrorNumberMsg("INVALIDPARAM_ERROR", INVALIDPARAM_ERROR,
-                            signAlg + "is invalid sigAlg, please use SHA256withECDSA/SHA384withECDSA, sign failed");
+                            signAlg + " is invalid sigAlg, please use SHA256withECDSA/SHA384withECDSA, sign failed");
         return ret;
     }
 
