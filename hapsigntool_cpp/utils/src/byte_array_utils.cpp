@@ -49,7 +49,7 @@ int ByteArrayUtils::InsertShortToByteArray(std::vector<int8_t>& desByte, size_t 
     return pos;
 }
 
-int ByteArrayUtils::InsertByteToByteArray(std::vector<int8_t>& des, int start, std::vector<int8_t> src, int srcLen)
+int ByteArrayUtils::InsertBytesToByteArray(std::vector<int8_t>& des, int start, std::vector<int8_t> src, int srcLen)
 {
     if (src.size() < srcLen) {
         return -1;

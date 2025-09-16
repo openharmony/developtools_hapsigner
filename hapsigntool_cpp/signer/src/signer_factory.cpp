@@ -83,10 +83,6 @@ std::shared_ptr<Signer> SignerFactory::LoadRemoteSigner(LocalizationAdapter& ada
         signer->SetCertificates(certs);
     }
 
-    for (size_t i = 0; i < strlen(userPwd); i++) {
-        userPwd[i] = 0;
-    }
-
     std::shared_ptr<Signer> remoteSigner(signer);
     return remoteSigner;
 }

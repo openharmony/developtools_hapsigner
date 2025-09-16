@@ -209,7 +209,7 @@ STACK_OF(X509)* LocalizationAdapter::GetSignCertChain()
         SIGNATURE_TOOLS_LOGE("sk_X509_new failed");
         return  NULL;
     }
-    std::vector<X509*> certs = GetCertsFromFile(certPath, certPath);
+    std::vector<X509*> certs = GetCertsFromFile(certPath, certType);
     for (int i = 0; i < static_cast<int>(certs.size()); i++) {
         sk_X509_push(certificates, certs[i]);
     }

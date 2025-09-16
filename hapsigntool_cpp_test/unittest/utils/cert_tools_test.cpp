@@ -44,7 +44,7 @@ HWTEST_F(CertToolsTest, cert_tools_test_001, testing::ext::TestSize.Level1)
     Options options;
     options[Options::BASIC_CONSTRAINTS_CRITICAL] = std::string("a");
     options[Options::BASIC_CONSTRAINTS] = std::string("1");
-    bool result = CertTools::SetBisicConstraints(&options, nullptr);
+    bool result = CertTools::SetBasicConstraints(&options, nullptr);
     EXPECT_EQ(result, false);
 }
 
@@ -59,13 +59,13 @@ HWTEST_F(CertToolsTest, cert_tools_test_002, testing::ext::TestSize.Level1)
     options[Options::BASIC_CONSTRAINTS_CRITICAL] = std::string("1");
     options[Options::BASIC_CONSTRAINTS] = std::string("1");
     options[Options::BASIC_CONSTRAINTS_CA] = std::string("a");
-    bool result = CertTools::SetBisicConstraints(&options, nullptr);
+    bool result = CertTools::SetBasicConstraints(&options, nullptr);
     EXPECT_EQ(result, false);
 }
 
 /**
  * @tc.name: cert_tools_test_003
- * @tc.desc: This function tests success for interface SetBisicConstraints
+ * @tc.desc: This function tests success for interface SetBasicConstraints
  * @tc.type: FUNC
  */
 HWTEST_F(CertToolsTest, cert_tools_test_003, testing::ext::TestSize.Level1)
@@ -75,7 +75,7 @@ HWTEST_F(CertToolsTest, cert_tools_test_003, testing::ext::TestSize.Level1)
     options[Options::BASIC_CONSTRAINTS] = std::string("1");
     options[Options::BASIC_CONSTRAINTS_CA] = std::string("1");
     X509* cert = X509_new();
-    bool ret = CertTools::SetBisicConstraints(&options, cert);
+    bool ret = CertTools::SetBasicConstraints(&options, cert);
     EXPECT_EQ(ret, true);
     X509_free(cert);
 }
@@ -151,14 +151,14 @@ HWTEST_F(CertToolsTest, cert_tools_test_006, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: cert_tools_test_007
- * @tc.desc: This function tests failed for interface SetCertPublickKey due to parameter subjectCsr no set PublickKey
+ * @tc.desc: This function tests failed for interface SetCertPublicKey due to parameter subjectCsr no set PublickKey
  * @tc.type: FUNC
  */
 HWTEST_F(CertToolsTest, cert_tools_test_007, testing::ext::TestSize.Level1)
 {
     X509* cert = X509_new();
     X509_REQ* certReq = X509_REQ_new();
-    bool ret = CertTools::SetCertPublickKey(cert, certReq);
+    bool ret = CertTools::SetCertPublicKey(cert, certReq);
     EXPECT_EQ(ret, false);
     X509_REQ_free(certReq);
     X509_free(cert);
@@ -166,7 +166,7 @@ HWTEST_F(CertToolsTest, cert_tools_test_007, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: cert_tools_test_008
- * @tc.desc: This function tests failed for interface SetCertPublickKey due to parameter cert is null
+ * @tc.desc: This function tests failed for interface SetCertPublicKey due to parameter cert is null
  * @tc.type: FUNC
  */
 HWTEST_F(CertToolsTest, cert_tools_test_008, testing::ext::TestSize.Level1)
@@ -175,7 +175,7 @@ HWTEST_F(CertToolsTest, cert_tools_test_008, testing::ext::TestSize.Level1)
     KeyStoreHelper stroe;
     EVP_PKEY* Prikey = stroe.GenerateKeyPair("ECC", 256);
     X509_REQ_set_pubkey(certReq, Prikey);
-    bool ret = CertTools::SetCertPublickKey(nullptr, certReq);
+    bool ret = CertTools::SetCertPublicKey(nullptr, certReq);
     EXPECT_EQ(ret, false);
     X509_REQ_free(certReq);
 }

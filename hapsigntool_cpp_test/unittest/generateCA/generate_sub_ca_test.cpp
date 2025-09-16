@@ -821,7 +821,7 @@ HWTEST_F(GenerateCaTest, GetCertChains_test_002, testing::ext::TestSize.Level1)
 
 /**
  * @tc.name: set_bisic_constraints_patchlen_test_001
- * @tc.desc: Test function of SetBisicConstraintsPathLen() interface for set ConstraintsPathLen in cert FAIL.
+ * @tc.desc: Test function of SetBasicConstraintsPathLen() interface for set ConstraintsPathLen in cert FAIL.
  * @tc.type: FUNC
  * @tc.require: SR000H63TL
  */
@@ -831,7 +831,7 @@ HWTEST_F(GenerateCaTest, set_bisic_constraints_patchlen_test_001, testing::ext::
     X509* cert = X509_new();
     Options options;
     options[Options::BASIC_CONSTRAINTS_PATH_LEN] = 1;
-    bool cert1 = CertTools::SetBisicConstraintsPathLen(&options, cert);
+    bool cert1 = CertTools::SetBasicConstraintsPathLen(&options, cert);
     EXPECT_NE(cert1, false);
 }
 

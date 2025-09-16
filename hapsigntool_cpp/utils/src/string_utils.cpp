@@ -31,7 +31,12 @@ bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::
     std::string fileSuffix = str;
     std::transform(fileSuffix.begin(), fileSuffix.end(), fileSuffix.begin(),
                    [](unsigned char c) { return std::tolower(c); });
-    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {return val == fileSuffix; });
+    
+    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {
+        std::string lowerVal = val;
+        std::transform(lowerVal.begin(), lowerVal.end(), lowerVal.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        return lowerVal == fileSuffix; });
 }
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)
@@ -61,7 +66,11 @@ std::string StringUtils::FormatLoading(std::string& dealStr)
 {
     char comma = ',';
     char slash = '/';
-    std::string del = dealStr.substr(dealStr.find_first_of("/") + 1, dealStr.size());
+    std::string::size_type firstSlashPosition = dealStr.find_first_of("/");
+    if(firstSlashPosition == std::string::npos) {
+        return "\n";
+    }
+    std::string del = dealStr.substr(firstSlashPosition + 1, dealStr.size() - firstSlashPosition - 1);
     std::string::size_type position = 0;
     while ((position = del.find(slash, position)) != std::string::npos) {
         del.insert(position + 1, " ");
