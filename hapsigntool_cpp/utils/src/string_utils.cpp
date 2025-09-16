@@ -36,7 +36,8 @@ bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::
         std::string lowerVal = val;
         std::transform(lowerVal.begin(), lowerVal.end(), lowerVal.begin(),
                        [](unsigned char c) { return std::tolower(c); });
-        return lowerVal == fileSuffix; });
+        return lowerVal == fileSuffix;
+        });
 }
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)
@@ -67,7 +68,7 @@ std::string StringUtils::FormatLoading(std::string& dealStr)
     char comma = ',';
     char slash = '/';
     std::string::size_type firstSlashPosition = dealStr.find_first_of("/");
-    if(firstSlashPosition == std::string::npos) {
+    if (firstSlashPosition == std::string::npos) {
         return "\n";
     }
     std::string del = dealStr.substr(firstSlashPosition + 1, dealStr.size() - firstSlashPosition - 1);
