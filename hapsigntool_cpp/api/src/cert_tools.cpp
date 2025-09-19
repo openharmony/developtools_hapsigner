@@ -128,10 +128,9 @@ bool CertTools::SetBasicConstraints(Options* options, X509* cert)
         int critial = basicConstraintsCritical ? 1 : 0;
         bool basicConstraintsCa = options->GetBool(Options::BASIC_CONSTRAINTS_CA);
         std::string  ContainCa = basicConstraintsCa ? "CA:TRUE" : "CA:FALSE";
-        std::string constraints;
+        std::string constraints = ContainCa;
         if (basicConstraintsCa) {
-            constraints = ContainCa + "," + "pathlen:" +
-                std::to_string(options->GetInt(Options::BASIC_CONSTRAINTS_PATH_LEN));
+            constraints += ", pathlen:" + std::to_string(options->GetInt(Options::BASIC_CONSTRAINTS_PATH_LEN));
         }
         
         X509V3_CTX ctx;
