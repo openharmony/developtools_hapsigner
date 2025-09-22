@@ -415,8 +415,8 @@ int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath
             BIO_free_all(bioOut);
             return RET_FAILED;
         }
-        if ((safes = PKCS12_unpack_authsafes(acceptP12)) == NULL) {
-            sk_PKCS7_pop_free(safes, PKCS7_free);
+        safes = PKCS12_unpack_authsafes(acceptP12);
+        if (safes == nullptr) {
             return RET_FAILED;
         }
     }

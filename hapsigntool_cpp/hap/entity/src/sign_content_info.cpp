@@ -23,9 +23,6 @@ namespace SignatureTools {
 SignContentHash::SignContentHash(const char type, const char tag, const short algId,
                                  const int length, const std::vector<int8_t> &hash)
 {
-    if (length != static_cast<int>(hash.size())) {
-        throw std::invalid_argument("The provided length does not match the size of the hash.");
-    }
     m_type = type;
     m_tag = tag;
     m_algId = algId;
