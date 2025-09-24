@@ -162,35 +162,14 @@ static bool UpdateParamForVariantBoolSelfSign(const ParamsSharedPtr& param)
     return true;
 }
 
-static std::string GetParentPath(const std::string &outFilePath)
+static std::string GetParentPath(const std::string &path)
 {
-    if (outFilePath.size() == 0) {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-                            "get_parent_path realpath error, empty input");
+    size_t lastSlash = path.find_last_of('/');
+    if (lastSlash == std::string::npos) {
         return "";
     }
 
-    if (outFilePath.size() > PATH_MAX) {
-        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-                            "get_parent_path realpath error, input too long");
-        return "";
-    }
-
-    char resolvedPath[PATH_MAX + 1] = {0x00};
-    if (realpath(outFilePath.c_str(), resolvedPath) == nullptr) {
-        SIGNATURE_TOOLS_LOGI("Get realpath from %s may failed", resolvedPath);
-        return "";
-    }
-    resolvedPath[PATH_MAX] = '\0';
-    SIGNATURE_TOOLS_LOGI("GetParentPath, resolvedPath:%s", resolvedPath);
-    char *parentPath = dirname(resolvedPath);
-    if (parentPath == nullptr) {
-        SIGNATURE_TOOLS_LOGI("Get parentPath of %s may failed", resolvedPath);
-        return "";
-    }
-
-    SIGNATURE_TOOLS_LOGI("GetParentPath :%s", parentPath);
-    return std::string(parentPath);
+    return path.substr(lastSlash + 1);
 }
 
 static std::string GetFileName(const std::string &path)
