@@ -169,7 +169,7 @@ static std::string GetParentPath(const std::string &path)
         return "";
     }
 
-    return path.substr(lastSlash + 1);
+    return path.substr(lastSlash);
 }
 
 static std::string GetFileName(const std::string &path)
