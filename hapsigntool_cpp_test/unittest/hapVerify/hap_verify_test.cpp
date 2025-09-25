@@ -1106,6 +1106,5 @@ HWTEST_F(VerifyHapTest, VerifyHapError031, TestSize.Level0)
     std::string result = StringUtils::FormatLoading(input);
     EXPECT_EQ(result, expected);
 }
-
 }
 }
