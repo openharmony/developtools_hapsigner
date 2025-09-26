@@ -244,7 +244,7 @@ bool CmdUtil::UpdateParamForCheckInFile(Options* options, const std::initializer
             std::string charStr(realFilePath);
             (*options)[key] = charStr;
 
-            if (!FileUtils::IsValidFile(inFilePath)) {
+            if (!FileUtils::IsValidFile(charStr)) {
                 return false;
             }
         }
