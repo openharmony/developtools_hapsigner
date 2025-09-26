@@ -157,8 +157,6 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
     for (auto& key : outFileKeys) {
         if (options->count(key)) {
             std::string outFilePath = options->GetString(key);
-            std::filesystem::path filePath = outFilePath;
-            std::string parentPath = filePath.parent_path();
 
             //Purpose: To prevent the user output path from passing an empty string. eg "   "
             std::string tmpOutFilePath = outFilePath;
@@ -166,6 +164,9 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
                                  [](unsigned char ch) { return !std::isspace(ch); }));
             tmpOutFilePath.erase(std::find_if(tmpOutFilePath.rbegin(), tmpOutFilePath.rend(),
                 [](unsigned char ch) { return !std::isspace(ch); }).base(), tmpOutFilePath.end());
+
+            std::filesystem::path filePath = tmpOutFilePath;
+            std::string parentPath = filePath.parent_path();
             if (parentPath.empty() && !tmpOutFilePath.empty()) {
                 parentPath = "./";
             }
