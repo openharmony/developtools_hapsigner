@@ -27,7 +27,7 @@ class ByteArrayUtils {
 public:
     static int InsertIntToByteArray(std::vector<int8_t>& desByte, int index, int num);
     static int InsertShortToByteArray(std::vector<int8_t>& desByte, size_t desByteLen, int index, short num);
-    static int InsertByteToByteArray(std::vector<int8_t>& des, int start, std::vector<int8_t> src, int srcLen);
+    static int InsertBytesToByteArray(std::vector<int8_t>& des, int start, std::vector<int8_t> src, int srcLen);
     static int InsertCharToByteArray(std::vector<int8_t>& des, int start, std::string src);
 
 private:

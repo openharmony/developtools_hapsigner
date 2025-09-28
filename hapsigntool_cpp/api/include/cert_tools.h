@@ -39,8 +39,8 @@ public:
                                  LocalizationAdapter& adapter,
                                  const char signCapacity[], int capacityLen);
     static X509* ReadfileToX509(const std::string& filename);
-    static bool SetBisicConstraints(Options* options, X509* cert);
-    static bool SetBisicConstraintsPathLen(Options* options, X509* cert);
+    static bool SetBasicConstraints(Options* options, X509* cert);
+    static bool SetBasicConstraintsPathLen(Options* options, X509* cert);
     static bool SetSubjectForCert(X509_REQ* certReq, X509* cert);
     static bool SignForSubCert(X509* cert, X509_REQ* csr, X509_REQ* caReq,
                                EVP_PKEY* caPrikey, Options* options);
@@ -53,7 +53,7 @@ public:
     static bool SetCertIssuerName(X509* cert, X509_NAME* issuer);
     static bool SetCertSubjectName(X509* cert, X509_REQ* subjectCsr);
     static bool SetCertValidityStartAndEnd(X509* cert, long vilidityStart, long vilidityEnd);
-    static bool SetCertPublickKey(X509* cert, X509_REQ* subjectCsr);
+    static bool SetCertPublicKey(X509* cert, X509_REQ* subjectCsr);
     static bool SetBasicExt(X509* cert);
     static bool SetkeyUsageExt(X509* cert);
     static bool SetKeyUsageEndExt(X509* cert);
