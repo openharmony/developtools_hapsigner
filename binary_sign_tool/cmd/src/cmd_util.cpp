@@ -162,26 +162,6 @@ static bool UpdateParamForVariantBoolSelfSign(const ParamsSharedPtr& param)
     return true;
 }
 
-static std::string GetParentPath(const std::string &path)
-{
-    size_t lastSlash = path.find_last_of('/');
-    if (lastSlash == std::string::npos) {
-        return "";
-    }
-
-    return path.substr(lastSlash);
-}
-
-static std::string GetFileName(const std::string &path)
-{
-    size_t lastSlash = path.find_last_of('/');
-    if (lastSlash == std::string::npos) {
-        return path;
-    }
-
-    return path.substr(lastSlash + 1);
-}
-
 bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initializer_list<std::string>& outFileKeys)
 {
     for (auto& key : outFileKeys) {
@@ -195,7 +175,7 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
             tmpOutFilePath.erase(std::find_if(tmpOutFilePath.rbegin(), tmpOutFilePath.rend(),
                 [](unsigned char ch) { return !std::isspace(ch); }).base(), tmpOutFilePath.end());
 
-            std::string parentPath = GetParentPath(tmpOutFilePath);
+            std::string parentPath = FileUtils::GetParentPath(tmpOutFilePath);
             if (parentPath.empty() && !tmpOutFilePath.empty()) {
                 parentPath = "./";
             }
@@ -212,7 +192,7 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
                 return false;
             }
             std::string charStr(realFilePath);
-            std::string fileName = GetFileName(tmpOutFilePath);
+            std::string fileName = FileUtils::GetFileName(tmpOutFilePath);
             if (fileName.empty()) {
                 PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "The file name cannot be empty '"
                                     + outFilePath + "', parameter name '-" + key + "'");

@@ -52,6 +52,26 @@ std::string FileUtils::GetSuffix(std::string filePath)
     return filePath.substr(lastDotPosition + 1);
 }
 
+std::string FileUtils::GetParentPath(const std::string &path)
+{
+    size_t lastSlash = path.find_last_of('/');
+    if (lastSlash == std::string::npos) {
+        return "";
+    }
+
+    return path.substr(lastSlash);
+}
+
+std::string FileUtils::GetFileName(const std::string &path)
+{
+    size_t lastSlash = path.find_last_of('/');
+    if (lastSlash == std::string::npos) {
+        return path;
+    }
+
+    return path.substr(lastSlash + 1);
+}
+
 bool FileUtils::ValidFileType(const std::string& filePath, const std::initializer_list<std::string> types)
 {
     std::string suffix = GetSuffix(filePath);
