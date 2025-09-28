@@ -463,7 +463,7 @@ int PKCS7Data::CheckSignerInfoSignTimeInCertChainValidPeriod(PKCS7_SIGNER_INFO* 
         const ASN1_TIME* notAfter = X509_get0_notAfter(cert);
         if (CheckSignTimeInValidPeriod(signTime, notBefore, notAfter) < 0) {
             SIGNATURE_TOOLS_LOGE("pkcs7 sign time check failed");
-            return INVALIDPARAM_ERROR;
+            return VERIFY_ERROR;
         }
     }
     return RET_OK;

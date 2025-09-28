@@ -31,13 +31,20 @@ bool StringUtils::ContainsCase(const std::vector<std::string> &strs, const std::
     std::string fileSuffix = str;
     std::transform(fileSuffix.begin(), fileSuffix.end(), fileSuffix.begin(),
                    [](unsigned char c) { return std::tolower(c); });
-    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {return val == fileSuffix; });
+    
+    return std::any_of(strs.begin(), strs.end(), [&fileSuffix](const std::string& val) {
+        std::string lowerVal = val;
+        std::transform(lowerVal.begin(), lowerVal.end(), lowerVal.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        return lowerVal == fileSuffix;
+        });
 }
 
 bool StringUtils::CaseCompare(const std::string& str1, const std::string& str2)
 {
     return str1 == str2;
 }
+
 std::vector<std::string> StringUtils::SplitString(const std::string& str, char delimiter)
 {
     std::vector<std::string> tokens;
@@ -48,6 +55,7 @@ std::vector<std::string> StringUtils::SplitString(const std::string& str, char d
     }
     return tokens;
 }
+
 std::string StringUtils::Trim(const std::string& str)
 {
     size_t startpos = str.find_first_not_of(" \n\r\f\v");
@@ -57,11 +65,16 @@ std::string StringUtils::Trim(const std::string& str)
     size_t endpos = str.find_last_not_of(" \n\r\f\v");
     return str.substr(startpos, endpos - startpos + 1);
 }
+
 std::string StringUtils::FormatLoading(std::string& dealStr)
 {
     char comma = ',';
     char slash = '/';
-    std::string del = dealStr.substr(dealStr.find_first_of("/") + 1, dealStr.size());
+    std::string::size_type firstSlashPosition = dealStr.find_first_of("/");
+    if (firstSlashPosition == std::string::npos) {
+        return "\n";
+    }
+    std::string del = dealStr.substr(firstSlashPosition + 1, dealStr.size() - firstSlashPosition - 1);
     std::string::size_type position = 0;
     while ((position = del.find(slash, position)) != std::string::npos) {
         del.insert(position + 1, " ");
@@ -70,6 +83,7 @@ std::string StringUtils::FormatLoading(std::string& dealStr)
     std::replace(del.begin(), del.end(), slash, comma);
     return del.append("\n");
 }
+
 std::string StringUtils::Pkcs7ToString(PKCS7* p7)
 {
     unsigned char* out = NULL;
@@ -85,6 +99,7 @@ std::string StringUtils::Pkcs7ToString(PKCS7* p7)
     OPENSSL_free(out);
     return ret;
 }
+
 std::string StringUtils::x509CertToString(X509* cert)
 {
     VerifyHapOpensslUtils::GetOpensslErrorMessage();
@@ -96,17 +111,18 @@ std::string StringUtils::x509CertToString(X509* cert)
     BIO_free(bio);
     return certStr;
 }
+
 std::string StringUtils::SubjectToString(X509* cert)
 {
-    VerifyHapOpensslUtils::GetOpensslErrorMessage();
     X509_NAME* subjectName = X509_get_subject_name(cert);
     if (!subjectName) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("Error getting subject name");
         return "";
     }
-    VerifyHapOpensslUtils::GetOpensslErrorMessage();
     char* subjectStr = X509_NAME_oneline(subjectName, NULL, 0);
     if (!subjectStr) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
         SIGNATURE_TOOLS_LOGE("Error create subject string");
         return "";
     }
@@ -115,6 +131,7 @@ std::string StringUtils::SubjectToString(X509* cert)
     OPENSSL_free(subjectStr);
     return result;
 }
+
 bool StringUtils::CheckStringToint(const std::string& in, int& out)
 {
     std::istringstream iss(in);
@@ -124,5 +141,6 @@ bool StringUtils::CheckStringToint(const std::string& in, int& out)
     SIGNATURE_TOOLS_LOGE("Cannot convert string:%s to integer", in.c_str());
     return false;
 }
+
 } // namespace SignatureTools
 } // namespace OHOS

@@ -1067,5 +1067,44 @@ HWTEST_F(VerifyHapTest, VerifyHapError028, TestSize.Level0)
     resultCode = verify.outputOptionalBlocks(outputProfileFile, outputProofFile, errorfile, optionBlocks);
     EXPECT_EQ(resultCode, false);
 }
+
+/**
+ * @tc.name: VerifyHapError029
+ * @tc.desc: This function tests the FormatLoading method of StringUtils with a simple input
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError029, TestSize.Level0)
+{
+    std::string input = "/CN=mycert";
+    std::string expected = "CN=mycert\n";
+    std::string result = StringUtils::FormatLoading(input);
+    EXPECT_EQ(result, expected);
+}
+
+/**
+ * @tc.name: VerifyHapError030
+ * @tc.desc: This function tests the FormatLoading method of StringUtils with a more complex input
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError030, TestSize.Level0)
+{
+    std::string input = "/C=CN/CN=mycert";
+    std::string expected = "C=CN, CN=mycert\n";
+    std::string result = StringUtils::FormatLoading(input);
+    EXPECT_EQ(result, expected);
+}
+
+/**
+ * @tc.name: VerifyHapError031
+ * @tc.desc: This function tests the FormatLoading method of StringUtils with a non-slash input
+ * @tc.type: FUNC
+ */
+HWTEST_F(VerifyHapTest, VerifyHapError031, TestSize.Level0)
+{
+    std::string input = "non_slash_string";
+    std::string expected = "\n";
+    std::string result = StringUtils::FormatLoading(input);
+    EXPECT_EQ(result, expected);
+}
 }
 }

@@ -33,7 +33,7 @@ bool CmdUtil::String2Bool(Options* options, const std::string& option)
         (*options)[option] = false;
     } else {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
-                            val + "is not valid value for " + "-" + option);
+                            val + " is not valid value for " + "-" + option);
         return false;
     }
     return true;
@@ -157,14 +157,16 @@ bool CmdUtil::UpdateParamForCheckOutFile(Options* options, const std::initialize
     for (auto& key : outFileKeys) {
         if (options->count(key)) {
             std::string outFilePath = options->GetString(key);
-            std::filesystem::path filePath = outFilePath;
-            std::string parentPath = filePath.parent_path();
 
             //Purpose: To prevent the user output path from passing an empty string. eg "   "
             std::string tmpOutFilePath = outFilePath;
-            tmpOutFilePath.erase(std::remove_if(tmpOutFilePath.begin(),
-                tmpOutFilePath.end(), ::isspace), tmpOutFilePath.end());
+            tmpOutFilePath.erase(tmpOutFilePath.begin(), std::find_if(tmpOutFilePath.begin(), tmpOutFilePath.end(),
+                                 [](unsigned char ch) { return !std::isspace(ch); }));
+            tmpOutFilePath.erase(std::find_if(tmpOutFilePath.rbegin(), tmpOutFilePath.rend(),
+                [](unsigned char ch) { return !std::isspace(ch); }).base(), tmpOutFilePath.end());
 
+            std::filesystem::path filePath = tmpOutFilePath;
+            std::string parentPath = filePath.parent_path();
             if (parentPath.empty() && !tmpOutFilePath.empty()) {
                 parentPath = "./";
             }
@@ -213,7 +215,7 @@ bool CmdUtil::UpdateParamForCheckInFile(Options* options, const std::initializer
             std::string charStr(realFilePath);
             (*options)[key] = charStr;
 
-            if (!FileUtils::IsValidFile(inFilePath)) {
+            if (!FileUtils::IsValidFile(charStr)) {
                 return false;
             }
         }
@@ -516,10 +518,11 @@ bool CmdUtil::VerifyType(const std::string& inputType)
 
 bool CmdUtil::VerifyType(const std::string& inputType, const std::string& supportTypes)
 {
-    std::string firstStr = supportTypes.substr(0, supportTypes.find_last_of(","));
-    std::string secondStr = supportTypes.substr(supportTypes.find_first_of(",") + 1,
-                                                supportTypes.size() - supportTypes.find_first_of(","));
-    if (inputType == firstStr || inputType == secondStr) {
+    size_t pos = supportTypes.find(inputType);
+    if ((pos != std::string::npos) &&
+        (pos == 0 || supportTypes[pos - 1] == ',') &&
+        (pos + inputType.length() == supportTypes.length() ||
+         supportTypes[pos + inputType.length()] == ',')) {
         return true;
     }
     PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR, "Not support command param '" + inputType + "'");

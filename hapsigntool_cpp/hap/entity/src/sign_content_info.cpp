@@ -57,21 +57,10 @@ std::vector<int8_t> SignContentInfo::GetByteContent()
     std::vector<int8_t> ret(m_size, 0);
     int index = 0;
 
-    index = ByteArrayUtils::InsertCharToByteArray(ret, index, m_version);
-    if (index < 0) {
+    if ((index = ByteArrayUtils::InsertCharToByteArray(ret, index, m_version)) < 0 ||
+        (index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, m_size)) < 0 ||
+        (index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, m_numOfBlocks)) < 0) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertCharToByteArray failed.");
-        return std::vector<int8_t>();
-    }
-
-    index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, m_size);
-    if (index < 0) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
-        return std::vector<int8_t>();
-    }
-
-    index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, m_numOfBlocks);
-    if (index < 0) {
-        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
         return std::vector<int8_t>();
     }
 
@@ -90,20 +79,9 @@ std::vector<int8_t> SignContentInfo::GetByteContent()
         ret[index] = tmp.m_tag;
         index++;
 
-        index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, tmp.m_algId);
-        if (index < 0) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
-            return std::vector<int8_t>();
-        }
-
-        index = ByteArrayUtils::InsertIntToByteArray(ret, index, tmp.m_length);
-        if (index < 0) {
-            PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
-            return std::vector<int8_t>();
-        }
-
-        index = ByteArrayUtils::InsertByteToByteArray(ret, index, tmp.m_hash, tmp.m_hash.size());
-        if (index < 0) {
+        if ((index = ByteArrayUtils::InsertShortToByteArray(ret, ret.size(), index, tmp.m_algId)) < 0 ||
+            (index = ByteArrayUtils::InsertIntToByteArray(ret, index, tmp.m_length)) < 0 ||
+            (index = ByteArrayUtils::InsertBytesToByteArray(ret, index, tmp.m_hash, tmp.m_hash.size())) < 0) {
             PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "InsertShortToByteArray failed.");
             return std::vector<int8_t>();
         }
