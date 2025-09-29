@@ -55,6 +55,9 @@ std::string FileUtils::GetSuffix(std::string filePath)
 std::string FileUtils::GetParentPath(const std::string &path)
 {
     size_t lastSlash = path.find_last_of('/');
+    if (lastSlash == 0) {
+        return "/";
+    }
     if (lastSlash == std::string::npos) {
         return "";
     }
