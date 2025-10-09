@@ -62,7 +62,7 @@ std::string FileUtils::GetParentPath(const std::string &path)
         return "";
     }
 
-    return path.substr(lastSlash);
+    return path.substr(0, lastSlash);
 }
 
 std::string FileUtils::GetFileName(const std::string &path)
