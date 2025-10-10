@@ -47,22 +47,20 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
     std::string outputFile = signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
     std::string tmpOutputFile = outputFile;
     if (outputFile == inputFile) {
-        tmpOutputFile = "tmp-signed-elf";
+        std::string parentPath = FileUtils::GetParentPath(tmpOutputFile);
+        tmpOutputFile = parentPath + '/' + "tmp-signed-elf";
     }
     uint64_t csOffset = 0;
     bool writeCodeSignFlag = WriteCodeSignBlock(elfReader, tmpOutputFile, csOffset);
     if  (!writeCodeSignFlag) {
+        unlink(tmpOutputFile.c_str());
         SIGNATURE_TOOLS_LOGE("[SignElf] WriteCodeSignBlock error");
-        return false;
-    }
-    // cs offset > 0 and 4K alignment
-    if (csOffset == 0 || (csOffset % PAGE_SIZE) != 0) {
-        SIGNATURE_TOOLS_LOGE("[SignElf] csOffset is not 4K alignment");
         return false;
     }
     std::string selfSign = signParams.at(ParamConstants::PARAM_SELF_SIGN);
     bool generateCodeSignFlag = GenerateCodeSignByte(signerConfig, tmpOutputFile, csOffset, selfSign);
     if  (!generateCodeSignFlag) {
+        unlink(tmpOutputFile.c_str());
         return false;
     }
     return FileUtils::CopyTmpFileAndDel(tmpOutputFile, outputFile);
@@ -215,6 +213,11 @@ bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfi
 bool SignElf::GenerateCodeSignByte(SignerConfig& signerConfig, const std::string& inputFile, uint64_t& csOffset,
                                    const std::string& selfSign)
 {
+    // cs offset > 0 and 4K alignment
+    if (csOffset == 0 || (csOffset % PAGE_SIZE) != 0) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] csOffset is not 4K alignment");
+        return false;
+    }
     CodeSigning codeSigning(&signerConfig, (selfSign == ParamConstants::SELF_SIGN_TYPE_1));
     std::vector<int8_t> codesignData;
     bool getElfCodeSignBlockFlag = codeSigning.GetElfCodeSignBlock(inputFile, csOffset, codesignData);
