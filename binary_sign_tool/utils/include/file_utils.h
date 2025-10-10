@@ -37,9 +37,11 @@ public:
     static constexpr int FILE_BUFFER_BLOCK = 1024 * 1024;
     FileUtils() = delete;
     // judge is or not empty
-    static bool  IsEmpty(std::string cs);
+    static bool IsEmpty(std::string cs);
     // get file suffix
-    static  std::string GetSuffix(std::string filePath);
+    static std::string GetSuffix(std::string filePath);
+    static std::string GetParentPath(const std::string &path);
+    static std::string GetFileName(const std::string &path);
     // verify file type
     static bool ValidFileType(const std::string& filePath, const std::initializer_list<std::string> types);
     static bool IsValidFile(std::string file);

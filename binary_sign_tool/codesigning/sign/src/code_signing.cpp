@@ -125,7 +125,7 @@ bool CodeSigning::GenerateSignature(const std::vector<int8_t>& signedData, const
 
 bool CodeSigning::GetOwnerIdFromCert(std::string& ownerID)
 {
-    if (m_signConfig == nullptr) {
+    if (m_signConfig == nullptr || m_signConfig->GetSigner() == nullptr) {
         ownerID = "";
         return true;
     }
