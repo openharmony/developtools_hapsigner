@@ -180,10 +180,6 @@ bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfi
     if (signParams.at(ParamConstants::PARAM_SELF_SIGN) == ParamConstants::SELF_SIGN_TYPE_1) {
         return true;
     }
-    // check elf bin or so
-    if (!isExecElf(reader)) {
-        return true;
-    }
     std::string p7b;
     if (!loadProfileAndSign(signerConfig, signParams, p7b)) {
         return false;
