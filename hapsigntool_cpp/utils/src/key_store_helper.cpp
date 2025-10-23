@@ -734,7 +734,7 @@ int KeyStoreHelper::ParsePkcs12Safebag(PKCS12_SAFEBAG* bag, const char* pass, in
             goto err;
         }
     }
-    if (sk_X509_push(ocerts, x509Cert) < 0) {
+    if (sk_X509_push(ocerts, x509Cert) <= 0) {
         goto err;
     }
 
