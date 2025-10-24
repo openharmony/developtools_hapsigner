@@ -154,5 +154,10 @@ bool Options::GetBool(const std::string& key)
     bool* stringPtr = std::get_if<bool>(&value);
     return *stringPtr;
 }
+
+bool Options::Exists(const std::string& key)
+{
+    return (!this->IsEmpty(key) && (this->find(key) != this->end()));
+}
 } // namespace SignatureTools
 } // namespace OHOS

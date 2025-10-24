@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,14 @@
 #include <memory>
 #include "constant.h"
 #include "help.h"
+#include "password_guard.h"
 
 namespace OHOS {
 namespace SignatureTools {
 const std::string ParamsRunTool::VERSION = "1.0.0";
 
+PasswordGuard keyPwd;
+PasswordGuard keystorePwd;
 static std::unordered_map <std::string,
                            std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD {
     {SIGN_ELF, ParamsRunTool::RunSignApp},
@@ -62,6 +65,25 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
     return true;
 }
 
+bool static UpdateParamForPwd(Options* options)
+{
+    if (options->Exists(Options::KEY_STORE_FILE) && !options->Exists(Options::KEY_STORE_RIGHTS)) {
+        if (!keystorePwd.getPasswordFromUser("Enter keyStorePwd: ")) {
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+            return false;
+        }
+        options->emplace(Options::KEY_STORE_RIGHTS, keystorePwd.get());
+    }
+    if (options->Exists(Options::APP_CERT_FILE) && !options->Exists(Options::KEY_RIGHTS)) {
+        if (!keyPwd.getPasswordFromUser("Enter keyPwd: ")) {
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+            return false;
+        }
+        options->emplace(Options::KEY_RIGHTS, keyPwd.get());
+    }
+    return true;
+}
+
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
 {
     if (!params->Required({Options::MODE, Options::IN_FILE, Options::OUT_FILE})) {
@@ -97,6 +119,9 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
     }
     std::string signAlg = params->GetString(Options::SIGN_ALG);
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
+        return false;
+    }
+    if (!UpdateParamForPwd(params)) {
         return false;
     }
     return api.Sign(params);
