@@ -24,7 +24,7 @@ namespace SignatureTools {
 class ServiceApi {
 public:
     ServiceApi() = default;
-    ~ServiceApi() = default;
+    virtual ~ServiceApi() = default;
 
     virtual bool GenerateKeyStore(Options* params) = 0;
     virtual bool GenerateCsr(Options* params) = 0;
