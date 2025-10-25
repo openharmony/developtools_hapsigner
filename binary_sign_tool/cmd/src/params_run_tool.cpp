@@ -65,7 +65,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
     return true;
 }
 
-bool static UpdateParamForPwd(Options* options)
+static bool UpdateParamForPwd(Options* options)
 {
     if (options->Exists(Options::KEY_STORE_FILE) && !options->Exists(Options::KEY_STORE_RIGHTS)) {
         if (!keystorePwd.getPasswordFromUser("Enter keyStorePwd: ")) {
