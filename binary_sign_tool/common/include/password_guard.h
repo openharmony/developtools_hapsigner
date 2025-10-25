@@ -32,17 +32,18 @@ namespace OHOS {
 namespace SignatureTools {
 class PasswordGuard {
 public:
-    PasswordGuard() : data(nullptr), len(0)
+    PasswordGuard() : data(nullptr), len(0), capacity(0)
     {}
 
     PasswordGuard(const PasswordGuard &) = delete;
 
     PasswordGuard &operator=(const PasswordGuard &) = delete;
 
-    PasswordGuard(PasswordGuard &&other) noexcept : data(other.data), len(other.len)
+    PasswordGuard(PasswordGuard &&other) noexcept : data(other.data), len(other.len), capacity(other.capacity)
     {
         other.data = nullptr;
         other.len = 0;
+        other.capacity = 0;
     }
 
     PasswordGuard &operator=(PasswordGuard &&other) noexcept
@@ -51,8 +52,10 @@ public:
             clear();
             data = other.data;
             len = other.len;
+            capacity = other.capacity;
             other.data = nullptr;
             other.len = 0;
+            other.capacity = 0;
         }
         return *this;
     }
@@ -75,10 +78,11 @@ public:
     void clear()
     {
         if (data) {
-            std::fill_n(data, len, '\0');
+            memset_s(data, capacity, '\0', capacity);
             delete[] data;
             data = nullptr;
             len = 0;
+            capacity = 0;
         }
     }
 
@@ -89,9 +93,10 @@ public:
 
     bool getPasswordFromUser(const std::string &prompt = "Enter password: ")
     {
-        const size_t MAX_PASS_LEN = 256;
-        char password[MAX_PASS_LEN];
-        size_t len = 0;
+        clear();
+        if (!extend()) {
+            return false;
+        }
 
         struct termios oldt;
         struct termios newt;
@@ -111,32 +116,45 @@ public:
                     std::cout << "\b" << "\b" << std::flush;
                 }
             } else {
-                if (len < MAX_PASS_LEN - 1) {
-                    password[len++] = ch;
-                    std::cout << '*' << std::flush;
+                if ((len >= capacity - 1) && !extend()) {
+                    return false;
                 }
+                data[len++] = ch;
+                std::cout << '*' << std::flush;
             }
         }
         std::cout << std::endl;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &oldt) != 0) {
             return false;
         }
-
-        data = new char[len + 1];
-        if (memcpy_s(data, len, password, len) != 0) {
-            return false;
-        }
         data[len] = '\0';  // null-terminate
-        // clear
-        if (memset_s(password, sizeof(password), 0, sizeof(password)) != 0) {
-            return false;
-        }
         return true;
     }
 
 private:
+    bool extend()
+    {
+        const size_t INITIAL_DATA_LENGTH = 256;
+        if (!data) {
+            data = new char[INITIAL_DATA_LENGTH];
+            capacity = INITIAL_DATA_LENGTH;
+        } else {
+            size_t new_capacity = capacity * 2;
+            char *buffer = new char[new_capacity];
+            if (memcpy_s(buffer, new_capacity, data, len) != 0) {
+                delete[] buffer;
+                return false;
+            }
+            memset_s(data, capacity, '\0', capacity);
+            delete[] data;
+            data = buffer;
+            capacity = new_capacity;
+        }
+        return true;
+    }
     char *data;
     size_t len;
+    size_t capacity;
 };
 }  // namespace SignatureTools
 }  // namespace OHOS
