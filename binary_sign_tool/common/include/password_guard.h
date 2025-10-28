@@ -113,7 +113,7 @@ public:
             if (ch == '\b' || ch == 127) {
                 if (len > 0) {
                     len--;
-                    std::cout << "\b" << "\b" << std::flush;
+                    std::cout << "\b \b" << std::flush;
                 }
             } else {
                 if ((len >= capacity - 1) && !extend()) {

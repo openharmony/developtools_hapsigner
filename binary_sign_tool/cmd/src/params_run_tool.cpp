@@ -69,14 +69,14 @@ static bool UpdateParamForPwd(Options* options)
 {
     if (options->Exists(Options::KEY_STORE_FILE) && !options->Exists(Options::KEY_STORE_RIGHTS)) {
         if (!keystorePwd.getPasswordFromUser("Enter keyStorePwd: ")) {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input keyStorePwd error ");
             return false;
         }
         options->emplace(Options::KEY_STORE_RIGHTS, keystorePwd.get());
     }
     if (options->Exists(Options::APP_CERT_FILE) && !options->Exists(Options::KEY_RIGHTS)) {
         if (!keyPwd.getPasswordFromUser("Enter keyPwd: ")) {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input keyPwd error ");
             return false;
         }
         options->emplace(Options::KEY_RIGHTS, keyPwd.get());
