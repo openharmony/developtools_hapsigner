@@ -110,7 +110,7 @@ public:
         std::cout << prompt << std::flush;
         char ch;
         while ((ch = getchar()) != '\n' && ch != '\r') {
-            if (ch == '\b' || ch == 127) {
+            if (ch == '\b' || ch == ASCII_DEL) {
                 if (len > 0) {
                     len--;
                     std::cout << "\b \b" << std::flush;
@@ -131,13 +131,14 @@ public:
         return true;
     }
 
+    const static int ASCII_DEL = 127;
 private:
     bool extend()
     {
         const size_t INITIAL_DATA_LENGTH = 256;
         if (!data) {
-            data = new char[INITIAL_DATA_LENGTH];
             capacity = INITIAL_DATA_LENGTH;
+            data = new char[capacity];
         } else {
             size_t new_capacity = capacity * 2;
             char *buffer = new char[new_capacity];
