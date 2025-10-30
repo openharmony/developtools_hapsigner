@@ -453,7 +453,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，非自签名模式时为必填项
-         ├── -keystorePwd       #密钥库口令，密钥文件存在时必填，支持缺少此参数进行交互式输入口令
+         ├── -keystorePwd       #密钥库口令，密钥库文件存在时必填，支持缺少此参数进行交互式输入口令
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
          ├── -selfSign          #是否本机自签名模式，1表示自签名，0表示证书签名，默认为0，可选项
@@ -471,7 +471,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，非自签名模式时为必填项
-         ├── -keystorePwd       #密钥库口令，证书文件存在时必填，支持缺少此参数进行交互式输入口令
+         ├── -keystorePwd       #密钥库口令，密钥库文件存在时必填，支持缺少此参数进行交互式输入口令
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
          ├── -selfSign          #是否本机自签名模式，1表示自签名，0表示证书签名，默认为0，可选项
