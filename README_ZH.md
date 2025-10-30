@@ -446,14 +446,14 @@ binary-sign-tool display-sign -inFile "signed.elf"
 
     sign : 二进制文件签名
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
-         ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -keyPwd            #密钥口令，证书文件存在时必填，支持缺少此参数进行交互式输入口令
+         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），非自签名模式时为必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，非自签名模式时为必填项
-         ├── -keystorePwd       #密钥库口令，可选项
+         ├── -keystorePwd       #密钥库口令，密钥文件存在时必填，支持缺少此参数进行交互式输入口令
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
          ├── -selfSign          #是否本机自签名模式，1表示自签名，0表示证书签名，默认为0，可选项
@@ -464,14 +464,14 @@ binary-sign-tool display-sign -inFile "signed.elf"
   
     sign : 二进制文件签名
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
-         ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -keyPwd            #密钥口令，证书文件存在时必填，支持缺少此参数进行交互式输入口令
+         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），非自签名模式时为必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
          ├── -signAlg           #签名算法，必填项，包括SHA256withECDSA / SHA384withECDSA
          ├── -keystoreFile      #密钥库文件，非自签名模式时为必填项
-         ├── -keystorePwd       #密钥库口令，可选项
+         ├── -keystorePwd       #密钥库口令，证书文件存在时必填，支持缺少此参数进行交互式输入口令
          ├── -outFile           #输出签名后文件，必填项
          ├── -moduleFile        #权限module.json文件，可选项
          ├── -selfSign          #是否本机自签名模式，1表示自签名，0表示证书签名，默认为0，可选项
