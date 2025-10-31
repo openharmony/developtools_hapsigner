@@ -363,6 +363,11 @@ int KeyStoreHelper::WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath,
     PKCS12* p12 = nullptr;
     BIO* bioOut = nullptr;
 
+    if (cert == nullptr) {
+        KeyPairFree(cert, p12, bioOut, "Failed to allocate X509 certificate");
+        return RET_FAILED;
+    }
+
     if (evpPkey == nullptr) {
         KeyPairFree(cert, p12, bioOut, "The key pair pointer is null");
         return RET_FAILED;
@@ -729,7 +734,7 @@ int KeyStoreHelper::ParsePkcs12Safebag(PKCS12_SAFEBAG* bag, const char* pass, in
             goto err;
         }
     }
-    if (!sk_X509_push(ocerts, x509Cert)) {
+    if (sk_X509_push(ocerts, x509Cert) <= 0) {
         goto err;
     }
 
