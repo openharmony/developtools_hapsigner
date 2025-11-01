@@ -39,6 +39,9 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         SIGNATURE_TOOLS_LOGE("[SignElf] Failed to load input ELF file");
         return false;
     }
+    elfReader.sections.del_last(codesignSec);
+    elfReader.sections.del_last(permissionSec);
+    elfReader.sections.del_last(profileSec);
     bool writeProfilFlag = WriteSecDataToFile(elfReader, signerConfig, signParams);
     if (!writeProfilFlag) {
         SIGNATURE_TOOLS_LOGE("[SignElf] WriteSecDataToFile error");
@@ -139,7 +142,6 @@ bool SignElf::WriteCodeSignBlock(ELFIO::elfio& reader, std::string& outputFile, 
         return false;
     }
     sec->set_type(ELFIO::SHT_PROGBITS);
-    sec->set_flags(ELFIO::SHF_ALLOC);
     sec->set_addr_align(PAGE_SIZE);
     char codesignData[PAGE_SIZE];
     sec->set_data(codesignData, PAGE_SIZE);
@@ -168,7 +170,6 @@ bool SignElf::WriteSection(ELFIO::elfio& reader, const std::string& content, con
         return false;
     }
     sec->set_type(ELFIO::SHT_PROGBITS);
-    sec->set_flags(ELFIO::SHF_ALLOC);
     sec->set_addr_align(1);
     sec->set_data(content);
     return true;
