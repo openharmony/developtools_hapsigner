@@ -78,6 +78,7 @@ ohos_executable("binary-sign-tool") {
   external_deps = [
     "bounds_checking_function:libsec_static",
     "elfio:elfio",
+    "json:nlohmann_json_static",
     "cJSON:cjson",
     "openssl:libcrypto_static",
     "openssl:libssl_static",
