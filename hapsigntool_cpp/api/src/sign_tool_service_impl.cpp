@@ -615,6 +615,9 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
     cJSON* root = cJSON_ParseWithOpts(bytes.c_str(), 0, 1);
     if (root == nullptr || !(cJSON_IsObject(root) || cJSON_IsArray(root))) {
         PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing appProvision failed!");
+        if (root != nullptr) {
+            cJSON_Delete(root);
+        }
         return PARSE_ERROR;
     }
 
@@ -627,16 +630,15 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
 
     ret = jsonStr;
     free(jsonStr);
+    cJSON_Delete(root);
 
     ProfileInfo provision;
     AppProvisionVerifyResult result = ParseProvision(ret, provision);
     if (result != PROVISION_OK) {
         SIGNATURE_TOOLS_LOGE("invalid provision");
-        cJSON_Delete(root);
         return INVALIDPARAM_ERROR;
     }
 
-    cJSON_Delete(root);
     return 0;
 }
 
