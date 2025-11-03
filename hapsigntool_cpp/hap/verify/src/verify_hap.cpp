@@ -324,7 +324,6 @@ int VerifyHap::GetProfileContent(const std::string profile, std::string& ret)
     if (obj != nullptr) {
         cJSON_Delete(obj);
     }
-
     PKCS7Data p7Data;
     if (p7Data.Parse(profile) < 0) {
         ret = profile;
