@@ -142,9 +142,9 @@ void ParseBundleInfo(const cJSON* obj, ProfileInfo& out)
     }
     GetStringIfExist(bundleInfo, KEY_DEVELOPER_ID, out.bundleInfo.developerId);
     GetStringIfExist(bundleInfo, KEY_DEVELOPMENT_CERTIFICATE,
-                        out.bundleInfo.developmentCertificate);
+                     out.bundleInfo.developmentCertificate);
     GetStringIfExist(bundleInfo, KEY_DISTRIBUTION_CERTIFICATE,
-                        out.bundleInfo.distributionCertificate);
+                     out.bundleInfo.distributionCertificate);
     GetStringIfExist(bundleInfo, KEY_BUNDLE_NAME, out.bundleInfo.bundleName);
     GetStringIfExist(bundleInfo, KEY_APL, out.bundleInfo.apl);
     GetStringIfExist(bundleInfo, KEY_APP_FEATURE, out.bundleInfo.appFeature);
@@ -166,9 +166,9 @@ void ParsePermissions(const cJSON* obj, ProfileInfo& out)
         return;
     }
     GetStringArrayIfExist(permissions, KEY_RESTRICTED_PERMISSIONS,
-                            out.permissions.restrictedPermissions);
+                          out.permissions.restrictedPermissions);
     GetStringArrayIfExist(permissions, KEY_RESTRICTED_CAPABILITIES,
-                            out.permissions.restrictedCapabilities);
+                          out.permissions.restrictedCapabilities);
 }
 void ParseDebugInfo(const cJSON* obj, ProfileInfo& out)
 {
@@ -298,7 +298,6 @@ AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileIn
         }
         return PROVISION_INVALID;
     }
-    
     from_json(obj, info);
     cJSON_Delete(obj);
     return PROVISION_OK;
