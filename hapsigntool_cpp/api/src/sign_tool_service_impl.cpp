@@ -18,7 +18,7 @@
 
 #include "pkcs7_data.h"
 #include "profile_sign_tool.h"
-#include "nlohmann/json.hpp"
+#include "cJSON.h"
 #include "profile_info.h"
 #include "profile_verify.h"
 #include "signature_tools_errno.h"
@@ -611,18 +611,32 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         SIGNATURE_TOOLS_LOGE("provision read faild!");
         return IO_ERROR;
     }
-    nlohmann::json obj = nlohmann::json::parse(bytes);
-    if (obj.is_discarded() || (!obj.is_structured())) {
+
+    cJSON* root = cJSON_ParseWithOpts(bytes.c_str(), 0, 1);
+    if (root == nullptr || !(cJSON_IsObject(root) || cJSON_IsArray(root))) {
         PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing appProvision failed!");
         return PARSE_ERROR;
     }
-    ret = obj.dump();
+
+    char* jsonStr = cJSON_Print(root);
+    if (jsonStr == nullptr) {
+        cJSON_Delete(root);
+        SIGNATURE_TOOLS_LOGE("Failed to convert JSON to string!");
+        return PARSE_ERROR;
+    }
+
+    ret = jsonStr;
+    free(jsonStr);
+
     ProfileInfo provision;
     AppProvisionVerifyResult result = ParseProvision(ret, provision);
     if (result != PROVISION_OK) {
         SIGNATURE_TOOLS_LOGE("invalid provision");
+        cJSON_Delete(root);
         return INVALIDPARAM_ERROR;
     }
+
+    cJSON_Delete(root);
     return 0;
 }
 
