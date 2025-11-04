@@ -23,6 +23,7 @@
 #include <cstdio>
 #include <cstdint>
 #include <iostream>
+#include <poll.h>
 #include <string>
 #include <securec.h>
 #include <termios.h>
@@ -107,28 +108,48 @@ public:
             return false;
         }
 
-        std::cout << prompt << std::flush;
+        struct pollfd pfd;
+        pfd.fd = STDIN_FILENO;
+        pfd.events = POLLIN;
         char ch;
-        while ((ch = getchar()) != '\n' && ch != '\r') {
+        std::cout << prompt << std::flush;
+        while (true) {
+            int result = poll(&pfd, 1, 30 * 1000);
+            if (result == 0) {
+                // timeout
+                break;
+            } else if (result == -1 || read(STDIN_FILENO, &ch, 1) != 1) {
+                // poll error
+                goto err;
+            }
+
             if (ch == '\b' || ch == ASCII_DEL) {
                 if (len > 0) {
                     len--;
                     std::cout << "\b \b" << std::flush;
                 }
+            } else if (ch == '\n' || ch == '\r') {
+                break;
             } else {
                 if ((len >= capacity - 1) && !extend()) {
-                    return false;
+                    goto err;
                 }
                 data[len++] = ch;
                 std::cout << '*' << std::flush;
             }
         }
+        data[len] = '\0';  // null-terminate
         std::cout << std::endl;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &oldt) != 0) {
+            clear();
             return false;
         }
-        data[len] = '\0';  // null-terminate
         return true;
+
+err:
+        clear();
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return false;
     }
 
     const static int ASCII_DEL = 127;

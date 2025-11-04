@@ -67,19 +67,40 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
 
 static bool UpdateParamForPwd(Options* options)
 {
-    if (options->Exists(Options::KEY_STORE_FILE) && !options->Exists(Options::KEY_STORE_RIGHTS)) {
-        if (!keystorePwd.getPasswordFromUser("Enter keyStorePwd: ")) {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input keyStorePwd error ");
+    std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
+    std::string alias = options->GetString(Options::KEY_ALIAS);
+    if (!options->Exists(Options::KEY_STORE_RIGHTS)) {
+        EVP_PKEY* keyPair = nullptr;
+        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
+        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
+            alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
+        EVP_PKEY_free(keyPair);
+        if (status == KEYSTORE_PASSWORD_ERROR) {
+            if (!keystorePwd.getPasswordFromUser("Enter keystorePwd (timeout 30 seconds): ")) {
+                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+                return false;
+            }
+            options->emplace(Options::KEY_STORE_RIGHTS, keystorePwd.get());
+        } else if (status != RET_OK) {
             return false;
         }
-        options->emplace(Options::KEY_STORE_RIGHTS, keystorePwd.get());
     }
-    if (options->Exists(Options::APP_CERT_FILE) && !options->Exists(Options::KEY_RIGHTS)) {
-        if (!keyPwd.getPasswordFromUser("Enter keyPwd: ")) {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input keyPwd error ");
+
+    if (!options->Exists(Options::KEY_RIGHTS)) {
+        EVP_PKEY* keyPair = nullptr;
+        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
+        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
+            alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
+        EVP_PKEY_free(keyPair);
+        if (status == KEY_PASSWORD_ERROR) {
+            if (!keyPwd.getPasswordFromUser("Enter keyPwd (timeout 30 seconds): ")) {
+                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+                return false;
+            }
+            options->emplace(Options::KEY_RIGHTS, keyPwd.get());
+        } else if (status != RET_OK) {
             return false;
         }
-        options->emplace(Options::KEY_RIGHTS, keyPwd.get());
     }
     return true;
 }
