@@ -33,17 +33,15 @@
             "components": [
                 "bounds_checking_function",
                 "c_utils",
+                "cJSON",
                 "elfio",
-                "json",
                 "openssl",
                 "zlib",
                 "hilog"
             ],
             "third_party": [
                 "bzip2",
-                "openssl",
-                "jsoncpp",
-                "cJSON"
+                "openssl"
             ]
         },
         "build": {

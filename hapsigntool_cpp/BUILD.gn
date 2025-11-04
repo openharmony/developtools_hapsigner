@@ -86,11 +86,11 @@ ohos_executable("hap-sign-tool") {
     "//third_party/bzip2:libbz2",
     "//third_party/openssl:libcrypto_shared",
     "//third_party/openssl:libssl_shared",
-    "//third_party/cJSON:cjson",
   ]
 
   external_deps = [
     "c_utils:utils",
+    "cJSON:cjson_static",
     "zlib:shared_libz",
   ]
 
