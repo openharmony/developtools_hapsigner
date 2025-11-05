@@ -60,11 +60,11 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         SIGNATURE_TOOLS_LOGE("provision read faild!");
         return IO_ERROR;
     }
-    nlohmann::json obj = nlohmann::json::parse(bytes);	
-    if (obj.is_discarded() || (!obj.is_structured())) {	
-        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing provision failed!");	
-        return PARSE_ERROR;	
-    }	
+    nlohmann::json obj = nlohmann::json::parse(bytes);
+    if (obj.is_discarded() || (!obj.is_structured())) {
+        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing provision failed!");
+        return PARSE_ERROR;
+    }
     ret = obj.dump();
     ProfileInfo provision;
     AppProvisionVerifyResult result = ParseProvision(ret, provision);
