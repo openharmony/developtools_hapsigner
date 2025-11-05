@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ namespace SignatureTools {
 
 class SignToolServiceImpl : public ServiceApi {
 public:
-    static int GetProvisionContent(const std::string& input, std::string& ret);
     SignToolServiceImpl() = default;
     virtual ~SignToolServiceImpl() = default;
     bool Sign(Options* options)override;
