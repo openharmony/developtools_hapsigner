@@ -20,14 +20,12 @@
 #include <cinttypes>
 #include <algorithm>
 
-#include "nlohmann/json.hpp"
 #include "string_utils.h"
 #include "file_utils.h"
 #include "sign_elf.h"
 #include "params.h"
 #include "constant.h"
 
-using namespace nlohmann;
 namespace OHOS {
 namespace SignatureTools {
 std::vector<std::string> SignProvider::VALID_SIGN_ALG_NAME = {
