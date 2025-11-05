@@ -18,6 +18,7 @@
 #include <memory>
 #include "constant.h"
 #include "help.h"
+#include "key_store_helper.h"
 #include "password_guard.h"
 
 namespace OHOS {
