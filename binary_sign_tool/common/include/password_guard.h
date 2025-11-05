@@ -111,8 +111,27 @@ public:
         struct pollfd pfd;
         pfd.fd = STDIN_FILENO;
         pfd.events = POLLIN;
-        char ch;
         std::cout << prompt << std::flush;
+        bool ret = input(pfd);
+        std::cout << std::endl;
+        if (ret) {
+            if (tcsetattr(STDIN_FILENO, TCSANOW, &oldt) != 0) {
+                clear();
+                return false;
+            }
+            return true;
+        } else {
+            clear();
+            tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+            return false;
+        }
+    }
+
+    const static int ASCII_DEL = 127;
+private:
+    bool input(pollfd pfd)
+    {
+        char ch;
         while (true) {
             int result = poll(&pfd, 1, 30 * 1000);
             if (result == 0) {
@@ -120,9 +139,8 @@ public:
                 break;
             } else if (result == -1 || read(STDIN_FILENO, &ch, 1) != 1) {
                 // poll error
-                goto err;
+                return false;
             }
-
             if (ch == '\b' || ch == ASCII_DEL) {
                 if (len > 0) {
                     len--;
@@ -132,28 +150,16 @@ public:
                 break;
             } else {
                 if ((len >= capacity - 1) && !extend()) {
-                    goto err;
+                    return false;
                 }
                 data[len++] = ch;
                 std::cout << '*' << std::flush;
             }
         }
         data[len] = '\0';  // null-terminate
-        std::cout << std::endl;
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &oldt) != 0) {
-            clear();
-            return false;
-        }
         return true;
-
-err:
-        clear();
-        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-        return false;
     }
 
-    const static int ASCII_DEL = 127;
-private:
     bool extend()
     {
         const size_t INITIAL_DATA_LENGTH = 256;
