@@ -31,6 +31,7 @@ public:
     ~KeyStoreHelper() = default;
     int WriteKeyStore(EVP_PKEY* evpPkey, std::string& keyStorePath, char* keyStorePwd,
                     std::string alias, char* keyPwd);
+    int VerifyKeyStore(std::string& keyStorePath, char* keyStorePwd, EVP_PKEY** evpPkey);
     int ReadKeyStore(std::string& keyStorePath, char* keyStorePwd, const std::string& alias,
                     char* keyPwd, EVP_PKEY** evpPkey);
     int GetPublicKey(PKCS7* safe, const std::string& alias, char* pass, int passlen, EVP_PKEY** publickey);

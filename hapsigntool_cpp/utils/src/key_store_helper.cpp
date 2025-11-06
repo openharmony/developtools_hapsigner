@@ -326,6 +326,9 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
     char* name = NULL;
 
     bags = PKCS12_unpack_p7data(safe);
+    if (bags == nullptr) {
+        return RET_FAILED;
+    }
     for (int m = 0; m < sk_PKCS12_SAFEBAG_num(bags); m++) {
         bag = sk_PKCS12_SAFEBAG_value(bags, m);
         if (PKCS12_SAFEBAG_get_nid(bag) != NID_pkcs8ShroudedKeyBag) {
@@ -435,6 +438,31 @@ int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath
     if (*p12 == nullptr) {
         return RET_FAILED;
     }
+    return RET_OK;
+}
+
+int KeyStoreHelper::VerifyKeyStore(std::string& keyStorePath, char* keyStorePwd, EVP_PKEY** evpPkey)
+{
+    X509* cert = nullptr;
+    PKCS12* p12 = nullptr;
+    BIO* bioOut = nullptr;
+
+    bioOut = BIO_new_file(keyStorePath.c_str(), "rb");
+    if (bioOut == nullptr) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
+        KeyPairFree(cert, p12, bioOut, "Open file: '" + keyStorePath + "' failed");
+        return RET_FAILED;
+    }
+
+    p12 = d2i_PKCS12_bio(bioOut, NULL);
+    int parse = Pkcs12PasswordParse(p12, keyStorePwd, keyStorePath);
+    if (parse != RET_OK) {
+        KeyPairFree(cert, p12, bioOut, "");
+        SetPassWordStatus(false);
+        return parse;
+    }
+
+    KeyPairFree(cert, p12, bioOut, "");
     return RET_OK;
 }
 

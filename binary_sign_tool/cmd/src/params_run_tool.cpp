@@ -73,8 +73,8 @@ static bool UpdateParamForPwd(Options* options)
     if (!options->Exists(Options::KEY_STORE_RIGHTS)) {
         EVP_PKEY* keyPair = nullptr;
         std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
-            alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
+        int status = keyStoreHelper->VerifyKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
+            &keyPair);
         EVP_PKEY_free(keyPair);
         if (status == KEYSTORE_PASSWORD_ERROR) {
             if (!keystorePwd.getPasswordFromUser("Enter keystorePwd (timeout 30 seconds): ")) {
