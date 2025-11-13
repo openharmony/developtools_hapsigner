@@ -612,11 +612,13 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         return IO_ERROR;
     }
     cJSON* root = cJSON_ParseWithOpts(bytes.c_str(), 0, 1);
-    if (root == nullptr || !(cJSON_IsObject(root) || cJSON_IsArray(root))) {
-        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing appProvision failed!");
-        if (root != nullptr) {
-            cJSON_Delete(root);
-        }
+    if (root == nullptr) {
+        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Failed to parse appProvision, JSON is invalid or empty!");
+        return PARSE_ERROR;
+    }
+    if (!(cJSON_IsObject(root) || cJSON_IsArray(root))) {
+        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "appProvision must be a JSON object or array!");
+        cJSON_Delete(root);
         return PARSE_ERROR;
     }
     char* jsonStr = cJSON_Print(root);

@@ -290,12 +290,15 @@ AppProvisionVerifyResult ParseAndVerify(const string& appProvision, ProfileInfo&
 AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileInfo& info)
 {
     cJSON* obj = cJSON_ParseWithOpts(appProvision.c_str(), 0, 1);
-    if (obj == nullptr || !(cJSON_IsObject(obj) || cJSON_IsArray(obj))) {
-        std::string errStr = "invalid json object, parse provision failed, json: " + appProvision;
+    if (obj == nullptr) {
+        std::string errStr = "JSON is invalid or empty, parse provision failed, json: " + appProvision;
         PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errStr.c_str());
-        if (obj != nullptr) {
-            cJSON_Delete(obj);
-        }
+        return PROVISION_INVALID;
+    }
+    if (!(cJSON_IsObject(obj) || cJSON_IsArray(obj))) {
+        std::string errStr = "invalid json object type, must be object or array, json: " + appProvision;
+        PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errStr.c_str());
+        cJSON_Delete(obj);
         return PROVISION_INVALID;
     }
     from_json(obj, info);
