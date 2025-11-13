@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,15 @@
 #include <memory>
 #include "constant.h"
 #include "help.h"
+#include "key_store_helper.h"
+#include "password_guard.h"
 
 namespace OHOS {
 namespace SignatureTools {
 const std::string ParamsRunTool::VERSION = "1.0.0";
 
+PasswordGuard keyPwd;
+PasswordGuard keystorePwd;
 static std::unordered_map <std::string,
                            std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD {
     {SIGN_ELF, ParamsRunTool::RunSignApp},
@@ -62,6 +66,46 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
     return true;
 }
 
+static bool UpdateParamForPwd(Options* options)
+{
+    std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
+    std::string alias = options->GetString(Options::KEY_ALIAS);
+    if (!options->Exists(Options::KEY_STORE_RIGHTS)) {
+        EVP_PKEY* keyPair = nullptr;
+        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
+        int status = keyStoreHelper->VerifyKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
+            &keyPair);
+        EVP_PKEY_free(keyPair);
+        if (status == KEYSTORE_PASSWORD_ERROR) {
+            if (!keystorePwd.getPasswordFromUser("Enter keystorePwd (timeout 30 seconds): ")) {
+                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+                return false;
+            }
+            options->emplace(Options::KEY_STORE_RIGHTS, keystorePwd.get());
+        } else if (status != RET_OK) {
+            return false;
+        }
+    }
+
+    if (!options->Exists(Options::KEY_RIGHTS)) {
+        EVP_PKEY* keyPair = nullptr;
+        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
+        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
+            alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
+        EVP_PKEY_free(keyPair);
+        if (status == KEY_PASSWORD_ERROR) {
+            if (!keyPwd.getPasswordFromUser("Enter keyPwd (timeout 30 seconds): ")) {
+                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+                return false;
+            }
+            options->emplace(Options::KEY_RIGHTS, keyPwd.get());
+        } else if (status != RET_OK) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
 {
     if (!params->Required({Options::MODE, Options::IN_FILE, Options::OUT_FILE})) {
@@ -97,6 +141,9 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
     }
     std::string signAlg = params->GetString(Options::SIGN_ALG);
     if (!CmdUtil::JudgeSignAlgType(signAlg)) {
+        return false;
+    }
+    if (!UpdateParamForPwd(params)) {
         return false;
     }
     return api.Sign(params);

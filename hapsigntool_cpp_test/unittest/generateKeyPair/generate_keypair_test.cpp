@@ -486,7 +486,7 @@ HWTEST_F(GenerateKeyPairTest, generate_keypair_test_015, testing::ext::TestSize.
 
     keyhelper.CreatePKCS12(&p12, keyStorePath.c_str(), storePwd, keyPwd, alias.c_str(), keypair, cert);
     int ret = keyhelper.FindKeyPair(p12, "", nullptr, nullptr, nullptr, "");
-    EXPECT_EQ(ret, RET_FAILED);
+    EXPECT_EQ(ret, KEY_PASSWORD_ERROR);
 }
 
 /*
