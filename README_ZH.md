@@ -416,6 +416,8 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
 
 2.工具仅支持PKCS#12密钥库格式，支持的密钥库文件后缀为.p12。
 
+3.工具支持交互式输入keyPwd和keystorePwd，当参数空缺并验证口令失败时，会请求手动输入口令，输入超时等待30秒。
+
 #### 说明
 ##### 签名相关文件用法说明
 
@@ -447,7 +449,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
     sign : 二进制文件签名
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
          ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），非自签名模式时为必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项
@@ -465,7 +467,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
     sign : 二进制文件签名
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
          ├── -keyPwd            #密钥口令，可选项
-         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），必填项
+         ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），非自签名模式时为必填项
          ├── -profileFile       #签名后的Provision Profile文件名，p7b格式，可选项
          ├── -profileSigned     #指示profile文件是否带有签名，1表示有签名，0表示没有签名，默认为1。可选项
          ├── -inFile            #输入的原始elf文件，必填项

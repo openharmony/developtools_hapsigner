@@ -248,13 +248,13 @@ int KeyStoreHelper::FindKeyPair(PKCS12* p12, const std::string& alias, char* key
 
             if (!GetPassWordStatus()) {
                 KeyPairFree(safes, publickey);
-                return RET_FAILED;
+                return KEY_PASSWORD_ERROR;
             }
         } else if (OBJ_obj2nid(safe->type) == NID_pkcs7_data && privateKeyStatus != RET_OK) {
             privateKeyStatus = GetPrivateKey(safe, alias, keyPwd, keyPairPwdLen, keyPiar);
             if (!GetPassWordStatus()) {
                 KeyPairFree(safes, publickey);
-                return RET_FAILED;
+                return KEY_PASSWORD_ERROR;
             }
         }
     }
@@ -326,6 +326,9 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
     char* name = NULL;
 
     bags = PKCS12_unpack_p7data(safe);
+    if (bags == nullptr) {
+        return RET_FAILED;
+    }
     for (int m = 0; m < sk_PKCS12_SAFEBAG_num(bags); m++) {
         bag = sk_PKCS12_SAFEBAG_value(bags, m);
         if (PKCS12_SAFEBAG_get_nid(bag) != NID_pkcs8ShroudedKeyBag) {
@@ -416,7 +419,7 @@ int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath
         if (acceptP12 == nullptr) {
             return RET_FAILED;
         }
-        if (Pkcs12PasswordParse(acceptP12, keyStorePwd, charsStorePath) == RET_FAILED) {
+        if (Pkcs12PasswordParse(acceptP12, keyStorePwd, charsStorePath) != RET_OK) {
             BIO_free_all(bioOut);
             return RET_FAILED;
         }
@@ -443,6 +446,31 @@ int KeyStoreHelper::CreatePKCS12(PKCS12** p12, const std::string& charsStorePath
     return RET_OK;
 }
 
+int KeyStoreHelper::VerifyKeyStore(std::string& keyStorePath, char* keyStorePwd, EVP_PKEY** evpPkey)
+{
+    X509* cert = nullptr;
+    PKCS12* p12 = nullptr;
+    BIO* bioOut = nullptr;
+
+    bioOut = BIO_new_file(keyStorePath.c_str(), "rb");
+    if (bioOut == nullptr) {
+        VerifyHapOpensslUtils::GetOpensslErrorMessage();
+        KeyPairFree(cert, p12, bioOut, "Open file: '" + keyStorePath + "' failed");
+        return RET_FAILED;
+    }
+
+    p12 = d2i_PKCS12_bio(bioOut, NULL);
+    int parse = Pkcs12PasswordParse(p12, keyStorePwd, keyStorePath);
+    if (parse != RET_OK) {
+        KeyPairFree(cert, p12, bioOut, "");
+        SetPassWordStatus(false);
+        return parse;
+    }
+
+    KeyPairFree(cert, p12, bioOut, "");
+    return RET_OK;
+}
+
 int KeyStoreHelper::ReadKeyStore(std::string& keyStorePath, char* keyStorePwd, const std::string& alias,
                                  char* keyPwd, EVP_PKEY** evpPkey)
 {
@@ -458,15 +486,16 @@ int KeyStoreHelper::ReadKeyStore(std::string& keyStorePath, char* keyStorePwd, c
     }
 
     p12 = d2i_PKCS12_bio(bioOut, NULL);
-    if (Pkcs12PasswordParse(p12, keyStorePwd, keyStorePath) == RET_FAILED) {
+    int parse = Pkcs12PasswordParse(p12, keyStorePwd, keyStorePath);
+    if (parse != RET_OK) {
         KeyPairFree(cert, p12, bioOut, "");
         SetPassWordStatus(false);
-        return RET_FAILED;
+        return parse;
     }
     int status = FindKeyPair(p12, alias, keyPwd, keyStorePwd, evpPkey, keyStorePath);
-    if (status == RET_FAILED) {
+    if (status != RET_OK) {
         KeyPairFree(cert, p12, bioOut, "");
-        return RET_FAILED;
+        return status;
     }
 
     KeyPairFree(cert, p12, bioOut, "");
@@ -496,7 +525,7 @@ int KeyStoreHelper::Pkcs12PasswordParse(PKCS12* p12, const char* keyStorePwd, co
     return RET_OK;
 err:
     PrintErrorNumberMsg("KEYSTORE_PASSWORD_ERROR", KEYSTORE_PASSWORD_ERROR, "keyStore password error");
-    return RET_FAILED;
+    return KEYSTORE_PASSWORD_ERROR;
 }
 
 bool KeyStoreHelper::IsKeyStoreFileExist(std::string& keyStorePath)
