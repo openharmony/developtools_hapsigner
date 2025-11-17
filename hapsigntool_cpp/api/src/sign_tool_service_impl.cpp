@@ -611,7 +611,7 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         SIGNATURE_TOOLS_LOGE("provision read faild!");
         return IO_ERROR;
     }
-    cJSON* root = cJSON_ParseWithOpts(bytes.c_str(), 0, 1);
+    cJSON* root = cJSON_ParseWithOpts(bytes.c_str(), nullptr, 1);
     if (root == nullptr) {
         PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Failed to parse appProvision, JSON is invalid or empty!");
         return PARSE_ERROR;
