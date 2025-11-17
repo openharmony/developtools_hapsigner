@@ -74,6 +74,7 @@ inline void GetStringIfExist(const cJSON* obj, const string& key, string& out)
         out = item->valuestring;
     }
 }
+
 inline void GetInt32IfExist(const cJSON* obj, const string& key, int32_t& out)
 {
     cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
@@ -81,6 +82,7 @@ inline void GetInt32IfExist(const cJSON* obj, const string& key, int32_t& out)
         out = static_cast<int32_t>(item->valueint);
     }
 }
+
 inline void GetInt64IfExist(const cJSON* obj, const string& key, int64_t& out)
 {
     cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
@@ -88,6 +90,7 @@ inline void GetInt64IfExist(const cJSON* obj, const string& key, int64_t& out)
         out = static_cast<int64_t>(item->valueint);
     }
 }
+
 inline void GetStringArrayIfExist(const cJSON* obj, const string& key, vector<string>& out)
 {
     cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
@@ -101,6 +104,7 @@ inline void GetStringArrayIfExist(const cJSON* obj, const string& key, vector<st
     }
 }
 } // namespace
+
 namespace OHOS {
 namespace SignatureTools {
 const std::map<std::string, int32_t> distTypeMap = {
@@ -123,6 +127,7 @@ void ParseType(const cJSON* obj, ProfileInfo& out)
         out.type = DEBUG;
     else out.type = NONE_PROVISION_TYPE;
 }
+
 void ParseAppDistType(const cJSON* obj, ProfileInfo& out)
 {
     string distType;
@@ -134,6 +139,7 @@ void ParseAppDistType(const cJSON* obj, ProfileInfo& out)
     }
     out.distributionType = AppDistType::NONE_TYPE;
 }
+
 void ParseBundleInfo(const cJSON* obj, ProfileInfo& out)
 {
     const cJSON* bundleInfo = cJSON_GetObjectItemCaseSensitive(obj, KEY_BUNDLE_INFO.c_str());
@@ -151,6 +157,7 @@ void ParseBundleInfo(const cJSON* obj, ProfileInfo& out)
     GetStringIfExist(bundleInfo, KEY_APP_IDENTIFIER, out.bundleInfo.appIdentifier);
     GetStringArrayIfExist(bundleInfo, KEY_DATA_GROUP_IDS, out.bundleInfo.dataGroupIds);
 }
+
 void ParseAcls(const cJSON* obj, ProfileInfo& out)
 {
     const cJSON* acls = cJSON_GetObjectItemCaseSensitive(obj, KEY_ACLS.c_str());
@@ -159,6 +166,7 @@ void ParseAcls(const cJSON* obj, ProfileInfo& out)
     }
     GetStringArrayIfExist(acls, KEY_ALLOWED_ACLS, out.acls.allowedAcls);
 }
+
 void ParsePermissions(const cJSON* obj, ProfileInfo& out)
 {
     const cJSON* permissions = cJSON_GetObjectItemCaseSensitive(obj, KEY_PERMISSIONS.c_str());
@@ -170,6 +178,7 @@ void ParsePermissions(const cJSON* obj, ProfileInfo& out)
     GetStringArrayIfExist(permissions, KEY_RESTRICTED_CAPABILITIES,
                           out.permissions.restrictedCapabilities);
 }
+
 void ParseDebugInfo(const cJSON* obj, ProfileInfo& out)
 {
     const cJSON* debugInfo = cJSON_GetObjectItemCaseSensitive(obj, KEY_DEBUG_INFO.c_str());
@@ -179,6 +188,7 @@ void ParseDebugInfo(const cJSON* obj, ProfileInfo& out)
     GetStringIfExist(debugInfo, KEY_DEVICE_ID_TYPE, out.debugInfo.deviceIdType);
     GetStringArrayIfExist(debugInfo, KEY_DEVICE_IDS, out.debugInfo.deviceIds);
 }
+
 void ParseValidity(const cJSON* obj, Validity& out)
 {
     const cJSON* validity = cJSON_GetObjectItemCaseSensitive(obj, VALUE_VALIDITY.c_str());
@@ -188,6 +198,7 @@ void ParseValidity(const cJSON* obj, Validity& out)
     GetInt64IfExist(validity, VALUE_NOT_BEFORE, out.notBefore);
     GetInt64IfExist(validity, VALUE_NOT_AFTER, out.notAfter);
 }
+
 void ParseMetadata(const cJSON* obj, ProfileInfo& out)
 {
     const cJSON* baseAppInfo = cJSON_GetObjectItemCaseSensitive(obj, KEY_BASEAPP_INFO.c_str());
@@ -202,6 +213,7 @@ void ParseMetadata(const cJSON* obj, ProfileInfo& out)
     GetStringIfExist(baseAppInfo, KEY_PACKAGE_CERT, metadata.value);
     out.metadatas.emplace_back(metadata);
 }
+
 void from_json(const cJSON* obj, ProfileInfo& out)
 {
     if (obj == nullptr || !cJSON_IsObject(obj)) {
@@ -287,6 +299,7 @@ AppProvisionVerifyResult ParseAndVerify(const string& appProvision, ProfileInfo&
     SIGNATURE_TOOLS_LOGD("Leave HarmonyAppProvision Verify");
     return PROVISION_OK;
 }
+
 AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileInfo& info)
 {
     cJSON* obj = cJSON_ParseWithOpts(appProvision.c_str(), 0, 1);
