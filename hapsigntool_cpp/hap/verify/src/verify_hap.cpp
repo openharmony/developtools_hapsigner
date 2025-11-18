@@ -315,7 +315,7 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
 
 int VerifyHap::GetProfileContent(const std::string profile, std::string& ret)
 {
-    cJSON* obj = cJSON_ParseWithOpts(profile.c_str(), 0, 1);
+    cJSON* obj = cJSON_ParseWithOpts(profile.c_str(), nullptr, 1);
     if (obj != nullptr && (cJSON_IsObject(obj) || cJSON_IsArray(obj))) {
         ret = profile;
         cJSON_Delete(obj);
