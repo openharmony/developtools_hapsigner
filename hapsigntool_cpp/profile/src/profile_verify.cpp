@@ -302,7 +302,7 @@ AppProvisionVerifyResult ParseAndVerify(const string& appProvision, ProfileInfo&
 
 AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileInfo& info)
 {
-    cJSON* obj = cJSON_ParseWithOpts(appProvision.c_str(), 0, 1);
+    cJSON* obj = cJSON_ParseWithOpts(appProvision.c_str(), nullptr, 1);
     if (obj == nullptr) {
         std::string errStr = "JSON is invalid or empty, parse provision failed, json: " + appProvision;
         PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errStr.c_str());
