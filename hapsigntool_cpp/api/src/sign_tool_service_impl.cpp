@@ -621,7 +621,7 @@ int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::stri
         cJSON_Delete(root);
         return PARSE_ERROR;
     }
-    char* jsonStr = cJSON_Print(root);
+    char* jsonStr = cJSON_PrintUnformatted(root);
     if (jsonStr == nullptr) {
         cJSON_Delete(root);
         SIGNATURE_TOOLS_LOGE("Failed to convert JSON to string!");
