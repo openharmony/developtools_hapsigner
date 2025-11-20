@@ -15,10 +15,6 @@
 
 #include "sign_tool_service_impl.h"
 #include "pkcs7_data.h"
-#include "profile_sign_tool.h"
-#include "nlohmann/json.hpp"
-#include "profile_info.h"
-#include "profile_verify.h"
 #include "signature_tools_errno.h"
 #include "self_sign_sign_provider.h"
 #include "local_sign_provider.h"
@@ -51,28 +47,6 @@ bool SignToolServiceImpl::Sign(Options* options)
         return false;
     }
     return signProvider->SignElf(options);
-}
-
-int SignToolServiceImpl::GetProvisionContent(const std::string& input, std::string& ret)
-{
-    std::string bytes;
-    if (FileUtils::ReadFile(input, bytes) < 0) {
-        SIGNATURE_TOOLS_LOGE("provision read faild!");
-        return IO_ERROR;
-    }
-    nlohmann::json obj = nlohmann::json::parse(bytes);
-    if (obj.is_discarded() || (!obj.is_structured())) {
-        PrintErrorNumberMsg("PARSE ERROR", PARSE_ERROR, "Parsing provision failed!");
-        return PARSE_ERROR;
-    }
-    ret = obj.dump();
-    ProfileInfo provision;
-    AppProvisionVerifyResult result = ParseProvision(ret, provision);
-    if (result != PROVISION_OK) {
-        SIGNATURE_TOOLS_LOGE("invalid provision");
-        return INVALIDPARAM_ERROR;
-    }
-    return 0;
 }
 
 bool SignToolServiceImpl::Verify(Options* option)

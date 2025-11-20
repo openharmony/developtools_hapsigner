@@ -14,14 +14,14 @@
  */
 
 #include <algorithm>
+#include <map>
 
-#include "nlohmann/json.hpp"
+#include "cJSON.h"
 #include "signature_tools_log.h"
 #include "signature_tools_errno.h"
 #include "profile_verify.h"
 
 using namespace std;
-using namespace nlohmann;
 
 namespace {
 const string KEY_VERSION_CODE = "version-code";
@@ -67,39 +67,44 @@ const string KEY_PACKAGE_CERT = "package-cert";
 const string KEY_APP_IDENTIFIER = "app-identifier";
 const string GENERIC_BUNDLE_NAME = ".*";
 
-inline void GetStringIfExist(const json& obj, const string& key, string& out)
+inline void GetStringIfExist(const cJSON* obj, const string& key, string& out)
 {
-    if (obj.find(key.c_str()) != obj.end() && obj[key.c_str()].is_string()) {
-        obj[key.c_str()].get_to(out);
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
+    if (item != nullptr && cJSON_IsString(item)) {
+        out = item->valuestring;
     }
 }
-inline void GetInt32IfExist(const json& obj, const string& key, int32_t& out)
+
+inline void GetInt32IfExist(const cJSON* obj, const string& key, int32_t& out)
 {
-    if (obj.find(key.c_str()) != obj.end() && obj[key.c_str()].is_number_integer()) {
-        obj[key.c_str()].get_to(out);
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
+    if (item != nullptr && cJSON_IsNumber(item)) {
+        out = static_cast<int32_t>(item->valueint);
     }
 }
-inline void GetInt64IfExist(const json& obj, const string& key, int64_t& out)
+
+inline void GetInt64IfExist(const cJSON* obj, const string& key, int64_t& out)
 {
-    if (obj.find(key.c_str()) != obj.end() && obj[key.c_str()].is_number_integer()) {
-        obj[key.c_str()].get_to(out);
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
+    if (item != nullptr && cJSON_IsNumber(item)) {
+        out = static_cast<int64_t>(item->valueint);
     }
 }
-inline void GetStringArrayIfExist(const json& obj, const string& key, vector<string>& out)
+
+inline void GetStringArrayIfExist(const cJSON* obj, const string& key, vector<string>& out)
 {
-    if (obj.find(key.c_str()) != obj.end() && obj[key.c_str()].is_array()) {
-        for (auto& item : obj[key.c_str()]) {
-            if (item.is_string()) {
-                out.push_back(item.get<string>());
+    cJSON* item = cJSON_GetObjectItemCaseSensitive(obj, key.c_str());
+    if (item != nullptr && cJSON_IsArray(item)) {
+        cJSON* arrayItem = nullptr;
+        cJSON_ArrayForEach(arrayItem, item) {
+            if (cJSON_IsString(arrayItem)) {
+                out.push_back(arrayItem->valuestring);
             }
         }
     }
 }
-inline bool IsObjectExist(const json& obj, const string& key)
-{
-    return obj.find(key.c_str()) != obj.end() && obj[key.c_str()].is_object();
-}
 } // namespace
+
 namespace OHOS {
 namespace SignatureTools {
 const std::map<std::string, int32_t> distTypeMap = {
@@ -111,7 +116,7 @@ const std::map<std::string, int32_t> distTypeMap = {
     {VALUE_DIST_TYPE_CROWDTESTING, AppDistType::CROWDTESTING}
 };
 
-void ParseType(const json& obj, ProfileInfo& out)
+void ParseType(const cJSON* obj, ProfileInfo& out)
 {
     string type;
     GetStringIfExist(obj, KEY_TYPE, type);
@@ -122,7 +127,8 @@ void ParseType(const json& obj, ProfileInfo& out)
         out.type = DEBUG;
     else out.type = NONE_PROVISION_TYPE;
 }
-void ParseAppDistType(const json& obj, ProfileInfo& out)
+
+void ParseAppDistType(const cJSON* obj, ProfileInfo& out)
 {
     string distType;
     GetStringIfExist(obj, KEY_APP_DIST_TYPE, distType);
@@ -133,69 +139,84 @@ void ParseAppDistType(const json& obj, ProfileInfo& out)
     }
     out.distributionType = AppDistType::NONE_TYPE;
 }
-void ParseBundleInfo(const json& obj, ProfileInfo& out)
+
+void ParseBundleInfo(const cJSON* obj, ProfileInfo& out)
 {
-    if (IsObjectExist(obj, KEY_BUNDLE_INFO)) {
-        const auto& bundleInfo = obj[KEY_BUNDLE_INFO];
-        GetStringIfExist(bundleInfo, KEY_DEVELOPER_ID, out.bundleInfo.developerId);
-        GetStringIfExist(bundleInfo, KEY_DEVELOPMENT_CERTIFICATE,
-                         out.bundleInfo.developmentCertificate);
-        GetStringIfExist(bundleInfo, KEY_DISTRIBUTION_CERTIFICATE,
-                         out.bundleInfo.distributionCertificate);
-        GetStringIfExist(bundleInfo, KEY_BUNDLE_NAME, out.bundleInfo.bundleName);
-        GetStringIfExist(bundleInfo, KEY_APL, out.bundleInfo.apl);
-        GetStringIfExist(bundleInfo, KEY_APP_FEATURE, out.bundleInfo.appFeature);
-        GetStringIfExist(bundleInfo, KEY_APP_IDENTIFIER, out.bundleInfo.appIdentifier);
-        GetStringArrayIfExist(bundleInfo, KEY_DATA_GROUP_IDS, out.bundleInfo.dataGroupIds);
+    const cJSON* bundleInfo = cJSON_GetObjectItemCaseSensitive(obj, KEY_BUNDLE_INFO.c_str());
+    if (bundleInfo == nullptr || !cJSON_IsObject(bundleInfo)) {
+        return;
     }
+    GetStringIfExist(bundleInfo, KEY_DEVELOPER_ID, out.bundleInfo.developerId);
+    GetStringIfExist(bundleInfo, KEY_DEVELOPMENT_CERTIFICATE,
+                     out.bundleInfo.developmentCertificate);
+    GetStringIfExist(bundleInfo, KEY_DISTRIBUTION_CERTIFICATE,
+                     out.bundleInfo.distributionCertificate);
+    GetStringIfExist(bundleInfo, KEY_BUNDLE_NAME, out.bundleInfo.bundleName);
+    GetStringIfExist(bundleInfo, KEY_APL, out.bundleInfo.apl);
+    GetStringIfExist(bundleInfo, KEY_APP_FEATURE, out.bundleInfo.appFeature);
+    GetStringIfExist(bundleInfo, KEY_APP_IDENTIFIER, out.bundleInfo.appIdentifier);
+    GetStringArrayIfExist(bundleInfo, KEY_DATA_GROUP_IDS, out.bundleInfo.dataGroupIds);
 }
-void ParseAcls(const json& obj, ProfileInfo& out)
+
+void ParseAcls(const cJSON* obj, ProfileInfo& out)
 {
-    if (IsObjectExist(obj, KEY_ACLS)) {
-        const auto& acls = obj[KEY_ACLS];
-        GetStringArrayIfExist(acls, KEY_ALLOWED_ACLS, out.acls.allowedAcls);
+    const cJSON* acls = cJSON_GetObjectItemCaseSensitive(obj, KEY_ACLS.c_str());
+    if (acls == nullptr || !cJSON_IsObject(acls)) {
+        return;
     }
+    GetStringArrayIfExist(acls, KEY_ALLOWED_ACLS, out.acls.allowedAcls);
 }
-void ParsePermissions(const json& obj, ProfileInfo& out)
+
+void ParsePermissions(const cJSON* obj, ProfileInfo& out)
 {
-    if (IsObjectExist(obj, KEY_PERMISSIONS)) {
-        const auto& permissions = obj[KEY_PERMISSIONS];
-        GetStringArrayIfExist(permissions, KEY_RESTRICTED_PERMISSIONS,
-                              out.permissions.restrictedPermissions);
-        GetStringArrayIfExist(permissions, KEY_RESTRICTED_CAPABILITIES,
-                              out.permissions.restrictedCapabilities);
+    const cJSON* permissions = cJSON_GetObjectItemCaseSensitive(obj, KEY_PERMISSIONS.c_str());
+    if (permissions == nullptr || !cJSON_IsObject(permissions)) {
+        return;
     }
+    GetStringArrayIfExist(permissions, KEY_RESTRICTED_PERMISSIONS,
+                          out.permissions.restrictedPermissions);
+    GetStringArrayIfExist(permissions, KEY_RESTRICTED_CAPABILITIES,
+                          out.permissions.restrictedCapabilities);
 }
-void ParseDebugInfo(const json& obj, ProfileInfo& out)
+
+void ParseDebugInfo(const cJSON* obj, ProfileInfo& out)
 {
-    if (IsObjectExist(obj, KEY_DEBUG_INFO)) {
-        GetStringIfExist(obj[KEY_DEBUG_INFO], KEY_DEVICE_ID_TYPE, out.debugInfo.deviceIdType);
-        GetStringArrayIfExist(obj[KEY_DEBUG_INFO], KEY_DEVICE_IDS, out.debugInfo.deviceIds);
+    const cJSON* debugInfo = cJSON_GetObjectItemCaseSensitive(obj, KEY_DEBUG_INFO.c_str());
+    if (debugInfo == nullptr || !cJSON_IsObject(debugInfo)) {
+        return;
     }
+    GetStringIfExist(debugInfo, KEY_DEVICE_ID_TYPE, out.debugInfo.deviceIdType);
+    GetStringArrayIfExist(debugInfo, KEY_DEVICE_IDS, out.debugInfo.deviceIds);
 }
-void ParseValidity(const json& obj, Validity& out)
+
+void ParseValidity(const cJSON* obj, Validity& out)
 {
-    if (IsObjectExist(obj, VALUE_VALIDITY)) {
-        GetInt64IfExist(obj[VALUE_VALIDITY], VALUE_NOT_BEFORE, out.notBefore);
-        GetInt64IfExist(obj[VALUE_VALIDITY], VALUE_NOT_AFTER, out.notAfter);
+    const cJSON* validity = cJSON_GetObjectItemCaseSensitive(obj, VALUE_VALIDITY.c_str());
+    if (validity == nullptr || !cJSON_IsObject(validity)) {
+        return;
     }
+    GetInt64IfExist(validity, VALUE_NOT_BEFORE, out.notBefore);
+    GetInt64IfExist(validity, VALUE_NOT_AFTER, out.notAfter);
 }
-void ParseMetadata(const json& obj, ProfileInfo& out)
+
+void ParseMetadata(const cJSON* obj, ProfileInfo& out)
 {
-    if (IsObjectExist(obj, KEY_BASEAPP_INFO)) {
-        const auto& baseAppInfo = obj[KEY_BASEAPP_INFO];
-        Metadata metadata;
-        metadata.name = KEY_PACKAGE_NAME;
-        GetStringIfExist(baseAppInfo, KEY_PACKAGE_NAME, metadata.value);
-        out.metadatas.emplace_back(metadata);
-        metadata.name = KEY_PACKAGE_CERT;
-        GetStringIfExist(baseAppInfo, KEY_PACKAGE_CERT, metadata.value);
-        out.metadatas.emplace_back(metadata);
+    const cJSON* baseAppInfo = cJSON_GetObjectItemCaseSensitive(obj, KEY_BASEAPP_INFO.c_str());
+    if (baseAppInfo == nullptr || !cJSON_IsObject(baseAppInfo)) {
+        return;
     }
+    Metadata metadata;
+    metadata.name = KEY_PACKAGE_NAME;
+    GetStringIfExist(baseAppInfo, KEY_PACKAGE_NAME, metadata.value);
+    out.metadatas.emplace_back(metadata);
+    metadata.name = KEY_PACKAGE_CERT;
+    GetStringIfExist(baseAppInfo, KEY_PACKAGE_CERT, metadata.value);
+    out.metadatas.emplace_back(metadata);
 }
-void from_json(const json& obj, ProfileInfo& out)
+
+void from_json(const cJSON* obj, ProfileInfo& out)
 {
-    if (!obj.is_object()) {
+    if (obj == nullptr || !cJSON_IsObject(obj)) {
         return;
     }
     GetInt32IfExist(obj, KEY_VERSION_CODE, out.versionCode);
@@ -278,15 +299,23 @@ AppProvisionVerifyResult ParseAndVerify(const string& appProvision, ProfileInfo&
     SIGNATURE_TOOLS_LOGD("Leave HarmonyAppProvision Verify");
     return PROVISION_OK;
 }
+
 AppProvisionVerifyResult ParseProfile(const std::string& appProvision, ProfileInfo& info)
 {
-    json obj = json::parse(appProvision, nullptr, false);
-    if (obj.is_discarded() || (!obj.is_structured())) {
-        std::string errStr = "invalid json object, parse provision failed, json: " + appProvision;
+    cJSON* obj = cJSON_ParseWithOpts(appProvision.c_str(), nullptr, 1);
+    if (obj == nullptr) {
+        std::string errStr = "JSON is invalid or empty, parse provision failed, json: " + appProvision;
         PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errStr.c_str());
         return PROVISION_INVALID;
     }
-    obj.get_to(info);
+    if (!(cJSON_IsObject(obj) || cJSON_IsArray(obj))) {
+        std::string errStr = "invalid json object type, must be object or array, json: " + appProvision;
+        PrintErrorNumberMsg("PROVISION_INVALID_ERROR", PROVISION_INVALID_ERROR, errStr.c_str());
+        cJSON_Delete(obj);
+        return PROVISION_INVALID;
+    }
+    from_json(obj, info);
+    cJSON_Delete(obj);
     return PROVISION_OK;
 }
 } // namespace SignatureTools
