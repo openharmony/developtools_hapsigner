@@ -20,7 +20,6 @@
 #include "gtest/gtest.h"
 #include "options.h"
 #include "sign_tool_service_impl.h"
-#include "nlohmann/json.hpp"
 #include "signer_factory.h"
 #include "profile_sign_tool.h"
 #include "params_run_tool.h"
@@ -31,8 +30,6 @@
 #include "bc_signeddata_generator.h"
 #include "profile_verify.h"
 #include "constant.h"
-
-using  nlohmann::json;
 
 namespace OHOS {
 namespace SignatureTools {

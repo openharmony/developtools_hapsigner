@@ -90,7 +90,7 @@ ohos_executable("hap-sign-tool") {
 
   external_deps = [
     "c_utils:utils",
-    "json:nlohmann_json_static",
+    "cJSON:cjson_static",
     "zlib:shared_libz",
   ]
 

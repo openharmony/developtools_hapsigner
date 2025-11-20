@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 
 #include "securec.h"
 #include "hap_signer_block_utils.h"
@@ -30,10 +31,9 @@
 #include "verify_code_signature.h"
 #include "param_constants.h"
 #include "file_utils.h"
-#include "nlohmann/json.hpp"
+#include "cJSON.h"
 #include "verify_hap.h"
 
-using namespace nlohmann;
 namespace OHOS {
 namespace SignatureTools {
 const int32_t VerifyHap::HEX_PRINT_LENGTH = 3;
@@ -315,10 +315,14 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
 
 int VerifyHap::GetProfileContent(const std::string profile, std::string& ret)
 {
-    json obj = json::parse(profile, nullptr, false);
-    if (!obj.is_discarded() && obj.is_structured()) {
+    cJSON* obj = cJSON_ParseWithOpts(profile.c_str(), nullptr, 1);
+    if (obj != nullptr && (cJSON_IsObject(obj) || cJSON_IsArray(obj))) {
         ret = profile;
+        cJSON_Delete(obj);
         return 0;
+    }
+    if (obj != nullptr) {
+        cJSON_Delete(obj);
     }
     PKCS7Data p7Data;
     if (p7Data.Parse(profile) < 0) {
