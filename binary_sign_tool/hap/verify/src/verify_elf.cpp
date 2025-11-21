@@ -22,11 +22,7 @@
 
 namespace OHOS {
 namespace SignatureTools {
-
 const int FLAG_SELF_SIGN = 1 << 4;
-const std::string VerifyElf::codesignSec = ".codesign";
-const std::string VerifyElf::profileSec = ".profile";
-const std::string VerifyElf::permissionSec = ".permission";
 
 bool VerifyElf::Verify(Options* options)
 {
@@ -41,6 +37,7 @@ bool VerifyElf::Verify(Options* options)
         SIGNATURE_TOOLS_LOGE("failed to load input ELF file");
         return false;
     }
+    PrintPermissionContent(elfReader);
     // get codesignSec section
     bool signFlag = ParseSignBlock(elfReader);
     if (!signFlag) {
@@ -49,9 +46,25 @@ bool VerifyElf::Verify(Options* options)
     return true;
 }
 
+void VerifyElf::PrintPermissionContent(const ELFIO::elfio& elfReader)
+{
+    ELFIO::section* sec = elfReader.sections[PERMISSION_SEC_NAME];
+    if (!sec) {
+        PrintMsg("permission is not found");
+        return;
+    }
+    const char* data = sec->get_data();
+    if (sec->get_size() == 0 || data == nullptr) {
+        PrintMsg("permission is empty");
+        return;
+    }
+    std::string content(data);
+    PrintMsg("+++++++++++++++++++++++++++++++++permission+++++++++++++++++++++++++++++++++++++\n" + content);
+}
+
 bool VerifyElf::ParseSignBlock(const ELFIO::elfio& elfReader)
 {
-    ELFIO::section* sec = elfReader.sections[codesignSec];
+    ELFIO::section* sec = elfReader.sections[CODE_SIGN_SEC_NAME];
     if (!sec) {
         PrintMsg("code signature is not found");
         return true;
