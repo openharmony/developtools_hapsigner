@@ -48,15 +48,13 @@ struct ElfSignInfo {
 class VerifyElf {
 public:
     static constexpr int PAGE_SIZE = 4096;
-    static const std::string profileSec;
-    static const std::string permissionSec;
-    static const std::string codesignSec;
 
 public:
     bool Verify(Options* options);
     static bool CheckParams(Options* options);
 
 private:
+    static void PrintPermissionContent(const ELFIO::elfio& elfReader);
     static bool ParseSignBlock(const ELFIO::elfio& elfReader);
     static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
 };

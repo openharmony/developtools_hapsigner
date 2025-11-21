@@ -16,6 +16,7 @@
 #include "sign_elf.h"
 #include <unistd.h>
 
+#include "cJSON.h"
 #include "file_utils.h"
 #include "string_utils.h"
 #include "constant.h"
@@ -25,10 +26,6 @@
 
 namespace OHOS {
 namespace SignatureTools {
-
-const std::string SignElf::codesignSec = ".codesign";
-const std::string SignElf::profileSec = ".profile";
-const std::string SignElf::permissionSec = ".permission";
 constexpr size_t MAX_SECTION_SIZE = static_cast<size_t>(0xFFFFFFFF);
 
 bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string>& signParams)
@@ -39,9 +36,9 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         SIGNATURE_TOOLS_LOGE("[SignElf] Failed to load input ELF file");
         return false;
     }
-    elfReader.sections.del_last(codesignSec);
-    elfReader.sections.del_last(permissionSec);
-    elfReader.sections.del_last(profileSec);
+    elfReader.sections.del_last(CODE_SIGN_SEC_NAME);
+    elfReader.sections.del_last(PERMISSION_SEC_NAME);
+    elfReader.sections.del_last(PROFILE_SEC_NAME);
     bool writeProfilFlag = WriteSecDataToFile(elfReader, signerConfig, signParams);
     if (!writeProfilFlag) {
         SIGNATURE_TOOLS_LOGE("[SignElf] WriteSecDataToFile error");
@@ -131,12 +128,12 @@ bool SignElf::isExecElf(ELFIO::elfio& reader)
 
 bool SignElf::WriteCodeSignBlock(ELFIO::elfio& reader, std::string& outputFile, uint64_t& csOffset)
 {
-    ELFIO::section* sec = reader.sections[codesignSec];
+    ELFIO::section* sec = reader.sections[CODE_SIGN_SEC_NAME];
     if (sec) {
         SIGNATURE_TOOLS_LOGE("[SignElf] .codesign section already exists");
         return false;
     }
-    sec = reader.sections.add(codesignSec);
+    sec = reader.sections.add(CODE_SIGN_SEC_NAME);
     if (!sec) {
         SIGNATURE_TOOLS_LOGE("[SignElf] Failed to create .codesign section");
         return false;
@@ -186,7 +183,7 @@ bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfi
         return false;
     }
     if (!p7b.empty()) {
-        if (WriteSection(reader, p7b, profileSec)) {
+        if (WriteSection(reader, p7b, PROFILE_SEC_NAME)) {
             PrintMsg("add profile section success");
         } else {
             return false;
@@ -198,7 +195,12 @@ bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfi
     }
 
     if (!moduleContent.empty()) {
-        if (WriteSection(reader, moduleContent, permissionSec)) {
+        std::string ret;
+        if (!UpdatePermissionVersion(moduleContent, ret)) {
+            SIGNATURE_TOOLS_LOGE("[SignElf] Update Permission Version error");
+            return false;
+        }
+        if (WriteSection(reader, ret, PERMISSION_SEC_NAME)) {
             PrintMsg("add permission section success");
         } else {
             return false;
@@ -258,6 +260,32 @@ bool SignElf::ReplaceDataOffset(const std::string& filePath, uint64_t& csOffset,
     }
     fileStream.flush();
     fileStream.close();
+    return true;
+}
+
+bool SignElf::UpdatePermissionVersion(const std::string& moduleContent, std::string& result)
+{
+    cJSON* root = cJSON_Parse(moduleContent.c_str());
+    if (!root) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] moduleFile json read error");
+        return false;
+    }
+
+    cJSON* version = cJSON_GetObjectItemCaseSensitive(root, "version");
+    if (version) {
+        cJSON_SetNumberValue(version, PERMISSION_VERSION);
+    } else {
+        cJSON_AddNumberToObject(root, "version", PERMISSION_VERSION);
+    }
+
+    char* jsonString = cJSON_PrintUnformatted(root);
+    if (!jsonString) {
+        cJSON_Delete(root);
+        return false;
+    }
+    result = jsonString;
+    free(jsonString);
+    cJSON_Delete(root);
     return true;
 }
 } // namespace SignatureTools

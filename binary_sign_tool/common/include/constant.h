@@ -87,6 +87,10 @@ constexpr int32_t ONE_DAY_SECOND = 60;
 static constexpr int YEAR1900 = 1900;
 static constexpr int MIN_CERTS_NUM = 2;
 static constexpr int MAX_CERTS_NUM = 3;
+
+const std::string CODE_SIGN_SEC_NAME = ".codesign";
+const std::string PROFILE_SEC_NAME = ".profile";
+const std::string PERMISSION_SEC_NAME = ".permission";
 } // namespace UpdateEngine
 } // namespace OHOS
 #endif // SIGNATRUETOOLS_CONSTANT_H
