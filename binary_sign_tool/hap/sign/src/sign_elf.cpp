@@ -196,8 +196,8 @@ bool SignElf::WriteSecDataToFile(ELFIO::elfio& reader, SignerConfig& signerConfi
 
     if (!moduleContent.empty()) {
         std::string ret;
-        if (!UpdatePermissionVersion(moduleContent, ret)) {
-            SIGNATURE_TOOLS_LOGE("[SignElf] Update Permission Version error");
+        if (!WritePermissionVersion(moduleContent, ret)) {
+            SIGNATURE_TOOLS_LOGE("[SignElf] Write Permission Version error");
             return false;
         }
         if (WriteSection(reader, ret, PERMISSION_SEC_NAME)) {
@@ -263,21 +263,23 @@ bool SignElf::ReplaceDataOffset(const std::string& filePath, uint64_t& csOffset,
     return true;
 }
 
-bool SignElf::UpdatePermissionVersion(const std::string& moduleContent, std::string& result)
+bool SignElf::WritePermissionVersion(const std::string& moduleContent, std::string& result)
 {
     cJSON* root = cJSON_Parse(moduleContent.c_str());
     if (!root) {
         SIGNATURE_TOOLS_LOGE("[SignElf] moduleFile json read error");
         return false;
     }
-
     cJSON* version = cJSON_GetObjectItemCaseSensitive(root, "version");
-    if (version) {
-        cJSON_SetNumberValue(version, PERMISSION_VERSION);
-    } else {
+    if (!version) {
         cJSON_AddNumberToObject(root, "version", PERMISSION_VERSION);
+    } else {
+        if (!cJSON_IsNumber(version) || cJSON_GetNumberValue(version) != PERMISSION_VERSION) {
+            SIGNATURE_TOOLS_LOGE("[SignElf] the value of 'version' in moduleFile json should be int %d",
+                PERMISSION_VERSION);
+            return false;
+        }
     }
-
     char* jsonString = cJSON_PrintUnformatted(root);
     if (!jsonString) {
         cJSON_Delete(root);

@@ -45,7 +45,7 @@ private:
     static bool GenerateCodeSignByte(SignerConfig& signerConfig, const std::string& inputFile, uint64_t& csOffset,
                                      const std::string& selfSign);
     static bool ReplaceDataOffset(const std::string& filePath, uint64_t& csOffset, const std::vector<int8_t>& csData);
-    static bool UpdatePermissionVersion(const std::string& moduleContent, std::string& result);
+    static bool WritePermissionVersion(const std::string& moduleContent, std::string& result);
 };
 } // namespace SignatureTools
 } // namespace OHOS
