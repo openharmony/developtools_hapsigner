@@ -16,6 +16,7 @@
 #include "verify_elf.h"
 
 #include <fstream>
+#include "cJSON.h"
 #include "constant.h"
 #include "signature_tools_log.h"
 #include "verify_hap_openssl_utils.h"
@@ -59,6 +60,18 @@ void VerifyElf::PrintPermissionContent(const ELFIO::elfio& elfReader)
         return;
     }
     std::string content(data);
+    cJSON* root = cJSON_Parse(data);
+    if (root) {
+        char* jsonFormat = cJSON_Print(root);
+        if (jsonFormat) {
+            content = jsonFormat;
+            free(jsonFormat);
+            goto out;
+        }
+        free(jsonFormat);
+    }
+out:
+    cJSON_Delete(root);
     PrintMsg("+++++++++++++++++++++++++++++++++permission+++++++++++++++++++++++++++++++++++++\n" + content);
 }
 
