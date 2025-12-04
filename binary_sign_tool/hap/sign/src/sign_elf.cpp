@@ -277,6 +277,7 @@ bool SignElf::WritePermissionVersion(const std::string& moduleContent, std::stri
         if (!cJSON_IsNumber(version) || cJSON_GetNumberValue(version) != PERMISSION_VERSION) {
             SIGNATURE_TOOLS_LOGE("[SignElf] the value of 'version' in moduleFile json should be int %d",
                 PERMISSION_VERSION);
+            cJSON_Delete(root);
             return false;
         }
     }
