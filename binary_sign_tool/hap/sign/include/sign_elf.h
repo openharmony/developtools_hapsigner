@@ -32,9 +32,7 @@ public:
 
 private:
     static constexpr int PAGE_SIZE = 4096;
-    static const std::string profileSec;
-    static const std::string permissionSec;
-    static const std::string codesignSec;
+    static constexpr int PERMISSION_VERSION = 1;
 
     static bool loadModule(std::map<std::string, std::string>& signParams, std::string& moduleContent);
     static bool loadProfileAndSign(SignerConfig& signerConfig, std::map<std::string, std::string>& signParams,
@@ -47,6 +45,7 @@ private:
     static bool GenerateCodeSignByte(SignerConfig& signerConfig, const std::string& inputFile, uint64_t& csOffset,
                                      const std::string& selfSign);
     static bool ReplaceDataOffset(const std::string& filePath, uint64_t& csOffset, const std::vector<int8_t>& csData);
+    static bool WritePermissionVersion(const std::string& moduleContent, std::string& result);
 };
 } // namespace SignatureTools
 } // namespace OHOS
