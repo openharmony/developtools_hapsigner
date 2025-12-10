@@ -25,6 +25,7 @@
 #include "local_sign_provider.h"
 #include "signature_tools_log.h"
 #include "param_constants.h"
+#include "params_run_tool.h"
 #include "verify_hap.h"
 #include "constant.h"
 #include "remote_sign_provider.h"
@@ -38,6 +39,10 @@ bool SignToolServiceImpl::GenerateCA(Options* options)
 {
     bool flag = true;
     std::unique_ptr<LocalizationAdapter> adapter = std::make_unique<LocalizationAdapter>(options);
+    adapter->GetAliasKey(true);
+    if (!(ParamsRunTool::UpdateParamForIssuerPwd(options) && ParamsRunTool::UpdateParamForKeystorePwd(options))) {
+        return false;
+    }
     bool isEmpty = FileUtils::IsEmpty(options->GetString(Options::ISSUER_KEY_ALIAS));
     EVP_PKEY* subKey = adapter->GetAliasKey(true);
     if (!subKey) {
