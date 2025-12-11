@@ -105,7 +105,7 @@ bool ParamsRunTool::CallGenerators(const ParamsSharedPtr& params, SignToolServic
     return isSuccess;
 }
 
-bool ParamsRunTool::UpdateParamForPwd(Options* options)
+bool ParamsRunTool::UpdateParamForPassword(Options* options)
 {
     return UpdateParamForKeystorePwd(options) && UpdateParamForKeyPwd(options);
 }
@@ -294,7 +294,7 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
             return false;
         }
-        if (!UpdateParamForPwd(params)) {
+        if (!UpdateParamForPassword(params)) {
             return false;
         }
     }
@@ -401,7 +401,7 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
-    if (!(UpdateParamForPwd(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
         return false;
     }
     return api.GenerateCert(params);
@@ -466,7 +466,7 @@ bool ParamsRunTool::RunAppCert(Options* params, SignToolServiceImpl& api)
         return false;
     }
 
-    if (!(UpdateParamForPwd(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
         return false;
     }
     return api.GenerateAppCert(params);
@@ -487,7 +487,7 @@ bool ParamsRunTool::RunProfileCert(Options* params, SignToolServiceImpl& api)
         return false;
     }
 
-    if (!(UpdateParamForPwd(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
         return false;
     }
     return api.GenerateProfileCert(params);
@@ -553,7 +553,7 @@ bool ParamsRunTool::RunCsr(Options* params, SignToolServiceImpl& api)
             return false;
         }
     }
-    if (!UpdateParamForPwd(params)) {
+    if (!UpdateParamForPassword(params)) {
         return false;
     }
     return api.GenerateCsr(params);
@@ -597,7 +597,7 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
             return false;
         }
 
-        if (!UpdateParamForPwd(params)) {
+        if (!UpdateParamForPassword(params)) {
             return false;
         }
     }
