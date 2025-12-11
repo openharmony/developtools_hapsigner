@@ -112,8 +112,7 @@ bool ParamsRunTool::UpdateParamForPassword(Options* options)
 
 bool ParamsRunTool::UpdateParamForIssuerPwd(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_STORE_FILE))
-    {
+    if (!options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
         std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
         std::string alias = options->GetString(Options::KEY_ALIAS);
         EVP_PKEY* keyPair = nullptr;
@@ -121,8 +120,10 @@ bool ParamsRunTool::UpdateParamForIssuerPwd(Options* options)
         int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
             alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
         EVP_PKEY_free(keyPair);
-        if(status == KEY_PASSWORD_ERROR) {
-            return UpdateParamForKeyPwd(options) && UpdateParamForKeystorePwd(options) && UpdateParamForIssuerKeyPwdFromKeystore(options);
+        if (status == KEY_PASSWORD_ERROR) {
+            return UpdateParamForKeyPwd(options) &&
+                   UpdateParamForKeystorePwd(options) &&
+                   UpdateParamForIssuerKeyPwdFromKeystore(options);
         }
         return UpdateParamForKeystorePwd(options) && UpdateParamForIssuerKeyPwdFromKeystore(options);
     }
@@ -211,8 +212,9 @@ bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
     if (!options->Exists(Options::ISSUER_KEY_RIGHTS)) {
         EVP_PKEY* keyPair = nullptr;
         std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->ReadKeyStore(issuerKeystoreFile, options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS),
-            issuerAlias, options->GetChars(Options::ISSUER_KEY_RIGHTS), &keyPair);
+        int status = keyStoreHelper->ReadKeyStore(issuerKeystoreFile,
+            options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), issuerAlias,
+            options->GetChars(Options::ISSUER_KEY_RIGHTS), &keyPair);
         EVP_PKEY_free(keyPair);
         if (status == KEY_PASSWORD_ERROR) {
             if (!issuerKeyPwd.getPasswordFromUser("Enter issuerKeyPwd (timeout 30 seconds): ")) {
@@ -236,8 +238,8 @@ bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
     if (!options->Exists(Options::ISSUER_KEY_STORE_RIGHTS)) {
         EVP_PKEY* keyPair = nullptr;
         std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->VerifyKeyStore(issuerKeystoreFile, options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS),
-            &keyPair);
+        int status = keyStoreHelper->VerifyKeyStore(issuerKeystoreFile,
+            options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), &keyPair);
         EVP_PKEY_free(keyPair);
         if (status == KEYSTORE_PASSWORD_ERROR) {
             if (!issuerKeystorePwd.getPasswordFromUser("Enter issuerKeystorePwd (timeout 30 seconds): ")) {
