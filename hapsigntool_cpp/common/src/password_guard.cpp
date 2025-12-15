@@ -94,10 +94,10 @@ bool PasswordGuard::input(pollfd pfd)
     while (true) {
         int result = poll(&pfd, 1, 30 * 1000);
         if (result == 0) {
-            /* timeout */
+            // timeout
             break;
         } else if (result == -1 || read(STDIN_FILENO, &ch, 1) != 1) {
-            /* poll error */
+            // poll error
             return false;
         }
         if (ch == '\b' || ch == ASCII_DEL) {
