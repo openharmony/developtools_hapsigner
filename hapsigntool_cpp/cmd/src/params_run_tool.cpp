@@ -312,8 +312,7 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         if (!UpdateParamForPassword(params)) {
             return false;
         }
-    }
-    if (StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
+    } else {
         if (!UpdateParamForRemoteUserPwd(params)) {
             return false;
         }
