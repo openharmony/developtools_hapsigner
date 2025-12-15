@@ -31,6 +31,7 @@ PasswordGuard keyPwd;
 PasswordGuard keystorePwd;
 PasswordGuard issuerKeyPwd;
 PasswordGuard issuerKeystorePwd;
+PasswordGuard remoteUserPwd;
 std::vector<std::string> ParamsRunTool::InformList = {
     "bin",
     "elf",
@@ -254,6 +255,18 @@ bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
     return true;
 }
 
+bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
+{
+    if (!options->Exists(ParamConstants::PARAM_REMOTE_USERPWD)) {
+        if (!remoteUserPwd.getPasswordFromUser("Enter remoteUserPwd (timeout 30 seconds): ")) {
+            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+            return false;
+        }
+        options->emplace(ParamConstants::PARAM_REMOTE_USERPWD, remoteUserPwd.get());
+    }
+    return true;
+}
+
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
 {
     if (!params->Required({Options::MODE, Options::IN_FILE, Options::OUT_FILE, Options::SIGN_ALG})) {
@@ -297,6 +310,11 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
             return false;
         }
         if (!UpdateParamForPassword(params)) {
+            return false;
+        }
+    }
+    if (StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
+        if (!UpdateParamForRemoteUserPwd(params)) {
             return false;
         }
     }

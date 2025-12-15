@@ -41,6 +41,7 @@ public:
     static bool UpdateParamForIssuerKeyPwdFromKeystore(Options* options);
     static bool UpdateParamForIssuerKeyPwd(Options* options);
     static bool UpdateParamForIssuerKeystorePwd(Options* options);
+    static bool UpdateParamForRemoteUserPwd(Options* options);
     static bool RunKeypair(Options* params, SignToolServiceImpl& api);
     static bool RunCa(Options* params, SignToolServiceImpl& api);
     static bool RunCert(Options* params, SignToolServiceImpl& api);
