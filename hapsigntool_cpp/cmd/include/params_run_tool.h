@@ -34,6 +34,14 @@ public:
     static bool ProcessCmd(char** args, size_t size);
     static bool DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api);
     static bool CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api);
+    static bool UpdateParamForPassword(Options* options);
+    static bool UpdateParamForKeyPwd(Options* options);
+    static bool UpdateParamForKeystorePwd(Options* options);
+    static bool UpdateParamForIssuerPwd(Options* options);
+    static bool UpdateParamForIssuerKeyPwdFromKeystore(Options* options);
+    static bool UpdateParamForIssuerKeyPwd(Options* options);
+    static bool UpdateParamForIssuerKeystorePwd(Options* options);
+    static bool UpdateParamForRemoteUserPwd(Options* options);
     static bool RunKeypair(Options* params, SignToolServiceImpl& api);
     static bool RunCa(Options* params, SignToolServiceImpl& api);
     static bool RunCert(Options* params, SignToolServiceImpl& api);
