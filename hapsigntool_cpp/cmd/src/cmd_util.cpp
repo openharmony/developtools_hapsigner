@@ -290,6 +290,9 @@ static bool UpdateParamForCheckRemoteSignProfile(const ParamsSharedPtr& param)
 
     if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) &&
         options->GetString(Options::MODE) == REMOTE_SIGN) {
+        if (!ParamsRunTool::UpdateParamForRemoteUserPwd(options)) {
+            return false;
+        }
         for (const std::string& key : signProfileRemoteParams) {
             if (options->count(key) == 0) {
                 PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "sign profile RemoteSign absence param '"
