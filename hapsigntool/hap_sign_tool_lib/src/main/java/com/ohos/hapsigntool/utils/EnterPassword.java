@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2025-2025. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,12 @@ import com.ohos.hapsigntool.error.CustomException;
 import java.io.Console;
 import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Provider function of enter password.
@@ -54,32 +59,27 @@ public class EnterPassword {
         Console console = System.console();
         if (console == null) {
             System.err.println("Console not available. Please run in a terminal environment.");
-            return null;
+            return new char[0];
         }
 
-        final char[][] password = {null};
-        Scanner scanner = new Scanner(System.in);
-        Thread readPasswordThread = new Thread(() -> {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<char[]> future = executor.submit(() -> {
             System.out.print(promptMessage);
-            password[0] = scanner.nextLine().toCharArray();
+            return console.readPassword();
         });
 
-        readPasswordThread.start();
-
         try {
-            readPasswordThread.join(MAX_WAIT_TIME);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
-        if (password[0] == null) {
-            readPasswordThread.interrupt();
+            return future.get(MAX_WAIT_TIME, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
             System.out.println();
             LOGGER.error("No password input, closing input.");
-            console.flush();
+            return new char[0];
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            return new char[0];
+        } finally {
+            executor.shutdownNow();
         }
-
-        return password[0];
     }
 
     /**
@@ -180,9 +180,9 @@ public class EnterPassword {
      */
     public static void updateParamForKeyPwd(Options params) {
         SimpleEntry<String, String> keyStoreEntry = new SimpleEntry<>(Options.KEY_STORE_FILE,
-                                                                      Options.KEY_STORE_RIGHTS);
+                                                                    Options.KEY_STORE_RIGHTS);
         SimpleEntry<String, String> keyAliasEntry = new SimpleEntry<>(Options.KEY_ALIAS,
-                                                                      Options.KEY_RIGHTS);
+                                                                    Options.KEY_RIGHTS);
         updateKeyAliasPassword(params, keyStoreEntry, keyAliasEntry, PROMPT_KEY_PWD);
     }
 
@@ -193,9 +193,9 @@ public class EnterPassword {
      */
     public static void updateParamForIssuerKeyPwdFromKeystore(Options params) {
         SimpleEntry<String, String> keyStoreEntry = new SimpleEntry<>(Options.KEY_STORE_FILE,
-                                                                      Options.KEY_STORE_RIGHTS);
+                                                                    Options.KEY_STORE_RIGHTS);
         SimpleEntry<String, String> keyAliasEntry = new SimpleEntry<>(Options.ISSUER_KEY_ALIAS,
-                                                                      Options.ISSUER_KEY_RIGHTS);
+                                                                    Options.ISSUER_KEY_RIGHTS);
         updateKeyAliasPassword(params, keyStoreEntry, keyAliasEntry, PROMPT_ISSUER_KEY_PWD);
     }
 
@@ -206,9 +206,9 @@ public class EnterPassword {
      */
     public static void updateParamForIssuerKeyPwd(Options params) {
         SimpleEntry<String, String> keyStoreEntry = new SimpleEntry<>(Options.ISSUER_KEY_STORE_FILE,
-                                                                      Options.ISSUER_KEY_STORE_RIGHTS);
+                                                                    Options.ISSUER_KEY_STORE_RIGHTS);
         SimpleEntry<String, String> keyAliasEntry = new SimpleEntry<>(Options.ISSUER_KEY_ALIAS,
-                                                                      Options.ISSUER_KEY_RIGHTS);
+                                                                    Options.ISSUER_KEY_RIGHTS);
         updateKeyAliasPassword(params, keyStoreEntry, keyAliasEntry, PROMPT_ISSUER_KEY_PWD);
     }
 
