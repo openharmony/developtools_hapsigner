@@ -16,8 +16,12 @@
 package com.ohos.hapsigntool.utils;
 
 import com.ohos.hapsigntool.entity.Options;
+import com.ohos.hapsigntool.error.CustomException;
+import com.ohos.hapsigntool.error.ERROR;
 import java.io.Console;
 import java.io.File;
+import java.security.UnrecoverableKeyException;
+import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Provider function of enter password.
@@ -34,14 +38,22 @@ public class EnterPassword {
     private static final String PROMPT_ISSUER_KEY_PWD = "please input IssuerKeyPwd:";
     private static final String PROMPT_ISSUER_KEYSTORE_PWD = "please input IssuerKeystorePwd:";
 
+    /**
+     * Constructor of Method
+     */
+    private EnterPassword() {
+    }
+
     private static void updateKeyAliasPassword(
             Options params,
-            String keyStoreFileKey,
-            String keyStorePwdKey,
-            String keyAliasKey,
-            String keyRightsKey,
+            SimpleEntry<String, String> keyStoreEntry,
+            SimpleEntry<String, String> keyAliasEntry,
             String promptMessage) {
 
+        String keyStoreFileKey = keyStoreEntry.getKey();
+        String keyStorePwdKey = keyStoreEntry.getValue();
+        String keyAliasKey = keyAliasEntry.getKey();
+        String keyRightsKey = keyAliasEntry.getValue();
         Object keyStorePwd = params.get(keyStorePwdKey);
         Object keyPwd = params.get(keyRightsKey);
 
@@ -63,22 +75,24 @@ public class EnterPassword {
         try {
             KeyStoreHelper tempKeyStoreHelper = new KeyStoreHelper(keyStoreFile, (char[]) keyStorePwd);
             tempKeyStoreHelper.loadPrivateKey(alias, new char[0]);
-        } catch (Exception e) {
-            LOGGER.error("Failed to load PrivateKey with empty password. open console input keyPwd");
-            Console console = System.console();
-            char[] password = console.readPassword(promptMessage);
-            params.put(keyRightsKey, password);
+        } catch (CustomException exception) {
+            if (exception.getMessage().contains("KEY_PASSWORD_ERROR")) {
+                LOGGER.error("Failed to load PrivateKey with empty password. open console input keyPwd");
+                Console console = System.console();
+                char[] password = console.readPassword(promptMessage);
+                params.put(keyRightsKey, password);
+            }
         }
     }
 
     private static void updateKeystorePassword(
             Options params,
             String keyStoreFileKey,
+            String keyStorePwdKey,
             String keyAliasKey,
-            String passwordKey,
             String promptMessage) {
 
-        Object keyStorePwd = params.get(passwordKey);
+        Object keyStorePwd = params.get(keyStorePwdKey);
         if (keyStorePwd != null) {
             return;
         }
@@ -96,53 +110,40 @@ public class EnterPassword {
         }
         try {
             new KeyStoreHelper(keyStoreFile, new char[0]);
-        } catch (Exception e) {
-            LOGGER.error("Failed to load Keystore with empty password. open console input pwd");
-            Console console = System.console();
-            char[] password = console.readPassword(promptMessage);
-            params.put(passwordKey, password);
+        } catch (CustomException exception) {
+            if (exception.getMessage().contains("INIT_KEYSTORE_FAILED")) {
+                LOGGER.error("Failed to load Keystore with empty password. open console input pwd");
+                Console console = System.console();
+                char[] password = console.readPassword(promptMessage);
+                params.put(keyStorePwdKey, password);
+            }
         }
     }
 
     public static void updateParamForKeyPwd(Options params) {
-        updateKeyAliasPassword(
-                params,
-                Options.KEY_STORE_FILE,
-                Options.KEY_STORE_RIGHTS,
-                Options.KEY_ALIAS,
-                Options.KEY_RIGHTS,
-                PROMPT_KEY_PWD
-        );
+        SimpleEntry<String, String> keyStoreEntry = new SimpleEntry<>(Options.KEY_STORE_FILE, Options.KEY_STORE_RIGHTS);
+        SimpleEntry<String, String> keyAliasEntry = new SimpleEntry<>(Options.KEY_ALIAS, Options.KEY_RIGHTS);
+        updateKeyAliasPassword(params, keyStoreEntry, keyAliasEntry, PROMPT_KEY_PWD);
     }
 
     public static void updateParamForIssuerKeyPwdFromKeystore(Options params) {
-        updateKeyAliasPassword(
-                params,
-                Options.KEY_STORE_FILE,
-                Options.KEY_STORE_RIGHTS,
-                Options.ISSUER_KEY_ALIAS,
-                Options.ISSUER_KEY_RIGHTS,
-                PROMPT_ISSUER_KEY_PWD
-        );
+        SimpleEntry<String, String> keyStoreEntry = new SimpleEntry<>(Options.KEY_STORE_FILE, Options.KEY_STORE_RIGHTS);
+        SimpleEntry<String, String> keyAliasEntry = new SimpleEntry<>(Options.ISSUER_KEY_ALIAS, Options.ISSUER_KEY_RIGHTS);
+        updateKeyAliasPassword(params, keyStoreEntry, keyAliasEntry, PROMPT_ISSUER_KEY_PWD);
     }
 
     public static void updateParamForIssuerKeyPwd(Options params) {
-        updateKeyAliasPassword(
-                params,
-                Options.ISSUER_KEY_STORE_FILE,
-                Options.ISSUER_KEY_STORE_RIGHTS,
-                Options.ISSUER_KEY_ALIAS,
-                Options.ISSUER_KEY_RIGHTS,
-                PROMPT_ISSUER_KEY_PWD
-        );
+        SimpleEntry<String, String> keyStoreEntry = new SimpleEntry<>(Options.ISSUER_KEY_STORE_FILE, Options.ISSUER_KEY_STORE_RIGHTS);
+        SimpleEntry<String, String> keyAliasEntry = new SimpleEntry<>(Options.ISSUER_KEY_ALIAS, Options.ISSUER_KEY_RIGHTS);
+        updateKeyAliasPassword(params, keyStoreEntry, keyAliasEntry, PROMPT_ISSUER_KEY_PWD);
     }
 
     public static void updateParamForKeystorePwd(Options params) {
         updateKeystorePassword(
                 params,
                 Options.KEY_STORE_FILE,
-                Options.KEY_ALIAS,
                 Options.KEY_STORE_RIGHTS,
+                Options.KEY_ALIAS,
                 PROMPT_KEYSTORE_PWD
         );
     }
@@ -151,8 +152,8 @@ public class EnterPassword {
         updateKeystorePassword(
                 params,
                 Options.ISSUER_KEY_STORE_FILE,
-                Options.ISSUER_KEY_ALIAS,
                 Options.ISSUER_KEY_STORE_RIGHTS,
+                Options.ISSUER_KEY_ALIAS,
                 PROMPT_ISSUER_KEYSTORE_PWD
         );
     }
