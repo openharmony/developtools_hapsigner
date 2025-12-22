@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025-2025. All rights reserved.
+ * Copyright (c) 2025-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,9 +21,9 @@ import java.io.Console;
 import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -62,7 +62,13 @@ public class EnterPassword {
             return new char[0];
         }
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+                1,
+                1,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>()
+        );
         Future<char[]> future = executor.submit(() -> {
             System.out.print(promptMessage);
             return console.readPassword();
@@ -75,7 +81,6 @@ public class EnterPassword {
             LOGGER.error("No password input, closing input.");
             return new char[0];
         } catch (InterruptedException | ExecutionException e) {
-            Thread.currentThread().interrupt();
             return new char[0];
         } finally {
             executor.shutdownNow();
