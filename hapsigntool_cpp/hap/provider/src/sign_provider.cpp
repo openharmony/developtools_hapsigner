@@ -648,12 +648,12 @@ bool SignProvider::CheckPwdInputMode()
 {
     if (signParams.find(ParamConstants::PARAM_PWD_INPUT_MODE) == signParams.end()) {
         signParams.insert(std::make_pair(ParamConstants::PARAM_PWD_INPUT_MODE,
-                                         ParamConstants::DISABLE_PWD_INPUT_MODE));
+                                         ParamConstants::PWD_INPUT_BY_COMMAND));
         return true;
     }
     std::string codeSign = signParams[ParamConstants::PARAM_PWD_INPUT_MODE];
-    if ((codeSign != ParamConstants::ENABLE_PWD_INPUT_MODE) &&
-        (codeSign != ParamConstants::DISABLE_PWD_INPUT_MODE)) {
+    if ((codeSign != ParamConstants::PWD_INPUT_BY_CONSOLE) &&
+        (codeSign != ParamConstants::PWD_INPUT_BY_COMMAND)) {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "pwdInputMode Parameter must 0 or 1, you put is " + codeSign);
         return false;
