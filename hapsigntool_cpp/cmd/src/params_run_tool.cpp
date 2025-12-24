@@ -135,7 +135,7 @@ bool ParamsRunTool::UpdateParamForIssuerPwd(Options* options)
 bool ParamsRunTool::CheckInputPermission(Options* options)
 {
     return options->Exists(Options::PWD_INPUT_MODE) &&
-           StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), DEFAULT_PWD_INPUT_MODE_1);
+           StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
 bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
