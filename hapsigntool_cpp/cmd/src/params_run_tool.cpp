@@ -132,8 +132,17 @@ bool ParamsRunTool::UpdateParamForIssuerPwd(Options* options)
     return UpdateParamForIssuerKeystorePwd(options) && UpdateParamForIssuerKeyPwd(options);
 }
 
+bool ParamsRunTool::CheckInputPermission(Options* options)
+{
+    return options->Exists(Options::USER_PWD_INPUT_MODE) &&
+           StringUtils::CaseCompare(options->GetString(Options::USER_PWD_INPUT_MODE), DEFAULT_USER_PWD_INPUT_MODE_1);
+}
+
 bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
 {
+    if (!CheckInputPermission(options)) {
+        return true;
+    }
     std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
     std::string alias = options->GetString(Options::KEY_ALIAS);
     if (!options->Exists(Options::KEY_RIGHTS)) {
@@ -157,6 +166,9 @@ bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
 
 bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
 {
+    if (!CheckInputPermission(options)) {
+        return true;
+    }
     std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
     if (!options->Exists(Options::KEY_STORE_RIGHTS)) {
         EVP_PKEY* keyPair = nullptr;
@@ -179,7 +191,7 @@ bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
 
 bool ParamsRunTool::UpdateParamForIssuerKeyPwdFromKeystore(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_ALIAS)) {
+    if (!CheckInputPermission(options) || !options->Exists(Options::ISSUER_KEY_ALIAS)) {
         return true;
     }
     std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
@@ -205,7 +217,7 @@ bool ParamsRunTool::UpdateParamForIssuerKeyPwdFromKeystore(Options* options)
 
 bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_ALIAS)) {
+    if (!CheckInputPermission(options) || !options->Exists(Options::ISSUER_KEY_ALIAS)) {
         return true;
     }
     std::string issuerKeystoreFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
@@ -232,7 +244,7 @@ bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 
 bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
+    if (!CheckInputPermission(options) || !options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
         return true;
     }
     std::string issuerKeystoreFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
@@ -257,6 +269,9 @@ bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 
 bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
 {
+    if (!CheckInputPermission(options)) {
+        return true;
+    }
     if (!options->Exists(ParamConstants::PARAM_REMOTE_USERPWD)) {
         if (!remoteUserPwd.getPasswordFromUser("Enter remoteUserPwd (timeout 30 seconds): ")) {
             PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");

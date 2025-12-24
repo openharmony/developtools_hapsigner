@@ -40,6 +40,10 @@ bool LocalSignProvider::CheckParams(Options* options)
         SIGNATURE_TOOLS_LOGE("signCode Parameter must 0 or 1");
         return false;
     }
+    if (!CheckUserPwdInputMode()) {
+        SIGNATURE_TOOLS_LOGE("userPwdInputMode Parameter must 0 or 1");
+        return false;
+    }
     if (!CheckPublicKeyPath()) {
         SIGNATURE_TOOLS_LOGE("appCertFile Parameter check error !");
         return false;
