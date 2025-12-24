@@ -89,7 +89,7 @@ protected:
     int CheckProfileValid(STACK_OF(X509)* inputCerts);
     int CheckProfileInfo(const ProfileInfo& info, STACK_OF(X509)* inputCerts)const;
     bool CheckSignCode();
-    bool CheckUserPwdInputMode();
+    bool CheckPwdInputMode();
     int LoadOptionalBlocks();
     bool CheckCompatibleVersion();
     std::vector<OptionalBlock> optionalBlocks;
