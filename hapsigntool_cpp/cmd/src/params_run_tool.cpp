@@ -178,7 +178,8 @@ bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
     if (!CheckInputPermission(options) || !options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
         return true;
     }
-    if (!issuerKeystorePwd.getPasswordFromUser("Enter " + Options::ISSUER_KEY_STORE_RIGHTS + " (timeout 30 seconds): ")) {
+    if (!issuerKeystorePwd.getPasswordFromUser("Enter " + Options::ISSUER_KEY_STORE_RIGHTS +
+                                               " (timeout 30 seconds): ")) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
         return false;
     }
