@@ -28,6 +28,8 @@ public:
     ~PasswordGuard();
 
     char *get() const;
+    size_t size() const;
+    char *create() const;
     void clear();
     bool isEmpty();
 
