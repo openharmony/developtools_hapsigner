@@ -117,7 +117,7 @@ bool ParamsRunTool::CheckInputPermission(Options* options)
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
-bool ParamsRunTool::UpdateParamForPwd(Options* options, const std::string& key,
+bool ParamsRunTool::UpdateParamForPassword(Options* options, const std::string& key,
                                       const std::string& checkParam, bool checkExist)
 {
     if (!CheckInputPermission(options) || (checkExist && !options->Exists(checkParam))) {
@@ -139,27 +139,27 @@ bool ParamsRunTool::UpdateParamForPwd(Options* options, const std::string& key,
 
 bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
 {
-    return UpdateParamForPwd(options, Options::KEY_RIGHTS, "", false);
+    return UpdateParamForPassword(options, Options::KEY_RIGHTS, "", false);
 }
 
 bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
 {
-    return UpdateParamForPwd(options, Options::KEY_STORE_RIGHTS, "", false);
+    return UpdateParamForPassword(options, Options::KEY_STORE_RIGHTS, "", false);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 {
-    return UpdateParamForPwd(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true);
+    return UpdateParamForPassword(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 {
-    return UpdateParamForPwd(options, Options::ISSUER_KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_FILE, true);
+    return UpdateParamForPassword(options, Options::ISSUER_KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_FILE, true);
 }
 
 bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
 {
-    return UpdateParamForPwd(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false);
+    return UpdateParamForPassword(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false);
 }
 
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
