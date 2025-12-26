@@ -27,11 +27,6 @@ namespace OHOS {
 namespace SignatureTools {
 const std::string ParamsRunTool::VERSION = "1.0.0";
 
-PasswordGuard keyPwd;
-PasswordGuard keystorePwd;
-PasswordGuard issuerKeyPwd;
-PasswordGuard issuerKeystorePwd;
-PasswordGuard remoteUserPwd;
 std::vector<std::string> ParamsRunTool::InformList = {
     "bin",
     "elf",
@@ -122,86 +117,49 @@ bool ParamsRunTool::CheckInputPermission(Options* options)
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
-bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
+static bool UpdateParamForPwd(Options* options, const std::string& key,
+                             const std::string& checkParam, bool checkExist)
 {
-    if (!CheckInputPermission(options)) {
+    if (!CheckInputPermission(options) || (checkExist && !options->Exists(checkParam))) {
         return true;
     }
-    if (!keyPwd.getPasswordFromUser("Enter " + Options::KEY_RIGHTS + " (timeout 30 seconds): ")) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
+    PasswordGuard pwd;
+    if (!pwd.getPasswordFromUser("Enter " + key + " (timeout 30 seconds): ")) {
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR,
+                            "failed to get " + key + ", please check terminal permissions.");
         return false;
     }
-    if (keyPwd.get()[0] == '\0') {
-        options->insert_or_assign(Options::KEY_RIGHTS, "");
-    } else {
-        options->insert_or_assign(Options::KEY_RIGHTS, keyPwd.get());
+    if (pwd.IsEmpty() || pwd.get()[0] == '\0') {
+        options->insert_or_assign(key, "");
+        return true;
     }
+    options->insert_or_assign(key, pwd.get());
     return true;
+}
+
+bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
+{
+    return UpdateParamForPwd(options, Options::KEY_RIGHTS, "", false);
 }
 
 bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
 {
-    if (!CheckInputPermission(options)) {
-        return true;
-    }
-    if (!keystorePwd.getPasswordFromUser("Enter " + Options::KEY_STORE_RIGHTS + " (timeout 30 seconds): ")) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-        return false;
-    }
-    if (keystorePwd.get()[0] == '\0') {
-        options->insert_or_assign(Options::KEY_STORE_RIGHTS, "");
-    } else {
-        options->insert_or_assign(Options::KEY_STORE_RIGHTS, keystorePwd.get());
-    }
-    return true;
+    return UpdateParamForPwd(options, Options::KEY_STORE_RIGHTS, "", false);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 {
-    if (!CheckInputPermission(options) || !options->Exists(Options::ISSUER_KEY_ALIAS)) {
-        return true;
-    }
-    if (!issuerKeyPwd.getPasswordFromUser("Enter " + Options::ISSUER_KEY_RIGHTS + " (timeout 30 seconds): ")) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-        return false;
-    }
-    if (issuerKeyPwd.get()[0] == '\0') {
-        options->insert_or_assign(Options::ISSUER_KEY_RIGHTS, "");
-    } else {
-        options->insert_or_assign(Options::ISSUER_KEY_RIGHTS, issuerKeyPwd.get());
-    }
-    return true;
+    return UpdateParamForPwd(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 {
-    if (!CheckInputPermission(options) || !options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
-        return true;
-    }
-    if (!issuerKeystorePwd.getPasswordFromUser("Enter " + Options::ISSUER_KEY_STORE_RIGHTS +
-                                               " (timeout 30 seconds): ")) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-        return false;
-    }
-    if (issuerKeystorePwd.get()[0] == '\0') {
-        options->insert_or_assign(Options::ISSUER_KEY_STORE_RIGHTS, "");
-    } else {
-        options->insert_or_assign(Options::ISSUER_KEY_STORE_RIGHTS, issuerKeystorePwd.get());
-    }
-    return true;
+    return UpdateParamForPwd(options, Options::ISSUER_KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_FILE, true);
 }
 
 bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
 {
-    if (!CheckInputPermission(options) || options->Exists(ParamConstants::PARAM_REMOTE_USERPWD)) {
-        return true;
-    }
-    if (!remoteUserPwd.getPasswordFromUser("Enter remoteUserPwd (timeout 30 seconds): ")) {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-        return false;
-    }
-    options->emplace(ParamConstants::PARAM_REMOTE_USERPWD, remoteUserPwd.get());
-    return true;
+    return UpdateParamForPwd(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false);
 }
 
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
