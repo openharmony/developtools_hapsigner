@@ -29,7 +29,7 @@ public:
 
     char *get() const;
     size_t size() const;
-    char *create() const;
+    char *getPwdStr() const;
     void clear();
     bool isEmpty();
 
