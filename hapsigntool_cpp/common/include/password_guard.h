@@ -28,8 +28,6 @@ public:
     ~PasswordGuard();
 
     char *get() const;
-    size_t size() const;
-    char *getPwdStr() const;
     void clear();
     bool isEmpty();
 
