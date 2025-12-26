@@ -117,8 +117,8 @@ bool ParamsRunTool::CheckInputPermission(Options* options)
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
-static bool UpdateParamForPwd(Options* options, const std::string& key,
-                             const std::string& checkParam, bool checkExist)
+bool ParamsRunTool::UpdateParamForPwd(Options* options, const std::string& key,
+                                      const std::string& checkParam, bool checkExist)
 {
     if (!CheckInputPermission(options) || (checkExist && !options->Exists(checkParam))) {
         return true;
@@ -129,7 +129,7 @@ static bool UpdateParamForPwd(Options* options, const std::string& key,
                             "failed to get " + key + ", please check terminal permissions.");
         return false;
     }
-    if (pwd.IsEmpty() || pwd.get()[0] == '\0') {
+    if (pwd.isEmpty() || pwd.get()[0] == '\0') {
         options->insert_or_assign(key, "");
         return true;
     }
