@@ -41,6 +41,21 @@ char* PasswordGuard::get() const
     return data;
 }
 
+size_t PasswordGuard::size() const
+{
+    return len;
+}
+
+char* PasswordGuard::create() const
+{
+    if (data == nullptr || len == 0) {
+        return nullptr;
+    }
+    char* newData = new char[len + 1];
+    std::copy(data, data + len + 1, newData);
+    return newData;
+}
+
 void PasswordGuard::clear()
 {
     if (data) {
