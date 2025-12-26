@@ -21,12 +21,16 @@
 #include "constant.h"
 #include "help.h"
 #include "key_store_helper.h"
-#include "password_guard.h"
 
 namespace OHOS {
 namespace SignatureTools {
 const std::string ParamsRunTool::VERSION = "1.0.0";
 
+PasswordGuard keyPwd;
+PasswordGuard keystorePwd;
+PasswordGuard issuerKeyPwd;
+PasswordGuard issuerKeystorePwd;
+PasswordGuard remoteUserPwd;
 std::vector<std::string> ParamsRunTool::InformList = {
     "bin",
     "elf",
@@ -117,13 +121,12 @@ bool ParamsRunTool::CheckInputPermission(Options* options)
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
-bool ParamsRunTool::UpdateParamForKey(Options* options, const std::string& key,
-                                      const std::string& checkParam, bool checkExist)
+bool ParamsRunTool::UpdateParamForKey(Options* options, const std::string& key, const std::string& checkParam,
+                                      bool checkExist, PasswordGuard& pwd)
 {
     if (!CheckInputPermission(options) || (checkExist && !options->Exists(checkParam))) {
         return true;
     }
-    PasswordGuard pwd;
     if (!pwd.getPasswordFromUser("Enter " + key + " (timeout 30 seconds): ")) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR,
                             "failed to get " + key + ", please check terminal permissions.");
@@ -133,33 +136,33 @@ bool ParamsRunTool::UpdateParamForKey(Options* options, const std::string& key,
         options->insert_or_assign(key, "");
         return true;
     }
-    options->insert_or_assign(key, pwd.getPwdStr());
+    options->insert_or_assign(key, pwd.get());
     return true;
 }
 
 bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
 {
-    return UpdateParamForKey(options, Options::KEY_RIGHTS, "", false);
+    return UpdateParamForKey(options, Options::KEY_RIGHTS, "", false, keyPwd);
 }
 
 bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
 {
-    return UpdateParamForKey(options, Options::KEY_STORE_RIGHTS, "", false);
+    return UpdateParamForKey(options, Options::KEY_STORE_RIGHTS, "", false, keystorePwd);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 {
-    return UpdateParamForKey(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true);
+    return UpdateParamForKey(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true, issuerKeyPwd);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 {
-    return UpdateParamForKey(options, Options::ISSUER_KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_FILE, true);
+    return UpdateParamForKey(options, Options::ISSUER_KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_FILE, true, issuerKeystorePwd);
 }
 
 bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
 {
-    return UpdateParamForKey(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false);
+    return UpdateParamForKey(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false, remoteUserPwd);
 }
 
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
