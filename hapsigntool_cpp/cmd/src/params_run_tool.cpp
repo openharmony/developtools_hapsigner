@@ -278,6 +278,9 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
+    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
+        return false;
+    }
 
     return api.GenerateCA(params);
 }
