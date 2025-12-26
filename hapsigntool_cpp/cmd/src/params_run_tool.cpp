@@ -133,11 +133,7 @@ bool ParamsRunTool::UpdateParamForKey(Options* options, const std::string& key,
         options->insert_or_assign(key, "");
         return true;
     }
-    if (options->Exists(key)) {
-        std::copy(pwd.get(), pwd.get() + pwd.size() + 1, options->GetChars(key));
-    } else {
-        options->insert_or_assign(key, pwd.create());
-    }
+    options->insert_or_assign(key, pwd.getPwdStr());
     return true;
 }
 

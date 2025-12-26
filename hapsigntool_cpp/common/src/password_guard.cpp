@@ -46,7 +46,7 @@ size_t PasswordGuard::size() const
     return len;
 }
 
-char* PasswordGuard::create() const
+char* PasswordGuard::getPwdStr() const
 {
     if (data == nullptr || len == 0) {
         return nullptr;
