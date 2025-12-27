@@ -75,6 +75,10 @@ public final class HapSignTool {
      */
     private static final String NOT_SIGNED = "0";
 
+    private static final String PWD_ENTER_BY_CONSOLE = "1";
+
+    private static final String PWD_ENTER_BY_COMMAND = "0";
+
     private static final List<String> informList = new ArrayList<>();
 
     static {
@@ -215,10 +219,17 @@ public final class HapSignTool {
         }
     }
 
+    private static boolean checkInputPermission(Options params) {
+        String pwdInputMode = params.getString(Options.PWD_INPUT_MODE);
+        return PWD_ENTER_BY_CONSOLE.equalsIgnoreCase(pwdInputMode);
+    }
+
     private static boolean runAppCert(Options params, ServiceApi api) {
         checkEndCertArguments(params);
-        EnterPassword.updateParamForPassword(params);
-        EnterPassword.updateParamForIssuerPwd(params);
+        if (checkInputPermission(params)) {
+            EnterPassword.updateParamForPassword(params);
+            EnterPassword.updateParamForIssuerPwd(params);
+        }
         return api.generateAppCert(params);
     }
 
@@ -233,8 +244,10 @@ public final class HapSignTool {
         CmdUtil.judgeSignAlgType(signAlg);
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
         params.put(Options.KEY_SIZE, CmdUtil.convertAlgSize(size));
-        EnterPassword.updateParamForIssuerPwd(params);
-        EnterPassword.updateParamForKeystorePwd(params);
+        if (checkInputPermission(params)) {
+            EnterPassword.updateParamForPassword(params);
+            EnterPassword.updateParamForIssuerPwd(params);
+        }
         return api.generateCA(params);
     }
 
@@ -252,8 +265,10 @@ public final class HapSignTool {
             String issuerKeyStoreFile = params.getString(Options.ISSUER_KEY_STORE_FILE);
             FileUtils.validFileType(issuerKeyStoreFile, "p12", "jks");
         }
-        EnterPassword.updateParamForPassword(params);
-        EnterPassword.updateParamForIssuerPwd(params);
+        if (checkInputPermission(params)) {
+            EnterPassword.updateParamForPassword(params);
+            EnterPassword.updateParamForIssuerPwd(params);
+        }
         return api.generateCert(params);
     }
 
@@ -265,7 +280,9 @@ public final class HapSignTool {
         if (!StringUtils.isEmpty(params.getString(Options.OUT_FILE))) {
             FileUtils.validFileType(params.getString(Options.OUT_FILE), "csr");
         }
-        EnterPassword.updateParamForPassword(params);
+        if (checkInputPermission(params)) {
+            EnterPassword.updateParamForPassword(params);
+        }
 
         return api.generateCsr(params);
     }
@@ -278,15 +295,19 @@ public final class HapSignTool {
         CmdUtil.judgeSize(size, keyAlg);
         params.put(Options.KEY_SIZE, CmdUtil.convertAlgSize(size));
         FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-        EnterPassword.updateParamForKeystorePwd(params);
+        if (checkInputPermission(params)) {
+            EnterPassword.updateParamForPassword(params);
+        }
 
         return api.generateKeyStore(params);
     }
 
     private static boolean runProfileCert(Options params, ServiceApi api) {
         checkEndCertArguments(params);
-        EnterPassword.updateParamForPassword(params);
-        EnterPassword.updateParamForIssuerPwd(params);
+        if (checkInputPermission(params)) {
+            EnterPassword.updateParamForPassword(params);
+            EnterPassword.updateParamForIssuerPwd(params);
+        }
         return api.generateProfileCert(params);
     }
 
@@ -303,7 +324,9 @@ public final class HapSignTool {
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.APP_CERT_FILE);
             FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
-            EnterPassword.updateParamForPassword(params);
+            if (checkInputPermission(params)) {
+                EnterPassword.updateParamForPassword(params);
+            }
         }
         checkProfile(params);
         String inForm = params.getString(Options.IN_FORM, "zip");
@@ -346,13 +369,15 @@ public final class HapSignTool {
         if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
             params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.PROFILE_CERT_FILE);
             FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
+            if (checkInputPermission(params)) {
+                EnterPassword.updateParamForPassword(params);
+            }
         }
 
         String signAlg = params.getString(Options.SIGN_ALG);
         CmdUtil.judgeEndSignAlgType(signAlg);
         String outFile = params.getString(Options.OUT_FILE);
         FileUtils.validFileType(outFile, "p7b");
-        EnterPassword.updateParamForPassword(params);
 
         return api.signProfile(params);
     }
