@@ -157,7 +157,8 @@ bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 
 bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 {
-    return UpdateParamForKey(options, Options::ISSUER_KEY_STORE_RIGHTS, Options::ISSUER_KEY_STORE_FILE, true, issuerKeystorePwd);
+    return UpdateParamForKey(options, Options::ISSUER_KEY_STORE_RIGHTS,
+                             Options::ISSUER_KEY_STORE_FILE, true, issuerKeystorePwd);
 }
 
 bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
