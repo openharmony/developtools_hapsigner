@@ -599,6 +599,7 @@ bool SignProvider::CheckParams(Options* options)
     paramFileds.emplace_back(ParamConstants::PARAM_LOCAL_PUBLIC_CERT);
     paramFileds.emplace_back(ParamConstants::PARAM_BASIC_COMPATIBLE_VERSION);
     paramFileds.emplace_back(ParamConstants::PARAM_SIGN_CODE);
+    paramFileds.emplace_back(ParamConstants::PARAM_PWD_INPUT_MODE);
     paramFileds.emplace_back(ParamConstants::PARAM_IN_FORM);
 
     std::unordered_set<std::string> paramSet = Params::InitParamField(paramFileds);
@@ -614,6 +615,10 @@ bool SignProvider::CheckParams(Options* options)
     }
     if (!CheckSignCode()) {
         SIGNATURE_TOOLS_LOGE("signCode Parameter check error, signCode must is 0 or 1");
+        return false;
+    }
+    if (!CheckPwdInputMode()) {
+        SIGNATURE_TOOLS_LOGE("pwdInputMode Parameter check error, pwdInputMode must is 0 or 1");
         return false;
     }
     if (!CheckSignatureAlg()) {
@@ -634,6 +639,23 @@ bool SignProvider::CheckSignCode()
     if ((codeSign != ParamConstants::ENABLE_SIGN_CODE) && (codeSign != ParamConstants::DISABLE_SIGN_CODE)) {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "signCode Parameter must 0 or 1, you put is " + codeSign);
+        return false;
+    }
+    return true;
+}
+
+bool SignProvider::CheckPwdInputMode()
+{
+    if (signParams.find(ParamConstants::PARAM_PWD_INPUT_MODE) == signParams.end()) {
+        signParams.insert(std::make_pair(ParamConstants::PARAM_PWD_INPUT_MODE,
+                                         ParamConstants::PWD_INPUT_BY_COMMAND));
+        return true;
+    }
+    std::string inputMode = signParams[ParamConstants::PARAM_PWD_INPUT_MODE];
+    if ((inputMode != ParamConstants::PWD_INPUT_BY_CONSOLE) &&
+        (inputMode != ParamConstants::PWD_INPUT_BY_COMMAND)) {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            "pwdInputMode Parameter must 0 or 1, you put is " + inputMode);
         return false;
     }
     return true;

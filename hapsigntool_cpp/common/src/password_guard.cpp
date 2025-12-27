@@ -52,6 +52,14 @@ void PasswordGuard::clear()
     }
 }
 
+bool PasswordGuard::isEmpty()
+{
+    if (data == nullptr || len == 0) {
+        return true;
+    }
+    return false;
+}
+
 bool PasswordGuard::getPasswordFromUser(const std::string &prompt)
 {
     clear();

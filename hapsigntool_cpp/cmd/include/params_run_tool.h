@@ -25,6 +25,7 @@
 #include "signature_tools_log.h"
 #include "params_trust_list.h"
 #include "string_utils.h"
+#include "password_guard.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -34,6 +35,9 @@ public:
     static bool ProcessCmd(char** args, size_t size);
     static bool DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api);
     static bool CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api);
+    static bool CheckInputPermission(Options* options);
+    static bool UpdateParamForKey(Options* options, const std::string& key, const std::string& checkParam,
+                                  bool checkExist, PasswordGuard& pwd);
     static bool UpdateParamForPassword(Options* options);
     static bool UpdateParamForKeyPwd(Options* options);
     static bool UpdateParamForKeystorePwd(Options* options);

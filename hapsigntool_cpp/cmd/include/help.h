@@ -37,6 +37,9 @@ const std::string KEYPAIR_HELP_TXT = R"(
         -keystoreFile : keystore file, required fields, JKS or P12 format;
         -keystorePwd : keystore password, optional fields;
         -extCfgFile : Extend Profile, optional fields;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         generate-keypair -keyAlias "oh-app1-key-v1" -keyPwd ****** -keyAlg ECC -keySize NIST-P-256
@@ -55,6 +58,9 @@ const std::string CSR_HELP_TXT = R"(
         -keystorePwd : keystore password, optional fields;
         -outFile : output file, optional fields, if not filled, it will be directly output to the console;
         -extCfgFile : Extend Profile, optional fields;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         generate-csr -keyAlias "oh-app1-key-v1" -keyPwd ****** -signAlg SHA256withECDSA -keystorePwd ******
@@ -89,6 +95,9 @@ const std::string CERT_HELP_TXT = R"(
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         generate-cert -keyAlias "oh-app1-key-v1" -keyPwd ****** -issuerKeyAlias "oh-app-sign-srv-ca-key-v1"
@@ -116,6 +125,9 @@ const std::string CA_CERT_HELP_TXT = R"(
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         generate-ca -keyAlias "oh-root-ca-key-v1" -validity 365 -signAlg SHA384withECDSA -keySize NIST-P-256
@@ -148,6 +160,9 @@ const std::string APP_CERT_HELP_TXT = R"(
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         generate-app-cert -keyAlias "oh-app1-key-v1" -issuerKeyAlias "oh-app-sign-debug-srv-ca-key-v1" -validity 365
@@ -181,6 +196,9 @@ const std::string PROFILE_CERT_HELP_TXT = R"(
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         generate-profile-cert -keyAlias "oh-profile-key-v1" -issuerKeyAlias "oh-profile-sign-debug-srv-ca-key-v1"
@@ -215,6 +233,9 @@ const std::string SIGN_PROFILE_HELP_TXT = R"(
         -onlineAuthMode : remote sign auth mode, required fields on remoteSign mode, including account;
         -username : user account for online auth, required fields on remoteSign mode with account auth mode;
         -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE:
         sign-profile -mode localSign -keyAlias "oh-profile-key-v1" -outFile "/home/signed-profile.p7b"
@@ -261,6 +282,9 @@ const std::string SIGN_APP_HELP_TXT = R"(
         -ext : extend parameters for remote signer plugin, optional fields;
         -signCode : Whether the HAP file is signed code, The value 1 means enable sign code, and value 0 means
     disable sign code.The default value is 1. It is optional.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
 
     EXAMPLE :
         sign-app-mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "/home/app-release-cert.cer" -signCode "1"

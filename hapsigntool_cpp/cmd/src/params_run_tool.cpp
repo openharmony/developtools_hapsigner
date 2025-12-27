@@ -21,7 +21,6 @@
 #include "constant.h"
 #include "help.h"
 #include "key_store_helper.h"
-#include "password_guard.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -113,158 +112,58 @@ bool ParamsRunTool::UpdateParamForPassword(Options* options)
 
 bool ParamsRunTool::UpdateParamForIssuerPwd(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
-        std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
-        std::string alias = options->GetString(Options::KEY_ALIAS);
-        EVP_PKEY* keyPair = nullptr;
-        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
-            alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
-        EVP_PKEY_free(keyPair);
-        if (status == KEY_PASSWORD_ERROR) {
-            return UpdateParamForKeyPwd(options) &&
-                   UpdateParamForKeystorePwd(options) &&
-                   UpdateParamForIssuerKeyPwdFromKeystore(options);
-        }
-        return UpdateParamForKeystorePwd(options) && UpdateParamForIssuerKeyPwdFromKeystore(options);
-    }
-
     return UpdateParamForIssuerKeystorePwd(options) && UpdateParamForIssuerKeyPwd(options);
+}
+
+bool ParamsRunTool::CheckInputPermission(Options* options)
+{
+    return options->Exists(Options::PWD_INPUT_MODE) &&
+           StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
+}
+
+bool ParamsRunTool::UpdateParamForKey(Options* options, const std::string& key, const std::string& checkParam,
+                                      bool checkExist, PasswordGuard& pwd)
+{
+    if (!CheckInputPermission(options) || (checkExist && !options->Exists(checkParam))) {
+        return true;
+    }
+    if (!pwd.getPasswordFromUser("Enter " + key + " (timeout 30 seconds): ")) {
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR,
+                            "failed to get " + key + ", please check terminal permissions.");
+        return false;
+    }
+    if (pwd.isEmpty() || pwd.get()[0] == '\0') {
+        options->insert_or_assign(key, "");
+        return true;
+    }
+    options->insert_or_assign(key, pwd.get());
+    return true;
 }
 
 bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
 {
-    std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
-    std::string alias = options->GetString(Options::KEY_ALIAS);
-    if (!options->Exists(Options::KEY_RIGHTS)) {
-        EVP_PKEY* keyPair = nullptr;
-        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
-            alias, options->GetChars(Options::KEY_RIGHTS), &keyPair);
-        EVP_PKEY_free(keyPair);
-        if (status == KEY_PASSWORD_ERROR) {
-            if (!keyPwd.getPasswordFromUser("Enter keyPwd (timeout 30 seconds): ")) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-                return false;
-            }
-            options->emplace(Options::KEY_RIGHTS, keyPwd.get());
-        } else if (status != RET_OK) {
-            return false;
-        }
-    }
-    return true;
+    return UpdateParamForKey(options, Options::KEY_RIGHTS, "", false, keyPwd);
 }
 
 bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
 {
-    std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
-    if (!options->Exists(Options::KEY_STORE_RIGHTS)) {
-        EVP_PKEY* keyPair = nullptr;
-        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->VerifyKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
-            &keyPair);
-        EVP_PKEY_free(keyPair);
-        if (status == KEYSTORE_PASSWORD_ERROR) {
-            if (!keystorePwd.getPasswordFromUser("Enter keystorePwd (timeout 30 seconds): ")) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-                return false;
-            }
-            options->emplace(Options::KEY_STORE_RIGHTS, keystorePwd.get());
-        } else if (status != RET_OK) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool ParamsRunTool::UpdateParamForIssuerKeyPwdFromKeystore(Options* options)
-{
-    if (!options->Exists(Options::ISSUER_KEY_ALIAS)) {
-        return true;
-    }
-    std::string keyStoreFile = options->GetString(Options::KEY_STORE_FILE);
-    std::string issuerAlias = options->GetString(Options::ISSUER_KEY_ALIAS);
-    if (!options->Exists(Options::ISSUER_KEY_RIGHTS)) {
-        EVP_PKEY* keyPair = nullptr;
-        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->ReadKeyStore(keyStoreFile, options->GetChars(Options::KEY_STORE_RIGHTS),
-            issuerAlias, options->GetChars(Options::ISSUER_KEY_RIGHTS), &keyPair);
-        EVP_PKEY_free(keyPair);
-        if (status == KEY_PASSWORD_ERROR) {
-            if (!issuerKeyPwd.getPasswordFromUser("Enter issuerKeyPwd (timeout 30 seconds): ")) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-                return false;
-            }
-            options->emplace(Options::ISSUER_KEY_RIGHTS, issuerKeyPwd.get());
-        } else if (status != RET_OK) {
-            return false;
-        }
-    }
-    return true;
+    return UpdateParamForKey(options, Options::KEY_STORE_RIGHTS, "", false, keystorePwd);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_ALIAS)) {
-        return true;
-    }
-    std::string issuerKeystoreFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
-    std::string issuerAlias = options->GetString(Options::ISSUER_KEY_ALIAS);
-    if (!options->Exists(Options::ISSUER_KEY_RIGHTS)) {
-        EVP_PKEY* keyPair = nullptr;
-        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->ReadKeyStore(issuerKeystoreFile,
-            options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), issuerAlias,
-            options->GetChars(Options::ISSUER_KEY_RIGHTS), &keyPair);
-        EVP_PKEY_free(keyPair);
-        if (status == KEY_PASSWORD_ERROR) {
-            if (!issuerKeyPwd.getPasswordFromUser("Enter issuerKeyPwd (timeout 30 seconds): ")) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-                return false;
-            }
-            options->emplace(Options::ISSUER_KEY_RIGHTS, issuerKeyPwd.get());
-        } else if (status != RET_OK) {
-            return false;
-        }
-    }
-    return true;
+    return UpdateParamForKey(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true, issuerKeyPwd);
 }
 
 bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
 {
-    if (!options->Exists(Options::ISSUER_KEY_STORE_FILE)) {
-        return true;
-    }
-    std::string issuerKeystoreFile = options->GetString(Options::ISSUER_KEY_STORE_FILE);
-    if (!options->Exists(Options::ISSUER_KEY_STORE_RIGHTS)) {
-        EVP_PKEY* keyPair = nullptr;
-        std::unique_ptr<KeyStoreHelper> keyStoreHelper = std::make_unique<KeyStoreHelper>();
-        int status = keyStoreHelper->VerifyKeyStore(issuerKeystoreFile,
-            options->GetChars(Options::ISSUER_KEY_STORE_RIGHTS), &keyPair);
-        EVP_PKEY_free(keyPair);
-        if (status == KEYSTORE_PASSWORD_ERROR) {
-            if (!issuerKeystorePwd.getPasswordFromUser("Enter issuerKeystorePwd (timeout 30 seconds): ")) {
-                PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-                return false;
-            }
-            options->emplace(Options::ISSUER_KEY_STORE_RIGHTS, issuerKeystorePwd.get());
-        } else if (status != RET_OK) {
-            return false;
-        }
-    }
-    return true;
+    return UpdateParamForKey(options, Options::ISSUER_KEY_STORE_RIGHTS,
+                             Options::ISSUER_KEY_STORE_FILE, true, issuerKeystorePwd);
 }
 
 bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
 {
-    if (!options->Exists(ParamConstants::PARAM_REMOTE_USERPWD)) {
-        if (!remoteUserPwd.getPasswordFromUser("Enter remoteUserPwd (timeout 30 seconds): ")) {
-            PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "input pwd error ");
-            return false;
-        }
-        options->emplace(ParamConstants::PARAM_REMOTE_USERPWD, remoteUserPwd.get());
-    }
-    return true;
+    return UpdateParamForKey(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false, remoteUserPwd);
 }
 
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
@@ -381,6 +280,9 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
         return false;
     }
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
+        return false;
+    }
+    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
         return false;
     }
 
@@ -533,16 +435,8 @@ bool ParamsRunTool::RunKeypair(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
-    BIO* bioOut = nullptr;
-    bioOut = BIO_new_file(params->GetString(Options::KEY_STORE_FILE).c_str(), "rb");
-    if (bioOut != nullptr && !UpdateParamForKeystorePwd(params)) {
-        BIO_free_all(bioOut);
-        bioOut = nullptr;
+    if (!UpdateParamForPassword(params)) {
         return false;
-    }
-    if (bioOut != nullptr) {
-        BIO_free_all(bioOut);
-        bioOut = nullptr;
     }
     return api.GenerateKeyStore(params);
 }
