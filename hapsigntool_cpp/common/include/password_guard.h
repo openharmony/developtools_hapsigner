@@ -29,6 +29,7 @@ public:
 
     char *get() const;
     void clear();
+    bool isEmpty();
 
     bool getPasswordFromUser(const std::string &prompt = "Enter password: ");
 private:

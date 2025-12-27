@@ -120,6 +120,7 @@ public:
     static const std::string PROOF_FILE;
     static const std::string PROFILE_FILE;
     static const std::string PROFILE_SIGNED;
+    static const std::string PWD_INPUT_MODE;
 };
 } // namespace SignatureTools
 } // namespace OHOS
