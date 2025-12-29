@@ -67,14 +67,13 @@ public class EnterPassword {
                 new LinkedBlockingQueue<>()
         );
         Future<char[]> future = executor.submit(() -> {
-            System.out.print(promptMessage);
+            LOGGER.info(promptMessage);
             return console.readPassword();
         });
 
         try {
             return future.get(MAX_WAIT_TIME, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            System.out.println();
             LOGGER.error("No password input, closing input.");
             return new char[0];
         } catch (InterruptedException | ExecutionException e) {
