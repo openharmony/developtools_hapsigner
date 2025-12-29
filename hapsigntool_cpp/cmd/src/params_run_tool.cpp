@@ -136,8 +136,9 @@ bool ParamsRunTool::ShouldEnterByConsole(Options* options)
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
-bool ParamsRunTool::EnterPasswordOfParameter(Options* options, const std::string& parameter, const std::string& checkParam,
-                                             bool checkExist, PasswordGuard& parameterPwd)
+bool ParamsRunTool::EnterPasswordOfParameter(Options* options, const std::string& parameter,
+                                             const std::string& checkParam, bool checkExist,
+                                             PasswordGuard& parameterPwd)
 {
     if (!ShouldEnterByConsole(options) || (checkExist && !options->Exists(checkParam))) {
         return true;
