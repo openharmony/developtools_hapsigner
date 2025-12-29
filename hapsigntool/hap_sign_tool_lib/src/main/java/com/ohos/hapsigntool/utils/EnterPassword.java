@@ -55,7 +55,7 @@ public class EnterPassword {
     private static char[] readPasswordWithTimeout(String promptMessage) {
         Console console = System.console();
         if (console == null) {
-            System.err.println("Console not available. Please run in a terminal environment.");
+            LOGGER.error("Console not available. Please run in a terminal environment.");
             return new char[0];
         }
 
@@ -85,71 +85,80 @@ public class EnterPassword {
     }
 
     /**
-     * Updates the keystore password.
+     * Enter the password of parameter.
      * 
      * @param params The options object containing various parameters.
-     * @param key The parameter used to check whether input is required.
-     * @param pwd The password used to enter the password of the keystore or key alias.
+     * @param parameter The parameter used to check whether input is required.
+     * @param parameterPwd The parameter used to enter the password of the keystore or key alias.
      * @param promptMessage The prompt message to display to the user.
      */
-    private static void updateParamForKey(
+    private static void enterPasswordOfParameter(
             Options params,
-            String key,
-            String pwd,
+            String parameter,
+            String parameterPwd,
             String promptMessage) {
-
-        String checkParam = params.getString(key);
+        String checkParam = params.getString(parameter);
         if (StringUtils.isEmpty(checkParam)) {
             return;
         }
         char[] password = readPasswordWithTimeout(promptMessage);
-        params.put(pwd, password);
+        params.put(parameterPwd, password);
     }
 
     /**
-     * Updates the password parameters for key alias.
+     * Enter the password of key alias.
      * 
      * @param params The options object containing various parameters.
      */
-    public static void updateParamForKeyPwd(Options params) {
-        updateParamForKey(params, Options.KEY_ALIAS, Options.KEY_RIGHTS, PROMPT_KEY_PWD);
+    public static void enterPasswordOfKeyAlias(Options params) {
+        enterPasswordOfParameter(params, Options.KEY_ALIAS, Options.KEY_RIGHTS, PROMPT_KEY_PWD);
     }
 
     /**
-     * Updates the password parameters for issuer key alias from issuer keystore.
+     * Enter the password of issuer key alias.
      * 
      * @param params The options object containing various parameters.
      */
-    public static void updateParamForIssuerKeyPwd(Options params) {
-        updateParamForKey(params, Options.ISSUER_KEY_ALIAS, Options.ISSUER_KEY_RIGHTS, PROMPT_ISSUER_KEY_PWD);
+    public static void enterPasswordOfIssuerKeyAlias(Options params) {
+        enterPasswordOfParameter(params, Options.ISSUER_KEY_ALIAS, Options.ISSUER_KEY_RIGHTS, PROMPT_ISSUER_KEY_PWD);
     }
 
     /**
-     * Updates the password parameters for keystore.
+     * Enter the password of keystore.
      * 
      * @param params The options object containing various parameters.
      */
-    public static void updateParamForKeystorePwd(Options params) {
-        updateParamForKey(params, Options.KEY_STORE_FILE, Options.KEY_STORE_RIGHTS, PROMPT_KEYSTORE_PWD);
+    public static void enterPasswordOfKeystore(Options params) {
+        enterPasswordOfParameter(params, Options.KEY_STORE_FILE, Options.KEY_STORE_RIGHTS, PROMPT_KEYSTORE_PWD);
     }
 
     /**
-     * Updates the password parameters for issuer keystore.
+     * Enter the password of issuer keystore.
      * 
      * @param params The options object containing various parameters.
      */
-    public static void updateParamForIssuerKeystorePwd(Options params) {
-        updateParamForKey(params, Options.ISSUER_KEY_STORE_FILE,
+    public static void enterPasswordOfIssuerKeystore(Options params) {
+        enterPasswordOfParameter(params, Options.ISSUER_KEY_STORE_FILE,
                 Options.ISSUER_KEY_STORE_RIGHTS, PROMPT_ISSUER_KEYSTORE_PWD);
     }
 
-    public static void updateParamForPassword(Options params) {
-        EnterPassword.updateParamForKeystorePwd(params);
-        EnterPassword.updateParamForKeyPwd(params);
+    /**
+     * Enter the password parameters.
+     * 
+     * @param params The options object containing various parameters.
+     */
+    public static void enterPassword(Options params) {
+        EnterPassword.enterPasswordOfKeystore(params);
+        EnterPassword.enterPasswordOfKeyAlias(params);
     }
 
-    public static void updateParamForIssuerPwd(Options params) {
-        EnterPassword.updateParamForIssuerKeystorePwd(params);
-        EnterPassword.updateParamForIssuerKeyPwd(params);
+    /**
+     * Enter the password parameters of issuer.
+     * 
+     * @param params The options object containing various parameters.
+     */
+    public static void enterPasswordOfIssuer(Options params) {
+        EnterPassword.enterPasswordOfIssuerKeystore(params);
+        EnterPassword.enterPasswordOfIssuerKeyAlias(params);
     }
 }
