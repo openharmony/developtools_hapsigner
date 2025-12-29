@@ -213,7 +213,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -keySize           # 密钥长度，必填项，RSA算法的长度为2048/3072/4096，ECC算法的长度NIST-P-256/NIST-P-384
          ├── -keystoreFile      # 密钥库文件，必填项
          ├── -keystorePwd       # 密钥库口令，可选项
-         ├── -pwdInputMode      # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+         ├── -pwdInputMode      # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 2.生成证书签名请求
 
@@ -225,7 +225,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -keystoreFile      # 密钥库文件，必填项
          ├── -keystorePwd       # 密钥库口令，可选项
          ├── -outFile           # 输出文件，可选项，如果不填，则直接输出到控制台
-         ├── -pwdInputMode      # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+         ├── -pwdInputMode      # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 3.生成根CA/中间CA证书
 
@@ -246,7 +246,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -keystoreFile                    # 密钥库文件，必填项
          ├── -keystorePwd                     # 密钥库口令，可选项
          ├── -outFile                         # 输出文件，可选项，如果不填，则直接输出到控制台
-         ├── -pwdInputMode                    # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+         ├── -pwdInputMode                    # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 4.生成应用调试/发布证书
 
@@ -267,7 +267,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
          ├── -subCaCertFile                   #  outForm为certChain时必填，中间CA证书文件
          ├── -outFile                         #  输出证书文件(证书或证书链)，可选项，如果不填，则直接输出到控制台
-         ├── -pwdInputMode                    # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+         ├── -pwdInputMode                    # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 5.生成profile调试/发布证书
 
@@ -288,7 +288,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
          ├── -rootCaCertFile                  #  outForm为certChain时必填，根CA证书文件
          ├── -subCaCertFile                   #  outForm为certChain时必填，中间CA证书文件
          ├── -outFile                         #  输出证书文件(证书或证书链)，可选项，如果不填，则直接输出到控制台
-         ├── -pwdInputMode                    # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+         ├── -pwdInputMode                    # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 6.通用证书生成，可以生成自定义证书
 
@@ -317,7 +317,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
           ├── -keystoreFile                      # 密钥库文件，必填项
           ├── -keystorePwd                       # 密钥库口令，可选项
           ├── -outFile                           # 输出证书文件，可选项，如果不填，则直接输出到控制台
-          ├── -pwdInputMode                      # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+          ├── -pwdInputMode                      # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 7.ProvisionProfile文件签名
 
@@ -331,7 +331,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
           ├── -keystoreFile    # 密钥库文件，localSign模式时为必填项
           ├── -keystorePwd     # 密钥库口令，可选项
           ├── -outFile         # 输出签名后的Provision Profile文件，p7b格式，必填项
-          ├── -pwdInputMode    # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+          ├── -pwdInputMode    # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 8.ProvisionProfile文件验签
 
@@ -355,7 +355,7 @@ hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mo
           ├── -keystorePwd   # 密钥库口令，可选项
           ├── -outFile       # 输出签名后的包文件，必填项
           ├── -signCode      # 是否启用代码签名，1表示开启代码签名，0表示关闭代码签名。可选项。默认对hap、hsp、hqf、elf开启代码签名，通过参数配置为0关闭。
-          ├── -pwdInputMode  # 密码输入模式，0表示密码从命令行参数中获取，1表示需要交互输入密码，默认为0。可选项
+          ├── -pwdInputMode  # 密码输入模式，0表示密码从命令行参数中获取，1表示通过控制台交互输入密吗，默认为0。可选项
 
 10.应用包和二进制工具文件验签
 
