@@ -31,7 +31,7 @@ public:
     void clear();
     bool isEmpty();
 
-    bool getPasswordFromUser(const std::string &prompt = "Enter password: ");
+    bool readPasswordWithTimeout(const std::string &prompt = "Enter password: ");
 private:
     bool input(pollfd pfd);
     bool extend();

@@ -74,7 +74,7 @@ bool ParamsRunTool::ProcessCmd(char** args, size_t size)
     } else {
         std::shared_ptr<SignToolServiceImpl> serviceApi = std::make_shared<SignToolServiceImpl>();
         ParamsSharedPtr param = std::make_shared<Params>();
-        if (!CmdUtil::Convert2Params(args, size, param)) {
+        if (!(CmdUtil::Convert2Params(args, size, param) && CheckPwdInputMode(param->GetOptions()))) {
             PrintMsg(param->GetMethod() + " failed");
             return false;
         }
@@ -105,65 +105,80 @@ bool ParamsRunTool::CallGenerators(const ParamsSharedPtr& params, SignToolServic
     return isSuccess;
 }
 
-bool ParamsRunTool::UpdateParamForPassword(Options* options)
+bool ParamsRunTool::CheckPwdInputMode(Options* options)
 {
-    return UpdateParamForKeystorePwd(options) && UpdateParamForKeyPwd(options);
+    if (!options->Exists(Options::PWD_INPUT_MODE)) {
+        return true;
+    }
+    std::string inputMode = options->GetString(Options::PWD_INPUT_MODE);
+    if ((inputMode != PWD_ENTER_BY_CONSOLE) &&
+        (inputMode != PWD_ENTER_BY_COMMAND)) {
+        PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
+                            "pwdInputMode Parameter must 0 or 1, you put is " + inputMode);
+        return false;
+    }
+    return true;
 }
 
-bool ParamsRunTool::UpdateParamForIssuerPwd(Options* options)
+bool ParamsRunTool::EnterPassword(Options* options)
 {
-    return UpdateParamForIssuerKeystorePwd(options) && UpdateParamForIssuerKeyPwd(options);
+    return EnterPasswordOfKeystore(options) && EnterPasswordOfKeyAlias(options);
 }
 
-bool ParamsRunTool::CheckInputPermission(Options* options)
+bool ParamsRunTool::EnterPasswordOfIssuer(Options* options)
+{
+    return EnterPasswordOfIssuerKeystore(options) && EnterPasswordOfIssuerKeyAlias(options);
+}
+
+bool ParamsRunTool::ShouldEnterByConsole(Options* options)
 {
     return options->Exists(Options::PWD_INPUT_MODE) &&
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
 }
 
-bool ParamsRunTool::UpdateParamForKey(Options* options, const std::string& key, const std::string& checkParam,
-                                      bool checkExist, PasswordGuard& pwd)
+bool ParamsRunTool::EnterPasswordOfParameter(Options* options, const std::string& parameter, const std::string& checkParam,
+                                             bool checkExist, PasswordGuard& parameterPwd)
 {
-    if (!CheckInputPermission(options) || (checkExist && !options->Exists(checkParam))) {
+    if (!ShouldEnterByConsole(options) || (checkExist && !options->Exists(checkParam))) {
         return true;
     }
-    if (!pwd.getPasswordFromUser("Enter " + key + " (timeout 30 seconds): ")) {
+    if (!parameterPwd.readPasswordWithTimeout("Enter " + parameter + " (timeout 30 seconds): ")) {
         PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR,
-                            "failed to get " + key + ", please check terminal permissions.");
+                            "failed to get " + parameter + ", please check terminal permissions.");
         return false;
     }
-    if (pwd.isEmpty() || pwd.get()[0] == '\0') {
-        options->insert_or_assign(key, "");
+    if (parameterPwd.isEmpty() || parameterPwd.get()[0] == '\0') {
+        options->insert_or_assign(parameter, "");
         return true;
     }
-    options->insert_or_assign(key, pwd.get());
+    options->insert_or_assign(parameter, parameterPwd.get());
     return true;
 }
 
-bool ParamsRunTool::UpdateParamForKeyPwd(Options* options)
+bool ParamsRunTool::EnterPasswordOfKeyAlias(Options* options)
 {
-    return UpdateParamForKey(options, Options::KEY_RIGHTS, "", false, keyPwd);
+    return EnterPasswordOfParameter(options, Options::KEY_RIGHTS, "", false, keyPwd);
 }
 
-bool ParamsRunTool::UpdateParamForKeystorePwd(Options* options)
+bool ParamsRunTool::EnterPasswordOfKeystore(Options* options)
 {
-    return UpdateParamForKey(options, Options::KEY_STORE_RIGHTS, "", false, keystorePwd);
+    return EnterPasswordOfParameter(options, Options::KEY_STORE_RIGHTS, "", false, keystorePwd);
 }
 
-bool ParamsRunTool::UpdateParamForIssuerKeyPwd(Options* options)
+bool ParamsRunTool::EnterPasswordOfIssuerKeyAlias(Options* options)
 {
-    return UpdateParamForKey(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true, issuerKeyPwd);
+    return EnterPasswordOfParameter(options, Options::ISSUER_KEY_RIGHTS, Options::ISSUER_KEY_ALIAS, true, issuerKeyPwd);
 }
 
-bool ParamsRunTool::UpdateParamForIssuerKeystorePwd(Options* options)
+bool ParamsRunTool::EnterPasswordOfIssuerKeystore(Options* options)
 {
-    return UpdateParamForKey(options, Options::ISSUER_KEY_STORE_RIGHTS,
-                             Options::ISSUER_KEY_STORE_FILE, true, issuerKeystorePwd);
+    return EnterPasswordOfParameter(options, Options::ISSUER_KEY_STORE_RIGHTS,
+                                    Options::ISSUER_KEY_STORE_FILE, true, issuerKeystorePwd);
 }
 
-bool ParamsRunTool::UpdateParamForRemoteUserPwd(Options* options)
+bool ParamsRunTool::EnterPasswordOfRemoteUserPwd(Options* options)
 {
-    return UpdateParamForKey(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false, remoteUserPwd);
+    return EnterPasswordOfParameter(options, ParamConstants::PARAM_REMOTE_USERPWD, "", false, remoteUserPwd);
 }
 
 bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
@@ -208,11 +223,11 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
             return false;
         }
-        if (!UpdateParamForPassword(params)) {
+        if (!EnterPassword(params)) {
             return false;
         }
     } else {
-        if (!UpdateParamForRemoteUserPwd(params)) {
+        if (!EnterPasswordOfRemoteUserPwd(params)) {
             return false;
         }
     }
@@ -282,7 +297,7 @@ bool ParamsRunTool::RunCa(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
-    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(EnterPassword(params) && EnterPasswordOfIssuer(params))) {
         return false;
     }
 
@@ -322,7 +337,7 @@ bool ParamsRunTool::RunCert(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
-    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(EnterPassword(params) && EnterPasswordOfIssuer(params))) {
         return false;
     }
     return api.GenerateCert(params);
@@ -387,7 +402,7 @@ bool ParamsRunTool::RunAppCert(Options* params, SignToolServiceImpl& api)
         return false;
     }
 
-    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(EnterPassword(params) && EnterPasswordOfIssuer(params))) {
         return false;
     }
     return api.GenerateAppCert(params);
@@ -408,7 +423,7 @@ bool ParamsRunTool::RunProfileCert(Options* params, SignToolServiceImpl& api)
         return false;
     }
 
-    if (!(UpdateParamForPassword(params) && UpdateParamForIssuerPwd(params))) {
+    if (!(EnterPassword(params) && EnterPasswordOfIssuer(params))) {
         return false;
     }
     return api.GenerateProfileCert(params);
@@ -435,7 +450,7 @@ bool ParamsRunTool::RunKeypair(Options* params, SignToolServiceImpl& api)
     if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
         return false;
     }
-    if (!UpdateParamForPassword(params)) {
+    if (!EnterPassword(params)) {
         return false;
     }
     return api.GenerateKeyStore(params);
@@ -466,7 +481,7 @@ bool ParamsRunTool::RunCsr(Options* params, SignToolServiceImpl& api)
             return false;
         }
     }
-    if (!UpdateParamForPassword(params)) {
+    if (!EnterPassword(params)) {
         return false;
     }
     return api.GenerateCsr(params);
@@ -510,7 +525,7 @@ bool ParamsRunTool::RunSignProfile(Options* params, SignToolServiceImpl& api)
             return false;
         }
 
-        if (!UpdateParamForPassword(params)) {
+        if (!EnterPassword(params)) {
             return false;
         }
     }

@@ -35,17 +35,17 @@ public:
     static bool ProcessCmd(char** args, size_t size);
     static bool DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api);
     static bool CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api);
-    static bool CheckInputPermission(Options* options);
-    static bool UpdateParamForKey(Options* options, const std::string& key, const std::string& checkParam,
+    static bool CheckPwdInputMode(Options* options);
+    static bool ShouldEnterByConsole(Options* options);
+    static bool EnterPasswordOfParameter(Options* options, const std::string& key, const std::string& checkParam,
                                   bool checkExist, PasswordGuard& pwd);
-    static bool UpdateParamForPassword(Options* options);
-    static bool UpdateParamForKeyPwd(Options* options);
-    static bool UpdateParamForKeystorePwd(Options* options);
-    static bool UpdateParamForIssuerPwd(Options* options);
-    static bool UpdateParamForIssuerKeyPwdFromKeystore(Options* options);
-    static bool UpdateParamForIssuerKeyPwd(Options* options);
-    static bool UpdateParamForIssuerKeystorePwd(Options* options);
-    static bool UpdateParamForRemoteUserPwd(Options* options);
+    static bool EnterPassword(Options* options);
+    static bool EnterPasswordOfIssuer(Options* options);
+    static bool EnterPasswordOfKeyAlias(Options* options);
+    static bool EnterPasswordOfKeystore(Options* options);
+    static bool EnterPasswordOfIssuerKeyAlias(Options* options);
+    static bool EnterPasswordOfIssuerKeystore(Options* options);
+    static bool EnterPasswordOfRemoteUserPwd(Options* options);
     static bool RunKeypair(Options* params, SignToolServiceImpl& api);
     static bool RunCa(Options* params, SignToolServiceImpl& api);
     static bool RunCert(Options* params, SignToolServiceImpl& api);
