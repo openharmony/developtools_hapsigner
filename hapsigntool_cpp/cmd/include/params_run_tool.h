@@ -36,7 +36,7 @@ public:
     static bool DispatchParams(const ParamsSharedPtr& params, SignToolServiceImpl& api);
     static bool CallGenerators(const ParamsSharedPtr& params, SignToolServiceImpl& api);
     static bool CheckPwdInputMode(Options* options);
-    static bool ShouldEnterByConsole(Options* options);
+    static bool ShouldEnterByInteractiveMode(Options* options);
     static bool EnterPasswordOfParameter(Options* options, const std::string& key, const std::string& checkParam,
                                   bool checkExist, PasswordGuard& pwd);
     static bool EnterPassword(Options* options);
