@@ -71,7 +71,7 @@ public class EnterPassword {
                     public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r);
                         thread.setUncaughtExceptionHandler((t, e) -> {
-                            LOGGER.error("Uncaught exception in thread.")
+                            LOGGER.error("Uncaught exception in thread.");
                         });
                         thread.setDaemon(true);
                         return thread;
