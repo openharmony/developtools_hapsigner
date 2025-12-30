@@ -70,9 +70,9 @@ public class EnterPassword {
                     @Override
                     public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r);
-                        threa.setUncaughtExceptionHandler(t, e) -> {
+                        thread.setUncaughtExceptionHandler((t, e) -> {
                             LOGGER.error("Uncaught exception in thread.")
-                        }
+                        });
                         thread.setDaemon(true);
                         return thread;
                     }
