@@ -76,9 +76,9 @@ public final class HapSignTool {
      */
     private static final String NOT_SIGNED = "0";
 
-    private static final String PWD_ENTER_BY_CONSOLE = "1";
+    private static final String PWD_ENTER_BY_INTERACTIVE_MODE = "1";
 
-    private static final String PWD_ENTER_BY_COMMAND = "0";
+    private static final String PWD_ENTER_BY_COMMAND_PARAMETER = "0";
 
     private static final List<String> informList = new ArrayList<>();
 
@@ -223,7 +223,7 @@ public final class HapSignTool {
 
     private static boolean shouldEnterByConsole(Options params) {
         String pwdInputMode = params.getString(Options.PWD_INPUT_MODE);
-        return PWD_ENTER_BY_CONSOLE.equalsIgnoreCase(pwdInputMode);
+        return PWD_ENTER_BY_INTERACTIVE_MODE.equalsIgnoreCase(pwdInputMode);
     }
 
     private static void checkPwdInputMode(Options params) throws InvalidParamsException {
@@ -231,8 +231,8 @@ public final class HapSignTool {
             return;
         }
         String pwdInputMode = params.getString(Options.PWD_INPUT_MODE);
-        if (!(PWD_ENTER_BY_CONSOLE.equalsIgnoreCase(pwdInputMode) ||
-                PWD_ENTER_BY_COMMAND.equalsIgnoreCase(pwdInputMode))) {
+        if (!(PWD_ENTER_BY_INTERACTIVE_MODE.equalsIgnoreCase(pwdInputMode) ||
+                PWD_ENTER_BY_COMMAND_PARAMETER.equalsIgnoreCase(pwdInputMode))) {
             throw new InvalidParamsException(SignToolErrMsg.PARAM_CHECK_FAILED
                     .toString(Options.PWD_INPUT_MODE, "value must be 0 or 1"));
         }
