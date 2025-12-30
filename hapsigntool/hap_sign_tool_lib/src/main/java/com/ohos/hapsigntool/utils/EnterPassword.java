@@ -65,7 +65,7 @@ public class EnterPassword {
                 1,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(),
+                new LinkedBlockingQueue<>(1),
                 new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable r) {
