@@ -204,6 +204,11 @@ public class Options extends HashMap<String, Object> {
     public static final String SUBJECT = "subject";
 
     /**
+     * Selecting the password input mode parameter name.
+     */
+    public static final String PWD_INPUT_MODE = "pwdInputMode";
+
+    /**
      * Trusted app source file parameter name.
      */
     public static final String TRUSTED_APP_SOURCE_FILE = "trustedAppSourceFile";
