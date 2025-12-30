@@ -47,8 +47,7 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
     std::string outputFile = signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE);
     std::string tmpOutputFile = outputFile;
     if (outputFile == inputFile) {
-        std::string parentPath = FileUtils::GetParentPath(tmpOutputFile);
-        tmpOutputFile = parentPath + '/' + "tmp-signed-elf";
+        tmpOutputFile = inputFile + "-tmp-signed";
     }
     uint64_t csOffset = 0;
     bool writeCodeSignFlag = WriteCodeSignBlock(elfReader, tmpOutputFile, csOffset);
@@ -63,7 +62,7 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         unlink(tmpOutputFile.c_str());
         return false;
     }
-    return FileUtils::CopyTmpFileAndDel(tmpOutputFile, outputFile);
+    return FileUtils::RenameTmpFile(tmpOutputFile, outputFile);
 }
 
 bool SignElf::loadModule(std::map<std::string, std::string>& signParams, std::string& moduleContent)

@@ -341,29 +341,17 @@ bool FileUtils::IsValidFile(std::string file)
     return true;
 }
 
-bool FileUtils::CopyTmpFileAndDel(const std::string& tmpFile, const std::string& output)
+bool FileUtils::RenameTmpFile(const std::string& tmpFile, const std::string& output)
 {
     if (tmpFile == output) {
         return true;
     }
-    std::ifstream src(tmpFile, std::ios::binary);
-    if (!src) {
-        PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + tmpFile + "' open failed");
+    if (rename(tmpFile.c_str(), output.c_str()) != 0) {
+        PrintErrorNumberMsg("IO_ERROR", IO_ERROR,
+            "Failed to rename '" + tmpFile + "', errno: " + std::to_string(errno));
         return false;
     }
-    std::ofstream dst(output, std::ios::binary);
-    if (!dst) {
-        PrintErrorNumberMsg("FILE_NOT_FOUND", FILE_NOT_FOUND, "'" + output + "' open failed");
-        return false;
-    }
-    SIGNATURE_TOOLS_LOGI("CopyTmpFileAndDel from %s to %s", tmpFile.c_str(), output.c_str());
-    dst << src.rdbuf();
-
-    if (unlink(tmpFile.c_str()) != 0) {
-        SIGNATURE_TOOLS_LOGE("Error: remove tmpFile");
-        return false;
-    }
-    SIGNATURE_TOOLS_LOGI("CopyTmpFileAndDel finish");
+    SIGNATURE_TOOLS_LOGI("RenameTmpFile success");
     return true;
 }
 } // namespace SignatureTools

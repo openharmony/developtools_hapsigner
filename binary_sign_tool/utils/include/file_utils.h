@@ -120,7 +120,7 @@ public:
     static bool IsRunnableFile(const std::string& name);
     static int64_t GetFileLen(const std::string& file);
     static void DelDir(const std::string& file);
-    static bool CopyTmpFileAndDel(const std::string& tmpFile, const std::string& output);
+    static bool RenameTmpFile(const std::string& tmpFile, const std::string& output);
 };
 } // namespace SignatureTools
 } // namespace OHOS
