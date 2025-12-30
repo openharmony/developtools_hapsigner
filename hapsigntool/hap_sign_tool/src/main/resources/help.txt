@@ -24,7 +24,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -keystoreFile : keystore file, required fields, JKS or P12 format;
         -keystorePwd : keystore password, optional fields;
         -extCfgFile : Extend Profile, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         generate-keypair -keyAlias "oh-app1-key-v1" -keyPwd ****** -keyAlg ECC -keySize NIST-P-256 -keystoreFile "D:\OH\app-keypair.jks" -keystorePwd ******
@@ -39,7 +39,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -keystorePwd : keystore password, optional fields;
         -outFile : output file, optional fields, if not filled, it will be directly output to the console;
         -extCfgFile : Extend Profile, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         generate-csr -keyAlias "oh-app1-key-v1" -keyPwd ****** -subject "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outFile "D:\OH\oh-app1-key-v1.csr"
@@ -67,7 +67,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         generate-cert -keyAlias "oh-app1-key-v1" -keyPwd ****** -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Signature Service CA" -issuerKeyAlias "oh-app-sign-srv-ca-key-v1" -issuerKeyPwd ****** -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Release" -validity 365 -keyUsage digitalSignature -extKeyUsage codeSignature -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outFile "D:\OH\app1.cer"
@@ -90,7 +90,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         generate-ca -keyAlias "oh-root-ca-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Root CA" -validity 365 -signAlg SHA384withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ******  -outFile "D:\OH\root-ca.cer" -keyAlg RSA -keySize 2048
@@ -115,7 +115,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         generate-app-cert -keyAlias "oh-app1-key-v1" -keyPwd ****** -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Application Debug Signature Service CA" -issuerKeyAlias "oh-app-sign-debug-srv-ca-key-v1" -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=App1 Debug" -validity 365 -signAlg SHA256withECDSA -rootCaCertFile "D:\OH\root-ca.cer" -subCaCertFile "D:\OH\sub-app-sign-srv-ca.cer" -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outForm certChain -outFile "D:\OH\app-debug-cert.cer"
@@ -139,7 +139,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -extCfgFile : Extend Profile, optional fields;
         -issuerKeystoreFile : issuer keystore file, optional fields, JKS or P12 format;
         -issuerKeystorePwd : issuer keystore password, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         generate-profile-cert -keyAlias "oh-profile-key-v1" -keyPwd ****** -issuer "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Provision Profile Debug Signature Service CA" -issuerKeyAlias "oh-profile-sign-debug-srv-ca-key-v1" -issuerKeyPwd ****** -subject  "C=CN,O=OpenHarmony,OU=OpenHarmony Community,CN=Provision Profile Debug" -validity 365 -signAlg SHA256withECDSA  -rootCaCertFile "D:\OH\root-ca.cer" -subCaCertFile "D:\OH\sub-profile-sign-srv-ca.cer" -keystoreFile  "D:\OH\profile-keypair.jks" -keystorePwd ****** -outForm certChain -outFile "D:\OH\provision-profile-debug.cer"
@@ -156,7 +156,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -keystorePwd : keystore password, optional fields;
         -outFile : output the signed Provision Profile file, p7b format, required fields;
         -extCfgFile : Extend Profile, optional fields;
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         sign-profile -mode localSign -keyAlias "oh-profile-key-v1" -keyPwd ****** -profileCertFile "D:\OH\provision-profile-release.cer" -inFile "D:\OH\app1-profile-release.json" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\profile-keypair.jks" -keystorePwd ****** -outFile "D:\OH\signed-profile.p7b"
@@ -191,7 +191,7 @@ USAGE:  <sign-profile|verify-profile|sign-app|verify-app> [options]
         -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
         -ext : extend parameters for remote signer plugin, optional fields;
         -signCode : Whether the HAP file is signed code, The options are as follows: 1:yes; 0:no; default value:1. code sign is only enabled for hap, hsp, hqf and elf. optional fields.
-        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line, And the value 1 represents entering the password by console. It is an optional parameter, with a default value of 0.
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with a default value of 0.
 
     EXAMPLE:
         sign-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "D:\OH\app-release-cert.cer" -profileFile "D:\OH\signed-profile.p7b" -inFile "D:\OH\app1-unsigned.hap" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks" -keystorePwd ****** -outFile "D:\OH\app1-signed.hap -compatibleVersion 8" -signCode "1"
