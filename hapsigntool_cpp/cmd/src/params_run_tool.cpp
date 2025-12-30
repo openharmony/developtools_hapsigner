@@ -111,8 +111,8 @@ bool ParamsRunTool::CheckPwdInputMode(Options* options)
         return true;
     }
     std::string inputMode = options->GetString(Options::PWD_INPUT_MODE);
-    if ((inputMode != PWD_ENTER_BY_CONSOLE) &&
-        (inputMode != PWD_ENTER_BY_COMMAND)) {
+    if ((inputMode != PWD_ENTER_BY_INTERACTIVE_MODE) &&
+        (inputMode != PWD_ENTER_BY_COMMAND_PARAMETER)) {
         PrintErrorNumberMsg("COMMAND_PARAM_ERROR", COMMAND_PARAM_ERROR,
                             "pwdInputMode Parameter must 0 or 1, you put is " + inputMode);
         return false;
@@ -133,7 +133,7 @@ bool ParamsRunTool::EnterPasswordOfIssuer(Options* options)
 bool ParamsRunTool::ShouldEnterByConsole(Options* options)
 {
     return options->Exists(Options::PWD_INPUT_MODE) &&
-           StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_CONSOLE);
+           StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_INTERACTIVE_MODE);
 }
 
 bool ParamsRunTool::EnterPasswordOfParameter(Options* options, const std::string& parameter,
