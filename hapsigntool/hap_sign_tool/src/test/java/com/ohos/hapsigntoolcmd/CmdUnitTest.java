@@ -23,6 +23,7 @@ import com.ohos.hapsigntool.HapSignTool;
 import com.ohos.hapsigntool.codesigning.utils.HapUtils;
 import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.error.CustomException;
+import com.ohos.hapsigntool.error.InvalidParamsException;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.utils.KeyPairTools;
 import com.ohos.hapsigntool.utils.FileUtils;
@@ -458,10 +459,11 @@ public class CmdUnitTest {
      * test cmdKeypair
      *
      * @throws IOException io error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(1)
     @Test
-    public void testCmdKeypair() throws IOException {
+    public void testCmdKeypair() throws IOException, InvalidParamsException {
         try {
             deleteFile(CMD_KEY_APP_STORE_PATH);
             deleteFile(CMD_KEY_PROFILE_STORE_PATH);
@@ -501,10 +503,11 @@ public class CmdUnitTest {
      * Csr test case.
      *
      * @throws IOException Error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(2)
     @Test
-    public void testCmdCsr() throws IOException {
+    public void testCmdCsr() throws IOException, InvalidParamsException {
         try {
             deleteFile(CMD_CSR_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CSR});
@@ -532,10 +535,11 @@ public class CmdUnitTest {
      * Cert test case
      *
      * @throws IOException Error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(3)
     @Test
-    public void testCmdCert() throws IOException {
+    public void testCmdCert() throws IOException, InvalidParamsException {
         try {
             deleteFile(CMD_CERT_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.GENERATE_CERT});
@@ -575,10 +579,11 @@ public class CmdUnitTest {
      * Ca test case.
      *
      * @throws IOException Error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(4)
     @Test
-    public void testCmdCa() throws IOException {
+    public void testCmdCa() throws IOException, InvalidParamsException {
         try {
             deleteFile(CMD_ROOT_APP_CA_PATH);
             deleteFile(CMD_ROOT_PROFILE_CA_PATH);
@@ -615,10 +620,11 @@ public class CmdUnitTest {
      * App cert test case.
      *
      * @throws IOException Error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(5)
     @Test
-    public void testCmdAppCert() throws IOException {
+    public void testCmdAppCert() throws IOException, InvalidParamsException {
         try {
             deleteFile(CMD_APP_DEBUG_CERT_PATH);
             deleteFile(CMD_APP_RELEASE_CERT_PATH);
@@ -673,10 +679,11 @@ public class CmdUnitTest {
      * Profile cert test case
      *
      * @throws IOException Error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(6)
     @Test
-    public void testCmdProfileCert() throws IOException {
+    public void testCmdProfileCert() throws IOException, InvalidParamsException  {
         try {
             deleteFile(CMD_PROFILE_DEBUG_CERT_PATH);
             deleteFile(CMD_PROFILE_RELEASE_CERT_PATH);
@@ -731,10 +738,11 @@ public class CmdUnitTest {
      * Sign profile test case.
      *
      * @throws IOException error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(7)
     @Test
-    public void testCmdSignProfile() throws IOException {
+    public void testCmdSignProfile() throws IOException, InvalidParamsException {
         try {
             deleteFile(CMD_SIGN_PROFILE_PATH);
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.SIGN_PROFILE});
@@ -779,10 +787,12 @@ public class CmdUnitTest {
 
     /**
      * Verify profile test case.
+     * 
+     * @throws InvalidParamsException invalid params error
      */
     @Order(8)
     @Test
-    public void testVerifyProfile() {
+    public void testVerifyProfile() throws InvalidParamsException {
         try {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.VERIFY_PROFILE});
             assertFalse(result);
@@ -799,10 +809,12 @@ public class CmdUnitTest {
 
     /**
      * Sign hap test case.
+     * 
+     * @throws InvalidParamsException invalid params error
      */
     @Order(9)
     @Test
-    public void testCmdSignApp() {
+    public void testCmdSignApp() throws InvalidParamsException {
         try {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.SIGN_APP});
             assertFalse(result);
@@ -813,10 +825,12 @@ public class CmdUnitTest {
 
     /**
      * Verify signed app test case.
+     * 
+     * @throws InvalidParamsException invalid params error
      */
     @Order(10)
     @Test
-    public void testCmdVerifyApp() {
+    public void testCmdVerifyApp() throws InvalidParamsException {
         try {
             boolean result = HapSignTool.processCmd(new String[]{CmdUtil.Method.VERIFY_APP});
             assertFalse(result);
@@ -829,10 +843,11 @@ public class CmdUnitTest {
      * test sign and verify hap file include multi lib
      *
      * @throws IOException error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(11)
     @Test
-    public void testCmdMultiHap() throws IOException {
+    public void testCmdMultiHap() throws IOException, InvalidParamsException {
         multiBundleTest(".hap");
     }
 
@@ -840,16 +855,17 @@ public class CmdUnitTest {
      * test sign and verify hqf file include multi lib
      *
      * @throws IOException error
+     * @throws InvalidParamsException invalid params error
      */
     @Order(12)
     @Test
-    public void testCmdMultiHqf() throws IOException {
+    public void testCmdMultiHqf() throws IOException, InvalidParamsException {
         multiBundleTest(".hqf");
     }
 
     @Order(13)
     @Test
-    public void testCmdMultiHnp() throws IOException {
+    public void testCmdMultiHnp() throws IOException, InvalidParamsException {
         loadFile(CMD_TEST_HAP_FILE_PATH);
         File unsignedHap = new File(CMD_TEST_HAP_FILE_PATH);
         signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
@@ -857,7 +873,7 @@ public class CmdUnitTest {
 
     @Order(14)
     @Test
-    public void testNoCodeSignHap() throws IOException {
+    public void testNoCodeSignHap() throws IOException, InvalidParamsException {
         File unsignedHap = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
             FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
         String signedHap = File.createTempFile("signed-", ".hap", new File("test")).getAbsolutePath();
@@ -887,7 +903,7 @@ public class CmdUnitTest {
 
     @Order(15)
     @Test
-    public void testNoRunnableFileHap() throws IOException {
+    public void testNoRunnableFileHap() throws IOException, InvalidParamsException {
         File unsignedHap = generateHapFile(FileType.FILE_NOT_EXISTED, FileType.FILE_NOT_EXISTED,
             FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
         String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
@@ -896,7 +912,7 @@ public class CmdUnitTest {
 
     @Order(16)
     @Test
-    public void testUncompressedRunnableFileHap() throws IOException {
+    public void testUncompressedRunnableFileHap() throws IOException, InvalidParamsException {
         File unsignedHap = generateHapFile(FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED,
             FileType.FILE_UNCOMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
         String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
@@ -905,14 +921,14 @@ public class CmdUnitTest {
 
     @Order(17)
     @Test
-    public void testCompressedRunnableFileHap() throws IOException {
+    public void testCompressedRunnableFileHap() throws IOException, InvalidParamsException {
         File unsignedHap = generateHapFile(FileType.FILE_COMPRESSED, FileType.FILE_COMPRESSED,
             FileType.FILE_COMPRESSED, FileType.FILE_UNCOMPRESSED, ".hap");
         String signedHap = signAndVerifyHap(unsignedHap.getAbsolutePath(), ".hap");
         assertFalse(existPagesInfoFile(signedHap));
     }
 
-    private void multiBundleTest(String bundleSuffix) throws IOException {
+    private void multiBundleTest(String bundleSuffix) throws IOException, InvalidParamsException {
         for (FileType abcFile : FileType.values()) {
             for (FileType soFile : FileType.values()) {
                 for (FileType anFile : FileType.values()) {
@@ -988,7 +1004,7 @@ public class CmdUnitTest {
         return bytes;
     }
 
-    private String signAndVerifyHap(String unsignedHap, String bundleSuffix) throws IOException {
+    private String signAndVerifyHap(String unsignedHap, String bundleSuffix) throws IOException, InvalidParamsException {
         String signedHap = File.createTempFile("signed-", bundleSuffix, new File("test")).getAbsolutePath();
         // debug
         boolean result = HapSignTool.processCmd(new String[] {
@@ -1114,7 +1130,7 @@ public class CmdUnitTest {
         }
     }
 
-    private boolean generateAppRootCa() {
+    private boolean generateAppRootCa() throws InvalidParamsException {
         return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
@@ -1130,7 +1146,7 @@ public class CmdUnitTest {
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
     }
 
-    private boolean generateProfileRootCa() {
+    private boolean generateProfileRootCa() throws InvalidParamsException {
         return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_ROOT_CA_KEY_V1,
@@ -1146,7 +1162,7 @@ public class CmdUnitTest {
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
     }
 
-    private boolean generateAppSubCa() {
+    private boolean generateAppSubCa() throws InvalidParamsException {
         return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_SUB_APP_CA_KEY_V1,
@@ -1165,7 +1181,7 @@ public class CmdUnitTest {
             CMD_BASIC_CONSTRAINTS_PATH_LEN, CMD_BC_PATH_LEN_0});
     }
 
-    private boolean generateProfileSubCa() {
+    private boolean generateProfileSubCa() throws InvalidParamsException {
         return HapSignTool.processCmd(new String[]{
             CmdUtil.Method.GENERATE_CA,
             CMD_KEY_ALIAS, CMD_OH_SUB_PROFILE_CA_KEY_V1,
