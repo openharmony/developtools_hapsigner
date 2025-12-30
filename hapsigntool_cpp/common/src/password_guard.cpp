@@ -60,7 +60,7 @@ bool PasswordGuard::isEmpty()
     return false;
 }
 
-bool PasswordGuard::getPasswordFromUser(const std::string &prompt)
+bool PasswordGuard::readPasswordWithTimeout(const std::string &prompt)
 {
     clear();
     if (!extend()) {
