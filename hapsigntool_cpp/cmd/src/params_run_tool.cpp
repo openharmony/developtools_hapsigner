@@ -130,7 +130,7 @@ bool ParamsRunTool::EnterPasswordOfIssuer(Options* options)
     return EnterPasswordOfIssuerKeystore(options) && EnterPasswordOfIssuerKeyAlias(options);
 }
 
-bool ParamsRunTool::ShouldEnterByConsole(Options* options)
+bool ParamsRunTool::ShouldEnterByInteractiveMode(Options* options)
 {
     return options->Exists(Options::PWD_INPUT_MODE) &&
            StringUtils::CaseCompare(options->GetString(Options::PWD_INPUT_MODE), PWD_ENTER_BY_INTERACTIVE_MODE);
@@ -140,7 +140,7 @@ bool ParamsRunTool::EnterPasswordOfParameter(Options* options, const std::string
                                              const std::string& checkParam, bool checkExist,
                                              PasswordGuard& parameterPwd)
 {
-    if (!ShouldEnterByConsole(options) || (checkExist && !options->Exists(checkParam))) {
+    if (!ShouldEnterByInteractiveMode(options) || (checkExist && !options->Exists(checkParam))) {
         return true;
     }
     if (!parameterPwd.readPasswordWithTimeout("Enter " + parameter + " (timeout 30 seconds): ")) {
