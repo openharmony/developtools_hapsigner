@@ -64,9 +64,6 @@ public:
     static constexpr int FILE_NAME_MIN_LENGTH = 2;
     static const std::string DISABLE_SIGN_CODE;
     static const std::string ENABLE_SIGN_CODE;
-    static const std::string PARAM_PWD_INPUT_MODE;
-    static const std::string PWD_INPUT_BY_COMMAND;
-    static const std::string PWD_INPUT_BY_CONSOLE;
 };
 } // namespace SignatureTools
 } // namespace OHOS

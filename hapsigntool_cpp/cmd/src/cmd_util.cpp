@@ -290,7 +290,7 @@ static bool UpdateParamForCheckRemoteSignProfile(const ParamsSharedPtr& param)
 
     if (param->GetMethod() == SIGN_PROFILE && options->count(Options::MODE) &&
         options->GetString(Options::MODE) == REMOTE_SIGN) {
-        if (!ParamsRunTool::UpdateParamForRemoteUserPwd(options)) {
+        if (!ParamsRunTool::EnterPasswordOfRemoteUserPwd(options)) {
             return false;
         }
         for (const std::string& key : signProfileRemoteParams) {
