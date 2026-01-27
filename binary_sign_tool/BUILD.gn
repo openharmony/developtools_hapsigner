@@ -86,7 +86,6 @@ ohos_executable("binary-sign-tool") {
   cflags_cc = [
     "-std=c++17",
     "-fno-rtti",
-    "-fstack-protector-strong",
   ]
 
   cflags = [
