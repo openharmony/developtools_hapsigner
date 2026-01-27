@@ -29,7 +29,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg FILE_FORMAT_UNSUPPORTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("06")
         .addErrCode("001")
-        .addDescription("Invalid File Format")
+        .addDescription("Invalid file format")
         .addCause("Unsupported file to sign")
         .addSolution("Support file format: %s")
         .build();
@@ -40,7 +40,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg READ_INPUT_STREAM_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("10")
         .addErrCode("001")
-        .addDescription("Input Stream Read Error")
+        .addDescription("Input stream read error")
         .addCause("Read buffer from input error")
         .build();
 
@@ -50,7 +50,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg CERTIFICATES_CONFIGURE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("11")
         .addErrCode("001")
-        .addDescription("Certificates Error")
+        .addDescription("Certificates error")
         .addCause("%s")
         .addSolution("Please check whether the certificate is correct")
         .build();
@@ -61,7 +61,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg SIGNATURE_VERIFY_FAILED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("11")
         .addErrCode("002")
-        .addDescription("Certificates Error")
+        .addDescription("Certificates error")
         .addCause("Signing failed")
         .addSolution("Please check whether the keyAlias is correct")
         .build();
@@ -72,7 +72,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_TYPE_UNSUPPORTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("Unsupported profile type")
         .addSolution("Value of 'type' in profile file should be debug or release")
         .build();
@@ -83,7 +83,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_TYPE_NOT_EXISTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("'type' not found in profile file")
         .addSolution("Add 'type' to the profile file")
         .build();
@@ -94,7 +94,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_BUNDLE_INFO_NOT_EXISTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("'bundle-info' not found in profile file")
         .addSolution("Add 'bundle-info' to the profile file")
         .build();
@@ -105,7 +105,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_PLUGIN_ID_NOT_EXISTED_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("'pluginDistributionIDs' not found in profile file")
         .addSolution("Add 'pluginDistributionIDs' to the profile file")
         .build();
@@ -116,7 +116,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_APPID_VALUE_TYPE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("Value type of app-identifier is not string")
         .addSolution("Value type of app-identifier should be string")
         .build();
@@ -127,7 +127,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_PLUGIN_ID_VALUE_TYPE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("Value type of pluginDistributionIDs is not string")
         .addSolution("Value type of pluginDistributionIDs should be string")
         .build();
@@ -138,7 +138,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_APPID_VALUE_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("Value length of app-identifier is invalid")
         .addSolution("Modify to a valid app-identifier in profile file")
         .build();
@@ -149,7 +149,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_PLUGIN_ID_VALUE_LENGTH_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("Value length of pluginDistributionIDs is invalid")
         .addSolution("Modify to a valid pluginDistributionIDs in profile file")
         .build();
@@ -160,7 +160,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PROFILE_JSON_PARSE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("001")
-        .addDescription("Profile Content Error")
+        .addDescription("Profile content error")
         .addCause("Profile json content is invalid")
         .addSolution("Please check whether the profile file is correct")
         .build();
@@ -171,7 +171,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg MODULE_JSON_PARSE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("002")
-        .addDescription("module.json Content Error")
+        .addDescription("module.json content error")
         .addCause("module.json content is invalid")
         .addSolution("Please check whether the module.json is correct")
         .build();
@@ -182,7 +182,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg HNP_FILE_DESCRIPTION_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("002")
-        .addDescription("module.json Content Error")
+        .addDescription("module.json content error")
         .addCause("Hnp {%s} is not described in module.json")
         .addSolution("Hnp file should be described in module.json")
         .build();
@@ -193,7 +193,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg ELF_FILE_HEADER_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("003")
-        .addDescription("Elf File Error")
+        .addDescription("Elf file error")
         .addCause("ELF {%s} is incorrect")
         .addSolution("Failed to read the elf file, please check whether the file header information is correct")
         .build();
@@ -204,7 +204,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg EXTRACT_HNP_FILE_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("12")
         .addErrCode("004")
-        .addDescription("File Format Error")
+        .addDescription("File format error")
         .addCause("Extract hnp file {%s} error")
         .addSolution("Check whether the hnp file is packaged correctly")
         .build();
@@ -215,7 +215,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg ALGORITHM_NOT_SUPPORT_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("13")
         .addErrCode("001")
-        .addDescription("Digest Algorithm Error")
+        .addDescription("Digest algorithm error")
         .addCause("Invalid algorithm {%s}")
         .addSolution("Support SHA-256 and SHA-512, if an error occurs, please check the JDK version")
         .build();
@@ -226,7 +226,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg CODE_SIGN_INTERNAL_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("14")
         .addErrCode("001")
-        .addDescription("Code Sign Internal Error")
+        .addDescription("Code sign internal error")
         .addCause("%s")
         .build();
 
@@ -236,7 +236,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg FILE_4K_ALIGNMENT_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("14")
         .addErrCode("001")
-        .addDescription("Code Sign Internal Error")
+        .addDescription("Code sign internal error")
         .addCause("Invalid data size {%d}, not a multiple of 4096")
         .build();
 
@@ -246,7 +246,7 @@ public class CodeSignErrMsg {
     public static final ErrorMsg PAGE_INFO_ERROR = ErrorMsg.getCodeSignErrBuilder()
         .addTypeCode("14")
         .addErrCode("001")
-        .addDescription("Code Sign Internal Error")
-        .addCause("Page Info Error : %s")
+        .addDescription("Code sign internal error")
+        .addCause("Page info error : %s")
         .build();
 }
