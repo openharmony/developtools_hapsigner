@@ -299,7 +299,7 @@ int KeyStoreHelper::GetPublicKey(PKCS7* safe, const std::string& alias, char* pa
     for (int i = 0; i < sk_X509_num(ocerts); i++) {
         bag = sk_PKCS12_SAFEBAG_value(bags, i);
         name = PKCS12_get_friendlyname(bag);
-        if (strcmp(name, alias.c_str()) != 0) {
+        if (name == nullptr || strcmp(name, alias.c_str()) != 0) {
             continue;
         }
         X509* cert = sk_X509_value(ocerts, i);
@@ -335,7 +335,7 @@ int KeyStoreHelper::GetPrivateKey(PKCS7* safe, const std::string& alias, char* p
             continue;
         }
         name = PKCS12_get_friendlyname(bag);
-        if (strcmp(name, alias.c_str()) != 0) {
+        if (name == nullptr || strcmp(name, alias.c_str()) != 0) {
             continue;
         }
         if ((p8 = PKCS12_decrypt_skey(bag, pass, passlen)) == NULL) {
