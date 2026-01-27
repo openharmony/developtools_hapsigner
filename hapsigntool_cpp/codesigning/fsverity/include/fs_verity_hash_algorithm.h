@@ -15,6 +15,7 @@
 #ifndef SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H
 #define SIGNATURETOOLS_FSVERITY_HASH_ALGORITHM_H
 
+#include <cstdint>
 #include <string>
 
 namespace OHOS {
