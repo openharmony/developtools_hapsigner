@@ -204,9 +204,9 @@ public class SignToolErrMsg {
     public static final ErrorMsg CERT_FORMAT_FAILED = ErrorMsg.getSignToolErrBuilder()
             .addTypeCode("13")
             .addErrCode("002")
-            .addDescription("Certificate format is in correct, please check your appCertFile parameter.")
+            .addDescription("Certificate format is incorrect, please check your appCertFile parameter.")
             .addCause("%s")
-            .addSolution("{-appCertFile} should input a cert chain file，This file is usually suffixed with .cer.")
+            .addSolution("{-appCertFile} should input a cert chain file, this file is usually suffixed with .cer.")
             .build();
 
     /**
@@ -276,7 +276,7 @@ public class SignToolErrMsg {
     public static final ErrorMsg KEY_ALIAS_NOT_FOUND = ErrorMsg.getSignToolErrBuilder()
             .addTypeCode("14")
             .addErrCode("001")
-            .addDescription("key alias not found")
+            .addDescription("Key alias not found")
             .addCause("KeyAlias {%s} is not exist in {%s}")
             .addSolution("Please check keystore file and keyAlias, ensure keyAlias is exist")
             .addSolution("Use jdk tool [keytool] check keystore: [keytool -list -keystore xxx.p12]")
