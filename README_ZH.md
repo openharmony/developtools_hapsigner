@@ -113,19 +113,19 @@ Profile模板文件：UnsgnedReleasedProfileTemplate.json、UnsgnedDebugProfileT
 1.命令行签名
    命令行签名分为profile文件签名和应用包或二进制工具签名。
 
-   （1）签名profile文件的命令实例如下：
+   （1）签名profile文件的命令示例如下：
 
 ​      **java：**
 
 
 ```shell
-java -jar hap-sign-tool.jar  sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "result\profile1.pem" -inFile "app1-profile-release.json" -keystoreFile "result\ohtest.jks" -outFile "result\app1-profile.p7b" -keyPwd "123456" -keystorePwd "123456"
+java -jar hap-sign-tool.jar sign-profile -keyAlias "openharmony application profile release" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "OpenHarmonyProfileRelease.pem" -inFile "UnsgnedReleasedProfileTemplate.json" -keystoreFile "OpenHarmony.p12" -outFile "SgnedReleaseProfileTemplate.p7b" -keyPwd "123456" -keystorePwd "123456"
 ```
 
 ​      **c++：**
 
 ```shell
-hap-sign-tool sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "result\profile1.pem" -inFile "app1-profile-release.json" -keystoreFile "result\ohtest.p12" -outFile "result\app1-profile.p7b" -keyPwd "123456" -keystorePwd "123456"
+hap-sign-tool sign-profile -keyAlias "openharmony application profile release" -signAlg "SHA256withECDSA" -mode "localSign" -profileCertFile "OpenHarmonyProfileRelease.pem" -inFile "UnsgnedReleasedProfileTemplate.json" -keystoreFile "OpenHarmony.p12" -outFile "SgnedReleaseProfileTemplate.p7b" -keyPwd "123456" -keystorePwd "123456"
 ```
 
 上述命令的参数说明如下：
@@ -143,7 +143,7 @@ hap-sign-tool sign-profile -keyAlias "oh-profile1-key-v1" -signAlg "SHA256withEC
 
 
 
-（2）签名应用包或二进制工具的命令实例如下：
+（2）签名应用包或二进制工具的命令示例如下：
 
 ​      **java：**
 
@@ -439,7 +439,7 @@ Profile签名证书：OpenHarmonyProfileRelease.pem、OpenHarmonyProfileDebug.pe
 
 ##### 使用说明
 
-（1）二进制签名工具（binary-sign-tool）的命令实例如下：
+（1）二进制签名工具（binary-sign-tool）的命令示例如下：
 
 ```shell
 // 证书签名
