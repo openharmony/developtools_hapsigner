@@ -148,13 +148,13 @@ hap-sign-tool sign-profile -keyAlias "openharmony application profile release" -
 ​      **java：**
 
 ```shell
-java -jar hap-sign-tool.jar sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.hap" -keystoreFile "result\ohtest.jks" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -signCode "1"
+java -jar hap-sign-tool.jar sign-app -keyAlias "openharmony application release" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "OpenHarmonyApplication.pem" -profileFile "SgnedReleaseProfileTemplate.p7b" -inFile "api11.hap" -keystoreFile "OpenHarmony.p12" -outFile "api11-signed.hap" -keyPwd "123456" -keystorePwd "123456" -signCode "1"
 ```
 
 ​      **c++：**
 
 ```shell
-hap-sign-tool sign-app -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -inFile "app1-unsigned.hap" -keystoreFile "result\ohtest.p12" -outFile "result\app1-unsigned.hap" -keyPwd "123456" -keystorePwd "123456" -signCode "1"
+hap-sign-tool sign-app -keyAlias "openharmony application release" -signAlg "SHA256withECDSA" -mode "localSign" -appCertFile "OpenHarmonyApplication.pem" -profileFile "SgnedReleaseProfileTemplate.p7b" -inFile "api11.hap" -keystoreFile "OpenHarmony.p12" -outFile "api11-signed.hap" -keyPwd "123456" -keystorePwd "123456" -signCode "1"
 ```
 
 上述命令的参数说明如下:
