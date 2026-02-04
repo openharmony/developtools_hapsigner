@@ -656,7 +656,7 @@ int KeyStoreHelper::SetCertPkcs12(X509* cert, PKCS12_SAFEBAG* bag, STACK_OF(PKCS
             goto err;
         }
 
-        if (keyIdLen && !PKCS12_add_localkeyid(bag, keyId, keyIdLen)) {
+        if (keyIdLen && (bag == nullptr || !PKCS12_add_localkeyid(bag, keyId, keyIdLen))) {
             goto err;
         }
     }
