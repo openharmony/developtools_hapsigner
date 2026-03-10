@@ -62,7 +62,7 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         unlink(tmpOutputFile.c_str());
         return false;
     }
-    return FileUtils::RenameTmpFile(tmpOutputFile, outputFile);
+    return FileUtils::CopyTmpFileAndDel(tmpOutputFile, outputFile);
 }
 
 bool SignElf::loadModule(std::map<std::string, std::string>& signParams, std::string& moduleContent)
