@@ -162,6 +162,11 @@ public class ParamConstants {
     public static final String SELF_SIGN_TYPE_1 = "1";
 
     /**
+     * Self sign type value 0 - disable self sign
+     */
+    public static final String SELF_SIGN_TYPE_0 = "0";
+
+    /**
      * Permission version constant
      */
     public static final int PERMISSION_VERSION = 1;
