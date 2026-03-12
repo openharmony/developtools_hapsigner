@@ -240,12 +240,10 @@ public class SignElf {
 
     private static boolean moveSignedOutput(SigningContext context) throws IOException {
         File output = new File(context.outputPath);
-        if (context.outputPath.equals(context.inputPath)) {
-            File backupFile = new File(context.inputPath + ".bak");
-            Files.move(context.inputFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        if (context.outputPath.equals(context.tmpOutputFile.getPath())) {
+            return true;
         }
         Files.move(context.tmpOutputFile.toPath(), output.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        LOGGER.info("Sign ELF file successfully: {}", context.outputPath);
         return true;
     }
 
