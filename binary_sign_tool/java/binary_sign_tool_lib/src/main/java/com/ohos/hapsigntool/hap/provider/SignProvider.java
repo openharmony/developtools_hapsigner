@@ -200,12 +200,6 @@ public abstract class SignProvider {
             return false;
         }
 
-        if (ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(
-                signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED))) {
-            LOGGER.error("Sign elf can not use unsigned profile.");
-            return false;
-        }
-
         if (profileContent != null) {
             signParams.put(ParamConstants.PARAM_PROFILE_JSON_CONTENT, profileContent);
         }

@@ -15,15 +15,13 @@
 
 package com.ohos.hapsigntool;
 
-import com.ohos.hapsigntool.entity.RetMsg;
-import com.ohos.hapsigntool.entity.SignAppParameters;
+import com.ohos.hapsigntool.entity.ParamConstants;
 import com.ohos.hapsigntool.api.ServiceApi;
 import com.ohos.hapsigntool.api.SignToolServiceImpl;
 import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.InvalidParamsException;
-import com.ohos.hapsigntool.error.ParamException;
 import com.ohos.hapsigntool.error.SignToolErrMsg;
 import com.ohos.hapsigntool.utils.EnterPassword;
 import com.ohos.hapsigntool.utils.FileUtils;
@@ -151,7 +149,13 @@ public final class BinarySignTool {
                 SignToolErrMsg.PARAM_CHECK_FAILED.toString(Options.MODE, "value must be localSign/remoteSign"));
         }
 
-        if ("1".equals(selfSign)) {
+        if (!ParamConstants.SELF_SIGN_TYPE_1.equalsIgnoreCase(selfSign)
+            && !ParamConstants.SELF_SIGN_TYPE_0.equalsIgnoreCase(selfSign)) {
+            CustomException.throwException(ERROR.COMMAND_ERROR,
+                SignToolErrMsg.PARAM_CHECK_FAILED.toString(Options.SELF_SIGN, "value must be 0/1"));
+        }
+
+        if (ParamConstants.SELF_SIGN_TYPE_1.equals(selfSign)) {
             return api.signHap(params);
         }
 
@@ -225,31 +229,5 @@ public final class BinarySignTool {
      */
     public static void help() {
         HelpDocument.printHelp(LOGGER);
-    }
-
-    /**
-     * sign App
-     *
-     * @param signAppParameters verifyProfileParameters
-     * @return RetMsg
-     */
-    public static RetMsg signApp(SignAppParameters signAppParameters) {
-        try {
-            if (signAppParameters == null) {
-                throw new ParamException("params is null");
-            }
-            Options options = signAppParameters.toOptions();
-            ServiceApi api = new SignToolServiceImpl();
-            if (runSignApp(options, api)) {
-                return new RetMsg(ERROR.SUCCESS_CODE, "sign app success");
-            }
-            return new RetMsg(ERROR.SIGN_ERROR, "sign app failed");
-        } catch (CustomException e) {
-            return new RetMsg(e.getError(), e.getMessage());
-        } catch (ParamException e) {
-            return new RetMsg(ERROR.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
-        } catch (Exception e) {
-            return new RetMsg(ERROR.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
-        }
     }
 }
