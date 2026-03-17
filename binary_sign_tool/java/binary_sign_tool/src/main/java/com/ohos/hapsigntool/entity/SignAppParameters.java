@@ -130,10 +130,9 @@ public class SignAppParameters implements Parameters {
             options.put(Options.KEY_RIGHTS, keyPwd);
         }
 
-        if (profileFile == null) {
-            throw new ParamException(Options.PROFILE_FILE);
+        if (profileFile != null) {
+            options.put(Options.PROFILE_FILE, profileFile);
         }
-        options.put(Options.PROFILE_FILE, profileFile);
 
         if (profileSigned != null) {
             options.put(Options.PROFILE_SIGNED, profileSigned.getValue());
@@ -159,11 +158,11 @@ public class SignAppParameters implements Parameters {
         options.put(Options.OUT_FILE, outFile);
 
         if (moduleFile != null) {
-            options.put("moduleFile", moduleFile);
+            options.put(Options.MODULE_FILE, moduleFile);
         }
 
         if (selfSign != null) {
-            options.put("selfSign", selfSign);
+            options.put(Options.SELF_SIGN, selfSign);
         }
 
         keyStoreFileToOptions(options);
