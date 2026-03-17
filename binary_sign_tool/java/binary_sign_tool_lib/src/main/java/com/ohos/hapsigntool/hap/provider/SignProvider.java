@@ -204,7 +204,7 @@ public abstract class SignProvider {
             signParams.put(ParamConstants.PARAM_PROFILE_JSON_CONTENT, profileContent);
         }
         /* 6. make signed file into output file. */
-        if (!SignElf.sign(signerConfig, signParams)) {
+        if (!new SignElf().sign(signerConfig, signParams)) {
             LOGGER.error("Sign elf internal failed.");
             return false;
         }
@@ -319,7 +319,7 @@ public abstract class SignProvider {
     private void checkProfileValid(List<X509Certificate> inputCerts) throws ProfileException {
         try {
             byte[] profile = new byte[0];
-            boolean isProfileWithoutSign = ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(
+            boolean isProfileWithoutSign = ParamConstants.PROFILE_UNSIGNED.equals(
                     signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED));
             if (!isProfileWithoutSign) {
                 CMSSignedData cmsSignedData = new CMSSignedData(profile);

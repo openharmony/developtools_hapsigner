@@ -54,7 +54,7 @@ public class SelfSignSignProvider extends SignProvider {
             signerConfig.setOptions(options);
 
             // Sign ELF in self-sign mode
-            if (!SignElf.sign(signerConfig, signParams)) {
+            if (!new SignElf().sign(signerConfig, signParams)) {
                 LOGGER.error("[SelfSignSignProvider] Sign elf failed");
                 return false;
             }

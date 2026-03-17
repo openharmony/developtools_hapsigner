@@ -41,6 +41,8 @@ public class Elfio {
 
     private boolean loadedFromFile = false; // Track if loaded from file vs newly created
 
+    private FileChannel sourceFileChannel; // Source file channel for streaming
+
     private ElfioUtils.CompressionInterface compression;
 
     /**
@@ -145,6 +147,9 @@ public class Elfio {
     public boolean load(FileChannel fc, boolean isLazy) throws IOException {
         sections.clear();
         segments.clear();
+
+        // Store source file channel reference for streaming
+        this.sourceFileChannel = fc;
 
         // Read and verify ELF identification
         ByteBuffer identBuffer = ByteBuffer.allocate(16);
@@ -828,6 +833,26 @@ public class Elfio {
 
     public boolean getLoadedFromFile() {
         return loadedFromFile;
+    }
+
+    /**
+     * Get source file channel (for streaming).
+     *
+     * @return Source file channel
+     */
+    public FileChannel getSourceFileChannel() {
+        return sourceFileChannel;
+    }
+
+    /**
+     * Set source file channel (for streaming).
+     * This should be called after loading from a file if the file channel
+     * was closed and needs to be reopened for streaming.
+     *
+     * @param fc Source file channel
+     */
+    public void setSourceFileChannel(FileChannel fc) {
+        this.sourceFileChannel = fc;
     }
 
     // Setters for header properties

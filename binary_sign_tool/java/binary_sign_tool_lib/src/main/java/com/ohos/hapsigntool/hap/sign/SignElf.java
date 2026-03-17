@@ -30,13 +30,14 @@ import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.signer.ISigner;
-import com.ohos.hapsigntool.utils.FileUtils;
 import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 /**
@@ -64,10 +65,12 @@ public class SignElf {
 
     private static final int PAGE_SIZE = 4096;
 
+    private FileChannel inputFc;
+
     /**
      * Constructor of Method
      */
-    private SignElf() {
+    public SignElf() {
     }
 
     private static class SigningContext {
@@ -99,14 +102,14 @@ public class SignElf {
      * @param signParams The input parameters of sign elf.
      * @return true if sign successfully; false otherwise.
      */
-    public static boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
+    public boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
         boolean isSuccess = false;
         File tmpOutputFile = null;
+        SigningContext context = createSigningContext(signParams);
+        if (context == null) {
+            return false;
+        }
         try {
-            SigningContext context = createSigningContext(signParams);
-            if (context == null) {
-                return false;
-            }
             tmpOutputFile = context.tmpOutputFile;
             LOGGER.info("Start signing ELF file...");
             isSuccess = executeSignWorkflow(context, signerConfig, signParams);
@@ -130,11 +133,18 @@ public class SignElf {
                     LOGGER.warn("Failed to delete temp file: {}", tmpOutputFile.getPath());
                 }
             }
+            if (inputFc != null && inputFc.isOpen()) {
+                try {
+                    inputFc.close();
+                } catch (IOException e) {
+                    LOGGER.warn("Failed to close input file channel: {}", context.inputPath);
+                }
+            }
         }
         return isSuccess;
     }
 
-    private static SigningContext createSigningContext(Map<String, String> signParams) {
+    private SigningContext createSigningContext(Map<String, String> signParams) {
         String inputPath = signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE);
         File inputFile = new File(inputPath);
         if (!inputFile.exists() || !inputFile.isFile()) {
@@ -146,11 +156,12 @@ public class SignElf {
         return new SigningContext(inputFile, inputPath, outputPath, new File(tmpOutputPath));
     }
 
-    private static boolean executeSignWorkflow(SigningContext context, SignerConfig signerConfig,
+    private boolean executeSignWorkflow(SigningContext context, SignerConfig signerConfig,
         Map<String, String> signParams)
         throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
+        inputFc = FileChannel.open(context.inputFile.toPath(), StandardOpenOption.READ);
         Elfio elfio = new Elfio();
-        if (!elfio.load(context.inputPath)) {
+        if (!elfio.load(inputFc, true)) {
             LOGGER.error("Failed to load ELF file: {}", context.inputPath);
             return false;
         }
@@ -174,7 +185,7 @@ public class SignElf {
         return moveSignedOutput(context);
     }
 
-    private static boolean removeSignatureSections(Elfio elfio) {
+    private boolean removeSignatureSections(Elfio elfio) {
         if (!removeSection(elfio, CODE_SIGN_SEC_NAME)) {
             LOGGER.error("Failed to remove existing .codesign section");
             return false;
@@ -190,7 +201,7 @@ public class SignElf {
         return true;
     }
 
-    private static boolean writeOptionalSections(Elfio elfio, SignerConfig signerConfig,
+    private boolean writeOptionalSections(Elfio elfio, SignerConfig signerConfig,
         Map<String, String> signParams) {
         String selfSign = signParams.get(ParamConstants.PARAM_SELF_SIGN);
         boolean isSelfSign = ParamConstants.SELF_SIGN_TYPE_1.equals(selfSign);
@@ -199,13 +210,12 @@ public class SignElf {
             return true;
         }
         if (!writeSectionData(elfio, signerConfig, signParams)) {
-            LOGGER.error("Write section data failed");
             return false;
         }
         return true;
     }
 
-    private static long createCodeSignSectionAndSave(Elfio elfio, File tmpOutputFile) throws IOException {
+    private long createCodeSignSectionAndSave(Elfio elfio, File tmpOutputFile) throws IOException {
         if (!writeCodeSignBlock(elfio)) {
             LOGGER.error("Write .codesign section placeholder failed");
             return -1;
@@ -222,7 +232,7 @@ public class SignElf {
         return codeSignSection.getOffset();
     }
 
-    private static byte[] generateCodeSignBlock(File tmpOutputFile, long codeSignOffset, SignerConfig signerConfig,
+    private byte[] generateCodeSignBlock(File tmpOutputFile, long codeSignOffset, SignerConfig signerConfig,
         boolean isSelfSign) throws FsVerityDigestException, CodeSignException, IOException, ProfileException {
         CodeSigning codeSigning = new CodeSigning(signerConfig, isSelfSign);
         byte[] codeSignBlock = codeSigning.getElfCodeSignBlock(tmpOutputFile, codeSignOffset);
@@ -238,7 +248,7 @@ public class SignElf {
         return codeSignBlock;
     }
 
-    private static boolean moveSignedOutput(SigningContext context) throws IOException {
+    private boolean moveSignedOutput(SigningContext context) throws IOException {
         File output = new File(context.outputPath);
         if (context.outputPath.equals(context.tmpOutputFile.getPath())) {
             return true;
@@ -255,16 +265,10 @@ public class SignElf {
      * @param signParams Sign parameters
      * @return true if success
      */
-    private static boolean writeSectionData(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams) {
+    private boolean writeSectionData(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams) {
         // Step 1: Load and sign profile if needed
         byte[] p7b = loadProfileAndSign(elfio, signerConfig, signParams);
         if (p7b != null && p7b.length > 0) {
-            // Check size limit (4GB as in C++)
-            if (p7b.length > 0xFFFFFFFFL) {
-                LOGGER.error("Profile content size exceeds maximum allowed section size (4GB)");
-                return false;
-            }
-
             // Write profile section to ELF file
             if (!addSection(elfio, PROFILE_SEC_NAME, p7b)) {
                 LOGGER.error("Failed to add .profile section");
@@ -288,12 +292,6 @@ public class SignElf {
             // Convert back to bytes
             byte[] permissionContent = processedModule.getBytes(java.nio.charset.StandardCharsets.UTF_8);
 
-            // Check size limit (4GB as in C++)
-            if (permissionContent.length > 0xFFFFFFFFL) {
-                LOGGER.error("Permission content size exceeds maximum allowed section size (4GB)");
-                return false;
-            }
-
             // Write permission section to ELF file
             if (!addSection(elfio, PERMISSION_SEC_NAME, permissionContent)) {
                 LOGGER.error("Failed to add .permission section");
@@ -311,7 +309,7 @@ public class SignElf {
      * @param elfio ELF file object
      * @return true if success
      */
-    private static boolean writeCodeSignBlock(Elfio elfio) {
+    private boolean writeCodeSignBlock(Elfio elfio) {
         // Check if .codesign section already exists
         if (elfio.getSection(CODE_SIGN_SEC_NAME) != null) {
             LOGGER.error(".codesign section already exists");
@@ -345,7 +343,7 @@ public class SignElf {
      * @param csData Code sign data
      * @return true if success
      */
-    private static boolean replaceCodeSignData(File outputFile, long csOffset, byte[] csData) {
+    private boolean replaceCodeSignData(File outputFile, long csOffset, byte[] csData) {
         try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(outputFile, "rw")) {
             // Seek to code sign section offset
             raf.seek(csOffset);
@@ -369,7 +367,7 @@ public class SignElf {
      * @param signParams Sign parameters
      * @return signed profile data, or null if failed
      */
-    private static byte[] loadProfileAndSign(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams) {
+    private byte[] loadProfileAndSign(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams) {
         try {
             // If no profile file provided, return null (no profile needed)
             if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE)) {
@@ -384,8 +382,14 @@ public class SignElf {
                 return null;
             }
 
-            byte[] profileContent = FileUtils.readFile(profileFile);
-            if (profileContent == null || profileContent.length == 0) {
+            // Check size limit (2GB as in C++)
+            if (profileFile.length() > Integer.MAX_VALUE) {
+                LOGGER.error("Profile content size exceeds maximum allowed section size (2GB)");
+                return null;
+            }
+
+            byte[] profileContent = Files.readAllBytes(profileFile.toPath());
+            if (profileContent.length == 0) {
                 LOGGER.error("Failed to read profile file or file is empty");
                 return null;
             }
@@ -394,39 +398,37 @@ public class SignElf {
             String profileSigned = signParams.get(ParamConstants.PARAM_BASIC_PROFILE_SIGNED);
             if (profileSigned == null) {
                 // Default: profile is already signed
-                profileSigned = ParamConstants.ProfileSignFlag.ENABLE_SIGN_CODE.getSignFlag();
+                profileSigned = ParamConstants.PROFILE_SIGNED;
             }
 
-            if (ParamConstants.ProfileSignFlag.DISABLE_SIGN_CODE.getSignFlag().equals(profileSigned)) {
-                // Profile needs to be signed
-                String signAlg = signParams.get(ParamConstants.PARAM_BASIC_SIGANTURE_ALG);
-                if (signAlg == null || signAlg.isEmpty()) {
-                    LOGGER.error("Signature algorithm not specified for profile signing");
-                    return null;
-                }
-
-                ISigner signer = signerConfig.getSigner();
-                if (signer == null) {
-                    LOGGER.error("Signer not configured for profile signing");
-                    return null;
-                }
-
-                byte[] signedProfile = ProfileSignTool.signProfile(profileContent, signer, signAlg);
-                if (signedProfile == null || signedProfile.length == 0) {
-                    LOGGER.error("Failed to sign profile");
-                    return null;
-                }
-
-                LOGGER.info("Profile signed successfully, size: {} bytes", signedProfile.length);
-                return signedProfile;
-            } else {
+            if (ParamConstants.PROFILE_SIGNED.equals(profileSigned)) {
                 // Profile is already signed, use as-is
                 LOGGER.info("Using pre-signed profile, size: {} bytes", profileContent.length);
                 return profileContent;
             }
+            // Profile needs to be signed
+            String signAlg = signParams.get(ParamConstants.PARAM_BASIC_SIGANTURE_ALG);
+            if (signAlg == null || signAlg.isEmpty()) {
+                LOGGER.error("Signature algorithm not specified for profile signing");
+                return null;
+            }
+
+            ISigner signer = signerConfig.getSigner();
+            if (signer == null) {
+                LOGGER.error("Signer not configured for profile signing");
+                return null;
+            }
+
+            byte[] signedProfile = ProfileSignTool.signProfile(profileContent, signer, signAlg);
+            if (signedProfile == null || signedProfile.length == 0) {
+                LOGGER.error("Failed to sign profile");
+                return null;
+            }
+
+            LOGGER.info("Profile signed successfully, size: {} bytes", signedProfile.length);
+            return signedProfile;
         } catch (IOException e) {
-            LOGGER.error("Load profile and sign error: {}", e.getMessage());
-            return null;
+            throw new RuntimeException("Load profile and sign error",e);
         }
     }
 
@@ -436,7 +438,7 @@ public class SignElf {
      * @param signParams Sign parameters
      * @return module content, or null if failed
      */
-    private static byte[] loadModule(Map<String, String> signParams) {
+    private byte[] loadModule(Map<String, String> signParams) {
         try {
             // If no module file provided, return null
             if (!signParams.containsKey(ParamConstants.PARAM_MODULE_FILE)) {
@@ -457,7 +459,7 @@ public class SignElf {
                 return null;
             }
 
-            byte[] content = FileUtils.readFile(moduleFile);
+            byte[] content = Files.readAllBytes(moduleFile.toPath());
             if (content == null || content.length == 0) {
                 LOGGER.error("Failed to read module file or file is empty");
                 return null;
@@ -466,8 +468,7 @@ public class SignElf {
             LOGGER.info("Module.json file loaded, size: {} bytes", content.length);
             return content;
         } catch (IOException e) {
-            LOGGER.error("Load module error: {}", e.getMessage());
-            return null;
+            throw new RuntimeException("Load module error",e);
         }
     }
 
@@ -478,7 +479,7 @@ public class SignElf {
      * @param moduleContent Original module.json content
      * @return Processed content with version validated/set, or null if failed
      */
-    private static String writePermissionVersion(String moduleContent) {
+    private String writePermissionVersion(String moduleContent) {
         // Parse JSON using Gson (equivalent to cJSON_Parse in C++)
         JsonObject root = JsonParser.parseString(moduleContent).getAsJsonObject();
 
@@ -521,7 +522,7 @@ public class SignElf {
      * @param sectionName Name of section to remove
      * @return true if success
      */
-    private static boolean removeSection(Elfio elfio, String sectionName) {
+    private boolean removeSection(Elfio elfio, String sectionName) {
         Section section = elfio.getSection(sectionName);
         if (section == null) {
             return true;
@@ -541,7 +542,7 @@ public class SignElf {
      * @param content Section data content
      * @return true if success
      */
-    private static boolean addSection(Elfio elfio, String sectionName, byte[] content) {
+    private boolean addSection(Elfio elfio, String sectionName, byte[] content) {
         // Check if section already exists
         if (elfio.getSection(sectionName) != null) {
             LOGGER.error("Section {} already exists", sectionName);

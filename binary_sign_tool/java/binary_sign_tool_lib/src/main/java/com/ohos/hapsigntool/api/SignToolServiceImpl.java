@@ -59,11 +59,11 @@ public class SignToolServiceImpl implements ServiceApi {
             // Self-sign mode
             signProvider = new SelfSignSignProvider();
             LOGGER.info("Using SelfSignSignProvider");
-        } else if ("localSign".equalsIgnoreCase(mode)) {
+        } else if (Options.LOCAL_SIGN.equalsIgnoreCase(mode)) {
             // Local sign mode
             signProvider = new LocalJKSSignProvider();
             LOGGER.info("Using LocalJKSSignProvider");
-        } else if ("remoteSign".equalsIgnoreCase(mode)) {
+        } else if (Options.REMOTE_SIGN.equalsIgnoreCase(mode)) {
             // Remote sign mode
             signProvider = new RemoteSignProvider();
             LOGGER.info("Using RemoteSignProvider");

@@ -64,6 +64,8 @@ public class Section {
 
     private boolean offsetSet = false; // Track if offset was explicitly set
 
+    private boolean dataModified = false; // Track if data was modified after loading
+
     private Elfio parentElfio;       // Reference to parent Elfio for offset recalculation
 
     private byte fileClass;
@@ -174,6 +176,17 @@ public class Section {
     }
 
     private void loadData(FileChannel fc, long offset) throws IOException {
+        // For large sections (>2GB), skip loading to memory to avoid int overflow
+        // Data will be streamed directly from source file when needed
+        if (size > Integer.MAX_VALUE) {
+            // Keep fileChannel reference for streaming
+            this.fileChannel = fc;
+            this.loadOffset = offset;
+            this.data = new byte[0];  // Empty array, data not loaded
+            return;
+        }
+
+        // Normal case: load into memory
         ByteBuffer buffer = ByteBuffer.allocate((int) size);
         buffer.order(convertor.getByteOrder());
         fc.position(offset);
@@ -257,9 +270,54 @@ public class Section {
         }
     }
 
+    /**
+     * Copy section data from source file channel to destination file channel.
+     * This is used for zero-copy streaming of large sections.
+     *
+     * @param dest Destination file channel
+     * @param destOffset Offset in destination file
+     * @throws IOException if copying fails
+     */
+    public void copyFromSource(FileChannel dest, long destOffset) throws IOException {
+        if (type == ElfTypes.SHT_NOBITS || type == ElfTypes.SHT_NULL || size <= 0) {
+            return;
+        }
+
+        // If data was modified or loaded into memory, write normally
+        if (dataModified || (data != null && data.length > 0)) {
+            writeUncompressedData(dest, destOffset);
+            return;
+        }
+
+        // Stream copy from source file (zero-copy)
+        if (fileChannel != null && loadOffset >= 0) {
+            long position = loadOffset;
+            long remaining = size;
+            long destPosition = destOffset;
+
+            // Use FileChannel.transferTo for efficient copying
+            while (remaining > 0) {
+                // transferTo has a max of Integer.MAX_VALUE bytes per call
+                long count = Math.min(remaining, Integer.MAX_VALUE);
+                long transferred = fileChannel.transferTo(position, count, dest.position(destPosition));
+                if (transferred <= 0) {
+                    throw new IOException("Failed to transfer data at position " + position);
+                }
+                position += transferred;
+                destPosition += transferred;
+                remaining -= transferred;
+            }
+        }
+    }
+
     private void writeUncompressedData(FileChannel fc, long dataOffset) throws IOException {
         fc.position(dataOffset);
-        if (data != null) {
+
+        // If data was modified or is already loaded, write from memory
+        // Note: For large sections (>2GB), dataModified should always be false
+        // and data should be empty, so we skip this branch
+        if (dataModified || (data != null && data.length > 0)) {
+            // Only small sections reach here (size <= Integer.MAX_VALUE)
             if (data.length >= size) {
                 ByteBuffer dataBuffer = ByteBuffer.wrap(data, 0, (int) size);
                 fc.write(dataBuffer);
@@ -268,15 +326,53 @@ public class Section {
                 ByteBuffer dataBuffer = ByteBuffer.wrap(data);
                 fc.write(dataBuffer);
 
-                int paddingSize = (int) (size - data.length);
-                ByteBuffer padding = ByteBuffer.allocate(paddingSize);
-                // ByteBuffer is already zeroed
-                fc.write(padding);
+                long paddingSize = size - data.length;
+                writePadding(fc, paddingSize);
             }
-        } else {
-            // No data but size > 0, write all zeros
-            ByteBuffer padding = ByteBuffer.allocate((int) size);
-            fc.write(padding);
+            return;
+        }
+
+        // No data in memory, stream from source file
+        if (fileChannel != null && loadOffset >= 0 && size > 0) {
+            long position = loadOffset;
+            long remaining = size;
+
+            // Handle large sections (>2GB) by chunking
+            while (remaining > 0) {
+                long chunkSize = Math.min(remaining, Integer.MAX_VALUE);
+                long transferred = fileChannel.transferTo(position, chunkSize, fc);
+                if (transferred <= 0) {
+                    throw new IOException("Failed to transfer data at position " + position);
+                }
+                position += transferred;
+                remaining -= transferred;
+            }
+            return;
+        }
+
+        // No data available, write zeros
+        writePadding(fc, size);
+    }
+
+    /**
+     * Write padding bytes (zeros) to file channel.
+     *
+     * @param fc File channel
+     * @param size Number of bytes to write
+     * @throws IOException if writing fails
+     */
+    private void writePadding(FileChannel fc, long size) throws IOException {
+        final int BUFFER_SIZE = 8 * 1024 * 1024; // 8MB chunks
+        byte[] zeros = new byte[BUFFER_SIZE];
+        ByteBuffer buffer = ByteBuffer.wrap(zeros);
+
+        long remaining = size;
+        while (remaining > 0) {
+            int chunkSize = (int) Math.min(remaining, BUFFER_SIZE);
+            buffer.limit(chunkSize);
+            buffer.rewind();
+            fc.write(buffer);
+            remaining -= chunkSize;
         }
     }
 
@@ -326,6 +422,12 @@ public class Section {
     }
 
     public byte[] getData() {
+        // For large sections (>2GB), don't load into memory
+        // Return empty array; data will be streamed from source file when saving
+        if (size > Integer.MAX_VALUE) {
+            return new byte[0];
+        }
+
         // Lazy loading: load data if not already loaded
         if (isLazy && (data == null || data.length == 0) && fileChannel != null) {
             try {
@@ -363,7 +465,14 @@ public class Section {
 
     public void setSize(long size) {
         this.size = size;
-        this.data = Arrays.copyOf(this.data, (int) size);
+
+        // Only resize data array if size is within int range and data is not null
+        // For large sections (>2GB), data array is not used (streamed from file)
+        if (size <= Integer.MAX_VALUE && data != null) {
+            this.data = Arrays.copyOf(this.data, (int) size);
+        }
+        // For large sections (>2GB), keep data as empty array or don't resize
+        // Data will be streamed from source file when needed
     }
 
     public void setLink(int link) {
@@ -394,6 +503,7 @@ public class Section {
     public void setData(byte[] data) {
         this.data = data;
         this.size = data.length;
+        this.dataModified = true;
     }
 
     /**
@@ -448,12 +558,24 @@ public class Section {
      * @param len Length to remove
      */
     public void removeData(int pos, int len) {
+        // For large sections (>2GB), don't modify in memory
+        // Silently ignore; data will be streamed from source file
+        if (size > Integer.MAX_VALUE) {
+            return;
+        }
+
+        // Ensure data is loaded if not already
+        if (data == null || data.length == 0) {
+            return;  // No data to remove
+        }
+
         if (data.length >= pos + len) {
             byte[] newData = new byte[data.length - len];
             System.arraycopy(data, 0, newData, 0, pos);
             System.arraycopy(data, pos + len, newData, pos, data.length - pos - len);
             data = newData;
             size = data.length;
+            dataModified = true;
         }
     }
 
@@ -500,6 +622,13 @@ public class Section {
             return;
         }
 
+        // For large sections (>2GB), don't modify in memory
+        // Silently ignore; data will be streamed from source file
+        if (size > Integer.MAX_VALUE) {
+            return;
+        }
+
+        // Normal case: small section, modify in memory
         byte[] newData = new byte[(int) (size + rawData.length)];
         System.arraycopy(data, 0, newData, 0, (int) pos);
         System.arraycopy(rawData, 0, newData, (int) pos, rawData.length);
@@ -507,6 +636,7 @@ public class Section {
 
         data = newData;
         size = data.length;
+        dataModified = true;
     }
 
     /**
@@ -562,5 +692,81 @@ public class Section {
      */
     public void setLazy(boolean lazy) {
         this.isLazy = lazy;
+    }
+
+    /**
+     * Check if data has been modified.
+     *
+     * @return true if data was modified
+     */
+    public boolean isDataModified() {
+        return dataModified;
+    }
+
+    /**
+     * Get source file channel (for streaming).
+     *
+     * @return Source file channel
+     */
+    public FileChannel getSourceFileChannel() {
+        return fileChannel;
+    }
+
+    /**
+     * Get load offset in source file (for streaming).
+     *
+     * @return Load offset
+     */
+    public long getLoadOffset() {
+        return loadOffset;
+    }
+
+    /**
+     * Set source file channel and load offset for a new section.
+     * This is used to specify an external data source for a newly created section,
+     * allowing zero-copy streaming from another file.
+     *
+     * @param fc Source file channel containing the section data
+     * @param offset Offset in the source file where section data starts
+     */
+    public void setDataChannel(FileChannel fc, long offset) {
+        this.fileChannel = fc;
+        this.loadOffset = offset;
+        this.data = new byte[0]; // Ensure data array is empty to trigger streaming
+    }
+
+    /**
+     * Get partial data from section (for large sections).
+     *
+     * @param offset Offset within section
+     * @param length Number of bytes to read
+     * @return Partial data
+     * @throws IOException if reading fails
+     */
+    public byte[] getPartialData(long offset, int length) throws IOException {
+        if (offset < 0 || length < 0 || offset + length > size) {
+            throw new IllegalArgumentException("Invalid offset or length");
+        }
+
+        // If data is in memory, return directly
+        if (data != null && data.length >= offset + length) {
+            byte[] result = new byte[length];
+            System.arraycopy(data, (int) offset, result, 0, length);
+            return result;
+        }
+
+        // Read from file channel
+        if (fileChannel != null && loadOffset >= 0) {
+            ByteBuffer buffer = ByteBuffer.allocate(length);
+            buffer.order(convertor.getByteOrder());
+            fileChannel.position(loadOffset + offset);
+            fileChannel.read(buffer);
+            buffer.flip();
+            byte[] result = new byte[length];
+            buffer.get(result);
+            return result;
+        }
+
+        return new byte[0];
     }
 }
