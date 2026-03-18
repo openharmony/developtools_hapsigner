@@ -26,6 +26,7 @@ import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
 import com.ohos.hapsigntool.entity.ParamConstants;
+import com.ohos.hapsigntool.error.ModuleException;
 import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
@@ -104,27 +105,22 @@ public class SignElf {
      */
     public boolean sign(SignerConfig signerConfig, Map<String, String> signParams) {
         boolean isSuccess = false;
-        File tmpOutputFile = null;
         SigningContext context = createSigningContext(signParams);
         if (context == null) {
             return false;
         }
+        File tmpOutputFile = context.tmpOutputFile;
         try {
-            tmpOutputFile = context.tmpOutputFile;
             LOGGER.info("Start signing ELF file...");
             isSuccess = executeSignWorkflow(context, signerConfig, signParams);
         } catch (FsVerityDigestException e) {
             LOGGER.error("FsVerity digest error: {}", e.getMessage(), e);
-            isSuccess = false;
         } catch (CodeSignException e) {
             LOGGER.error("Code sign error: {}", e.getMessage(), e);
-            isSuccess = false;
         } catch (IOException e) {
             LOGGER.error("IO error: {}", e.getMessage(), e);
-            isSuccess = false;
-        } catch (ProfileException e) {
-            LOGGER.error("Profile error: {}", e.getMessage(), e);
-            isSuccess = false;
+        } catch (ProfileException | ModuleException e) {
+            LOGGER.error("Profile/Module error: {}", e.getMessage(), e);
         } finally {
             if (!isSuccess && tmpOutputFile != null && tmpOutputFile.exists()) {
                 try {
@@ -158,7 +154,7 @@ public class SignElf {
 
     private boolean executeSignWorkflow(SigningContext context, SignerConfig signerConfig,
         Map<String, String> signParams)
-        throws IOException, FsVerityDigestException, CodeSignException, ProfileException {
+        throws IOException, FsVerityDigestException, CodeSignException, ProfileException, ModuleException {
         inputFc = FileChannel.open(context.inputFile.toPath(), StandardOpenOption.READ);
         Elfio elfio = new Elfio();
         if (!elfio.load(inputFc, true)) {
@@ -202,17 +198,14 @@ public class SignElf {
     }
 
     private boolean writeOptionalSections(Elfio elfio, SignerConfig signerConfig,
-        Map<String, String> signParams) {
+        Map<String, String> signParams) throws ProfileException, ModuleException {
         String selfSign = signParams.get(ParamConstants.PARAM_SELF_SIGN);
         boolean isSelfSign = ParamConstants.SELF_SIGN_TYPE_1.equals(selfSign);
         if (isSelfSign) {
             LOGGER.info("Self-sign mode enabled, skip writing .profile and .permission sections");
             return true;
         }
-        if (!writeSectionData(elfio, signerConfig, signParams)) {
-            return false;
-        }
-        return true;
+        return writeSectionData(elfio, signerConfig, signParams);
     }
 
     private long createCodeSignSectionAndSave(Elfio elfio, File tmpOutputFile) throws IOException {
@@ -265,7 +258,8 @@ public class SignElf {
      * @param signParams Sign parameters
      * @return true if success
      */
-    private boolean writeSectionData(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams) {
+    private boolean writeSectionData(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams)
+        throws ProfileException, ModuleException {
         // Step 1: Load and sign profile if needed
         byte[] p7b = loadProfileAndSign(elfio, signerConfig, signParams);
         if (p7b != null && p7b.length > 0) {
@@ -367,7 +361,8 @@ public class SignElf {
      * @param signParams Sign parameters
      * @return signed profile data, or null if failed
      */
-    private byte[] loadProfileAndSign(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams) {
+    private byte[] loadProfileAndSign(Elfio elfio, SignerConfig signerConfig, Map<String, String> signParams)
+        throws ProfileException {
         try {
             // If no profile file provided, return null (no profile needed)
             if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE)) {
@@ -428,7 +423,7 @@ public class SignElf {
             LOGGER.info("Profile signed successfully, size: {} bytes", signedProfile.length);
             return signedProfile;
         } catch (IOException e) {
-            throw new RuntimeException("Load profile and sign error",e);
+            throw new ProfileException("Load profile and sign error",e);
         }
     }
 
@@ -438,7 +433,7 @@ public class SignElf {
      * @param signParams Sign parameters
      * @return module content, or null if failed
      */
-    private byte[] loadModule(Map<String, String> signParams) {
+    private byte[] loadModule(Map<String, String> signParams) throws ModuleException {
         try {
             // If no module file provided, return null
             if (!signParams.containsKey(ParamConstants.PARAM_MODULE_FILE)) {
@@ -468,7 +463,7 @@ public class SignElf {
             LOGGER.info("Module.json file loaded, size: {} bytes", content.length);
             return content;
         } catch (IOException e) {
-            throw new RuntimeException("Load module error",e);
+            throw new ModuleException("Load module error",e);
         }
     }
 
