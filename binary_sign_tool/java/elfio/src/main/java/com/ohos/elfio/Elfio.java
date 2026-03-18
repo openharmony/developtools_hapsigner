@@ -331,26 +331,13 @@ public class Elfio {
             // Match sections to segment
             for (int j = 0; j < sections.size(); j++) {
                 Section sec = sections.get(j);
-                if (checkSectionInSegment(sec, seg)) {
+                if (checkTlsSectionMapping(sec, seg) && checkOffsetRange(sec, seg)
+                    && checkAllocatedSectionVma(sec, seg) && checkEmptyDynamicSection(sec, seg)) {
                     seg.addSectionIndex(j);
                 }
             }
             seg.sortSections(sectionOffsets);
         }
-    }
-
-    private boolean checkSectionInSegment(Section sec, Segment seg) {
-        Boolean tlsDecision = checkTlsSectionMapping(sec, seg);
-        if (tlsDecision != null) {
-            return tlsDecision;
-        }
-        if (!checkOffsetRange(sec, seg)) {
-            return false;
-        }
-        if (!checkAllocatedSectionVma(sec, seg)) {
-            return false;
-        }
-        return checkEmptyDynamicSection(sec, seg);
     }
 
     private Boolean checkTlsSectionMapping(Section sec, Segment seg) {
@@ -361,10 +348,7 @@ public class Elfio {
             return seg.getType() == ElfTypes.PT_TLS || seg.getType() == ElfTypes.PT_LOAD
                 || seg.getType() == ElfTypes.PT_GNU_RELRO;
         }
-        if (seg.getType() == ElfTypes.PT_TLS) {
-            return false;
-        }
-        return null;
+        return seg.getType() != ElfTypes.PT_TLS;
     }
 
     private boolean checkOffsetRange(Section sec, Segment seg) {
