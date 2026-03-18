@@ -451,7 +451,7 @@ public class Segment {
         }
 
         // Copy data from sections
-        long currentOffset = 0;
+        long currentOffset = 0L;
         for (int sectionIdx : sectionIndices) {
             if (sectionIdx < 0 || sectionIdx >= sections.size()) {
                 continue;
@@ -479,7 +479,7 @@ public class Segment {
                 // Stream from source file
                 long srcOffset = section.getLoadOffset();
                 long copySize = Math.min(sectionSize, fileSize - currentOffset);
-                long copied = 0;
+                long copied = 0L;
 
                 while (copied < copySize) {
                     long chunk = Math.min(copySize - copied, Integer.MAX_VALUE);
@@ -507,13 +507,13 @@ public class Segment {
      * @throws IOException if writing fails
      */
     private void writePadding(FileChannel fc, long size) throws IOException {
-        final int BUFFER_SIZE = 8 * 1024 * 1024; // 8MB chunks
-        byte[] zeros = new byte[BUFFER_SIZE];
+        final int bufferSize = 8 * 1024 * 1024; // 8MB chunks
+        byte[] zeros = new byte[bufferSize];
         ByteBuffer buffer = ByteBuffer.wrap(zeros);
 
         long remaining = size;
         while (remaining > 0) {
-            int chunkSize = (int) Math.min(remaining, BUFFER_SIZE);
+            int chunkSize = (int) Math.min(remaining, bufferSize);
             buffer.limit(chunkSize);
             buffer.rewind();
             fc.write(buffer);
