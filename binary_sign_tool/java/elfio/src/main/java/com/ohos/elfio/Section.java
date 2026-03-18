@@ -362,13 +362,13 @@ public class Section {
      * @throws IOException if writing fails
      */
     private void writePadding(FileChannel fc, long size) throws IOException {
-        final int BUFFER_SIZE = 8 * 1024 * 1024; // 8MB chunks
-        byte[] zeros = new byte[BUFFER_SIZE];
+        final int bufferSize = 8 * 1024 * 1024; // 8MB chunks
+        byte[] zeros = new byte[bufferSize];
         ByteBuffer buffer = ByteBuffer.wrap(zeros);
 
         long remaining = size;
         while (remaining > 0) {
-            int chunkSize = (int) Math.min(remaining, BUFFER_SIZE);
+            int chunkSize = (int) Math.min(remaining, bufferSize);
             buffer.limit(chunkSize);
             buffer.rewind();
             fc.write(buffer);
