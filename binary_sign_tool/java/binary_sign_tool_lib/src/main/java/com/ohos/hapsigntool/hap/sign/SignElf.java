@@ -66,6 +66,8 @@ public class SignElf {
 
     private static final int PAGE_SIZE = 4096;
 
+    private static final int MAX_SECTION_SIZE = 10240;
+
     private FileChannel inputFc;
 
     /**
@@ -262,7 +264,15 @@ public class SignElf {
         throws ProfileException, ModuleException {
         // Step 1: Load and sign profile if needed
         byte[] p7b = loadProfileAndSign(elfio, signerConfig, signParams);
-        if (p7b != null && p7b.length > 0) {
+        if (p7b == null) {
+            return false;
+        } else if (p7b.length > 0) {
+            // Check size limit
+            if (p7b.length > MAX_SECTION_SIZE) {
+                LOGGER.error("Profile content size exceeds maximum allowed section size (10kB)");
+                return false;
+            }
+
             // Write profile section to ELF file
             if (!addSection(elfio, PROFILE_SEC_NAME, p7b)) {
                 LOGGER.error("Failed to add .profile section");
@@ -273,7 +283,9 @@ public class SignElf {
 
         // Step 2: Load module.json file
         byte[] moduleContent = loadModule(signParams);
-        if (moduleContent != null && moduleContent.length > 0) {
+        if (moduleContent == null) {
+            return false;
+        } else if (moduleContent.length > 0) {
             // Step 3: Validate/set permission version
             String moduleJson = new String(moduleContent, java.nio.charset.StandardCharsets.UTF_8);
             String processedModule = writePermissionVersion(moduleJson);
@@ -367,7 +379,7 @@ public class SignElf {
             // If no profile file provided, return null (no profile needed)
             if (!signParams.containsKey(ParamConstants.PARAM_BASIC_PROFILE)) {
                 LOGGER.info("No profile file provided");
-                return null;
+                return new byte[0];
             }
 
             String profilePath = signParams.get(ParamConstants.PARAM_BASIC_PROFILE);
@@ -377,9 +389,9 @@ public class SignElf {
                 return null;
             }
 
-            // Check size limit (2GB as in C++)
-            if (profileFile.length() > Integer.MAX_VALUE) {
-                LOGGER.error("Profile content size exceeds maximum allowed section size (2GB)");
+            // Check size limit
+            if (profileFile.length() > MAX_SECTION_SIZE) {
+                LOGGER.error("Profile content size exceeds maximum allowed section size (10KB)");
                 return null;
             }
 
@@ -438,7 +450,7 @@ public class SignElf {
             // If no module file provided, return null
             if (!signParams.containsKey(ParamConstants.PARAM_MODULE_FILE)) {
                 LOGGER.info("No module file provided");
-                return null;
+                return new byte[0];
             }
 
             String moduleFilePath = signParams.get(ParamConstants.PARAM_MODULE_FILE);
@@ -448,9 +460,9 @@ public class SignElf {
                 return null;
             }
 
-            // Check size limit (2GB as in C++)
-            if (moduleFile.length() > Integer.MAX_VALUE) {
-                LOGGER.error("Module content size exceeds maximum allowed section size (2GB)");
+            // Check size limit
+            if (moduleFile.length() > MAX_SECTION_SIZE) {
+                LOGGER.error("Module content size exceeds maximum allowed section size (10KB)");
                 return null;
             }
 
