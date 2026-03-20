@@ -318,7 +318,9 @@ public class Section {
         // and data should be empty, so we skip this branch
         if (dataModified || (data != null && data.length > 0)) {
             // Only small sections reach here (size <= Integer.MAX_VALUE)
-            if (data.length >= size) {
+            if (data.length > size) {
+                throw new IOException(this.getName() + " section data length exceeds section size");
+            } else if (data.length == size) {
                 ByteBuffer dataBuffer = ByteBuffer.wrap(data, 0, (int) size);
                 fc.write(dataBuffer);
             } else {
