@@ -63,6 +63,8 @@ public class VerifyElf {
 
     private static final int FLAG_SELF_SIGN = 1 << 4;
 
+    private static final String PROFILE_SEC_NAME = ".profile";
+
     private static final String PERMISSION_SEC_NAME = ".permission";
 
     private static final String CODE_SIGN_SEC_NAME = ".codesign";
@@ -368,7 +370,7 @@ public class VerifyElf {
     }
 
     private byte[] extractProfileFromSection(Elfio elfio) {
-        Section profileSec = elfio.getSection(".profile");
+        Section profileSec = elfio.getSection(PROFILE_SEC_NAME);
         if (profileSec == null) {
             return null;
         }
