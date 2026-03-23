@@ -239,46 +239,14 @@ public class Options extends HashMap<String, Object> {
     public static final String SUBJECT = "subject";
 
     /**
-     * Selecting the password input mode parameter name.
-     */
-    public static final String PWD_INPUT_MODE = "pwdInputMode";
-
-    /**
-     * Trusted app source file parameter name.
-     */
-    public static final String TRUSTED_APP_SOURCE_FILE = "trustedAppSourceFile";
-
-    /**
-     * Trusted root ca file parameter name.
-     */
-    public static final String TRUSTED_ROOT_CA_FILE = "trustedRootCaFile";
-
-    /**
-     * Validity parameter name.
-     */
-    public static final String VALIDITY = "validity";
-
-    /**
-     * All usages included in the extended key usage.
-     */
-    public static final String EXT_KEY_USAGE_SCOPE = "clientAuthentication,serverAuthentication,codeSignature,"
-            + "emailProtection,smartCardLogin,timestamp,ocspSignature";
-
-    /**
-     * Key usage includes all usages.
-     */
-    public static final String KEY_USAGE_SCOPE = "digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment,"
-            + "keyAgreement,certificateSignature,crlSignature,encipherOnly,decipherOnly";
-
-    /**
-     * Out form includes all forms.
-     */
-    public static final String OUT_FORM_SCOPE = "cert,certChain";
-
-    /**
      * Out form includes all forms.
      */
     public static final String LOCAL_SIGN = "localSign";
+
+    /**
+     * Out form includes all forms.
+     */
+    public static final String REMOTE_SIGN = "remoteSign";
 
     /**
      * Serial version UID.

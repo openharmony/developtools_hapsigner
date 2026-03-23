@@ -142,6 +142,16 @@ public class ParamConstants {
     public static final String PARAM_BASIC_PROFILE_SIGNED = "profileSigned";
 
     /**
+     * Flag indicates whether profile is signed
+     */
+    public static final String PROFILE_UNSIGNED = "0";
+
+    /**
+     * Flag indicates whether profile is signed
+     */
+    public static final String PROFILE_SIGNED = "1";
+
+    /**
      * Module.json file path
      */
     public static final String PARAM_MODULE_FILE = "moduleFile";
@@ -215,22 +225,4 @@ public class ParamConstants {
      * The path used to output profile
      */
     public static final String PARAM_VERIFY_PROFILE_FILE = "outProfile";
-
-    /**
-     * Enumerated value of whether a profile is signed
-     */
-    public enum ProfileSignFlag {
-        DISABLE_SIGN_CODE("0"),
-        ENABLE_SIGN_CODE("1");
-
-        private String signFlag;
-
-        ProfileSignFlag(String signFlag) {
-            this.signFlag = signFlag;
-        }
-
-        public String getSignFlag() {
-            return signFlag;
-        }
-    }
 }
