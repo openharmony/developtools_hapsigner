@@ -53,6 +53,8 @@ public class Segment {
 
     private boolean isLazy;
 
+    private boolean dataModified = false; // Track if data was modified
+
     private boolean offsetInitialized; // Track if offset was loaded/set from file
 
     private byte fileClass;
@@ -217,6 +219,7 @@ public class Segment {
         if (data != null && data.length > 0) {
             this.fileSize = data.length;
         }
+        this.dataModified = true;
     }
 
     /**
@@ -380,5 +383,141 @@ public class Segment {
      */
     public void clearSections() {
         sectionIndices.clear();
+    }
+
+    /**
+     * Check if data has been modified.
+     *
+     * @return true if data was modified
+     */
+    public boolean isDataModified() {
+        return dataModified;
+    }
+
+    /**
+     * Get partial data from segment (for large segments).
+     *
+     * @param offset Offset within segment
+     * @param length Number of bytes to read
+     * @param sections List of all sections (for finding section data)
+     * @return Partial data
+     * @throws IOException if reading fails
+     */
+    public byte[] getPartialData(long offset, int length, List<Section> sections) throws IOException {
+        if (offset < 0 || length < 0 || offset + length > fileSize) {
+            throw new IllegalArgumentException("Invalid offset or length");
+        }
+
+        // If data is in memory, return directly
+        if (data != null && data.length >= offset + length) {
+            byte[] result = new byte[length];
+            System.arraycopy(data, (int) offset, result, 0, length);
+            return result;
+        }
+
+        // If no in-memory data, return empty array
+        // (Segment data is typically derived from its sections)
+        return new byte[0];
+    }
+
+    /**
+     * Copy segment data from its sections to destination file channel.
+     *
+     * @param dest Destination file channel
+     * @param destOffset Offset in destination file
+     * @param sections List of all sections
+     * @param srcFileChannel Source file channel (optional, for streaming)
+     * @throws IOException if copying fails
+     */
+    public void copyDataFromSections(FileChannel dest, long destOffset, List<Section> sections,
+                                      FileChannel srcFileChannel) throws IOException {
+        if (fileSize <= 0) {
+            return;
+        }
+
+        dest.position(destOffset);
+
+        // If data is already in memory and modified, write directly
+        if (dataModified && data != null && data.length > 0) {
+            ByteBuffer buffer = ByteBuffer.wrap(data, 0, (int) Math.min(data.length, fileSize));
+            dest.write(buffer);
+
+            // Pad with zeros if needed
+            long paddingNeeded = fileSize - data.length;
+            if (paddingNeeded > 0) {
+                writePadding(dest, paddingNeeded);
+            }
+            return;
+        }
+
+        // Copy data from sections
+        long currentOffset = 0L;
+        for (int sectionIdx : sectionIndices) {
+            if (sectionIdx < 0 || sectionIdx >= sections.size()) {
+                continue;
+            }
+
+            Section section = sections.get(sectionIdx);
+            long sectionOffset = section.getOffset() - this.offset;
+            long sectionSize = section.getSize();
+
+            // Skip if section is outside this segment
+            if (sectionOffset < 0 || sectionOffset >= fileSize) {
+                continue;
+            }
+
+            // Write section data
+            if (section.getData() != null && section.getData().length > 0) {
+                // Write from memory
+                int writeLength = (int) Math.min(sectionSize, fileSize - currentOffset);
+                byte[] sectionData = section.getData();
+                int copyLength = Math.min(writeLength, sectionData.length);
+                ByteBuffer buffer = ByteBuffer.wrap(sectionData, 0, copyLength);
+                dest.write(buffer);
+                currentOffset += copyLength;
+            } else if (srcFileChannel != null && section.getSourceFileChannel() != null) {
+                // Stream from source file
+                long srcOffset = section.getLoadOffset();
+                long copySize = Math.min(sectionSize, fileSize - currentOffset);
+                long copied = 0L;
+
+                while (copied < copySize) {
+                    long chunk = Math.min(copySize - copied, Integer.MAX_VALUE);
+                    long transferred = srcFileChannel.transferTo(srcOffset + copied, chunk, dest);
+                    if (transferred <= 0) {
+                        break;
+                    }
+                    copied += transferred;
+                    currentOffset += transferred;
+                }
+            }
+        }
+
+        // Pad remaining space with zeros
+        if (currentOffset < fileSize) {
+            writePadding(dest, fileSize - currentOffset);
+        }
+    }
+
+    /**
+     * Write padding bytes (zeros) to file channel.
+     *
+     * @param fc File channel
+     * @param size Number of bytes to write
+     * @throws IOException if writing fails
+     */
+    private void writePadding(FileChannel fc, long size) throws IOException {
+        final int bufferSize = 8 * 1024 * 1024; // 8MB chunks
+        byte[] zeros = new byte[bufferSize];
+        ByteBuffer buffer = ByteBuffer.wrap(zeros);
+
+        long remaining = size;
+        while (remaining > 0) {
+            int chunkSize = (int) Math.min(remaining, bufferSize);
+            buffer.limit(chunkSize);
+            buffer.rewind();
+            fc.write(buffer);
+            remaining -= chunkSize;
+        }
     }
 }
