@@ -406,9 +406,29 @@ hap-sign-tool sign-app -keyAlias "openharmony application release" -signAlg "SHA
 
 #### 约束
 
-二进制签名工具（binary-sign-tool）基于openharmony标准系统编译构建ohos-sdk形态，使用前先配置openharmony开发环境，并使用C++17及以上语言标准。
+**java版本约束**
+
+- 签名工具基于Java语言开发，需要在Java8以上Java环境运行。
+
+**c++版本约束**
+
+- 二进制签名工具（binary-sign-tool）基于openharmony标准系统编译构建ohos-sdk形态，使用前先配置openharmony开发环境，并使用C++17及以上语言标准。
 
 #### 编译构建
+
+**java版本编译流程**
+
+ 1. 该工具基于Maven3编译构建，请确认环境已安装配置Maven3环境，并且版本正确
+
+        mvn -version
+
+ 2. 下载代码，命令行打开文件目录至developtools_hapsigner/binarysigntool/java，执行命令进行编译打包
+
+        mvn package
+
+ 3. 编译后得到二进制文件，目录为: ./build/libs
+
+**c++版本编译流程**
 
 1. 编译ohos-sdk形态签名工具
    + 编译**release**版本：默认是release版本，直接编译即可。
@@ -433,17 +453,30 @@ hap-sign-tool sign-app -keyAlias "openharmony application release" -signAlg "SHA
 
 ```
 签名密钥库文件：OpenHarmony.p12
-Profile签名证书：OpenHarmonyProfileRelease.pem、OpenHarmonyProfileDebug.pem
-签名工具：binary-sign-tool
+Profile签名证书：OpenHarmonyApplication.pem
+签名工具：binary-sign-tool.jar/binary-sign-tool
 ```
 
 ##### 使用说明
 
 （1）二进制签名工具（binary-sign-tool）的命令示例如下：
 
+​      **java：**
 ```shell
 // 证书签名
-binary-sign-tool sign -keyAlias "oh-app1-key-v1" -signAlg "SHA256withECDSA" -appCertFile "result\app1.pem" -profileFile "result\app1-profile.p7b" -profileSigned "1" -inFile "unsigned.elf" -keystoreFile "result\ohtest.p12" -outFile "signed.elf" -keyPwd "123456" -keystorePwd "123456" -moduleFile "module.json"
+java -jar binary-sign-tool.jar sign -keyAlias "openharmony application release" -signAlg "SHA256withECDSA" -appCertFile "OpenHarmonyApplication.pem" -profileFile "SgnedReleaseProfileTemplate.p7b" -profileSigned "1" -inFile "unsigned.elf" -keystoreFile "OpenHarmony.p12" -outFile "signed.elf" -keyPwd "123456" -keystorePwd "123456" -moduleFile "module.json"
+
+// 本机自签名
+java -jar binary-sign-tool.jar sign -inFile "unsigned.elf" -outFile "signed.elf" -selfSign "1"
+
+// 输出二进制文件签名信息
+java -jar binary-sign-tool.jar display-sign -inFile "signed.elf"
+```
+
+​      **C++：**
+```shell
+// 证书签名
+binary-sign-tool sign -keyAlias "openharmony application release" -signAlg "SHA256withECDSA" -appCertFile "OpenHarmonyApplication.pem" -profileFile "SgnedReleaseProfileTemplate.p7b" -profileSigned "1" -inFile "unsigned.elf" -keystoreFile "OpenHarmony.p12" -outFile "signed.elf" -keyPwd "123456" -keystorePwd "123456" -moduleFile "module.json"
 
 // 本机自签名
 binary-sign-tool sign -inFile "unsigned.elf" -outFile "signed.elf" -selfSign "1"
@@ -473,6 +506,7 @@ binary-sign-tool display-sign -inFile "signed.elf"
 1.二进制文件签名
   
     sign : 二进制文件签名
+         ├── -mode              #签名模式，包括localSign，remoteSign，可选项，默认为localSign
          ├── -keyAlias          #密钥别名，必填项，不区分大小写
          ├── -keyPwd            #密钥口令，可选项
          ├── -appCertFile       #签名证书文件（证书链，顺序为实体证书-中间CA证书-根证书），非自签名模式时为必填项

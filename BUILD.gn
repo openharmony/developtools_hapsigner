@@ -23,6 +23,7 @@ ohos_copy("lib") {
       "dist/UnsgnedDebugProfileTemplate.json",
       "dist/UnsgnedReleasedProfileTemplate.json",
       "dist/hap-sign-tool.jar",
+      "dist/binary-sign-tool.jar",
     ]
   } else {
     sources = "dist/hap-sign-tool.jar"
