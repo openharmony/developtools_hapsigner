@@ -26,7 +26,7 @@
 
 namespace OHOS {
 namespace SignatureTools {
-constexpr size_t MAX_SECTION_SIZE = static_cast<size_t>(0xFFFFFFFF);
+constexpr size_t MAX_SECTION_SIZE = static_cast<size_t>(10240);
 
 bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string>& signParams)
 {
@@ -77,7 +77,7 @@ bool SignElf::loadModule(std::map<std::string, std::string>& signParams, std::st
         SIGNATURE_TOOLS_LOGI("[SignElf] No module file");
     }
     if (moduleContent.size() > MAX_SECTION_SIZE) {
-        SIGNATURE_TOOLS_LOGE("[SignElf] moduleContent size exceeds maximum allowed section size (4GB)");
+        SIGNATURE_TOOLS_LOGE("[SignElf] moduleContent size exceeds maximum allowed section size (10KB)");
         return false;
     }
     return true;
@@ -107,7 +107,7 @@ bool SignElf::loadProfileAndSign(SignerConfig& signerConfig, std::map<std::strin
         p7b = profileContent;
     }
     if (p7b.size() > MAX_SECTION_SIZE) {
-        SIGNATURE_TOOLS_LOGE("[SignElf] profileContent size exceeds maximum allowed section size (4GB)");
+        SIGNATURE_TOOLS_LOGE("[SignElf] profileContent size exceeds maximum allowed section size (10KB)");
         return false;
     }
     return true;
