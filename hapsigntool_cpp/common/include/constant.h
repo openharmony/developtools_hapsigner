@@ -76,6 +76,7 @@ const std::string GENERATE_CA = "generate-ca";
 const std::string GENERATE_CERT = "generate-cert";
 const std::string GENERATE_APP_CERT = "generate-app-cert";
 const std::string GENERATE_PROFILE_CERT = "generate-profile-cert";
+const std::string RE_SIGN_APP = "resign-enterprise-app";
 const std::string SIGN_APP = "sign-app";
 const std::string SIGN_PROFILE = "sign-profile";
 const std::string VERIFY_APP = "verify-app";

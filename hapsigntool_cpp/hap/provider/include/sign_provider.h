@@ -59,6 +59,7 @@ public:
     SignProvider() = default;
     virtual ~SignProvider() = default;
     bool Sign(Options* options);
+    bool ReSignHap(Options* options);
     bool SignElf(Options* options);
     bool SignBin(Options* options);
     bool SetSignParams(Options* options, std::unordered_set<std::string>& paramSet);
@@ -95,6 +96,8 @@ protected:
     std::map<std::string, std::string> signParams = std::map<std::string, std::string>();
 
 private:
+    bool IsEnterpriseProfile();
+
     int CheckParmaAndInitConfig(SignerConfig& config, Options* options, std::string& suffix);
 
     fileIOTuple PrepareIOStreams(const std::string& inputPath, const std::string& outputPath, bool& ret);
@@ -126,6 +129,8 @@ private:
 
     bool AppendCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
                              const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip);
+    bool AppendReCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
+                               const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip);
     bool OutputSignedFile(RandomAccessFile* outputHap, long centralDirectoryOffset,
                           ByteBuffer& signingBlock, ByteBufferDataSource* centralDirectory, ByteBuffer& eocdBuffer);
 
