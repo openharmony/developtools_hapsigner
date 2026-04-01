@@ -274,14 +274,15 @@ bool SignProvider::IsEnterpriseProfile()
         SIGNATURE_TOOLS_LOGE("parse provision error");
         return PARSE_ERROR;
     }
-    if (info.distributionType == AppDistType::ENTERPRISE_NORMAL || info.distributionType == AppDistType::ENTERPRISE_MDM ||
+    if (info.distributionType == AppDistType::ENTERPRISE_NORMAL ||
+        info.distributionType == AppDistType::ENTERPRISE_MDM ||
         info.distributionType == AppDistType::ENTERPRISE) {
         return true;
     }
     return false;
 }
 
-bool SignProvider::ReSignHap(Options* options)
+bool SignProvider::GetResignBlocks(Options* options)
 {
     std::string inputFilePath = options->GetString(Options::IN_FILE);
     RandomAccessFile inputFile;
@@ -304,14 +305,21 @@ bool SignProvider::ReSignHap(Options* options)
         hapSignInfo.hapSignatureBlock
     };
     optionalBlocks.push_back(originalMainSignBlock);
+    return true;
+}
 
+bool SignProvider::ReSignHap(Options* options)
+{
+    if (!GetResignBlocks(options)) {
+        return PrintErrorLog("Get Resign Blocks failed", COMMAND_PARAM_ERROR);
+    }
     bool isPathOverlap = false;
     SignerConfig signerConfig;
     std::string suffix;
     if (CheckParmaAndInitConfig(signerConfig, options, suffix) != RET_OK) {
         return PrintErrorLog("Check Parma And Init Config failed", COMMAND_PARAM_ERROR);
     }
-
+    std::string inputFilePath = options->GetString(Options::IN_FILE);
     auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(
         inputFilePath,
         signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE), isPathOverlap);
@@ -493,7 +501,7 @@ bool SignProvider::AppendReCodeSignBlock(SignerConfig* signerConfig, std::string
     CodeSigning codeSigning(signerConfig);
     std::vector<int8_t> codeSignArray;
     if (!codeSigning.GetCodeSignBlock(outputFilePath, codeSignOffset, suffixTmp, profileContent, zip,
-                                        codeSignArray)) {
+                                      codeSignArray)) {
         SIGNATURE_TOOLS_LOGE("Codesigning getCodeSignBlock Fail.");
         return false;
     }

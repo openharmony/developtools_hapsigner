@@ -48,6 +48,7 @@ const int32_t HapSignerBlockUtils::ZIP_EOCD_COMMENT_LENGTH_OFFSET = 20;
 const int32_t HapSignerBlockUtils::ZIP_CD_OFFSET_IN_EOCD = 16;
 const int32_t HapSignerBlockUtils::ZIP_CD_SIZE_OFFSET_IN_EOCD = 12;
 const int32_t HapSignerBlockUtils::ZIP_BLOCKS_NUM_NEED_DIGEST = 3;
+const int32_t HapSignerBlockUtils::ZIP_RESIGN_BLOCKS_NUM = 5;
 
 const char HapSignerBlockUtils::ZIP_FIRST_LEVEL_CHUNK_PREFIX = 0x5a;
 const char HapSignerBlockUtils::ZIP_SECOND_LEVEL_CHUNK_PREFIX = 0xa5;
@@ -369,22 +370,32 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile, int3
             return false;
         }
         readLen += headLength;
-        if (blockCount == 5) {
-            if (!ClassifyHapSubReSigningBlock(signInfo, signBuffer, subSignBlockHead.type)) {
-                SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", subSignBlockHead.type);
-                return false;
-            }
-        } else {
-            if (!ClassifyHapSubSigningBlock(signInfo, signBuffer, subSignBlockHead.type)) {
-                SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", subSignBlockHead.type);
-                return false;
-            }
+        if (!ClassifyBothHapSubSigningBlock(signInfo, blockCount, signBuffer, subSignBlockHead.type)) {
+            SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", subSignBlockHead.type);
+            return false;
         }
     }
     /* size of block must be equal to the sum of all subblocks length */
     if (readLen != blockArrayLen) {
         SIGNATURE_TOOLS_LOGE("Len: %" PRId64 " is not equal blockArrayLen: %" PRId64, readLen, blockArrayLen);
         return false;
+    }
+    return true;
+}
+
+bool HapSignerBlockUtils::ClassifyBothHapSubSigningBlock(SignatureInfo& signInfo, int32_t blockCount,
+                                                         const ByteBuffer& signBuffer, uint32_t type)
+{
+    if (blockCount == ZIP_RESIGN_BLOCKS_NUM) {
+        if (!ClassifyHapSubReSigningBlock(signInfo, signBuffer, type)) {
+            SIGNATURE_TOOLS_LOGE("subReSigningBlock error, type is %d", type);
+            return false;
+        }
+    } else {
+        if (!ClassifyHapSubSigningBlock(signInfo, signBuffer, type)) {
+            SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", type);
+            return false;
+        }
     }
     return true;
 }
@@ -422,7 +433,7 @@ bool HapSignerBlockUtils::ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
 }
 
 bool HapSignerBlockUtils::ClassifyHapSubReSigningBlock(SignatureInfo& signInfo,
-                                                     const ByteBuffer& subBlock, uint32_t type)
+                                                       const ByteBuffer& subBlock, uint32_t type)
 {
     bool ret = false;
     switch (type) {

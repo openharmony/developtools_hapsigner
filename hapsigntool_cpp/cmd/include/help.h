@@ -312,8 +312,8 @@ const std::string RE_SIGN_APP_HELP_TXT = R"(
 
     EXAMPLE :
         resign-enterprise-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "/home/app-release-cert.cer"
--keystoreFile "/home/app-keypair.jks" -keystorePwd ****** -outFile "/home/app1-signed.hap -inFile "/home/app1-signed.hap"
--signAlg SHA256withECDSA
+-keystoreFile "/home/app-keypair.jks" -keystorePwd ****** -outFile "/home/app1-signed.hap -signAlg SHA256withECDSA
+-inFile "/home/app1-signed.hap"
 )";
 
 const std::string VERIFY_APP_HELP_TXT = R"(

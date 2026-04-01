@@ -70,7 +70,8 @@ public:
     int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t>& profile, Options* options);
 
     int32_t Verify(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
-    int32_t VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options, const std::string& filePath);
+    int32_t VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options,
+                         const std::string& filePath);
 
     bool CheckCodeSign(const std::string& hapFilePath, const std::vector<OptionalBlock>& optionalBlocks)const;
     static int GetProfileContent(const std::string profile, std::string& ret);
