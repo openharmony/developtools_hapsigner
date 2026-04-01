@@ -293,27 +293,31 @@ const std::string SIGN_APP_HELP_TXT = R"(
 )";
 
 const std::string RE_SIGN_APP_HELP_TXT = R"(
-    resign-enterprise-app[options]:
-        -mode : signature mode, required fields, including localSign/remoteSign/remoteResign;
+    resign-enterprise-app [options]:
+        -mode : signature mode, required fields, including localSign/remoteSign;
         -keyAlias : key alias, required fields;
         -keyPwd : key password, optional fields on localSign mode;
-        -appCertFile : application signature certificate file, required fields on localSign mode, optional fields
-    on remoteSign mode;
-        -inFile : input original application package file, .hap, .bin, and .elf format, required fields;
+        -appCertFile : application signature certificate file, required fields;
+        -inFile : signed enterprise application package file(hap format), required fields;
+        -inForm : Enter the format of the original file, optional fields. The supported file formats is zip;
         -signAlg : signature algorithm, required fields, including SHA256withECDSA/SHA384withECDSA;
         -keystoreFile : keystore file, if signature mode is localSign, required fields on localSign mode,
     JKS or P12 format;
         -keystorePwd : keystore password, optional fields on localSign mode;
-        -outFile : output the signed Provision Profile file, required fields;
-        -inForm : Enter the format of the original file.The supported file formats include.zip, .bin, and .elf.;
+        -outFile : output the re-signed enterprise application package file(hap format), required fields;
+        -signServer : remote signer plugin, required fields on remoteSign mode;
+        -signerPlugin : remote sign service url, required fields on remoteSign mode;
+        -onlineAuthMode : remote sign auth mode, required fields on remoteSign mode, including account;
+        -username : user account for online auth, required fields on remoteSign mode with account auth mode;
+        -userPwd : user password for online auth, required fields on remoteSign mode with account auth mode;
         -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
     command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
     a default value of 0.
 
-    EXAMPLE :
-        resign-enterprise-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "/home/app-release-cert.cer"
--keystoreFile "/home/app-keypair.jks" -keystorePwd ****** -outFile "/home/app1-signed.hap -signAlg SHA256withECDSA
--inFile "/home/app1-signed.hap"
+    EXAMPLE:
+        resign-enterprise-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "D:\OH\app-release-cert.cer"
+    -inFile "D:\OH\app1-signed.hap" -signAlg SHA256withECDSA  -keystoreFile  "D:\OH\app-keypair.jks"
+    -keystorePwd ****** -keyPwd ****** -outFile "D:\OH\app1-resigned.hap"
 )";
 
 const std::string VERIFY_APP_HELP_TXT = R"(
@@ -340,6 +344,7 @@ COMMANDS :
     verify-profile : Provision Profile file verification
     sign-app : application package signature
     verify-app : application package file verification
+    resign-enterprise-app : enterprise application package re-signature
 )";
 /* help.txt all content */
 const std::string HELP_TXT = HELP_TXT_HEADER + KEYPAIR_HELP_TXT + CSR_HELP_TXT + CERT_HELP_TXT
