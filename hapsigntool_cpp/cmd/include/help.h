@@ -292,6 +292,30 @@ const std::string SIGN_APP_HELP_TXT = R"(
 -profileFile "/home/signed-profile.p7b" -inFile "/home/app1-unsigned.hap" -signAlg SHA256withECDSA
 )";
 
+const std::string RE_SIGN_APP_HELP_TXT = R"(
+    resign-enterprise-app[options]:
+        -mode : signature mode, required fields, including localSign/remoteSign/remoteResign;
+        -keyAlias : key alias, required fields;
+        -keyPwd : key password, optional fields on localSign mode;
+        -appCertFile : application signature certificate file, required fields on localSign mode, optional fields
+    on remoteSign mode;
+        -inFile : input original application package file, .hap, .bin, and .elf format, required fields;
+        -signAlg : signature algorithm, required fields, including SHA256withECDSA/SHA384withECDSA;
+        -keystoreFile : keystore file, if signature mode is localSign, required fields on localSign mode,
+    JKS or P12 format;
+        -keystorePwd : keystore password, optional fields on localSign mode;
+        -outFile : output the signed Provision Profile file, required fields;
+        -inForm : Enter the format of the original file.The supported file formats include.zip, .bin, and .elf.;
+        -pwdInputMode : Selecting the password input mode. The value 0 represents entering the password by the
+    command line parameter, and the value 1 represents interactive password input. It is an optional parameter, with
+    a default value of 0.
+
+    EXAMPLE :
+        resign-enterprise-app -mode localSign -keyAlias "oh-app1-key-v1" -appCertFile "/home/app-release-cert.cer"
+-keystoreFile "/home/app-keypair.jks" -keystorePwd ****** -outFile "/home/app1-signed.hap -inFile "/home/app1-signed.hap"
+-signAlg SHA256withECDSA
+)";
+
 const std::string VERIFY_APP_HELP_TXT = R"(
     verify-app[options]:
         -inFile : signed application package file, hap or bin format, required fields;
@@ -320,7 +344,7 @@ COMMANDS :
 /* help.txt all content */
 const std::string HELP_TXT = HELP_TXT_HEADER + KEYPAIR_HELP_TXT + CSR_HELP_TXT + CERT_HELP_TXT
 + CA_CERT_HELP_TXT + APP_CERT_HELP_TXT + PROFILE_CERT_HELP_TXT
-+ SIGN_PROFILE_HELP_TXT + VERIFY_PROFILE_HELP_TXT + SIGN_APP_HELP_TXT
++ SIGN_PROFILE_HELP_TXT + VERIFY_PROFILE_HELP_TXT + SIGN_APP_HELP_TXT + RE_SIGN_APP_HELP_TXT
 + VERIFY_APP_HELP_TXT + HELP_END_TXT;
 }
 }

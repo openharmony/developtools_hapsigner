@@ -47,20 +47,30 @@ public:
 
     bool HapOutPutPkcs7(PKCS7* p7, const std::string& outPutPath);
 
+    bool IsVerifyResign(const SignatureInfo& hapSignInfo);
+    X509* ExtractCertificateFromProfile(const SignatureInfo& hapSignInfo);
+    bool CheckInputCertMatchWithCertchain(X509* inputCert, const SignatureInfo& hapSignInfo);
+    bool IsEnterpriseProfileDistributionType(const SignatureInfo& hapSignInfo);
+    bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile);
+    bool VerifyCertificateConsistency(const SignatureInfo& hapSignInfo);
+    int32_t VerifyOriginalPackageSignature(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options);
     DLL_EXPORT bool CheckFilePath(const std::string& filePath, std::string& standardFilePath);
 
     bool outputOptionalBlocks(const std::string& outputProfileFile, const std::string& outputProofFile,
                                  const std::string& outputPropertyFile,
+                                 const std::vector<OptionalBlock>& optionBlocks);
+    bool outputReSignOptionalBlocks(const std::string& outputHapSignFile, const std::string& outputCodeResignFile,
                                  const std::vector<OptionalBlock>& optionBlocks);
     bool writeOptionalBytesToFile(const OptionalBlock& optionalBlock, const std::string& path);
 
     bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
 
     int32_t Verify(const std::string& filePath, Options* options);
-
+    
     int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t>& profile, Options* options);
 
     int32_t Verify(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
+    int32_t VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options, const std::string& filePath);
 
     bool CheckCodeSign(const std::string& hapFilePath, const std::vector<OptionalBlock>& optionalBlocks)const;
     static int GetProfileContent(const std::string profile, std::string& ret);

@@ -30,6 +30,8 @@ class SignHap {
 public:
     static bool Sign(DataSource* contents[], int32_t len, SignerConfig& config,
                      std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result);
+    static bool SignWithEnterpriseResign(DataSource* contents[], int32_t len, SignerConfig& config,
+                                         std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result);
     static bool ComputeDigests(const DigestParameter& digestParam, DataSource* contents[], int32_t len,
                                const std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result);
 
@@ -52,6 +54,9 @@ private:
     static bool GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock,
                                         std::vector<OptionalBlock>& optionalBlocks,
                                         int compatibleVersion, ByteBuffer& result);
+    static bool GenerateHapSigningBlockWithEnterpriseResign(const std::string& hapSignatureSchemeBlock,
+                                                            std::vector<OptionalBlock>& optionalBlocks,
+                                                            int compatibleVersion, ByteBuffer& result);
     static void EncodeListOfPairsToByteArray(const DigestParameter& digestParam,
                                              const std::vector<std::pair<int32_t, ByteBuffer>>& contentDigests,
                                              ByteBuffer& result);

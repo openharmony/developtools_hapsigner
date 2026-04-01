@@ -21,7 +21,9 @@
 #include <cinttypes>
 #include <filesystem>
 #include <algorithm>
+#include <numeric>
 
+#include "cJSON.h"
 #include "string_utils.h"
 #include "file_utils.h"
 #include "pkcs7_data.h"
@@ -265,6 +267,102 @@ bool SignProvider::Sign(Options* options)
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
 }
 
+bool SignProvider::IsEnterpriseProfile()
+{
+    ProfileInfo info;
+    if (ParseProvision(profileContent, info) != PROVISION_OK) {
+        SIGNATURE_TOOLS_LOGE("parse provision error");
+        return PARSE_ERROR;
+    }
+    if (info.distributionType == AppDistType::ENTERPRISE_NORMAL || info.distributionType == AppDistType::ENTERPRISE_MDM ||
+        info.distributionType == AppDistType::ENTERPRISE) {
+        return true;
+    }
+    return false;
+}
+
+bool SignProvider::ReSignHap(Options* options)
+{
+    std::string inputFilePath = options->GetString(Options::IN_FILE);
+    RandomAccessFile inputFile;
+    if (!inputFile.Init(inputFilePath)) {
+        return PrintErrorLog("[ReSignHap] Failed to init input HAP file", IO_ERROR, inputFilePath);
+    }
+    SignatureInfo hapSignInfo;
+    if (!HapSignerBlockUtils::FindHapSignature(inputFile, hapSignInfo)) {
+        return PrintErrorLog("[ReSignHap] Failed to find HAP signature", ZIP_ERROR, inputFilePath);
+    }
+
+    optionalBlocks.clear();
+
+    for (const auto& block : hapSignInfo.optionBlocks) {
+        optionalBlocks.push_back(block);
+    }
+
+    OptionalBlock originalMainSignBlock = {
+        HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID,
+        hapSignInfo.hapSignatureBlock
+    };
+    optionalBlocks.push_back(originalMainSignBlock);
+
+    bool isPathOverlap = false;
+    SignerConfig signerConfig;
+    std::string suffix;
+    if (CheckParmaAndInitConfig(signerConfig, options, suffix) != RET_OK) {
+        return PrintErrorLog("Check Parma And Init Config failed", COMMAND_PARAM_ERROR);
+    }
+
+    auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(
+        inputFilePath,
+        signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE), isPathOverlap);
+
+    if (!inputStream || !tmpOutput) {
+        return PrintErrorLog("[ReSignHap] Prepare IO Streams failed", IO_ERROR);
+    }
+
+    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
+    std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
+    if (!InitZipOutput(outputHap, zip, inputStream, tmpOutput, tmpOutputFilePath)) {
+        return PrintErrorLog("[ReSignHap] Init Zip Output failed", IO_ERROR);
+    }
+
+    DataSourceContents dataSrcContents;
+    if (!InitDataSourceContents(*outputHap, dataSrcContents)) {
+        return PrintErrorLog("[ReSignHap] Init Data Source Contents failed", ZIP_ERROR, tmpOutputFilePath);
+    }
+
+    if (signParams.find(ParamConstants::PARAM_SIGN_CODE) == signParams.end()) {
+        signParams[ParamConstants::PARAM_SIGN_CODE] = ParamConstants::ENABLE_SIGN_CODE;
+    }
+
+    DataSource* contents[] = {dataSrcContents.beforeCentralDir,
+        dataSrcContents.centralDir, dataSrcContents.endOfCentralDir
+    };
+
+    if (!AppendReCodeSignBlock(&signerConfig, tmpOutputFilePath, suffix, dataSrcContents.cDOffset, *zip)) {
+        return PrintErrorLog("[SignCode] AppendCodeSignBlock failed", SIGN_ERROR, tmpOutputFilePath);
+    }
+
+    ByteBuffer signingBlock;
+    if (!SignHap::SignWithEnterpriseResign(contents, sizeof(contents) / sizeof(contents[0]),
+                                           signerConfig, optionalBlocks, signingBlock)) {
+        return PrintErrorLog("[ReSignHap] SignHap Sign failed.", SIGN_ERROR, tmpOutputFilePath);
+    }
+
+    int64_t newCentralDirectoryOffset = dataSrcContents.cDOffset + signingBlock.GetCapacity();
+    SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %" PRId64, newCentralDirectoryOffset);
+    dataSrcContents.eocdPair.first.SetPosition(0);
+    if (!ZipUtils::SetCentralDirectoryOffset(dataSrcContents.eocdPair.first, newCentralDirectoryOffset)) {
+        return PrintErrorLog("[ReSignHap] Set Central Directory Offset.", ZIP_ERROR, tmpOutputFilePath);
+    }
+
+    if (!OutputSignedFile(outputHap.get(), dataSrcContents.cDOffset, signingBlock, dataSrcContents.centralDir,
+                          dataSrcContents.eocdPair.first)) {
+        return PrintErrorLog("[ReSignHap] write output signed file failed.", ZIP_ERROR, tmpOutputFilePath);
+    }
+    return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
+}
+
 bool SignProvider::SignElf(Options* options)
 {
     bool isPathOverlap = false;
@@ -377,6 +475,39 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
         OptionalBlock tmp = {HapUtils::HAP_PROPERTY_BLOCK_ID, *result};
         optionalBlocks.insert(optionalBlocks.begin(), tmp);
     }
+    return true;
+}
+
+bool SignProvider::AppendReCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
+ 	                                     const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip)
+{
+    SIGNATURE_TOOLS_LOGI("start re code signing.");
+    std::string suffixTmp = suffix;
+    std::transform(suffixTmp.begin(), suffixTmp.end(), suffixTmp.begin(), ::tolower);
+    int64_t optionalBlockSize = std::accumulate(optionalBlocks.begin(), optionalBlocks.end(), 0,
+        [](int64_t sum, const auto& elem) { return sum + elem.optionalBlockValue.GetCapacity(); });
+    // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
+    int64_t appendOptionalBlocksHeaderSize = (4 + 4 + 4) * 2 + 12;
+    int64_t codeSignOffset = centralDirectoryOffset + optionalBlockSize + appendOptionalBlocksHeaderSize;
+    // create CodeSigning Object
+    CodeSigning codeSigning(signerConfig);
+    std::vector<int8_t> codeSignArray;
+    if (!codeSigning.GetCodeSignBlock(outputFilePath, codeSignOffset, suffixTmp, profileContent, zip,
+                                        codeSignArray)) {
+        SIGNATURE_TOOLS_LOGE("Codesigning getCodeSignBlock Fail.");
+        return false;
+    }
+    SIGNATURE_TOOLS_LOGI("generate codeSignArray finished.");
+    std::unique_ptr<ByteBuffer> result =
+        std::make_unique<ByteBuffer>(codeSignArray.size()
+                                        + (FOUR_BYTE + FOUR_BYTE + FOUR_BYTE));
+    result->PutInt32(HapUtils::HAP_CODE_SIGN_BLOCK_ID);
+    result->PutInt32(codeSignArray.size()); // length
+    result->PutInt32((int32_t)codeSignOffset); // offset
+    result->PutData(codeSignArray.data(), codeSignArray.size());
+
+    OptionalBlock tmp = {HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID, *result};
+    optionalBlocks.push_back(tmp);
     return true;
 }
 

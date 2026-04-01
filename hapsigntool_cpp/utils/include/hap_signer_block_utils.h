@@ -43,6 +43,8 @@ enum HapBlobType {
     PROOF_ROTATION_BLOB = 0x20000001,
     PROFILE_BLOB = 0x20000002,
     PROPERTY_BLOB = 0x20000003,
+    ENTERPRISE_RE_SIGN_BLOB = 0x20000004,
+    ENTERPRISE_CODE_RE_SIGN_BLOB = 0x20000005,
 };
 
 struct HapSubSignBlockHead {
@@ -81,6 +83,8 @@ public:
                                                  int32_t type, int& index);
     DLL_EXPORT static bool VerifyHapIntegrity(Pkcs7Context& digestInfo, RandomAccessFile& hapFile,
                                               SignatureInfo& signInfo);
+    DLL_EXPORT static bool VerifyOldHapIntegrity(Pkcs7Context& digestInfo, RandomAccessFile& hapFile,
+                                              SignatureInfo& signInfo);
     DLL_EXPORT static int64_t CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo);
 
     DLL_EXPORT static bool FindEocdInHap(RandomAccessFile& hapFile, std::pair<ByteBuffer, int64_t>& eocd);
@@ -98,6 +102,8 @@ public:
                                        int64_t hapSignBlockOffset,
                                        SignatureInfo& signInfo);
     DLL_EXPORT static bool ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
+                                                      const ByteBuffer& subBlock, uint32_t type);
+    DLL_EXPORT static bool ClassifyHapSubReSigningBlock(SignatureInfo& signInfo,
                                                       const ByteBuffer& subBlock, uint32_t type);
     DLL_EXPORT static bool SetUnsignedInt32(ByteBuffer& buffer, int32_t offset, int64_t value);
     DLL_EXPORT static bool ComputeDigestsWithOptionalBlock(const DigestParameter& digestParam,
