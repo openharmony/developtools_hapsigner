@@ -100,8 +100,9 @@ bool VerifyHap::outputOptionalBlocks(const std::string& outputProfileFile, const
     return true;
 }
 
-bool VerifyHap::outputReSignOptionalBlocks(const std::string& outputHapSignFile, const std::string& outputCodeResignFile,
-                                 const std::vector<OptionalBlock>& optionBlocks)
+bool VerifyHap::outputReSignOptionalBlocks(const std::string& outputHapSignFile,
+                                           const std::string& outputCodeResignFile,
+                                           const std::vector<OptionalBlock>& optionBlocks)
 {
     for (auto& optionBlock : optionBlocks) {
         if (optionBlock.optionalType == HapUtils::HAP_PROFILE_BLOCK_ID) {
@@ -311,17 +312,17 @@ X509* VerifyHap::ExtractCertificateFromProfile(const SignatureInfo& hapSignInfo)
         return nullptr;
     }
 
-    if(info.type == ProvisionType::RELEASE) {
+    if (info.type == ProvisionType::RELEASE) {
         BIO* bio = BIO_new(BIO_s_mem());
         BIO_write(bio, info.bundleInfo.distributionCertificate.c_str(),
-                static_cast<int>(info.bundleInfo.distributionCertificate.length()));
+                  static_cast<int>(info.bundleInfo.distributionCertificate.length()));
         X509* cert = PEM_read_bio_X509(bio, nullptr, nullptr, nullptr);
         BIO_free(bio);
         return cert;
-    } else if(info.type == ProvisionType::DEBUG) {
+    } else if (info.type == ProvisionType::DEBUG) {
         BIO* bio = BIO_new(BIO_s_mem());
         BIO_write(bio, info.bundleInfo.developmentCertificate.c_str(),
-                static_cast<int>(info.bundleInfo.developmentCertificate.length()));
+                  static_cast<int>(info.bundleInfo.developmentCertificate.length()));
         X509* cert = PEM_read_bio_X509(bio, nullptr, nullptr, nullptr);
         BIO_free(bio);
         return cert;
@@ -410,20 +411,21 @@ bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProf
     return ret;
 }
 
-int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options, const std::string& filePath)
+int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo,
+                                Options* options, const std::string& filePath)
 {
-    if (!IsEnterpriseProfileDistributionType(hapSignInfo)) {
-        SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
+    if (VerifyOriginalPackageSignature(hapFile, hapSignInfo, options) != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("Verify Original Package Signature failed");
         return VERIFY_ERROR;
     }
-    
+
     if (!VerifyCertificateConsistency(hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Certificate Consistency failed");
         return VERIFY_ERROR;
     }
 
-    if (VerifyOriginalPackageSignature(hapFile, hapSignInfo, options) != RET_OK) {
-        SIGNATURE_TOOLS_LOGE("Verify Original Package Signature failed");
+    if (!IsEnterpriseProfileDistributionType(hapSignInfo)) {
+        SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
         return VERIFY_ERROR;
     }
     
@@ -459,15 +461,16 @@ int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSig
     }
 
     if (!outputReSignOptionalBlocks(options->GetString(ParamConstants::PARAM_VERIFY_HAP_SIGN_FILE),
-                              options->GetString(ParamConstants::PARAM_VERIFY_CODE_RESIGN_FILE),
-                              hapSignInfo.optionBlocks)) {
+                                    options->GetString(ParamConstants::PARAM_VERIFY_CODE_RESIGN_FILE),
+                                    hapSignInfo.optionBlocks)) {
         SIGNATURE_TOOLS_LOGE("output Optional Blocks failed");
         return IO_ERROR;
     }
     return RET_OK;
 }
 
-int32_t VerifyHap::VerifyOriginalPackageSignature(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options)
+int32_t VerifyHap::VerifyOriginalPackageSignature(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo,
+                                                  Options* options)
 {
     const ByteBuffer* profileBlock = nullptr;
     for (const auto& block : hapSignInfo.optionBlocks) {
@@ -576,51 +579,15 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
     }
     bool codeReSignFlag = map.find(HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID) != map.end() &&
         map[HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID].GetCapacity() > 0;
-    if (codeReSignFlag) {
-        ByteBuffer propertyBlockArray = map[HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID];
-        std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
-        if (fileNameArray.size() < ParamConstants::FILE_NAME_MIN_LENGTH) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "ZIP64 format not supported.");
-            return false;
-        }
-
-        if (propertyBlockArray.GetCapacity() < ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH)
-            return false;
-        uint32_t blockType;
-        propertyBlockArray.GetUInt32(OFFSET_ZERO, blockType);
-        uint32_t blockLength;
-        propertyBlockArray.GetUInt32(OFFSET_FOUR, blockLength);
-        uint32_t blockOffset;
-        propertyBlockArray.GetUInt32(OFFSET_EIGHT, blockOffset);
-
-        if (blockType != HapUtils::HAP_CODE_SIGN_BLOCK_ID) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "code sign data not exist in hap " + hapFilePath);
-            return false;
-        }
-        auto ite = map.find(HapUtils::HAP_PROFILE_BLOCK_ID);
-        if (ite == map.end())
-            return false;
-        ByteBuffer profileArray = ite->second;
-        std::string profileArray_(profileArray.GetBufferPtr(), profileArray.GetCapacity());
-        std::string profileContent;
-        if (GetProfileContent(profileArray_, profileContent) < 0) {
-            SIGNATURE_TOOLS_LOGE("get profile content failed, file: %s", hapFilePath.c_str());
-            return false;
-        }
-        std::string suffix = fileNameArray[fileNameArray.size() - 1];
-        bool isCodeSign = VerifyCodeSignature::VerifyHap(hapFilePath, blockOffset, blockLength,
-                                                         suffix, profileContent);
-        if (!isCodeSign) {
-            SIGNATURE_TOOLS_LOGE("verify coderesign failed, file: %s", hapFilePath.c_str());
-            return false;
-        }
-        SIGNATURE_TOOLS_LOGI("verify coderesign success.");
-        return true;
-    }
     bool codeSignFlag = map.find(HapUtils::HAP_PROPERTY_BLOCK_ID) != map.end() &&
         map[HapUtils::HAP_PROPERTY_BLOCK_ID].GetCapacity() > 0;
-    if (codeSignFlag) {
-        ByteBuffer propertyBlockArray = map[HapUtils::HAP_PROPERTY_BLOCK_ID];
+    if (codeReSignFlag || codeSignFlag) {
+        ByteBuffer propertyBlockArray;
+        if (codeReSignFlag) {
+            propertyBlockArray = map[HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID];
+        } else {
+            propertyBlockArray = map[HapUtils::HAP_PROPERTY_BLOCK_ID];
+        }
         std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
         if (fileNameArray.size() < ParamConstants::FILE_NAME_MIN_LENGTH) {
             PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "ZIP64 format not supported.");

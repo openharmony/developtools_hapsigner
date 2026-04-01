@@ -68,6 +68,7 @@ public:
     static const int32_t ZIP_CD_OFFSET_IN_EOCD;
     static const int32_t ZIP_CD_SIZE_OFFSET_IN_EOCD;
     static const int32_t ZIP_BLOCKS_NUM_NEED_DIGEST;
+    static const int32_t ZIP_RESIGN_BLOCKS_NUM;
     static const char ZIP_FIRST_LEVEL_CHUNK_PREFIX;
     static const char ZIP_SECOND_LEVEL_CHUNK_PREFIX;
     /* the specifications of hap sign block */
@@ -101,6 +102,8 @@ public:
                                        int64_t blockArrayLen,
                                        int64_t hapSignBlockOffset,
                                        SignatureInfo& signInfo);
+    DLL_EXPORT static bool ClassifyBothHapSubSigningBlock(SignatureInfo& signInfo, int32_t blockCount,
+                                                          const ByteBuffer& signBuffer, uint32_t type);
     DLL_EXPORT static bool ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
                                                       const ByteBuffer& subBlock, uint32_t type);
     DLL_EXPORT static bool ClassifyHapSubReSigningBlock(SignatureInfo& signInfo,

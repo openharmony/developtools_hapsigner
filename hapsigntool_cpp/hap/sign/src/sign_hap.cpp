@@ -200,7 +200,7 @@ void SignHap::ExtractedResult(std::vector<OptionalBlock>& optionalBlocks, ByteBu
 }
 
 bool SignHap::SignWithEnterpriseResign(DataSource* contents[], int32_t len, SignerConfig& config,
-                   std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result)
+                                       std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result)
 {
     if (len != CONTENT_NUBER) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
@@ -243,7 +243,7 @@ bool SignHap::SignWithEnterpriseResign(DataSource* contents[], int32_t len, Sign
     }
     SIGNATURE_TOOLS_LOGI("[SignHap] GenerateSignedData %lu", static_cast<unsigned long>(ret.size()));
     bool checkGenerateHapSigningBlockFlag = GenerateHapSigningBlockWithEnterpriseResign(ret, optionalBlocks,
-                                                                    config.GetCompatibleVersion(), result);
+        config.GetCompatibleVersion(), result);
     if (!checkGenerateHapSigningBlockFlag) {
         PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Generate Hap Signing Block failed");
         return false;
