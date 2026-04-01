@@ -570,6 +570,21 @@ int32_t VerifyHap::Verify(RandomAccessFile& hapFile, Options* options, const std
     return RET_OK;
 }
 
+bool VerifyHap::CheckFileNameAndBlockArray(const std::string& hapFilePath,
+                                           const ByteBuffer& propertyBlockArray)const
+{
+    std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
+    if (fileNameArray.size() < ParamConstants::FILE_NAME_MIN_LENGTH) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "ZIP64 format not supported.");
+        return false;
+    }
+
+    if (propertyBlockArray.GetCapacity() < ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH) {
+        return false;
+    }
+    return true;
+}
+
 bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
                               const std::vector<OptionalBlock>& optionalBlocks)const
 {
@@ -582,20 +597,14 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
     bool codeSignFlag = map.find(HapUtils::HAP_PROPERTY_BLOCK_ID) != map.end() &&
         map[HapUtils::HAP_PROPERTY_BLOCK_ID].GetCapacity() > 0;
     if (codeReSignFlag || codeSignFlag) {
-        ByteBuffer propertyBlockArray;
+        ByteBuffer propertyBlockArray = map[HapUtils::HAP_PROPERTY_BLOCK_ID];
         if (codeReSignFlag) {
             propertyBlockArray = map[HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID];
-        } else {
-            propertyBlockArray = map[HapUtils::HAP_PROPERTY_BLOCK_ID];
         }
+        if (!CheckFileNameAndBlockArray(hapFilePath, propertyBlockArray))
+            return false;
+        
         std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
-        if (fileNameArray.size() < ParamConstants::FILE_NAME_MIN_LENGTH) {
-            PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, "ZIP64 format not supported.");
-            return false;
-        }
-
-        if (propertyBlockArray.GetCapacity() < ZIP_HEAD_OF_SUBSIGNING_BLOCK_LENGTH)
-            return false;
         uint32_t blockType;
         propertyBlockArray.GetUInt32(OFFSET_ZERO, blockType);
         uint32_t blockLength;

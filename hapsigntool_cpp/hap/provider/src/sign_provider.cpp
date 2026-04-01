@@ -320,8 +320,7 @@ bool SignProvider::ReSignHap(Options* options)
         return PrintErrorLog("Check Parma And Init Config failed", COMMAND_PARAM_ERROR);
     }
     std::string inputFilePath = options->GetString(Options::IN_FILE);
-    auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(
-        inputFilePath,
+    auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(inputFilePath,
         signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE), isPathOverlap);
 
     if (!inputStream || !tmpOutput) {
@@ -344,8 +343,7 @@ bool SignProvider::ReSignHap(Options* options)
     }
 
     DataSource* contents[] = {dataSrcContents.beforeCentralDir,
-        dataSrcContents.centralDir, dataSrcContents.endOfCentralDir
-    };
+        dataSrcContents.centralDir, dataSrcContents.endOfCentralDir};
 
     if (!AppendReCodeSignBlock(&signerConfig, tmpOutputFilePath, suffix, dataSrcContents.cDOffset, *zip)) {
         return PrintErrorLog("[SignCode] AppendCodeSignBlock failed", SIGN_ERROR, tmpOutputFilePath);
@@ -487,7 +485,7 @@ bool SignProvider::AppendCodeSignBlock(SignerConfig* signerConfig, std::string o
 }
 
 bool SignProvider::AppendReCodeSignBlock(SignerConfig* signerConfig, std::string outputFilePath,
- 	                                     const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip)
+    const std::string& suffix, int64_t centralDirectoryOffset, ZipSigner& zip)
 {
     SIGNATURE_TOOLS_LOGI("start re code signing.");
     std::string suffixTmp = suffix;
