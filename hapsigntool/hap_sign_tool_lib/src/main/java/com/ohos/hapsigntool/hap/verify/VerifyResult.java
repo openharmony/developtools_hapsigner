@@ -17,6 +17,8 @@ package com.ohos.hapsigntool.hap.verify;
 
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 
+import com.ohos.hapsigntool.hap.utils.HapUtils;
+import com.ohos.hapsigntool.zip.ZipFileInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
@@ -101,6 +103,11 @@ public class VerifyResult {
      */
     public static final int RET_CODE_SIGN_BLOCK_ERROR = 10013;
 
+    /**
+     * Return code of re-sign enterprise check error.
+     */
+    public static final int RET_CODE_RESIGN_PROFILE_CHECK_ERROR = 10014;
+
     private boolean isResult;
     private int code;
     private String message;
@@ -118,6 +125,12 @@ public class VerifyResult {
     private int signBlockVersion;
 
     private byte[] profile;
+
+    private byte[] signatureSchemeBlock;
+
+    private ZipFileInfo zipInfo;
+
+    private HapUtils.HapSignBlockInfo hapSignBlockInfo;
 
     /**
      * Empty constructor
@@ -216,5 +229,29 @@ public class VerifyResult {
 
     public void setProfile(byte[] profile) {
         this.profile = profile;
+    }
+
+    public void setSignatureSchemeBlock(byte[] signatureSchemeBlock) {
+        this.signatureSchemeBlock = signatureSchemeBlock;
+    }
+
+    public byte[] getSignatureSchemeBlock() {
+        return signatureSchemeBlock;
+    }
+
+    public void setZipInfo(ZipFileInfo zipInfo) {
+        this.zipInfo = zipInfo;
+    }
+
+    public ZipFileInfo getZipInfo() {
+        return zipInfo;
+    }
+
+    public void setHapSignBlockInfo(HapUtils.HapSignBlockInfo hapSignBlockInfo) {
+        this.hapSignBlockInfo = hapSignBlockInfo;
+    }
+
+    public HapUtils.HapSignBlockInfo getHapSignBlockInfo() {
+        return hapSignBlockInfo;
     }
 }

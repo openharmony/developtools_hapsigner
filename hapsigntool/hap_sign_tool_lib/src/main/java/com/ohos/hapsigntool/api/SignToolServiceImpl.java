@@ -336,6 +336,19 @@ public class SignToolServiceImpl implements ServiceApi {
         }
     }
 
+    @Override
+    public boolean runReSignEnterpriseApp(Options options) {
+        String mode = options.getString(Options.MODE);
+        // sign online or locally
+        SignProvider signProvider;
+        if ("localSign".equalsIgnoreCase(mode)) {
+            signProvider = new LocalJKSSignProvider();
+        } else {
+            signProvider = new RemoteSignProvider();
+        }
+        return signProvider.runReSignEnterpriseApp(options);
+    }
+
     /**
      * Output string, save into file or print.
      *
