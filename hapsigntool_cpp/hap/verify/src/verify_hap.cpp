@@ -340,6 +340,10 @@ bool VerifyHap::CheckInputCertMatchWithCertchain(X509* inputCert, const Signatur
             break;
         }
     }
+    if (!signatureBlock) {
+        SIGNATURE_TOOLS_LOGE("Get signatureBlock failed");
+        return false;
+    }
 
     if (signatureBlock->GetCapacity() == 0) {
         return false;
@@ -478,6 +482,10 @@ int32_t VerifyHap::VerifyOriginalPackageSignature(RandomAccessFile& hapFile, Sig
             profileBlock = &block.optionalBlockValue;
             break;
         }
+    }
+    if (!profileBlock) {
+        SIGNATURE_TOOLS_LOGE("Get profileBlock failed");
+        return PARSE_ERROR;
     }
 
     Pkcs7Context pkcs7Context;

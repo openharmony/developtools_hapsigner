@@ -94,7 +94,7 @@ std::vector<std::string> ParamsTrustList::GetTrustList(const std::string& comman
     if (trustMap.find(keyParam) != trustMap.end()) {
         return trustMap[keyParam];
     } else {
-        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "'" + command + "is not trust command");
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "'" + command + "' is not trust command");
         trustMap[keyParam].clear();
         return trustMap[keyParam];
     }
