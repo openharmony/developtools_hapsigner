@@ -15,6 +15,7 @@
 
 package com.ohos.hapsigntool;
 
+import com.ohos.entity.ReSignEnterpriseAppParameters;
 import com.ohos.entity.RetMsg;
 import com.ohos.entity.SignAppParameters;
 import com.ohos.entity.SignProfileParameters;
@@ -80,12 +81,27 @@ public final class HapSignTool {
 
     private static final String PWD_ENTER_BY_COMMAND_PARAMETER = "0";
 
+    /**
+     * Input original application package file with ZIP format.
+     */
+    private static final String INPUT_FILE_FORMAT_ZIP = "zip";
+
+    /**
+     * Input original application package file with ELF format.
+     */
+    private static final String INPUT_FILE_FORMAT_ELF = "elf";
+
+    /**
+     * Input original application package file with binary format.
+     */
+    private static final String INPUT_FILE_FORMAT_BIN = "bin";
+
     private static final List<String> informList = new ArrayList<>();
 
     static {
-        informList.add("bin");
-        informList.add("elf");
-        informList.add("zip");
+        informList.add(INPUT_FILE_FORMAT_BIN);
+        informList.add(INPUT_FILE_FORMAT_ELF);
+        informList.add(INPUT_FILE_FORMAT_ZIP);
     }
 
     private HapSignTool() {
@@ -185,6 +201,9 @@ public final class HapSignTool {
                 break;
             case Method.VERIFY_PROFILE:
                 isSuccess = runVerifyProfile(params.getOptions(), api);
+                break;
+            case Method.RE_SIGN_ENTERPRISE_APP:
+                isSuccess = runReSignEnterpriseApp(params.getOptions(), api);
                 break;
             default:
                 isSuccess = callGenerators(params, api);
@@ -343,7 +362,7 @@ public final class HapSignTool {
             }
         }
         checkProfile(params);
-        String inForm = params.getString(Options.IN_FORM, "zip");
+        String inForm = params.getString(Options.IN_FORM, INPUT_FILE_FORMAT_ZIP);
         if (!StringUtils.isEmpty(inForm) && !containsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
                     .toString(Options.IN_FORM, "value must be " + informList));
@@ -359,7 +378,7 @@ public final class HapSignTool {
         String profileFile = params.getString(Options.PROFILE_FILE);
         String profileSigned = params.getString(Options.PROFILE_SIGNED, SIGNED);
 
-        if ("elf".equalsIgnoreCase(inForm) && StringUtils.isEmpty(profileFile)) {
+        if (INPUT_FILE_FORMAT_ELF.equalsIgnoreCase(inForm) && StringUtils.isEmpty(profileFile)) {
             return;
         }
         if (!SIGNED.equals(profileSigned) && !NOT_SIGNED.equals(profileSigned)) {
@@ -399,7 +418,7 @@ public final class HapSignTool {
     private static boolean runVerifyApp(Options params, ServiceApi api) {
         params.required(Options.IN_FILE, Options.OUT_CERT_CHAIN,
                 Options.OUT_PROFILE);
-        String inForm = params.getString(Options.IN_FORM, "zip");
+        String inForm = params.getString(Options.IN_FORM, INPUT_FILE_FORMAT_ZIP);
         if (!containsIgnoreCase(inForm)) {
             CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
                     .toString(Options.IN_FORM, "value must be " + informList));
@@ -418,6 +437,30 @@ public final class HapSignTool {
         }
 
         return api.verifyProfile(params);
+    }
+
+    private static boolean runReSignEnterpriseApp(Options params, ServiceApi api) {
+        params.required(Options.MODE, Options.IN_FILE, Options.OUT_FILE, Options.SIGN_ALG);
+        String mode = params.getString(Options.MODE);
+        if (!LOCAL_SIGN.equalsIgnoreCase(mode) && !REMOTE_SIGN.equalsIgnoreCase(mode)) {
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString(Options.MODE, "value must be localSign/remoteSign"));
+        }
+        if (LOCAL_SIGN.equalsIgnoreCase(mode)) {
+            params.required(Options.KEY_STORE_FILE, Options.KEY_ALIAS, Options.APP_CERT_FILE);
+            FileUtils.validFileType(params.getString(Options.KEY_STORE_FILE), "p12", "jks");
+            if (shouldEnterByInteractiveMode(params)) {
+                EnterPassword.enterPassword(params);
+            }
+        }
+        String inForm = params.getString(Options.IN_FORM, INPUT_FILE_FORMAT_ZIP);
+        if (!StringUtils.isEmpty(inForm) && !INPUT_FILE_FORMAT_ZIP.equalsIgnoreCase(inForm)) {
+            CustomException.throwException(ERROR.COMMAND_ERROR, SignToolErrMsg.PARAM_CHECK_FAILED
+                    .toString(Options.IN_FORM, "value must be " + INPUT_FILE_FORMAT_ZIP));
+        }
+        String signAlg = params.getString(Options.SIGN_ALG);
+        CmdUtil.judgeEndSignAlgType(signAlg);
+        return api.runReSignEnterpriseApp(params);
     }
 
     /**
@@ -441,6 +484,32 @@ public final class HapSignTool {
             }
         }
         return false;
+    }
+
+    /**
+     * Re-sign enterprise application
+     *
+     * @param parameters re-sign enterprise application parameters
+     * @return RetMsg
+     */
+    public static RetMsg reSignEnterpriseApp(ReSignEnterpriseAppParameters parameters) {
+        try {
+            if (parameters == null) {
+                throw new ParamException("params is null");
+            }
+            Options options = parameters.toOptions();
+            ServiceApi api = new SignToolServiceImpl();
+            if (runReSignEnterpriseApp(options, api)) {
+                return new RetMsg(ERROR.SUCCESS_CODE, "re-sign app success");
+            }
+            return new RetMsg(ERROR.SIGN_ERROR, "re-sign app failed");
+        } catch (CustomException e) {
+            return new RetMsg(e.getError(), e.getMessage());
+        } catch (ParamException e) {
+            return new RetMsg(ERROR.COMMAND_PARAM_ERROR, "paramException : " + e.getMessage());
+        } catch (Exception e) {
+            return new RetMsg(ERROR.UNKNOWN_ERROR, "unknownException : " + e.getMessage());
+        }
     }
 
     /**

@@ -469,4 +469,35 @@ public class SignToolErrMsg {
             .addDescription("Zip format failed")
             .addCause("%s")
             .build();
+
+    /**
+     * SIGNED_APP_SIZE_INVALID
+     */
+    public static final ErrorMsg SIGNED_APP_SIZE_INVALID = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("17")
+            .addErrCode("005")
+            .addDescription("The size of signed application is out of range")
+            .addCause("The size of application exceeded 4GB after being signed, which is beyond the zip specification.")
+            .addSolution("Please reduce the application package size.")
+            .build();
+
+    /**
+     * HAP_VERIFY_FAILED
+     */
+    public static final ErrorMsg HAP_VERIFY_FAILED = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("18")
+            .addErrCode("001")
+            .addDescription("Verify input HAP failed")
+            .addCause("%s")
+            .build();
+
+    /**
+     * Unsupported application distribution type
+     */
+    public static final ErrorMsg UNSUPPORTED_DISTRIBUTION_TYPE = ErrorMsg.getSignToolErrBuilder()
+            .addTypeCode("18")
+            .addErrCode("002")
+            .addDescription("Unsupported application distribution type: %s")
+            .addCause("The input file is not an enterprise application")
+            .build();
 }

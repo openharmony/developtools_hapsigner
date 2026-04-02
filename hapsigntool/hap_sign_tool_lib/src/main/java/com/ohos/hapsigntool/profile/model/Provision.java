@@ -72,6 +72,16 @@ public class Provision {
     public static final String ENTERPRISE = "enterprise";
 
     /**
+     * Enterprise normal application distribute type.
+     */
+    public static final String ENTERPRISE_NORMAL = "enterprise_normal";
+
+    /**
+     * Enterprise MDM application distribute type.
+     */
+    public static final String ENTERPRISE_MDM = "enterprise_mdm";
+
+    /**
      * Field OS_INTEGRATION.
      */
     public static final String OS_INTEGRATION = "os_integration";
@@ -156,6 +166,18 @@ public class Provision {
      * Dto for provision profile.
      */
     public Provision() {}
+
+    /**
+     * Determine whether an application is an enterprise application based on the distribution type.
+     *
+     * @param distributionType application distribution type
+     * @return if true, the application is an enterprise application
+     */
+    public static boolean isEnterpriseApp(String distributionType) {
+        return ENTERPRISE.equalsIgnoreCase(distributionType)
+                || ENTERPRISE_NORMAL.equalsIgnoreCase(distributionType)
+                || ENTERPRISE_MDM.equalsIgnoreCase(distributionType);
+    }
 
     /**
      * buildType valid

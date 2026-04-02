@@ -183,7 +183,13 @@ public class SignAppParameters implements Parameters {
         return options;
     }
 
-    private void keyStoreFileToOptions(Options options) throws ParamException {
+    /**
+     * Transfer keystore file parameters
+     *
+     * @param options cmd options
+     * @throws ParamException parameter invalid
+     */
+    protected void keyStoreFileToOptions(Options options) throws ParamException {
         if (mode == Mode.LOCAL_SIGN) {
             if (keyStoreFile == null) {
                 throw new ParamException(Options.KEY_STORE_FILE);
@@ -196,7 +202,13 @@ public class SignAppParameters implements Parameters {
         }
     }
 
-    private void appCertFileToOptions(Options options) throws ParamException {
+    /**
+     * Transfer application sign cert parameters
+     *
+     * @param options cmd options
+     * @throws ParamException parameter invalid
+     */
+    protected void appCertFileToOptions(Options options) throws ParamException {
         if (mode == Mode.LOCAL_SIGN) {
             if (appCertFile == null) {
                 throw new ParamException(Options.APP_CERT_FILE);
@@ -209,7 +221,13 @@ public class SignAppParameters implements Parameters {
         }
     }
 
-    private void remoteSignParamToOptions(Options options) throws ParamException {
+    /**
+     * Transfer remote sign parameters
+     *
+     * @param options cmd options
+     * @throws ParamException parameter invalid
+     */
+    protected void remoteSignParamToOptions(Options options) throws ParamException {
         if (mode == Mode.LOCAL_SIGN) {
             return;
         }
