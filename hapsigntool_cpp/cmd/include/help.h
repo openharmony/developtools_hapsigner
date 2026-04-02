@@ -293,7 +293,7 @@ const std::string SIGN_APP_HELP_TXT = R"(
 )";
 
 const std::string RE_SIGN_APP_HELP_TXT = R"(
-    resign-enterprise-app [options]:
+    resign-enterprise-app[options]:
         -mode : signature mode, required fields, including localSign/remoteSign;
         -keyAlias : key alias, required fields;
         -keyPwd : key password, optional fields on localSign mode;
