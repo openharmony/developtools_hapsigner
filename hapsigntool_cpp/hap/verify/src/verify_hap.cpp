@@ -603,7 +603,7 @@ bool VerifyHap::CheckCodeSign(const std::string& hapFilePath,
         }
         if (!CheckFileNameAndBlockArray(hapFilePath, propertyBlockArray))
             return false;
-        
+
         std::vector<std::string> fileNameArray = StringUtils::SplitString(hapFilePath, '.');
         uint32_t blockType;
         propertyBlockArray.GetUInt32(OFFSET_ZERO, blockType);
