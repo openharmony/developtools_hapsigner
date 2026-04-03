@@ -77,6 +77,7 @@ public:
     static std::string GetAppIdentifier(const std::string& profileContent);
     static std::pair<std::string, std::string> ParseAppIdentifier(const std::string& profileContent);
     static std::vector<int8_t> GetHapSigningBlockMagic(int compatibleVersion);
+    static std::vector<int8_t> GetHapSigningBlockMagicV3();
     static int GetHapSigningBlockVersion(int compatibleVersion);
     static bool ReadFileToByteBuffer(const std::string& file, ByteBuffer& buffer);
 
