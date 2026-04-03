@@ -15,6 +15,12 @@
 
 package com.ohos.hapsigntool.hap.verify;
 
+import com.ohos.hapsigntool.entity.Pair;
+import com.ohos.hapsigntool.error.ProfileException;
+import com.ohos.hapsigntool.profile.model.Provision;
+import com.ohos.hapsigntool.utils.FileUtils;
+import com.ohos.hapsigntool.utils.LogUtils;
+import com.google.gson.JsonSyntaxException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -23,6 +29,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Provider;
 import java.security.Security;
 import java.security.cert.CertificateException;
@@ -34,6 +41,8 @@ import java.util.Collection;
  * @since 2021/12/20
  */
 public class VerifyUtils {
+    private static final LogUtils LOGGER = new LogUtils(VerifyUtils.class);
+
     static {
         Provider bc = Security.getProvider("BC");
         if (bc == null) {
@@ -70,5 +79,38 @@ public class VerifyUtils {
                 throw new OperatorCreationException("Failed to verify BC signatures: " + e.getMessage(), e);
             }
         });
+    }
+
+    /**
+     * Parse profile content from signed or unsigned profile block
+     *
+     * @param value profile block value
+     * @return parsed Provision object and original content string
+     * @throws ProfileException if profile content is invalid
+     */
+    public static Pair<Provision, String> parseProfile(byte[] value) throws ProfileException {
+        String profiledContent = null;
+        try {
+            CMSSignedData cmsSignedData = new CMSSignedData(value);
+            Object contentObj = cmsSignedData.getSignedContent().getContent();
+            if (!(contentObj instanceof byte[])) {
+                throw new ProfileException("Check profile failed, signed profile content is not byte array!");
+            }
+            profiledContent = new String((byte[]) contentObj, StandardCharsets.UTF_8);
+        } catch (CMSException e) {
+            LOGGER.info("profile maybe is not signed");
+            profiledContent = new String(value, StandardCharsets.UTF_8);
+        }
+        try {
+            Provision provision = FileUtils.GSON.fromJson(profiledContent, Provision.class);
+            if (provision == null) {
+                throw new ProfileException("Profile content is empty");
+            }
+            return Pair.create(provision, profiledContent);
+        } catch (JsonSyntaxException e) {
+            throw new ProfileException("Profile content invalid", e);
+        } catch (Exception e) {
+            throw new ProfileException("Failed to parse profile: " + e.getMessage(), e);
+        }
     }
 }

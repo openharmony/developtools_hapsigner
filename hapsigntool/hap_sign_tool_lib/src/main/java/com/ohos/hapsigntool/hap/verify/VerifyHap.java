@@ -202,6 +202,10 @@ public class VerifyHap {
                     case HapUtils.HAP_PROPERTY_BLOCK_ID:
                         writeOptionalBytesToFile(optionalBlock.getValue(), outputPropertyFile);
                         break;
+                    case HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID:
+                    case HapUtils.ENTERPRISE_CODE_RE_SIGN_BLOCK_ID:
+                    case HapUtils.ENTERPRISE_RE_SIGN_BLOCK_ID:
+                        break;
                     default:
                         throw new IOException("Unsupported Block Id: 0x" + Long.toHexString(type));
                 }
@@ -264,6 +268,8 @@ public class VerifyHap {
             HapVerify verifyEngine = getHapVerify(hapFile, zipInfo, hapSigningBlockAndOffsetInFile,
                     signatureSchemeBlock, optionalBlocks);
             result = verifyEngine.verify();
+            result.setZipInfo(zipInfo);
+            result.setHapSignBlockInfo(hapSigningBlockAndOffsetInFile);
             result.setSignBlockVersion(hapSigningBlockAndOffsetInFile.getVersion());
         } catch (IOException e) {
             LOGGER.error("Verify Hap has IO error!", e);
@@ -322,7 +328,13 @@ public class VerifyHap {
             throws FsVerityDigestException, IOException, VerifyCodeSignException, CMSException, ProfileException {
         Map<Integer, byte[]> map = optionalBlocks.stream()
                 .collect(Collectors.toMap(SigningBlock::getType, SigningBlock::getValue));
-        byte[] propertyBlockArray = map.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
+        byte[] propertyBlockArray = map.get(HapUtils.ENTERPRISE_CODE_RE_SIGN_BLOCK_ID);
+        // check enterprise code re-sign
+        if (propertyBlockArray != null && propertyBlockArray.length > 0) {
+            LOGGER.info("Locate enterprise code re-sign data success.");
+        } else {
+            propertyBlockArray = map.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
+        }
         if (propertyBlockArray != null && propertyBlockArray.length > 0) {
             LOGGER.info("trying verify codesign block");
             String[] fileNameArray = hapFilePath.split("\\.");

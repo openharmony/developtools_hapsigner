@@ -25,6 +25,7 @@ import com.ohos.hapsigntool.entity.Options;
 import com.ohos.hapsigntool.codesigning.exception.CodeSignException;
 import com.ohos.hapsigntool.codesigning.exception.FsVerityDigestException;
 import com.ohos.hapsigntool.codesigning.sign.CodeSigning;
+import com.ohos.hapsigntool.entity.Pair;
 import com.ohos.hapsigntool.error.CustomException;
 import com.ohos.hapsigntool.error.ERROR;
 import com.ohos.hapsigntool.error.SignToolErrMsg;
@@ -39,7 +40,10 @@ import com.ohos.hapsigntool.hap.sign.SignBin;
 import com.ohos.hapsigntool.hap.sign.SignElf;
 import com.ohos.hapsigntool.hap.sign.SignHap;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
+import com.ohos.hapsigntool.hap.verify.VerifyHap;
+import com.ohos.hapsigntool.hap.verify.VerifyResult;
 import com.ohos.hapsigntool.hap.verify.VerifyUtils;
+import com.ohos.hapsigntool.profile.model.Provision;
 import com.ohos.hapsigntool.utils.CertificateUtils;
 import com.ohos.hapsigntool.utils.DigestUtils;
 import com.ohos.hapsigntool.utils.EscapeCharacter;
@@ -52,6 +56,7 @@ import com.ohos.hapsigntool.utils.StringUtils;
 import com.ohos.hapsigntool.zip.ByteBufferZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataInput;
 import com.ohos.hapsigntool.zip.RandomAccessFileZipDataOutput;
+import com.ohos.hapsigntool.zip.UnsignedDecimalUtil;
 import com.ohos.hapsigntool.zip.Zip;
 import com.ohos.hapsigntool.zip.ZipDataInput;
 import com.ohos.hapsigntool.zip.ZipDataOutput;
@@ -84,6 +89,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Sign provider super class
@@ -316,13 +322,12 @@ public abstract class SignProvider {
      * @return true, if sign successfully
      */
     public boolean sign(Options options) {
-        List<X509Certificate> publicCerts = null;
         File output = null;
         File tmpOutput = null;
         boolean isRet = false;
         boolean isPathOverlap = false;
         try {
-            publicCerts = getX509Certificates(options);
+            List<X509Certificate> publicCerts = getX509Certificates(options);
             checkCompatibleVersion();
             File input = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
             output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
@@ -352,6 +357,9 @@ public abstract class SignProvider {
                 appendCodeSignBlock(signerConfig, tmpOutput, suffix, centralDirectoryOffset, zip);
                 byte[] signingBlock = SignHap.sign(contents, signerConfig, optionalBlocks);
                 long newCentralDirectoryOffset = centralDirectoryOffset + signingBlock.length;
+                if (newCentralDirectoryOffset >= UnsignedDecimalUtil.MAX_UNSIGNED_INT_VALUE) {
+                    CustomException.throwException(ERROR.ZIP_ERROR, SignToolErrMsg.SIGNED_APP_SIZE_INVALID.toString());
+                }
                 ZipUtils.setCentralDirectoryOffset(eocdBuffer, newCentralDirectoryOffset);
                 LOGGER.info("Generate signing block success, begin write it to output file");
 
@@ -367,6 +375,174 @@ public abstract class SignProvider {
             printErrorLog(e);
         }
         return doAfterSign(isRet, isPathOverlap, tmpOutput, output);
+    }
+
+    /**
+     * re-sign enterprise hap file
+     *
+     * @param options parameters used to re-sign enterprise hap file
+     * @return true, if re-sign enterprise hap file successfully
+     */
+    public boolean runReSignEnterpriseApp(Options options) {
+        File output = null;
+        File tmpOutput = null;
+        boolean isRet = false;
+        boolean isPathOverlap = false;
+        try {
+            // 1. check the parameters
+            checkParams(options);
+            // 2. load signature cert chain and CRL
+            List<X509Certificate> publicCerts = getPublicCerts();
+            Optional<X509CRL> crl = getCrl();
+            // 3. verify signed hap
+            output = new File(signParams.get(ParamConstants.PARAM_BASIC_OUTPUT_FILE));
+            String input = options.getString(ParamConstants.PARAM_BASIC_INPUT_FILE);
+            VerifyResult verifyResult = verifyHap(input);
+            List<SigningBlock> oldOptionalBlocks = verifyResult.getOptionalBlocks();
+            // 4. create signer config
+            SignerConfig signerConfig = createSignerConfigs(publicCerts, crl, options);
+
+            // 5. prepare re-sing optional blocks and check profile content
+            byte[] signatureSchemeBlock = verifyResult.getSignatureSchemeBlock();
+            prepareReSignBlocks(oldOptionalBlocks, signatureSchemeBlock);
+
+            // 6. copy HAP to temp or out file
+            File inputHap = new File(signParams.get(ParamConstants.PARAM_BASIC_INPUT_FILE));
+            isPathOverlap = inputHap.getCanonicalPath().equals(output.getCanonicalPath());
+            tmpOutput = isPathOverlap ? File.createTempFile("re-signed", ".hap") : output;
+            copyFile(tmpOutput, inputHap, verifyResult);
+            // 7. do enterprise signature
+            doEnterpriseAppReSign(tmpOutput, inputHap, verifyResult, signerConfig);
+            isRet = true;
+        } catch (InvalidParamsException | CustomException | FsVerityDigestException | HapFormatException
+                 | CodeSignException | ProfileException e) {
+            printErrorLogWithoutStack(e);
+        } catch (IOException e) {
+            LOGGER.error(SignToolErrMsg.FILE_IO_FAILED.toString(e.getMessage()));
+        } catch (SignatureException e) {
+            printErrorLog(e);
+        } catch (Exception e) {
+            LOGGER.error(SignToolErrMsg.UNKNOWN_ERROR.toString(e.getMessage()));
+        }
+        return doAfterSign(isRet, isPathOverlap, tmpOutput, output);
+    }
+
+    private void doEnterpriseAppReSign(File tmpOutput, File inputHap, VerifyResult verifyResult,
+            SignerConfig signerConfig) throws IOException, FsVerityDigestException,
+            CodeSignException, ProfileException, SignatureException {
+        try (RandomAccessFile outputHap = new RandomAccessFile(tmpOutput, "rw");
+             RandomAccessFile inputHapFile = new RandomAccessFile(inputHap, "r")) {
+            ZipDataInput srcHapFile = new RandomAccessFileZipDataInput(inputHapFile);
+            ZipFileInfo zipInfo = verifyResult.getZipInfo();
+            HapUtils.HapSignBlockInfo hapSignBlockInfo = verifyResult.getHapSignBlockInfo();
+            long offset = hapSignBlockInfo.getOffset();
+            ByteBuffer eocd = zipInfo.getEocd();
+            ZipUtils.setCentralDirectoryOffset(eocd, offset);
+            ZipDataInput beforeCentralDir = srcHapFile.slice(0, offset);
+            ZipDataInput centralDirectory = srcHapFile.slice(zipInfo.getCentralDirectoryOffset(),
+                    zipInfo.getCentralDirectorySize());
+            appendResignCodeSignBlock(signerConfig, tmpOutput, "hap", offset, new Zip(tmpOutput));
+            ZipDataInput[] contents = {beforeCentralDir, centralDirectory, new ByteBufferZipDataInput(eocd)};
+            byte[] reSignEnterpriseAppBytes = SignHap.reSignEnterpriseApp(contents, signerConfig, optionalBlocks);
+            long newCentralDirectoryOffset = offset + reSignEnterpriseAppBytes.length;
+            if (newCentralDirectoryOffset >= UnsignedDecimalUtil.MAX_UNSIGNED_INT_VALUE) {
+                CustomException.throwException(ERROR.ZIP_ERROR, SignToolErrMsg.SIGNED_APP_SIZE_INVALID.toString());
+            }
+            ZipUtils.setCentralDirectoryOffset(eocd, newCentralDirectoryOffset);
+            outputSignedFile(outputHap, offset, reSignEnterpriseAppBytes, centralDirectory, eocd);
+        }
+    }
+
+    /**
+     * Copy HAP file content to temporary output file
+     *
+     * @param tmpOutput temporary output file
+     * @param inputHap input HAP file
+     * @param verifyResult verification result containing zip info
+     * @throws IOException if I/O error occurs
+     */
+    private void copyFile(File tmpOutput, File inputHap, VerifyResult verifyResult) throws IOException {
+        // copy file
+        try (RandomAccessFile outputHap = new RandomAccessFile(tmpOutput, "rw");
+             RandomAccessFile inputHapFile = new RandomAccessFile(inputHap, "r")) {
+            // if out file exist, clean it.
+            outputHap.setLength(0L);
+            ZipDataInput srcHapFile = new RandomAccessFileZipDataInput(inputHapFile);
+            ZipDataOutput outputHapIn = new RandomAccessFileZipDataOutput(outputHap);
+            ZipFileInfo zipInfo = verifyResult.getZipInfo();
+            HapUtils.HapSignBlockInfo hapSignBlockInfo = verifyResult.getHapSignBlockInfo();
+            long offset = hapSignBlockInfo.getOffset();
+            ByteBuffer eocd = zipInfo.getEocd().slice().order(ByteOrder.LITTLE_ENDIAN);
+            ZipUtils.setCentralDirectoryOffset(eocd, offset);
+            srcHapFile.copyTo(0, offset, outputHapIn);
+            ZipDataInput centralDirectory = srcHapFile.slice(zipInfo.getCentralDirectoryOffset(),
+                    zipInfo.getCentralDirectorySize());
+            centralDirectory.copyTo(0, centralDirectory.size(), outputHapIn);
+            outputHapIn.write(eocd);
+        }
+    }
+
+    /**
+     * Prepare re-sign blocks from old optional blocks
+     *
+     * @param oldSignOptionalBlocks old optional blocks from original HAP
+     * @param oldSignatureSchemeBlock old signature scheme block
+     */
+    private void prepareReSignBlocks(List<SigningBlock> oldSignOptionalBlocks,
+                                                   byte[] oldSignatureSchemeBlock) {
+        Map<Integer, SigningBlock> optionalBlockMap = oldSignOptionalBlocks.stream()
+                .collect(Collectors.toMap(SigningBlock::getType, signingBlock -> signingBlock));
+        SigningBlock profileBlock = optionalBlockMap.get(HapUtils.HAP_PROFILE_BLOCK_ID);
+        if (profileBlock == null) {
+            CustomException.throwException(ERROR.NOT_SUPPORT_ERROR,
+                SignToolErrMsg.VERIFY_PROFILE_FAILED.toString("Profile block not found in HAP file"));
+        }
+        // check enterprise application based on profile
+        checkProfile(profileBlock);
+        SigningBlock oldCodeSignBlock = optionalBlockMap.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
+        if (oldCodeSignBlock != null) {
+            this.optionalBlocks.add(oldCodeSignBlock);
+        }
+        this.optionalBlocks.add(profileBlock);
+        this.optionalBlocks.add(new SigningBlock(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID, oldSignatureSchemeBlock));
+    }
+
+    /**
+     * Verify HAP file
+     *
+     * @param hapPath path to HAP file
+     * @return verification result
+     */
+    private VerifyResult verifyHap(String hapPath) {
+        VerifyHap verifyHap = new VerifyHap(false);
+        VerifyResult verifyResult = verifyHap.verifyHap(hapPath);
+        if (!verifyResult.isVerified()) {
+            CustomException.throwException(ERROR.VERIFY_ERROR, SignToolErrMsg.HAP_VERIFY_FAILED
+                    .toString(verifyResult.getMessage()));
+        }
+        return verifyResult;
+    }
+
+    /**
+     * Check if profile block contains enterprise application distribution type
+     *
+     * @param profileBlock profile signing block
+     */
+    private void checkProfile(SigningBlock profileBlock) {
+        byte[] value = profileBlock.getValue();
+        try {
+            Pair<Provision, String> provision = VerifyUtils.parseProfile(value);
+            String appDistributionType = provision.getFirst().getAppDistributionType();
+
+            if (!Provision.isEnterpriseApp(appDistributionType)) {
+                CustomException.throwException(ERROR.NOT_SUPPORT_ERROR,
+                        SignToolErrMsg.UNSUPPORTED_DISTRIBUTION_TYPE.toString(appDistributionType));
+            }
+            this.profileContent = provision.getSecond();
+        } catch (ProfileException e) {
+            CustomException.throwException(ERROR.VERIFY_ERROR,
+                    SignToolErrMsg.VERIFY_PROFILE_FAILED.toString(e.getMessage()));
+        }
     }
 
     /**

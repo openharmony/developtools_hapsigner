@@ -103,4 +103,12 @@ public interface ServiceApi {
      */
     boolean verifyHap(Options options);
 
+    /**
+     * Re-sign enterprise hap.
+     *
+     * @param options options
+     * @return Result indicating whether the enterprise HAP is re-signed.
+     */
+    boolean runReSignEnterpriseApp(Options options);
+
 }

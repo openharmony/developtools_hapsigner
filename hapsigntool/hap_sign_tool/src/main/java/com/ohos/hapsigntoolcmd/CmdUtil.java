@@ -274,5 +274,10 @@ public final class CmdUtil {
          * Verify profile method name.
          */
         public static final String VERIFY_PROFILE = "verify-profile";
+
+        /**
+         * Re-sign enterprise application package.
+         */
+        public static final String RE_SIGN_ENTERPRISE_APP = "resign-enterprise-app";
     }
 }

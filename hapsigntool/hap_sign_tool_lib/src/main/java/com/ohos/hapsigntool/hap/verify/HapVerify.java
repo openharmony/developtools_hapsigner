@@ -15,9 +15,15 @@
 
 package com.ohos.hapsigntool.hap.verify;
 
+import com.ohos.hapsigntool.entity.Pair;
+import com.ohos.hapsigntool.error.ProfileException;
+import com.ohos.hapsigntool.error.VerifyCertificateChainException;
 import com.ohos.hapsigntool.hap.entity.SigningBlock;
 import com.ohos.hapsigntool.entity.ContentDigestAlgorithm;
 import com.ohos.hapsigntool.entity.SignatureAlgorithm;
+import com.ohos.hapsigntool.profile.model.BundleInfo;
+import com.ohos.hapsigntool.profile.model.Provision;
+import com.ohos.hapsigntool.utils.CertUtils;
 import com.ohos.hapsigntool.utils.DigestUtils;
 import com.ohos.hapsigntool.hap.utils.HapUtils;
 import com.ohos.hapsigntool.utils.LogUtils;
@@ -29,6 +35,7 @@ import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.Store;
@@ -36,6 +43,7 @@ import org.bouncycastle.util.Store;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -64,7 +72,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class used to verify hap-file with signature
@@ -85,12 +95,6 @@ public class HapVerify {
     private ZipDataInput eocd;
 
     private List<SigningBlock> optionalBlocks;
-
-    private Map<ContentDigestAlgorithm, byte[]> digestMap = new HashMap<ContentDigestAlgorithm, byte[]>();
-
-    private JcaX509CertificateConverter certificateConverter = new JcaX509CertificateConverter();
-
-    private JcaX509CRLConverter crlConverter = new JcaX509CRLConverter();
 
     private boolean isPrintCert;
 
@@ -128,7 +132,163 @@ public class HapVerify {
      * @return verify result.
      */
     public VerifyResult verify() {
-        return parserSigner(signatureSchemeBlock);
+        Map<Integer, SigningBlock> blockMap = optionalBlocks.stream().collect(Collectors.toMap(SigningBlock::getType,
+                block -> block));
+        if (blockMap.containsKey(HapUtils.ENTERPRISE_RE_SIGN_BLOCK_ID)) {
+            List<SigningBlock> blocks = new ArrayList<>();
+            SigningBlock propertyBlock = blockMap.get(HapUtils.HAP_PROPERTY_BLOCK_ID);
+            if (propertyBlock != null) {
+                blocks.add(propertyBlock);
+            }
+            SigningBlock profileBlock = blockMap.get(HapUtils.HAP_PROFILE_BLOCK_ID);
+            if (profileBlock == null) {
+                return new VerifyResult(false, VerifyResult.RET_CODE_RESIGN_PROFILE_CHECK_ERROR,
+                        "Profile block not found in HAP file");
+            }
+            blocks.add(profileBlock);
+            ByteBuffer oldSignatureBlockBuffer = signatureSchemeBlock.slice();
+            VerifyResult verifyResultOld = parserSigner(signatureSchemeBlock, blocks);
+            if (!verifyResultOld.isVerified()) {
+                LOGGER.error("Verify old signature block failed");
+                return verifyResultOld;
+            }
+            LOGGER.info("Verify old signature block success");
+            // check profile and signer certs
+            try {
+                checkProfileAndSignatureCert(profileBlock.getValue(), verifyResultOld);
+            } catch (VerifyHapException e) {
+                return new VerifyResult(false, VerifyResult.RET_CODE_RESIGN_PROFILE_CHECK_ERROR,
+                        "Check profile and signer certificate failed: " + e.getMessage());
+            }
+            byte[] oldSignatureBlock = new byte[oldSignatureBlockBuffer.remaining()];
+            oldSignatureBlockBuffer.get(oldSignatureBlock);
+            blocks.add(new SigningBlock(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID, oldSignatureBlock));
+            if (blockMap.containsKey(HapUtils.ENTERPRISE_CODE_RE_SIGN_BLOCK_ID)) {
+                blocks.add(blockMap.get(HapUtils.ENTERPRISE_CODE_RE_SIGN_BLOCK_ID));
+            }
+            byte[] reSignatureBlockBytes = blockMap.get(HapUtils.ENTERPRISE_RE_SIGN_BLOCK_ID).getValue();
+            ByteBuffer reSignatureBlockBuffer = ByteBuffer.wrap(reSignatureBlockBytes);
+            VerifyResult enterpriseReSignVerifyResult = parserSigner(reSignatureBlockBuffer, blocks);
+            enterpriseReSignVerifyResult.setSignatureSchemeBlock(oldSignatureBlock);
+            return enterpriseReSignVerifyResult;
+        } else {
+            return parserSigner(signatureSchemeBlock, optionalBlocks);
+        }
+    }
+
+    /**
+     * Check profile content and verify certificate matches
+     *
+     * @param profileContent profile block content
+     * @param verifyResult verification result containing certificate information
+     * @throws VerifyHapException if profile or certificate verification fails
+     */
+    private void checkProfileAndSignatureCert(byte[] profileContent, VerifyResult verifyResult)
+            throws VerifyHapException {
+        if (profileContent == null || profileContent.length == 0) {
+            return;
+        }
+        Pair<Provision, String> provision;
+        try {
+            provision = VerifyUtils.parseProfile(profileContent);
+        } catch (ProfileException e) {
+            throw new VerifyHapException("Parse profile content failed", e);
+        }
+        String appDistributionType = provision.getFirst().getAppDistributionType();
+        if (!Provision.isEnterpriseApp(appDistributionType)) {
+            throw new VerifyHapException("The input file is not an enterprise application");
+        }
+        X509Certificate certFromProvision;
+        try {
+            certFromProvision = getCertFromProvision(provision.getFirst());
+            if (certFromProvision == null) {
+                throw new VerifyHapException("Find certificate from profile failed");
+            }
+        } catch (CertificateException | VerifyCertificateChainException e) {
+            throw new VerifyHapException("Get certificate from profile error", e);
+        }
+        List<X509Certificate> signatureCerts = getSignatureCerts(verifyResult);
+        if (signatureCerts.isEmpty()) {
+            throw new VerifyHapException("Can not find signer certificate");
+        }
+        for (X509Certificate signatureCert : signatureCerts) {
+            if (certFromProvision.equals(signatureCert)) {
+                return;
+            }
+        }
+        throw new VerifyHapException("Certificate in profile do not match signer certificate");
+    }
+
+    /**
+     * Get certificate from provision profile
+     *
+     * @param provision provision object
+     * @return X509 certificate
+     * @throws CertificateException if certificate error occurs
+     * @throws VerifyCertificateChainException if certificate chain verification fails
+     * @throws VerifyHapException if provision is invalid
+     */
+    private X509Certificate getCertFromProvision(Provision provision)
+            throws CertificateException, VerifyCertificateChainException, VerifyHapException {
+        if (provision == null) {
+            throw new VerifyHapException("Provision is null");
+        }
+        String type = provision.getType();
+        String certString;
+        if (Provision.isBuildTypeRelease(type)) {
+            certString = Optional.ofNullable(provision.getBundleInfo()).map(BundleInfo::getDistributionCertificate)
+                    .orElse("");
+        } else {
+            certString = Optional.ofNullable(provision.getBundleInfo()).map(BundleInfo::getDevelopmentCertificate)
+                    .orElse("");
+        }
+        if (certString.isEmpty()) {
+            throw new VerifyHapException("Certificate in profile is empty");
+        }
+        List<X509Certificate> certs = CertUtils.generateCertificates(certString.getBytes(StandardCharsets.UTF_8));
+        if (certs == null || certs.size() != 1) {
+            throw new VerifyHapException("Certificate in profile is invalid");
+        }
+        return certs.get(0);
+    }
+
+    /**
+     * Get signature certificates from verification result
+     *
+     * @param verifyResult verification result containing certificate information
+     * @return list of X509 certificates
+     * @throws VerifyHapException if certificate extraction fails
+     */
+    private List<X509Certificate> getSignatureCerts(VerifyResult verifyResult) throws VerifyHapException {
+        Store<X509CertificateHolder> certificateHolderStore = verifyResult.getCertificateHolderStore();
+        if (certificateHolderStore == null) {
+            return Collections.emptyList();
+        }
+        List<SignerInformation> signerInfos = verifyResult.getSignerInfos();
+        if (signerInfos == null || signerInfos.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<X509Certificate> signerCerts = new ArrayList<>();
+        JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
+        try {
+            for (SignerInformation signerInfo : signerInfos) {
+                SignerId sid = signerInfo.getSID();
+                if (sid == null) {
+                    continue;
+                }
+                X509CertificateSelector selector = new X509CertificateSelector(sid);
+                Collection<X509CertificateHolder> matches = certificateHolderStore.getMatches(selector);
+                if (matches == null || matches.isEmpty()) {
+                    continue;
+                }
+                for (X509CertificateHolder match : matches) {
+                    signerCerts.add(converter.getCertificate(match));
+                }
+            }
+        } catch (CertificateException e) {
+            throw new VerifyHapException("Get certificate chain error!", e);
+        }
+        return signerCerts;
     }
 
     /**
@@ -138,7 +298,7 @@ public class HapVerify {
      * @return verify result.
      */
     public VerifyResult verifyElfProfile(byte[] profile) {
-        return parserSigner(ByteBuffer.wrap(profile), false);
+        return parserSigner(ByteBuffer.wrap(profile), false, null);
     }
 
     public void setIsPrintCert(boolean isPrintCert) {
@@ -222,11 +382,11 @@ public class HapVerify {
         }
     }
 
-    private VerifyResult parserSigner(ByteBuffer signer) {
-        return parserSigner(signer, true);
+    private VerifyResult parserSigner(ByteBuffer signer, List<SigningBlock> optionalBlocks) {
+        return parserSigner(signer, true, optionalBlocks);
     }
 
-    private VerifyResult parserSigner(ByteBuffer signer, boolean verifyContent) {
+    private VerifyResult parserSigner(ByteBuffer signer, boolean verifyContent, List<SigningBlock> optionalBlocks) {
         byte[] signingBlock = new byte[signer.remaining()];
         signer.get(signingBlock);
         try {
@@ -235,7 +395,7 @@ public class HapVerify {
             List<X509CRL> crlList = getCrlList(cmsSignedData);
             verifyCRLs(crlList, certificates);
             if (verifyContent) {
-                checkContentDigest(cmsSignedData);
+                checkContentDigest(cmsSignedData, optionalBlocks);
             }
             List<SignerInformation> signerInfos = getSignerInformations(cmsSignedData);
             VerifyResult result = new VerifyResult(true, VerifyResult.RET_SUCCESS, "Verify success");
@@ -244,6 +404,7 @@ public class HapVerify {
             result.setCertificateHolderStore(cmsSignedData.getCertificates());
             result.setSignerInfos(signerInfos);
             result.setOptionalBlocks(optionalBlocks);
+            result.setSignatureSchemeBlock(signingBlock);
             return result;
         } catch (VerifyHapException e) {
             LOGGER.error("Verify profile error!", e);
@@ -261,7 +422,8 @@ public class HapVerify {
         return new ArrayList<>(signers);
     }
 
-    private void checkContentDigest(CMSSignedData cmsSignedData) throws VerifyHapException {
+    private void checkContentDigest(CMSSignedData cmsSignedData, List<SigningBlock> optionalBlocks)
+            throws VerifyHapException {
         Object content = cmsSignedData.getSignedContent().getContent();
         byte[] contentBytes = null;
         if (content instanceof byte[]) {
@@ -270,7 +432,7 @@ public class HapVerify {
             throw new VerifyHapException("PKCS cms content is not a byte array!");
         }
         try {
-            boolean isCheckResult = parserContentinfo(contentBytes);
+            boolean isCheckResult = parserContentinfo(contentBytes, optionalBlocks);
             if (!isCheckResult) {
                 throw new VerifyHapException("Hap content digest check failed.");
             }
@@ -310,6 +472,7 @@ public class HapVerify {
         Iterator<X509CRLHolder> iterator = matches.iterator();
         List<X509CRL> crlList = new ArrayList<>();
         try {
+            JcaX509CRLConverter crlConverter = new JcaX509CRLConverter();
             while (iterator.hasNext()) {
                 X509CRLHolder crlHolder = iterator.next();
                 crlList.add(crlConverter.getCRL(crlHolder));
@@ -331,6 +494,7 @@ public class HapVerify {
         }
         List<X509Certificate> certificateList = new ArrayList<>();
         Iterator<X509CertificateHolder> iterator = matches.iterator();
+        JcaX509CertificateConverter certificateConverter = new JcaX509CertificateConverter();
         while (iterator.hasNext()) {
             X509CertificateHolder next = iterator.next();
             certificateList.add(certificateConverter.getCertificate(next));
@@ -338,9 +502,10 @@ public class HapVerify {
         return certificateList;
     }
 
-    private boolean parserContentinfo(byte[] data)
+    private boolean parserContentinfo(byte[] data, List<SigningBlock> blocks)
             throws DigestException, SignatureException, IOException {
         ByteBuffer digestDatas = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
+        Map<ContentDigestAlgorithm, byte[]> digestMap = new HashMap<>();
         while (digestDatas.remaining() > 4) {
             /**
              * contentinfo format:
@@ -374,7 +539,7 @@ public class HapVerify {
 
         Set<ContentDigestAlgorithm> keySet = digestMap.keySet();
         Map<ContentDigestAlgorithm, byte[]> actualDigestMap = HapUtils.computeDigests(
-                keySet, new ZipDataInput[]{beforeApkSigningBlock, centralDirectoryBlock, eocd}, optionalBlocks);
+                keySet, new ZipDataInput[]{beforeApkSigningBlock, centralDirectoryBlock, eocd}, blocks);
         boolean isResult = true;
         for (Entry<ContentDigestAlgorithm, byte[]> entry : digestMap.entrySet()) {
             ContentDigestAlgorithm digestAlg = entry.getKey();
