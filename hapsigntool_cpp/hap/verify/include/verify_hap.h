@@ -50,7 +50,7 @@ public:
     bool IsVerifyResign(const SignatureInfo& hapSignInfo);
     X509* ExtractCertificateFromProfile(const SignatureInfo& hapSignInfo);
     bool CheckInputCertMatchWithCertchain(X509* inputCert, const SignatureInfo& hapSignInfo);
-    bool IsEnterpriseProfileDistributionType(const SignatureInfo& hapSignInfo);
+    static bool IsEnterpriseProfileDistributionType(const SignatureInfo& hapSignInfo);
     bool CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile);
     bool VerifyCertificateConsistency(const SignatureInfo& hapSignInfo);
     int32_t VerifyOriginalPackageSignature(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options);

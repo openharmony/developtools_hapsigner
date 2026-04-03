@@ -31,6 +31,7 @@
 #include "sign_bin.h"
 #include "params.h"
 #include "constant.h"
+#include "verify_hap.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -292,6 +293,11 @@ bool SignProvider::GetResignBlocks(Options* options)
     SignatureInfo hapSignInfo;
     if (!HapSignerBlockUtils::FindHapSignature(inputFile, hapSignInfo)) {
         return PrintErrorLog("[ReSignHap] Failed to find HAP signature", ZIP_ERROR, inputFilePath);
+    }
+
+    if (!VerifyHap::IsEnterpriseProfileDistributionType(hapSignInfo)) {
+        SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
+        return VERIFY_ERROR;
     }
 
     optionalBlocks.clear();

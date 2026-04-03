@@ -74,6 +74,7 @@ ohos_unittest("hapsigntool_pc_unittest") {
     "./hapSign/sign_elf_test.cpp",
     "./hapSign/sign_head_test.cpp",
     "./hapSign/sign_provider_test.cpp",
+    "./hapReSign/hap_resign_test.cpp",
     "./hapVerify/hap_cert_verify_openssl_utils_test.cpp",
     "./hapVerify/hap_signer_block_utils_test.cpp",
     "./hapVerify/hap_verify_test.cpp",
