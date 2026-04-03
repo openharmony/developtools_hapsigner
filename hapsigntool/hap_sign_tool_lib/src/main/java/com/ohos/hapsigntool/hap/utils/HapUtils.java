@@ -163,14 +163,14 @@ public class HapUtils {
     public static final int BLOCK_SIZE = 8;
 
     /**
+     * Minimum api version for hap sign schema v3.
+     */
+    public static final int MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3 = 8;
+
+    /**
      * The set of IDs of optional blocks in hap signature block.
      */
     private static final Set<Integer> HAP_SIGNATURE_OPTIONAL_BLOCK_IDS ;
-
-    /**
-     * Minimum api version for hap sign schema v3.
-     */
-    private static final int MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3 = 8;
 
     /**
      * Magic word of hap signature block v2

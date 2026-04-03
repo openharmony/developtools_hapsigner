@@ -401,6 +401,8 @@ public abstract class SignProvider {
             List<SigningBlock> oldOptionalBlocks = verifyResult.getOptionalBlocks();
             // 4. create signer config
             SignerConfig signerConfig = createSignerConfigs(publicCerts, crl, options);
+            // re-sign enterprise application using v3 schema default
+            signerConfig.setCompatibleVersion(HapUtils.MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3);
 
             // 5. prepare re-sing optional blocks and check profile content
             byte[] signatureSchemeBlock = verifyResult.getSignatureSchemeBlock();
