@@ -457,9 +457,10 @@ int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSig
 
     if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
         SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
+        sk_x509_CRL_pop_free(x509Crl, X509_CRL_free);
         return VERIFY_ERROR;
     }
-
+    sk_x509_CRL_pop_free(x509Crl, X509_CRL_free);
     if (!HapSignerBlockUtils::VerifyHapIntegrity(pkcs7Context, hapFile, hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Integrity failed");
         return VERIFY_ERROR;
@@ -512,9 +513,10 @@ int32_t VerifyHap::VerifyOriginalPackageSignature(RandomAccessFile& hapFile, Sig
 
     if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
         SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
+        sk_x509_CRL_pop_free(x509Crl, X509_CRL_free);
         return VERIFY_ERROR;
     }
-
+    sk_x509_CRL_pop_free(x509Crl, X509_CRL_free);
     if (!HapSignerBlockUtils::VerifyOldHapIntegrity(pkcs7Context, hapFile, hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Integrity failed");
         return VERIFY_ERROR;
