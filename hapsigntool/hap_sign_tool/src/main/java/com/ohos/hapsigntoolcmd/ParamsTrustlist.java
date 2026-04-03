@@ -61,6 +61,7 @@ public final class ParamsTrustlist {
         COMMONDS.add(CmdUtil.Method.VERIFY_PROFILE + OPTIONS);
         COMMONDS.add(CmdUtil.Method.SIGN_APP + OPTIONS);
         COMMONDS.add(CmdUtil.Method.VERIFY_APP + OPTIONS);
+        COMMONDS.add(CmdUtil.Method.RE_SIGN_ENTERPRISE_APP + OPTIONS);
     }
 
     private ParamsTrustlist() {

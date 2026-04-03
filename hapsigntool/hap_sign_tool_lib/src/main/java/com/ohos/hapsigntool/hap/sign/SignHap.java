@@ -79,11 +79,23 @@ public abstract class SignHap {
             List<SigningBlock> optionalBlocks)
             throws SignatureException {
         byte[] hapSignatureSchemeBlock = generateHapSignatureSchemeBlock(signerConfig, contentDigests);
-        return generateHapSigningBlock(hapSignatureSchemeBlock, optionalBlocks, signerConfig.getCompatibleVersion());
+        List<SigningBlock> signingBlocks = new ArrayList<>(optionalBlocks);
+        signingBlocks.add(new SigningBlock(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID, hapSignatureSchemeBlock));
+        return generateHapSigningBlock(signingBlocks, signerConfig.getCompatibleVersion());
     }
 
-    private static byte[] generateHapSigningBlock(byte[] hapSignatureSchemeBlock,
-                                                  List<SigningBlock> optionalBlocks, int compatibleVersion) {
+    private static byte[] generateEnterpriseReHapSigningBlock(
+            SignerConfig signerConfig,
+            Map<ContentDigestAlgorithm, byte[]> contentDigests,
+            List<SigningBlock> optionalBlocks)
+            throws SignatureException {
+        byte[] hapSignatureSchemeBlock = generateHapSignatureSchemeBlock(signerConfig, contentDigests);
+        List<SigningBlock> signingBlocks = new ArrayList<>(optionalBlocks);
+        signingBlocks.add(new SigningBlock(HapUtils.ENTERPRISE_RE_SIGN_BLOCK_ID, hapSignatureSchemeBlock));
+        return generateHapSigningBlock(signingBlocks, signerConfig.getCompatibleVersion());
+    }
+
+    private static byte[] generateHapSigningBlock(List<SigningBlock> signingBlocks, int compatibleVersion) {
         // FORMAT:
         // Proof-of-Rotation pairs(optional):
         // uint32:type
@@ -109,14 +121,13 @@ public abstract class SignHap {
         // uint64: size
         // uint128: magic
         // uint32: version
-        long optionalBlockSize = 0L;
-        for (SigningBlock optionalBlock : optionalBlocks) {
-            optionalBlockSize += optionalBlock.getLength();
+        long blockSize = 0L;
+        for (SigningBlock signingBlock : signingBlocks) {
+            blockSize += signingBlock.getLength();
         }
         long resultSize =
-                ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1))
-                        + optionalBlockSize // optional pair
-                        + hapSignatureSchemeBlock.length // App signing pairs
+                ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * signingBlocks.size())
+                        + blockSize // optional pair
                         + BLOCK_COUNT // block count
                         + HapUtils.BLOCK_SIZE // size
                         + BLOCK_MAGIC // magic
@@ -128,31 +139,21 @@ public abstract class SignHap {
         result.order(ByteOrder.LITTLE_ENDIAN);
 
         Map<Integer, Integer> typeAndOffsetMap = new HashMap<Integer, Integer>();
-        int currentOffset = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE
-                + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1));
+        int currentOffset = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) * signingBlocks.size());
         int currentOffsetInBlockValue = 0;
-        int blockValueSizes = (int) (optionalBlockSize + hapSignatureSchemeBlock.length);
+        int blockValueSizes = (int) blockSize;
         byte[] blockValues = new byte[blockValueSizes];
 
-        for (SigningBlock optionalBlock : optionalBlocks) {
+        for (SigningBlock optionalBlock : signingBlocks) {
             System.arraycopy(
                     optionalBlock.getValue(), 0, blockValues, currentOffsetInBlockValue, optionalBlock.getLength());
             typeAndOffsetMap.put(optionalBlock.getType(), currentOffset);
             currentOffset += optionalBlock.getLength();
             currentOffsetInBlockValue += optionalBlock.getLength();
         }
-
-        System.arraycopy(
-                hapSignatureSchemeBlock, 0, blockValues, currentOffsetInBlockValue, hapSignatureSchemeBlock.length);
-        typeAndOffsetMap.put(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID, currentOffset);
-
-        extractedResult(optionalBlocks, result, typeAndOffsetMap);
-        result.putInt(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID); // type
-        result.putInt(hapSignatureSchemeBlock.length); // length
-        int offset = typeAndOffsetMap.get(HapUtils.HAP_SIGNATURE_SCHEME_V1_BLOCK_ID);
-        result.putInt(offset); // offset
+        extractedResult(signingBlocks, result, typeAndOffsetMap);
         result.put(blockValues);
-        result.putInt(optionalBlocks.size() + 1); // Signing block count
+        result.putInt(signingBlocks.size()); // Signing block count
         result.putLong(resultSize); // length of hap signing block
         result.put(HapUtils.getHapSigningBlockMagic(compatibleVersion)); // magic
         result.putInt(HapUtils.getHapSigningBlockVersion(compatibleVersion)); // version
@@ -226,5 +227,35 @@ public abstract class SignHap {
             contentDigestAlgorithms.add(signatureAlgorithm.getContentDigestAlgorithm());
         }
         return getHapSigningBlock(contentDigestAlgorithms, optionalBlocks, signerConfig, contents);
+    }
+
+    public static byte[] reSignEnterpriseApp(ZipDataInput[] contents, SignerConfig signerConfig,
+            List<SigningBlock> optionalBlocks) throws SignatureException {
+        Set<ContentDigestAlgorithm> contentDigestAlgorithms = new HashSet<ContentDigestAlgorithm>();
+        for (SignatureAlgorithm signatureAlgorithm : signerConfig.getSignatureAlgorithms()) {
+            contentDigestAlgorithms.add(signatureAlgorithm.getContentDigestAlgorithm());
+        }
+        return getEnterpriseReHapSigningBlock(contentDigestAlgorithms, optionalBlocks, signerConfig, contents);
+    }
+
+    private static byte[] getEnterpriseReHapSigningBlock(
+            Set<ContentDigestAlgorithm> contentDigestAlgorithms,
+            List<SigningBlock> optionalBlocks,
+            SignerConfig signerConfig,
+            ZipDataInput[] hapData)
+            throws SignatureException {
+        /**
+         * Compute digests of Hap contents
+         * Sign the digests and wrap the signature and signer info into the Hap Signing Block
+         */
+        byte[] hapSignatureBytes = null;
+        try {
+            Map<ContentDigestAlgorithm, byte[]> contentDigests =
+                    HapUtils.computeDigests(contentDigestAlgorithms, hapData, optionalBlocks);
+            hapSignatureBytes = generateEnterpriseReHapSigningBlock(signerConfig, contentDigests, optionalBlocks);
+        } catch (DigestException | IOException e) {
+            throw new SignatureException("Failed to compute digests of HAP", e);
+        }
+        return hapSignatureBytes;
     }
 }

@@ -72,7 +72,12 @@ public class HapUtils {
     public static final int HAP_PROPERTY_BLOCK_ID = 0x20000003;
 
     /**
-     * ID of enterprise code re-sign block
+     * ID of enterprise app re-sign block
+     */
+    public static final int ENTERPRISE_RE_SIGN_BLOCK_ID = 0x20000004;
+
+    /**
+     * ID of enterprise app code re-sign block
      */
     public static final int ENTERPRISE_CODE_RE_SIGN_BLOCK_ID = 0x20000005;
 
@@ -193,6 +198,8 @@ public class HapUtils {
         blockIds.add(HAP_PROOF_OF_ROTATION_BLOCK_ID);
         blockIds.add(HAP_PROFILE_BLOCK_ID);
         blockIds.add(HAP_PROPERTY_BLOCK_ID);
+        blockIds.add(ENTERPRISE_RE_SIGN_BLOCK_ID);
+        blockIds.add(ENTERPRISE_CODE_RE_SIGN_BLOCK_ID);
         HAP_SIGNATURE_OPTIONAL_BLOCK_IDS = Collections.unmodifiableSet(blockIds);
     }
 
