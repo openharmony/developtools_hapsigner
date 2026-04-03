@@ -297,7 +297,7 @@ bool SignHap::GenerateHapSigningBlockWithEnterpriseResign(const std::string& hap
     result.PutData(blockValues.c_str(), blockValueSizes);
     result.PutInt32(optionalBlocks.size() + 1); // Signing block count
     result.PutInt64(resultSize); // length of hap signing block
-    std::vector<int8_t> signingBlockMagic = HapUtils::HAP_SIGNING_BLOCK_MAGIC_V3;
+    std::vector<int8_t> signingBlockMagic = HapUtils::GetHapSigningBlockMagicV3();
     result.PutData(reinterpret_cast<const char*>(signingBlockMagic.data()), signingBlockMagic.size()); // magic
     result.PutInt32(HapUtils::GetHapSigningBlockVersion(compatibleVersion)); // version
     return true;

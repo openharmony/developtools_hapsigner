@@ -89,6 +89,11 @@ std::vector<int8_t> HapUtils::GetHapSigningBlockMagic(int compatibleVersion)
     return HAP_SIGNING_BLOCK_MAGIC_V2;
 }
 
+std::vector<int8_t> HapUtils::GetHapSigningBlockMagicV3()
+{
+    return HAP_SIGNING_BLOCK_MAGIC_V3;
+}
+
 int HapUtils::GetHapSigningBlockVersion(int compatibleVersion)
 {
     if (compatibleVersion >= MIN_COMPATIBLE_VERSION_FOR_SCHEMA_V3) {

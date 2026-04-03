@@ -364,7 +364,9 @@ bool VerifyHap::CheckInputCertMatchWithCertchain(X509* inputCert, const Signatur
 bool VerifyHap::VerifyCertificateConsistency(const SignatureInfo& hapSignInfo)
 {
     X509* profileCert = ExtractCertificateFromProfile(hapSignInfo);
-    return CheckInputCertMatchWithCertchain(profileCert, hapSignInfo);
+    bool result = CheckInputCertMatchWithCertchain(profileCert, hapSignInfo);
+    X509_free(profileCert);
+    return result;
 }
 
 bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProfile)
@@ -410,8 +412,12 @@ bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProf
                             "The public key is null!");
         ret = false;
     }
-    if (pkey1) EVP_PKEY_free(pkey1);
-    if (pkey2) EVP_PKEY_free(pkey2);
+    if (pkey1) {
+        EVP_PKEY_free(pkey1);
+    }
+    if (pkey2) {
+        EVP_PKEY_free(pkey2);
+    }
     return ret;
 }
 
