@@ -268,21 +268,6 @@ bool SignProvider::Sign(Options* options)
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
 }
 
-bool SignProvider::IsEnterpriseProfile()
-{
-    ProfileInfo info;
-    if (ParseProvision(profileContent, info) != PROVISION_OK) {
-        SIGNATURE_TOOLS_LOGE("parse provision error");
-        return PARSE_ERROR;
-    }
-    if (info.distributionType == AppDistType::ENTERPRISE_NORMAL ||
-        info.distributionType == AppDistType::ENTERPRISE_MDM ||
-        info.distributionType == AppDistType::ENTERPRISE) {
-        return true;
-    }
-    return false;
-}
-
 bool SignProvider::GetResignBlocks(Options* options)
 {
     std::string inputFilePath = options->GetString(Options::IN_FILE);
