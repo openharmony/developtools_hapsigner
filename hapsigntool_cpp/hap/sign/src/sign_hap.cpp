@@ -159,7 +159,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     for (const auto& elem : optionalBlocks) {
         if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes,
             elem.optionalBlockValue.GetBufferPtr(),
-            elem.optionalBlockValue.GetCapacity()) != 0) {
+            elem.optionalBlockValue.GetCapacity()) != EOK) {
             SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
             return false;
         }
@@ -168,7 +168,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
         currentOffsetInBlockValue += elem.optionalBlockValue.GetCapacity();
     }
     if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes, hapSignatureSchemeBlock.data(),
-        hapSignatureSchemeBlock.size()) != 0) {
+        hapSignatureSchemeBlock.size()) != EOK) {
         SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
         return false;
     }
@@ -259,7 +259,7 @@ bool SignHap::GenerateHapSigningBlockWithEnterpriseResign(const std::string& hap
     long optionalBlockSize = std::accumulate(optionalBlocks.begin(), optionalBlocks.end(), 0L,
         [](int64_t sum, const auto& elem) { return sum + elem.optionalBlockValue.GetCapacity(); });
     long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) *
-                       (optionalBlocks.size() + 1)) + optionalBlockSize + hapSignatureSchemeBlock.size() +
+        (optionalBlocks.size() + 1)) + optionalBlockSize + hapSignatureSchemeBlock.size() +
         BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC + BLOCK_VERSION;
     if (resultSize > INT_MAX) {
         SIGNATURE_TOOLS_LOGE("Illegal Argument. HapSigningBlock out of range: %ld", resultSize);
@@ -275,7 +275,7 @@ bool SignHap::GenerateHapSigningBlockWithEnterpriseResign(const std::string& hap
     for (const auto& elem : optionalBlocks) {
         if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes,
             elem.optionalBlockValue.GetBufferPtr(),
-            elem.optionalBlockValue.GetCapacity()) != 0) {
+            elem.optionalBlockValue.GetCapacity()) != EOK) {
             SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
             return false;
         }
@@ -284,7 +284,7 @@ bool SignHap::GenerateHapSigningBlockWithEnterpriseResign(const std::string& hap
         currentOffsetInBlockValue += elem.optionalBlockValue.GetCapacity();
     }
     if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes, hapSignatureSchemeBlock.data(),
-        hapSignatureSchemeBlock.size()) != 0) {
+        hapSignatureSchemeBlock.size()) != EOK) {
         SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
         return false;
     }
