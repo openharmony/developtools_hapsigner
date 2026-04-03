@@ -400,22 +400,22 @@ bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProf
     }
     EVP_PKEY* pkey1 = X509_get_pubkey(inputCert);
     EVP_PKEY* pkey2 = X509_get_pubkey(certInProfile);
-    if (pkey1 && pkey2 && EVP_PKEY_cmp(pkey1, pkey2) != 1) {
+    if (pkey1 != nullptr && pkey2 != nullptr && EVP_PKEY_cmp(pkey1, pkey2) != 1) {
         EVP_PKEY_free(pkey1);
         EVP_PKEY_free(pkey2);
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
                             "The public key does not match!");
         return false;
     }
-    if (!pkey1 || !pkey2) {
+    if (pkey1 == nullptr || pkey2 == nullptr) {
         PrintErrorNumberMsg("CERTIFICATE_ERROR", CERTIFICATE_ERROR,
                             "The public key is null!");
         ret = false;
     }
-    if (pkey1) {
+    if (pkey1 != nullptr) {
         EVP_PKEY_free(pkey1);
     }
-    if (pkey2) {
+    if (pkey2 != nullptr) {
         EVP_PKEY_free(pkey2);
     }
     return ret;
