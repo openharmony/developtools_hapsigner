@@ -159,7 +159,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
     for (const auto& elem : optionalBlocks) {
         if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes,
             elem.optionalBlockValue.GetBufferPtr(),
-            elem.optionalBlockValue.GetCapacity()) != EOK) {
+            elem.optionalBlockValue.GetCapacity()) != 0) {
             SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
             return false;
         }
@@ -168,7 +168,7 @@ bool SignHap::GenerateHapSigningBlock(const std::string& hapSignatureSchemeBlock
         currentOffsetInBlockValue += elem.optionalBlockValue.GetCapacity();
     }
     if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes, hapSignatureSchemeBlock.data(),
-        hapSignatureSchemeBlock.size()) != EOK) {
+        hapSignatureSchemeBlock.size()) != 0) {
         SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
         return false;
     }
@@ -297,7 +297,7 @@ bool SignHap::GenerateHapSigningBlockWithEnterpriseResign(const std::string& hap
     result.PutData(blockValues.c_str(), blockValueSizes);
     result.PutInt32(optionalBlocks.size() + 1); // Signing block count
     result.PutInt64(resultSize); // length of hap signing block
-    std::vector<int8_t> signingBlockMagic = HapUtils::GetHapSigningBlockMagic(compatibleVersion);
+    std::vector<int8_t> signingBlockMagic = HapUtils::HAP_SIGNING_BLOCK_MAGIC_V3;
     result.PutData(reinterpret_cast<const char*>(signingBlockMagic.data()), signingBlockMagic.size()); // magic
     result.PutInt32(HapUtils::GetHapSigningBlockVersion(compatibleVersion)); // version
     return true;
