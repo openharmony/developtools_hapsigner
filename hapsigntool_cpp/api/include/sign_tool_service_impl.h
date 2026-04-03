@@ -45,6 +45,7 @@ public:
     bool GetAndOutPutCert(LocalizationAdapter& adapter, X509* cert);
     bool SignProfile(Options* options)override;
     bool SignHap(Options* options)override;
+    bool ReSignHap(Options* options)override;
     bool VerifyProfile(Options* options)override;
     bool OutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
     bool OutPutCert(X509* cert, const std::string& outPutPath);

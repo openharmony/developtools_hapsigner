@@ -40,6 +40,7 @@ std::vector<std::string> ParamsRunTool::InformList = {
 static std::unordered_map <std::string,
                            std::function<bool(Options* params, SignToolServiceImpl& api)>> DISPATCH_RUN_METHOD {
     {SIGN_APP, ParamsRunTool::RunSignApp},
+    {RE_SIGN_APP, ParamsRunTool::RunReSignApp},
     {SIGN_PROFILE, ParamsRunTool::RunSignProfile},
     {VERIFY_APP, ParamsRunTool::RunVerifyApp},
     {VERIFY_PROFILE, ParamsRunTool::RunVerifyProfile}
@@ -233,6 +234,57 @@ bool ParamsRunTool::RunSignApp(Options* params, SignToolServiceImpl& api)
         }
     }
     return api.SignHap(params);
+}
+
+bool ParamsRunTool::RunReSignApp(Options* params, SignToolServiceImpl& api)
+{
+    if (!params->Required({Options::MODE, Options::IN_FILE, Options::OUT_FILE, Options::SIGN_ALG})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckInFile(params, {Options::IN_FILE, Options::APP_CERT_FILE,
+                                            Options::PROFILE_FILE, Options::KEY_STORE_FILE,
+                                            ParamConstants::PARAM_REMOTE_SIGNERPLUGIN})) {
+        return false;
+    }
+
+    if (!CmdUtil::UpdateParamForCheckOutFile(params, {Options::OUT_FILE})) {
+        return false;
+    }
+
+    std::string mode = params->GetString(Options::MODE);
+    if (!StringUtils::CaseCompare(mode, LOCAL_SIGN) &&
+        !StringUtils::CaseCompare(mode, REMOTE_SIGN)) {
+        PrintErrorNumberMsg("COMMAND_ERROR", COMMAND_ERROR, "not support command param '" + mode + "'");
+        return false;
+    }
+
+    std::string inForm = params->GetString(Options::INFORM, ZIP);
+    if (!StringUtils::IsEmpty(inForm) && !StringUtils::ContainsCase(InformList, inForm)) {
+        PrintErrorNumberMsg("NOT_SUPPORT_ERROR", NOT_SUPPORT_ERROR, "parameter '" + inForm
+                            + "' format error, Inform only support zip/elf/bin");
+        return false;
+    }
+    std::string signAlg = params->GetString(Options::SIGN_ALG);
+    if (!CmdUtil::JudgeSignAlgType(signAlg)) {
+        return false;
+    }
+    if (StringUtils::CaseCompare(mode, LOCAL_SIGN)) {
+        if (!params->Required({Options::KEY_STORE_FILE, Options::KEY_ALIAS, Options::APP_CERT_FILE})) {
+            return false;
+        }
+        if (!FileUtils::ValidFileType(params->GetString(Options::KEY_STORE_FILE), {"p12", "jks"})) {
+            return false;
+        }
+        if (!EnterPassword(params)) {
+            return false;
+        }
+    } else {
+        if (!EnterPasswordOfRemoteUserPwd(params)) {
+            return false;
+        }
+    }
+    return api.ReSignHap(params);
 }
 
 bool ParamsRunTool::CheckProfile(Options& params)

@@ -58,6 +58,8 @@ public:
     static const std::string PARAM_VERIFY_PROFILE_FILE;
     static const std::string PARAM_VERIFY_PROOF_FILE;
     static const std::string PARAM_VERIFY_PROPERTY_FILE;
+    static const std::string PARAM_VERIFY_HAP_SIGN_FILE;
+    static const std::string PARAM_VERIFY_CODE_RESIGN_FILE;
     static const std::string PARAM_RESIGN_CONFIG_FILE;
     static const std::string PARAM_IN_FORM;
     static const std::string PARAM_SIGN_CODE;

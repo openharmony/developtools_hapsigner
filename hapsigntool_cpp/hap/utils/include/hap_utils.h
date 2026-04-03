@@ -54,6 +54,7 @@ public:
     static constexpr int HAP_PROOF_OF_ROTATION_BLOCK_ID = 0x20000001;
     static constexpr int HAP_PROFILE_BLOCK_ID = 0x20000002;
     static constexpr int HAP_PROPERTY_BLOCK_ID = 0x20000003;
+    static constexpr int ENTERPRISE_RE_SIGN_BLOCK_ID = 0x20000004;
     static constexpr int ENTERPRISE_CODE_RE_SIGN_BLOCK_ID = 0x20000005;
     static constexpr int HAP_CODE_SIGN_BLOCK_ID = 0x30000001;
     static constexpr int CONTENT_DIGESTED_CHUNK_MAX_SIZE_BYTES = 1024 * 1024;
@@ -76,6 +77,7 @@ public:
     static std::string GetAppIdentifier(const std::string& profileContent);
     static std::pair<std::string, std::string> ParseAppIdentifier(const std::string& profileContent);
     static std::vector<int8_t> GetHapSigningBlockMagic(int compatibleVersion);
+    static std::vector<int8_t> GetHapSigningBlockMagicV3();
     static int GetHapSigningBlockVersion(int compatibleVersion);
     static bool ReadFileToByteBuffer(const std::string& file, ByteBuffer& buffer);
 

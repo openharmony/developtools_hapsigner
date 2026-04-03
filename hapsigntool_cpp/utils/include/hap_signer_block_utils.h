@@ -43,6 +43,8 @@ enum HapBlobType {
     PROOF_ROTATION_BLOB = 0x20000001,
     PROFILE_BLOB = 0x20000002,
     PROPERTY_BLOB = 0x20000003,
+    ENTERPRISE_RE_SIGN_BLOB = 0x20000004,
+    ENTERPRISE_CODE_RE_SIGN_BLOB = 0x20000005,
 };
 
 struct HapSubSignBlockHead {
@@ -66,6 +68,7 @@ public:
     static const int32_t ZIP_CD_OFFSET_IN_EOCD;
     static const int32_t ZIP_CD_SIZE_OFFSET_IN_EOCD;
     static const int32_t ZIP_BLOCKS_NUM_NEED_DIGEST;
+    static const int32_t ZIP_RESIGN_BLOCKS_NUM;
     static const char ZIP_FIRST_LEVEL_CHUNK_PREFIX;
     static const char ZIP_SECOND_LEVEL_CHUNK_PREFIX;
     /* the specifications of hap sign block */
@@ -80,6 +83,8 @@ public:
     DLL_EXPORT static bool GetOptionalBlockIndex(std::vector<OptionalBlock>& optionBlocks,
                                                  int32_t type, int& index);
     DLL_EXPORT static bool VerifyHapIntegrity(Pkcs7Context& digestInfo, RandomAccessFile& hapFile,
+                                              SignatureInfo& signInfo);
+    DLL_EXPORT static bool VerifyOldHapIntegrity(Pkcs7Context& digestInfo, RandomAccessFile& hapFile,
                                               SignatureInfo& signInfo);
     DLL_EXPORT static int64_t CreatTestZipFile(const std::string& pathFile, SignatureInfo& signInfo);
 
@@ -97,7 +102,11 @@ public:
                                        int64_t blockArrayLen,
                                        int64_t hapSignBlockOffset,
                                        SignatureInfo& signInfo);
+    DLL_EXPORT static bool ClassifyBothHapSubSigningBlock(SignatureInfo& signInfo, int32_t blockCount,
+                                                          const ByteBuffer& signBuffer, uint32_t type);
     DLL_EXPORT static bool ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
+                                                      const ByteBuffer& subBlock, uint32_t type);
+    DLL_EXPORT static bool ClassifyHapSubReSigningBlock(SignatureInfo& signInfo,
                                                       const ByteBuffer& subBlock, uint32_t type);
     DLL_EXPORT static bool SetUnsignedInt32(ByteBuffer& buffer, int32_t offset, int64_t value);
     DLL_EXPORT static bool ComputeDigestsWithOptionalBlock(const DigestParameter& digestParam,

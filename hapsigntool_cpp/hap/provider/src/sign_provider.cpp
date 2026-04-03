@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <numeric>
 
+#include "cJSON.h"
 #include "string_utils.h"
 #include "file_utils.h"
 #include "pkcs7_data.h"
@@ -30,6 +31,7 @@
 #include "sign_bin.h"
 #include "params.h"
 #include "constant.h"
+#include "verify_hap.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -262,6 +264,98 @@ bool SignProvider::Sign(Options* options)
     if (!OutputSignedFile(outputHap.get(), dataSrcContents.cDOffset, signingBlock, dataSrcContents.centralDir,
                           dataSrcContents.eocdPair.first)) {
         return PrintErrorLog("[SignHap] write output signed file failed.", ZIP_ERROR, tmpOutputFilePath);
+    }
+    return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
+}
+
+bool SignProvider::GetResignBlocks(Options* options)
+{
+    std::string inputFilePath = options->GetString(Options::IN_FILE);
+    RandomAccessFile inputFile;
+    if (!inputFile.Init(inputFilePath)) {
+        return PrintErrorLog("[ReSignHap] Failed to init input HAP file", IO_ERROR, inputFilePath);
+    }
+    SignatureInfo hapSignInfo;
+    if (!HapSignerBlockUtils::FindHapSignature(inputFile, hapSignInfo)) {
+        return PrintErrorLog("[ReSignHap] Failed to find HAP signature", ZIP_ERROR, inputFilePath);
+    }
+
+    if (!VerifyHap::IsEnterpriseProfileDistributionType(hapSignInfo)) {
+        SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
+        return VERIFY_ERROR;
+    }
+
+    optionalBlocks.clear();
+
+    for (const auto& block : hapSignInfo.optionBlocks) {
+        optionalBlocks.push_back(block);
+    }
+
+    OptionalBlock originalMainSignBlock = {
+        HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID,
+        hapSignInfo.hapSignatureBlock
+    };
+    optionalBlocks.push_back(originalMainSignBlock);
+    return true;
+}
+
+bool SignProvider::ReSignHap(Options* options)
+{
+    if (!GetResignBlocks(options)) {
+        return PrintErrorLog("Get Resign Blocks failed", COMMAND_PARAM_ERROR);
+    }
+    bool isPathOverlap = false;
+    SignerConfig signerConfig;
+    std::string suffix;
+    if (CheckParmaAndInitConfig(signerConfig, options, suffix) != RET_OK) {
+        return PrintErrorLog("Check Parma And Init Config failed", COMMAND_PARAM_ERROR);
+    }
+    std::string inputFilePath = options->GetString(Options::IN_FILE);
+    auto [inputStream, tmpOutput, tmpOutputFilePath] = PrepareIOStreams(inputFilePath,
+        signParams.at(ParamConstants::PARAM_BASIC_OUTPUT_FILE), isPathOverlap);
+
+    if (!inputStream || !tmpOutput) {
+        return PrintErrorLog("[ReSignHap] Prepare IO Streams failed", IO_ERROR);
+    }
+
+    std::shared_ptr<ZipSigner> zip = std::make_shared<ZipSigner>();
+    std::shared_ptr<RandomAccessFile> outputHap = std::make_shared<RandomAccessFile>();
+    if (!InitZipOutput(outputHap, zip, inputStream, tmpOutput, tmpOutputFilePath)) {
+        return PrintErrorLog("[ReSignHap] Init Zip Output failed", IO_ERROR);
+    }
+
+    DataSourceContents dataSrcContents;
+    if (!InitDataSourceContents(*outputHap, dataSrcContents)) {
+        return PrintErrorLog("[ReSignHap] Init Data Source Contents failed", ZIP_ERROR, tmpOutputFilePath);
+    }
+
+    if (signParams.find(ParamConstants::PARAM_SIGN_CODE) == signParams.end()) {
+        signParams[ParamConstants::PARAM_SIGN_CODE] = ParamConstants::ENABLE_SIGN_CODE;
+    }
+
+    DataSource* contents[] = {dataSrcContents.beforeCentralDir,
+        dataSrcContents.centralDir, dataSrcContents.endOfCentralDir};
+
+    if (!AppendReCodeSignBlock(&signerConfig, tmpOutputFilePath, suffix, dataSrcContents.cDOffset, *zip)) {
+        return PrintErrorLog("[SignCode] AppendCodeSignBlock failed", SIGN_ERROR, tmpOutputFilePath);
+    }
+
+    ByteBuffer signingBlock;
+    if (!SignHap::SignWithEnterpriseResign(contents, sizeof(contents) / sizeof(contents[0]),
+                                           signerConfig, optionalBlocks, signingBlock)) {
+        return PrintErrorLog("[ReSignHap] SignHap Sign failed.", SIGN_ERROR, tmpOutputFilePath);
+    }
+
+    int64_t newCentralDirectoryOffset = dataSrcContents.cDOffset + signingBlock.GetCapacity();
+    SIGNATURE_TOOLS_LOGI("new Central Directory Offset is %" PRId64, newCentralDirectoryOffset);
+    dataSrcContents.eocdPair.first.SetPosition(0);
+    if (!ZipUtils::SetCentralDirectoryOffset(dataSrcContents.eocdPair.first, newCentralDirectoryOffset)) {
+        return PrintErrorLog("[ReSignHap] Set Central Directory Offset.", ZIP_ERROR, tmpOutputFilePath);
+    }
+
+    if (!OutputSignedFile(outputHap.get(), dataSrcContents.cDOffset, signingBlock, dataSrcContents.centralDir,
+                          dataSrcContents.eocdPair.first)) {
+        return PrintErrorLog("[ReSignHap] write output signed file failed.", ZIP_ERROR, tmpOutputFilePath);
     }
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
 }
