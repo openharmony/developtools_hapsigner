@@ -54,6 +54,7 @@ public:
     static bool RunCsr(Options* params, SignToolServiceImpl& api);
     static bool RunSignProfile(Options* params, SignToolServiceImpl& api);
     static bool RunSignApp(Options* params, SignToolServiceImpl& api);
+    static bool RunReSignApp(Options* params, SignToolServiceImpl& api);
     static bool RunVerifyProfile(Options* params, SignToolServiceImpl& api);
     static bool RunVerifyApp(Options* params, SignToolServiceImpl& api);
     static bool CheckEndCertArguments(Options& params);

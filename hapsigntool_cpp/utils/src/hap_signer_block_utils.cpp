@@ -27,6 +27,7 @@
 #include "digest_common.h"
 #include "signature_tools_log.h"
 #include "signature_tools_errno.h"
+#include "hap_utils.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -47,6 +48,7 @@ const int32_t HapSignerBlockUtils::ZIP_EOCD_COMMENT_LENGTH_OFFSET = 20;
 const int32_t HapSignerBlockUtils::ZIP_CD_OFFSET_IN_EOCD = 16;
 const int32_t HapSignerBlockUtils::ZIP_CD_SIZE_OFFSET_IN_EOCD = 12;
 const int32_t HapSignerBlockUtils::ZIP_BLOCKS_NUM_NEED_DIGEST = 3;
+const int32_t HapSignerBlockUtils::ZIP_RESIGN_BLOCKS_NUM = 5;
 
 const char HapSignerBlockUtils::ZIP_FIRST_LEVEL_CHUNK_PREFIX = 0x5a;
 const char HapSignerBlockUtils::ZIP_SECOND_LEVEL_CHUNK_PREFIX = 0xa5;
@@ -368,7 +370,7 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile, int3
             return false;
         }
         readLen += headLength;
-        if (!ClassifyHapSubSigningBlock(signInfo, signBuffer, subSignBlockHead.type)) {
+        if (!ClassifyBothHapSubSigningBlock(signInfo, blockCount, signBuffer, subSignBlockHead.type)) {
             SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", subSignBlockHead.type);
             return false;
         }
@@ -377,6 +379,23 @@ bool HapSignerBlockUtils::FindHapSubSigningBlock(RandomAccessFile& hapFile, int3
     if (readLen != blockArrayLen) {
         SIGNATURE_TOOLS_LOGE("Len: %" PRId64 " is not equal blockArrayLen: %" PRId64, readLen, blockArrayLen);
         return false;
+    }
+    return true;
+}
+
+bool HapSignerBlockUtils::ClassifyBothHapSubSigningBlock(SignatureInfo& signInfo, int32_t blockCount,
+                                                         const ByteBuffer& signBuffer, uint32_t type)
+{
+    if (blockCount == ZIP_RESIGN_BLOCKS_NUM) {
+        if (!ClassifyHapSubReSigningBlock(signInfo, signBuffer, type)) {
+            SIGNATURE_TOOLS_LOGE("subReSigningBlock error, type is %d", type);
+            return false;
+        }
+    } else {
+        if (!ClassifyHapSubSigningBlock(signInfo, signBuffer, type)) {
+            SIGNATURE_TOOLS_LOGE("subSigningBlock error, type is %d", type);
+            return false;
+        }
     }
     return true;
 }
@@ -399,6 +418,40 @@ bool HapSignerBlockUtils::ClassifyHapSubSigningBlock(SignatureInfo& signInfo,
         case PROFILE_BLOB:
         case PROOF_ROTATION_BLOB:
         case PROPERTY_BLOB:
+            {
+                OptionalBlock optionalBlockObject;
+                optionalBlockObject.optionalType = static_cast<int>(type);
+                optionalBlockObject.optionalBlockValue = subBlock;
+                signInfo.optionBlocks.push_back(optionalBlockObject);
+                ret = true;
+                break;
+            }
+        default:
+            break;
+    }
+    return ret;
+}
+
+bool HapSignerBlockUtils::ClassifyHapSubReSigningBlock(SignatureInfo& signInfo,
+                                                       const ByteBuffer& subBlock, uint32_t type)
+{
+    bool ret = false;
+    switch (type) {
+        case ENTERPRISE_RE_SIGN_BLOB:
+            {
+                if (signInfo.hapSignatureBlock.GetCapacity() != 0) {
+                    SIGNATURE_TOOLS_LOGE("find more than one hap sign block");
+                    break;
+                }
+                signInfo.hapSignatureBlock = subBlock;
+                ret = true;
+                break;
+            }
+        case HAP_SIGN_BLOB:
+        case PROFILE_BLOB:
+        case PROOF_ROTATION_BLOB:
+        case PROPERTY_BLOB:
+        case ENTERPRISE_CODE_RE_SIGN_BLOB:
             {
                 OptionalBlock optionalBlockObject;
                 optionalBlockObject.optionalType = static_cast<int>(type);
@@ -451,6 +504,51 @@ bool HapSignerBlockUtils::VerifyHapIntegrity(
 
     ByteBuffer actualDigest;
     if (!ComputeDigestsWithOptionalBlock(digestParam, signInfo.optionBlocks, chunkDigest, actualDigest)) {
+        SIGNATURE_TOOLS_LOGE("Compute Final Digests failed, alg: %d", nId);
+        return false;
+    }
+
+    if (!digestInfo.content.IsEqual(actualDigest)) {
+        SIGNATURE_TOOLS_LOGE("digest of contents verify failed, alg %d", nId);
+        return false;
+    }
+    PrintMsg(std::string("Digest verify result: ") + "success" + ", DigestAlgorithm: "
+             + DigestCommon::GetDigestAlgorithmString(digestInfo.digestAlgorithm));
+
+    return true;
+}
+
+bool HapSignerBlockUtils::VerifyOldHapIntegrity(
+    Pkcs7Context& digestInfo, RandomAccessFile& hapFile, SignatureInfo& signInfo)
+{
+    if (!SetUnsignedInt32(signInfo.hapEocd, ZIP_CD_OFFSET_IN_EOCD, signInfo.hapSigningBlockOffset)) {
+        SIGNATURE_TOOLS_LOGE("Set central dir offset failed");
+        return false;
+    }
+
+    int64_t centralDirSize = signInfo.hapEocdOffset - signInfo.hapCentralDirOffset;
+    FileDataSource contentsZip(hapFile, 0, signInfo.hapSigningBlockOffset, 0);
+    FileDataSource centralDir(hapFile, signInfo.hapCentralDirOffset, centralDirSize, 0);
+    ByteBufferDataSource eocd(signInfo.hapEocd);
+    DataSource* content[ZIP_BLOCKS_NUM_NEED_DIGEST] = {&contentsZip, &centralDir, &eocd};
+    int32_t nId = DigestCommon::GetDigestAlgorithmId(digestInfo.digestAlgorithm);
+    DigestParameter digestParam = GetDigestParameter(nId);
+    ByteBuffer chunkDigest;
+    if (!ComputeDigestsForEachChunk(digestParam, content, ZIP_BLOCKS_NUM_NEED_DIGEST, chunkDigest)) {
+        SIGNATURE_TOOLS_LOGE("Compute Content Digests failed, alg: %d", nId);
+        return false;
+    }
+
+    std::vector<OptionalBlock> filteredBlocks;
+    for (const auto& block : signInfo.optionBlocks) {
+        if (block.optionalType != HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID &&
+            block.optionalType != HapUtils::ENTERPRISE_CODE_RE_SIGN_BLOCK_ID) {
+            filteredBlocks.push_back(block);
+        }
+    }
+
+    ByteBuffer actualDigest;
+    if (!ComputeDigestsWithOptionalBlock(digestParam, filteredBlocks, chunkDigest, actualDigest)) {
         SIGNATURE_TOOLS_LOGE("Compute Final Digests failed, alg: %d", nId);
         return false;
     }

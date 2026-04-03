@@ -198,5 +198,109 @@ void SignHap::ExtractedResult(std::vector<OptionalBlock>& optionalBlocks, ByteBu
         result.PutInt32(offset);  // offset
     }
 }
+
+bool SignHap::SignWithEnterpriseResign(DataSource* contents[], int32_t len, SignerConfig& config,
+                                       std::vector<OptionalBlock>& optionalBlocks, ByteBuffer& result)
+{
+    if (len != CONTENT_NUBER) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR,
+                            "zip contents len must is 3, now is " + std::to_string(len));
+        return false;
+    }
+
+    std::vector<SignatureAlgorithmHelper> algoClass = config.GetSignatureAlgorithms();
+    if (algoClass.empty()) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Signature Algorithms is empty");
+        return false;
+    }
+
+    SignatureAlgorithm algo = static_cast<SignatureAlgorithm>(algoClass[0].m_id);
+    SIGNATURE_TOOLS_LOGI("[SignHap] Signature Algorithm  is %d", algo);
+    int32_t nId = DigestCommon::GetDigestAlgorithmId(algo);
+    DigestParameter digestParam = HapSignerBlockUtils::GetDigestParameter(nId);
+    ByteBuffer digContext;
+    std::vector<std::pair<int32_t, ByteBuffer>> nidAndcontentDigestsVec;
+    // 1:Summarize corresponding content and optionalBlock
+    if (!ComputeDigests(digestParam, contents, CONTENT_NUBER, optionalBlocks, digContext)) {
+        SIGNATURE_TOOLS_LOGE("[SignHap] compute Digests failed");
+        return false;
+    }
+    SIGNATURE_TOOLS_LOGI("[SignHap] ComputeDigests %d", digContext.GetCapacity());
+    // 2:Encoding Summary Information
+    ByteBuffer digMessage;
+    std::pair<int32_t, ByteBuffer> nidAndcontentDigests = std::make_pair(algo, digContext);
+    nidAndcontentDigestsVec.push_back(nidAndcontentDigests);
+    EncodeListOfPairsToByteArray(digestParam, nidAndcontentDigestsVec, digMessage);
+
+    SIGNATURE_TOOLS_LOGI("[SignHap] EncodeListOfPairsToByteArray %d", digMessage.GetCapacity());
+    // 3:Encrypt the encoded summary information.
+    std::shared_ptr<Pkcs7Generator> pkcs7Generator = std::make_shared<BCPkcs7Generator>();
+    std::string digMessageData(digMessage.GetBufferPtr(), digMessage.GetCapacity());
+    std::string ret;
+    if (pkcs7Generator->GenerateSignedData(digMessageData, &config, ret) != 0) {
+        SIGNATURE_TOOLS_LOGE("[SignHap] Generate Signed Data failed");
+        return false;
+    }
+    SIGNATURE_TOOLS_LOGI("[SignHap] GenerateSignedData %lu", static_cast<unsigned long>(ret.size()));
+    bool checkGenerateHapSigningBlockFlag = GenerateHapSigningBlockWithEnterpriseResign(ret, optionalBlocks,
+        config.GetCompatibleVersion(), result);
+    if (!checkGenerateHapSigningBlockFlag) {
+        PrintErrorNumberMsg("SIGN_ERROR", SIGN_ERROR, "Generate Hap Signing Block failed");
+        return false;
+    }
+    SIGNATURE_TOOLS_LOGI("[SignHap] GenerateHapReSigningBlock %d", result.GetCapacity());
+    return true;
+}
+
+bool SignHap::GenerateHapSigningBlockWithEnterpriseResign(const std::string& hapSignatureSchemeBlock,
+                                                          std::vector<OptionalBlock>& optionalBlocks,
+                                                          int compatibleVersion, ByteBuffer& result)
+{
+    long optionalBlockSize = std::accumulate(optionalBlocks.begin(), optionalBlocks.end(), 0L,
+        [](int64_t sum, const auto& elem) { return sum + elem.optionalBlockValue.GetCapacity(); });
+    long resultSize = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE + OPTIONAL_OFFSET_SIZE) *
+        (optionalBlocks.size() + 1)) + optionalBlockSize + hapSignatureSchemeBlock.size() +
+        BLOCK_COUNT + HapUtils::BLOCK_SIZE + BLOCK_MAGIC + BLOCK_VERSION;
+    if (resultSize > INT_MAX) {
+        SIGNATURE_TOOLS_LOGE("Illegal Argument. HapSigningBlock out of range: %ld", resultSize);
+        return false;
+    }
+    result.SetCapacity((int)resultSize);
+    std::unordered_map<int, int> typeAndOffsetMap;
+    int currentOffset = ((OPTIONAL_TYPE_SIZE + OPTIONAL_LENGTH_SIZE
+                         + OPTIONAL_OFFSET_SIZE) * (optionalBlocks.size() + 1));
+    int currentOffsetInBlockValue = 0;
+    int blockValueSizes = (int)(optionalBlockSize + hapSignatureSchemeBlock.size());
+    std::string blockValues(blockValueSizes, 0);
+    for (const auto& elem : optionalBlocks) {
+        if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes,
+            elem.optionalBlockValue.GetBufferPtr(),
+            elem.optionalBlockValue.GetCapacity()) != EOK) {
+            SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
+            return false;
+        }
+        typeAndOffsetMap.insert({ elem.optionalType, currentOffset });
+        currentOffset += elem.optionalBlockValue.GetCapacity();
+        currentOffsetInBlockValue += elem.optionalBlockValue.GetCapacity();
+    }
+    if (memcpy_s(blockValues.data() + currentOffsetInBlockValue, blockValueSizes, hapSignatureSchemeBlock.data(),
+        hapSignatureSchemeBlock.size()) != EOK) {
+        SIGNATURE_TOOLS_LOGE("GenerateHapSigningBlock memcpy_s failed\n");
+        return false;
+    }
+    typeAndOffsetMap.insert({ HapUtils::ENTERPRISE_RE_SIGN_BLOCK_ID, currentOffset });
+    ExtractedResult(optionalBlocks, result, typeAndOffsetMap);
+    result.PutInt32(HapUtils::ENTERPRISE_RE_SIGN_BLOCK_ID); // type
+    result.PutInt32(hapSignatureSchemeBlock.size()); // length
+    int offset = typeAndOffsetMap.at(HapUtils::ENTERPRISE_RE_SIGN_BLOCK_ID);
+    result.PutInt32(offset); // offset
+    result.PutData(blockValues.c_str(), blockValueSizes);
+    result.PutInt32(optionalBlocks.size() + 1); // Signing block count
+    result.PutInt64(resultSize); // length of hap signing block
+    std::vector<int8_t> signingBlockMagic = HapUtils::GetHapSigningBlockMagicV3();
+    result.PutData(reinterpret_cast<const char*>(signingBlockMagic.data()), signingBlockMagic.size()); // magic
+    result.PutInt32(HapUtils::GetHapSigningBlockVersion(compatibleVersion)); // version
+    return true;
+}
 } // namespace SignatureTools
 } // namespace OHOS

@@ -35,6 +35,7 @@ public:
     virtual bool SignProfile(Options* params) = 0;
     virtual bool VerifyProfile(Options* params) = 0;
     virtual bool SignHap(Options* params) = 0;
+    virtual bool ReSignHap(Options* params) = 0;
     virtual bool VerifyHapSigner(Options* params) = 0;
 };
 } // namespace SignatureTools

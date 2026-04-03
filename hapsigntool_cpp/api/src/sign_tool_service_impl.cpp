@@ -531,6 +531,21 @@ bool SignToolServiceImpl::SignHap(Options* options)
     return true;
 }
 
+bool SignToolServiceImpl::ReSignHap(Options* options)
+{
+    std::string mode = options->GetString(Options::MODE);
+    std::shared_ptr<SignProvider> signProvider;
+    if (LOCAL_SIGN == mode) {
+        signProvider = std::make_shared<LocalSignProvider>();
+    } else if (REMOTE_SIGN == mode) {
+        signProvider = std::make_shared<RemoteSignProvider>();
+    } else {
+        SIGNATURE_TOOLS_LOGE("Not implemented mode");
+        return false;
+    }
+    return signProvider->ReSignHap(options);
+}
+
 bool SignToolServiceImpl::VerifyProfile(Options* options)
 {
     LocalizationAdapter adapter(options);
