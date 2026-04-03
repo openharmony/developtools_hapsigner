@@ -354,7 +354,8 @@ bool HapReSignFuzzTest012(const uint8_t* data, size_t size)
     }
     VerifyHap verify;
     std::string hapFilePath(reinterpret_cast<const char*>(data), size);
-    ByteBuffer propertyBlockArray("test data", 9);
+    size_t PropertyBlockArraySize = 9;
+    ByteBuffer propertyBlockArray("test data", PropertyBlockArraySize);
 
     bool ret = verify.CheckFileNameAndBlockArray(hapFilePath, propertyBlockArray);
     return ret;
@@ -368,9 +369,10 @@ bool HapReSignFuzzTest013(const uint8_t* data, size_t size)
     VerifyHap verify;
     std::string outputHapSignFile = "./hapReSign/outputHapSign-fuzz.bin";
     std::string outputCodeResignFile = "./hapReSign/outputCodeResign-fuzz.bin";
+    size_t MaxOptionalBlocks = 10;
 
     std::vector<OptionalBlock> optionBlocks;
-    for (size_t i = 0; i < size && i < 10; i++) {
+    for (size_t i = 0; i < size && i < MaxOptionalBlocks; i++) {
         int blockType = static_cast<int>(data[i]);
         ByteBuffer blockData(reinterpret_cast<const char*>(data + i + 1), size - i - 1);
         OptionalBlock testBlock = {blockType, blockData};
