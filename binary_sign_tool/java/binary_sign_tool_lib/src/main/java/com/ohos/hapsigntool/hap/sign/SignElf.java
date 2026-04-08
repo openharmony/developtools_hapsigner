@@ -35,9 +35,10 @@ import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
@@ -248,7 +249,19 @@ public class SignElf {
         if (context.outputPath.equals(context.tmpOutputFile.getPath())) {
             return true;
         }
-        Files.move(context.tmpOutputFile.toPath(), output.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try (InputStream in = Files.newInputStream(context.tmpOutputFile.toPath());
+            OutputStream out = Files.newOutputStream(output.toPath())) {
+            // buffered 64k
+            byte[] buffer = new byte[1024 * 64];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.flush();
+        } catch (IOException e) {
+            throw new IOException("Failed to copy file via stream", e);
+        }
+        Files.delete(context.tmpOutputFile.toPath());
         return true;
     }
 
