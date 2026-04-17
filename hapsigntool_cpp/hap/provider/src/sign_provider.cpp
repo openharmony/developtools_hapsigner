@@ -270,6 +270,13 @@ bool SignProvider::Sign(Options* options)
 
 bool SignProvider::PrepareReSignBlocks(Options* options)
 {
+    VerifyHap hapVerify;
+    int32_t ret = hapVerify.VerifyBeforeResign(options->GetString(Options::IN_FILE), options);
+    if (ret != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("hap verify failed !");
+        return false;
+    }
+    
     std::string inputFilePath = options->GetString(Options::IN_FILE);
     RandomAccessFile inputFile;
     if (!inputFile.Init(inputFilePath)) {
