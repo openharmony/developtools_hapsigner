@@ -59,7 +59,7 @@ public:
     SignProvider() = default;
     virtual ~SignProvider() = default;
     bool Sign(Options* options);
-    bool GetResignBlocks(Options* options);
+    bool PrepareReSignBlocks(Options* options);
     bool ReSignHap(Options* options);
     bool SignElf(Options* options);
     bool SignBin(Options* options);

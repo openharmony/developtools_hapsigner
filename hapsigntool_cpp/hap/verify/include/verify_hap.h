@@ -66,10 +66,14 @@ public:
     bool HapOutPutCertChain(std::vector<X509*>& certs, const std::string& outPutPath);
 
     int32_t Verify(const std::string& filePath, Options* options);
+
+    int32_t VerifyBeforeResign(const std::string& filePath, Options* options);
     
     int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t>& profile, Options* options);
 
     int32_t Verify(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
+    
+    int32_t VerifyBeforeResign(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
 
     int32_t VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options,
                          const std::string& filePath);

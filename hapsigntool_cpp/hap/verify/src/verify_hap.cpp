@@ -216,6 +216,26 @@ int32_t VerifyHap::Verify(const std::string& filePath, Options* options)
     return resultCode;
 }
 
+int32_t VerifyHap::VerifyBeforeResign(const std::string& filePath, Options* options)
+{
+    SIGNATURE_TOOLS_LOGD("Start Verify");
+    std::string standardFilePath;
+    if (!CheckFilePath(filePath, standardFilePath)) {
+        SIGNATURE_TOOLS_LOGE("Check file path%s failed", filePath.c_str());
+        return IO_ERROR;
+    }
+    RandomAccessFile hapFile;
+    if (!hapFile.Init(standardFilePath)) {
+        SIGNATURE_TOOLS_LOGE("%s init failed", standardFilePath.c_str());
+        return ZIP_ERROR;
+    }
+    int32_t resultCode = VerifyBeforeResign(hapFile, options, filePath);
+    if (resultCode != RET_OK) {
+        PrintErrorNumberMsg("VERIFY_ERROR", VERIFY_ERROR, standardFilePath + " verify failed");
+    }
+    return resultCode;
+}
+
 bool VerifyHap::CheckFilePath(const std::string& filePath, std::string& standardFilePath)
 {
     char path[PATH_MAX] = { 0x00 };
@@ -438,7 +458,12 @@ int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSig
         SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
         return VERIFY_ERROR;
     }
-    
+
+    if (CheckCodeSign(filePath, hapSignInfo.optionBlocks) == false) {
+        SIGNATURE_TOOLS_LOGE("check coode sign failed\n");
+        return VERIFY_ERROR;
+    }
+
     Pkcs7Context pkcs7Context;
     if (!VerifyAppPkcs7(pkcs7Context, hapSignInfo.hapSignatureBlock)) {
         return PARSE_ERROR;
@@ -541,7 +566,7 @@ int32_t VerifyHap::Verify(RandomAccessFile& hapFile, Options* options, const std
         return VerifyResign(hapFile, hapSignInfo, options, filePath);
     }
     if (CheckCodeSign(filePath, hapSignInfo.optionBlocks) == false) {
-        SIGNATURE_TOOLS_LOGE("check coode sign failed\n");
+        SIGNATURE_TOOLS_LOGE("check code sign failed\n");
         return VERIFY_ERROR;
     }
 
@@ -582,6 +607,46 @@ int32_t VerifyHap::Verify(RandomAccessFile& hapFile, Options* options, const std
                               hapSignInfo.optionBlocks)) {
         SIGNATURE_TOOLS_LOGE("output Optional Blocks failed");
         return IO_ERROR;
+    }
+    return RET_OK;
+}
+
+int32_t VerifyHap::VerifyBeforeResign(RandomAccessFile& hapFile, Options* options, const std::string& filePath)
+{
+    SignatureInfo hapSignInfo;
+    if (!HapSignerBlockUtils::FindHapSignature(hapFile, hapSignInfo)) {
+        return ZIP_ERROR;
+    }
+
+    if (CheckCodeSign(filePath, hapSignInfo.optionBlocks) == false) {
+        SIGNATURE_TOOLS_LOGE("check code sign failed\n");
+        return VERIFY_ERROR;
+    }
+
+    Pkcs7Context pkcs7Context;
+    if (!VerifyAppPkcs7(pkcs7Context, hapSignInfo.hapSignatureBlock)) {
+        return PARSE_ERROR;
+    }
+
+    if (!GetDigestAndAlgorithm(pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Get digest failed");
+        return PARSE_ERROR;
+    }
+
+    STACK_OF(X509_CRL)* x509Crl = nullptr;
+    if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
+        SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
+        return PARSE_ERROR;
+    }
+
+    if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
+        return VERIFY_ERROR;
+    }
+
+    if (!HapSignerBlockUtils::VerifyHapIntegrity(pkcs7Context, hapFile, hapSignInfo)) {
+        SIGNATURE_TOOLS_LOGE("Verify Integrity failed");
+        return VERIFY_ERROR;
     }
     return RET_OK;
 }
