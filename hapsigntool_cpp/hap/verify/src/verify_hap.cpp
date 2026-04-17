@@ -441,16 +441,16 @@ bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProf
     return ret;
 }
 
-int32_t VerifyHap::VerifyCRL(Pkcs7Context& pkcs7Context)
+bool VerifyHap::VerifyCRL(Pkcs7Context& pkcs7Context)
 {
     STACK_OF(X509_CRL)* x509Crl = nullptr;
     x509Crl = pkcs7Context.p7->d.sign->crl;
 
     if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
         SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
-        return VERIFY_ERROR;
+        return false;
     }
-    return RET_OK;
+    return true;
 }
 
 int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo,
