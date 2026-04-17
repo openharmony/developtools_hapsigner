@@ -533,12 +533,6 @@ bool SignToolServiceImpl::SignHap(Options* options)
 
 bool SignToolServiceImpl::ReSignHap(Options* options)
 {
-    VerifyHap hapVerify;
-    int32_t ret = hapVerify.VerifyBeforeResign(options->GetString(Options::IN_FILE), options);
-    if (ret != RET_OK) {
-        SIGNATURE_TOOLS_LOGE("hap verify failed !");
-        return false;
-    }
     std::string mode = options->GetString(Options::MODE);
     std::shared_ptr<SignProvider> signProvider;
     if (LOCAL_SIGN == mode) {
