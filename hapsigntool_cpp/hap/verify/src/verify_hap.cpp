@@ -443,7 +443,7 @@ bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProf
 
 int32_t VerifyHap::VerifyCRL(Pkcs7Context& pkcs7Context)
 {
-     STACK_OF(X509_CRL)* x509Crl = nullptr;
+    STACK_OF(X509_CRL)* x509Crl = nullptr;
     if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
         SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
         return PARSE_ERROR;
