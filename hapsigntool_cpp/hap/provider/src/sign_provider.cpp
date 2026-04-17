@@ -289,7 +289,7 @@ bool SignProvider::PrepareReSignBlocks(Options* options)
 
     if (!VerifyHap::IsEnterpriseProfileDistributionType(hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
-        return VERIFY_ERROR;
+        return false;
     }
 
     optionalBlocks.clear();
