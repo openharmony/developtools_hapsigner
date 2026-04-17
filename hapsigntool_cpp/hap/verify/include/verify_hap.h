@@ -72,10 +72,6 @@ public:
     int32_t WriteVerifyOutput(Pkcs7Context& pkcs7Context, std::vector<int8_t>& profile, Options* options);
 
     int32_t Verify(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
-    
-    int32_t VerifyBeforeResign(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
-
-    int32_t VerifyCRL(Pkcs7Context& pkcs7Context);
 
     int32_t VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options,
                          const std::string& filePath);
@@ -88,6 +84,10 @@ public:
     bool VerifyAppPkcs7(Pkcs7Context& pkcs7Context, const ByteBuffer& hapSignatureBlock);
     DLL_EXPORT bool GetDigestAndAlgorithm(Pkcs7Context& digest);
     static bool PrintCertChainToCmd(std::vector<X509*>& certChain);
+
+private:
+    bool VerifyCRL(Pkcs7Context& pkcs7Context);
+    int32_t VerifyBeforeResign(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
 
 private:
     bool isPrintCert;
