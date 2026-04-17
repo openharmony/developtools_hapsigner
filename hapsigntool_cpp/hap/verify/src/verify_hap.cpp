@@ -540,18 +540,11 @@ int32_t VerifyHap::VerifyOriginalPackageSignature(RandomAccessFile& hapFile, Sig
         return PARSE_ERROR;
     }
 
-    STACK_OF(X509_CRL)* x509Crl = nullptr;
-    if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
-        SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
-        return PARSE_ERROR;
-    }
-
-    if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
-        sk_X509_CRL_pop_free(x509Crl, X509_CRL_free);
+    if (!VerifyCRL(pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Verify CRL failed");
         return VERIFY_ERROR;
     }
-    sk_X509_CRL_pop_free(x509Crl, X509_CRL_free);
+
     if (!HapSignerBlockUtils::VerifyOldHapIntegrity(pkcs7Context, hapFile, hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Integrity failed");
         return VERIFY_ERROR;
@@ -590,14 +583,8 @@ int32_t VerifyHap::Verify(RandomAccessFile& hapFile, Options* options, const std
         return PARSE_ERROR;
     }
 
-    STACK_OF(X509_CRL)* x509Crl = nullptr;
-    if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
-        SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
-        return PARSE_ERROR;
-    }
-
-    if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
+    if (!VerifyCRL(pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Verify CRL failed");
         return VERIFY_ERROR;
     }
 
@@ -643,14 +630,8 @@ int32_t VerifyHap::VerifyBeforeResign(RandomAccessFile& hapFile, Options* option
         return PARSE_ERROR;
     }
 
-    STACK_OF(X509_CRL)* x509Crl = nullptr;
-    if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
-        SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
-        return PARSE_ERROR;
-    }
-
-    if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
+    if (!VerifyCRL(pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Verify CRL failed");
         return VERIFY_ERROR;
     }
 
