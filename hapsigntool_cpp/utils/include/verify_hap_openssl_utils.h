@@ -38,7 +38,6 @@ public:
                                              uint32_t packageLen, Pkcs7Context& pkcs7Context);
     DLL_EXPORT static bool GetCertChains(PKCS7* p7, Pkcs7Context& pkcs7Context);
 
-    DLL_EXPORT static bool GetCrlStack(PKCS7* p7, STACK_OF(X509_CRL)* x509Crl);
     DLL_EXPORT static bool VerifyPkcs7(Pkcs7Context& pkcs7Context);
 
     static void GetOpensslErrorMessage();

@@ -268,8 +268,15 @@ bool SignProvider::Sign(Options* options)
     return DoAfterSign(isPathOverlap, tmpOutputFilePath, inputFilePath);
 }
 
-bool SignProvider::GetResignBlocks(Options* options)
+bool SignProvider::PrepareReSignBlocks(Options* options)
 {
+    VerifyHap hapVerify;
+    int32_t ret = hapVerify.VerifyBeforeResign(options->GetString(Options::IN_FILE), options);
+    if (ret != RET_OK) {
+        SIGNATURE_TOOLS_LOGE("hap verify failed !");
+        return false;
+    }
+    
     std::string inputFilePath = options->GetString(Options::IN_FILE);
     RandomAccessFile inputFile;
     if (!inputFile.Init(inputFilePath)) {
@@ -282,26 +289,38 @@ bool SignProvider::GetResignBlocks(Options* options)
 
     if (!VerifyHap::IsEnterpriseProfileDistributionType(hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Enterprise Profile failed");
-        return VERIFY_ERROR;
+        return false;
     }
 
     optionalBlocks.clear();
 
     for (const auto& block : hapSignInfo.optionBlocks) {
-        optionalBlocks.push_back(block);
+        if (block.optionalType == HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID ||
+            block.optionalType == HapUtils::HAP_PROFILE_BLOCK_ID ||
+            block.optionalType == HapUtils::HAP_PROPERTY_BLOCK_ID) {
+            optionalBlocks.push_back(block);
+        }
     }
-
-    OptionalBlock originalMainSignBlock = {
-        HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID,
-        hapSignInfo.hapSignatureBlock
-    };
-    optionalBlocks.push_back(originalMainSignBlock);
+    bool foundOriginalHapSignBlock = false;
+    for (const auto& block : optionalBlocks) {
+        if (block.optionalType == HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID) {
+            foundOriginalHapSignBlock = true;
+            break;
+        }
+    }
+    if (!foundOriginalHapSignBlock) {
+        OptionalBlock originalMainSignBlock = {
+            HapUtils::HAP_SIGNATURE_SCHEME_V1_BLOCK_ID,
+            hapSignInfo.hapSignatureBlock
+        };
+        optionalBlocks.push_back(originalMainSignBlock);
+    }
     return true;
 }
 
 bool SignProvider::ReSignHap(Options* options)
 {
-    if (!GetResignBlocks(options)) {
+    if (!PrepareReSignBlocks(options)) {
         return PrintErrorLog("Get Resign Blocks failed", COMMAND_PARAM_ERROR);
     }
     bool isPathOverlap = false;
@@ -485,7 +504,7 @@ bool SignProvider::AppendReCodeSignBlock(SignerConfig* signerConfig, std::string
         [](int64_t sum, const auto& elem) { return sum + elem.optionalBlockValue.GetCapacity(); });
     // 4 means hap format occupy 4 byte storage location,2 means optional blocks reserve 2 storage location
     // 12 byte before codeSignArray
-    int64_t appendOptionalBlocksHeaderSize = (4 + 4 + 4) * 2 + 12;
+    int64_t appendOptionalBlocksHeaderSize = (4 + 4 + 4) * (optionalBlocks.size() + 2) + 12;
     int64_t codeSignOffset = centralDirectoryOffset + optionalBlockSize + appendOptionalBlocksHeaderSize;
     // create CodeSigning Object
     CodeSigning codeSigning(signerConfig);

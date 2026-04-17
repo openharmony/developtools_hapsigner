@@ -133,15 +133,6 @@ bool VerifyHapOpensslUtils::CheckPkcs7SignedDataIsValid(const PKCS7* p7)
     return true;
 }
 
-bool VerifyHapOpensslUtils::GetCrlStack(PKCS7* p7, STACK_OF(X509_CRL)* x509Crl)
-{
-    if (!CheckPkcs7SignedDataIsValid(p7)) {
-        return false;
-    }
-    x509Crl = p7->d.sign->crl;
-    return true;
-}
-
 bool VerifyHapOpensslUtils::VerifyPkcs7(Pkcs7Context& pkcs7Context)
 {
     if (!CheckPkcs7SignedDataIsValid(pkcs7Context.p7)) {
