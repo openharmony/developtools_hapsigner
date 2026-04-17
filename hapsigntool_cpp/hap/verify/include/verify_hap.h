@@ -75,6 +75,8 @@ public:
     
     int32_t VerifyBeforeResign(RandomAccessFile& hapFile, Options* options, const std::string& filePath);
 
+    int32_t VerifyCRL(Pkcs7Context& pkcs7Context);
+
     int32_t VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo, Options* options,
                          const std::string& filePath);
 

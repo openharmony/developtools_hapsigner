@@ -441,6 +441,23 @@ bool VerifyHap::CheckInputCertMatchWithProfile(X509* inputCert, X509* certInProf
     return ret;
 }
 
+int32_t VerifyHap::VerifyCRL(Pkcs7Context& pkcs7Context)
+{
+     STACK_OF(X509_CRL)* x509Crl = nullptr;
+    if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
+        SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
+        return PARSE_ERROR;
+    }
+
+    if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
+        sk_X509_CRL_pop_free(x509Crl, X509_CRL_free);
+        return VERIFY_ERROR;
+    }
+    sk_X509_CRL_pop_free(x509Crl, X509_CRL_free);
+    return RET_OK;
+}
+
 int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSignInfo,
                                 Options* options, const std::string& filePath)
 {
@@ -460,7 +477,7 @@ int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSig
     }
 
     if (CheckCodeSign(filePath, hapSignInfo.optionBlocks) == false) {
-        SIGNATURE_TOOLS_LOGE("check coode sign failed\n");
+        SIGNATURE_TOOLS_LOGE("check code sign failed\n");
         return VERIFY_ERROR;
     }
 
@@ -474,18 +491,11 @@ int32_t VerifyHap::VerifyResign(RandomAccessFile& hapFile, SignatureInfo& hapSig
         return PARSE_ERROR;
     }
 
-    STACK_OF(X509_CRL)* x509Crl = nullptr;
-    if (!VerifyHapOpensslUtils::GetCrlStack(pkcs7Context.p7, x509Crl)) {
-        SIGNATURE_TOOLS_LOGE("Get Crl stack failed");
-        return PARSE_ERROR;
-    }
-
-    if (!VerifyCertOpensslUtils::VerifyCrl(pkcs7Context.certChain[0], x509Crl, pkcs7Context)) {
-        SIGNATURE_TOOLS_LOGE("Verify Crl stack failed");
-        sk_X509_CRL_pop_free(x509Crl, X509_CRL_free);
+    if (!VerifyCRL(pkcs7Context)) {
+        SIGNATURE_TOOLS_LOGE("Verify CRL failed");
         return VERIFY_ERROR;
     }
-    sk_X509_CRL_pop_free(x509Crl, X509_CRL_free);
+
     if (!HapSignerBlockUtils::VerifyHapIntegrity(pkcs7Context, hapFile, hapSignInfo)) {
         SIGNATURE_TOOLS_LOGE("Verify Integrity failed");
         return VERIFY_ERROR;
