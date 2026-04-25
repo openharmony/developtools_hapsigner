@@ -17,8 +17,6 @@ package com.ohos.hapsigntool.utils;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRL;
 import java.security.cert.CRLException;
 import java.security.cert.Certificate;
@@ -40,60 +38,6 @@ public class DigestUtils {
      * Constructor of Method
      */
     private DigestUtils() {
-    }
-
-    /**
-     * digest the inputContent with SHA-256
-     *
-     * @param inputContentArray input Content Array
-     * @return the result of digest with SHA-256
-     */
-    public static byte[] sha256Digest(byte[] inputContentArray) {
-        byte[] sha2Array = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(inputContentArray);
-            sha2Array = md.digest();
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("don't has SHA-256 Algorithm");
-        }
-        return sha2Array;
-    }
-
-    /**
-     * digest the inputContent with SHA-384
-     *
-     * @param inputContentArray input Content Array
-     * @return the result of digest with SHA-384
-     */
-    public static byte[] sha384Digest(byte[] inputContentArray) {
-        byte[] sha2Array = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-384");
-            md.update(inputContentArray);
-            sha2Array = md.digest();
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("don't has SHA-384 Algorithm");
-        }
-        return sha2Array;
-    }
-
-    /**
-     * digest the inputContent with SHA-512
-     *
-     * @param inputContentArray input Content Array
-     * @return the result of digest with SHA-512
-     */
-    public static byte[] sha512Digest(byte[] inputContentArray) {
-        byte[] sha2Array = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(inputContentArray);
-            sha2Array = md.digest();
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("don't has SHA-512 Algorithm");
-        }
-        return sha2Array;
     }
 
     /**

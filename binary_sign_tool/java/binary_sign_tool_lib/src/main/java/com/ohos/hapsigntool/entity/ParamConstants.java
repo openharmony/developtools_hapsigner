@@ -215,14 +215,4 @@ public class ParamConstants {
      * The certificate file path
      */
     public static final String PARAM_LOCAL_PUBLIC_CERT = "appCertFile";
-
-    /**
-     * The path used to output certificate-chain
-     */
-    public static final String PARAM_VERIFY_CERTCHAIN_FILE = "outCertChain";
-
-    /**
-     * The path used to output profile
-     */
-    public static final String PARAM_VERIFY_PROFILE_FILE = "outProfile";
 }

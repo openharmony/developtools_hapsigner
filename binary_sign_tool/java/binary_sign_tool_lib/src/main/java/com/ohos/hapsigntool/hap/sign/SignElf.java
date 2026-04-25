@@ -31,6 +31,7 @@ import com.ohos.hapsigntool.error.ProfileException;
 import com.ohos.hapsigntool.hap.config.SignerConfig;
 import com.ohos.hapsigntool.profile.ProfileSignTool;
 import com.ohos.hapsigntool.signer.ISigner;
+import com.ohos.hapsigntool.utils.CompareElf;
 import com.ohos.hapsigntool.utils.LogUtils;
 
 import java.io.File;
@@ -170,6 +171,10 @@ public class SignElf {
         long codeSignOffset = createCodeSignSectionAndSave(elfio, context.tmpOutputFile);
         if (codeSignOffset < 0) {
             return false;
+        }
+        // Validate the saved ELF file against original elfio before generating code signature
+        if (!new CompareElf(context.inputFile, context.tmpOutputFile).validate()) {
+            LOGGER.warn("ELF file validation failed");
         }
         String selfSign = signParams.get(ParamConstants.PARAM_SELF_SIGN);
         boolean isSelfSign = ParamConstants.SELF_SIGN_TYPE_1.equals(selfSign);
