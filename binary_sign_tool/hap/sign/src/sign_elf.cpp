@@ -23,6 +23,7 @@
 #include "code_signing.h"
 #include "param_constants.h"
 #include "profile_sign_tool.h"
+#include "compare_elf.h"
 
 namespace OHOS {
 namespace SignatureTools {
@@ -56,6 +57,13 @@ bool SignElf::Sign(SignerConfig& signerConfig, std::map<std::string, std::string
         SIGNATURE_TOOLS_LOGE("[SignElf] WriteCodeSignBlock error");
         return false;
     }
+
+    // Validate the saved ELF file against original before generating code signature
+    CompareElf compareElf(inputFile, tmpOutputFile);
+    if (!compareElf.Validate()) {
+        SIGNATURE_TOOLS_LOGE("[SignElf] ELF file validation failed");
+    }
+
     std::string selfSign = signParams.at(ParamConstants::PARAM_SELF_SIGN);
     bool generateCodeSignFlag = GenerateCodeSignByte(signerConfig, tmpOutputFile, csOffset, selfSign);
     if  (!generateCodeSignFlag) {
