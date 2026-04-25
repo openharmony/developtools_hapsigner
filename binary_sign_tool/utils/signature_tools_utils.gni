@@ -23,4 +23,5 @@ signature_tools_utils_src = [
   "${hapsigntool_cpp_utils}/src/key_store_helper.cpp",
   "${hapsigntool_cpp_utils}/src/string_utils.cpp",
   "${hapsigntool_cpp_utils}/src/verify_hap_openssl_utils.cpp",
+  "${signature_tools_utils}/src/compare_elf.cpp",
 ]
